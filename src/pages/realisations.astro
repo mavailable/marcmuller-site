@@ -1,0 +1,490 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const title = 'Réalisations — MM Agency';
+const description = 'Découvrez les sites web que j\'ai créés pour mes clients. Design sur mesure, performance maximale et SEO local au rendez-vous.';
+
+interface Project {
+  id: string;
+  title: string;
+  sector: string;
+  sectorColor: string;
+  type: string;
+  offer: 'Essentiel' | 'Multi-pages' | 'Sur mesure';
+  description: string;
+  url: string;
+  gradient: string;
+  screenshot: string;
+  features: string[];
+  stack: string[];
+  highlights: { label: string; value: string }[];
+}
+
+const offerColors: Record<string, { bg: string; text: string; border: string }> = {
+  'Essentiel': { bg: 'bg-blue-500/10', text: 'text-blue-500', border: 'border-blue-500/20' },
+  'Multi-pages': { bg: 'bg-[var(--color-accent)]/10', text: 'text-[var(--color-accent)]', border: 'border-[var(--color-accent)]/20' },
+  'Sur mesure': { bg: 'bg-purple-500/10', text: 'text-purple-500', border: 'border-purple-500/20' },
+};
+
+const offers = ['Essentiel', 'Multi-pages', 'Sur mesure'] as const;
+
+const projects: Project[] = [
+  {
+    id: 'la-grange-aux-fees',
+    title: 'La Grange aux Fées',
+    sector: 'Tourisme',
+    sectorColor: 'border-amber-400/30 bg-amber-400/10 text-amber-400',
+    type: 'Site de réservation',
+    offer: 'Sur mesure',
+    description: 'Complexe de 6 gîtes de charme à Amnéville-les-Thermes. Le site permet aux visiteurs de choisir leur gîte via un sélecteur visuel, consulter les avis Airbnb et réserver directement — sans passer par une plateforme.',
+    url: 'https://dev.la-grange-aux-fees.pages.dev/',
+    gradient: 'from-[#C97152] to-[#E8A87C]',
+    screenshot: '/images/projects/la-grange-aux-fees.webp',
+    features: ['Réservation directe', 'Sélecteur de gîtes', 'Avis Airbnb intégrés', 'Galerie immersive', 'SEO local', 'Contact WhatsApp'],
+    stack: ['Astro', 'Tailwind', 'Cloudflare'],
+    highlights: [
+      { label: 'Lighthouse', value: '100' },
+      { label: 'Livré en', value: '5 jours' },
+      { label: 'Coût hébergement', value: '0€/mois' },
+    ],
+  },
+  {
+    id: 'vergers-galine',
+    title: 'Les Vergers de la Galine',
+    sector: 'Agriculture',
+    sectorColor: 'border-lime-400/30 bg-lime-400/10 text-lime-400',
+    type: 'Site e-commerce',
+    offer: 'Sur mesure',
+    description: 'Ferme familiale en agroforesterie dans les Alpes. Le site présente l\'exploitation, ses produits et propose une boutique en ligne avec paiement sécurisé — pour vendre en direct sans intermédiaire.',
+    url: 'https://site-vergers-galine.pages.dev/',
+    gradient: 'from-[#9BC83B] to-[#C5E17A]',
+    screenshot: '/images/projects/vergers-galine.webp',
+    features: ['Boutique en ligne', 'Paiement sécurisé', 'Catalogue produits', 'Blog', 'Page formations', 'SEO local'],
+    stack: ['Astro', 'Tailwind', 'Stripe', 'Cloudflare'],
+    highlights: [
+      { label: 'Lighthouse', value: '100' },
+      { label: 'Paiement', value: 'Stripe' },
+      { label: 'Coût hébergement', value: '0€/mois' },
+    ],
+  },
+  {
+    id: 'pacor-piano',
+    title: "P'Accord Piano",
+    sector: 'Artisanat',
+    sectorColor: 'border-yellow-400/30 bg-yellow-400/10 text-yellow-400',
+    type: 'Site vitrine',
+    offer: 'Multi-pages',
+    description: 'Accordeur de piano indépendant à Chartres. Le site génère des demandes grâce à un calculateur de tarif géolocalisé et un design soigné qui inspire confiance dès la première visite.',
+    url: 'https://pacor-piano.vercel.app/',
+    gradient: 'from-[#1A1A1A] to-[#3D3D3D]',
+    screenshot: '/images/projects/pacor-piano.webp',
+    features: ['Calculateur de tarif', 'Géolocalisation', 'Design premium', 'SEO local', 'Formulaire de contact', 'Blog'],
+    stack: ['Astro', 'Tailwind', 'Vercel'],
+    highlights: [
+      { label: 'Lighthouse', value: '100' },
+      { label: 'Livré en', value: '7 jours' },
+      { label: 'Coût hébergement', value: '0€/mois' },
+    ],
+  },
+  {
+    id: 'datavi',
+    title: 'DATAVI',
+    sector: 'Médico-social',
+    sectorColor: 'border-orange-400/30 bg-orange-400/10 text-orange-400',
+    type: 'Site vitrine',
+    offer: 'Multi-pages',
+    description: 'Cabinet d\'assistante sociale libérale. Le site présente les prestations, affiche les témoignages clients vérifiés et facilite la prise de contact — pour une professionnelle qui exerçait jusque-là sans visibilité web.',
+    url: 'https://site-datavi.pages.dev/',
+    gradient: 'from-[#E85D3D] to-[#F5A08A]',
+    screenshot: '/images/projects/datavi.webp',
+    features: ['Témoignages vérifiés', 'SEO optimisé', 'Page recrutement', 'Blog', 'FAQ', 'Formulaire de contact'],
+    stack: ['Astro', 'Tailwind', 'Cloudflare'],
+    highlights: [
+      { label: 'Lighthouse', value: '100' },
+      { label: 'Livré en', value: '5 jours' },
+      { label: 'Coût hébergement', value: '0€/mois' },
+    ],
+  },
+  {
+    id: 'mm-securite',
+    title: 'MM Sécurité',
+    sector: 'Sécurité',
+    sectorColor: 'border-blue-400/30 bg-blue-400/10 text-blue-400',
+    type: 'Site vitrine',
+    offer: 'Multi-pages',
+    description: 'Technicien indépendant en alarme et vidéosurveillance à Metz. Un site pensé pour le SEO local avec des pages services détaillées, la conformité ERP mise en avant et un tunnel de demande de devis.',
+    url: 'https://mm-securite.fr',
+    gradient: 'from-[#2D5A7B] to-[#4A7C9E]',
+    screenshot: '/images/projects/mm-securite.webp',
+    features: ['SEO local avancé', 'Demande de devis', 'Conformité ERP', 'Pages services', 'Blog', 'FAQ'],
+    stack: ['Astro', 'Tailwind', 'Cloudflare'],
+    highlights: [
+      { label: 'Lighthouse', value: '100' },
+      { label: 'Cible', value: 'Commerces' },
+      { label: 'Coût hébergement', value: '0€/mois' },
+    ],
+  },
+  {
+    id: 'kor',
+    title: 'Kor',
+    sector: 'SaaS',
+    sectorColor: 'border-purple-400/30 bg-purple-400/10 text-purple-400',
+    type: 'Landing page',
+    offer: 'Essentiel',
+    description: 'Copilote business IA pour entrepreneurs. Une landing page dark mode avec animations fluides, présentation des intégrations et formulaire d\'inscription à la bêta — conçue pour convertir les early adopters.',
+    url: 'https://kor-landing.pages.dev/',
+    gradient: 'from-[#6B5B95] to-[#A78BFA]',
+    screenshot: '/images/projects/kor.webp',
+    features: ['Design dark mode', 'Animations au scroll', 'Inscription bêta', 'Présentation produit', '10+ intégrations', 'Conforme RGPD'],
+    stack: ['Astro', 'Tailwind', 'Cloudflare'],
+    highlights: [
+      { label: 'Lighthouse', value: '100' },
+      { label: 'Livré en', value: '5 jours' },
+      { label: 'Coût hébergement', value: '0€/mois' },
+    ],
+  },
+  {
+    id: 'levain-kohtao',
+    title: 'Le Levain de Koh Tao',
+    sector: 'Restauration',
+    sectorColor: 'border-amber-400/30 bg-amber-400/10 text-amber-400',
+    type: 'Site vitrine',
+    offer: 'Essentiel',
+    description: 'Boulangerie artisanale française sur l\'île de Koh Tao en Thaïlande. Le site présente le menu, l\'histoire du boulanger et la carte — avec un design immersif qui donne envie de pousser la porte dès 6h30.',
+    url: 'https://main.site-levain-kohtao.pages.dev/',
+    gradient: 'from-[#1B2F33] to-[#C97152]',
+    screenshot: '/images/projects/levain-kohtao.webp',
+    features: ['Design immersif', 'Menu interactif', 'Carte & itinéraire', 'Contact WhatsApp', 'SEO local', 'FAQ'],
+    stack: ['Astro', 'Tailwind', 'Cloudflare'],
+    highlights: [
+      { label: 'Lighthouse', value: '100' },
+      { label: 'Livré en', value: '5 jours' },
+      { label: 'Coût hébergement', value: '0€/mois' },
+    ],
+  },
+  {
+    id: 'occivolt',
+    title: "Occi'Volt",
+    sector: 'Artisanat',
+    sectorColor: 'border-yellow-400/30 bg-yellow-400/10 text-yellow-400',
+    type: 'Site vitrine',
+    offer: 'Multi-pages',
+    description: 'Électricien indépendant à Castelnaudary et dans tout le Lauragais. Un site pensé pour le SEO local avec galerie de réalisations, avis Google intégrés et demande de devis — pour un artisan qui veut des chantiers sans prospecter.',
+    url: 'https://occivolt.pages.dev/',
+    gradient: 'from-[#1A1A1A] to-[#D4A017]',
+    screenshot: '/images/projects/occivolt.webp',
+    features: ['Galerie réalisations', 'Avis Google intégrés', 'Demande de devis', 'SEO local', 'FAQ', 'Appel direct'],
+    stack: ['Astro', 'Tailwind', 'Cloudflare'],
+    highlights: [
+      { label: 'Lighthouse', value: '100' },
+      { label: 'Livré en', value: '5 jours' },
+      { label: 'Coût hébergement', value: '0€/mois' },
+    ],
+  },
+  {
+    id: 'roma-laudarium',
+    title: 'Roma Laudarium',
+    sector: 'Art & Culture',
+    sectorColor: 'border-emerald-400/30 bg-emerald-400/10 text-emerald-400',
+    type: 'Site vitrine',
+    offer: 'Essentiel',
+    description: 'Écrivaine, conteuse et metteuse en scène. Le site présente son spectacle de contes pour jeune public, son univers poétique et permet aux programmateurs de salles et écoles de la contacter — pour une artiste qui tournait sans vitrine web.',
+    url: 'https://roma-laudarium.pages.dev/',
+    gradient: 'from-[#1B3A2A] to-[#C9942A]',
+    screenshot: '/images/projects/roma-laudarium.webp',
+    features: ['Présentation spectacle', 'Univers artistique', 'Contact programmateurs', 'Design poétique', 'SEO local', 'Conforme RGPD'],
+    stack: ['Astro', 'Tailwind', 'Cloudflare'],
+    highlights: [
+      { label: 'Lighthouse', value: '100' },
+      { label: 'Livré en', value: '5 jours' },
+      { label: 'Coût hébergement', value: '0€/mois' },
+    ],
+  },
+];
+
+const sectors = [...new Set(projects.map(p => p.sector))];
+const types = [...new Set(projects.map(p => p.type))];
+---
+
+<BaseLayout title={title} description={description}>
+  <!-- HERO — compact, stats intégrées -->
+  <section class="relative w-full bg-[#0D0D0D] px-6 py-10 md:px-8 md:py-14 overflow-hidden">
+    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 40px 40px;"></div>
+    <div class="relative mx-auto max-w-5xl z-10">
+      <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
+        <!-- Left: title -->
+        <div>
+          <h1 class="text-3xl font-bold text-white md:text-4xl">Mes réalisations</h1>
+          <p class="mt-2 text-gray-400 text-sm max-w-lg">Sites sur mesure, Astro + Tailwind. Rapide, bien référencé, pensé pour convertir.</p>
+        </div>
+        <!-- Right: mini stats -->
+        <div class="flex items-center gap-5 md:gap-6">
+          <div class="text-center">
+            <p class="text-xl font-bold text-white">{projects.length}</p>
+            <p class="text-[10px] uppercase tracking-wider text-gray-500">Projets</p>
+          </div>
+          <div class="w-px h-8 bg-white/10"></div>
+          <div class="text-center">
+            <p class="text-xl font-bold text-white">100</p>
+            <p class="text-[10px] uppercase tracking-wider text-gray-500">Lighthouse</p>
+          </div>
+          <div class="w-px h-8 bg-white/10"></div>
+          <div class="text-center">
+            <p class="text-xl font-bold text-[var(--color-accent)]">0€</p>
+            <p class="text-[10px] uppercase tracking-wider text-gray-500">/mois</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section class="w-full bg-[var(--color-bg)] px-6 py-8 md:px-8 md:py-12">
+    <div class="mx-auto max-w-5xl">
+
+      <!-- FILTER BAR -->
+      <div class="mb-8 space-y-3" id="filter-bar">
+        <!-- Row 1: Offre -->
+        <div class="flex flex-wrap items-center justify-center gap-2">
+          <span class="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-muted)] mr-2">Offre</span>
+          <button data-filter-type="offer" data-filter-value="all" class="filter-btn filter-btn--active px-4 py-1.5 rounded-full text-xs font-medium transition-all duration-200 cursor-pointer bg-[var(--color-text)] text-white shadow-sm">
+            Toutes <span class="ml-1 opacity-60">{projects.length}</span>
+          </button>
+          {offers.map((offer) => (
+            <button data-filter-type="offer" data-filter-value={offer} class="filter-btn px-4 py-1.5 rounded-full text-xs font-medium transition-all duration-200 cursor-pointer bg-white text-[var(--color-text-muted)] border border-[var(--color-border)] hover:border-[var(--color-accent)]/40 hover:text-[var(--color-text)]">
+              {offer} <span class="ml-1 opacity-60">{projects.filter(p => p.offer === offer).length}</span>
+            </button>
+          ))}
+        </div>
+        <!-- Row 2: Secteur -->
+        <div class="flex flex-wrap items-center justify-center gap-2">
+          <span class="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-muted)] mr-2">Secteur</span>
+          <button data-filter-type="sector" data-filter-value="all" class="filter-btn filter-btn--active px-4 py-1.5 rounded-full text-xs font-medium transition-all duration-200 cursor-pointer bg-[var(--color-text)] text-white shadow-sm">
+            Tous
+          </button>
+          {sectors.map((sector) => (
+            <button data-filter-type="sector" data-filter-value={sector} class="filter-btn px-4 py-1.5 rounded-full text-xs font-medium transition-all duration-200 cursor-pointer bg-white text-[var(--color-text-muted)] border border-[var(--color-border)] hover:border-[var(--color-accent)]/40 hover:text-[var(--color-text)]">
+              {sector}
+            </button>
+          ))}
+        </div>
+        <!-- Empty state -->
+        <p id="no-results" class="hidden text-center text-[var(--color-text-muted)] py-12">Aucun projet ne correspond à ces filtres.</p>
+      </div>
+
+    <div class="space-y-12" id="projects-list">
+      {projects.map((project, index) => (
+        <article data-offer={project.offer} data-sector={project.sector} class="project-card group overflow-hidden rounded-2xl border border-[var(--color-border)] bg-white shadow-sm transition-all hover:shadow-xl">
+          <div class={`grid ${index % 2 === 0 ? 'lg:grid-cols-[1.1fr_1fr]' : 'lg:grid-cols-[1fr_1.1fr]'}`}>
+
+            {/* Screenshot area */}
+            <div class={`relative overflow-hidden bg-gradient-to-br ${project.gradient} ${index % 2 !== 0 ? 'lg:order-2' : ''} flex flex-col items-center justify-center p-6 lg:p-8`}>
+              {/* Screenshot — full image, no crop */}
+              <div class="relative w-full rounded-lg overflow-hidden shadow-2xl ring-1 ring-black/10">
+                <img
+                  src={project.screenshot}
+                  alt={`Capture d'écran de ${project.title}`}
+                  class="w-full h-auto block"
+                  loading="lazy"
+                />
+              </div>
+              {/* Highlights pills */}
+              <div class="flex flex-wrap justify-center gap-2 mt-5">
+                {project.highlights.map((h) => (
+                  <span class="rounded-full bg-black/25 px-3 py-1 text-[11px] font-medium text-white backdrop-blur-sm">
+                    {h.label} : <span class="font-bold">{h.value}</span>
+                  </span>
+                ))}
+              </div>
+            </div>
+
+            {/* Content side */}
+            <div class={`flex flex-col justify-center p-8 lg:p-10 ${index % 2 !== 0 ? 'lg:order-1' : ''}`}>
+              {/* Sector + Type + Offer */}
+              <div class="mb-4 flex flex-wrap items-center gap-2">
+                <span class={`inline-block rounded-full border px-3 py-1 text-xs font-semibold ${project.sectorColor}`}>
+                  {project.sector}
+                </span>
+                <span class={`inline-block rounded-full border px-3 py-1 text-xs font-semibold ${offerColors[project.offer].bg} ${offerColors[project.offer].text} ${offerColors[project.offer].border}`}>
+                  Offre {project.offer}
+                </span>
+                <span class="text-xs text-[var(--color-text-muted)]">{project.type}</span>
+              </div>
+
+              <h2 class="mb-3 text-2xl font-bold text-[var(--color-text)] lg:text-3xl">
+                {project.title}
+              </h2>
+
+              <p class="mb-6 text-[var(--color-text-muted)] leading-relaxed">
+                {project.description}
+              </p>
+
+              {/* Features */}
+              <div class="mb-6 flex flex-wrap gap-2">
+                {project.features.map((f) => (
+                  <span class="rounded-md bg-[var(--color-bg-alt)] px-2.5 py-1 text-xs font-medium text-[var(--color-text)]">
+                    {f}
+                  </span>
+                ))}
+              </div>
+
+              {/* Stack */}
+              <div class="mb-8 flex items-center gap-3">
+                <span class="text-xs uppercase tracking-wider text-[var(--color-text-light)]">Stack :</span>
+                {project.stack.map((s) => (
+                  <span class="text-xs font-semibold text-[var(--color-accent)]">{s}</span>
+                ))}
+              </div>
+
+              {/* CTA */}
+              <div class="flex flex-wrap gap-3">
+                <a
+                  href={project.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-2 rounded-xl bg-[var(--color-accent)] px-5 py-2.5 text-sm font-medium text-white transition-all hover:bg-[var(--color-accent-hover)] hover:shadow-lg"
+                  style="box-shadow: 0 4px 15px rgba(232, 108, 71, 0.2);"
+                >
+                  Voir le site
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                </a>
+                <a
+                  href={`https://pagespeed.web.dev/analysis?url=${encodeURIComponent(project.url)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center gap-2 rounded-xl border border-[var(--color-border)] px-5 py-2.5 text-sm font-medium text-[var(--color-text-muted)] transition-all hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
+                >
+                  Score Lighthouse
+                  <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z" /></svg>
+                </a>
+              </div>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+    </div>
+  </section>
+
+  <!-- TECH SECTION -->
+  <section class="w-full border-t border-[var(--color-border)] bg-white px-6 py-16 md:px-8 md:py-20">
+    <div class="mx-auto max-w-3xl text-center">
+      <h2 class="mb-4 text-2xl font-bold text-[var(--color-text)]">La stack derrière chaque projet</h2>
+      <p class="mb-10 text-[var(--color-text-muted)]">Pas de WordPress, pas de templates. Du code custom, optimisé, déployé sur le edge.</p>
+      <div class="flex flex-wrap items-center justify-center gap-6">
+        <div class="flex items-center gap-2 rounded-xl border border-[var(--color-border)] px-5 py-3">
+          <span class="text-lg font-bold text-[var(--color-accent)]">Astro</span>
+          <span class="text-xs text-[var(--color-text-muted)]">Framework</span>
+        </div>
+        <div class="flex items-center gap-2 rounded-xl border border-[var(--color-border)] px-5 py-3">
+          <span class="text-lg font-bold text-[var(--color-accent)]">Tailwind</span>
+          <span class="text-xs text-[var(--color-text-muted)]">CSS</span>
+        </div>
+        <div class="flex items-center gap-2 rounded-xl border border-[var(--color-border)] px-5 py-3">
+          <span class="text-lg font-bold text-[var(--color-accent)]">Cloudflare</span>
+          <span class="text-xs text-[var(--color-text-muted)]">Hosting</span>
+        </div>
+        <div class="flex items-center gap-2 rounded-xl border border-[var(--color-border)] px-5 py-3">
+          <span class="text-lg font-bold text-[var(--color-accent)]">Stripe</span>
+          <span class="text-xs text-[var(--color-text-muted)]">Paiement</span>
+        </div>
+        <div class="flex items-center gap-2 rounded-xl border border-[var(--color-border)] px-5 py-3">
+          <span class="text-lg font-bold text-[var(--color-accent)]">Web3Forms</span>
+          <span class="text-xs text-[var(--color-text-muted)]">Formulaires</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA -->
+  <section class="w-full bg-gradient-to-b from-[#1A1A1A] to-[#111111] px-6 py-16 md:px-8 md:py-24">
+    <div class="mx-auto max-w-3xl text-center">
+      <h2 class="mb-4 text-2xl font-bold text-white">Votre projet mérite la même attention</h2>
+      <p class="mb-8 text-gray-300">
+        Sites Express à partir de 490€, Sur mesure à partir de 1 490€. Livré en 7 jours.
+      </p>
+      <div class="flex flex-wrap items-center justify-center gap-4">
+        <a
+          href="/contact"
+          class="inline-block rounded-xl bg-[var(--color-accent)] px-8 py-3 font-medium text-white transition-all hover:bg-[var(--color-accent-hover)] hover:shadow-xl"
+          style="box-shadow: 0 10px 25px rgba(232, 108, 71, 0.3);"
+        >
+          Parlons de votre projet
+        </a>
+        <a
+          href="/offre"
+          class="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/5 px-8 py-3 font-medium text-white/85 transition-all hover:bg-white/10"
+        >
+          Voir les formules
+          <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const buttons = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+    const cards = document.querySelectorAll<HTMLElement>('.project-card');
+    const noResults = document.getElementById('no-results');
+
+    const activeClass = ['bg-[var(--color-text)]', 'text-white', 'shadow-sm'];
+    const inactiveClass = ['bg-white', 'text-[var(--color-text-muted)]', 'border', 'border-[var(--color-border)]'];
+
+    // Current filter state
+    const state: Record<string, string> = { offer: 'all', sector: 'all' };
+
+    function applyFilters() {
+      let visibleCount = 0;
+      cards.forEach(card => {
+        const matchOffer = state.offer === 'all' || card.dataset.offer === state.offer;
+        const matchSector = state.sector === 'all' || card.dataset.sector === state.sector;
+        const show = matchOffer && matchSector;
+
+        if (show) {
+          visibleCount++;
+          card.style.display = '';
+          card.style.opacity = '0';
+          card.style.transform = 'translateY(12px)';
+          requestAnimationFrame(() => {
+            card.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+          });
+        } else {
+          card.style.transition = 'opacity 0.15s ease';
+          card.style.opacity = '0';
+          setTimeout(() => { card.style.display = 'none'; }, 150);
+        }
+      });
+
+      if (noResults) {
+        noResults.classList.toggle('hidden', visibleCount > 0);
+      }
+    }
+
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const type = btn.dataset.filterType as string;
+        const value = btn.dataset.filterValue as string;
+
+        state[type] = value;
+
+        // Update button styles within same group
+        buttons.forEach(b => {
+          if (b.dataset.filterType === type) {
+            b.classList.remove(...activeClass);
+            b.classList.add(...inactiveClass);
+            b.classList.remove('filter-btn--active');
+          }
+        });
+        btn.classList.remove(...inactiveClass);
+        btn.classList.add(...activeClass);
+        btn.classList.add('filter-btn--active');
+
+        applyFilters();
+      });
+    });
+  });
+</script>

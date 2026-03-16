@@ -1,0 +1,49 @@
+---
+interface Props {
+  href: string;
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
+  size?: 'sm' | 'md' | 'lg' | 'xl';
+  class?: string;
+  icon?: boolean;
+  arrow?: boolean;
+}
+
+const {
+  href,
+  variant = 'primary',
+  size = 'md',
+  class: customClass = '',
+  icon = false,
+  arrow = false,
+} = Astro.props;
+
+const baseStyles = 'inline-flex items-center justify-center gap-2 font-medium transition-all duration-300 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)]';
+
+const variantStyles = {
+  primary: 'bg-[var(--color-accent)] text-white shadow-md hover:bg-[var(--color-accent-hover)] hover:shadow-lg hover:scale-105',
+  secondary: 'bg-transparent border border-[var(--color-accent)] text-[var(--color-accent)] hover:bg-[var(--color-accent)]/10 hover:border-[var(--color-accent-hover)]',
+  outline: 'bg-transparent border border-[var(--color-border)] text-[var(--color-text)] hover:bg-[var(--color-bg-alt)] hover:border-[var(--color-accent)]',
+  ghost: 'bg-transparent text-[var(--color-accent)] hover:bg-[var(--color-accent)]/5 hover:text-[var(--color-accent-hover)]',
+};
+
+const sizeStyles = {
+  sm: 'px-4 py-1.5 text-sm',
+  md: 'px-6 py-2.5 text-sm',
+  lg: 'px-8 py-3 text-base',
+  xl: 'px-10 py-4 text-base font-semibold',
+};
+
+const combinedClass = `${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${customClass}`;
+---
+
+<a {href} class={combinedClass}>
+  {icon && (
+    <slot name="icon" />
+  )}
+  <slot />
+  {arrow && (
+    <svg class="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" />
+    </svg>
+  )}
+</a>

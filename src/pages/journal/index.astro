@@ -1,0 +1,105 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const title = 'Journal — MM Agency';
+const description = 'Réflexions sur le web, le code, et comment les petits commerces peuvent tirer leur épingle du jeu.';
+
+interface BlogPost {
+  title: string;
+  slug: string;
+  date: string;
+  readTime: string;
+  excerpt: string;
+  tag: string;
+}
+
+const posts: BlogPost[] = [
+  {
+    title: 'Combien coûte un site web en 2026 ?',
+    slug: 'combien-coute-un-site-web',
+    date: '15 mars 2026',
+    readTime: '8 min',
+    excerpt: 'Comparatif honnête : DIY vs template vs freelance vs agence. Ce qui change vraiment le prix, et ce qui est un mythe.',
+    tag: 'Business',
+  },
+];
+---
+
+<BaseLayout title={title} description={description}>
+  <!-- HERO -->
+  <section class="relative w-full bg-[#0D0D0D] px-6 py-16 md:px-8 md:py-24 overflow-hidden">
+    <!-- Dot grid overlay -->
+    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 40px 40px;"></div>
+
+    <div class="relative mx-auto max-w-4xl text-center z-10">
+      <h1 class="mb-6 text-4xl font-bold leading-tight text-white md:text-5xl">
+        Journal
+      </h1>
+      <p class="text-lg text-gray-300 md:text-xl">
+        Réflexions sur le web, le code, et comment les petits commerces peuvent tirer leur épingle du jeu.
+      </p>
+    </div>
+  </section>
+
+  <!-- ARTICLES -->
+  <section class="w-full bg-[var(--color-bg)] px-6 py-16 md:px-8 md:py-24">
+    <div class="mx-auto max-w-4xl">
+      <div class="space-y-8">
+        {posts.map((post) => (
+          <a href={`/journal/${post.slug}`} class="group block">
+            <article class="rounded-xl bg-white border border-[var(--color-border)] p-8 shadow-sm hover:shadow-lg hover:-translate-y-1 transition-all">
+              <div class="mb-4 flex flex-wrap items-center gap-3">
+                <span class="inline-block rounded-full bg-[var(--color-accent)]/10 px-3 py-1 text-xs font-semibold text-[var(--color-accent)]">
+                  {post.tag}
+                </span>
+                <span class="text-sm text-[var(--color-text-muted)]">
+                  {post.date}
+                </span>
+                <span class="text-sm text-[var(--color-text-muted)]">•</span>
+                <span class="text-sm text-[var(--color-text-muted)]">
+                  {post.readTime} de lecture
+                </span>
+              </div>
+              <h2 class="mb-3 text-2xl font-bold text-[var(--color-text)] group-hover:text-[var(--color-accent)] transition-colors">
+                {post.title}
+              </h2>
+              <p class="mb-5 text-[var(--color-text-muted)] leading-relaxed">
+                {post.excerpt}
+              </p>
+              <span class="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-accent)] group-hover:gap-3 transition-all">
+                Lire l'article
+                <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+              </span>
+            </article>
+          </a>
+        ))}
+      </div>
+
+      <!-- Empty State -->
+      {posts.length === 0 && (
+        <div class="rounded-xl bg-white border border-[var(--color-border)] p-12 text-center">
+          <p class="text-[var(--color-text-muted)]">
+            Plus d'articles à venir...
+          </p>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- CTA Newsletter / Contact -->
+  <section class="w-full bg-gradient-to-b from-[#1A1A1A] to-[#111111] px-6 py-16 md:px-8 md:py-24">
+    <div class="mx-auto max-w-3xl text-center">
+      <h2 class="mb-4 text-2xl font-bold text-white">Un projet en tête ?</h2>
+      <p class="mb-8 text-gray-300">
+        Chaque article reflète ma façon de travailler. Si ça vous parle, parlons de votre projet.
+      </p>
+      <a
+        href="/contact"
+        class="inline-block px-8 py-3 bg-[var(--color-accent)] text-white font-medium rounded-xl hover:bg-[var(--color-accent-hover)] transition-all shadow-lg hover:shadow-xl"
+        style="box-shadow: 0 10px 25px rgba(232, 108, 71, 0.3);"
+      >
+        Me contacter
+      </a>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,45 @@
+---
+// Composant Astro pour injecter du JSON-LD dans le head
+// Props:
+// - type: 'person' | 'localBusiness' | 'faqPage' | 'article' | 'breadcrumb'
+// - data: any (les données du schema)
+
+interface Props {
+  type: 'person' | 'localBusiness' | 'faqPage' | 'article' | 'breadcrumb' | 'webSite';
+  data?: any;
+}
+
+const { type, data } = Astro.props;
+
+let schema: any = {};
+
+switch (type) {
+  case 'person':
+    const { getPersonSchema } = await import('../data/schemas');
+    schema = getPersonSchema();
+    break;
+  case 'localBusiness':
+    const { getLocalBusinessSchema } = await import('../data/schemas');
+    schema = getLocalBusinessSchema();
+    break;
+  case 'faqPage':
+    const { getFAQSchema } = await import('../data/schemas');
+    schema = getFAQSchema(data || []);
+    break;
+  case 'article':
+    const { getArticleSchema } = await import('../data/schemas');
+    schema = getArticleSchema(data || {});
+    break;
+  case 'breadcrumb':
+    const { getBreadcrumbSchema } = await import('../data/schemas');
+    schema = getBreadcrumbSchema(data || []);
+    break;
+  case 'webSite':
+    const { getWebSiteSchema } = await import('../data/schemas');
+    schema = getWebSiteSchema();
+    break;
+}
+---
+
+<script type="application/ld+json" set:html={JSON.stringify(schema)}>
+</script>

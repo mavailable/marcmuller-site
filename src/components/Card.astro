@@ -1,0 +1,46 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  iconSvg?: string;
+  variant?: 'default' | 'highlight';
+  href?: string;
+}
+
+const { title, description, iconSvg, variant = 'default', href } = Astro.props;
+
+const isHighlight = variant === 'highlight';
+const baseClass =
+  'group overflow-hidden rounded-lg border border-l-[3px] transition-all duration-300';
+const bgClass = isHighlight ? 'bg-[var(--color-bg-alt)] border-[var(--color-accent)]' : 'bg-white border-transparent hover:border-[var(--color-accent)]';
+const hoverClass = href ? 'hover:shadow-lg hover:-translate-y-0.5 cursor-pointer' : 'hover:shadow-lg hover:-translate-y-0.5';
+const shadow = isHighlight ? 'shadow-md' : 'shadow-sm';
+
+const combinedClass = `${baseClass} ${bgClass} ${hoverClass} ${shadow} p-6`;
+
+const innerContent = (
+  <>
+    {iconSvg && (
+      <div class="mb-4 h-10 w-10 text-[var(--color-accent)]">
+        <Fragment set:html={iconSvg} />
+      </div>
+    )}
+    <h3 class="mb-3 text-lg font-bold text-[var(--color-text)]">
+      {title}
+    </h3>
+    <p class="line-clamp-3 text-sm text-[var(--color-text-muted)]">
+      {description}
+    </p>
+  </>
+);
+---
+
+{href ? (
+  <a href={href} class={combinedClass}>
+    {innerContent}
+  </a>
+) : (
+  <div class={combinedClass}>
+    {innerContent}
+  </div>
+)}

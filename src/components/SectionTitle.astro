@@ -1,0 +1,42 @@
+---
+interface Props {
+  title: string;
+  subtitle?: string;
+  align?: 'left' | 'center';
+  tag?: 'h2' | 'h3';
+  badge?: string;
+}
+
+const { title, subtitle, align = 'left', tag: Tag = 'h2', badge } = Astro.props;
+
+const alignClass = align === 'center' ? 'text-center' : 'text-left';
+const badgeAlignClass = align === 'center' ? 'justify-center' : '';
+---
+
+<div class={alignClass}>
+  {badge && (
+    <div class={`mb-4 flex ${badgeAlignClass}`}>
+      <span class="text-xs font-bold uppercase tracking-widest text-[var(--color-accent)]">
+        {badge}
+      </span>
+    </div>
+  )}
+
+  <div class="group relative inline-block">
+    <Tag class="mb-3 text-3xl font-bold text-[var(--color-text)] md:text-4xl">
+      {title}
+    </Tag>
+    <!-- Accent underline animation on scroll/hover -->
+    <div
+      class="absolute -bottom-3 left-0 h-1 w-0 bg-[var(--color-accent)] transition-all duration-500 group-hover:w-12"
+      role="presentation"
+    >
+    </div>
+  </div>
+
+  {subtitle && (
+    <p class={`mt-6 text-lg text-[var(--color-text-muted)] ${align === 'center' ? 'mx-auto max-w-2xl' : 'max-w-2xl'}`}>
+      {subtitle}
+    </p>
+  )}
+</div>

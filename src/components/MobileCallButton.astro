@@ -1,0 +1,60 @@
+---
+// Mobile call button - sticky circular button with pulse animation at bottom of screen on mobile only
+---
+
+<a
+  href="mailto:marc@muller.im"
+  class="call-button fixed bottom-8 right-6 md:hidden z-40 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--color-accent)] text-white shadow-lg ring-4 ring-[var(--color-accent)]/20 transition-all duration-300 hover:bg-[var(--color-accent-hover)] hover:shadow-2xl hover:scale-110 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)]"
+  aria-label="Contacter Marc Muller"
+>
+  <svg class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" stroke-width="2">
+    <path
+      stroke-linecap="round"
+      stroke-linejoin="round"
+      d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"
+    ></path>
+  </svg>
+</a>
+
+<style>
+  @keyframes pulse-custom {
+    0%, 100% {
+      box-shadow: 0 0 0 0 rgba(232, 108, 71, 0.7);
+    }
+    50% {
+      box-shadow: 0 0 0 10px rgba(232, 108, 71, 0);
+    }
+  }
+
+  .call-button {
+    animation: pulse-custom 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+  }
+
+  .call-button:hover {
+    animation: none;
+  }
+</style>
+
+<script>
+  // Hide call button when near footer
+  const callButton = document.querySelector('.call-button');
+
+  if (callButton) {
+    window.addEventListener('scroll', () => {
+      const footer = document.querySelector('footer');
+      if (!footer) return;
+
+      const footerRect = footer.getBoundingClientRect();
+      const buttonRect = callButton.getBoundingClientRect();
+
+      // Hide if footer is visible in viewport
+      if (footerRect.top < window.innerHeight - 100) {
+        callButton.style.opacity = '0';
+        callButton.style.pointerEvents = 'none';
+      } else {
+        callButton.style.opacity = '1';
+        callButton.style.pointerEvents = 'auto';
+      }
+    });
+  }
+</script>
