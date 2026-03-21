@@ -1,6 +1,38 @@
 ---
 // Header component with signature logo, navigation with underline animation,
 // CTA button with micro-animation, smooth scroll background transition, and animated mobile menu
+
+interface Props {
+  lang?: 'fr' | 'en';
+  frPath?: string;
+  enPath?: string;
+}
+
+const { lang = 'fr', frPath, enPath } = Astro.props;
+
+const nav = lang === 'en'
+  ? [
+      { href: '/en/portfolio', label: 'Portfolio', aria: 'View my work' },
+      { href: '/en/services', label: 'Services', aria: 'Discover my services' },
+      { href: '/en/blog', label: 'Blog', aria: 'Read my blog' },
+      { href: '/en/about', label: 'About', aria: 'About Marc' },
+    ]
+  : [
+      { href: '/realisations', label: 'Réalisations', aria: 'Voir mes réalisations' },
+      { href: '/offre', label: 'Offre', aria: 'Découvrir mon offre' },
+      { href: '/journal', label: 'Journal', aria: 'Lire mon journal' },
+      { href: '/qui-suis-je', label: 'Qui suis-je', aria: 'En savoir plus sur Marc' },
+    ];
+
+const ctaLabel = lang === 'en' ? 'Contact' : 'Contact';
+const ctaHref = lang === 'en' ? '/en/contact' : '/contact';
+const vitrinesHref = lang === 'en' ? '/en/100-artisan-websites' : '/100-sites-artisans';
+const vitrinesLabel = lang === 'en' ? '100 Websites' : '100 Vitrines';
+const vitrinesLabelMobile = lang === 'en' ? '100 Websites — Free for craftspeople' : '100 Vitrines — Sites gratuits pour artisans';
+
+// Language switcher URLs
+const switchToFR = frPath ?? '/';
+const switchToEN = enPath ?? '/en/';
 ---
 
 <header
@@ -14,64 +46,61 @@
 
   <nav class="relative mx-auto flex max-w-7xl items-center justify-between px-6 py-4 md:px-8">
     <!-- Logo with signature style -->
-    <a href="/" class="group relative flex items-center gap-2">
+    <a href={lang === 'en' ? '/en/' : '/'} class="group relative flex items-center gap-2">
       <span class="text-2xl font-bold text-[var(--color-text)]">Marc M</span>
       <span class="absolute bottom-0 left-0 h-1 w-0 bg-[var(--color-accent)] transition-all duration-300 group-hover:w-full"></span>
     </a>
 
     <!-- Desktop Navigation with underline animation -->
     <div class="hidden items-center gap-8 md:flex">
+      {nav.map(({ href, label, aria }) => (
+        <a
+          href={href}
+          class="relative text-sm font-medium text-[var(--color-text)] transition-colors duration-300 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-[var(--color-accent)] after:transition-all after:duration-300 hover:text-[var(--color-accent)] hover:after:w-full"
+          aria-label={aria}
+        >
+          {label}
+        </a>
+      ))}
       <a
-        href="/realisations"
-        class="relative text-sm font-medium text-[var(--color-text)] transition-colors duration-300 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-[var(--color-accent)] after:transition-all after:duration-300 hover:text-[var(--color-accent)] hover:after:w-full"
-        aria-label="Voir mes réalisations"
-      >
-        Réalisations
-      </a>
-      <a
-        href="/offre"
-        class="relative text-sm font-medium text-[var(--color-text)] transition-colors duration-300 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-[var(--color-accent)] after:transition-all after:duration-300 hover:text-[var(--color-accent)] hover:after:w-full"
-        aria-label="Découvrir mon offre"
-      >
-        Offre
-      </a>
-      <a
-        href="/journal"
-        class="relative text-sm font-medium text-[var(--color-text)] transition-colors duration-300 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-[var(--color-accent)] after:transition-all after:duration-300 hover:text-[var(--color-accent)] hover:after:w-full"
-        aria-label="Lire mon journal"
-      >
-        Journal
-      </a>
-      <a
-        href="/qui-suis-je"
-        class="relative text-sm font-medium text-[var(--color-text)] transition-colors duration-300 after:absolute after:bottom-0 after:left-0 after:h-0.5 after:w-0 after:bg-[var(--color-accent)] after:transition-all after:duration-300 hover:text-[var(--color-accent)] hover:after:w-full"
-        aria-label="En savoir plus sur Marc"
-      >
-        Qui suis-je
-      </a>
-      <a
-        href="/100-sites-artisans"
+        href={vitrinesHref}
         target="_blank"
         rel="noopener noreferrer"
         class="inline-flex items-center gap-1.5 rounded-full px-3.5 py-1.5 text-xs font-semibold transition-all duration-300 hover:opacity-90"
         style="background: rgba(232, 108, 71, 0.12); border: 1px solid rgba(232, 108, 71, 0.3); color: #E86C47;"
-        aria-label="Initiative 100 Vitrines pour les artisans"
+        aria-label={lang === 'en' ? '100 Websites initiative for craftspeople' : 'Initiative 100 Vitrines pour les artisans'}
       >
         <span class="relative flex h-1.5 w-1.5">
           <span class="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75" style="background: #E86C47;"></span>
           <span class="relative inline-flex h-1.5 w-1.5 rounded-full" style="background: #E86C47;"></span>
         </span>
-        100 Vitrines
+        {vitrinesLabel}
       </a>
+
+      <!-- Language Switcher -->
+      <div class="flex items-center gap-1 rounded-full border border-neutral-700 bg-neutral-800/50 px-1 py-0.5 text-xs font-semibold">
+        <a
+          href={switchToFR}
+          class={`rounded-full px-2 py-0.5 transition-all duration-200 ${lang === 'fr' ? 'bg-[var(--color-accent)] text-white' : 'text-neutral-400 hover:text-neutral-200'}`}
+          aria-label="Version française"
+          hreflang="fr"
+        >FR</a>
+        <a
+          href={switchToEN}
+          class={`rounded-full px-2 py-0.5 transition-all duration-200 ${lang === 'en' ? 'bg-[var(--color-accent)] text-white' : 'text-neutral-400 hover:text-neutral-200'}`}
+          aria-label="English version"
+          hreflang="en"
+        >EN</a>
+      </div>
     </div>
 
     <!-- CTA Button with micro-animation (Desktop) -->
     <a
-      href="/contact"
+      href={ctaHref}
       class="hidden rounded-lg bg-[var(--color-accent)] px-6 py-2.5 text-sm font-medium text-white transition-all duration-300 shadow-md hover:shadow-lg hover:scale-105 hover:bg-[var(--color-accent-hover)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)] md:inline-block"
-      aria-label="Accéder à la section contact"
+      aria-label={lang === 'en' ? 'Go to contact' : 'Accéder à la section contact'}
     >
-      Contact
+      {ctaLabel}
     </a>
 
     <!-- Mobile Hamburger Button -->
@@ -100,102 +129,150 @@
     </button>
   </nav>
 
-  <!-- Mobile Navigation Panel with slide-in animation -->
+  <!-- Mobile Navigation Panel — fullscreen dark overlay -->
   <div
     id="mobile-menu"
-    class="fixed inset-0 top-[65px] hidden w-full flex-col gap-6 bg-[var(--color-bg)] px-6 py-8 md:hidden mobile-menu transform transition-transform duration-300 ease-out translate-x-full"
+    class="fixed inset-0 top-0 z-40 hidden flex-col md:hidden mobile-menu opacity-0 transition-opacity duration-300 ease-out"
+    style="background: rgba(13, 13, 13, 0.97); backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);"
   >
-    <!-- Dark overlay behind mobile menu -->
-    <div class="absolute inset-0 top-[65px] bg-black opacity-0 -z-10 mobile-menu-overlay"></div>
+    <!-- Top bar — logo + close aligned with header -->
+    <div class="flex items-center justify-between px-6 py-4">
+      <a href={lang === 'en' ? '/en/' : '/'} class="text-2xl font-bold text-white">Marc M</a>
+      <button
+        class="mobile-close-btn flex items-center justify-center w-10 h-10 rounded-lg text-neutral-400 hover:text-white hover:bg-white/10 transition-colors"
+        aria-label="Fermer le menu"
+      >
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path>
+        </svg>
+      </button>
+    </div>
 
-    <a
-      href="/realisations"
-      class="text-[var(--color-text)] font-medium transition-colors duration-300 hover:text-[var(--color-accent)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)] rounded-sm"
-    >
-      Réalisations
-    </a>
-    <a
-      href="/offre"
-      class="text-[var(--color-text)] font-medium transition-colors duration-300 hover:text-[var(--color-accent)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)] rounded-sm"
-    >
-      Offre
-    </a>
-    <a
-      href="/journal"
-      class="text-[var(--color-text)] font-medium transition-colors duration-300 hover:text-[var(--color-accent)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)] rounded-sm"
-    >
-      Journal
-    </a>
-    <a
-      href="/qui-suis-je"
-      class="text-[var(--color-text)] font-medium transition-colors duration-300 hover:text-[var(--color-accent)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)] rounded-sm"
-    >
-      Qui suis-je
-    </a>
-    <a
-      href="/100-sites-artisans"
-      target="_blank"
-      rel="noopener noreferrer"
-      class="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm font-semibold focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)]"
-      style="background: rgba(232, 108, 71, 0.1); border: 1px solid rgba(232, 108, 71, 0.25); color: #E86C47;"
-    >
-      <span class="relative flex h-2 w-2">
-        <span class="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75" style="background: #E86C47;"></span>
-        <span class="relative inline-flex h-2 w-2 rounded-full" style="background: #E86C47;"></span>
-      </span>
-      100 Vitrines — Sites gratuits pour artisans
-    </a>
-    <a
-      href="/contact"
-      class="mt-4 rounded-lg bg-[var(--color-accent)] px-6 py-2.5 text-center font-medium text-white transition-all duration-300 hover:bg-[var(--color-accent-hover)] hover:shadow-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)]"
-    >
-      Contact
-    </a>
+    <!-- Navigation links — large, centered, spaced -->
+    <div class="flex flex-1 flex-col justify-center px-8 -mt-12">
+      <nav class="flex flex-col gap-2">
+        {nav.map(({ href, label }, i) => (
+          <a
+            href={href}
+            class="mobile-nav-link group flex items-center gap-4 rounded-xl px-4 py-4 text-2xl font-semibold text-white/90 transition-all duration-200 hover:bg-white/[0.06] hover:text-[var(--color-accent)] active:scale-[0.98]"
+            style={`transition-delay: ${i * 50}ms;`}
+          >
+            <span class="h-1.5 w-1.5 rounded-full bg-[var(--color-accent)] opacity-0 group-hover:opacity-100 transition-opacity"></span>
+            {label}
+          </a>
+        ))}
+      </nav>
+
+      <!-- Divider -->
+      <div class="my-6 h-px bg-white/10 mx-4"></div>
+
+      <!-- 100 Vitrines badge -->
+      <a
+        href={vitrinesHref}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="mx-4 inline-flex items-center gap-3 rounded-xl px-4 py-3.5 text-sm font-semibold transition-all duration-200 hover:bg-white/[0.06] active:scale-[0.98]"
+        style="border: 1px solid rgba(232, 108, 71, 0.2); color: #E86C47;"
+      >
+        <span class="relative flex h-2.5 w-2.5">
+          <span class="absolute inline-flex h-full w-full animate-ping rounded-full opacity-75" style="background: #E86C47;"></span>
+          <span class="relative inline-flex h-2.5 w-2.5 rounded-full" style="background: #E86C47;"></span>
+        </span>
+        {vitrinesLabelMobile}
+        <svg class="ml-auto h-4 w-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"></path></svg>
+      </a>
+    </div>
+
+    <!-- Bottom section — CTA + language -->
+    <div class="px-8 pb-10 flex flex-col gap-4">
+      <!-- CTA Contact -->
+      <a
+        href={ctaHref}
+        class="flex items-center justify-center gap-2 rounded-xl bg-[var(--color-accent)] px-6 py-4 text-base font-semibold text-white transition-all duration-200 hover:bg-[var(--color-accent-hover)] active:scale-[0.98] shadow-lg shadow-[var(--color-accent)]/20"
+      >
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path></svg>
+        {ctaLabel}
+      </a>
+
+      <!-- Language switcher + copyright -->
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-1.5 rounded-full border border-white/10 bg-white/[0.04] px-1.5 py-1 text-sm font-semibold">
+          <a
+            href={switchToFR}
+            class={`rounded-full px-3 py-1 transition-all duration-200 ${lang === 'fr' ? 'bg-[var(--color-accent)] text-white' : 'text-neutral-500 hover:text-neutral-300'}`}
+            aria-label="Version française"
+          >FR</a>
+          <a
+            href={switchToEN}
+            class={`rounded-full px-3 py-1 transition-all duration-200 ${lang === 'en' ? 'bg-[var(--color-accent)] text-white' : 'text-neutral-500 hover:text-neutral-300'}`}
+            aria-label="English version"
+          >EN</a>
+        </div>
+        <span class="text-xs text-neutral-600">marcm.fr</span>
+      </div>
+    </div>
   </div>
 </header>
 
 <script>
   const hamburgerBtn = document.querySelector('.hamburger-btn');
-  const mobileMenu = document.querySelector('#mobile-menu');
+  const mobileMenu = document.querySelector('#mobile-menu') as HTMLElement | null;
   const hamburgerIcon = document.querySelector('.hamburger-icon');
   const hamburgerClose = document.querySelector('.hamburger-close');
+  const mobileCloseBtn = document.querySelector('.mobile-close-btn');
   const header = document.querySelector('header');
   const headerBg = document.querySelector('.header-bg');
 
-  // Toggle mobile menu with slide-in animation
+  function openMobileMenu() {
+    if (!mobileMenu) return;
+    mobileMenu.classList.remove('hidden');
+    mobileMenu.classList.add('flex');
+    // Trigger reflow then animate in
+    requestAnimationFrame(() => {
+      requestAnimationFrame(() => {
+        mobileMenu.classList.remove('opacity-0');
+        mobileMenu.classList.add('opacity-100');
+      });
+    });
+    hamburgerIcon?.classList.add('hidden');
+    hamburgerClose?.classList.remove('hidden');
+    hamburgerBtn?.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeMobileMenu() {
+    if (!mobileMenu) return;
+    mobileMenu.classList.remove('opacity-100');
+    mobileMenu.classList.add('opacity-0');
+    setTimeout(() => {
+      mobileMenu.classList.add('hidden');
+      mobileMenu.classList.remove('flex');
+    }, 300);
+    hamburgerIcon?.classList.remove('hidden');
+    hamburgerClose?.classList.add('hidden');
+    hamburgerBtn?.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  }
+
+  // Open via hamburger
   hamburgerBtn?.addEventListener('click', () => {
     const isHidden = mobileMenu?.classList.contains('hidden');
-
-    if (isHidden) {
-      mobileMenu?.classList.remove('hidden');
-      mobileMenu?.classList.remove('translate-x-full');
-      hamburgerIcon?.classList.add('hidden');
-      hamburgerClose?.classList.remove('hidden');
-      hamburgerBtn?.setAttribute('aria-expanded', 'true');
-    } else {
-      mobileMenu?.classList.add('translate-x-full');
-      // Wait for animation before hiding
-      setTimeout(() => {
-        mobileMenu?.classList.add('hidden');
-      }, 300);
-      hamburgerIcon?.classList.remove('hidden');
-      hamburgerClose?.classList.add('hidden');
-      hamburgerBtn?.setAttribute('aria-expanded', 'false');
-    }
+    isHidden ? openMobileMenu() : closeMobileMenu();
   });
 
-  // Close menu when a link is clicked
-  const mobileLinks = document.querySelectorAll('.mobile-menu a');
-  mobileLinks.forEach((link) => {
-    link.addEventListener('click', () => {
-      mobileMenu?.classList.add('translate-x-full');
-      setTimeout(() => {
-        mobileMenu?.classList.add('hidden');
-      }, 300);
-      hamburgerIcon?.classList.remove('hidden');
-      hamburgerClose?.classList.add('hidden');
-      hamburgerBtn?.setAttribute('aria-expanded', 'false');
-    });
+  // Close via X button inside menu
+  mobileCloseBtn?.addEventListener('click', closeMobileMenu);
+
+  // Close when a link is clicked
+  document.querySelectorAll('#mobile-menu a').forEach((link) => {
+    link.addEventListener('click', closeMobileMenu);
+  });
+
+  // Close on Escape key
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && !mobileMenu?.classList.contains('hidden')) {
+      closeMobileMenu();
+    }
   });
 
   // Sticky header with smooth backdrop blur on scroll
