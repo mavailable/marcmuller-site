@@ -2,6 +2,7 @@
 import BaseLayout from '@layouts/BaseLayout.astro';
 import Header from '@components/Header.astro';
 import Footer from '@components/Footer.astro';
+import { business } from '@data/business';
 
 interface Section {
   title: string;
@@ -49,7 +50,7 @@ const {
   },
   pricingCustom = {
     title: 'Site Sur mesure',
-    price: 'À partir de 1 490€',
+    price: 'À partir de 1 990€',
     features: [
       '✓ 7-10 pages custom',
       '✓ Galerie ou blog',
@@ -72,15 +73,15 @@ const siteUrl = Astro.site?.toString().replace(/\/$/, '');
 const localBusinessSchema = {
   "@context": "https://schema.org",
   "@type": "LocalBusiness",
-  "name": "Marc Muller - Création de sites web",
+  "name": `${business.name} — Création de sites web`,
   "description": `Création de sites web sur mesure à ${ville}. Sites custom, rapides, bien référencés.`,
   "url": siteUrl,
-  "telephone": "",
-  "email": "marc@muller.im",
+  "telephone": business.phone,
+  "email": business.email,
   "founder": {
     "@type": "Person",
-    "name": "Marc Muller",
-    "jobTitle": "Créateur de sites web"
+    "name": business.owner,
+    "jobTitle": business.jobTitle
   },
   "address": {
     "@type": "PostalAddress",
@@ -96,11 +97,10 @@ const localBusinessSchema = {
     "@type": "City",
     "name": area
   })),
-  "priceRange": "490€ - 1490€+",
+  "priceRange": business.priceRange,
   "currenciesAccepted": "EUR",
   "paymentAccepted": "Virement, Chèque",
-  "image": `${siteUrl}/og-default.jpg`,
-  "logo": `${siteUrl}/assets/logos/logo.webp`
+  "image": `${siteUrl}/og-default.png`
 };
 
 // FAQPage Schema JSON-LD

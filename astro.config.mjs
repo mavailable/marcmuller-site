@@ -6,7 +6,7 @@ const LANG = 'fr';
 const LOCALE_MAP = { fr: 'fr-FR' };
 
 export default defineConfig({
-  site: 'https://marcmuller-site.pages.dev',
+  site: 'https://marcm.fr',
   output: 'static',
   compressHTML: true,
   integrations: [

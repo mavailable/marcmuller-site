@@ -21,16 +21,15 @@ export function getPersonSchema() {
     "@context": "https://schema.org",
     "@type": "Person",
     "name": "Marc Muller",
-    "jobTitle": "Développeur Web & Fondateur MM Agency",
+    "jobTitle": "Développeur Web Freelance",
     "description": "Développeur web spécialisé dans la création de sites web sur mesure pour artisans, commerçants et petites entreprises",
-    "url": "https://marcmuller.fr",
+    "url": business.url,
     "sameAs": [
-      "https://www.linkedin.com/in/marcmuller",
-      "https://github.com/marcmuller"
+      "https://www.linkedin.com/in/marcmuller"
     ],
     "worksFor": {
       "@type": "Organization",
-      "name": "MM Agency"
+      "name": "Marc M"
     },
     "address": {
       "@type": "PostalAddress",
@@ -46,60 +45,30 @@ export function getLocalBusinessSchema() {
   return {
     "@context": "https://schema.org",
     "@type": "LocalBusiness",
-    "name": "MM Agency",
-    "description": "Création de sites web sur mesure pour artisans, commerçants et petites entreprises",
-    "url": "https://marcmuller.fr",
-    "telephone": "",
-    "email": "marc@muller.im",
+    "name": business.name,
+    "description": business.description,
+    "url": business.url,
+    "telephone": business.phone,
+    "email": business.email,
     "address": {
       "@type": "PostalAddress",
-      "addressLocality": "Strasbourg",
-      "addressRegion": "Grand Est",
-      "postalCode": "67000",
-      "addressCountry": "FR"
+      "addressLocality": business.address.city,
+      "addressRegion": business.address.region,
+      "postalCode": business.address.zip,
+      "addressCountry": business.address.country
     },
-    "areaServed": [
-      {
-        "@type": "City",
-        "name": "Strasbourg"
-      },
-      {
-        "@type": "City",
-        "name": "Metz"
-      },
-      {
-        "@type": "City",
-        "name": "Nancy"
-      },
-      {
-        "@type": "Country",
-        "name": "France"
-      }
-    ],
-    "priceRange": "490€ - 1490€+",
-    "hasOfferingChannel": [
-      {
-        "@type": "Service",
-        "name": "Essentiel",
-        "price": "490",
-        "priceCurrency": "EUR",
-        "description": "1 à 5 pages sur mesure, design adapté, responsive mobile-first, SEO LocalBusiness complet, formulaire de contact + bouton d'appel, livraison en 5-7 jours"
-      },
-      {
-        "@type": "Service",
-        "name": "Multi-pages",
-        "price": "990",
-        "priceCurrency": "EUR",
-        "description": "Site multi-pages optimisé SEO, blog intégré, données structurées, formulaire avancé"
-      },
-      {
-        "@type": "Service",
-        "name": "Sur mesure",
-        "price": "1490",
-        "priceCurrency": "EUR",
-        "description": "Architecture personnalisée, fonctionnalités spécifiques, accompagnement complet, 3 mois de suivi post-lancement"
-      }
-    ]
+    "areaServed": business.areaServed.map(city => ({
+      "@type": "City",
+      "name": city
+    })),
+    "priceRange": business.priceRange,
+    "hasOfferingChannel": business.offers.map(offer => ({
+      "@type": "Service",
+      "name": offer.name,
+      "price": String(offer.price),
+      "priceCurrency": offer.currency,
+      "description": offer.description
+    }))
   };
 }
 
@@ -137,12 +106,12 @@ export function getArticleSchema(article: {
     ...(article.image && { "image": article.image }),
     "author": {
       "@type": "Person",
-      "name": article.author || "Marc Muller"
+      "name": article.author || business.owner
     },
     "publisher": {
       "@type": "Organization",
-      "name": "MM Agency",
-      "url": "https://marcmuller.fr"
+      "name": business.name,
+      "url": business.url
     }
   };
 }
