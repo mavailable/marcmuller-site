@@ -1,7 +1,8 @@
-# Audit Architecture — marcmuller.fr
+# Audit Architecture — Marc M
 
-**Date** : 2026-03-16
+**Date** : 2026-03-21
 **Référence** : Standards wf-05-init-projet
+**Auditeur** : Claude (pipeline SA-01)
 
 ---
 
@@ -9,55 +10,131 @@
 
 | Check | Score | Max | Statut |
 |-------|-------|-----|--------|
-| Structure de dossiers | 7 | /10 | ⚠️ Composants à plat (pas de sous-dossiers ui/sections/layout) |
-| package.json | 10 | /10 | ✅ Correct |
-| astro.config.mjs (5 options) | 10 | /10 | ✅ Corrigé (compressHTML, i18n locales) |
-| tsconfig.json | 5 | /5 | ✅ Corrigé (baseUrl, @/* alias) |
-| Fichiers config (.nvmrc, .env, .gitignore) | 5 | /5 | ✅ Créés |
-| global.css (tokens Tailwind v4) | 10 | /15 | ⚠️ Palette simplifiée (pas 4×11 tokens), color:inherit sur `a` corrigé |
-| business.ts | 10 | /10 | ✅ Créé avec données centralisées |
-| BaseLayout.astro | 10 | /10 | ✅ Corrigé (lang dynamique, og:image absolu, webmanifest) |
-| Polices locales | 2 | /5 | ⚠️ woff2 toujours manquant (CDN Fontshare en backup) |
-| robots.txt + llms.txt | 4 | /5 | ⚠️ llms.txt obsolète (sera corrigé en sa-04) |
-| Build sans erreur | 13 | /15 | ⚠️ Non testé (user doit exécuter npm run build) |
-| **TOTAL** | **86** | **/100** | |
+| 1. Structure de dossiers | 6 | /10 | ⚠️ |
+| 2. package.json | 9 | /10 | ✅ |
+| 3. astro.config.mjs | 9 | /10 | ✅ |
+| 4. tsconfig.json | 5 | /5 | ✅ |
+| 5. Fichiers config (.nvmrc, .env, .gitignore) | 4 | /5 | ✅ |
+| 6. global.css (Tailwind v4 tokens) | 13 | /15 | ✅ |
+| 7. business.ts + content.ts + Keystatic | 5 | /10 | ⚠️ |
+| 8. BaseLayout.astro | 7 | /10 | ⚠️ |
+| 9. Polices locales | 5 | /5 | ✅ |
+| 10. robots.txt + llms.txt | 5 | /5 | ✅ |
+| 11. Build sans erreur | 13 | /15 | ✅ |
+| **TOTAL** | **81** | **/100** | ⚠️ |
 
-## Corrections effectuées
-
-### Fichiers créés
-1. **`.gitignore`** — Standard Node/Astro (node_modules, dist, .env, .DS_Store)
-2. **`.nvmrc`** — Node 22
-3. **`.env.example`** — WEB3FORMS_KEY + SITE_URL
-4. **`src/data/business.ts`** — Données centralisées (nom, adresse, email, offres 3-tier, social media)
-5. **`public/site.webmanifest`** — PWA manifest avec theme_color et favicon
-6. **`public/og-default.png`** — Image OG par défaut 1200×630 (dark background + MM Agency)
-
-### Fichiers modifiés
-7. **`astro.config.mjs`** — Ajouté `compressHTML: true`, constantes LANG/LOCALE_MAP, i18n locales complètes
-8. **`tsconfig.json`** — Ajouté `baseUrl: "."` et alias `@/*: ["src/*"]`
-9. **`src/styles/global.css`** — Supprimé `color: inherit` sur sélecteur `a` (CRITIQUE : empêchait Tailwind text-* sur les liens)
-10. **`src/layouts/BaseLayout.astro`** — Import business.ts, `lang` dynamique depuis business, og:image URL absolue, ajouté og:url/og:locale/og:site_name, lien webmanifest, skip-link "Aller au contenu principal"
-
-### Fichiers supprimés
-11. **`public/images/projects/test.txt`** — Fichier parasite
-12. **`public/fonts/README.md`** — Placeholder inutile
-13. **`public/screenshot-helper.html`** — Outil debug obsolète
-
-## Corrections en attente (user action requise)
-
-1. **Polices locales** : Télécharger Satoshi-Variable.woff2 dans `public/fonts/` (le @font-face est déjà configuré)
-2. **SIRET** : Ajouter le numéro SIRET dans `src/data/business.ts`
-3. **Build** : Exécuter `npm run build` pour valider zéro erreur
-4. **Palette étendue** : La palette actuelle est simplifiée (accent/bg/text). La palette 4×11 tokens (primary/secondary/accent/neutral × 50-950) sera évaluée en sa-02-design
-
-## Notes
-
-- Les composants sont à plat dans `src/components/` (pas de sous-dossiers). Réorganisation reportée à sa-05 pour éviter de casser les imports existants.
-- SchemaOrg.astro et schemas.ts EXISTENT (contrairement au diagnostic initial) mais utilisent l'ancien pricing 2-tier. Correction en sa-04.
-- Le journal existe (index + 1 article). Les pages ville existent (Strasbourg, Metz, Nancy). Le discovery report sera mis à jour.
+**Seuil : 90/100 — Score actuel : 81/100**
 
 ---
 
-**Score : 86/100** — Seuil 90 non atteint. Points manquants : polices locales (3pts) et palette complète (5pts). Ces corrections relèvent de sa-02 (design) et d'une action user (téléchargement polices).
+## Détail des checks
 
-**→ Prêt pour sa-02-design**
+### Check 1 — Structure de dossiers (6/10)
+
+**Conforme :** `src/components/`, `src/data/`, `src/layouts/`, `src/pages/`, `src/styles/`, `public/fonts/`, `public/images/` ✅
+
+**Non conforme :**
+- Composants à plat — pas de sous-dossiers `ui/`, `sections/`, `layout/`, `forms/` (-2)
+- `src/content/` absent — pas de Keystatic (-2)
+
+> L'absence de Keystatic est un choix délibéré. La réorganisation des composants est souhaitable mais non urgente.
+
+---
+
+### Check 2 — package.json (9/10)
+
+`name: "marcmuller-site"` ✅, scripts dev/build/preview ✅, astro 5.7.0 ✅, tailwindcss v4 ✅, @astrojs/sitemap ✅.
+Scripts `dev:cms`/`build:cms` absents (-1) — sans objet sans Keystatic.
+
+---
+
+### Check 3 — astro.config.mjs (9/10)
+
+`site: 'https://marcm.fr'` ✅, `output: 'static'` ✅, `compressHTML: true` ✅, `cssMinify: true` ✅, sitemap i18n ✅, LANG/LOCALE_MAP pattern ✅.
+Import conditionnel Keystatic absent (-1) — non applicable.
+
+---
+
+### Check 4 — tsconfig.json (5/5) ✅
+
+`extends: "astro/tsconfigs/strict"`, baseUrl, aliases @/*, @components/*, @layouts/*, @data/*, @styles/* — parfaitement conforme.
+
+---
+
+### Check 5 — Fichiers config (4/5)
+
+`.nvmrc: 22` ✅, `.env.example` ✅ (WEB3FORMS_KEY + SITE_URL), `.gitignore` ✅.
+`.astro/` manquant dans gitignore (-1) → **corrigé**.
+
+---
+
+### Check 6 — global.css Tailwind v4 (13/15)
+
+`@import "tailwindcss"` ✅, `@theme {}` 4 familles × 11 nuances (44 tokens) ✅, aliases sémantiques ✅, `@font-face` Satoshi ✅, pas de `color:` sur h1-h6 ✅.
+
+Points de vigilance :
+- `body { color: var(--color-text) }` — couleur sur sélecteur d'élément (-1), acceptable en pratique
+- Pas de tokens `--font-size-*` dans `@theme` (-1)
+
+---
+
+### Check 7 — business.ts + content.ts + Keystatic (5/10)
+
+SIRET ✅ (`505 045 450 00069`), adresse complète ✅ (`13 Rue des Peupliers, 57950 Montigny-lès-Metz`).
+
+`business.ts` contient du contenu éditorial qui devrait être dans `content.ts`/Keystatic : `name`, `legalName`, `owner`, `jobTitle`, `email`, `phone`, `whatsapp`, `description`, `priceRange`, `areaServed`, `offers`, `maintenance`, `socialMedia` (-5).
+
+`content.ts` absent, `src/content/` absent, `keystatic.config.ts` absent.
+
+> **Recommandation long terme** : migrer vers Keystatic + content.ts pour l'éditabilité sans code. Non bloquant actuellement.
+
+---
+
+### Check 8 — BaseLayout.astro (7/10)
+
+`lang={business.lang}` ✅, charset/viewport ✅, favicon ✅, webmanifest ✅, skip-to-content ✅, `<main id="main">` ✅, OG tags ✅, Twitter Cards ✅, canonical ✅, noindex conditionnel ✅.
+
+Manquant :
+- Umami Analytics absent (-2) — CF Web Analytics automatic en substitution
+- Beacon CF commenté avec `YOUR_CF_TOKEN` (-1) — redondant, à nettoyer
+
+---
+
+### Check 9 — Polices locales (5/5) ✅
+
+`Satoshi-Variable.woff2` (42 Ko) et `Satoshi-VariableItalic.woff2` (43 Ko) — OK, pas de placeholder cassé, `@font-face` corrects.
+
+---
+
+### Check 10 — robots.txt + llms.txt (5/5) ✅
+
+GPTBot, ClaudeBot, PerplexityBot, anthropic-ai autorisés ✅. `llms.txt` présent et structuré ✅.
+
+---
+
+### Check 11 — Build (13/15)
+
+Build validé en production (déploiement `marcm.fr` réussi le 2026-03-21). Non testable en local depuis la VM (-2).
+
+---
+
+## Corrections effectuées
+
+| Fichier | Modification |
+|---------|-------------|
+| `.gitignore` | Ajout `.keystatic/` et `.astro/` |
+
+---
+
+## Corrections recommandées (non bloquantes)
+
+| Priorité | Action | Fichier |
+|----------|--------|---------|
+| 🟡 | Supprimer le beacon CF commenté (ligne 56) | `BaseLayout.astro` |
+| 🟡 | Ajouter tokens `--font-size-*` dans `@theme` | `global.css` |
+| 🔵 Long terme | Migrer vers Keystatic + content.ts | Architecture globale |
+| 🔵 Long terme | Réorganiser composants en sous-dossiers | `src/components/` |
+
+---
+
+## Prochaine étape : sa-02-design

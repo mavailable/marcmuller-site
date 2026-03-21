@@ -12,9 +12,9 @@ export const business = {
   lang: 'fr',
   country: 'FR',
   address: {
-    street: '',
-    city: 'Strasbourg',
-    zip: '67000',
+    street: '13 Rue des Peupliers',
+    city: 'Montigny-lès-Metz',
+    zip: '57950',
     region: 'Grand Est',
     country: 'FR',
   },
@@ -67,5 +67,5 @@ export const business = {
   },
 
   // Legal (à compléter)
-  siret: '', // TODO: ajouter le SIRET
+  siret: '505 045 450 00069',
 } as const;

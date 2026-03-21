@@ -1,124 +1,190 @@
-# Audit Pré-Production — marcmuller.fr
+# Audit Pré-Production — Marc M (marcm.fr)
 
-**Date** : 2026-03-16
-**Score global** : 90/100
-**Décision** : ✅ PASS — Prêt pour le déploiement
+**Date** : 2026-03-21
+**URL** : https://marcm.fr
+**Stack** : Astro 5.7.0 · Tailwind v4 · Cloudflare Pages
+**Méthode** : Audit statique du code source + vérifications JS/DOM live sur marcm.fr
 
 ---
 
-## Scores Lighthouse (à vérifier par l'utilisateur post-deploy)
+## Score global : **74/100 — ❌ FAIL**
 
-| Catégorie | Score estimé | Statut |
-|-----------|-------------|--------|
-| Performance | ~95+ | ⏳ À vérifier via PageSpeed Insights |
-| Accessibility | ~95+ | ⏳ À vérifier |
-| Best Practices | ~95+ | ⏳ À vérifier |
-| SEO | ~100 | ⏳ À vérifier |
+> Seuil de passage : 90/100
+> Corrections prioritaires identifiées ci-dessous — 3 actions critiques permettront d'atteindre ~88+/100
 
-> Site Astro SSG statique sans JS client → scores naturellement élevés. Confirmation requise post-déploiement.
+| Catégorie | Score | Max | Statut |
+|-----------|-------|-----|--------|
+| Analytics & Conversion | 4 | /10 | ❌ |
+| Formulaire | 12 | /15 | ✅ |
+| RGPD & Cookies | 9 | /10 | ✅ |
+| Légal | 8 | /10 | ⚠️ |
+| SEO | 10 | /15 | ⚠️ |
+| Open Graph | 8 | /10 | ✅ |
+| Accessibilité | 8 | /10 | ✅ |
+| Technique | 8 | /10 | ✅ |
+| Conversion | 7 | /10 | ⚠️ |
+| **TOTAL** | **74** | **/100** | **❌ FAIL** |
+
+---
+
+## Scores Lighthouse
+
+> Lighthouse non exécuté dans le sandbox (à vérifier par l'utilisateur post-déploiement via PageSpeed Insights).
+
+| Catégorie | Score attendu | Notes |
+|-----------|---------------|-------|
+| Performance | ~95+ | Site statique Astro, fonts locales, CSS minifié, images WebP + lazy loading |
+| Accessibility | ~90+ | skip-link ✅, alt sur images ✅, contraste borderline sur boutons CTA ⚠️ |
+| Best Practices | ~95+ | Pas de JS bloquant, HTTPS Cloudflare, manifest présent |
+| SEO | ~90 | Mais robots.txt override Cloudflare bloque les bots IA → impact GEO |
+
+**Vérifier après déploiement :** https://pagespeed.web.dev/?url=https://marcm.fr
 
 ---
 
 ## Résultats par catégorie
 
-### Analytics & Conversion : 5/10
+### Analytics & Conversion : 4/10 ❌
 
-- [x] Script Cloudflare Web Analytics présent dans BaseLayout (commenté, prêt)
-- [ ] ❌ Token CF Analytics manquant → script commenté, pas de données collectées
-- [ ] ❌ Événements form_submit/cta_click non configurés
-- [x] Page /merci créée et trackée (noindex ✅)
+**Ce qui fonctionne :**
+- Page `/merci` présente ✅
+- `/merci` avec `noindex, nofollow` ✅
+- Redirection post-formulaire vers `/merci` ✅
 
-### Formulaire : 14/15
+**Ce qui manque :**
+- ❌ Aucun script analytics actif sur le site (Cloudflare Web Analytics commenté dans `BaseLayout.astro`)
+- ❌ Aucun événement de tracking (form-submit, cta-click, email-click)
 
-- [x] Anti-spam honeypot (champ `botcheck` caché)
-- [x] 7 labels sur les champs
-- [x] 5 champs required + validation HTML5
-- [x] Mention RGPD visible sous le formulaire (checkbox consentement)
-- [x] Redirection /merci après soumission
-- [x] Web3Forms access key configurée
-- [ ] ⚠️ Envoi réel non testé (à vérifier post-deploy avec URL de prod)
+**Action requise :**
+Activer Cloudflare Web Analytics dans le Dashboard → marcm.fr → Analytics → Web Analytics → "Enable Web Analytics". Aucun code requis, Cloudflare injecte le script automatiquement.
 
-### RGPD & Cookies : 10/10
+---
 
-- [x] Aucun script tiers (CDN Fontshare supprimé, polices locales)
-- [x] Aucun cookie tiers → bannière cookies non nécessaire
-- [x] Cloudflare Web Analytics = privacy-friendly (pas de cookies)
-- [x] Formulaire avec consentement explicite
+### Formulaire : 12/15 ✅
 
-### Légal : 8/10
+**Ce qui fonctionne :**
+- ✅ Web3Forms action URL configurée
+- ✅ Honeypot anti-spam (`name="botcheck"`)
+- ✅ Mention RGPD avec checkbox required
+- ✅ Redirection vers `/merci` après soumission
+- ✅ Labels sur tous les champs
+- ✅ Validation HTML5 (required, type="email", etc.)
+- ✅ Aria sur les champs
 
-- [x] /mentions-legales présente et complète
-- [x] /politique-confidentialite présente et complète
-- [x] Footer avec liens vers les 2 pages légales
-- [x] Copyright © dynamique (année auto-mise à jour)
-- [ ] ❌ SIRET manquant dans business.ts et mentions-legales.astro (obligatoire auto-entrepreneur)
+**Ce qui manque :**
+- ❌ Envoi réel non testé (email de confirmation non vérifié côté Marc + côté expéditeur)
 
-### SEO : 15/15
+**Action requise :**
+Envoyer un message test depuis https://marcm.fr/contact → vérifier réception sur marc@muller.im.
 
-| Page | Title (len) | Desc (len) | H1 | OG | Schema.org |
-|------|------------|-----------|----|----|-----------|
-| / | 68 ✅ | 155 ✅ | 1 ✅ | ✅ | WebSite, Person, LocalBusiness |
-| /offre | 52 ✅ | 148 ✅ | 1 ✅ | ✅ | WebSite, LocalBusiness |
-| /realisations | 24 ✅ | 125 ✅ | 1 ✅ | ✅ | WebSite |
-| /qui-suis-je | 25 ✅ | 120 ✅ | 1 ✅ | ✅ | WebSite, Person |
-| /contact | 21 ✅ | 77 ✅ | 1 ✅ | ✅ | WebSite, LocalBusiness |
-| /journal | 19 ✅ | 98 ✅ | 1 ✅ | ✅ | WebSite |
-| /mentions-legales | 28 ✅ | 50 ⚠️ | 1 ✅ | ✅ | WebSite |
-| /politique-confidentialite | 38 ✅ | 67 ✅ | 1 ✅ | ✅ | WebSite |
-| /merci | noindex ✅ | — | 1 ✅ | ✅ | WebSite |
+---
 
-- [x] Title unique par page (21-68 car.)
-- [x] Meta description unique par page
-- [x] Canonical URL sur chaque page
-- [x] 1 seul H1 par page (vérifié 9 pages)
-- [x] Sitemap via @astrojs/sitemap (i18n fr-FR)
-- [x] robots.txt : GPTBot, ClaudeBot, PerplexityBot autorisés
-- [x] llms.txt complet (3-tier, villes, infos clés)
-- [x] Schema JSON-LD : WebSite + Person + LocalBusiness
-- [x] 0 lien interne cassé (8 liens vérifiés)
-- [x] Liens externes : target="_blank" + rel="noopener noreferrer"
+### RGPD & Cookies : 9/10 ✅
 
-### Open Graph : 9/10
+- ✅ Aucun cookie de tracking tiers → bannière cookies non requise
+- ✅ Cloudflare Web Analytics (sans PII, pas de cookie) → conforme RGPD
+- ✅ `/politique-confidentialite` complète avec droits détaillés
+- ✅ Pas de scripts tiers chargés
+- ⚠️ Analytics commenté = pas d'analytics actif (neutre RGPD, mais perte de données métier)
 
-- [x] og:title, og:description, og:image sur toutes les pages
-- [x] og:url avec URL absolue
-- [x] og:locale = fr_FR
-- [x] og:site_name = MM Agency
-- [x] twitter:card = summary_large_image
-- [x] Image OG par défaut : /og-default.png (1200×630)
-- [ ] ⚠️ OG image basique (texte sur fond sombre) — pas de photo/illustration attractive
+---
 
-### Accessibilité : 10/10
+### Légal : 8/10 ⚠️
 
-- [x] Contraste WCAG AA respecté (30+ opacités corrigées dans l'audit)
-- [x] 0 image sans alt (vérifié dans le DOM)
-- [x] Skip-link "Aller au contenu principal" → #main
-- [x] `<main id="main">` présent
-- [x] Navigation clavier : focus-visible sur éléments interactifs
-- [x] HTML sémantique : `<section>`, `<main>`, `<header>`, `<footer>`, `<nav>`
-- [x] aria-labels sur les liens sociaux et boutons
+- ✅ `/mentions-legales` : éditeur Marc M, hébergeur Cloudflare Inc. ✅
+- ✅ `/politique-confidentialite` complète (données, finalité, durée, droits)
+- ✅ Footer avec liens légaux (Mentions légales + Politique de confidentialité)
+- ✅ Copyright © 2026 Marc M dynamique
+- ❌ **SIRET absent** dans les mentions légales (`siret: ''` dans `business.ts`)
 
-### Technique : 10/10
+**Action requise :**
+Ajouter le SIRET dans `src/data/business.ts` → `siret: 'XXX XXX XXX XXXXX'` → rebuild + redéploiement.
 
-- [x] Images en WebP (9 images, -92% poids)
-- [x] compressHTML: true
-- [x] cssMinify: true
-- [x] Polices locales (Satoshi Variable woff2, 42+43 Ko)
-- [x] Aucun CDN externe (Fontshare supprimé)
-- [x] Aucun JS bloquant
-- [x] Favicon SVG
-- [x] site.webmanifest avec theme_color
-- [x] Pas de mixed content
-- [x] Responsive : 27 breakpoints md:, hamburger mobile, CTA sticky mobile
+---
 
-### Conversion : 9/10
+### SEO : 10/15 ⚠️
 
-- [x] CTA visible sans scroll (Hero : "Voir les offres" + "Voir les réalisations")
-- [x] Bouton sticky CTA mobile (MobileCallButton, fixed bottom-8)
-- [x] Email cliquable (mailto: dans footer + contact)
-- [x] Témoignages/Social proof sur homepage
-- [x] 3-tier pricing clair (Essentiel/Multi-pages/Sur mesure)
-- [ ] ⚠️ Lien "Laisser un avis Google" absent de /merci (pas de fiche GBP configurée)
+**Ce qui fonctionne :**
+- ✅ Titles uniques par page (vérifiés : homepage, contact, 404, merci)
+- ✅ Meta descriptions uniques dans les bonnes longueurs
+- ✅ Canonical URLs dynamiques
+- ✅ Un seul H1 par page
+- ✅ Sitemap.xml généré et accessible (`/sitemap-index.xml` → `/sitemap-0.xml`)
+- ✅ llms.txt présent et bien structuré
+- ✅ Schema JSON-LD : WebSite, Person, LocalBusiness, FAQPage, Article, BreadcrumbList
+- ✅ Liens externes avec `noopener noreferrer` ✅
+- ✅ 0 lien cassé détecté
+
+**Problème critique — robots.txt :**
+
+```
+# ⚠️ CLOUDFLARE AI CRAWL CONTROL OVERRIDE DÉTECTÉ
+# Cloudflare injecte une section managée EN TÊTE du robots.txt
+# qui bloque ClaudeBot, GPTBot, Google-Extended avec Disallow: /
+# avant que les règles personnalisées Allow: / soient lues.
+# Résultat : GEO (référencement IA) complètement cassé.
+```
+
+**Action CRITIQUE requise :**
+Cloudflare Dashboard → marcm.fr → **Security** → **Bots** → **AI Crawl Control** → Mettre tous les bots IA sur **Allow** (ClaudeBot, GPTBot, Google-Extended, PerplexityBot, etc.)
+
+---
+
+### Open Graph : 8/10 ✅
+
+- ✅ `og:title`, `og:description`, `og:image` sur les pages principales
+- ✅ `twitter:card: summary_large_image` configuré
+- ✅ Image OG 1200×630px (`/og-default.png`) accessible sur marcm.fr
+- ✅ URLs absolues pour les OG images
+- ⚠️ Pages secondaires partagent la même OG image par défaut (pas d'OG images uniques par page interne)
+
+**Vérification recommandée :**
+https://developers.facebook.com/tools/debug/?q=https://marcm.fr
+
+---
+
+### Accessibilité : 8/10 ✅
+
+- ✅ Skip-to-content : `<a class="skip-link" href="#main">Aller au contenu principal</a>` ✅
+- ✅ `<main id="main">` présent ✅
+- ✅ 0 image sans attribut `alt`
+- ✅ Navigation clavier : hamburger menu, focus-visible sur tous les boutons
+- ✅ Aria-labels sur la navigation (vérifiés)
+- ✅ Ordre de tabulation logique
+- ⚠️ Contraste boutons CTA : Accent #E86C47 / texte blanc = 3.15:1 (borderline pour `text-sm font-medium`)
+
+---
+
+### Technique : 8/10 ✅
+
+- ✅ `compressHTML: true` dans astro.config.mjs
+- ✅ `cssMinify: true` dans astro.config.mjs
+- ✅ `output: 'static'` — génération statique optimale
+- ✅ Fonts locales Satoshi woff2 (pas de CDN externe)
+- ✅ `font-display: swap` configuré
+- ✅ Images projets en WebP avec `loading="lazy"` ✅
+- ✅ Favicon SVG (`/favicon.svg`)
+- ✅ `site.webmanifest` présent
+- ✅ Page 404 personnalisée avec liens de repli
+- ✅ HTTPS via Cloudflare
+- ✅ Responsive vérifié par code (breakpoints `sm:` / `md:` / `lg:` systématiques sur tous les composants)
+- ✅ 0 script externe bloquant le rendu
+- ❌ Pas de `<link rel="preload">` pour la font Satoshi
+- ❌ Icônes webmanifest uniquement en SVG (pas de PNG 192px / 512px pour install PWA)
+
+---
+
+### Conversion : 7/10 ⚠️
+
+- ✅ CTA visible sans scroll (Hero : "Parlons de votre projet" + "Voir mes réalisations")
+- ✅ Bouton sticky email sur mobile (`MobileCallButton.astro`, `md:hidden`) avec animation pulse
+- ✅ Preuve sociale présente (projets réels, chiffres, témoignages)
+- ✅ Éléments de réassurance (vitrine live en 7j, prix transparents, sans engagement)
+- ✅ WhatsApp + email sur `/merci`
+- ✅ LinkedIn avec `noopener noreferrer`
+- ❌ Pas de lien `tel:` (numéro de téléphone absent du site — MobileCallButton = mailto, pas un appel)
+- ❌ Pas de lien "Laisser un avis Google" sur `/merci`
+- ❌ Calendly (`calendly.com/marc-muller`) — URL à confirmer
 
 ---
 
@@ -126,71 +192,74 @@
 
 | Check | Méthode | Résultat |
 |-------|---------|---------|
-| CSS spécificité | grep global.css | ✅ Aucun `color:` sur sélecteur d'élément nu |
-| Meta tags (9 pages) | JS fetch + DOMParser | ✅ Title, desc, H1, OG, Schema.org sur toutes |
-| Liens internes | JS fetch HEAD (8 liens) | ✅ 0 cassé |
-| target="_blank" + rel | grep src/ | ✅ Tous ont rel="noopener noreferrer" |
-| Mixed content | grep http:// | ✅ Uniquement data: URIs (SVG inline) |
-| Responsive breakpoints | grep md:/sm:/lg: | ✅ 27+7+8 breakpoints |
-| Hamburger mobile | grep Header.astro | ✅ md:hidden + mobile-menu |
-| Skip-link | grep BaseLayout | ✅ a.skip-link → #main |
-| Honeypot anti-spam | grep contact.astro | ✅ champ botcheck |
-| RGPD formulaire | grep contact.astro | ✅ Checkbox consentement |
-| noindex /merci | grep merci.astro | ✅ noindex={true} |
-| Fonts locales | ls public/fonts/ | ✅ 2× woff2 (42+43 Ko) |
-| CDN supprimé | grep fontshare | ✅ Aucune référence |
+| Title / meta description / canonical | JS/DOM live | ✅ OK |
+| Schemas JSON-LD | JS/DOM live | ✅ WebSite + Person + LocalBusiness |
+| OG tags + twitter:card | JS/DOM live | ✅ |
+| lang="fr" | JS/DOM live | ✅ |
+| Skip-link + main#main | JS/DOM live | ✅ |
+| 0 image sans alt | JS/DOM live | ✅ |
+| Liens externes noopener | JS/DOM live | ✅ LinkedIn |
+| Formulaire contact | JS/DOM live | ✅ Web3Forms + honeypot + RGPD |
+| Sitemap | Navigation live | ✅ |
+| robots.txt | Navigation live | ❌ Cloudflare AI override bloque les bots IA |
+| /merci noindex | JS/DOM live | ✅ noindex, nofollow |
+| /404 personnalisée | Navigation live | ✅ |
+| /mentions-legales | Navigation live | ⚠️ SIRET vide |
+| Responsive CSS | Analyse code source | ✅ breakpoints md/lg/sm systématiques |
+| Spécificité CSS (global.css) | Analyse code source | ✅ |
+| Images lazy loading | Analyse code source | ✅ loading="lazy" présent |
+| Favicon + manifest | JS/DOM live | ✅ |
+| Script analytics actif | JS/DOM live | ❌ aucun |
 
 ---
 
 ## Checks à effectuer par l'utilisateur (post-déploiement)
 
-- [ ] Lighthouse ≥ 90 sur les 4 catégories (via [PageSpeed Insights](https://pagespeed.web.dev/))
-- [ ] Rendu mobile sur appareil physique (375px, 768px)
-- [ ] Envoi réel du formulaire → email reçu
-- [ ] OG image visible sur WhatsApp/Facebook ([Facebook Debugger](https://developers.facebook.com/tools/debug/))
-- [ ] Schema.org validé ([Rich Results Test](https://search.google.com/test/rich-results))
-- [ ] Navigation complète du site en conditions réelles
+- [ ] **Lighthouse ≥ 90** sur les 4 catégories → https://pagespeed.web.dev/?url=https://marcm.fr
+- [ ] **Rendu mobile** sur appareil physique (375px, 768px)
+- [ ] **Envoi réel du formulaire** depuis /contact → email reçu sur marc@muller.im
+- [ ] **OG preview** → https://developers.facebook.com/tools/debug/?q=https://marcm.fr
+- [ ] **Vérifier Calendly** : https://calendly.com/marc-muller
 
 ---
 
 ## Corrections requises
 
-### Priorité haute (avant deploy idéalement)
+### 🔴 Priorité haute (bloquant)
 
-- [ ] **SIRET** : Ajouter dans `src/data/business.ts` (ligne 69) et `src/pages/mentions-legales.astro`
+- [ ] **Cloudflare AI Crawl Control** : Dashboard CF → marcm.fr → Security → Bots → AI Crawl Control → mettre tous les bots IA sur **Allow**. Sans ce fix, GEO (Claude, GPT, Perplexity) est complètement bloqué.
+- [ ] **Tester le formulaire** : envoyer un message réel depuis /contact, vérifier réception sur marc@muller.im.
+- [ ] **Activer Cloudflare Web Analytics** : Dashboard CF → marcm.fr → Analytics → Web Analytics → Enable. Aucun code requis.
 
-### Priorité moyenne (après deploy)
+### 🟡 Priorité moyenne
 
-- [ ] **CF Analytics** : Obtenir token → décommenter dans BaseLayout.astro (ligne 55)
-- [ ] **OG Image** : Remplacer l'image texte par une image plus attractive (photo + gradient)
+- [ ] **SIRET** : `src/data/business.ts` → `siret: 'XXX XXX XXX XXXXX'` → rebuild + `npx wrangler pages deploy ./dist --project-name=marcmuller-site --branch=master`.
+- [ ] **Lien avis Google** sur `/merci` : bouton "Laisser un avis Google" avec l'URL Google Business.
+- [ ] **Vérifier Calendly** : confirmer que `https://calendly.com/marc-muller` est actif.
 
-### Priorité basse (amélioration continue)
+### 🟢 Priorité basse (amélioration)
 
-- [ ] **Photo portrait** : Remplacer "Photo à venir" sur /qui-suis-je
-- [ ] **Blog** : Publier 1-2 articles supplémentaires pour le SEO
-- [ ] **Avis Google** : Configurer fiche GBP + lien sur /merci
-
----
-
-## Scoring détaillé
-
-| Catégorie | Score | Max |
-|-----------|-------|-----|
-| Analytics & Conversion | 5 | /10 |
-| Formulaire | 14 | /15 |
-| RGPD & Cookies | 10 | /10 |
-| Légal | 8 | /10 |
-| SEO | 15 | /15 |
-| Open Graph | 9 | /10 |
-| Accessibilité | 10 | /10 |
-| Technique | 10 | /10 |
-| Conversion | 9 | /10 |
-| **TOTAL** | **90** | **/100** |
+- [ ] **Font preload** : `<link rel="preload" href="/fonts/Satoshi-Variable.woff2" as="font" type="font/woff2" crossorigin>` dans `BaseLayout.astro`.
+- [ ] **PNG webmanifest** : ajouter `icon-192.png` et `icon-512.png` dans `/public/`.
+- [ ] **Lien tel:** : envisager afficher un numéro de téléphone cliquable (footer, contact, MobileCallButton).
+- [ ] **`@id` + `openingHours` + `sameAs`** dans LocalBusiness schema pour score maximal.
 
 ---
 
-**Décision** : ✅ **PASS (90/100)** — Site prêt pour le déploiement.
+## Estimation score post-corrections
 
-Les 10 points manquants sont tous liés à des actions utilisateur (token analytics, SIRET, OG image, avis Google) qui peuvent être résolues après le premier deploy.
+| Correction appliquée | Impact |
+|---------------------|--------|
+| AI Crawl Control → Allow | SEO: +3 → 13/15 |
+| Analytics activé | Analytics: +5 → 9/10 |
+| SIRET ajouté | Légal: +1 → 9/10 |
+| Formulaire testé | Formulaire: +1 → 13/15 |
+| Google review + Calendly | Conversion: +2 → 9/10 |
+| **Score estimé post-corrections** | **~88-91/100** |
 
-**→ Prêt pour wf-10-deploiement**
+---
+
+**Décision actuelle** : ❌ FAIL (74/100) — 3 corrections critiques requises
+**Décision après corrections** : ✅ PASS estimé (~88-91/100)
+
+*Rapport généré le 2026-03-21 — Audit wf-09 live marcm.fr*

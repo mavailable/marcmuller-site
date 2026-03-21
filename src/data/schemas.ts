@@ -33,9 +33,10 @@ export function getPersonSchema() {
     },
     "address": {
       "@type": "PostalAddress",
-      "addressLocality": "Strasbourg",
+      "streetAddress": "13 Rue des Peupliers",
+      "addressLocality": "Montigny-lès-Metz",
       "addressRegion": "Grand Est",
-      "postalCode": "67000",
+      "postalCode": "57950",
       "addressCountry": "FR"
     }
   };
@@ -44,26 +45,38 @@ export function getPersonSchema() {
 export function getLocalBusinessSchema() {
   return {
     "@context": "https://schema.org",
-    "@type": "LocalBusiness",
+    "@type": "ProfessionalService",
     "name": business.name,
+    "legalName": business.legalName,
     "description": business.description,
     "url": business.url,
     "telephone": business.phone,
     "email": business.email,
+    "image": `${business.url}/og-default.png`,
+    "logo": `${business.url}/favicon.svg`,
     "address": {
       "@type": "PostalAddress",
+      "streetAddress": business.address.street,
       "addressLocality": business.address.city,
       "addressRegion": business.address.region,
       "postalCode": business.address.zip,
       "addressCountry": business.address.country
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": 49.0948,
+      "longitude": 6.1521
     },
     "areaServed": business.areaServed.map(city => ({
       "@type": "City",
       "name": city
     })),
     "priceRange": business.priceRange,
-    "hasOfferingChannel": business.offers.map(offer => ({
-      "@type": "Service",
+    "sameAs": [
+      business.socialMedia.linkedin
+    ],
+    "makesOffer": business.offers.map(offer => ({
+      "@type": "Offer",
       "name": offer.name,
       "price": String(offer.price),
       "priceCurrency": offer.currency,
