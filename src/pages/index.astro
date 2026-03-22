@@ -3,11 +3,18 @@ import BaseLayout from '../layouts/BaseLayout.astro';
 import Button from '../components/Button.astro';
 import SectionTitle from '../components/SectionTitle.astro';
 import SchemaOrg from '../components/SchemaOrg.astro';
+import { business } from '../data/business';
+
+const { sitesRealises, sitesTotal } = business;
+const progressPercent = Math.round((sitesRealises / sitesTotal) * 100);
 ---
 
 <BaseLayout
   title="Marc M — Sites web sur mesure pour artisans et petits commerces"
   description="Créateur de sites web performants et référencés pour artisans, petits commerces et entrepreneurs du Grand Est. Rapides, bien SEO, qui ramènent des clients."
+  lang="fr"
+  frPath="/"
+  enPath="/en/"
 >
   <SchemaOrg type="person" />
   <SchemaOrg type="localBusiness" />
@@ -38,12 +45,12 @@ import SchemaOrg from '../components/SchemaOrg.astro';
           </div>
 
           <h1 class="mb-8 text-[2.75rem] md:text-6xl lg:text-[4.25rem] font-bold leading-[1.08] tracking-[-0.03em] text-white hero-fade hero-fade-2">
-            Le site que vous auriez fait si vous
-            <span class="hero-accent-text">saviez coder.</span>
+            Vous faites un bon boulot.
+            <span class="hero-accent-text">Faites-le savoir.</span>
           </h1>
 
           <p class="mb-10 text-lg md:text-xl leading-relaxed text-neutral-400 max-w-xl hero-fade hero-fade-3">
-            Sites web sur mesure pour artisans et petits commerces. Rapides. Bien référencés. Qui ramènent des clients.
+            Votre prochain client vous cherche sur Google en ce moment. Sites web sur mesure pour artisans et petits commerces — rapides, bien référencés, qui convertissent.
           </p>
 
           <div class="flex flex-col gap-4 sm:flex-row hero-fade hero-fade-4">
@@ -74,90 +81,106 @@ import SchemaOrg from '../components/SchemaOrg.astro';
           </div>
         </div>
 
-        <!-- Right: Browser mockup with floating elements -->
-        <div class="relative hidden lg:block hero-fade hero-fade-3">
-          <!-- Main browser window -->
-          <div class="relative hero-float">
-            <div class="rounded-2xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-xl overflow-hidden shadow-2xl shadow-black/40">
-              <!-- Browser chrome -->
-              <div class="flex items-center gap-2 px-4 py-3 bg-white/[0.04] border-b border-white/[0.06]">
-                <div class="flex gap-1.5">
-                  <div class="w-3 h-3 rounded-full bg-[#FF5F57]"></div>
-                  <div class="w-3 h-3 rounded-full bg-[#FFBD2E]"></div>
-                  <div class="w-3 h-3 rounded-full bg-[#28CA41]"></div>
-                </div>
-                <div class="flex-1 ml-3">
-                  <div class="mx-auto max-w-xs rounded-md bg-white/10 px-3 py-1 text-xs text-neutral-500 text-center">
-                    votre-site.fr
+        <!-- Right: Défilé interactif de réalisations -->
+        <div class="relative hidden lg:block hero-fade hero-fade-3" style="height: 580px; overflow: hidden;">
+
+          <!-- Fade top -->
+          <div class="pointer-events-none absolute inset-x-0 top-0 z-10 h-24" style="background: linear-gradient(to bottom, #0D0D0D 30%, transparent 100%);"></div>
+          <!-- Fade bottom -->
+          <div class="pointer-events-none absolute inset-x-0 bottom-0 z-10 h-32" style="background: linear-gradient(to top, #0D0D0D 40%, transparent 100%);"></div>
+
+          <div class="flex gap-4 h-full">
+
+            <!-- Colonne 1 — monte lentement -->
+            <div class="flex flex-1 flex-col gap-4 hero-scroll-up-slow">
+              {[
+                { img: '/images/projects/la-grange-aux-fees.webp', name: 'La Grange aux Fées', sub: 'Gîtes · Amnéville', id: 'la-grange-aux-fees', score: true },
+                { img: '/images/projects/dmultiservices-og.webp',      name: 'DMulti Services',    sub: 'Artisan · Pyrénées',   id: 'dmultiservices' },
+                { img: '/images/projects/occivolt.webp',            name: "Occi'Volt",           sub: 'Électricien · Aude',   id: 'occivolt', score: true },
+                { img: '/images/projects/roma-laudarium.webp',      name: 'Roma Laudarium',     sub: 'Artiste · Grand Est',  id: 'roma-laudarium' },
+                { img: '/images/projects/la-grange-aux-fees.webp', name: 'La Grange aux Fées', sub: 'Gîtes · Amnéville', id: 'la-grange-aux-fees', score: true },
+                { img: '/images/projects/dmultiservices-og.webp',      name: 'DMulti Services',    sub: 'Artisan · Pyrénées',   id: 'dmultiservices' },
+                { img: '/images/projects/occivolt.webp',            name: "Occi'Volt",           sub: 'Électricien · Aude',   id: 'occivolt', score: true },
+                { img: '/images/projects/roma-laudarium.webp',      name: 'Roma Laudarium',     sub: 'Artiste · Grand Est',  id: 'roma-laudarium' },
+              ].map((p) => (
+                <a href={`/realisations#${p.id}`} class="group/card shrink-0 block overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.02] shadow-xl shadow-black/40 transition-all duration-300 hover:-translate-y-1 hover:border-white/20 hover:shadow-black/60">
+                  <div class="relative overflow-hidden">
+                    <img src={p.img} alt={p.name} class="h-[155px] w-full object-cover object-top transition-transform duration-500 group-hover/card:scale-[1.04]" loading="lazy" />
+                    <!-- gradient overlay permanent -->
+                    <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.1) 50%, transparent 100%);"></div>
+                    <!-- badge score -->
+                    {p.score && (
+                      <div class="absolute left-3 top-3 flex items-center gap-1.5 rounded-full border border-emerald-500/25 bg-black/50 px-2.5 py-1 backdrop-blur-sm">
+                        <div class="h-1.5 w-1.5 rounded-full bg-emerald-400"></div>
+                        <span class="text-[10px] font-bold text-emerald-400">100</span>
+                      </div>
+                    )}
+                    <!-- overlay "Voir" au hover -->
+                    <div class="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover/card:opacity-100">
+                      <span class="rounded-full bg-white/15 px-4 py-1.5 text-xs font-semibold text-white backdrop-blur-sm border border-white/20">
+                        Voir le projet →
+                      </span>
+                    </div>
+                    <!-- texte en bas -->
+                    <div class="absolute inset-x-0 bottom-0 px-3 pb-3">
+                      <p class="text-sm font-semibold text-white leading-tight truncate">{p.name}</p>
+                      <p class="text-[11px] text-white/45 truncate">{p.sub}</p>
+                    </div>
                   </div>
-                </div>
-              </div>
-              <!-- Fake site content -->
-              <div class="p-6 space-y-4">
-                <div class="flex gap-4 items-center mb-6">
-                  <div class="w-8 h-8 rounded-lg bg-[var(--color-accent)]/20 flex items-center justify-center">
-                    <div class="w-4 h-4 rounded bg-[var(--color-accent)]"></div>
-                  </div>
-                  <div class="flex gap-4">
-                    <div class="h-2 w-12 rounded-full bg-white/10"></div>
-                    <div class="h-2 w-10 rounded-full bg-white/10"></div>
-                    <div class="h-2 w-14 rounded-full bg-white/10"></div>
-                  </div>
-                </div>
-                <div class="space-y-2">
-                  <div class="h-3 w-3/4 rounded-full bg-white/[0.08]"></div>
-                  <div class="h-3 w-1/2 rounded-full bg-white/[0.06]"></div>
-                </div>
-                <div class="h-32 rounded-xl bg-gradient-to-br from-[var(--color-accent)]/10 to-[#4F46E5]/10 border border-white/[0.05]"></div>
-                <div class="grid grid-cols-3 gap-3">
-                  <div class="h-20 rounded-lg bg-white/[0.04] border border-white/[0.05]"></div>
-                  <div class="h-20 rounded-lg bg-white/[0.04] border border-white/[0.05]"></div>
-                  <div class="h-20 rounded-lg bg-white/[0.04] border border-white/[0.05]"></div>
-                </div>
-              </div>
+                </a>
+              ))}
             </div>
+
+            <!-- Colonne 2 — monte plus vite, décalée -->
+            <div class="flex flex-1 flex-col gap-4 hero-scroll-up-fast" style="margin-top: 70px;">
+              {[
+                { img: '/images/projects/levain-kohtao.webp',  name: 'Le Levain de Koh Tao', sub: 'Boulangerie · Thaïlande', id: 'levain-kohtao', score: true },
+                { img: '/images/projects/mm-securite.webp',    name: 'MM Sécurité',           sub: 'Sécurité · Grand Est',   id: 'mm-securite', score: true },
+                { img: '/images/projects/paccord-piano.webp',  name: "P'Accord Piano",        sub: 'Musique · Grand Est',    id: 'paccord-piano', score: true },
+                { img: '/images/projects/kor.webp',            name: 'KOR',                   sub: 'Sport · France',         id: 'kor' },
+                { img: '/images/projects/levain-kohtao.webp',  name: 'Le Levain de Koh Tao', sub: 'Boulangerie · Thaïlande', id: 'levain-kohtao', score: true },
+                { img: '/images/projects/mm-securite.webp',    name: 'MM Sécurité',           sub: 'Sécurité · Grand Est',   id: 'mm-securite', score: true },
+                { img: '/images/projects/paccord-piano.webp',  name: "P'Accord Piano",        sub: 'Musique · Grand Est',    id: 'paccord-piano', score: true },
+                { img: '/images/projects/kor.webp',            name: 'KOR',                   sub: 'Sport · France',         id: 'kor' },
+              ].map((p) => (
+                <a href={`/realisations#${p.id}`} class="group/card shrink-0 block overflow-hidden rounded-2xl border border-white/[0.07] bg-white/[0.02] shadow-xl shadow-black/40 transition-all duration-300 hover:-translate-y-1 hover:border-white/20 hover:shadow-black/60">
+                  <div class="relative overflow-hidden">
+                    <img src={p.img} alt={p.name} class="h-[155px] w-full object-cover object-top transition-transform duration-500 group-hover/card:scale-[1.04]" loading="lazy" />
+                    <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(0,0,0,0.82) 0%, rgba(0,0,0,0.1) 50%, transparent 100%);"></div>
+                    {p.score && (
+                      <div class="absolute left-3 top-3 flex items-center gap-1.5 rounded-full border border-emerald-500/25 bg-black/50 px-2.5 py-1 backdrop-blur-sm">
+                        <div class="h-1.5 w-1.5 rounded-full bg-emerald-400"></div>
+                        <span class="text-[10px] font-bold text-emerald-400">100</span>
+                      </div>
+                    )}
+                    <div class="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover/card:opacity-100">
+                      <span class="rounded-full bg-white/15 px-4 py-1.5 text-xs font-semibold text-white backdrop-blur-sm border border-white/20">
+                        Voir le projet →
+                      </span>
+                    </div>
+                    <div class="absolute inset-x-0 bottom-0 px-3 pb-3">
+                      <p class="text-sm font-semibold text-white leading-tight truncate">{p.name}</p>
+                      <p class="text-[11px] text-white/45 truncate">{p.sub}</p>
+                    </div>
+                  </div>
+                </a>
+              ))}
+            </div>
+
           </div>
 
-          <!-- Floating performance card -->
-          <div class="absolute -left-8 top-[20%] hero-float-delayed">
-            <div class="rounded-xl border border-white/[0.08] bg-[#161616]/90 backdrop-blur-xl p-4 shadow-xl shadow-black/30">
-              <div class="flex items-center gap-3">
-                <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500/10">
-                  <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                </div>
-                <div>
-                  <div class="text-xs text-neutral-400">Performance</div>
-                  <div class="text-lg font-bold text-emerald-400">100/100</div>
-                </div>
+          <!-- Badge flottant -->
+          <a href="/realisations" class="absolute bottom-6 left-1/2 z-20 -translate-x-1/2 transition-transform hover:-translate-y-0.5 hover:-translate-x-1/2">
+            <div class="flex items-center gap-2 rounded-full border border-white/10 bg-black/70 px-5 py-2.5 backdrop-blur-md shadow-lg">
+              <span class="text-xs font-medium text-white/60">10 projets livrés</span>
+              <span class="text-white/15">·</span>
+              <div class="flex items-center gap-1.5">
+                <div class="h-1.5 w-1.5 rounded-full bg-emerald-400"></div>
+                <span class="text-xs font-semibold text-emerald-400">Lighthouse 100</span>
               </div>
+              <svg class="h-3 w-3 text-white/30" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
             </div>
-          </div>
-
-          <!-- Floating SEO card -->
-          <div class="absolute -right-4 bottom-[15%] hero-float-delayed-2">
-            <div class="rounded-xl border border-white/[0.08] bg-[#161616]/90 backdrop-blur-xl p-4 shadow-xl shadow-black/30">
-              <div class="flex items-center gap-3">
-                <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--color-accent)]/10">
-                  <svg class="w-5 h-5 text-[var(--color-accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12"></path></svg>
-                </div>
-                <div>
-                  <div class="text-xs text-neutral-400">SEO Score</div>
-                  <div class="text-lg font-bold text-[var(--color-accent)]">98/100</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Floating code snippet -->
-          <div class="absolute -left-4 bottom-[5%] hero-float-delayed-3">
-            <div class="rounded-lg border border-white/[0.08] bg-[#161616]/90 backdrop-blur-xl px-4 py-2.5 shadow-lg shadow-black/20">
-              <code class="text-xs font-mono">
-                <span class="text-[#7C3AED]">&lt;</span><span class="text-emerald-400">Astro</span><span class="text-[#7C3AED]"> /&gt;</span>
-                <span class="text-neutral-500 mx-1">+</span>
-                <span class="text-[#7C3AED]">&lt;</span><span class="text-sky-400">Tailwind</span><span class="text-[#7C3AED]"> /&gt;</span>
-              </code>
-            </div>
-          </div>
+          </a>
         </div>
       </div>
     </div>
@@ -202,12 +225,12 @@ import SchemaOrg from '../components/SchemaOrg.astro';
           <!-- Progress -->
           <div class="text-center">
             <div class="flex items-baseline gap-1 justify-center">
-              <span class="text-5xl font-extrabold" style="color: #E86C47;">0</span>
-              <span class="text-xl font-bold text-white/60">/100</span>
+              <span class="text-5xl font-extrabold" style="color: #E86C47;">{sitesRealises}</span>
+              <span class="text-xl font-bold text-white/60">/{sitesTotal}</span>
             </div>
             <p class="mt-1 text-xs text-white/60 uppercase tracking-widest">sites réalisés</p>
             <div class="mt-3 w-48 bg-white/10 rounded-full h-1.5">
-              <div class="h-1.5 rounded-full transition-all duration-1000" style="width: 0%; background: linear-gradient(90deg, #E86C47, #FF8A65);"></div>
+              <div class="h-1.5 rounded-full transition-all duration-1000" style={`width: ${progressPercent === 0 ? 0.5 : progressPercent}%; background: linear-gradient(90deg, #E86C47, #FF8A65);`}></div>
             </div>
           </div>
 
@@ -230,55 +253,72 @@ import SchemaOrg from '../components/SchemaOrg.astro';
     </div>
   </section>
 
-  <!-- PROBLÈME / VOUS VOUS RECONNAISSEZ -->
-  <section class="w-full bg-[var(--color-bg-alt)] px-6 py-24 md:px-8 md:py-32">
-    <div class="mx-auto max-w-5xl">
-      <SectionTitle title="Vous vous reconnaissez ?" align="center" />
-      <div class="mt-16 grid gap-8 md:grid-cols-3">
-        <!-- Bloc 1 -->
-        <div class="rounded-xl bg-white p-8 border border-[var(--color-border)] hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-          <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--color-accent-light)]">
-            <svg class="w-7 h-7 text-[var(--color-accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
+  <!-- PROBLÈME — section sombre, directe, conversationnelle -->
+  <section class="relative w-full bg-[#0D0D0D] px-6 py-24 md:px-8 md:py-32 overflow-hidden">
+    <!-- Dot pattern subtle -->
+    <div class="absolute inset-0 opacity-[0.04]" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 32px 32px;"></div>
+
+    <div class="relative mx-auto max-w-4xl z-10">
+      <!-- Titre conversationnel -->
+      <p class="text-[var(--color-accent)] font-semibold text-sm tracking-wide uppercase mb-4">Le constat</p>
+      <h2 class="text-3xl md:text-4xl font-bold text-white leading-tight">
+        Vous avez un <span class="text-[var(--color-accent)]">vrai métier</span>.<br class="hidden md:block" />
+        Votre site devrait travailler aussi dur que vous.
+      </h2>
+      <p class="mt-4 text-neutral-400 text-lg max-w-2xl">Pourtant, aujourd'hui...</p>
+
+      <!-- Pain points — style checklist éditorial -->
+      <div class="mt-12 space-y-6">
+        <!-- Point 1 -->
+        <div class="group flex items-start gap-5 rounded-2xl border border-white/[0.06] bg-white/[0.02] px-6 py-6 md:px-8 transition-all duration-300 hover:border-white/[0.12] hover:bg-white/[0.04]">
+          <span class="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-red-500/10 text-red-400 text-lg font-bold">1</span>
+          <div>
+            <h3 class="text-lg font-bold text-white group-hover:text-[var(--color-accent)] transition-colors">
+              Votre site WordPress rame et vous coûte cher
+            </h3>
+            <p class="mt-2 text-neutral-400 leading-relaxed text-[15px]">
+              Plugins à mettre à jour, cache qui ne suffit pas, hébergement qui grimpe. 3 secondes de chargement = 53% de visiteurs perdus.
+            </p>
           </div>
-          <h3 class="mb-3 text-lg font-bold text-[var(--color-text)]">
-            Votre site WordPress rame et vous coûte cher
-          </h3>
-          <p class="text-[var(--color-text-muted)] leading-relaxed">
-            Mises à jour plugins à répétition, plugins de cache qui ne suffisent pas, coûts d'hébergement qui grimpent. Vous attendez 3 secondes avant que votre site charge.
-          </p>
         </div>
 
-        <!-- Bloc 2 -->
-        <div class="rounded-xl bg-white p-8 border border-[var(--color-border)] hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-          <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--color-accent-light)]">
-            <svg class="w-7 h-7 text-[var(--color-accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
+        <!-- Point 2 -->
+        <div class="group flex items-start gap-5 rounded-2xl border border-white/[0.06] bg-white/[0.02] px-6 py-6 md:px-8 transition-all duration-300 hover:border-white/[0.12] hover:bg-white/[0.04]">
+          <span class="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-amber-500/10 text-amber-400 text-lg font-bold">2</span>
+          <div>
+            <h3 class="text-lg font-bold text-white group-hover:text-[var(--color-accent)] transition-colors">
+              Vous n'avez pas de site et perdez des clients
+            </h3>
+            <p class="mt-2 text-neutral-400 leading-relaxed text-[15px]">
+              Vos concurrents apparaissent sur Google. Pas vous. Les clients potentiels appellent ailleurs. Chaque jour sans site, c'est du chiffre en moins.
+            </p>
           </div>
-          <h3 class="mb-3 text-lg font-bold text-[var(--color-text)]">
-            Vous n'avez pas de site et perdez des clients
-          </h3>
-          <p class="text-[var(--color-text-muted)] leading-relaxed">
-            Vos concurrents sont visibles en ligne. Vous, vous restez invisible. Les clients potentiels vont ailleurs. Vous laissez de l'argent sur la table.
-          </p>
         </div>
 
-        <!-- Bloc 3 -->
-        <div class="rounded-xl bg-white p-8 border border-[var(--color-border)] hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-          <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--color-accent-light)]">
-            <svg class="w-7 h-7 text-[var(--color-accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
-            </svg>
+        <!-- Point 3 -->
+        <div class="group flex items-start gap-5 rounded-2xl border border-white/[0.06] bg-white/[0.02] px-6 py-6 md:px-8 transition-all duration-300 hover:border-white/[0.12] hover:bg-white/[0.04]">
+          <span class="mt-1 flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-orange-500/10 text-orange-400 text-lg font-bold">3</span>
+          <div>
+            <h3 class="text-lg font-bold text-white group-hover:text-[var(--color-accent)] transition-colors">
+              Votre site est générique et ne vous ressemble pas
+            </h3>
+            <p class="mt-2 text-neutral-400 leading-relaxed text-[15px]">
+              Template vu mille fois, couleurs par défaut, zéro personnalité. Les visiteurs repartent sans se souvenir de vous.
+            </p>
           </div>
-          <h3 class="mb-3 text-lg font-bold text-[var(--color-text)]">
-            Votre site est moche et ne vous ressemble pas
-          </h3>
-          <p class="text-[var(--color-text-muted)] leading-relaxed">
-            Template générique, couleurs par défaut, rien de personnel. Les visiteurs n'ont pas l'impression de vraiment vous connaître. Pas de connexion.
-          </p>
         </div>
+      </div>
+
+      <!-- Transition vers la solution -->
+      <div class="mt-14 flex flex-col items-center text-center">
+        <div class="h-12 w-px bg-gradient-to-b from-transparent via-[var(--color-accent)]/40 to-transparent"></div>
+        <p class="mt-6 text-lg text-neutral-300">
+          Et si votre site devenait votre <span class="font-semibold text-white">meilleur commercial</span> ?
+        </p>
+        <a href="/offre" class="mt-4 inline-flex items-center gap-2 text-[var(--color-accent)] font-semibold text-sm hover:underline transition-colors">
+          Découvrir mon approche
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+        </a>
       </div>
     </div>
   </section>
@@ -287,7 +327,7 @@ import SchemaOrg from '../components/SchemaOrg.astro';
   <section class="w-full bg-white px-6 py-24 md:px-8 md:py-32">
     <div class="mx-auto max-w-5xl">
       <h2 class="text-center text-3xl md:text-4xl font-bold text-[var(--color-text)] mb-4">Ça marche</h2><p class="text-center text-[var(--color-text-muted)] mb-16 text-lg">Des chiffres, pas des promesses.</p>
-      <div class="grid gap-12 md:grid-cols-4">
+      <div class="grid gap-12 md:grid-cols-3">
         <div class="text-center">
           <div class="mb-3 text-6xl font-bold text-[var(--color-accent)]"><span class="count-up" data-target="12">0</span><span class="text-3xl">+</span></div>
           <p class="text-[var(--color-text-muted)]">Projets livrés et en production</p>
@@ -300,22 +340,84 @@ import SchemaOrg from '../components/SchemaOrg.astro';
           <div class="mb-3 text-6xl font-bold text-[var(--color-accent)]">100<span class="text-3xl">%</span></div>
           <p class="text-[var(--color-text-muted)]">Taux de satisfaction clients</p>
         </div>
-        <div class="text-center">
-          <div class="mb-3 text-5xl font-bold text-[var(--color-accent)]">2020</div>
-          <p class="text-[var(--color-text-muted)]">Créateur de sites web à temps plein</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- AVIS CLIENTS -->
+  <section class="w-full bg-[var(--color-bg-alt)] px-6 py-24 md:px-8 md:py-32">
+    <div class="mx-auto max-w-5xl">
+      <div class="mb-12 text-center">
+        <p class="mb-2 text-sm font-semibold uppercase tracking-widest text-[var(--color-accent)]">Avis Google</p>
+        <h2 class="text-3xl font-bold text-[var(--color-text)] md:text-4xl">Ils me font confiance</h2>
+      </div>
+      <div class="grid gap-6 md:grid-cols-2">
+        <!-- Avis 1 — David MERLY -->
+        <div class="rounded-2xl border border-[var(--color-border)] bg-white p-8 shadow-sm flex flex-col">
+          <div class="mb-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-accent)] text-sm font-bold text-white">D</div>
+              <div>
+                <p class="font-semibold text-[var(--color-text)]">David Merly</p>
+                <p class="text-xs text-[var(--color-text-muted)]">Local Guide · Mars 2026</p>
+              </div>
+            </div>
+            <svg class="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+          </div>
+          <div class="mb-3 flex gap-0.5">
+            {[...Array(5)].map(() => <svg class="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>)}
+          </div>
+          <p class="text-[var(--color-text-muted)] leading-relaxed flex-1">"Si vous avez envie d'un site web Marc est la personne qu'il vous faut sans hésitation 👍 Réactif, inventif, il sait exactement où il va pour que votre site soit parfait et surtout il est attentif à l'attente du client 👌 Je le recommande à 1000%. Un très grand MERCI, grâce à vous j'ai une meilleure visibilité pour mon entreprise."</p>
+          <!-- Projet associé -->
+          <div class="mt-5 pt-4 border-t border-[var(--color-border)]">
+            <a href="/realisations#dmultiservices" class="inline-flex items-center gap-2 text-xs font-medium text-[var(--color-text-muted)] hover:text-[var(--color-accent)] transition-colors group">
+              <svg class="h-3.5 w-3.5 text-[var(--color-accent)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.828 10.172a4 4 0 00-5.656 0l-4 4a4 4 0 105.656 5.656l1.102-1.101m-.758-4.899a4 4 0 005.656 0l4-4a4 4 0 00-5.656-5.656l-1.1 1.1"/></svg>
+              Projet associé : <span class="text-[var(--color-text)] font-semibold group-hover:text-[var(--color-accent)] transition-colors">DMulti Services</span>
+              <svg class="h-3 w-3 group-hover:translate-x-0.5 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+            </a>
+          </div>
         </div>
+        <!-- Avis 2 — Jennifer De Groeve -->
+        <div class="rounded-2xl border border-[var(--color-border)] bg-white p-8 shadow-sm">
+          <div class="mb-4 flex items-center justify-between">
+            <div class="flex items-center gap-3">
+              <div class="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-accent)] text-sm font-bold text-white">J</div>
+              <div>
+                <p class="font-semibold text-[var(--color-text)]">Jennifer De Groeve</p>
+                <p class="text-xs text-[var(--color-text-muted)]">Mars 2026</p>
+              </div>
+            </div>
+            <svg class="h-5 w-5" viewBox="0 0 24 24" aria-hidden="true"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+          </div>
+          <div class="mb-3 flex gap-0.5">
+            {[...Array(5)].map(() => <svg class="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>)}
+          </div>
+          <p class="text-[var(--color-text-muted)] leading-relaxed">"Je conseille vivement de faire confiance à Marc — une écoute attentive, réactif dans la création du digital et très compétent. Faites-lui confiance, vous ne regretterez pas."</p>
+        </div>
+      </div>
+      <!-- CTA vers Google -->
+      <div class="mt-10 text-center">
+        <a
+          href="https://www.google.com/search?sa=X&sca_esv=f03daf4eddc76bb6&authuser=0&hl=en&gl=fr&biw=1920&bih=850&sxsrf=ANbL-n4U8o8EJKy6t166pN01iPFVVAGitw:1774128528926&q=marc%20m%20reviews&rflfq=1&num=20&stick=H4sIAAAAAAAAAONgkxK2sDA3MDK3MDQyNTEzMjQ3MjM338DI-IqRLzexKFkhV6EotSwztbx4ESuaAADfd4fdPAAAAA&rldimm=8870278125462172677&tbm=lcl&ved=0CAgQ5foLahcKEwjIxKvm97GTAxUAAAAAHQAAAAAQBQ#lkt=LocalPoiReviews&arid=Ci9DQUlRQUNvZENodHljRjlvT25WdU1tbHZiRkEzYjB0SlEzRnpYWTVObTlsUVZFEAE"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 rounded-full border border-[var(--color-border)] bg-white px-6 py-3 text-sm font-medium text-[var(--color-text)] shadow-sm transition hover:shadow-md"
+        >
+          <svg class="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+          Voir tous mes avis Google
+        </a>
       </div>
     </div>
   </section>
 
   <!-- RÉALISATIONS -->
-  <section class="w-full bg-[var(--color-bg-alt)] px-6 py-24 md:px-8 md:py-32">
+  <section class="w-full bg-white px-6 py-24 md:px-8 md:py-32">
     <div class="mx-auto max-w-5xl">
       <SectionTitle title="Mes derniers projets" align="center" />
-      <div class="mt-16 grid gap-8 md:grid-cols-3">
+      <div class="mt-16 grid gap-8 md:grid-cols-2">
         <!-- Projet 1 — La Grange aux Fées -->
         <a href="/realisations" class="rounded-xl overflow-hidden border border-[var(--color-border)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group block">
-          <div class="h-48 overflow-hidden">
+          <div class="h-52 overflow-hidden">
             <img src="/images/projects/la-grange-aux-fees.webp" alt="La Grange aux Fées — Gîtes de charme à Amnéville" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-300" loading="lazy" />
           </div>
           <div class="p-6 bg-white">
@@ -327,7 +429,7 @@ import SchemaOrg from '../components/SchemaOrg.astro';
 
         <!-- Projet 2 — Le Levain de Koh Tao -->
         <a href="/realisations" class="rounded-xl overflow-hidden border border-[var(--color-border)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group block">
-          <div class="h-48 overflow-hidden">
+          <div class="h-52 overflow-hidden">
             <img src="/images/projects/levain-kohtao.webp" alt="Le Levain de Koh Tao — Boulangerie artisanale" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-300" loading="lazy" />
           </div>
           <div class="p-6 bg-white">
@@ -339,13 +441,32 @@ import SchemaOrg from '../components/SchemaOrg.astro';
 
         <!-- Projet 3 — Occi'Volt -->
         <a href="/realisations" class="rounded-xl overflow-hidden border border-[var(--color-border)] hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group block">
-          <div class="h-48 overflow-hidden">
+          <div class="h-52 overflow-hidden">
             <img src="/images/projects/occivolt.webp" alt="Occi'Volt — Électricien à Castelnaudary" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-300" loading="lazy" />
           </div>
           <div class="p-6 bg-white">
             <h3 class="mb-2 text-lg font-bold text-[var(--color-text)]">Occi'Volt</h3>
             <p class="mb-3 text-sm text-[var(--color-text-muted)]">Électricien — Castelnaudary</p>
             <p class="text-sm text-[var(--color-text)]">Galerie réalisations, avis Google intégrés, demande de devis. Score Lighthouse 100.</p>
+          </div>
+        </a>
+
+        <!-- Projet 4 — DMulti Services (avec avis client lié) -->
+        <a href="/realisations#dmultiservices" class="rounded-xl overflow-hidden border border-[var(--color-accent)]/30 hover:shadow-xl hover:-translate-y-1 transition-all duration-300 group block">
+          <div class="h-52 overflow-hidden">
+            <img src="/images/projects/dmultiservices.webp" alt="DMulti Services — Artisan multi-services Hautes-Pyrénées" class="w-full h-full object-cover object-top group-hover:scale-105 transition-transform duration-300" loading="lazy" />
+          </div>
+          <div class="p-6 bg-white">
+            <h3 class="mb-2 text-lg font-bold text-[var(--color-text)]">DMulti Services</h3>
+            <p class="mb-3 text-sm text-[var(--color-text-muted)]">Artisan multi-services — Hautes-Pyrénées</p>
+            <p class="text-sm text-[var(--color-text)]">Devis en ligne, SEO local 65/32, galerie réalisations. Score Lighthouse 100.</p>
+            <!-- Avis client lié -->
+            <div class="mt-4 pt-4 border-t border-[var(--color-border)]">
+              <div class="flex items-start gap-2">
+                <svg class="mt-0.5 h-3.5 w-3.5 shrink-0 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                <p class="text-xs text-[var(--color-text-muted)] italic leading-relaxed">"Réactif, inventif, il sait exactement où il va pour que votre site soit parfait." — <span class="not-italic font-medium text-[var(--color-text)]">David Merly</span></p>
+              </div>
+            </div>
           </div>
         </a>
       </div>
@@ -361,7 +482,7 @@ import SchemaOrg from '../components/SchemaOrg.astro';
   </section>
 
   <!-- MÉTHODE -->
-  <section class="w-full bg-white px-6 py-24 md:px-8 md:py-32">
+  <section class="w-full bg-[var(--color-bg-alt)] px-6 py-24 md:px-8 md:py-32">
     <div class="mx-auto max-w-5xl">
       <SectionTitle title="Comment on travaille" align="center" />
       <div class="mt-16 grid gap-8 md:grid-cols-3">
@@ -411,7 +532,7 @@ import SchemaOrg from '../components/SchemaOrg.astro';
   </section>
 
   <!-- DIFFÉRENCIATEURS -->
-  <section class="w-full bg-[var(--color-bg-alt)] px-6 py-24 md:px-8 md:py-32">
+  <section class="w-full bg-white px-6 py-24 md:px-8 md:py-32">
     <div class="mx-auto max-w-5xl">
       <SectionTitle title="Pourquoi travailler avec moi" align="center" />
       <div class="mt-16 grid gap-8 md:grid-cols-2 lg:grid-cols-4">
@@ -488,6 +609,22 @@ import SchemaOrg from '../components/SchemaOrg.astro';
 </BaseLayout>
 
 <style>
+  /* Hero — défilé réalisations */
+  @keyframes scroll-up {
+    0%   { transform: translateY(0); }
+    100% { transform: translateY(-50%); }
+  }
+  @keyframes scroll-down {
+    0%   { transform: translateY(-50%); }
+    100% { transform: translateY(0); }
+  }
+  .hero-scroll-up-slow  { animation: scroll-up   28s linear infinite; }
+  .hero-scroll-up-fast  { animation: scroll-up   18s linear infinite; }
+  .hero-scroll-down-med { animation: scroll-down 23s linear infinite; }
+  .hero-scroll-up-slow:hover,
+  .hero-scroll-up-fast:hover,
+  .hero-scroll-down-med:hover { animation-play-state: paused; }
+
   /* Hero accent text gradient animation */
   .hero-accent-text {
     background: linear-gradient(135deg, #E86C47 0%, #FF8A65 50%, #E86C47 100%);
