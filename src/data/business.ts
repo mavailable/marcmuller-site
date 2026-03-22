@@ -66,6 +66,10 @@ export const business = {
     period: 'mois',
   },
 
+  // 100 Vitrines — 🔧 MISE À JOUR ICI pour changer le compteur partout
+  sitesRealises: 5,
+  sitesTotal: 100,
+
   // Legal (à compléter)
   siret: '505 045 450 00069',
 } as const;

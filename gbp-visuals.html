@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Google Business Profile — Visuels Marc M</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #F0F0EE;
+      font-family: 'Inter', system-ui, sans-serif;
+      padding: 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 64px;
+    }
+
+    /* ── Labels & UI ── */
+    .section-label {
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 0.15em;
+      text-transform: uppercase;
+      color: #888;
+      margin-bottom: 12px;
+    }
+    .spec-note {
+      font-size: 11px;
+      color: #999;
+      margin-top: 10px;
+    }
+    .dl-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-top: 14px;
+    }
+    .dl-btn {
+      display: inline-flex;
+      align-items: center;
+      gap-8px;
+      gap: 8px;
+      background: #E86C47;
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 9px 20px;
+      font-size: 12px;
+      font-weight: 700;
+      font-family: 'Inter', system-ui, sans-serif;
+      letter-spacing: 0.02em;
+      cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+      box-shadow: 0 4px 14px rgba(232,108,71,0.3);
+    }
+    .dl-btn:hover { background: #D4572F; transform: translateY(-1px); }
+    .dl-btn:active { transform: translateY(0); }
+    .dl-btn.loading { background: #aaa; cursor: wait; pointer-events: none; }
+    .dl-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+    .dim-badge {
+      font-size: 11px;
+      font-weight: 600;
+      color: #aaa;
+      background: #fff;
+      border-radius: 6px;
+      padding: 4px 10px;
+      border: 1px solid #E8E8E8;
+    }
+
+    /* ── COVER 1080×608 ── */
+    .cover {
+      width: 1080px;
+      height: 608px;
+      background: #0D0D0D;
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .cover .dot-grid {
+      position: absolute;
+      inset: 0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    .cover .glow {
+      position: absolute;
+      width: 700px; height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(232,108,71,0.18) 0%, transparent 70%);
+      top: -150px; right: -100px;
+    }
+    .cover .glow-2 {
+      position: absolute;
+      width: 400px; height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(232,108,71,0.10) 0%, transparent 70%);
+      bottom: -100px; left: -50px;
+    }
+    .cover-content {
+      position: relative;
+      z-index: 10;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .cover-eyebrow {
+      font-size: 12px; font-weight: 600;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(255,255,255,0.4);
+      margin-bottom: 28px;
+    }
+    .cover-logo {
+      font-size: 80px; font-weight: 900;
+      color: #fff; letter-spacing: -3px; line-height: 1;
+      margin-bottom: 28px;
+    }
+    .cover-logo span { color: #E86C47; }
+    .cover-tagline {
+      font-size: 22px; font-weight: 400;
+      color: rgba(255,255,255,0.65);
+      line-height: 1.5; max-width: 600px;
+      margin-bottom: 48px;
+    }
+    .cover-tagline strong { color: #fff; font-weight: 700; }
+    .cover-stats {
+      display: flex; align-items: center; gap: 0;
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 16px; overflow: hidden;
+      background: rgba(255,255,255,0.04);
+    }
+    .cover-stat { padding: 16px 32px; text-align: center; }
+    .cover-stat + .cover-stat { border-left: 1px solid rgba(255,255,255,0.08); }
+    .cover-stat-value {
+      font-size: 28px; font-weight: 800;
+      color: #fff; line-height: 1; margin-bottom: 6px;
+    }
+    .cover-stat-value.accent { color: #E86C47; }
+    .cover-stat-label {
+      font-size: 10px; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(255,255,255,0.35);
+    }
+    .cover-url {
+      position: absolute; bottom: 28px; right: 36px;
+      font-size: 13px; color: rgba(255,255,255,0.25);
+      font-weight: 500; letter-spacing: 0.04em;
+    }
+
+    /* ── COVER B ── */
+    .cover-b {
+      width: 1080px; height: 608px;
+      position: relative; overflow: hidden;
+      display: flex; align-items: stretch;
+    }
+    .cover-b .left {
+      width: 55%; background: #0D0D0D;
+      display: flex; flex-direction: column;
+      justify-content: center; padding: 64px 56px;
+      position: relative; z-index: 2;
+    }
+    .cover-b .right {
+      flex: 1;
+      background: linear-gradient(135deg, #E86C47, #D4572F);
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      gap: 20px; padding: 48px;
+    }
+    .cover-b .right .stat-block {
+      background: rgba(255,255,255,0.15);
+      border-radius: 16px; padding: 20px 32px;
+      text-align: center; width: 100%;
+    }
+    .cover-b .right .stat-block .val {
+      font-size: 42px; font-weight: 900;
+      color: #fff; line-height: 1;
+    }
+    .cover-b .right .stat-block .lbl {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: rgba(255,255,255,0.7); margin-top: 6px;
+    }
+    .cover-b .dot-grid {
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.07) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    .cover-b .left-logo {
+      font-size: 64px; font-weight: 900;
+      color: #fff; letter-spacing: -2px; line-height: 1;
+      margin-bottom: 20px;
+    }
+    .cover-b .left-logo span { color: #E86C47; }
+    .cover-b .left-tag {
+      font-size: 18px; font-weight: 400;
+      color: rgba(255,255,255,0.6); line-height: 1.6;
+      margin-bottom: 32px;
+    }
+    .cover-b .left-tag strong { color: #fff; font-weight: 700; }
+    .cover-b .pill {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(232,108,71,0.15);
+      border: 1px solid rgba(232,108,71,0.3);
+      border-radius: 100px; padding: 8px 18px;
+      font-size: 12px; font-weight: 600; color: #E86C47;
+    }
+    .cover-b .pill::before { content: '●'; font-size: 7px; }
+    .cover-b .cover-eyebrow {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: .15em; text-transform: uppercase;
+      color: rgba(255,255,255,.35); margin-bottom: 20px;
+    }
+
+    /* ── LOGO SQUARE ── */
+    .logo-sq {
+      width: 400px; height: 400px;
+      background: #0D0D0D;
+      display: flex; align-items: center;
+      justify-content: center;
+      position: relative; overflow: hidden;
+    }
+    .logo-sq .glow {
+      position: absolute; width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(232,108,71,0.15) 0%, transparent 60%);
+      top: -100px; left: -100px;
+    }
+    .logo-sq .mark {
+      position: relative; z-index: 2; text-align: center;
+    }
+    .logo-sq .mark-text {
+      font-size: 96px; font-weight: 900;
+      color: #fff; letter-spacing: -4px; line-height: 1;
+    }
+    .logo-sq .mark-text span { color: #E86C47; }
+    .logo-sq .mark-sub {
+      font-size: 13px; font-weight: 600;
+      letter-spacing: 0.25em; text-transform: uppercase;
+      color: rgba(255,255,255,0.3); margin-top: 12px;
+    }
+
+    /* ── POST SQUARE ── */
+    .post-sq {
+      width: 540px; height: 540px;
+      background: #0D0D0D;
+      position: relative; overflow: hidden;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 56px; text-align: center;
+    }
+    .post-sq .dot-grid {
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+    .post-sq .glow {
+      position: absolute; width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(232,108,71,0.2) 0%, transparent 70%);
+      top: -150px; right: -150px;
+    }
+    .post-sq-content {
+      position: relative; z-index: 2;
+      display: flex; flex-direction: column;
+      align-items: center; gap: 0;
+    }
+    .post-sq .ps-badge {
+      display: inline-block;
+      background: rgba(232,108,71,0.15);
+      border: 1px solid rgba(232,108,71,0.3);
+      border-radius: 100px; padding: 6px 16px;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: #E86C47; margin-bottom: 24px;
+    }
+    .post-sq .ps-headline {
+      font-size: 36px; font-weight: 800;
+      color: #fff; line-height: 1.2; margin-bottom: 16px;
+    }
+    .post-sq .ps-headline em { font-style: normal; color: #E86C47; }
+    .post-sq .ps-sub {
+      font-size: 14px; color: rgba(255,255,255,0.5);
+      line-height: 1.6; margin-bottom: 32px; max-width: 380px;
+    }
+    .post-sq .ps-stats {
+      display: grid; grid-template-columns: 1fr 1fr 1fr;
+      gap: 1px; background: rgba(255,255,255,0.08);
+      border-radius: 14px; overflow: hidden;
+      width: 100%; margin-bottom: 28px;
+    }
+    .post-sq .ps-stat {
+      background: rgba(255,255,255,0.04);
+      padding: 14px 8px; text-align: center;
+    }
+    .post-sq .ps-stat-v {
+      font-size: 22px; font-weight: 800; color: #fff;
+    }
+    .post-sq .ps-stat-v.acc { color: #E86C47; }
+    .post-sq .ps-stat-l {
+      font-size: 9px; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(255,255,255,0.3); margin-top: 3px;
+    }
+    .post-sq .ps-brand {
+      font-size: 12px; font-weight: 700;
+      color: rgba(255,255,255,0.25); letter-spacing: 0.1em;
+    }
+    .post-sq .ps-brand span { color: #E86C47; }
+
+    /* ── VISUAL ROW ── */
+    .visual-row {
+      display: flex; gap: 48px;
+      flex-wrap: wrap; align-items: flex-start;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ════ COVER A ════ -->
+  <div>
+    <p class="section-label">① Couverture principale</p>
+    <div id="cover-a" class="cover">
+      <div class="dot-grid"></div>
+      <div class="glow"></div>
+      <div class="glow-2"></div>
+      <div class="cover-content">
+        <p class="cover-eyebrow">Développeur web freelance · Lorraine</p>
+        <h1 class="cover-logo">Marc <span>M</span></h1>
+        <p class="cover-tagline">Vous faites un bon boulot.<br/><strong>Faites-le savoir.</strong></p>
+        <div class="cover-stats">
+          <div class="cover-stat">
+            <p class="cover-stat-value">7 j</p>
+            <p class="cover-stat-label">Livraison</p>
+          </div>
+          <div class="cover-stat">
+            <p class="cover-stat-value">100</p>
+            <p class="cover-stat-label">Lighthouse</p>
+          </div>
+          <div class="cover-stat">
+            <p class="cover-stat-value accent">0 €</p>
+            <p class="cover-stat-label">Hébergement</p>
+          </div>
+          <div class="cover-stat">
+            <p class="cover-stat-value">490 €</p>
+            <p class="cover-stat-label">À partir de</p>
+          </div>
+        </div>
+      </div>
+      <p class="cover-url">marcm.fr</p>
+    </div>
+    <div class="dl-bar">
+      <button class="dl-btn" onclick="download('cover-a','marcm-gbp-couverture-principale.png')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17"/></svg>
+        Télécharger PNG
+      </button>
+      <span class="dim-badge">1080 × 608 px</span>
+      <span class="spec-note">Couverture GBP recommandée</span>
+    </div>
+  </div>
+
+  <!-- ════ COVER B ════ -->
+  <div>
+    <p class="section-label">② Couverture variante — split layout</p>
+    <div id="cover-b" class="cover-b">
+      <div class="left">
+        <div class="dot-grid"></div>
+        <div style="position:relative;z-index:2">
+          <p class="cover-eyebrow">Développeur web freelance</p>
+          <p class="left-logo">Marc <span>M</span></p>
+          <p class="left-tag">Sites sur mesure pour artisans<br/>et <strong>commerçants de proximité.</strong></p>
+          <div class="pill">Livré en 5–7 jours · Sans WordPress</div>
+        </div>
+      </div>
+      <div class="right">
+        <div class="stat-block">
+          <p class="val">100</p>
+          <p class="lbl">Score Lighthouse</p>
+        </div>
+        <div class="stat-block">
+          <p class="val">7 j</p>
+          <p class="lbl">Délai de livraison</p>
+        </div>
+        <div class="stat-block">
+          <p class="val">0 € / mois</p>
+          <p class="lbl">Hébergement Cloudflare</p>
+        </div>
+      </div>
+    </div>
+    <div class="dl-bar">
+      <button class="dl-btn" onclick="download('cover-b','marcm-gbp-couverture-split.png')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17"/></svg>
+        Télécharger PNG
+      </button>
+      <span class="dim-badge">1080 × 608 px</span>
+      <span class="spec-note">Variante dynamique</span>
+    </div>
+  </div>
+
+  <!-- ════ LOGO + POST ════ -->
+  <div class="visual-row">
+
+    <div>
+      <p class="section-label">③ Logo / Photo de profil</p>
+      <div id="logo-sq" class="logo-sq">
+        <div class="glow"></div>
+        <div class="mark">
+          <p class="mark-text">M<span>.</span></p>
+          <p class="mark-sub">marcm.fr</p>
+        </div>
+      </div>
+      <div class="dl-bar">
+        <button class="dl-btn" onclick="download('logo-sq','marcm-gbp-logo.png')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17"/></svg>
+          Télécharger PNG
+        </button>
+        <span class="dim-badge">400 × 400 px</span>
+      </div>
+    </div>
+
+    <div>
+      <p class="section-label">④ Post / Photo additionnelle</p>
+      <div id="post-sq" class="post-sq">
+        <div class="dot-grid"></div>
+        <div class="glow"></div>
+        <div class="post-sq-content">
+          <span class="ps-badge">Création de site web</span>
+          <h2 class="ps-headline">Votre site en<br/><em>5 à 7 jours</em></h2>
+          <p class="ps-sub">Design sur mesure · Rapide · Bien référencé<br/>Sans WordPress ni contrat de maintenance</p>
+          <div class="ps-stats">
+            <div class="ps-stat">
+              <p class="ps-stat-v">100</p>
+              <p class="ps-stat-l">Lighthouse</p>
+            </div>
+            <div class="ps-stat">
+              <p class="ps-stat-v acc">490€</p>
+              <p class="ps-stat-l">À partir de</p>
+            </div>
+            <div class="ps-stat">
+              <p class="ps-stat-v">0€</p>
+              <p class="ps-stat-l">/mois</p>
+            </div>
+          </div>
+          <p class="ps-brand">Marc <span>M</span> · marcm.fr</p>
+        </div>
+      </div>
+      <div class="dl-bar">
+        <button class="dl-btn" onclick="download('post-sq','marcm-gbp-post-services.png')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17"/></svg>
+          Télécharger PNG
+        </button>
+        <span class="dim-badge">540 × 540 px</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ════ POST DÉFI ════ -->
+  <div>
+    <p class="section-label">⑤ Post "Défi 100 sites artisans"</p>
+    <div id="post-defi" class="post-sq" style="background: linear-gradient(135deg, #1A0A05, #2C1205);">
+      <div class="dot-grid"></div>
+      <div style="position:absolute;width:600px;height:600px;border-radius:50%;background:radial-gradient(circle,rgba(232,108,71,0.25) 0%,transparent 65%);top:-150px;left:-150px;"></div>
+      <div class="post-sq-content">
+        <span class="ps-badge" style="background:rgba(232,108,71,0.2);border-color:rgba(232,108,71,0.4);">Initiative</span>
+        <h2 class="ps-headline" style="font-size:32px;">🎯 100 sites offerts<br/>aux <em>artisans méritants</em></h2>
+        <p class="ps-sub">Je construis 100 sites web à prix coûtant pour des artisans qui font un travail exceptionnel mais sont invisibles en ligne.</p>
+        <div style="display:flex;gap:10px;margin-bottom:28px;flex-wrap:wrap;justify-content:center;">
+          <span style="background:rgba(232,108,71,0.15);border:1px solid rgba(232,108,71,0.3);border-radius:100px;padding:7px 16px;font-size:12px;font-weight:700;color:#E86C47;">Candidatez sur marcm.fr</span>
+        </div>
+        <p class="ps-brand">Marc <span>M</span> · marcm.fr/100-sites-artisans</p>
+      </div>
+    </div>
+    <div class="dl-bar">
+      <button class="dl-btn" onclick="download('post-defi','marcm-gbp-post-100-sites.png')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17"/></svg>
+        Télécharger PNG
+      </button>
+      <span class="dim-badge">540 × 540 px</span>
+      <span class="spec-note">Post GBP pour le défi artisans</span>
+    </div>
+  </div>
+
+  <!-- ════ TOUT TÉLÉCHARGER ════ -->
+  <div style="background:#fff;border-radius:20px;padding:32px 40px;max-width:700px;border:1px solid #E8E8E8;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;">
+    <div>
+      <p style="font-size:15px;font-weight:800;color:#111;margin-bottom:4px;">Tout télécharger d'un coup</p>
+      <p style="font-size:13px;color:#888;">5 fichiers PNG nommés, prêts pour Google Business Profile</p>
+    </div>
+    <button class="dl-btn" style="font-size:13px;padding:12px 28px;" onclick="downloadAll()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17"/></svg>
+      Télécharger tout (5 PNG)
+    </button>
+  </div>
+
+  <script>
+    async function download(id, filename) {
+      const el = document.getElementById(id);
+      const btn = el.parentElement.querySelector('.dl-btn') || document.querySelector(`[onclick*="${id}"]`);
+
+      if (btn) {
+        btn.classList.add('loading');
+        btn.textContent = 'Génération…';
+      }
+
+      try {
+        // Wait for fonts to load
+        await document.fonts.ready;
+
+        const canvas = await html2canvas(el, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: false,
+          backgroundColor: null,
+          logging: false,
+          imageTimeout: 0,
+          onclone: (clonedDoc) => {
+            // Ensure cloned element has exact dimensions
+            const clonedEl = clonedDoc.getElementById(id);
+            if (clonedEl) {
+              clonedEl.style.fontFamily = "'Inter', system-ui, sans-serif";
+            }
+          }
+        });
+
+        const link = document.createElement('a');
+        link.download = filename;
+        link.href = canvas.toDataURL('image/png', 1.0);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+
+      } catch(e) {
+        console.error(e);
+        alert('Erreur lors de la génération. Essaie de zoomer à 100% (Cmd+0) et relance.');
+      } finally {
+        if (btn) {
+          btn.classList.remove('loading');
+          btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px;flex-shrink:0"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17"/></svg> Télécharger PNG`;
+        }
+      }
+    }
+
+    async function downloadAll() {
+      const visuals = [
+        { id: 'cover-a',   filename: 'marcm-gbp-couverture-principale.png' },
+        { id: 'cover-b',   filename: 'marcm-gbp-couverture-split.png' },
+        { id: 'logo-sq',   filename: 'marcm-gbp-logo.png' },
+        { id: 'post-sq',   filename: 'marcm-gbp-post-services.png' },
+        { id: 'post-defi', filename: 'marcm-gbp-post-100-sites.png' },
+      ];
+
+      const allBtn = document.querySelector('[onclick="downloadAll()"]');
+      if (allBtn) {
+        allBtn.classList.add('loading');
+        allBtn.textContent = 'Génération en cours…';
+      }
+
+      await document.fonts.ready;
+
+      for (const v of visuals) {
+        try {
+          const canvas = await html2canvas(document.getElementById(v.id), {
+            scale: 2, useCORS: true, allowTaint: false,
+            backgroundColor: null, logging: false, imageTimeout: 0,
+          });
+          const link = document.createElement('a');
+          link.download = v.filename;
+          link.href = canvas.toDataURL('image/png', 1.0);
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          // Small delay between downloads
+          await new Promise(r => setTimeout(r, 400));
+        } catch(e) {
+          console.error(`Erreur sur ${v.id}:`, e);
+        }
+      }
+
+      if (allBtn) {
+        allBtn.classList.remove('loading');
+        allBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px;flex-shrink:0"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17"/></svg> Télécharger tout (5 PNG)`;
+      }
+    }
+  </script>
+</body>
+</html>

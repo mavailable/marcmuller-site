@@ -9,17 +9,36 @@ interface Props {
   title: string;
   description: string;
   ogImage?: string;
+  ogType?: string;
   noindex?: boolean;
   noHeader?: boolean;
+  lang?: 'fr' | 'en';
+  frPath?: string; // e.g. '/', '/realisations'
+  enPath?: string; // e.g. '/en/', '/en/portfolio'
 }
 
-const { title, description, ogImage = '/og-default.png', noindex = false, noHeader = false } = Astro.props;
+const {
+  title,
+  description,
+  ogImage = '/og-default.png',
+  ogType = 'website',
+  noindex = false,
+  noHeader = false,
+  lang = 'fr',
+  frPath,
+  enPath,
+} = Astro.props;
+
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const ogImageURL = new URL(ogImage, Astro.site).href;
+const ogLocale = lang === 'en' ? 'en_US' : 'fr_FR';
+
+const frURL = frPath ? new URL(frPath, Astro.site).href : null;
+const enURL = enPath ? new URL(enPath, Astro.site).href : null;
 ---
 
 <!doctype html>
-<html lang={business.lang}>
+<html lang={lang}>
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -32,8 +51,8 @@ const ogImageURL = new URL(ogImage, Astro.site).href;
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImageURL} />
     <meta property="og:url" content={canonicalURL} />
-    <meta property="og:type" content="website" />
-    <meta property="og:locale" content="fr_FR" />
+    <meta property="og:type" content={ogType} />
+    <meta property="og:locale" content={ogLocale} />
     <meta property="og:site_name" content={business.name} />
 
     <!-- Twitter Cards -->
@@ -48,6 +67,11 @@ const ogImageURL = new URL(ogImage, Astro.site).href;
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
     <link rel="manifest" href="/site.webmanifest" />
 
+    <!-- Hreflang alternate links -->
+    {frURL && <link rel="alternate" hreflang="fr" href={frURL} />}
+    {enURL && <link rel="alternate" hreflang="en" href={enURL} />}
+    {frURL && <link rel="alternate" hreflang="x-default" href={frURL} />}
+
     <title>{title}</title>
 
     <!-- Schema.org WebSite (global) -->
@@ -58,12 +82,12 @@ const ogImageURL = new URL(ogImage, Astro.site).href;
   </head>
   <body>
     <a href="#main" class="skip-link">
-      Aller au contenu principal
+      {lang === 'en' ? 'Skip to main content' : 'Aller au contenu principal'}
     </a>
-    {!noHeader && <Header />}
+    {!noHeader && <Header lang={lang} frPath={frPath} enPath={enPath} />}
     <main id="main">
       <slot />
     </main>
-    <Footer />
+    <Footer lang={lang} />
   </body>
 </html>

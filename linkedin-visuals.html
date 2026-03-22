@@ -1,0 +1,872 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>LinkedIn — Visuels Marc M</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #E8E8E6;
+      font-family: 'Inter', system-ui, sans-serif;
+      padding: 48px;
+      display: flex;
+      flex-direction: column;
+      gap: 72px;
+    }
+
+    /* ── UI Chrome ── */
+    .section-label {
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.15em; text-transform: uppercase;
+      color: #888; margin-bottom: 12px;
+    }
+    .dl-bar {
+      display: flex; align-items: center;
+      gap: 12px; margin-top: 14px; flex-wrap: wrap;
+    }
+    .dl-btn {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: #E86C47; color: #fff; border: none;
+      border-radius: 10px; padding: 9px 20px;
+      font-size: 12px; font-weight: 700;
+      font-family: 'Inter', system-ui, sans-serif;
+      letter-spacing: 0.02em; cursor: pointer;
+      transition: background 0.15s, transform 0.1s;
+      box-shadow: 0 4px 14px rgba(232,108,71,0.3);
+    }
+    .dl-btn:hover { background: #D4572F; transform: translateY(-1px); }
+    .dl-btn:active { transform: translateY(0); }
+    .dl-btn.loading { background: #aaa; cursor: wait; pointer-events: none; }
+    .dl-btn svg { width: 14px; height: 14px; flex-shrink: 0; }
+    .dim-badge {
+      font-size: 11px; font-weight: 600; color: #aaa;
+      background: #fff; border-radius: 6px;
+      padding: 4px 10px; border: 1px solid #E8E8E8;
+    }
+    .spec-note { font-size: 11px; color: #999; }
+    .visual-row {
+      display: flex; gap: 48px;
+      flex-wrap: wrap; align-items: flex-start;
+    }
+
+    /* ════════════════════════════════════
+       ① BANNIÈRE PROFIL — 1584×396
+    ════════════════════════════════════ */
+    .banner {
+      width: 1584px; height: 396px;
+      background: #0D0D0D;
+      position: relative; overflow: hidden;
+      display: flex; align-items: stretch;
+    }
+    .banner .dot-grid {
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.065) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    .banner .glow-left {
+      position: absolute; width: 500px; height: 500px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(232,108,71,0.2) 0%, transparent 65%);
+      top: -200px; left: -100px;
+    }
+    .banner .glow-right {
+      position: absolute; width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(232,108,71,0.1) 0%, transparent 65%);
+      bottom: -300px; right: 200px;
+    }
+    /* Left zone */
+    .banner .zone-left {
+      position: relative; z-index: 2;
+      width: 500px; flex-shrink: 0;
+      display: flex; flex-direction: column;
+      justify-content: center; padding: 0 0 0 72px;
+      border-right: 1px solid rgba(255,255,255,0.07);
+    }
+    .banner .b-eyebrow {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.2em; text-transform: uppercase;
+      color: rgba(255,255,255,0.3); margin-bottom: 16px;
+    }
+    .banner .b-logo {
+      font-size: 64px; font-weight: 900;
+      color: #fff; letter-spacing: -2.5px; line-height: 1;
+      margin-bottom: 16px;
+    }
+    .banner .b-logo span { color: #E86C47; }
+    .banner .b-tagline {
+      font-size: 15px; font-weight: 400;
+      color: rgba(255,255,255,0.5); line-height: 1.6;
+    }
+    .banner .b-tagline strong { color: rgba(255,255,255,0.85); font-weight: 600; }
+    /* Center zone */
+    .banner .zone-center {
+      position: relative; z-index: 2;
+      flex: 1; display: flex;
+      flex-direction: column; justify-content: center;
+      align-items: center; gap: 20px; padding: 0 56px;
+    }
+    .banner .b-headline {
+      font-size: 26px; font-weight: 800;
+      color: #fff; text-align: center; line-height: 1.35;
+    }
+    .banner .b-headline em { font-style: normal; color: #E86C47; }
+    .banner .b-pills {
+      display: flex; flex-wrap: wrap;
+      justify-content: center; gap: 10px;
+    }
+    .banner .b-pill {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-radius: 100px; padding: 7px 18px;
+      font-size: 12px; font-weight: 600; color: rgba(255,255,255,0.7);
+    }
+    /* Right zone */
+    .banner .zone-right {
+      position: relative; z-index: 2;
+      width: 340px; flex-shrink: 0;
+      display: flex; flex-direction: column;
+      justify-content: center; gap: 2px; padding: 0 56px;
+      border-left: 1px solid rgba(255,255,255,0.07);
+    }
+    .banner .b-stat {
+      display: flex; align-items: baseline;
+      gap: 10px; padding: 14px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.05);
+    }
+    .banner .b-stat:last-child { border-bottom: none; }
+    .banner .b-stat-val {
+      font-size: 32px; font-weight: 900;
+      color: #fff; line-height: 1;
+    }
+    .banner .b-stat-val.acc { color: #E86C47; }
+    .banner .b-stat-label {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+    }
+
+    /* ════════════════════════════════════
+       ② POST IMAGE — 1200×627
+    ════════════════════════════════════ */
+    .post-wide {
+      width: 1200px; height: 627px;
+      background: #0D0D0D;
+      position: relative; overflow: hidden;
+      display: flex; align-items: stretch;
+    }
+    .post-wide .dot-grid {
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.065) 1px, transparent 1px);
+      background-size: 40px 40px;
+    }
+    .post-wide .pw-glow {
+      position: absolute; width: 700px; height: 700px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(232,108,71,0.18) 0%, transparent 65%);
+      top: -200px; right: -100px;
+    }
+    .post-wide .pw-left {
+      position: relative; z-index: 2;
+      flex: 1; display: flex;
+      flex-direction: column; justify-content: center;
+      padding: 72px 64px;
+    }
+    .post-wide .pw-badge {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(232,108,71,0.15);
+      border: 1px solid rgba(232,108,71,0.35);
+      border-radius: 100px; padding: 7px 18px;
+      font-size: 11px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: #E86C47; margin-bottom: 28px;
+      width: fit-content;
+    }
+    .post-wide .pw-title {
+      font-size: 44px; font-weight: 900;
+      color: #fff; line-height: 1.2; margin-bottom: 20px;
+      letter-spacing: -1px;
+    }
+    .post-wide .pw-title em { font-style: normal; color: #E86C47; }
+    .post-wide .pw-sub {
+      font-size: 17px; color: rgba(255,255,255,0.5);
+      line-height: 1.6; margin-bottom: 40px; max-width: 480px;
+    }
+    .post-wide .pw-cta {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: #E86C47; border-radius: 12px;
+      padding: 14px 28px; font-size: 15px; font-weight: 700;
+      color: #fff; width: fit-content;
+      box-shadow: 0 8px 24px rgba(232,108,71,0.35);
+    }
+    .post-wide .pw-right {
+      position: relative; z-index: 2;
+      width: 380px; flex-shrink: 0;
+      display: flex; flex-direction: column;
+      justify-content: center; gap: 16px;
+      padding: 56px 56px 56px 40px;
+      border-left: 1px solid rgba(255,255,255,0.07);
+    }
+    .post-wide .pw-card {
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+      border-radius: 16px; padding: 20px 24px;
+    }
+    .post-wide .pw-card-val {
+      font-size: 36px; font-weight: 900;
+      color: #fff; line-height: 1; margin-bottom: 6px;
+    }
+    .post-wide .pw-card-val.acc { color: #E86C47; }
+    .post-wide .pw-card-lbl {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(255,255,255,0.3);
+    }
+    .post-wide .pw-brand {
+      position: absolute; bottom: 28px; right: 40px;
+      font-size: 12px; font-weight: 700;
+      color: rgba(255,255,255,0.2); z-index: 2;
+      letter-spacing: 0.05em;
+    }
+    .post-wide .pw-brand span { color: rgba(232,108,71,0.6); }
+
+    /* ════════════════════════════════════
+       ③ POST CARRÉ — 1080×1080 (affiché 540×540)
+    ════════════════════════════════════ */
+    .post-sq {
+      width: 540px; height: 540px;
+      background: #0D0D0D;
+      position: relative; overflow: hidden;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 52px; text-align: center;
+    }
+    .post-sq .dot-grid {
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+    .post-sq .sq-glow {
+      position: absolute; width: 550px; height: 550px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(232,108,71,0.2) 0%, transparent 65%);
+      top: -200px; right: -150px;
+    }
+    .post-sq-content {
+      position: relative; z-index: 2;
+      display: flex; flex-direction: column;
+      align-items: center;
+    }
+    .post-sq .sq-eyebrow {
+      display: inline-block;
+      background: rgba(232,108,71,0.15);
+      border: 1px solid rgba(232,108,71,0.3);
+      border-radius: 100px; padding: 5px 14px;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: #E86C47; margin-bottom: 20px;
+    }
+    .post-sq .sq-title {
+      font-size: 32px; font-weight: 900;
+      color: #fff; line-height: 1.2; margin-bottom: 14px;
+      letter-spacing: -0.5px;
+    }
+    .post-sq .sq-title em { font-style: normal; color: #E86C47; }
+    .post-sq .sq-sub {
+      font-size: 13px; color: rgba(255,255,255,0.45);
+      line-height: 1.65; margin-bottom: 28px; max-width: 360px;
+    }
+    .post-sq .sq-stats {
+      display: grid; grid-template-columns: 1fr 1fr 1fr;
+      gap: 1px; background: rgba(255,255,255,0.08);
+      border-radius: 14px; overflow: hidden;
+      width: 100%; margin-bottom: 24px;
+    }
+    .post-sq .sq-stat {
+      background: rgba(255,255,255,0.04);
+      padding: 13px 8px; text-align: center;
+    }
+    .post-sq .sq-stat-v {
+      font-size: 20px; font-weight: 800; color: #fff;
+    }
+    .post-sq .sq-stat-v.acc { color: #E86C47; }
+    .post-sq .sq-stat-l {
+      font-size: 8px; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(255,255,255,0.28); margin-top: 3px;
+    }
+    .post-sq .sq-brand {
+      font-size: 11px; font-weight: 700;
+      color: rgba(255,255,255,0.2); letter-spacing: 0.08em;
+    }
+    .post-sq .sq-brand span { color: rgba(232,108,71,0.5); }
+
+    /* ════════════════════════════════════
+       ④ POST PORTRAIT — 1080×1350 (affiché 540×675)
+    ════════════════════════════════════ */
+    .post-portrait {
+      width: 540px; height: 675px;
+      background: #0D0D0D;
+      position: relative; overflow: hidden;
+      display: flex; flex-direction: column;
+      padding: 56px 52px;
+    }
+    .post-portrait .dot-grid {
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.06) 1px, transparent 1px);
+      background-size: 32px 32px;
+    }
+    .post-portrait .pp-glow {
+      position: absolute; width: 600px; height: 600px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(232,108,71,0.18) 0%, transparent 65%);
+      top: -200px; right: -150px;
+    }
+    .post-portrait .pp-glow-2 {
+      position: absolute; width: 400px; height: 400px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(232,108,71,0.1) 0%, transparent 65%);
+      bottom: -100px; left: -100px;
+    }
+    .pp-content {
+      position: relative; z-index: 2;
+      display: flex; flex-direction: column; height: 100%;
+    }
+    .post-portrait .pp-top {
+      display: flex; justify-content: space-between;
+      align-items: center; margin-bottom: 40px;
+    }
+    .post-portrait .pp-logo {
+      font-size: 28px; font-weight: 900;
+      color: #fff; letter-spacing: -1px;
+    }
+    .post-portrait .pp-logo span { color: #E86C47; }
+    .post-portrait .pp-domain {
+      font-size: 11px; font-weight: 600;
+      color: rgba(255,255,255,0.25); letter-spacing: 0.08em;
+    }
+    .post-portrait .pp-badge {
+      display: inline-block;
+      background: rgba(232,108,71,0.15);
+      border: 1px solid rgba(232,108,71,0.3);
+      border-radius: 100px; padding: 5px 14px;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: #E86C47; margin-bottom: 20px;
+      width: fit-content;
+    }
+    .post-portrait .pp-title {
+      font-size: 38px; font-weight: 900;
+      color: #fff; line-height: 1.2; margin-bottom: 18px;
+      letter-spacing: -1px;
+    }
+    .post-portrait .pp-title em { font-style: normal; color: #E86C47; }
+    .post-portrait .pp-body {
+      font-size: 14px; color: rgba(255,255,255,0.5);
+      line-height: 1.7; margin-bottom: 36px;
+    }
+    .post-portrait .pp-items {
+      display: flex; flex-direction: column;
+      gap: 10px; flex: 1;
+    }
+    .post-portrait .pp-item {
+      display: flex; align-items: center; gap: 14px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.07);
+      border-radius: 12px; padding: 14px 18px;
+    }
+    .post-portrait .pp-item-icon {
+      width: 36px; height: 36px; flex-shrink: 0;
+      border-radius: 10px; background: rgba(232,108,71,0.15);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px;
+    }
+    .post-portrait .pp-item-text {
+      flex: 1;
+    }
+    .post-portrait .pp-item-title {
+      font-size: 13px; font-weight: 700; color: #fff;
+    }
+    .post-portrait .pp-item-sub {
+      font-size: 11px; color: rgba(255,255,255,0.35);
+      margin-top: 2px;
+    }
+    .post-portrait .pp-item-val {
+      font-size: 14px; font-weight: 800; color: #E86C47;
+      flex-shrink: 0;
+    }
+    .post-portrait .pp-footer {
+      margin-top: 28px; padding-top: 20px;
+      border-top: 1px solid rgba(255,255,255,0.08);
+      display: flex; align-items: center; gap: 12px;
+    }
+    .post-portrait .pp-avatar {
+      width: 40px; height: 40px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, #E86C47, #D4572F);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 900; color: #fff;
+      flex-shrink: 0;
+    }
+    .post-portrait .pp-author-name {
+      font-size: 13px; font-weight: 700; color: #fff;
+    }
+    .post-portrait .pp-author-sub {
+      font-size: 11px; color: rgba(255,255,255,0.35);
+      margin-top: 1px;
+    }
+    .post-portrait .pp-cta {
+      margin-left: auto;
+      background: #E86C47; border-radius: 8px;
+      padding: 8px 16px; font-size: 12px; font-weight: 700;
+      color: #fff; flex-shrink: 0;
+    }
+
+    /* ════════════════════════════════════
+       ⑤ POST PORTRAIT "Article" — 1080×1350
+    ════════════════════════════════════ */
+    .post-article {
+      width: 540px; height: 675px;
+      position: relative; overflow: hidden;
+      display: flex; flex-direction: column;
+      background: linear-gradient(160deg, #0D0D0D 0%, #1A0805 100%);
+    }
+    .post-article .dot-grid {
+      position: absolute; inset: 0;
+      background-image: radial-gradient(circle, rgba(255,255,255,0.05) 1px, transparent 1px);
+      background-size: 30px 30px;
+    }
+    .pa-top-bar {
+      position: relative; z-index: 2;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 32px 44px 0;
+    }
+    .pa-logo {
+      font-size: 22px; font-weight: 900;
+      color: #fff; letter-spacing: -0.5px;
+    }
+    .pa-logo span { color: #E86C47; }
+    .pa-tag {
+      background: rgba(232,108,71,0.15);
+      border: 1px solid rgba(232,108,71,0.3);
+      border-radius: 100px; padding: 5px 14px;
+      font-size: 10px; font-weight: 700;
+      letter-spacing: 0.1em; text-transform: uppercase;
+      color: #E86C47;
+    }
+    .pa-body {
+      position: relative; z-index: 2;
+      flex: 1; display: flex; flex-direction: column;
+      justify-content: center; padding: 40px 44px;
+    }
+    .pa-read {
+      font-size: 11px; font-weight: 600;
+      letter-spacing: 0.12em; text-transform: uppercase;
+      color: rgba(255,255,255,0.3); margin-bottom: 16px;
+    }
+    .pa-title {
+      font-size: 34px; font-weight: 900;
+      color: #fff; line-height: 1.2; margin-bottom: 20px;
+      letter-spacing: -0.5px;
+    }
+    .pa-title em { font-style: normal; color: #E86C47; }
+    .pa-excerpt {
+      font-size: 14px; color: rgba(255,255,255,0.45);
+      line-height: 1.7; margin-bottom: 36px;
+    }
+    .pa-divider {
+      width: 48px; height: 3px;
+      background: #E86C47; border-radius: 2px;
+      margin-bottom: 28px;
+    }
+    .pa-points {
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .pa-point {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .pa-point-dot {
+      width: 6px; height: 6px; border-radius: 50%;
+      background: #E86C47; flex-shrink: 0;
+    }
+    .pa-point-text {
+      font-size: 13px; font-weight: 600; color: rgba(255,255,255,0.7);
+    }
+    .pa-footer {
+      position: relative; z-index: 2;
+      border-top: 1px solid rgba(255,255,255,0.07);
+      padding: 24px 44px;
+      display: flex; align-items: center; justify-content: space-between;
+    }
+    .pa-footer-left {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .pa-avatar {
+      width: 36px; height: 36px; border-radius: 50%;
+      background: linear-gradient(135deg, #E86C47, #C0432A);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 14px; font-weight: 900; color: #fff;
+    }
+    .pa-author { font-size: 12px; font-weight: 700; color: rgba(255,255,255,0.7); }
+    .pa-domain { font-size: 10px; color: rgba(255,255,255,0.3); margin-top: 1px; }
+    .pa-arrow {
+      width: 36px; height: 36px; border-radius: 50%;
+      border: 1px solid rgba(232,108,71,0.4);
+      display: flex; align-items: center; justify-content: center;
+      color: #E86C47; font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ════ ① BANNIÈRE PROFIL 1584×396 ════ -->
+  <div>
+    <p class="section-label">① Bannière de profil</p>
+    <div id="banner" class="banner">
+      <div class="dot-grid"></div>
+      <div class="glow-left"></div>
+      <div class="glow-right"></div>
+
+      <div class="zone-left">
+        <p class="b-eyebrow">Freelance · Lorraine</p>
+        <h1 class="b-logo">Marc <span>M</span></h1>
+        <p class="b-tagline">
+          Développeur web pour<br/>
+          <strong>artisans et commerçants</strong>
+        </p>
+      </div>
+
+      <div class="zone-center">
+        <h2 class="b-headline">
+          Votre site en <em>7 jours.</em><br/>
+          Sans WordPress.<br/>Sans surprises.
+        </h2>
+        <div class="b-pills">
+          <span class="b-pill">Astro + Tailwind</span>
+          <span class="b-pill">Cloudflare Pages</span>
+          <span class="b-pill">SEO local</span>
+          <span class="b-pill">100 Lighthouse</span>
+        </div>
+      </div>
+
+      <div class="zone-right">
+        <div class="b-stat">
+          <p class="b-stat-val">7 j</p>
+          <p class="b-stat-label">Livraison garantie</p>
+        </div>
+        <div class="b-stat">
+          <p class="b-stat-val">100</p>
+          <p class="b-stat-label">Score Lighthouse</p>
+        </div>
+        <div class="b-stat">
+          <p class="b-stat-val acc">490€</p>
+          <p class="b-stat-label">À partir de</p>
+        </div>
+        <div class="b-stat">
+          <p class="b-stat-val acc">0€</p>
+          <p class="b-stat-label">Hébergement / mois</p>
+        </div>
+      </div>
+    </div>
+    <div class="dl-bar">
+      <button class="dl-btn" onclick="download('banner','marcm-linkedin-banniere.png')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17"/></svg>
+        Télécharger PNG
+      </button>
+      <span class="dim-badge">1584 × 396 px</span>
+      <span class="spec-note">Background du profil LinkedIn</span>
+    </div>
+  </div>
+
+  <!-- ════ ② POST IMAGE 1200×627 ════ -->
+  <div>
+    <p class="section-label">② Post avec image — format paysage</p>
+    <div id="post-wide" class="post-wide">
+      <div class="dot-grid"></div>
+      <div class="pw-glow"></div>
+      <div class="pw-left">
+        <span class="pw-badge">Création de site web</span>
+        <h2 class="pw-title">
+          Sites pour artisans.<br/>
+          Livrés en <em>7 jours.</em>
+        </h2>
+        <p class="pw-sub">
+          Design sur mesure, sans WordPress, sans contrat de maintenance.
+          Rapide, bien référencé, pensé pour convertir.
+        </p>
+        <span class="pw-cta">
+          Parler de mon projet →
+        </span>
+      </div>
+      <div class="pw-right">
+        <div class="pw-card">
+          <p class="pw-card-val">100</p>
+          <p class="pw-card-lbl">Score Lighthouse</p>
+        </div>
+        <div class="pw-card">
+          <p class="pw-card-val acc">490€</p>
+          <p class="pw-card-lbl">À partir de</p>
+        </div>
+        <div class="pw-card">
+          <p class="pw-card-val acc">0€/mois</p>
+          <p class="pw-card-lbl">Hébergement</p>
+        </div>
+      </div>
+      <p class="pw-brand">Marc <span>M</span> · marcm.fr</p>
+    </div>
+    <div class="dl-bar">
+      <button class="dl-btn" onclick="download('post-wide','marcm-linkedin-post-large.png')">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17"/></svg>
+        Télécharger PNG
+      </button>
+      <span class="dim-badge">1200 × 627 px</span>
+      <span class="spec-note">Post LinkedIn avec image / article</span>
+    </div>
+  </div>
+
+  <!-- ════ ③ + ④ côte à côte ════ -->
+  <div class="visual-row">
+
+    <!-- Post carré -->
+    <div>
+      <p class="section-label">③ Post carré (1:1)</p>
+      <div id="post-sq" class="post-sq">
+        <div class="dot-grid"></div>
+        <div class="sq-glow"></div>
+        <div class="post-sq-content">
+          <span class="sq-eyebrow">Développeur web freelance</span>
+          <h2 class="sq-title">Vous méritez<br/>un site <em>rapide.</em></h2>
+          <p class="sq-sub">
+            Fini les sites WordPress lents.<br/>
+            Astro + Cloudflare = 100 Lighthouse<br/>et 0€ d'hébergement par mois.
+          </p>
+          <div class="sq-stats">
+            <div class="sq-stat">
+              <p class="sq-stat-v">7 j</p>
+              <p class="sq-stat-l">Livraison</p>
+            </div>
+            <div class="sq-stat">
+              <p class="sq-stat-v">100</p>
+              <p class="sq-stat-l">Lighthouse</p>
+            </div>
+            <div class="sq-stat">
+              <p class="sq-stat-v acc">0€</p>
+              <p class="sq-stat-l">/mois</p>
+            </div>
+          </div>
+          <p class="sq-brand">Marc <span>M</span> · marcm.fr</p>
+        </div>
+      </div>
+      <div class="dl-bar">
+        <button class="dl-btn" onclick="download('post-sq','marcm-linkedin-post-carre.png')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17"/></svg>
+          Télécharger PNG
+        </button>
+        <span class="dim-badge">1080 × 1080 px</span>
+      </div>
+    </div>
+
+    <!-- Post portrait offre -->
+    <div>
+      <p class="section-label">④ Post portrait (4:5) — Offre</p>
+      <div id="post-portrait" class="post-portrait">
+        <div class="dot-grid"></div>
+        <div class="pp-glow"></div>
+        <div class="pp-glow-2"></div>
+        <div class="pp-content">
+          <div class="pp-top">
+            <p class="pp-logo">Marc <span>M</span></p>
+            <p class="pp-domain">marcm.fr</p>
+          </div>
+          <span class="pp-badge">Mes formules</span>
+          <h2 class="pp-title">3 offres,<br/>1 <em>résultat :</em><br/>vous trouver.</h2>
+          <p class="pp-body">Des sites sur mesure pour artisans et commerçants. Livrés vite, sans WordPress, sans hébergement à payer.</p>
+          <div class="pp-items">
+            <div class="pp-item">
+              <div class="pp-item-icon">🚀</div>
+              <div class="pp-item-text">
+                <p class="pp-item-title">Essentiel</p>
+                <p class="pp-item-sub">1 page · livré en 5 jours</p>
+              </div>
+              <p class="pp-item-val">490€</p>
+            </div>
+            <div class="pp-item">
+              <div class="pp-item-icon">✦</div>
+              <div class="pp-item-text">
+                <p class="pp-item-title">Multi-pages</p>
+                <p class="pp-item-sub">Blog + pages services</p>
+              </div>
+              <p class="pp-item-val">1 290€</p>
+            </div>
+            <div class="pp-item">
+              <div class="pp-item-icon">🎯</div>
+              <div class="pp-item-text">
+                <p class="pp-item-title">Sur mesure</p>
+                <p class="pp-item-sub">Tout inclus · 7 jours</p>
+              </div>
+              <p class="pp-item-val">1 990€+</p>
+            </div>
+          </div>
+          <div class="pp-footer">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div class="pp-avatar">M</div>
+              <div>
+                <p class="pp-author-name">Marc Muller</p>
+                <p class="pp-author-sub">Développeur web freelance</p>
+              </div>
+            </div>
+            <span class="pp-cta">marcm.fr →</span>
+          </div>
+        </div>
+      </div>
+      <div class="dl-bar">
+        <button class="dl-btn" onclick="download('post-portrait','marcm-linkedin-post-portrait-offre.png')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17"/></svg>
+          Télécharger PNG
+        </button>
+        <span class="dim-badge">1080 × 1350 px</span>
+      </div>
+    </div>
+
+    <!-- Post portrait article -->
+    <div>
+      <p class="section-label">⑤ Post portrait (4:5) — Article blog</p>
+      <div id="post-article" class="post-article">
+        <div class="dot-grid"></div>
+        <div class="pa-top-bar">
+          <p class="pa-logo">Marc <span>M</span></p>
+          <span class="pa-tag">SEO local</span>
+        </div>
+        <div class="pa-body">
+          <p class="pa-read">Lecture · 10 min</p>
+          <h2 class="pa-title">
+            Comment apparaître<br/>
+            en <em>#1 sur Google</em><br/>
+            sans budget pub
+          </h2>
+          <p class="pa-excerpt">
+            Google Maps, fiche établissement, avis, Schema.org —
+            le guide complet pour les artisans qui veulent être trouvés dans leur ville.
+          </p>
+          <div class="pa-divider"></div>
+          <div class="pa-points">
+            <div class="pa-point">
+              <div class="pa-point-dot"></div>
+              <p class="pa-point-text">SEO local vs. SEO classique</p>
+            </div>
+            <div class="pa-point">
+              <div class="pa-point-dot"></div>
+              <p class="pa-point-text">Google Business Profile : la checklist</p>
+            </div>
+            <div class="pa-point">
+              <div class="pa-point-dot"></div>
+              <p class="pa-point-text">Schema.org LocalBusiness pas à pas</p>
+            </div>
+            <div class="pa-point">
+              <div class="pa-point-dot"></div>
+              <p class="pa-point-text">Obtenir 30 avis en 3 mois</p>
+            </div>
+          </div>
+        </div>
+        <div class="pa-footer">
+          <div class="pa-footer-left">
+            <div class="pa-avatar">M</div>
+            <div>
+              <p class="pa-author">Marc Muller</p>
+              <p class="pa-domain">marcm.fr/journal</p>
+            </div>
+          </div>
+          <div class="pa-arrow">→</div>
+        </div>
+      </div>
+      <div class="dl-bar">
+        <button class="dl-btn" onclick="download('post-article','marcm-linkedin-post-portrait-article.png')">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17"/></svg>
+          Télécharger PNG
+        </button>
+        <span class="dim-badge">1080 × 1350 px</span>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ════ TOUT TÉLÉCHARGER ════ -->
+  <div style="background:#fff;border-radius:20px;padding:32px 40px;max-width:700px;border:1px solid #E8E8E8;display:flex;align-items:center;justify-content:space-between;gap:24px;flex-wrap:wrap;">
+    <div>
+      <p style="font-size:15px;font-weight:800;color:#111;margin-bottom:4px;">Tout télécharger</p>
+      <p style="font-size:13px;color:#888;">5 fichiers PNG nommés, prêts pour LinkedIn</p>
+    </div>
+    <button class="dl-btn" style="font-size:13px;padding:12px 28px;" onclick="downloadAll()">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17"/></svg>
+      Télécharger tout (5 PNG)
+    </button>
+  </div>
+
+  <script>
+    const VISUALS = [
+      { id: 'banner',        filename: 'marcm-linkedin-banniere.png' },
+      { id: 'post-wide',     filename: 'marcm-linkedin-post-large.png' },
+      { id: 'post-sq',       filename: 'marcm-linkedin-post-carre.png' },
+      { id: 'post-portrait', filename: 'marcm-linkedin-post-portrait-offre.png' },
+      { id: 'post-article',  filename: 'marcm-linkedin-post-portrait-article.png' },
+    ];
+
+    async function download(id, filename) {
+      const el = document.getElementById(id);
+      const btn = document.querySelector(`[onclick="download('${id}','${filename}')"]`);
+      if (btn) { btn.classList.add('loading'); btn.textContent = 'Génération…'; }
+
+      try {
+        await document.fonts.ready;
+        const canvas = await html2canvas(el, {
+          scale: 2, useCORS: true, allowTaint: false,
+          backgroundColor: null, logging: false, imageTimeout: 0,
+        });
+        const link = document.createElement('a');
+        link.download = filename;
+        link.href = canvas.toDataURL('image/png', 1.0);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch(e) {
+        console.error(e);
+        alert('Erreur. Assure-toi d\'être à 100% de zoom (Cmd+0) et réessaie.');
+      } finally {
+        if (btn) {
+          btn.classList.remove('loading');
+          btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px;flex-shrink:0"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17"/></svg> Télécharger PNG`;
+        }
+      }
+    }
+
+    async function downloadAll() {
+      const allBtn = document.querySelector('[onclick="downloadAll()"]');
+      if (allBtn) { allBtn.classList.add('loading'); allBtn.textContent = 'Génération en cours…'; }
+      await document.fonts.ready;
+      for (const v of VISUALS) {
+        try {
+          const canvas = await html2canvas(document.getElementById(v.id), {
+            scale: 2, useCORS: true, allowTaint: false,
+            backgroundColor: null, logging: false, imageTimeout: 0,
+          });
+          const link = document.createElement('a');
+          link.download = v.filename;
+          link.href = canvas.toDataURL('image/png', 1.0);
+          document.body.appendChild(link);
+          link.click();
+          document.body.removeChild(link);
+          await new Promise(r => setTimeout(r, 450));
+        } catch(e) { console.error(`Erreur ${v.id}:`, e); }
+      }
+      if (allBtn) {
+        allBtn.classList.remove('loading');
+        allBtn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="width:14px;height:14px;flex-shrink:0"><path d="M12 15V3m0 12l-4-4m4 4l4-4M2 17l.621 2.485A2 2 0 004.561 21h14.878a2 2 0 001.94-1.515L22 17"/></svg> Télécharger tout (5 PNG)`;
+      }
+    }
+  </script>
+</body>
+</html>

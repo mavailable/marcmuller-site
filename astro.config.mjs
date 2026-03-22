@@ -2,9 +2,6 @@ import { defineConfig } from 'astro/config';
 import tailwindcss from '@tailwindcss/vite';
 import sitemap from '@astrojs/sitemap';
 
-const LANG = 'fr';
-const LOCALE_MAP = { fr: 'fr-FR' };
-
 export default defineConfig({
   site: 'https://marcm.fr',
   output: 'static',
@@ -12,8 +9,11 @@ export default defineConfig({
   integrations: [
     sitemap({
       i18n: {
-        defaultLocale: LANG,
-        locales: { [LANG]: LOCALE_MAP[LANG] },
+        defaultLocale: 'fr',
+        locales: {
+          fr: 'fr-FR',
+          en: 'en-US',
+        },
       },
     }),
   ],

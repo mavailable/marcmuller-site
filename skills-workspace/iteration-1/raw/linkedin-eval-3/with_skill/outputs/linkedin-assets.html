@@ -1,0 +1,863 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>LinkedIn — Visuels MM Sécurité</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800;900&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #f5f5f5;
+      padding: 40px 20px;
+      line-height: 1.5;
+    }
+
+    .container {
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    h1 {
+      color: #0d0d0d;
+      margin-bottom: 10px;
+      font-size: 28px;
+    }
+
+    .subtitle {
+      color: #6b6b6b;
+      margin-bottom: 40px;
+      font-size: 16px;
+    }
+
+    .section-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-top: 50px;
+      margin-bottom: 20px;
+      padding-bottom: 10px;
+      border-bottom: 1px solid #ddd;
+    }
+
+    .section-label h2 {
+      color: #0d0d0d;
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .dim-badge {
+      background: #e8e8e8;
+      color: #525252;
+      padding: 4px 12px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-weight: 500;
+    }
+
+    .preview-box {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .preview-box canvas {
+      max-width: 100%;
+      height: auto;
+      display: block;
+      border: 1px solid #e5e5e5;
+      border-radius: 4px;
+    }
+
+    .controls {
+      display: flex;
+      gap: 10px;
+      margin-top: 15px;
+      align-items: center;
+    }
+
+    .dl-btn {
+      background: #E86C47;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 600;
+      transition: background 0.2s;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    .dl-btn:hover {
+      background: #D55A36;
+    }
+
+    .dl-btn.loading {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .footer-download {
+      background: white;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      padding: 30px;
+      margin-top: 60px;
+      text-align: center;
+      box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    }
+
+    .footer-download h3 {
+      color: #0d0d0d;
+      margin-bottom: 15px;
+      font-size: 18px;
+    }
+
+    .footer-download .dl-btn {
+      background: #E86C47;
+      font-size: 16px;
+      padding: 12px 30px;
+    }
+
+    /* Visuels LinkedIn */
+
+    /* ① Bannière 1584×396 */
+    #banner {
+      width: 1584px;
+      height: 396px;
+      background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    #banner::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 400px;
+      height: 400px;
+      background: radial-gradient(circle, rgba(232, 108, 71, 0.15) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    .banner-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+
+    .banner-content {
+      display: flex;
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      height: 100%;
+    }
+
+    .banner-left {
+      flex: 0 0 500px;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      color: white;
+      background: linear-gradient(90deg, rgba(0,0,0,0.4) 0%, transparent 100%);
+    }
+
+    .banner-left-img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 500px;
+      height: 100%;
+      background-size: cover;
+      background-position: center;
+      opacity: 0.25;
+    }
+
+    .banner-logo {
+      width: 50px;
+      height: 50px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      margin-bottom: 15px;
+      opacity: 0.9;
+    }
+
+    .banner-name {
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 5px;
+      letter-spacing: -0.5px;
+    }
+
+    .banner-sector {
+      font-size: 14px;
+      color: #E86C47;
+      font-weight: 600;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+      margin-bottom: 15px;
+    }
+
+    .banner-tagline {
+      font-size: 14px;
+      color: rgba(255,255,255,0.85);
+      line-height: 1.4;
+      max-width: 380px;
+    }
+
+    .banner-center {
+      flex: 1;
+      padding: 40px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      color: white;
+    }
+
+    .banner-headline {
+      font-size: 32px;
+      font-weight: 800;
+      line-height: 1.3;
+      margin-bottom: 20px;
+      letter-spacing: -0.5px;
+    }
+
+    .banner-pills {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .banner-pill {
+      background: rgba(232, 108, 71, 0.15);
+      border: 1px solid rgba(232, 108, 71, 0.4);
+      color: #E86C47;
+      padding: 8px 16px;
+      border-radius: 20px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .banner-right {
+      flex: 0 0 300px;
+      padding: 40px 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      color: white;
+    }
+
+    .banner-stat {
+      margin-bottom: 25px;
+      text-align: right;
+    }
+
+    .banner-stat-value {
+      font-size: 28px;
+      font-weight: 800;
+      color: #E86C47;
+      line-height: 1.2;
+      letter-spacing: -0.5px;
+    }
+
+    .banner-stat-label {
+      font-size: 12px;
+      color: rgba(255,255,255,0.8);
+      margin-top: 4px;
+      line-height: 1.3;
+    }
+
+    /* ② Post paysage 1200×627 */
+    #post-wide {
+      width: 1200px;
+      height: 627px;
+      background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%);
+      display: flex;
+      position: relative;
+      overflow: hidden;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    #post-wide::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px);
+      background-size: 40px 40px;
+      pointer-events: none;
+    }
+
+    .post-wide-left {
+      flex: 0 0 720px;
+      padding: 50px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      color: white;
+      position: relative;
+      z-index: 2;
+    }
+
+    .post-badge {
+      display: inline-block;
+      background: rgba(232, 108, 71, 0.2);
+      border: 1px solid rgba(232, 108, 71, 0.5);
+      color: #E86C47;
+      padding: 6px 14px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 20px;
+      width: fit-content;
+    }
+
+    .post-title {
+      font-size: 36px;
+      font-weight: 800;
+      line-height: 1.3;
+      margin-bottom: 15px;
+      letter-spacing: -0.5px;
+    }
+
+    .post-subtitle {
+      font-size: 16px;
+      color: rgba(255,255,255,0.8);
+      line-height: 1.5;
+      margin-bottom: 25px;
+      max-width: 500px;
+    }
+
+    .post-cta {
+      display: inline-block;
+      background: #E86C47;
+      color: white;
+      padding: 12px 30px;
+      border-radius: 6px;
+      font-size: 14px;
+      font-weight: 700;
+      text-decoration: none;
+      width: fit-content;
+      border: none;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    .post-cta:hover {
+      background: #D55A36;
+    }
+
+    .post-wide-right {
+      flex: 0 0 480px;
+      padding: 50px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      position: relative;
+      z-index: 2;
+    }
+
+    .post-image {
+      width: 100%;
+      height: 350px;
+      background-size: cover;
+      background-position: center;
+      border-radius: 8px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+      transform: perspective(1000px) rotateY(-5deg);
+    }
+
+    .post-url {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      font-size: 12px;
+      color: rgba(255,255,255,0.6);
+      z-index: 3;
+    }
+
+    /* ③ Post carré 540×540 */
+    #post-sq {
+      width: 540px;
+      height: 540px;
+      background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      font-family: 'Inter', system-ui, sans-serif;
+      padding: 40px;
+    }
+
+    #post-sq::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 30px 30px;
+      pointer-events: none;
+    }
+
+    .post-sq-content {
+      position: relative;
+      z-index: 2;
+      color: white;
+    }
+
+    .post-sq-stat-value {
+      font-size: 72px;
+      font-weight: 900;
+      color: #E86C47;
+      line-height: 1;
+      margin-bottom: 10px;
+      letter-spacing: -2px;
+    }
+
+    .post-sq-stat-label {
+      font-size: 18px;
+      color: rgba(255,255,255,0.9);
+      margin-bottom: 40px;
+      font-weight: 600;
+      line-height: 1.3;
+    }
+
+    .post-sq-divider {
+      width: 80px;
+      height: 3px;
+      background: #E86C47;
+      margin: 0 auto 40px;
+      border-radius: 2px;
+    }
+
+    .post-sq-secondary {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      margin-bottom: 20px;
+    }
+
+    .post-sq-mini {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+
+    .post-sq-mini-value {
+      font-size: 28px;
+      font-weight: 800;
+      color: #E86C47;
+      margin-bottom: 4px;
+    }
+
+    .post-sq-mini-label {
+      font-size: 12px;
+      color: rgba(255,255,255,0.7);
+    }
+
+    /* ④ Post portrait 540×675 */
+    #post-portrait {
+      width: 540px;
+      height: 675px;
+      background: linear-gradient(135deg, #0d0d0d 0%, #1a1a1a 100%);
+      position: relative;
+      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      font-family: 'Inter', system-ui, sans-serif;
+    }
+
+    #post-portrait::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background-image:
+        radial-gradient(circle, rgba(255,255,255,0.02) 1px, transparent 1px);
+      background-size: 30px 30px;
+      pointer-events: none;
+    }
+
+    .post-portrait-header {
+      padding: 25px 30px;
+      border-bottom: 1px solid rgba(232, 108, 71, 0.2);
+      color: white;
+      position: relative;
+      z-index: 2;
+    }
+
+    .post-portrait-logo {
+      width: 40px;
+      height: 40px;
+      background-size: contain;
+      background-repeat: no-repeat;
+      margin-bottom: 10px;
+    }
+
+    .post-portrait-logo-text {
+      font-size: 16px;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .post-portrait-url {
+      font-size: 12px;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .post-portrait-body {
+      flex: 1;
+      padding: 40px 30px;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      color: white;
+      position: relative;
+      z-index: 2;
+    }
+
+    .post-portrait-badge {
+      display: inline-block;
+      background: rgba(232, 108, 71, 0.2);
+      border: 1px solid rgba(232, 108, 71, 0.5);
+      color: #E86C47;
+      padding: 6px 12px;
+      border-radius: 4px;
+      font-size: 11px;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 20px;
+      width: fit-content;
+    }
+
+    .post-portrait-title {
+      font-size: 28px;
+      font-weight: 800;
+      line-height: 1.3;
+      margin-bottom: 15px;
+      letter-spacing: -0.5px;
+    }
+
+    .post-portrait-desc {
+      font-size: 15px;
+      color: rgba(255,255,255,0.8);
+      line-height: 1.5;
+      margin-bottom: 20px;
+    }
+
+    .post-portrait-divider {
+      width: 60px;
+      height: 2px;
+      background: #E86C47;
+      margin: 20px 0;
+      border-radius: 1px;
+    }
+
+    .post-portrait-points {
+      list-style: none;
+      font-size: 14px;
+      color: rgba(255,255,255,0.85);
+      line-height: 1.8;
+      margin-bottom: 20px;
+    }
+
+    .post-portrait-points li {
+      margin-bottom: 10px;
+      padding-left: 20px;
+      position: relative;
+    }
+
+    .post-portrait-points li::before {
+      content: '✓';
+      position: absolute;
+      left: 0;
+      color: #E86C47;
+      font-weight: 800;
+    }
+
+    .post-portrait-footer {
+      padding: 30px;
+      border-top: 1px solid rgba(232, 108, 71, 0.2);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      color: white;
+      position: relative;
+      z-index: 2;
+    }
+
+    .post-portrait-author {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .post-portrait-avatar {
+      width: 48px;
+      height: 48px;
+      background: linear-gradient(135deg, #E86C47 0%, #D55A36 100%);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 800;
+      font-size: 20px;
+    }
+
+    .post-portrait-author-name {
+      font-size: 13px;
+      font-weight: 700;
+    }
+
+    .post-portrait-author-title {
+      font-size: 11px;
+      color: rgba(255,255,255,0.6);
+    }
+
+    .post-portrait-cta {
+      color: #E86C47;
+      font-size: 20px;
+      font-weight: 800;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>📱 LinkedIn Assets — MM Sécurité</h1>
+    <p class="subtitle">4 formats optimisés pour LinkedIn. Cliquez sur "Télécharger PNG" pour exporter chaque visuel en haute résolution.</p>
+
+    <!-- ① BANNIÈRE PROFIL 1584×396 -->
+    <div class="section-label">
+      <h2>① Bannière de profil</h2>
+      <span class="dim-badge">1584 × 396 px</span>
+    </div>
+    <div class="preview-box">
+      <div id="banner">
+        <div class="banner-grid"></div>
+        <div class="banner-content">
+          <div class="banner-left">
+            <div class="banner-logo" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHJ4PSI2IiBmaWxsPSIjRTg2QzQ3Ii8+PHRleHQgeD0iMjQiIHk9IjMwIiBmb250LWZhbWlseT0iSW50ZXIiIGZvbnQtd2VpZ2h0PSI4MDAiIGZvbnQtc2l6ZT0iMjgiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5NPC90ZXh0Pjwvc3ZnPg==');">
+            </div>
+            <div class="banner-name">MM Sécurité</div>
+            <div class="banner-sector">Sécurité</div>
+            <div class="banner-tagline">Expert en alarme et vidéosurveillance à Metz et Moselle</div>
+          </div>
+
+          <div class="banner-center">
+            <div class="banner-headline">Protégez votre commerce en toute confiance</div>
+            <div class="banner-pills">
+              <div class="banner-pill">✓ Installation rapide</div>
+              <div class="banner-pill">✓ Support 24/7</div>
+              <div class="banner-pill">✓ Devis gratuit</div>
+            </div>
+          </div>
+
+          <div class="banner-right">
+            <div class="banner-stat">
+              <div class="banner-stat-value">50+</div>
+              <div class="banner-stat-label">Commerces protégés</div>
+            </div>
+            <div class="banner-stat">
+              <div class="banner-stat-value">48h</div>
+              <div class="banner-stat-label">Devis</div>
+            </div>
+            <div class="banner-stat">
+              <div class="banner-stat-value">Moselle</div>
+              <div class="banner-stat-label">Couverture</div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="dl-btn" onclick="download('banner', 'mm-securite-linkedin-banniere.png')">Télécharger PNG</button>
+        <span class="dim-badge">Format paysage</span>
+      </div>
+    </div>
+
+    <!-- ② POST PAYSAGE 1200×627 -->
+    <div class="section-label">
+      <h2>② Post paysage</h2>
+      <span class="dim-badge">1200 × 627 px</span>
+    </div>
+    <div class="preview-box">
+      <div id="post-wide">
+        <div class="post-wide-left">
+          <div class="post-badge">🔒 Sécurité</div>
+          <div class="post-title">Sécurisez votre<br/>commerce dès aujourd'hui</div>
+          <div class="post-subtitle">Alarme, vidéosurveillance, accès protégé. Installation en 48h. Devis gratuit sans engagement.</div>
+          <button class="post-cta">Demander un devis</button>
+        </div>
+        <div class="post-wide-right">
+          <div class="post-image" style="background-image: url('data:image/webp;base64,UklGRixcAABXRUJQVlA4ICBcAABw2gGdASqwBHYCPjEYi0QiIaEhIPOIeEAGCWdu8BqDTiWZupADahesh3k2/rQzqITT3P1eRJ01fM+PUoX/QfqP7n+xu2+eW/qX7ffkr2N3af3L9YflV8u/PLp3ylfMP0j/if4b9xP8x////Z9w/7d/4v7l+2PyJ/QP/v/yXwBfqH/r/9v/2/5b7v/2/+H7g//f/Y/7D//8NAP//f4AAs9+iHlAZcOSfAKnHAYo6QJZhryoLkz9z+2HKcOtdBAWz8HBZCcOpAcVKkF4PwIEcTq1M7fJQwSmZZPtS7R3TE6/O6h6/Q+UfhUBvAKQD+SfKyPx0fSXqUvK7gf6TKI6sI8NQAAA');">
+          </div>
+        </div>
+        <div class="post-url">mm-securite.fr</div>
+      </div>
+      <div class="controls">
+        <button class="dl-btn" onclick="download('post-wide', 'mm-securite-linkedin-post-large.png')">Télécharger PNG</button>
+        <span class="dim-badge">Format paysage</span>
+      </div>
+    </div>
+
+    <!-- ③ POST CARRÉ 540×540 -->
+    <div class="section-label">
+      <h2>③ Post carré</h2>
+      <span class="dim-badge">1080 × 1080 px @2x (540×540 px affichage)</span>
+    </div>
+    <div class="preview-box">
+      <div id="post-sq">
+        <div class="post-sq-content">
+          <div class="post-sq-stat-value">50+</div>
+          <div class="post-sq-stat-label">Commerces protégés</div>
+          <div class="post-sq-divider"></div>
+          <div class="post-sq-secondary">
+            <div class="post-sq-mini">
+              <div class="post-sq-mini-value">48h</div>
+              <div class="post-sq-mini-label">Devis</div>
+            </div>
+            <div class="post-sq-mini">
+              <div class="post-sq-mini-value">7/7</div>
+              <div class="post-sq-mini-label">Support</div>
+            </div>
+          </div>
+          <div style="font-size: 14px; color: rgba(255,255,255,0.8); margin-top: 30px; line-height: 1.5;">
+            Expertise en alarme et vidéosurveillance<br/>pour Metz et la Moselle
+          </div>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="dl-btn" onclick="download('post-sq', 'mm-securite-linkedin-post-carre.png')">Télécharger PNG</button>
+        <span class="dim-badge">Format carré</span>
+      </div>
+    </div>
+
+    <!-- ④ POST PORTRAIT 540×675 -->
+    <div class="section-label">
+      <h2>④ Post portrait</h2>
+      <span class="dim-badge">1080 × 1350 px @2x (540×675 px affichage)</span>
+    </div>
+    <div class="preview-box">
+      <div id="post-portrait">
+        <div class="post-portrait-header">
+          <div class="post-portrait-logo" style="background-image: url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHZpZXdCb3g9IjAgMCA0OCA0OCIgZmlsbD0ibm9uZSIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48cmVjdCB3aWR0aD0iNDgiIGhlaWdodD0iNDgiIHJ4PSI2IiBmaWxsPSIjRTg2QzQ3Ii8+PHRleHQgeD0iMjQiIHk9IjMwIiBmb250LWZhbWlseT0iSW50ZXIiIGZvbnQtd2VpZ2h0PSI4MDAiIGZvbnQtc2l6ZT0iMjgiIGZpbGw9IndoaXRlIiB0ZXh0LWFuY2hvcj0ibWlkZGxlIj5NPC90ZXh0Pjwvc3ZnPg==');">
+          </div>
+          <div class="post-portrait-logo-text">MM Sécurité</div>
+          <div class="post-portrait-url">mm-securite.fr</div>
+        </div>
+
+        <div class="post-portrait-body">
+          <div class="post-portrait-badge">🔒 Sécurité</div>
+          <div class="post-portrait-title">Protégez votre commerce</div>
+          <div class="post-portrait-desc">Alarme, vidéosurveillance, accès protégé. Devis en 48h.</div>
+          <div class="post-portrait-divider"></div>
+          <ul class="post-portrait-points">
+            <li>50+ commerces protégés</li>
+            <li>Devis sous 48h</li>
+            <li>Couverture Moselle</li>
+            <li>Support 24/7</li>
+          </ul>
+        </div>
+
+        <div class="post-portrait-footer">
+          <div class="post-portrait-author">
+            <div class="post-portrait-avatar">M</div>
+            <div>
+              <div class="post-portrait-author-name">MM Sécurité</div>
+              <div class="post-portrait-author-title">Metz, Moselle</div>
+            </div>
+          </div>
+          <div class="post-portrait-cta">→</div>
+        </div>
+      </div>
+      <div class="controls">
+        <button class="dl-btn" onclick="download('post-portrait', 'mm-securite-linkedin-post-portrait.png')">Télécharger PNG</button>
+        <span class="dim-badge">Format portrait</span>
+      </div>
+    </div>
+
+    <!-- TÉLÉCHARGER TOUT -->
+    <div class="footer-download">
+      <h3>📦 Télécharger tous les visuels</h3>
+      <p style="color: #6b6b6b; margin-bottom: 20px;">Exporte les 4 formats en un seul clic (PNG haute résolution).</p>
+      <button class="dl-btn" onclick="downloadAll()">Télécharger tout (4 PNG)</button>
+    </div>
+  </div>
+
+  <script>
+    async function download(id, filename) {
+      const el = document.getElementById(id);
+      const buttons = document.querySelectorAll(`.dl-btn`);
+      const btn = Array.from(buttons).find(b => b.textContent.includes('Télécharger'));
+
+      if (btn) {
+        btn.classList.add('loading');
+        btn.textContent = 'Génération…';
+      }
+
+      try {
+        await document.fonts.ready;
+        const canvas = await html2canvas(el, {
+          scale: 2,
+          useCORS: true,
+          allowTaint: false,
+          backgroundColor: null,
+          logging: false,
+        });
+        const link = document.createElement('a');
+        link.download = filename;
+        link.href = canvas.toDataURL('image/png', 1.0);
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } catch(e) {
+        alert('Erreur lors de la génération. Assurez-vous que le zoom est à 100% (Cmd+0 ou Ctrl+0) et réessayez.');
+        console.error(e);
+      } finally {
+        if (btn) {
+          btn.classList.remove('loading');
+          btn.textContent = 'Télécharger PNG';
+        }
+      }
+    }
+
+    async function downloadAll() {
+      const items = [
+        { id: 'banner', name: 'mm-securite-linkedin-banniere.png' },
+        { id: 'post-wide', name: 'mm-securite-linkedin-post-large.png' },
+        { id: 'post-sq', name: 'mm-securite-linkedin-post-carre.png' },
+        { id: 'post-portrait', name: 'mm-securite-linkedin-post-portrait.png' },
+      ];
+
+      for (const item of items) {
+        await download(item.id, item.name);
+        await new Promise(resolve => setTimeout(resolve, 400));
+      }
+    }
+  </script>
+</body>
+</html>

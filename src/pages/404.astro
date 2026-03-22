@@ -1,8 +1,5 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-
-const title = 'Page non trouvée — Marc M';
-const description = 'La page que vous cherchez n\'existe pas ou a été déplacée.';
 ---
 
 <style>
@@ -22,68 +19,98 @@ const description = 'La page que vous cherchez n\'existe pas ou a été déplac�
   }
 </style>
 
-<BaseLayout title={title} description={description}>
+<BaseLayout
+  title="Page not found — Marc M"
+  description="The page you are looking for does not exist or has been moved."
+  noindex={true}
+>
 <script>
+  // Detect language from URL and adapt content
+  const isEN = window.location.pathname.startsWith('/en/');
+
+  const fr = {
+    title: "Oups, cette page n'existe pas",
+    sub: "Pas de panique — voici quelques pages qui existent, elles :",
+    links: [
+      { href: '/', label: 'Accueil', desc: 'Retour à la page principale' },
+      { href: '/realisations', label: 'Réalisations', desc: 'Découvrez mes projets web' },
+      { href: '/offre', label: 'Offre', desc: 'Mes services et forfaits' },
+      { href: '/contact', label: 'Contact', desc: 'Me contacter pour un projet' },
+    ],
+    btn: "Retour à l'accueil",
+  };
+
+  const en = {
+    title: "Oops, this page doesn't exist",
+    sub: "Don't worry — here are some pages that do:",
+    links: [
+      { href: '/en/', label: 'Home', desc: 'Back to the main page' },
+      { href: '/en/portfolio', label: 'Portfolio', desc: 'Browse my web projects' },
+      { href: '/en/services', label: 'Services', desc: 'My packages and pricing' },
+      { href: '/en/contact', label: 'Contact', desc: 'Get in touch about a project' },
+    ],
+    btn: 'Back to home',
+  };
+
+  const t = isEN ? en : fr;
+  const homeHref = isEN ? '/en/' : '/';
+
+  const titleEl = document.getElementById('nf-title');
+  const subEl = document.getElementById('nf-sub');
+  const linksEl = document.getElementById('nf-links');
+  const btnEl = document.getElementById('nf-btn') as HTMLAnchorElement | null;
+
+  if (titleEl) titleEl.textContent = t.title;
+  if (subEl) subEl.textContent = t.sub;
+  if (btnEl) { btnEl.textContent = t.btn; btnEl.href = homeHref; }
+
+  if (linksEl) {
+    linksEl.innerHTML = t.links.map(l => `
+      <a href="${l.href}" class="group relative rounded-lg border border-[var(--color-bg-alt)] p-8 transition-all hover:border-[var(--color-accent)] hover:bg-[var(--color-bg-alt)] block">
+        <div class="text-2xl font-bold text-[var(--color-accent)] mb-2">${l.label}</div>
+        <p class="text-sm text-[var(--color-text-muted)]">${l.desc}</p>
+      </a>
+    `).join('');
+  }
+
   // Track 404 error in Umami
   if (typeof window !== 'undefined' && (window as any).umami) {
     (window as any).umami.track('404_error', { url: window.location.pathname });
   }
 </script>
+
   <div class="relative mx-auto flex min-h-screen max-w-7xl flex-col items-center justify-center overflow-hidden px-6 py-20 md:px-8">
     <div class="not-found-bg relative z-10 text-center">
-      <h1 class="mb-8 text-5xl font-bold text-[var(--color-text)] md:text-6xl">
+      <h1 id="nf-title" class="mb-8 text-5xl font-bold text-[var(--color-text)] md:text-6xl">
         Oups, cette page n'existe pas
       </h1>
 
-      <p class="mb-12 max-w-2xl text-lg text-[var(--color-text-muted)]">
+      <p id="nf-sub" class="mb-12 max-w-2xl text-lg text-[var(--color-text-muted)]">
         Pas de panique — voici quelques pages qui existent, elles :
       </p>
 
       <!-- Links Grid 2x2 -->
-      <div class="mb-12 grid gap-6 sm:grid-cols-2">
-        <a
-          href="/"
-          class="group relative rounded-lg border border-[var(--color-bg-alt)] p-8 transition-all hover:border-[var(--color-accent)] hover:bg-[var(--color-bg-alt)]"
-        >
+      <div id="nf-links" class="mb-12 grid gap-6 sm:grid-cols-2">
+        <a href="/" class="group relative rounded-lg border border-[var(--color-bg-alt)] p-8 transition-all hover:border-[var(--color-accent)] hover:bg-[var(--color-bg-alt)]">
           <div class="text-2xl font-bold text-[var(--color-accent)] mb-2">Accueil</div>
-          <p class="text-sm text-[var(--color-text-muted)] group-hover:text-[var(--color-text)]">
-            Retour à la page principale
-          </p>
+          <p class="text-sm text-[var(--color-text-muted)]">Retour à la page principale</p>
         </a>
-
-        <a
-          href="/realisations"
-          class="group relative rounded-lg border border-[var(--color-bg-alt)] p-8 transition-all hover:border-[var(--color-accent)] hover:bg-[var(--color-bg-alt)]"
-        >
+        <a href="/realisations" class="group relative rounded-lg border border-[var(--color-bg-alt)] p-8 transition-all hover:border-[var(--color-accent)] hover:bg-[var(--color-bg-alt)]">
           <div class="text-2xl font-bold text-[var(--color-accent)] mb-2">Réalisations</div>
-          <p class="text-sm text-[var(--color-text-muted)] group-hover:text-[var(--color-text)]">
-            Découvrez mes projets web
-          </p>
+          <p class="text-sm text-[var(--color-text-muted)]">Découvrez mes projets web</p>
         </a>
-
-        <a
-          href="/offre"
-          class="group relative rounded-lg border border-[var(--color-bg-alt)] p-8 transition-all hover:border-[var(--color-accent)] hover:bg-[var(--color-bg-alt)]"
-        >
+        <a href="/offre" class="group relative rounded-lg border border-[var(--color-bg-alt)] p-8 transition-all hover:border-[var(--color-accent)] hover:bg-[var(--color-bg-alt)]">
           <div class="text-2xl font-bold text-[var(--color-accent)] mb-2">Offre</div>
-          <p class="text-sm text-[var(--color-text-muted)] group-hover:text-[var(--color-text)]">
-            Mes services et forfaits
-          </p>
+          <p class="text-sm text-[var(--color-text-muted)]">Mes services et forfaits</p>
         </a>
-
-        <a
-          href="/contact"
-          class="group relative rounded-lg border border-[var(--color-bg-alt)] p-8 transition-all hover:border-[var(--color-accent)] hover:bg-[var(--color-bg-alt)]"
-        >
+        <a href="/contact" class="group relative rounded-lg border border-[var(--color-bg-alt)] p-8 transition-all hover:border-[var(--color-accent)] hover:bg-[var(--color-bg-alt)]">
           <div class="text-2xl font-bold text-[var(--color-accent)] mb-2">Contact</div>
-          <p class="text-sm text-[var(--color-text-muted)] group-hover:text-[var(--color-text)]">
-            Me contacter pour un projet
-          </p>
+          <p class="text-sm text-[var(--color-text-muted)]">Me contacter pour un projet</p>
         </a>
       </div>
 
-      <!-- Primary Button -->
       <a
+        id="nf-btn"
         href="/"
         class="inline-block rounded-lg bg-[var(--color-accent)] px-8 py-4 font-medium text-white transition-all hover:shadow-lg hover:scale-105"
       >

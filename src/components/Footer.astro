@@ -1,5 +1,46 @@
 ---
 // Footer component with signature accent line, tagline, mini CTA, and inline social icons
+
+interface Props {
+  lang?: 'fr' | 'en';
+}
+
+const { lang = 'fr' } = Astro.props;
+
+const nav = lang === 'en'
+  ? [
+      { href: '/en/portfolio', label: 'Portfolio' },
+      { href: '/en/services', label: 'Services' },
+      { href: '/en/blog', label: 'Blog' },
+      { href: '/en/about', label: 'About' },
+    ]
+  : [
+      { href: '/realisations', label: 'Réalisations' },
+      { href: '/offre', label: 'Offre' },
+      { href: '/journal', label: 'Journal' },
+      { href: '/qui-suis-je', label: 'Qui suis-je' },
+    ];
+
+const legalLinks = lang === 'en'
+  ? [
+      { href: '/en/legal-notice', label: 'Legal Notice' },
+      { href: '/en/privacy-policy', label: 'Privacy Policy' },
+    ]
+  : [
+      { href: '/mentions-legales', label: 'Mentions légales' },
+      { href: '/politique-confidentialite', label: 'Politique de confidentialité' },
+    ];
+
+const ctaText = lang === 'en'
+  ? { question: 'Have a web project in mind?', cta: "Let's talk →", href: '/en/contact' }
+  : { question: 'Un projet web en tête ?', cta: 'Parlons-en →', href: '/contact' };
+
+const tagline1 = lang === 'en' ? 'I translate your craft into a website.' : 'Je traduis votre métier en site web.';
+const tagline2 = lang === 'en'
+  ? 'Custom websites for SMEs and craftspeople. No templates, true bespoke work.'
+  : 'Sites web sur mesure pour PME et artisans. Pas de template, du vrai sur-mesure.';
+const navTitle = lang === 'en' ? 'Navigation' : 'Navigation';
+const followTitle = lang === 'en' ? 'Follow me' : 'Suivez-moi';
 ---
 
 <footer class="relative border-t-[3px] border-[var(--color-accent)] bg-gradient-to-b from-[var(--color-bg-dark)] to-[var(--color-neutral-950)] text-white">
@@ -10,57 +51,41 @@
       <div class="lg:col-span-2">
         <h3 class="mb-2 text-lg font-bold">Marc M</h3>
         <p class="mb-6 text-sm text-neutral-300">
-          Je traduis votre métier en site web.
+          {tagline1}
         </p>
         <p class="text-sm text-neutral-400">
-          Sites web sur mesure pour PME et artisans. Pas de template, du vrai sur-mesure.
+          {tagline2}
         </p>
       </div>
 
       <!-- Quick Links -->
       <div>
-        <h4 class="mb-4 text-sm font-semibold uppercase tracking-wider text-neutral-300">Navigation</h4>
+        <h4 class="mb-4 text-sm font-semibold uppercase tracking-wider text-neutral-300">{navTitle}</h4>
         <div class="flex flex-wrap gap-3">
-          <a
-            href="/realisations"
-            class="text-sm text-neutral-400 transition-colors duration-300 hover:text-[var(--color-accent)]"
-          >
-            Réalisations
-          </a>
-          <span class="text-neutral-600">•</span>
-          <a
-            href="/offre"
-            class="text-sm text-neutral-400 transition-colors duration-300 hover:text-[var(--color-accent)]"
-          >
-            Offre
-          </a>
-          <span class="text-neutral-600">•</span>
-          <a
-            href="/journal"
-            class="text-sm text-neutral-400 transition-colors duration-300 hover:text-[var(--color-accent)]"
-          >
-            Journal
-          </a>
-          <span class="text-neutral-600">•</span>
-          <a
-            href="/qui-suis-je"
-            class="text-sm text-neutral-400 transition-colors duration-300 hover:text-[var(--color-accent)]"
-          >
-            Qui suis-je
-          </a>
+          {nav.map(({ href, label }, i) => (
+            <>
+              <a
+                href={href}
+                class="text-sm text-neutral-400 transition-colors duration-300 hover:text-[var(--color-accent)]"
+              >
+                {label}
+              </a>
+              {i < nav.length - 1 && <span class="text-neutral-600">•</span>}
+            </>
+          ))}
         </div>
       </div>
 
       <!-- Social Icons -->
       <div>
-        <h4 class="mb-4 text-sm font-semibold uppercase tracking-wider text-neutral-300">Suivez-moi</h4>
+        <h4 class="mb-4 text-sm font-semibold uppercase tracking-wider text-neutral-300">{followTitle}</h4>
         <div class="flex gap-4">
           <!-- LinkedIn Icon -->
           <a
             href="https://linkedin.com/in/marcmuller"
             target="_blank"
             rel="noopener noreferrer"
-            aria-label="Profil LinkedIn de Marc M"
+            aria-label="Marc M LinkedIn profile"
             class="flex h-8 w-8 items-center justify-center rounded-full bg-neutral-800 text-neutral-300 transition-all duration-300 hover:bg-[var(--color-accent)] hover:text-white"
           >
             <svg
@@ -79,7 +104,7 @@
     <!-- Mini CTA -->
     <div class="mb-12 rounded-lg bg-neutral-800/50 p-6 backdrop-blur-sm">
       <p class="text-center text-sm text-neutral-300">
-        <strong>Un projet web en tête ?</strong> <a href="/contact" class="text-[var(--color-accent)] hover:underline transition-colors" data-umami-event="footer-cta-click">Parlons-en →</a>
+        <strong>{ctaText.question}</strong> <a href={ctaText.href} class="text-[var(--color-accent)] hover:underline transition-colors" data-umami-event="footer-cta-click">{ctaText.cta}</a>
       </p>
       <p class="text-center text-xs text-neutral-500 mt-2">
         <a href="tel:+33688766648" class="hover:text-neutral-300 transition-colors" data-umami-event="phone-click">+33 6 88 77 66 48</a>
@@ -95,18 +120,14 @@
           © 2026 Marc M
         </p>
         <div class="flex gap-6">
-          <a
-            href="/mentions-legales"
-            class="text-sm text-neutral-400 transition-colors duration-300 hover:text-neutral-200"
-          >
-            Mentions légales
-          </a>
-          <a
-            href="/politique-confidentialite"
-            class="text-sm text-neutral-400 transition-colors duration-300 hover:text-neutral-200"
-          >
-            Politique de confidentialité
-          </a>
+          {legalLinks.map(({ href, label }) => (
+            <a
+              href={href}
+              class="text-sm text-neutral-400 transition-colors duration-300 hover:text-neutral-200"
+            >
+              {label}
+            </a>
+          ))}
         </div>
       </div>
     </div>
