@@ -8,6 +8,11 @@ export default defineConfig({
   compressHTML: true,
   integrations: [
     sitemap({
+      filter: (page) =>
+        !page.includes('/merci') &&
+        !page.includes('/thank-you') &&
+        !page.includes('/graphistes') &&
+        !page.includes('/designers'),
       i18n: {
         defaultLocale: 'fr',
         locales: {

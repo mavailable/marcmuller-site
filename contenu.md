@@ -1,202 +1,272 @@
-# Contenu du site — Marc M
+# Contenu du site — marcm.fr
 
-**Langue** : fr
+**Langue** : FR (+ EN mirror)
 **Type** : freelance-consultant (création de sites web)
-**Date d'extraction** : 2026-03-21
+**Date d'extraction** : 2026-03-23
 
 ---
 
-## Meta (global)
+## Hero (index.astro)
 
-- **Title homepage** : Marc M — Sites web sur mesure pour artisans et petits commerces
-- **Description homepage** : Créateur de sites web performants et référencés pour artisans, petits commerces et entrepreneurs du Grand Est. Rapides, bien SEO, qui ramènent des clients.
-
----
-
-## Header / Navigation
-
-- **Logo** : Marc M
-- **Liens nav** : Réalisations · Offre · Journal · Qui suis-je
-- **CTA header** : Devis gratuit (lien /contact)
-
----
-
-## Page Accueil (/)
-
-### Hero
-- **Badge** : Disponible pour nouveaux projets
-- **H1** : Le site que vous auriez fait si vous saviez coder.
-- **Sous-titre** : Sites web sur mesure pour artisans et petits commerces. Rapides. Bien référencés. Qui ramènent des clients.
+- **Titre H1** : Marc M — Sites web sur mesure pour artisans et petits commerces
+- **Accroche** : Je traduis votre métier en site web.
+- **Sous-titre** : Sites web performants et référencés pour artisans, petits commerces et entrepreneurs du Grand Est. Rapides, bien SEO, qui ramènent des clients.
+- **Badges** : Livrés en 7 jours · À partir de 490€ · Devis gratuit
 - **CTA primaire** : Parlons de votre projet → /contact
 - **CTA secondaire** : Voir mes réalisations → /realisations
-- **Trust badges** : Livrés en 7 jours · À partir de 490€ · Devis gratuit
-- **Scroll indicator** : Défiler *(corrigé de "Scroll")*
 
-### Défi du moment
-- **Badge** : Défi en cours
-- **H2** : 100 Vitrines pour 100 Artisans. / Gratuit. Vrai. Sans engagement.
-- **Texte** : Je crée gratuitement 100 sites web professionnels pour des artisans sans présence en ligne. Création, hébergement et domaine offerts la première année.
-- **Compteur** : 0/100 sites réalisés (WIP)
-- **CTA** : Je candidate → /100-sites-artisans
+---
 
-### Problème (Vous vous reconnaissez ?)
-- **H2** : Vous vous reconnaissez ?
-- **Bloc 1** : Votre site WordPress rame et vous coûte cher
-- **Bloc 2** : Vous n'avez pas de site et perdez des clients
-- **Bloc 3** : Votre site est moche et ne vous ressemble pas
+## Derniers projets (index.astro)
 
-### Preuve sociale (Ça marche)
-- **H2** : Ça marche
-- **Sous-titre** : Des chiffres, pas des promesses.
-- **Stat 1** : 12+ Projets livrés et en production
-- **Stat 2** : 7j Délai moyen du brief à la mise en ligne
-- **Stat 3** : 100% Taux de satisfaction clients
-- **Stat 4** : 2020 Créateur de sites web à temps plein
-
-### Réalisations (extrait)
-- **H2** : Mes derniers projets
-- **Projet 1** : La Grange aux Fées — Gîtes de charme, Amnéville
-- **Projet 2** : Le Levain de Koh Tao — Boulangerie artisanale, Thaïlande
-- **Projet 3** : Occi'Volt — Électricien, Castelnaudary
+- **Titre H2** : Mes derniers projets
+- **Projets affichés** : DMulti Services, Occi'Volt, La Grange aux Fées, Le Levain de Koh Tao (avec descriptions, badges Lighthouse 100, avis client)
 - **CTA** : Voir toutes les réalisations → /realisations
 
-### Méthode
-- **H2** : Comment on travaille
-- **Étape 1** : On discute — 30 min sur Zoom
-- **Étape 2** : Je crée votre site — 5-7 jours
-- **Étape 3** : C'est en ligne — Mise en ligne + suivi
+---
 
-### Différenciateurs
-- **H2** : Pourquoi travailler avec moi
-- **D1** : Pas de template — Du sur-mesure pur.
-- **D2** : Ultra-rapide — Temps de chargement < 1s.
-- **D3** : SEO inclus — Vous apparaîtrez sur Google. *(corrigé)*
-- **D4** : 1 interlocuteur — C'est moi du début à la fin.
+## Section 100 Vitrines (index.astro)
 
-### CTA Final
-- **H2** : Prêt à commencer ?
+- **Titre** : 100 Vitrines pour 100 Artisans
+- **Sous-titre** : Gratuit. Vrai. Sans engagement.
+- **Texte** : Je crée gratuitement 100 sites web pour des artisans et petits commerces qui n'ont aucune présence en ligne.
+- **CTA** : Je candidate → /100-sites-artisans
+
+---
+
+## La Méthode (index.astro)
+
+- **Titre H2** : Simple, rapide, sans prise de tête.
+- **Sous-titre** : Pas de cahier des charges de 30 pages. Pas de réunions interminables. On échange, je construis, vous validez.
+- **Étape 1** : On discute (30 min) — Vous me parlez de votre métier, vos objectifs, vos craintes.
+- **Étape 2** : Je crée votre site (5-7 jours) — Vous fournissez les infos, je construis.
+- **Étape 3** : C'est en ligne (Live) — Vos clients le trouvent.
+
+---
+
+## Pourquoi moi (index.astro)
+
+- Pas de template — Du sur-mesure pur
+- Ultra-rapide — Chargement < 1s
+- SEO inclus — Technique SEO dès la base
+- 1 interlocuteur — Moi du début à la fin
+
+---
+
+## Stats (index.astro)
+
+- 12+ Projets livrés et en production
+- 7j Délai moyen du brief à la mise en ligne
+- 100% Taux de satisfaction clients
+
+---
+
+## CTA final (index.astro)
+
+- **Titre H2** : Prêt à commencer ?
 - **Texte** : Que ce soit un site Essentiel, Multi-pages ou sur mesure, écrivons-nous.
 - **CTA** : Écrire à Marc → /contact
-- **Reassurance** : Réponse sous 48h · Devis gratuit · Sans engagement
+- **Réassurance** : Réponse sous 48h · Devis gratuit · Sans engagement
 
 ---
 
-## Page Offre (/offre)
+## Offre (offre.astro)
 
-- **Title** : Offre & Tarifs — Marc M | Création de sites web
-- **H1** : Un site pro, au juste prix
+- **Titre H1** : Un site pro, au juste prix
+- **Badge** : 3 formules, 0 mauvaise surprise
 - **Sous-titre** : Toutes les formules incluent 1 an d'hébergement, le nom de domaine, la maintenance et le référencement SEO & GEO.
 
-### Formule Essentiel
-- **Prix** : 490€ HT
-- **Type** : Site One Page
-- **Description** : Une page unique qui dit l'essentiel. Parfait pour démarrer.
-- **Inclus** : 1 page, design custom, responsive, formulaire contact, SEO & GEO, Lighthouse 95+
-- **Délai** : Livré en 5 jours
-- **CTA** : Demander un devis
+### Formule Essentiel — 490€ HT
+- Site One Page — Une page unique qui dit l'essentiel
+- Livré en 5 jours
+- CTA : Demander un devis
 
-### Formule Multi-pages (Populaire)
-- **Prix** : 1 290€ HT
-- **Type** : Site Vitrine
-- **Description** : Le choix de la plupart des pros et artisans.
-- **Inclus** : Tout Essentiel + 5-7 pages, blog optionnel, Google Analytics, etc.
-- **CTA** : Démarrer mon projet
+### Formule Multi-pages — 1 290€ HT (POPULAIRE)
+- Site Vitrine — Le choix de la plupart des pros et artisans
+- 5 à 7 pages personnalisées
+- Livré en 7-10 jours
+- CTA : Demander un devis
 
-### Formule Sur Mesure
-- **Prix** : Dès 1 990€ HT
-- **Type** : Sur Mesure
-- **Description** : Pour les projets avec des besoins spécifiques.
-- **Inclus** : Tout Multi-pages + e-commerce, réservation en ligne, etc.
-- **CTA** : Parlons de votre projet
+### Formule Sur mesure — à partir de 1 990€ HT
+- Site Avancé — Paiement, réservation, e-commerce
+- Pages illimitées
+- Livré en 2-4 semaines
+- CTA : Demander un devis
 
 ### Inclus dans toutes les formules
-- Hébergement Cloudflare 1 an
-- Nom de domaine .fr ou .com
-- Certificat SSL
-- Maintenance + mises à jour 12 mois
-- SEO technique + GEO
-- Renouvellement : 120€/an
-
-### FAQ (6 questions)
-1. **490€, c'est un template ?** — Non, sur-mesure total.
-2. **Paiement en plusieurs fois ?** — Oui, 50/50 ou 2-3 fois.
-3. **Qu'est-ce qui est inclus dans l'hébergement 1 an ?** — Cloudflare CDN, SSL, maintenance.
-4. **C'est quoi le référencement GEO ?** — Optimisation pour ChatGPT/Perplexity/Claude.
-5. **Vous faites du WordPress ?** — Non, Astro uniquement.
-6. **Quelle formule choisir ?** — Guide selon le profil.
-
-### CTA Final offre
-- **H2** : Pas sûr de la formule ?
-- **Texte** : Écrivez-moi, je vous conseillerai honnêtement sur ce qui vous convient vraiment.
+- Hébergement 1 an (Cloudflare CDN)
+- Nom de domaine (1ère année)
+- SEO & GEO (Google + moteurs IA)
+- Maintenance & support (12 mois)
+- SSL certificate
+- Analytics (Umami)
 
 ---
 
-## Page Qui suis-je (/qui-suis-je)
+## FAQ (offre.astro) — 6 questions
 
-- **Title** : Qui suis-je — Marc M
-- **Description** : Marc, 40 ans, Messin. Entrepreneur depuis toujours, je crée des sites web performants pour ceux qui fabriquent des choses avec leurs mains.
-- **H1** : Marc Muller
-- **Tagline** : 40 ans, Messin. Entrepreneur depuis toujours, développeur par la force des choses.
-- **Histoire** : Origines boulangeries, 10 ans bâtiment/immobilier, 10 ans escape game en ligne, tools-maker compulsif.
-- **Citation** : "Des sites web, j'en ai fait pour chacun de mes business. Ou plutôt : j'ai galéré à en faire."
-- **H2** : Ce que je préfère dans ce métier — rencontrer des gens, apprendre.
-- **Note perso** : Divemaster certifié, remote depuis la Thaïlande.
-
-### Chiffres
-- 20 ans d'entrepreneuriat
-- 4 secteurs différents
-- 100 sites offerts aux artisans
-- 100/100 score Lighthouse
-
-### CTA final
-- **H2** : On discute ?
-- **CTA** : Me contacter + WhatsApp
+1. **490€, c'est un template ?** → Non. Chaque site est construit de zéro.
+2. **Paiement en plusieurs fois ?** → Oui. 50/50 ou 2-3 fois.
+3. **Qu'est-ce qui est inclus dans l'hébergement 1 an ?** → Cloudflare, domaine, SSL, maintenance 12 mois. Renouvellement 120€/an.
+4. **C'est quoi le référencement GEO ?** → Optimisation pour les réponses IA (ChatGPT, Perplexity, Claude).
+5. **Vous faites du WordPress ?** → Non, Astro. Plus rapide, plus sûr, plus léger.
+6. **Quelle formule choisir ?** → Essentiel pour démarrer, Multi-pages pour la plupart, Sur mesure pour besoins spécifiques.
 
 ---
 
-## Page Contact (/contact)
+## Réalisations (realisations.astro)
 
-- **Title** : Contact — Marc M
-- **H1** : Parlons de votre projet
+- **Titre H1** : Réalisations
+- **Meta description** : Découvrez les sites web que j'ai créés pour mes clients. Design sur mesure, performance maximale et SEO local au rendez-vous.
+- **10 projets** : DMulti Services, Occi'Volt, La Grange aux Fées, MM Sécurité, P'Accord Piano, Kor, Le Levain de Koh Tao, Jennifer De Groeve (conteuse), La Ferme du Tilleul, Malou Assistante Sociale
+- **Stack technique** : Astro, Tailwind, Cloudflare, Stripe, Web3Forms
+- **CTA final** : Parlons de votre projet · Voir les formules
+
+---
+
+## Qui suis-je (qui-suis-je.astro)
+
+- **Titre H1** : Marc Muller
+- **Accroche** : 40 ans, Messin. Entrepreneur depuis toujours, développeur par la force des choses.
+- **Bio** : Grandi dans des boulangeries. 10 ans bâtiment/immobilier. 10 ans escape game. Toujours bricolé ses propres outils.
+- **Bloc accent** : Des sites web, j'en ai fait pour chacun de mes business. J'ai galéré pendant des années.
+- **Stats** : 20 ans d'entrepreneuriat, 4 secteurs, 100 sites offerts, 100/100 Lighthouse
+- **Ce que je préfère** : Rencontrer des gens, comprendre leur métier, apprendre.
+- **Note perso** : Divemaster certifié, travaille parfois depuis la Thaïlande.
+- **CTA** : On discute ? Me contacter · WhatsApp
+
+---
+
+## Contact (contact.astro)
+
+- **Titre H1** : Parlons de votre projet
 - **Sous-titre** : Formulaire, email, téléphone — comme vous voulez. Je réponds en max 48h.
-- **H2 formulaire** : Laissez-moi un message
-- **Labels** : Prénom, Email, Téléphone (opt.), Votre projet (textarea)
-- **CTA submit** : Envoyer →
-- **Infos contact** : Montigny-lès-Metz, Grand Est | marc@muller.im | +33 6 88 76 66 48
+- **Formulaire** : Prénom, Email, Téléphone (optionnel), Activité/Secteur, Formule envisagée (select), Message
+- **RGPD** : Consentement art. 6.1.a RGPD
+- **CTA submit** : Envoyer le message
+- **Contact direct** : Tél +33 6 88 77 66 48, WhatsApp, Email marc@muller.im
+- **Localisation** : Montigny-lès-Metz, Grand Est
+- **Horaires** : Lundi - Vendredi, 9h - 18h
+- **Calendly** : Réserver un créneau de 30 min
 
 ---
 
-## Page /merci (noindex)
+## Page /merci (merci.astro)
 
-- **Title** : Message reçu — Marc M
-- **H1** : Message reçu !
+- **Titre H1** : Message reçu !
 - **Texte** : Merci pour votre message. Je lis tout personnellement et je reviens vers vous sous 48h max.
-- **H2** : En attendant : [liens vers offre, qui-suis-je, accueil]
+- **Liens** : Voir les formules, Me connaître, Retour à l'accueil
+- **Contact direct** : WhatsApp + marc@muller.im
 
 ---
 
 ## Page 404
 
-- **Title** : Page non trouvée — Marc M
-- **H1** : Oups, cette page n'existe pas
-- **Texte** : Pas de panique — voici quelques pages qui existent, elles :
-- **Liens** : Accueil · Réalisations · Offre · Contact
+- **Titre** : Oups, cette page n'existe pas
+- **Sous-titre** : Pas de panique — voici quelques pages qui existent, elles :
+- **Liens** : Accueil, Réalisations, Offre, Contact
+- **Note** : Page bilingue via JS, meta title/description en anglais uniquement (noindex)
 
 ---
 
-## Footer
+## Journal (journal/index.astro)
+
+- **Titre H1** : Journal
+- **Sous-titre** : Réflexions pratiques sur le web : prix, SEO, performance et tout ce qu'on ne vous dit pas quand on vous vend un site.
+- **5 articles** :
+  1. Combien coûte un site web en 2026 ? (9 min, Business)
+  2. Les 5 erreurs qui font fuir les clients (7 min, Conseils)
+  3. SEO local : comment apparaître en 1ère position (10 min, SEO)
+  4. Pourquoi votre site WordPress est lent (7 min, Performance)
+  5. Faut-il un blog pour son site vitrine ? (6 min, Stratégie)
+
+---
+
+## 100 Sites Artisans (100-sites-artisans.astro)
+
+- **Titre H1** : 100 Vitrines. 100 Artisans. Gratuitement.
+- **Texte** : Je crée gratuitement des sites web pour des artisans sans présence en ligne.
+- **Inclus** : Design sur mesure, hébergement 1 an, nom de domaine, SEO technique
+- **FAQ** : 8 questions-réponses (gratuité, candidature, propriété du site, après 1 an...)
+- **Formulaire** : Prénom, Nom, Métier, Ville, Email, Téléphone, Description activité, Ressources disponibles
+
+---
+
+## Graphistes (graphistes.astro)
+
+- **Titre** : Graphistes, sous-traitez vos sites web
+- **Offre sous-traitance** : One-page 200€, Multi-page 300€, livré 24-72h
+- **Formation** : 800€ pour devenir autonome
+- **CTA** : Envoyer un premier brief
+
+---
+
+## Pages ville (Metz, Nancy, Strasbourg)
+
+- Pages géolocalisées SEO pour chaque ville
+- Même structure : hero, services, FAQ, témoignages, CTA
+- Meta descriptions avec nom de ville
+
+---
+
+## Header (Header.astro)
+
+- **Logo** : Marc M
+- **Nav FR** : Réalisations, Offre, Journal, Qui suis-je
+- **Spécial** : 100 Vitrines (avec indicateur pulsant)
+- **CTA** : Contact
+- **Langues** : FR | EN
+
+---
+
+## Footer (Footer.astro)
 
 - **Tagline** : Je traduis votre métier en site web.
-- **Description** : Sites web sur mesure pour PME et artisans. Pas de template, du vrai sur-mesure.
-- **Navigation** : Réalisations · Offre · Journal · Qui suis-je
+- **Sous-texte** : Sites web sur mesure pour PME et artisans. Pas de template, du vrai sur-mesure.
+- **Nav** : Réalisations, Offre, Journal, Qui suis-je
+- **Social** : LinkedIn
 - **Mini CTA** : Un projet web en tête ? Parlons-en →
-- **Copyright** : © [année dynamique] Marc M
-- **Liens légaux** : Mentions légales · Politique de confidentialité
+- **Contact** : +33 6 88 77 66 48 · marc@muller.im
+- **Légal** : Mentions légales · Politique de confidentialité
+- **Copyright** : © 2026 Marc M
 
 ---
 
-## Contenu manquant / à produire
+## Mentions légales (mentions-legales.astro)
 
-- **Témoignages clients** : Aucun témoignage textuel (quote + auteur) sur l'accueil. À ajouter dès que des clients réels en fournissent.
-- **FAQ sur l'accueil** : Pas de FAQ section sur la homepage. Envisager d'en ajouter 3-5 questions courtes pour le SEO.
-- **Numéro téléphone** dans Header/Footer (actuellement seulement dans /contact).
+- Éditeur : Marc M, SIRET inclus
+- Directeur publication : Marc Muller
+- Hébergeur : Cloudflare Pages
+- Propriété intellectuelle, données personnelles, limitation responsabilité
+- Loi française, tribunaux de Metz
+
+---
+
+## Politique de confidentialité (politique-confidentialite.astro)
+
+- Responsable : Marc Muller
+- Données formulaire : consentement art. 6.1.a RGPD
+- Analytics : Umami (sans cookie)
+- Conservation : 2 ans formulaire, 6 mois analytics
+- Droits RGPD complets
+
+---
+
+## Témoignages
+
+1. **David Merly** (Google, 5★, Local Guide) — DMulti Services
+2. **Jennifer De Groeve** (Google, 5★) — Conteuse
+
+---
+
+## Éléments de réassurance
+
+- 12+ projets livrés
+- 7 jours délai moyen
+- 100% satisfaction
+- Lighthouse 100 sur tous les projets
+- 20 ans d'entrepreneuriat
+- Devis gratuit, sans engagement
+- Réponse sous 48h
+- Paiement en plusieurs fois
+- Le site vous appartient

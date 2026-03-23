@@ -1,6 +1,10 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SchemaOrg from '../components/SchemaOrg.astro';
+import { business } from '../data/business';
+
+const phoneDisplay = business.phone.replace(/(\+33)(\d)(\d{2})(\d{2})(\d{2})(\d{2})/, '$1 $2 $3 $4 $5 $6');
+const whatsappMessage = encodeURIComponent(business.whatsappMessage);
 
 const phoneIcon = `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 5a2 2 0 012-2h3.28a1 1 0 00.948.684l1.498 7.487a1 1 0 00.502.756l2.048 1.029a11.042 11.042 0 005.516 5.516l1.029 2.048a1 1 0 00.756.502l7.487 1.498a1 1 0 00.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" /></svg>`;
 const mapIcon = `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>`;
@@ -170,7 +174,7 @@ const mailIcon = `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="c
                 class="mt-1 h-5 w-5 rounded border-[var(--color-border)] text-[var(--color-accent)] focus:ring-[var(--color-accent)] cursor-pointer"
               />
               <label for="privacy" class="text-sm text-[var(--color-text-muted)] cursor-pointer">
-                J'accepte que mes données soient traitées sur la base de mon intérêt légitime (art. 6.1.f RGPD) pour me recontacter au sujet de mon projet. *
+                J'accepte que mes données soient traitées sur la base de mon consentement (art. 6.1.a RGPD) pour me recontacter au sujet de mon projet. *
                 <a href="/politique-confidentialite" class="text-[var(--color-accent)] hover:underline ml-1" target="_blank" rel="noopener">Politique de confidentialité →</a>
               </label>
             </div>
@@ -190,7 +194,7 @@ const mailIcon = `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="c
         <div class="space-y-6">
           <!-- Téléphone -->
           <a
-            href="tel:+33688766648"
+            href={`tel:${business.phone}`}
             class="flex items-center gap-3 rounded-xl p-6 transition-all hover:-translate-y-0.5 hover:shadow-md"
             style="background:#FFF7ED; border:1px solid #FED7AA;"
             data-umami-event="phone-click"
@@ -200,13 +204,13 @@ const mailIcon = `<svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="c
             </div>
             <div>
               <p class="font-bold text-[var(--color-text)]">Téléphone</p>
-              <p class="text-sm text-[var(--color-text-muted)]">+33 6 88 77 66 48</p>
+              <p class="text-sm text-[var(--color-text-muted)]">{phoneDisplay}</p>
             </div>
           </a>
 
           <!-- WhatsApp -->
           <a
-            href="https://wa.me/33688766648?text=Bonjour%20Marc%2C%20je%20souhaite%20discuter%20d'un%20projet%20de%20site%20web."
+            href={`https://wa.me/${business.whatsapp}?text=${whatsappMessage}`}
             target="_blank"
             rel="noopener noreferrer"
             class="flex items-center gap-3 rounded-xl p-6 transition-all hover:-translate-y-0.5 hover:shadow-md"

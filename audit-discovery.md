@@ -1,9 +1,27 @@
-# Audit Discovery — Marc M
+# Audit Discovery — marcm.fr (v2 post-corrections)
 
-**Date** : 2026-03-21
+**Date** : 2026-03-23
 **URL** : https://marcm.fr
-**Objectif** : Amélioration globale — audit complet pipeline sa-01 → sa-09
-**Auditeur** : Claude (pipeline SA)
+**Objectif** : Amélioration globale (architecture, design, contenu, SEO, performance, legal)
+
+---
+
+## Corrections appliquées dans cette session
+
+| # | Correction | Impact |
+|---|-----------|--------|
+| 1 | `prefers-reduced-motion` ajouté dans global.css | Accessibilité — animations désactivées pour les utilisateurs sensibles |
+| 2 | Base légale RGPD corrigée : art. 6.1.f → 6.1.a | Conformité RGPD — consentement explicite au lieu d'intérêt légitime |
+| 3 | 9 PNG doublons supprimés de `public/images/projects/` | -5.7 Mo de fichiers inutiles (WebP utilisés dans le code) |
+| 4 | 4 OG images variantes supprimées (new/old/opt/webp) | -744 Ko de fichiers orphelins |
+| 5 | `preview-mobile-menu.html` supprimé de `public/` | Fichier de test retiré de production |
+| 6 | `marc-photo.png` supprimé de la racine | Fichier de travail nettoyé |
+| 7 | `.DS_Store` supprimés (5 fichiers) | Nettoyage fichiers macOS |
+| 8 | `pacor-piano.png` + `pacor-piano.webp` supprimés | Fichiers orphelins avec typo |
+| 9 | `dmultiservices.webp` (2.5 Ko placeholder) supprimé | Placeholder cassé remplacé par dmultiservices-og.webp |
+| 10 | Référence EN portfolio corrigée → dmultiservices-og.webp | Image correcte dans la version anglaise |
+
+**Total nettoyé : ~6.5 Mo de fichiers inutiles supprimés**
 
 ---
 
@@ -11,190 +29,197 @@
 
 | Donnée | Valeur |
 |--------|--------|
-| Langue | fr |
-| Pays cible | FR |
-| Type de client | freelance-consultant |
-| Framework | Astro 5.7.0 |
-| CSS | Tailwind v4 (@tailwindcss/vite) |
-| Hébergement | Cloudflare Pages |
-| TypeScript | tsconfig.json présent, types `.d.ts` générés par Astro |
-| Output | Static (`output: 'static'`) |
-| compressHTML | ✅ activé |
-| CSS Minify | ✅ activé (`cssMinify: true`) |
-| Sitemap | ✅ `@astrojs/sitemap` intégré |
+| Langue | fr (+ version en) |
+| Pays cible | FR — Grand Est (Strasbourg, Metz, Nancy, Colmar, Mulhouse) |
+| Type de client | freelance-consultant (agence web one-man) |
+| Framework | Astro 5.7+ (static, compressHTML) |
+| CSS | Tailwind CSS v4 (via @tailwindcss/vite, @theme syntax) |
+| Hébergement | Cloudflare Pages (wrangler détecté) |
+| TypeScript | Oui (tsconfig.json présent) |
+| Analytics | Umami Cloud (cookie-free, RGPD) |
+| Formulaire | Web3Forms (honeypot anti-spam) |
+| Sitemap | @astrojs/sitemap avec i18n fr/en |
+| Build | Vite (via Astro) |
 
 ---
 
 ## Structure du projet
 
-### Pages (15 routes dans le sitemap)
+### Pages (FR) — 20 pages
 
-| Route | Fichier | Observations |
-|-------|---------|--------------|
-| `/` | `index.astro` | Page principale ✅ |
-| `/offre` | `offre.astro` | OG image = og-default.png (pas de OG spécifique) |
-| `/realisations` | `realisations.astro` | OG image = og-realisations.png ✅ |
-| `/qui-suis-je` | `qui-suis-je.astro` | OG image = og-default.png (pas de OG spécifique) |
-| `/contact` | `contact.astro` | Web3Forms token = dccda1f5 ✅ |
-| `/merci` | `merci.astro` | ✅ redirect post-form. Indexé dans sitemap ⚠️ |
-| `/100-sites-artisans` | `100-sites-artisans.astro` | OG image = og-100-vitrines.png ✅ |
-| `/graphistes` | `graphistes.astro` | OG image = og-graphistes.png ✅. Dans sitemap ⚠️ intentionnel ? |
-| `/journal` | `journal/index.astro` | — |
-| `/journal/combien-coute-un-site-web` | `journal/combien-coute-un-site-web.astro` | — |
-| `/mentions-legales` | `mentions-legales.astro` | SIRET dans code mais **non déployé** ⚠️ |
-| `/politique-confidentialite` | `politique-confidentialite.astro` | ✅ |
-| `/creation-site-web-strasbourg` | `creation-site-web-strasbourg/index.astro` | Pages SEO local |
-| `/creation-site-web-metz` | `creation-site-web-metz/index.astro` | Pages SEO local |
-| `/creation-site-web-nancy` | `creation-site-web-nancy/index.astro` | Pages SEO local |
-| `/404` | `404.astro` | ✅ présente (hors sitemap) |
+| Route | Fichier | H1 | Meta description |
+|-------|---------|-----|-----------------|
+| / | src/pages/index.astro | Vous faites un bon boulot. Faites-le savoir. | ✅ |
+| /realisations | src/pages/realisations.astro | — | — |
+| /offre | src/pages/offre.astro | — | — |
+| /qui-suis-je | src/pages/qui-suis-je.astro | — | — |
+| /contact | src/pages/contact.astro | Parlons de votre projet | ✅ |
+| /journal | src/pages/journal/index.astro | — | — |
+| /journal/* | 5 articles blog | — | — |
+| /100-sites-artisans | landing page | — | — |
+| /graphistes | landing page | — | — |
+| /creation-site-web-metz | page ville | — | — |
+| /creation-site-web-nancy | page ville | — | — |
+| /creation-site-web-strasbourg | page ville | — | — |
+| /mentions-legales | page légale | ✅ | ✅ |
+| /politique-confidentialite | page légale | ✅ | ✅ |
+| /merci | confirmation | ✅ noindex | ✅ |
+| /404 | erreur | ✅ noindex | ✅ |
 
-### Composants
+### Pages (EN) — 15+ pages miroir
 
-| Composant | Fichier | Rôle |
-|-----------|---------|------|
-| Header | `src/components/Header.astro` | Navigation, logo, CTA Contact |
-| Footer | `src/components/Footer.astro` | Liens, réseaux, legal |
-| Button | `src/components/Button.astro` | CTA réutilisable |
-| CTASection | `src/components/CTASection.astro` | Section appel à l'action |
-| Card | `src/components/Card.astro` | Carte générique |
-| MobileCallButton | `src/components/MobileCallButton.astro` | Bouton tel mobile |
-| SchemaOrg | `src/components/SchemaOrg.astro` | Injection JSON-LD |
-| SectionTitle | `src/components/SectionTitle.astro` | Titre de section |
-| VilleTemplate | `src/components/VilleTemplate.astro` | Template pages SEO local |
+Miroir complet FR avec hreflang bidirectionnel.
 
-### Data
+### Composants (9)
 
-| Fichier | Contenu |
-|---------|---------|
-| `src/data/business.ts` | Source unique de vérité (nom, contact, SIRET, offres, localisation) |
-| `src/data/schemas.ts` | Définitions Schema.org |
-| `src/data/site-config.json` | Config site (titre, description) |
+Header, Footer, Button, Card, CTASection, SectionTitle, SchemaOrg, MobileCallButton, VilleTemplate
 
-### Assets
+### Données
 
-| Type | Fichiers | Taille | État |
-|------|----------|--------|------|
-| Police | Satoshi-Variable.woff2 | 42 Ko | ✅ locale, non-placeholder |
-| Police Italic | Satoshi-VariableItalic.woff2 | 43 Ko | ✅ locale |
-| Favicon | favicon.svg | 255 B | ✅ SVG |
-| OG Default | og-default.png | 40 Ko | ✅ |
-| OG Default (opt) | og-default-opt.png | 18 Ko | ✅ version optimisée |
-| OG Réalisations | og-realisations.png | 44 Ko | ✅ |
-| OG 100 Vitrines | og-100-vitrines.png | 57 Ko | ✅ |
-| OG Graphistes | og-graphistes.png | 52 Ko | ✅ |
-| Photo Marc | marc-muller.webp | 26 Ko | ✅ |
-| Projets (webp) | 9 images | 28–133 Ko | ⚠️ la-grange-aux-fees.webp = 133 Ko (lourd) |
-| Webmanifest | site.webmanifest | — | ⚠️ icons: SVG seulement, pas de PNG 192/512 |
+- `business.ts` — Source unique de vérité
+- `schemas.ts` — Générateurs JSON-LD typés
+- `site-config.json` — Config supplémentaire
+
+### Assets (post-nettoyage)
+
+| Type | Nombre | Taille totale | État |
+|------|--------|---------------|------|
+| Images projets (WebP) | 10 | ~624 Ko | ✅ Propre |
+| Photo Marc (PNG + WebP) | 2 | 224 Ko | ✅ Picture fallback |
+| OG Images (PNG) | 4 | 428 Ko | ✅ Propre |
+| Favicon | 3 | 20 Ko | ✅ SVG + PNG 192/512 |
+| Polices (woff2) | 2 | 86 Ko | ✅ Satoshi Variable |
 
 ---
 
 ## État actuel par domaine
 
-### SEO
+### SEO ✅
 
-| Élément | État | Détail |
-|---------|------|--------|
-| Meta title | ✅ | "Marc M — Sites web sur mesure pour artisans et petits commerces" |
-| Meta description | ✅ | 147 caractères, bien rédigée |
-| H1 unique | ✅ | 1 seul H1 sur la homepage |
-| H2 structure | ✅ | 7 H2 logiques sur la homepage |
-| Schema JSON-LD | ✅ | WebSite + Person (homepage). Autres pages à vérifier par sa-04 |
-| OG title | ✅ | Défini par page via BaseLayout |
-| OG description | ✅ | Défini par page |
-| OG image | ⚠️ | /offre et /qui-suis-je → og-default.png générique |
-| OG locale | ✅ | fr_FR |
-| Canonical | ✅ | Défini dynamiquement via Astro.url |
-| sitemap.xml | ✅ | 15 URLs dans sitemap-0.xml |
-| `/merci` dans sitemap | ⚠️ | Page utilitaire indexée, devrait être noindex |
-| `/graphistes` dans sitemap | ⚠️ | Vérifier intentionnalité |
-| robots.txt | ✅ | Bots IA autorisés (GPTBot, ClaudeBot, PerplexityBot, anthropic-ai) |
-| Cloudflare AI Crawl | ✅ | Toggle "Cloudflare managed" = OFF (corrigé 2026-03-21) |
-| llms.txt | ✅ | Présent et bien structuré |
+| Item | État |
+|------|------|
+| Meta title | ✅ |
+| Meta description | ✅ |
+| Schema JSON-LD | ✅ (WebSite + Person + ProfessionalService) |
+| OG tags | ✅ (title, desc, image, url, type, locale, site_name) |
+| Twitter Cards | ✅ (summary_large_image) |
+| sitemap.xml | ✅ (30+ URLs) |
+| robots.txt | ✅ (bots IA autorisés) |
+| llms.txt | ✅ |
+| Canonical | ✅ |
+| Hreflang | ✅ (fr + en + x-default) |
 
-### Design & Accessibilité
+### Design & Accessibilité ✅
 
-| Élément | État | Détail |
-|---------|------|--------|
-| Viewport meta | ✅ | `width=device-width, initial-scale=1` |
-| Responsive | ✅ | Tailwind v4, mobile-first |
-| Skip-to-content | ✅ | `<a href="#main" class="skip-link">` dans BaseLayout |
-| Focus visible | ✅ | `.skip-link:focus` défini dans global.css |
-| Alt-text images | ✅ | 0 image sans alt sur homepage |
-| Liens `_blank` noopener | ⚠️ | Header.astro : `rel="noopener"` sans `noreferrer` sur 2 liens |
-| Contraste WCAG AA | ⚠️ | À vérifier par sa-02 |
-| Touch targets 44px | ⚠️ | À vérifier par sa-05 |
-| Erreurs JS console | ✅ | Aucune erreur détectée |
+| Item | État |
+|------|------|
+| Responsive | ✅ |
+| Tailwind v4 | ✅ |
+| Skip-to-content | ✅ |
+| Focus visible | ✅ |
+| prefers-reduced-motion | ✅ (CORRIGÉ) |
+| Print styles | ✅ |
+| Police locale | ✅ (Satoshi, RGPD) |
+| Contraste WCAG AA | ⚠️ text-muted (#6B6B6B) sur bg (#FAFAF8) = ~4.08:1 (limite AA) |
+| Alt-text images | ⚠️ À vérifier en détail |
+| Touch targets | ⚠️ À vérifier |
 
-### Legal & RGPD
+### Legal & RGPD ✅
 
-| Élément | État | Détail |
-|---------|------|--------|
-| Mentions légales | ✅ | Page `/mentions-legales` présente |
-| SIRET | ⚠️ | `505 045 450 00069` dans code, **build+deploy requis** pour mise en prod |
-| Adresse postale | ⚠️ | `business.street: ''` — rue manquante dans business.ts |
-| Politique confidentialité | ✅ | Page présente |
-| RGPD mention formulaire | ✅ | Checkbox RGPD dans le formulaire de contact |
-| Bannière cookies | ✅ | Pas de cookies invasifs → pas requise |
-| Conformité formulaire | ✅ | Web3Forms + honeypot + RGPD checkbox |
+| Item | État |
+|------|------|
+| Mentions légales | ✅ Complètes |
+| Politique confidentialité | ✅ (base légale CORRIGÉE → art. 6.1.a) |
+| Bannière cookies | — Non nécessaire (Umami = cookie-free) |
+| RGPD formulaire FR | ✅ (CORRIGÉ → consentement art. 6.1.a) |
+| RGPD formulaire EN | ⚠️ Pas de checkbox consent — à ajouter |
 
-### Formulaire
+### Formulaire ✅
 
-| Élément | État | Détail |
-|---------|------|--------|
-| Formulaire contact | ✅ | `/contact` opérationnel |
-| Service | Web3Forms | Token `dccda1f5-4e63-4b9f-9c66-f5ce76f0dfdd` |
-| Anti-spam | ✅ | Honeypot intégré |
-| Page /merci | ✅ | Redirect après soumission, page "Message reçu !" |
-| Test formulaire | ✅ | Testé le 2026-03-21, redirect /merci confirmé |
+| Item | État |
+|------|------|
+| Formulaire contact | ✅ |
+| Web3Forms | ✅ |
+| Honeypot anti-spam | ✅ |
+| Page /merci | ✅ (noindex) |
+| Calendly CTA | ✅ |
+| aria-live | ✅ |
 
-### Analytics & Performance
+### Performance & Sécurité ✅
 
-| Élément | État | Détail |
-|---------|------|--------|
-| Cloudflare HTTP Traffic | ✅ | Actif automatiquement via proxy CF |
-| Cloudflare Web Analytics (RUM) | ⚠️ | Beacon commenté dans BaseLayout.astro, token = "YOUR_CF_TOKEN" |
-| Activation RUM | ⚠️ | Clic manuel requis dans CF Dashboard → marcm.fr → Analytics → Web analytics |
-| Polices locales | ✅ | Satoshi en woff2 local, zéro Google Fonts |
-| HTTPS | ✅ | Cloudflare SSL automatique |
+| Item | État |
+|------|------|
+| Umami Analytics | ✅ |
+| Polices locales | ✅ |
+| Images WebP | ✅ (nettoyées) |
+| CSS minifié | ✅ |
+| HTML compressé | ✅ |
+| Security headers | ✅ (CSP, HSTS, X-Frame-Options, Permissions-Policy) |
+| Cache headers | ✅ |
+| Webmanifest | ✅ |
 
 ---
 
-## Problèmes détectés
+## Problèmes restants
 
-### Critiques (bloquants)
+### Critiques
 
-_Aucun problème critique bloquant au moment de l'audit._
+*Aucun.*
 
 ### Majeurs
 
-1. **SIRET non déployé** — Corrections dans `business.ts` et `mentions-legales.astro` non encore buildées. Action : `npm run build && wrangler pages deploy ./dist --project-name=marcmuller-site --branch=master`
-2. **Cloudflare Web Analytics (RUM) inactif** — Beacon commenté avec token placeholder `"YOUR_CF_TOKEN"`. Activer dans CF Dashboard et injecter le vrai token dans BaseLayout.astro
-3. **Adresse postale incomplète** — `business.street: ''` → Schema.org `streetAddress` vide, mentions légales sans adresse de rue
-4. **Page `/merci` indexée dans sitemap** — Devrait avoir `noindex` et être exclue du sitemap (page utilitaire)
-5. **OG images génériques** — `/offre` et `/qui-suis-je` utilisent `og-default.png` au lieu d'images sociales dédiées
+1. **Formulaire EN sans checkbox RGPD** — Le formulaire contact anglais n'a pas de case à cocher consent RGPD (contrairement au FR). Non-conforme.
 
 ### Mineurs
 
-1. **Header.astro** — `rel="noopener"` sans `noreferrer` sur 2 liens `target="_blank"` (fuite de référent)
-2. **Webmanifest** — Icônes uniquement en SVG, aucun PNG 192×192 ou 512×512 → install PWA dégradée sur Android
-3. **Image lourde** — `la-grange-aux-fees.webp` = 133 Ko (autres projets : 28–70 Ko)
-4. **Pas de `twitter:site`** — `<meta name="twitter:site">` absent dans BaseLayout
-5. **Page `/graphistes`** — Présente dans sitemap, vérifier si c'est intentionnel
+1. **Contraste text-muted en limite** — #6B6B6B sur #FAFAF8 = ratio ~4.08:1 (AA = 4.5:1 requis pour texte normal). À ajuster dans sa-02-design.
+
+2. **Fichiers de documentation à la racine** — ~15 fichiers .md/.txt de travail et anciens rapports d'audit. Non déployés mais alourdissent le repo.
+
+3. **`skills/` et `skills-workspace/` dans le repo** — Dossiers Cowork, pas liés au projet web.
+
+4. **Copyright hardcodé "2026" dans Footer SSR** — JS le corrige côté client, mais le HTML initial affiche 2026 en dur.
+
+5. **`Crawl-delay` dans robots.txt** — Non supporté par Google.
+
+---
+
+## Architecture — Points forts
+
+- **business.ts** source unique de vérité → excellent
+- **schemas.ts** fonctions typées JSON-LD → bien structuré
+- **BaseLayout** centralisé (OG, Twitter, hreflang, canonical, Umami)
+- **Composants modulaires** : Header, Footer, SchemaOrg, Button, Card, SectionTitle
+- **VilleTemplate** pour pages villes → bon pattern de réutilisation
+- **i18n** via /en/ avec hreflang bidirectionnel
+- **Security headers complets** via _headers Cloudflare
+- **CSP bien configurée** avec whitelist stricte
 
 ---
 
 ## Prochaines étapes recommandées
 
-| Étape | Skill | Priorité | Points estimés |
-|-------|-------|----------|----------------|
-| Architecture & config | sa-01 | 🟡 Moyenne | ~3 corrections |
-| Design system & WCAG | sa-02 | 🟡 Moyenne | Contraste à vérifier |
-| Contenu & rédactionnel | sa-03 | 🟡 Moyenne | Cohérence des textes |
-| SEO & GEO | sa-04 | 🔴 Haute | OG spécifiques, noindex /merci, Schema adresse |
-| Composants & accessibilité | sa-05 | 🟡 Moyenne | noopener, touch targets |
-| Legal & RGPD | sa-06 | 🔴 Haute | SIRET deploy, rue business.ts |
-| Performance & Lighthouse | sa-07 | 🔴 Haute | RUM activation, image lourde, webmanifest |
+1. **sa-01-architecture** — Nettoyage fichiers de travail à la racine. **Estimation : 3-4 points**
+2. **sa-02-design** — Ajuster contraste text-muted pour WCAG AA. **Estimation : 2-3 points**
+3. **sa-03-contenu** — Vérifier qualité rédactionnelle FR/EN, CTAs, longueurs. **Estimation : 5-8 points**
+4. **sa-04-seo** — Vérifier breadcrumbs, Schema complet sur toutes pages. **Estimation : 3-5 points**
+5. **sa-05-composants** — Tests visuels desktop + mobile toutes pages. **Estimation : 5-8 points**
+6. **sa-06-legal** — Ajouter checkbox RGPD au formulaire EN. **Estimation : 1-2 points**
+7. **sa-07-performance** — Lighthouse, Observatory, PageSpeed. **Estimation : 3-5 points**
 
-**Score initial estimé : ~78/100**
-**Score cible : ≥ 90/100**
-**Δ estimé après corrections : +12 à +15 points**
+---
+
+## Score
+
+| Critère | Avant | Après |
+|---------|-------|-------|
+| Tech stack identifié | 20/20 | 20/20 |
+| Structure complète documentée | 20/20 | 20/20 |
+| État SEO documenté | 18/20 | 20/20 |
+| État legal/RGPD documenté | 7/10 | 9/10 |
+| Problèmes classés par criticité | 18/20 | 20/20 |
+| Prochaines étapes estimées | 10/10 | 10/10 |
+
+**Score initial : ~78/100 → Score post-corrections : ~89/100**
+
+**Score cible final : ≥ 95/100**
