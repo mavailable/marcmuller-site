@@ -77,7 +77,7 @@ export const projects: Project[] = [
       { label: 'Delivered in', value: '10 days' },
     ],
     stack: ['Astro', 'Tailwind', 'Cloudflare', 'Keystatic'],
-    carousels: ['realisations', 'portfolio', 'homepage'],
+    carousels: ['realisations', 'portfolio', 'homepage', '100-sites', 'graphistes'],
   },
 
   // ── DMulti Services ──────────────────────────────────────────────────────
@@ -109,7 +109,7 @@ export const projects: Project[] = [
       { label: 'Delivered in', value: '10 days' },
     ],
     stack: ['Astro', 'Tailwind', 'Cloudflare', 'Keystatic'],
-    carousels: ['realisations', 'portfolio', 'homepage'],
+    carousels: ['realisations', 'portfolio', 'homepage', '100-sites', 'graphistes'],
   },
 
   // ── JD Zoothérapie ───────────────────────────────────────────────────────
@@ -141,7 +141,7 @@ export const projects: Project[] = [
       { label: 'Delivered in', value: '10 days' },
     ],
     stack: ['Astro', 'Tailwind', 'Cloudflare', 'Keystatic'],
-    carousels: ['realisations', 'portfolio', 'homepage'],
+    carousels: ['realisations', 'portfolio', 'homepage', '100-sites', 'graphistes'],
   },
 
   // ── Le Refuge ────────────────────────────────────────────────────────────
@@ -173,7 +173,7 @@ export const projects: Project[] = [
       { label: 'Delivered in', value: '7 days' },
     ],
     stack: ['Astro', 'Tailwind', 'Cloudflare', 'Keystatic'],
-    carousels: ['realisations', 'portfolio', 'homepage'],
+    carousels: ['realisations', 'portfolio', 'homepage', '100-sites', 'graphistes'],
   },
 
   // ── AM Électricité ───────────────────────────────────────────────────────
@@ -205,7 +205,7 @@ export const projects: Project[] = [
       { label: 'Delivered in', value: '7 days' },
     ],
     stack: ['Astro', 'Tailwind', 'Cloudflare', 'Keystatic'],
-    carousels: ['realisations', 'portfolio', 'homepage'],
+    carousels: ['realisations', 'portfolio', 'homepage', '100-sites', 'graphistes'],
   },
 
   // ── Angelo Grossi ────────────────────────────────────────────────────────
@@ -237,7 +237,7 @@ export const projects: Project[] = [
       { label: 'Delivered in', value: '7 days' },
     ],
     stack: ['Astro', 'Tailwind', 'Cloudflare', 'Keystatic'],
-    carousels: ['realisations', 'portfolio', 'homepage'],
+    carousels: ['realisations', 'portfolio', 'homepage', '100-sites', 'graphistes'],
   },
 
   // ── Occi'Volt ────────────────────────────────────────────────────────────
@@ -269,7 +269,7 @@ export const projects: Project[] = [
       { label: 'Delivered in', value: '7 days' },
     ],
     stack: ['Astro', 'Tailwind', 'Cloudflare', 'Keystatic'],
-    carousels: ['realisations', 'portfolio', 'homepage'],
+    carousels: ['realisations', 'portfolio', 'homepage', '100-sites', 'graphistes'],
   },
 
   // ── MM Sécurité ──────────────────────────────────────────────────────────
@@ -301,7 +301,7 @@ export const projects: Project[] = [
       { label: '11', value: 'blog posts' },
     ],
     stack: ['Astro', 'Tailwind', 'Cloudflare'],
-    carousels: ['realisations', 'portfolio', 'homepage'],
+    carousels: ['realisations', 'portfolio', 'homepage', '100-sites', 'graphistes'],
   },
 
   // ── La Grange aux Fées ──────────────────────────────────────────────────
@@ -333,7 +333,7 @@ export const projects: Project[] = [
       { label: '6', value: 'rentals' },
     ],
     stack: ['Astro', 'Cloudinary', 'Cloudflare'],
-    carousels: ['realisations', 'portfolio', 'homepage'],
+    carousels: ['realisations', 'portfolio', 'homepage', '100-sites', 'graphistes'],
   },
 
   // ── Roma Laudarium ───────────────────────────────────────────────────────
@@ -365,7 +365,7 @@ export const projects: Project[] = [
       { label: 'Delivered in', value: '5 days' },
     ],
     stack: ['Astro', 'Tailwind', 'Cloudflare'],
-    carousels: ['realisations', 'portfolio', 'homepage'],
+    carousels: ['realisations', 'portfolio', 'homepage', '100-sites', 'graphistes'],
   },
 
   // ── Kor ──────────────────────────────────────────────────────────────────
@@ -397,7 +397,7 @@ export const projects: Project[] = [
       { label: 'Delivered in', value: '3 days' },
     ],
     stack: ['HTML', 'CSS', 'Cloudflare KV'],
-    carousels: ['realisations', 'portfolio'],
+    carousels: ['realisations', 'portfolio', 'homepage'],
   },
 ];
 
