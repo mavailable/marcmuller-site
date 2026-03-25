@@ -408,10 +408,11 @@ export const projects: Project[] = [
 ];
 
 /** Récupère les projets pour un carousel donné.
- *  Les projets wip apparaissent dans 'realisations' et 'portfolio' mais pas dans les carousels de mise en avant. */
+ *  Les projets wip sont toujours triés en dernier. */
 export function getProjectsForCarousel(carouselId: string): Project[] {
-  const showWip = carouselId === 'realisations' || carouselId === 'portfolio';
-  return projects.filter(p => !p.hidden && p.carousels.includes(carouselId) && (showWip || !p.wip));
+  return projects
+    .filter(p => !p.hidden && p.carousels.includes(carouselId))
+    .sort((a, b) => (a.wip ? 1 : 0) - (b.wip ? 1 : 0));
 }
 
 /** Tous les projets visibles (non hidden) */
