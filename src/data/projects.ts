@@ -72,7 +72,7 @@ export const projects: Project[] = [
     features: ['Calculateur de tarif', 'Pianos d\'occasion', 'Réservation en ligne', 'SEO local', 'Keystatic CMS', 'Schema.org'],
     featuresEn: ['Price calculator', 'Second-hand pianos', 'Online booking', 'Local SEO', 'Keystatic CMS', 'Schema.org'],
     highlights: [
-      { label: 'Lighthouse', value: '100' },
+      { label: 'Vitesse', value: '100' },
       { label: 'Livré en', value: '10 jours' },
     ],
     highlightsEn: [
@@ -104,7 +104,7 @@ export const projects: Project[] = [
     features: ['Galerie par catégorie', 'Keystatic CMS', 'SEO local', 'Devis en ligne', 'FAQ', 'Schema.org'],
     featuresEn: ['Category gallery', 'Keystatic CMS', 'Local SEO', 'Online quote', 'FAQ', 'Schema.org'],
     highlights: [
-      { label: 'Lighthouse', value: '100' },
+      { label: 'Vitesse', value: '100' },
       { label: 'Livré en', value: '10 jours' },
     ],
     highlightsEn: [
@@ -136,7 +136,7 @@ export const projects: Project[] = [
     features: ['Profils animaux', 'Ateliers & Tarifs', 'Keystatic CMS', 'SEO local', 'FAQ', 'Schema.org'],
     featuresEn: ['Animal profiles', 'Workshops & Pricing', 'Keystatic CMS', 'Local SEO', 'FAQ', 'Schema.org'],
     highlights: [
-      { label: 'Lighthouse', value: '100' },
+      { label: 'Vitesse', value: '100' },
       { label: 'Livré en', value: '10 jours' },
     ],
     highlightsEn: [
@@ -169,7 +169,7 @@ export const projects: Project[] = [
     features: ['Menu & Tarifs', 'Chambres d\'hôtes', 'Galerie photos', 'SEO local', 'FAQ', 'Formulaire contact'],
     featuresEn: ['Menu & Pricing', 'Guest rooms', 'Photo gallery', 'Local SEO', 'FAQ', 'Contact form'],
     highlights: [
-      { label: 'Lighthouse', value: '100' },
+      { label: 'Vitesse', value: '100' },
       { label: 'Livré en', value: '7 jours' },
     ],
     highlightsEn: [
@@ -201,7 +201,7 @@ export const projects: Project[] = [
     features: ['Triple CTA', 'Galerie avant/après', 'SEO local', 'FAQ', 'WhatsApp', 'Schema.org'],
     featuresEn: ['Triple CTA', 'Before/after gallery', 'Local SEO', 'FAQ', 'WhatsApp', 'Schema.org'],
     highlights: [
-      { label: 'Lighthouse', value: '100' },
+      { label: 'Vitesse', value: '100' },
       { label: 'Livré en', value: '7 jours' },
     ],
     highlightsEn: [
@@ -233,7 +233,7 @@ export const projects: Project[] = [
     features: ['Calendly intégré', 'Méthode H2S', 'Témoignages', 'SEO local', 'FAQ', 'Schema.org'],
     featuresEn: ['Calendly booking', 'H2S Method', 'Testimonials', 'Local SEO', 'FAQ', 'Schema.org'],
     highlights: [
-      { label: 'Lighthouse', value: '100' },
+      { label: 'Vitesse', value: '100' },
       { label: 'Livré en', value: '7 jours' },
     ],
     highlightsEn: [
@@ -265,7 +265,7 @@ export const projects: Project[] = [
     features: ['Galerie travaux', 'Devis gratuit', 'Keystatic CMS', 'SEO local', 'FAQ', 'Schema.org'],
     featuresEn: ['Project gallery', 'Free quote', 'Keystatic CMS', 'Local SEO', 'FAQ', 'Schema.org'],
     highlights: [
-      { label: 'Lighthouse', value: '100' },
+      { label: 'Vitesse', value: '100' },
       { label: 'Livré en', value: '7 jours' },
     ],
     highlightsEn: [
@@ -297,7 +297,7 @@ export const projects: Project[] = [
     features: ['Blog SEO', 'Pages par ville', 'Pages par service', 'Devis gratuit', 'FAQ', 'Schema.org'],
     featuresEn: ['SEO Blog', 'City pages', 'Service pages', 'Free quote', 'FAQ', 'Schema.org'],
     highlights: [
-      { label: 'Lighthouse', value: '100' },
+      { label: 'Vitesse', value: '100' },
       { label: '11', value: 'articles blog' },
     ],
     highlightsEn: [
@@ -330,7 +330,7 @@ export const projects: Project[] = [
     features: ['Carousel chambres', 'Blog tourisme', 'Avis clients', 'FAQ', 'Formulaire contact', 'Schema.org'],
     featuresEn: ['Room carousel', 'Tourism blog', 'Reviews', 'FAQ', 'Contact form', 'Schema.org'],
     highlights: [
-      { label: 'Lighthouse', value: '100' },
+      { label: 'Vitesse', value: '100' },
       { label: '6', value: 'gîtes' },
     ],
     highlightsEn: [
@@ -363,7 +363,7 @@ export const projects: Project[] = [
     features: ['Design poétique', 'Spectacle', 'Univers littéraire', 'Formulaire programmation', 'FAQ', 'Schema.org'],
     featuresEn: ['Poetic design', 'Show showcase', 'Literary world', 'Booking form', 'FAQ', 'Schema.org'],
     highlights: [
-      { label: 'Lighthouse', value: '100' },
+      { label: 'Vitesse', value: '100' },
       { label: 'Livré en', value: '5 jours' },
     ],
     highlightsEn: [
@@ -395,7 +395,7 @@ export const projects: Project[] = [
     features: ['Waitlist', 'Cloudflare KV', 'Animations scroll', 'Design dark', 'CTA conversion', 'Open Graph'],
     featuresEn: ['Waitlist', 'Cloudflare KV', 'Scroll animations', 'Dark design', 'Conversion CTA', 'Open Graph'],
     highlights: [
-      { label: 'Lighthouse', value: '100' },
+      { label: 'Vitesse', value: '100' },
       { label: 'Livré en', value: '3 jours' },
     ],
     highlightsEn: [
