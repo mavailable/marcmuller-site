@@ -67,7 +67,7 @@ export const business = {
   },
 
   // 100 Vitrines — 🔧 MISE À JOUR ICI pour changer le compteur partout
-  sitesRealises: 5,
+  sitesRealises: 11,
   sitesTotal: 100,
 
   // Géolocalisation (Schema.org)

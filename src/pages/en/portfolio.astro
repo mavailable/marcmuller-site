@@ -1,101 +1,25 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SchemaOrg from '../../components/SchemaOrg.astro';
+import { getProjectsForCarousel } from '../../data/projects';
 
-interface Project {
-  id: string;
-  name: string;
-  tagline: string;
-  description: string;
-  sector: string;
-  sectorColor: string;
-  type: string;
-  url: string;
-  gradient: string;
-  image: string;
-  features: string[];
-  stack: string[];
-  highlights: { label: string; value: string }[];
-}
+const allProjects = getProjectsForCarousel('portfolio');
 
-const projects: Project[] = [
-  {
-    id: 'paccord-piano',
-    name: "P'Accord Piano",
-    tagline: "Piano tuner with a premium digital presence",
-    description: "Independent piano tuner based in Chartres, serving Eure-et-Loir. Full redesign with a geo-located pricing calculator, direct booking, and a premium dark aesthetic — built for a craftsman holding the prestigious Brevet des Métiers d'Art diploma.",
-    sector: "Crafts",
-    sectorColor: "border-yellow-400/30 bg-yellow-400/10 text-yellow-400",
-    type: "Portfolio site",
-    url: "https://master.site-paccord-piano.pages.dev/",
-    gradient: "linear-gradient(135deg, #1A1A1A, #2C2008)",
-    image: "/images/projects/paccord-piano.webp",
-    features: ["Pricing calculator", "Geo-location", "Online booking", "Second-hand pianos", "FAQ", "Local SEO"],
-    stack: ["Astro", "Tailwind", "Cloudflare"],
-    highlights: [
-      { label: "Lighthouse", value: "100" },
-      { label: "Delivered in", value: "7 days" },
-      { label: "Hosting cost", value: "€0/month" },
-    ],
-  },
-  {
-    id: 'mm-securite',
-    name: "MM Sécurité",
-    tagline: "Security & CCTV specialist for businesses and homes",
-    description: "Independent alarm and CCTV technician based in Metz. A site built for local SEO with detailed service pages, highlighted ERP compliance, 50+ businesses protected, and a 48h quote request pipeline.",
-    sector: "Security",
-    sectorColor: "border-blue-400/30 bg-blue-400/10 text-blue-400",
-    type: "Business site",
-    url: "https://mm-securite.fr",
-    gradient: "linear-gradient(135deg, #1A3A5C, #2D5A7B)",
-    image: "/images/projects/mm-securite.webp",
-    features: ["Advanced local SEO", "48h quote request", "ERP compliance", "Service pages", "Blog", "FAQ"],
-    stack: ["Astro", "Tailwind", "Cloudflare"],
-    highlights: [
-      { label: "Lighthouse", value: "100" },
-      { label: "Businesses protected", value: "50+" },
-      { label: "Hosting cost", value: "€0/month" },
-    ],
-  },
-  {
-    id: 'roma-laudarium',
-    name: "Roma Laudarium",
-    tagline: "Storyteller with a poetic digital identity",
-    description: "Writer, storyteller and stage director. The site showcases her show for young audiences, her poetic world, and allows venue programmers and schools to book her directly.",
-    sector: "Arts",
-    sectorColor: "border-violet-400/30 bg-violet-400/10 text-violet-400",
-    type: "Portfolio site",
-    url: "https://roma-laudarium.pages.dev/",
-    gradient: "linear-gradient(135deg, #1E1040, #3D2080)",
-    image: "/images/projects/roma-laudarium.webp",
-    features: ["Show presentation", "Artistic world", "Programmer contact", "Poetic design", "Local SEO", "GDPR compliant"],
-    stack: ["Astro", "Tailwind", "Cloudflare"],
-    highlights: [
-      { label: "Lighthouse", value: "100" },
-      { label: "Delivered in", value: "5 days" },
-      { label: "Hosting cost", value: "€0/month" },
-    ],
-  },
-  {
-    id: 'dmultiservices',
-    name: "D Multiservices",
-    tagline: "Multi-trade craftsman, every service under one roof",
-    description: "Multi-trade craftsman in the Pyrenees with 30 years of experience in joinery, kitchen fitting, timber decking, and floor coverings. The site generates local quote requests through targeted local SEO in two departments.",
-    sector: "Trades",
-    sectorColor: "border-emerald-400/30 bg-emerald-400/10 text-emerald-400",
-    type: "Business site",
-    url: "https://dmultiservices.fr/",
-    gradient: "linear-gradient(135deg, #1A1A2E, #2D2D3F)",
-    image: "/images/projects/dmultiservices-og.webp",
-    features: ["Online quotes", "Local SEO", "Work gallery", "Direct call", "WhatsApp", "FAQ"],
-    stack: ["Astro", "Tailwind", "Cloudflare"],
-    highlights: [
-      { label: "Lighthouse", value: "100" },
-      { label: "Delivered in", value: "7 days" },
-      { label: "Hosting cost", value: "€0/month" },
-    ],
-  },
-];
+// Map to EN-friendly shape
+const projects = allProjects.map(p => ({
+  id: p.id,
+  name: p.titleEn || p.title,
+  description: p.descriptionEn || p.description,
+  sector: p.sectorEn || p.sector,
+  sectorColor: p.sectorColor,
+  type: p.typeEn || p.type,
+  url: p.url,
+  gradient: `linear-gradient(135deg, ${p.gradientFrom}, ${p.gradientTo})`,
+  image: p.screenshot,
+  features: p.featuresEn || p.features,
+  stack: p.stack || ['Astro', 'Tailwind', 'Cloudflare'],
+  highlights: p.highlightsEn || p.highlights,
+}));
 ---
 
 <BaseLayout
