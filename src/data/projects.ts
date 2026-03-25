@@ -37,6 +37,8 @@ export interface Project {
   highlightsEn?: { label: string; value: string }[];
   stack?: string[];
   hidden?: boolean;
+  /** Projet en cours de création — publié mais pas mis en avant, pas de bouton "Voir le site" ni Lighthouse */
+  wip?: boolean;
   review?: {
     text: string;
     author: string;
@@ -401,9 +403,11 @@ export const projects: Project[] = [
   },
 ];
 
-/** Récupère les projets pour un carousel donné */
+/** Récupère les projets pour un carousel donné.
+ *  Les projets wip apparaissent dans 'realisations' et 'portfolio' mais pas dans les carousels de mise en avant. */
 export function getProjectsForCarousel(carouselId: string): Project[] {
-  return projects.filter(p => !p.hidden && p.carousels.includes(carouselId));
+  const showWip = carouselId === 'realisations' || carouselId === 'portfolio';
+  return projects.filter(p => !p.hidden && p.carousels.includes(carouselId) && (showWip || !p.wip));
 }
 
 /** Tous les projets visibles (non hidden) */
