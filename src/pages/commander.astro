@@ -6,15 +6,35 @@ import { business } from '../data/business';
 const siteVitrine = business.offers[0];
 const basePrice = siteVitrine.price!;
 
+const categories = [
+  { id: 'all', label: 'Tout' },
+  { id: 'visibility', label: 'Être trouvé' },
+  { id: 'convert', label: 'Convertir' },
+  { id: 'design', label: 'Design' },
+];
+
 const addonsData = [
-  { name: 'Page supplémentaire', price: 120, desc: 'Une page dédiée (À propos, tarifs, galerie...)', icon: 'plus' },
-  { name: 'Fiche Google Business', price: 90, desc: 'Création et optimisation de votre fiche Google Maps', icon: 'map' },
-  { name: 'Pack réseaux sociaux', price: 150, desc: 'Visuels Facebook, LinkedIn & Google Business', icon: 'share' },
-  { name: 'Blog SEO (5 articles + CMS)', price: 390, desc: '5 articles optimisés + CMS pour écrire vous-même', icon: 'blog' },
-  { name: 'Prise de RDV en ligne', price: 180, desc: 'Cal.com intégré à votre site', icon: 'cal' },
-  { name: 'Paiement en ligne', price: 250, desc: 'Stripe intégré pour encaisser directement', icon: 'pay' },
-  { name: 'Galerie photos avancée', price: 90, desc: 'Galerie filtrable avec lightbox', icon: 'img' },
-  { name: 'Animations au scroll', price: 90, desc: 'Animations subtiles pour un site vivant', icon: 'anim' },
+  // Être trouvé
+  { name: 'Fiche Google Business', price: 90, desc: 'Votre entreprise sur Google Maps — 46% des recherches Google sont locales', cat: 'visibility', badge: 'Populaire',
+    icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>' },
+  { name: 'Pack réseaux sociaux', price: 150, desc: 'Visuels professionnels aux bonnes dimensions pour Facebook, LinkedIn et Google Business', cat: 'visibility', badge: '',
+    icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8.684 13.342C8.886 12.938 9 12.482 9 12c0-.482-.114-.938-.316-1.342m0 2.684a3 3 0 110-2.684m0 2.684l6.632 3.316m-6.632-6l6.632-3.316m0 0a3 3 0 105.367-2.684 3 3 0 00-5.367 2.684zm0 9.316a3 3 0 105.368 2.684 3 3 0 00-5.368-2.684z"/></svg>' },
+  { name: 'Blog SEO', price: 390, desc: '5 articles optimisés pour Google + CMS Keystatic pour écrire vos prochains articles', cat: 'visibility', badge: '',
+    icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z"/></svg>' },
+  { name: 'Rédaction de contenu', price: 190, desc: 'Je rédige tous les textes de votre site — vous n\'avez rien à écrire', cat: 'visibility', badge: '',
+    icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>' },
+  // Convertir
+  { name: 'Page supplémentaire', price: 120, desc: 'Page dédiée : À propos, tarifs, galerie, témoignages...', cat: 'convert', badge: '',
+    icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M12 4v16m8-8H4"/></svg>' },
+  { name: 'Prise de RDV en ligne', price: 180, desc: 'Vos clients réservent un créneau directement sur votre site (Cal.com)', cat: 'convert', badge: 'Recommandé',
+    icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>' },
+  { name: 'Paiement en ligne', price: 250, desc: 'Encaissez directement via Stripe — devis, acomptes ou paiement complet', cat: 'convert', badge: '',
+    icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"/></svg>' },
+  // Design
+  { name: 'Galerie photos', price: 90, desc: 'Galerie filtrable par catégorie avec lightbox plein écran', cat: 'design', badge: '',
+    icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"/></svg>' },
+  { name: 'Animations au scroll', price: 90, desc: 'Entrées animées des sections pour un site moderne et vivant', cat: 'design', badge: '',
+    icon: '<svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>' },
 ];
 
 const checkIcon = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>`;
@@ -125,27 +145,63 @@ const checkIcon = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
         <!-- ========== STEP 2 — Options ========== -->
         <div class="step-panel" data-step="2">
           <h2 class="text-xl font-bold text-[var(--color-text)] mb-1">Options à la carte</h2>
-          <p class="text-sm text-[var(--color-text-muted)] mb-6">Facultatif. Vous pourrez revenir en arrière.</p>
+          <p class="text-sm text-[var(--color-text-muted)] mb-5">Facultatif — choisissez ce qui vous sera utile.</p>
 
-          <div class="grid gap-3 sm:grid-cols-2">
+          <!-- Category filter tabs -->
+          <div class="flex gap-2 mb-6 overflow-x-auto pb-1 -mx-1 px-1" role="tablist">
+            {categories.map((cat, i) => (
+              <button
+                type="button"
+                role="tab"
+                class={`cat-tab whitespace-nowrap rounded-full px-4 py-2 text-xs font-semibold transition-all ${i === 0 ? 'active' : ''}`}
+                data-cat={cat.id}
+                aria-selected={i === 0 ? 'true' : 'false'}
+              >
+                {cat.label}
+              </button>
+            ))}
+            <span class="cat-count ml-auto self-center text-xs text-[var(--color-text-muted)] flex-shrink-0" id="addon-count">0 sélectionnée(s)</span>
+          </div>
+
+          <!-- Addon cards -->
+          <div class="grid gap-3 sm:grid-cols-2" id="addons-grid">
             {addonsData.map((addon, i) => (
-              <label class="addon-card group relative flex items-start gap-3 rounded-xl border border-[var(--color-border)] bg-white p-4 cursor-pointer transition-all hover:border-[var(--color-accent)]/50 hover:shadow-sm" data-addon-price={addon.price} data-addon-name={addon.name}>
+              <label
+                class="addon-card group relative flex gap-3 rounded-xl border border-[var(--color-border)] bg-white p-4 cursor-pointer transition-all hover:border-[var(--color-accent)]/50 hover:shadow-sm"
+                data-addon-price={addon.price}
+                data-addon-name={addon.name}
+                data-addon-cat={addon.cat}
+              >
                 <input type="checkbox" name={`addon_${i}`} value={`${addon.name} (+${addon.price}€)`} class="sr-only addon-checkbox" />
-                <div class="addon-check w-5 h-5 rounded-md border-2 border-[var(--color-border)] flex items-center justify-center flex-shrink-0 mt-0.5 transition-all">
-                  <svg class="w-3.5 h-3.5 text-white opacity-0 transition-opacity" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+
+                <!-- Icon -->
+                <div class="addon-icon w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 transition-all" style="background: rgba(232, 108, 71, 0.08);">
+                  <span class="text-[var(--color-accent)]" set:html={addon.icon} />
                 </div>
+
+                <!-- Content -->
                 <div class="flex-grow min-w-0">
-                  <div class="flex items-baseline justify-between gap-2">
-                    <span class="text-sm font-semibold text-[var(--color-text)] leading-tight">{addon.name}</span>
+                  <div class="flex items-start justify-between gap-2">
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <span class="text-sm font-semibold text-[var(--color-text)] leading-tight">{addon.name}</span>
+                      {addon.badge && (
+                        <span class={`inline-block text-[10px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-full ${addon.badge === 'Populaire' ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'}`}>{addon.badge}</span>
+                      )}
+                    </div>
                     <span class="text-sm font-bold text-[var(--color-accent)] flex-shrink-0">+{addon.price}€</span>
                   </div>
-                  <p class="text-xs text-[var(--color-text-muted)] mt-0.5 leading-relaxed">{addon.desc}</p>
+                  <p class="text-xs text-[var(--color-text-muted)] mt-1 leading-relaxed">{addon.desc}</p>
+                </div>
+
+                <!-- Check indicator -->
+                <div class="addon-check w-5 h-5 rounded-md border-2 border-[var(--color-border)] flex items-center justify-center flex-shrink-0 mt-0.5 transition-all absolute top-3 right-3">
+                  <svg class="w-3.5 h-3.5 text-white opacity-0 transition-opacity" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
                 </div>
               </label>
             ))}
           </div>
 
-          <p class="text-xs text-center text-[var(--color-text-muted)] mt-4">Pas besoin d'options ? Passez directement à l'étape suivante.</p>
+          <p class="text-xs text-center text-[var(--color-text-muted)] mt-5">Pas besoin d'options ? Passez directement à l'étape suivante.</p>
         </div>
 
         <!-- ========== STEP 3 — Infos ========== -->
@@ -336,10 +392,26 @@ const checkIcon = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
   .step-panel.slide-back { transform: translateX(-20px); }
 
 
+  /* Category tabs */
+  .cat-tab {
+    background: var(--color-bg-alt);
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border);
+  }
+  .cat-tab:hover { color: var(--color-text); border-color: var(--color-text-muted); }
+  .cat-tab.active {
+    background: var(--color-accent);
+    color: #fff;
+    border-color: var(--color-accent);
+  }
+
   /* Addon cards */
+  .addon-card { position: relative; }
   .addon-card.selected { border-color: var(--color-accent); background: var(--color-accent-light); }
   .addon-card.selected .addon-check { background: var(--color-accent); border-color: var(--color-accent); }
   .addon-card.selected .addon-check svg { opacity: 1; }
+  .addon-card.selected .addon-icon { background: rgba(232, 108, 71, 0.15); }
+  .addon-card.hidden-by-filter { display: none; }
 
   /* Checkbox */
   input[type="checkbox"] { accent-color: var(--color-accent); }
@@ -453,14 +525,44 @@ const checkIcon = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
       if (currentStep < 4) goToStep(currentStep + 1, 'forward');
     });
 
-    // ---- Addon toggle ----
+    // ---- Category filter ----
+    const catTabs = document.querySelectorAll<HTMLElement>('.cat-tab');
     const addonCards = document.querySelectorAll<HTMLElement>('.addon-card');
+    const addonCount = document.getElementById('addon-count');
+
+    catTabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        catTabs.forEach(t => { t.classList.remove('active'); t.setAttribute('aria-selected', 'false'); });
+        tab.classList.add('active');
+        tab.setAttribute('aria-selected', 'true');
+        const cat = tab.dataset.cat;
+        addonCards.forEach(card => {
+          if (cat === 'all' || card.dataset.addonCat === cat) {
+            card.classList.remove('hidden-by-filter');
+          } else {
+            card.classList.add('hidden-by-filter');
+          }
+        });
+      });
+    });
+
+    // ---- Addon toggle ----
+    function updateAddonCount() {
+      let count = 0;
+      addonCards.forEach(card => {
+        const cb = card.querySelector('.addon-checkbox') as HTMLInputElement;
+        if (cb.checked) count++;
+      });
+      if (addonCount) addonCount.textContent = count === 0 ? '0 sélectionnée(s)' : `${count} sélectionnée(s)`;
+    }
+
     addonCards.forEach(card => {
       card.addEventListener('click', () => {
         const cb = card.querySelector('.addon-checkbox') as HTMLInputElement;
         cb.checked = !cb.checked;
         card.classList.toggle('selected', cb.checked);
         updateTotal();
+        updateAddonCount();
       });
     });
 
