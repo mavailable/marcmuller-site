@@ -5,6 +5,29 @@ import { business } from '../../data/business';
 
 const { sitesRealises, sitesTotal } = business;
 const progressPercent = Math.round((sitesRealises / sitesTotal) * 100);
+
+const faqItems = [
+  {
+    question: "How much does a website cost?",
+    answer: "From €490 for a one-page site. Multi-page from €1,290, custom from €1,990. Hosting, domain name and maintenance included for the first year."
+  },
+  {
+    question: "How long does it take to build a website?",
+    answer: "On average 7 working days for an Essential site, 10 to 14 days for a Multi-page. Every project starts with a free discovery call."
+  },
+  {
+    question: "Do you work with WordPress?",
+    answer: "No, I use Astro, a modern framework that's much faster and more secure. The result: a site that loads in under a second and that Google loves."
+  },
+  {
+    question: "Is SEO included?",
+    answer: "Yes. Every site is optimised from the start: semantic markup, performance, structured data, and local SEO. Technical SEO is included in all packages."
+  },
+  {
+    question: "Do you only work in Grand Est?",
+    answer: "I'm based in Metz but I work with clients across France. Everything is done remotely: discovery call, emails and video meetings."
+  }
+];
 ---
 
 <BaseLayout
@@ -16,6 +39,7 @@ const progressPercent = Math.round((sitesRealises / sitesTotal) * 100);
 >
   <SchemaOrg type="person" />
   <SchemaOrg type="localBusiness" />
+  <SchemaOrg type="faqPage" data={faqItems} />
 
   <!-- HERO -->
   <section class="relative w-full min-h-screen flex items-center overflow-hidden bg-[#0D0D0D]">
@@ -275,12 +299,12 @@ const progressPercent = Math.round((sitesRealises / sitesTotal) * 100);
           <p class="text-[var(--color-text-muted)]">Projects delivered and live</p>
         </div>
         <div class="text-center">
-          <div class="mb-3 text-6xl font-bold text-[var(--color-accent)]"><span class="count-up" data-target="100">0</span></div>
-          <p class="text-[var(--color-text-muted)]">Lighthouse score (performance)</p>
+          <div class="mb-3 text-4xl font-bold text-[var(--color-accent)]">7<span class="text-2xl">d</span></div>
+          <p class="text-[var(--color-text-muted)]">Average delivery time from brief to launch</p>
         </div>
         <div class="text-center">
-          <div class="mb-3 text-6xl font-bold text-[var(--color-accent)]">7</div>
-          <p class="text-[var(--color-text-muted)]">Days average delivery time</p>
+          <div class="mb-3 text-6xl font-bold text-[var(--color-accent)]">100<span class="text-3xl">%</span></div>
+          <p class="text-[var(--color-text-muted)]">Client satisfaction rate</p>
         </div>
       </div>
     </div>
@@ -305,6 +329,25 @@ const progressPercent = Math.round((sitesRealises / sitesTotal) * 100);
           View all services
           <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
         </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- FAQ -->
+  <section class="w-full bg-[var(--color-bg-alt)] px-6 py-24 md:px-8 md:py-32">
+    <div class="mx-auto max-w-3xl">
+      <h2 class="text-center text-3xl md:text-4xl font-bold text-[var(--color-text)] mb-4">Frequently asked questions</h2>
+      <p class="text-center text-[var(--color-text-muted)] mb-12 text-lg">Everything you need to know before getting started.</p>
+      <div class="space-y-4">
+        {faqItems.map((item) => (
+          <details class="group rounded-xl border border-[var(--color-border)] bg-white">
+            <summary class="flex cursor-pointer items-center justify-between px-6 py-5 text-left font-semibold text-[var(--color-text)] hover:text-[var(--color-accent)] transition-colors">
+              {item.question}
+              <svg class="h-5 w-5 shrink-0 text-[var(--color-text-muted)] transition-transform duration-200 group-open:rotate-180" aria-hidden="true" role="presentation" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+            </summary>
+            <div class="px-6 pb-5 text-[var(--color-text-muted)] leading-relaxed">{item.answer}</div>
+          </details>
+        ))}
       </div>
     </div>
   </section>
@@ -358,3 +401,64 @@ const progressPercent = Math.round((sitesRealises / sitesTotal) * 100);
     to { opacity: 1; transform: translateY(0); }
   }
 </style>
+
+<script>
+  // Intersection Observer for scroll animations
+  const observerOptions = {
+    threshold: 0.1,
+    rootMargin: '0px 0px -50px 0px'
+  };
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        entry.target.classList.add('animate-in');
+      }
+    });
+  }, observerOptions);
+
+  // Observe count-up elements
+  document.querySelectorAll('.count-up').forEach((el) => {
+    observer.observe(el);
+  });
+
+  // Animate numbers
+  document.querySelectorAll('.count-up').forEach((element) => {
+    const targetText = element.getAttribute('data-target');
+    const target = parseInt(targetText);
+
+    const originalObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && !element.classList.contains('counted')) {
+          element.classList.add('counted');
+          animateCount(element, target, 1500);
+          originalObserver.unobserve(element);
+        }
+      });
+    }, observerOptions);
+
+    originalObserver.observe(element);
+  });
+
+  function animateCount(element: HTMLElement, target: number, duration: number) {
+    const startTime = Date.now();
+    const startValue = 0;
+
+    const animate = () => {
+      const now = Date.now();
+      const elapsed = now - startTime;
+      const progress = Math.min(elapsed / duration, 1);
+
+      const current = Math.floor(startValue + (target - startValue) * progress);
+      element.textContent = current.toString();
+
+      if (progress < 1) {
+        requestAnimationFrame(animate);
+      } else {
+        element.textContent = target.toString();
+      }
+    };
+
+    animate();
+  }
+</script>
