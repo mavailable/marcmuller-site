@@ -1,0 +1,729 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SchemaOrg from '../components/SchemaOrg.astro';
+import { business } from '../data/business';
+
+const siteVitrine = business.offers[0];
+const basePrice = siteVitrine.price!;
+
+const addonsData = [
+  { name: 'Page supplémentaire', price: 120, desc: 'Une page dédiée (À propos, tarifs, galerie...)' },
+  { name: 'Fiche Google Business', price: 90, desc: 'Création et optimisation de votre fiche Google Maps' },
+  { name: 'Pack réseaux sociaux', price: 150, desc: 'Visuels Facebook, LinkedIn & Google Business' },
+  { name: 'Blog SEO (5 articles + CMS)', price: 390, desc: '5 articles optimisés + CMS pour écrire vous-même' },
+  { name: 'Prise de RDV en ligne', price: 180, desc: 'Calendly ou Cal.com intégré à votre site' },
+  { name: 'Paiement en ligne', price: 250, desc: 'Stripe intégré pour encaisser directement' },
+  { name: 'Galerie photos avancée', price: 90, desc: 'Galerie filtrable avec lightbox' },
+  { name: 'Animations au scroll', price: 90, desc: 'Animations subtiles pour un site vivant' },
+];
+
+const checkIcon = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>`;
+---
+
+<BaseLayout
+  title="Commander votre site — Marc M"
+  description="Commandez votre site professionnel en ligne. Site Vitrine à 490€ HT, options à la carte, livré en 7 jours."
+  lang="fr"
+  frPath="/commander"
+>
+  <SchemaOrg type="localBusiness" />
+
+  <!-- HERO -->
+  <section class="relative w-full bg-[#0D0D0D] px-6 py-16 md:px-8 md:py-24 overflow-hidden">
+    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 40px 40px;"></div>
+    <div class="relative mx-auto max-w-4xl text-center z-10">
+      <div class="mb-6 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--color-accent)]">
+        <span class="w-2 h-2 rounded-full bg-[var(--color-accent)]"></span>
+        <span class="text-sm font-semibold text-white">Commande en ligne</span>
+      </div>
+      <h1 class="mb-6 text-4xl font-bold leading-tight text-white md:text-5xl">
+        Finalisez votre commande
+      </h1>
+      <p class="text-lg text-neutral-300 md:text-xl max-w-2xl mx-auto">
+        Choisissez vos options, remplissez vos infos, et je commence votre site sous 24h.
+      </p>
+    </div>
+  </section>
+
+  <!-- STEPS -->
+  <section class="w-full bg-[var(--color-bg)] px-6 py-12 md:px-8 md:py-16">
+    <div class="mx-auto max-w-3xl">
+
+      <!-- STEP INDICATOR -->
+      <div class="steps-indicator mb-12" role="navigation" aria-label="Progression de la commande">
+        <div class="flex items-center justify-center gap-0">
+          {[
+            { num: 1, label: 'Votre site' },
+            { num: 2, label: 'Options' },
+            { num: 3, label: 'Vos infos' },
+            { num: 4, label: 'Récapitulatif' },
+          ].map((step, i) => (
+            <div class="flex items-center">
+              <div class={`step-dot flex flex-col items-center ${i === 0 ? 'active' : ''}`} data-step-dot={step.num}>
+                <div class="w-10 h-10 rounded-full flex items-center justify-center text-sm font-bold transition-all duration-300 border-2">
+                  {step.num}
+                </div>
+                <span class="text-xs mt-2 font-medium hidden sm:block">{step.label}</span>
+              </div>
+              {i < 3 && (
+                <div class="step-line w-12 sm:w-20 h-0.5 mx-2 sm:mx-3 transition-all duration-300"></div>
+              )}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- FORM (wraps all steps) -->
+      <form id="order-form" action="https://api.web3forms.com/submit" method="POST">
+        <input type="hidden" name="access_key" value="dccda1f5-4e63-4b9f-9c66-f5ce76f0dfdd" />
+        <input type="text" name="botcheck" style="display: none;" />
+        <input type="hidden" name="redirect" value="https://marcm.fr/merci" />
+        <input type="hidden" name="subject" value="Nouvelle commande Site Vitrine" />
+        <input type="hidden" name="from_name" value="Commande marcm.fr" />
+        <!-- Hidden fields for order data -->
+        <input type="hidden" name="commande_total" id="hidden-total" value="490" />
+        <input type="hidden" name="commande_options" id="hidden-options" value="" />
+        <input type="hidden" name="commande_paiement" id="hidden-payment" value="1x 490€" />
+
+        <!-- ========== STEP 1 — Votre site ========== -->
+        <div class="step-panel active" data-step="1">
+          <div class="rounded-2xl p-8 lg:p-10" style="background-color: #111; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(232, 108, 71, 0.3);">
+            <div class="absolute-top-bar h-1 rounded-t-2xl -mt-8 lg:-mt-10 -mx-8 lg:-mx-10 mb-6" style="background: linear-gradient(90deg, #E86C47, #F5C8B3);"></div>
+
+            <span class="inline-block px-3 py-1 text-xs font-bold uppercase tracking-wider text-neutral-300 mb-2" style="letter-spacing: 0.15em;">Site Vitrine</span>
+            <h2 class="text-2xl font-bold text-white mb-2">Votre site professionnel</h2>
+            <p class="text-sm text-neutral-400 mb-8 leading-relaxed">Construit de zéro, à votre image. Pas un template.</p>
+
+            <div class="flex items-baseline gap-1 mb-8">
+              <span class="text-5xl font-extrabold text-white">490</span>
+              <span class="text-2xl font-bold text-white">&euro;</span>
+              <span class="text-sm text-neutral-400 ml-2">HT</span>
+            </div>
+
+            <div class="space-y-3 mb-8">
+              {[
+                'Design unique à votre image',
+                'Responsive mobile & tablette',
+                'Référencement Google + IA (SEO & GEO)',
+                'Score Lighthouse 100/100',
+                'Hébergement offert à vie',
+                'Livré en 7 jours',
+                'Nom de domaine inclus la 1re année',
+              ].map((feat) => (
+                <div class="flex items-start gap-3">
+                  <span class="text-[var(--color-accent)] flex-shrink-0 w-5 h-5 mt-0.5" set:html={checkIcon} />
+                  <span class="text-sm text-white">{feat}</span>
+                </div>
+              ))}
+            </div>
+
+            <!-- Payment options -->
+            <div class="border-t border-neutral-700 pt-6 mb-2">
+              <p class="text-sm font-semibold text-white mb-4">Mode de paiement</p>
+              <div class="grid grid-cols-2 gap-3">
+                <label class="payment-option relative flex items-center gap-3 rounded-xl border-2 p-4 cursor-pointer transition-all" data-payment="1x">
+                  <input type="radio" name="paiement" value="1x 490€" checked class="sr-only" />
+                  <div class="radio-circle w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0">
+                    <div class="radio-dot w-2.5 h-2.5 rounded-full"></div>
+                  </div>
+                  <div>
+                    <span class="text-sm font-bold text-white block">490&euro; en 1&times;</span>
+                  </div>
+                </label>
+                <label class="payment-option relative flex items-center gap-3 rounded-xl border-2 p-4 cursor-pointer transition-all" data-payment="2x">
+                  <input type="radio" name="paiement" value="2x 245€" class="sr-only" />
+                  <div class="radio-circle w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0">
+                    <div class="radio-dot w-2.5 h-2.5 rounded-full"></div>
+                  </div>
+                  <div>
+                    <span class="text-sm font-bold text-white block">2&times; 245&euro;</span>
+                  </div>
+                </label>
+              </div>
+            </div>
+          </div>
+
+          <div class="flex justify-end mt-8">
+            <button type="button" class="btn-next inline-flex items-center gap-2 px-8 py-3 bg-[var(--color-accent)] text-white font-medium rounded-xl hover:bg-[var(--color-accent-hover)] transition-all" data-goto="2">
+              Continuer
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- ========== STEP 2 — Options ========== -->
+        <div class="step-panel" data-step="2">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-2">Options à la carte</h2>
+          <p class="text-[var(--color-text-muted)] mb-8">Sélectionnez les options qui vous intéressent. Vous pourrez revenir en arrière.</p>
+
+          <div class="grid gap-4 sm:grid-cols-2">
+            {addonsData.map((addon, i) => (
+              <label class="addon-card group relative flex items-start gap-4 rounded-xl border border-[var(--color-border)] bg-white p-5 cursor-pointer transition-all hover:border-[var(--color-accent)] hover:shadow-md" data-addon-price={addon.price} data-addon-name={addon.name}>
+                <input type="checkbox" name={`addon_${i}`} value={`${addon.name} (+${addon.price}€)`} class="sr-only addon-checkbox" />
+                <div class="addon-check w-6 h-6 rounded-lg border-2 border-[var(--color-border)] flex items-center justify-center flex-shrink-0 mt-0.5 transition-all">
+                  <svg class="w-4 h-4 text-white opacity-0 transition-opacity" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+                </div>
+                <div class="flex-grow">
+                  <div class="flex items-center justify-between mb-1">
+                    <span class="text-sm font-bold text-[var(--color-text)]">{addon.name}</span>
+                    <span class="text-sm font-bold text-[var(--color-accent)] whitespace-nowrap ml-2">+{addon.price}&euro;</span>
+                  </div>
+                  <p class="text-xs text-[var(--color-text-muted)] leading-relaxed">{addon.desc}</p>
+                </div>
+              </label>
+            ))}
+          </div>
+
+          <!-- RUNNING TOTAL (sticky on mobile) -->
+          <div class="running-total sticky bottom-0 mt-8 rounded-xl bg-white border border-[var(--color-border)] p-4 shadow-lg z-20 flex items-center justify-between">
+            <div>
+              <span class="text-sm text-[var(--color-text-muted)]">Total estimé</span>
+              <div class="text-2xl font-extrabold text-[var(--color-text)]" id="running-total">{basePrice}&euro; <span class="text-sm font-normal text-[var(--color-text-muted)]">HT</span></div>
+            </div>
+            <div class="flex gap-3">
+              <button type="button" class="btn-back inline-flex items-center gap-2 px-5 py-3 text-[var(--color-text-muted)] font-medium rounded-xl border border-[var(--color-border)] hover:bg-[var(--color-bg-alt)] transition-all" data-goto="1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+                Retour
+              </button>
+              <button type="button" class="btn-next inline-flex items-center gap-2 px-5 py-3 bg-[var(--color-accent)] text-white font-medium rounded-xl hover:bg-[var(--color-accent-hover)] transition-all" data-goto="3">
+                Continuer
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- ========== STEP 3 — Vos informations ========== -->
+        <div class="step-panel" data-step="3">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-2">Vos informations</h2>
+          <p class="text-[var(--color-text-muted)] mb-8">Pour préparer votre site au mieux. Les champs marqués * sont obligatoires.</p>
+
+          <div class="space-y-6">
+            <!-- Nom complet -->
+            <div>
+              <label for="fullname" class="block text-sm font-medium text-[var(--color-text)] mb-2">Nom complet *</label>
+              <input type="text" id="fullname" name="fullname" required class="field-input w-full rounded-lg bg-white px-4 py-3 text-[var(--color-text)] placeholder-[var(--color-text-muted)] border border-[var(--color-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent transition-all" placeholder="Prénom Nom" />
+            </div>
+
+            <!-- Email -->
+            <div>
+              <label for="order-email" class="block text-sm font-medium text-[var(--color-text)] mb-2">Email *</label>
+              <input type="email" id="order-email" name="email" required class="field-input w-full rounded-lg bg-white px-4 py-3 text-[var(--color-text)] placeholder-[var(--color-text-muted)] border border-[var(--color-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent transition-all" placeholder="votre@email.com" />
+            </div>
+
+            <!-- Téléphone -->
+            <div>
+              <label for="order-phone" class="block text-sm font-medium text-[var(--color-text)] mb-2">Téléphone *</label>
+              <input type="tel" id="order-phone" name="phone" required class="field-input w-full rounded-lg bg-white px-4 py-3 text-[var(--color-text)] placeholder-[var(--color-text-muted)] border border-[var(--color-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent transition-all" placeholder="+33 6 XX XX XX XX" />
+            </div>
+
+            <!-- Nom entreprise -->
+            <div>
+              <label for="company" class="block text-sm font-medium text-[var(--color-text)] mb-2">Nom de l'entreprise / activité *</label>
+              <input type="text" id="company" name="company" required class="field-input w-full rounded-lg bg-white px-4 py-3 text-[var(--color-text)] placeholder-[var(--color-text-muted)] border border-[var(--color-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent transition-all" placeholder="Ex: Boulangerie Martin, Cabinet Dupont..." />
+            </div>
+
+            <!-- Description activité -->
+            <div>
+              <label for="activity-desc" class="block text-sm font-medium text-[var(--color-text)] mb-2">Décrivez votre activité en quelques phrases *</label>
+              <textarea id="activity-desc" name="activity_description" required rows="3" class="field-input w-full rounded-lg bg-white px-4 py-3 text-[var(--color-text)] placeholder-[var(--color-text-muted)] border border-[var(--color-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent transition-all resize-none" placeholder="Que faites-vous ? Pour qui ? Depuis quand ?"></textarea>
+            </div>
+
+            <!-- Ville -->
+            <div>
+              <label for="city" class="block text-sm font-medium text-[var(--color-text)] mb-2">Ville / zone d'intervention *</label>
+              <input type="text" id="city" name="city" required class="field-input w-full rounded-lg bg-white px-4 py-3 text-[var(--color-text)] placeholder-[var(--color-text-muted)] border border-[var(--color-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent transition-all" placeholder="Ex: Metz et alentours" />
+            </div>
+
+            <!-- Séparateur optionnels -->
+            <div class="border-t border-[var(--color-border)] pt-6">
+              <p class="text-sm font-semibold text-[var(--color-text)] mb-1">Informations complémentaires</p>
+              <p class="text-xs text-[var(--color-text-muted)] mb-6">Facultatif, mais utile pour préparer votre site.</p>
+            </div>
+
+            <!-- Site web actuel -->
+            <div>
+              <label for="current-site" class="block text-sm font-medium text-[var(--color-text)] mb-2">Site web actuel (si existant)</label>
+              <input type="url" id="current-site" name="current_website" class="field-input w-full rounded-lg bg-white px-4 py-3 text-[var(--color-text)] placeholder-[var(--color-text-muted)] border border-[var(--color-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent transition-all" placeholder="https://..." />
+            </div>
+
+            <!-- Google Business -->
+            <div>
+              <label for="google-business" class="block text-sm font-medium text-[var(--color-text)] mb-2">Lien Google Business (si existant)</label>
+              <input type="url" id="google-business" name="google_business" class="field-input w-full rounded-lg bg-white px-4 py-3 text-[var(--color-text)] placeholder-[var(--color-text-muted)] border border-[var(--color-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent transition-all" placeholder="https://g.page/..." />
+            </div>
+
+            <!-- Réseaux sociaux -->
+            <div>
+              <label for="social-media" class="block text-sm font-medium text-[var(--color-text)] mb-2">Réseaux sociaux (Facebook, Instagram, LinkedIn)</label>
+              <input type="text" id="social-media" name="social_media" class="field-input w-full rounded-lg bg-white px-4 py-3 text-[var(--color-text)] placeholder-[var(--color-text-muted)] border border-[var(--color-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent transition-all" placeholder="Liens ou noms de vos pages" />
+            </div>
+
+            <!-- Couleurs -->
+            <div>
+              <label for="colors" class="block text-sm font-medium text-[var(--color-text)] mb-2">Couleurs préférées</label>
+              <input type="text" id="colors" name="preferred_colors" class="field-input w-full rounded-lg bg-white px-4 py-3 text-[var(--color-text)] placeholder-[var(--color-text-muted)] border border-[var(--color-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent transition-all" placeholder="Ex: bleu marine et or, couleurs de mon logo..." />
+            </div>
+
+            <!-- Sites inspirants -->
+            <div>
+              <label for="inspiration" class="block text-sm font-medium text-[var(--color-text)] mb-2">Sites web qui vous inspirent</label>
+              <input type="text" id="inspiration" name="inspiration_sites" class="field-input w-full rounded-lg bg-white px-4 py-3 text-[var(--color-text)] placeholder-[var(--color-text-muted)] border border-[var(--color-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent transition-all" placeholder="URLs de sites que vous aimez" />
+            </div>
+
+            <!-- Message -->
+            <div>
+              <label for="order-message" class="block text-sm font-medium text-[var(--color-text)] mb-2">Message / demandes particulières</label>
+              <textarea id="order-message" name="message" rows="3" class="field-input w-full rounded-lg bg-white px-4 py-3 text-[var(--color-text)] placeholder-[var(--color-text-muted)] border border-[var(--color-border)] focus:outline-none focus:ring-2 focus:ring-[var(--color-accent)] focus:border-transparent transition-all resize-none" placeholder="Tout ce qui vous semble important..."></textarea>
+            </div>
+
+            <!-- RGPD -->
+            <div class="flex items-start gap-3 pt-4">
+              <input type="checkbox" id="order-privacy" name="privacy" required class="mt-1 h-5 w-5 rounded border-[var(--color-border)] text-[var(--color-accent)] focus:ring-[var(--color-accent)] cursor-pointer" />
+              <label for="order-privacy" class="text-sm text-[var(--color-text-muted)] cursor-pointer">
+                J'accepte que mes données soient traitées sur la base de mon consentement (art. 6.1.a RGPD) pour la réalisation de mon projet. *
+                <a href="/politique-confidentialite" class="text-[var(--color-accent)] hover:underline ml-1" target="_blank" rel="noopener">Politique de confidentialité</a>
+              </label>
+            </div>
+          </div>
+
+          <!-- Nav buttons -->
+          <div class="flex justify-between mt-8">
+            <button type="button" class="btn-back inline-flex items-center gap-2 px-5 py-3 text-[var(--color-text-muted)] font-medium rounded-xl border border-[var(--color-border)] hover:bg-[var(--color-bg-alt)] transition-all" data-goto="2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+              Retour
+            </button>
+            <button type="button" class="btn-next inline-flex items-center gap-2 px-8 py-3 bg-[var(--color-accent)] text-white font-medium rounded-xl hover:bg-[var(--color-accent-hover)] transition-all" data-goto="4" id="btn-to-recap">
+              Continuer
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+            </button>
+          </div>
+        </div>
+
+        <!-- ========== STEP 4 — Récapitulatif ========== -->
+        <div class="step-panel" data-step="4">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-8">Récapitulatif de votre commande</h2>
+
+          <!-- Order summary -->
+          <div class="rounded-xl border border-[var(--color-border)] bg-white overflow-hidden mb-6">
+            <div class="p-5 border-b border-[var(--color-border)] flex justify-between items-center">
+              <div>
+                <span class="font-bold text-[var(--color-text)]">Site Vitrine</span>
+                <span class="text-xs text-[var(--color-text-muted)] block">Design sur mesure, livré en 7 jours</span>
+              </div>
+              <span class="font-bold text-[var(--color-text)]">490&euro;</span>
+            </div>
+            <div id="recap-addons">
+              <!-- Filled by JS -->
+            </div>
+            <div class="p-5 bg-[var(--color-bg-alt)] flex justify-between items-center">
+              <span class="font-bold text-[var(--color-text)]">Total HT</span>
+              <span class="text-2xl font-extrabold text-[var(--color-accent)]" id="recap-total">490&euro;</span>
+            </div>
+          </div>
+
+          <!-- Payment method -->
+          <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 mb-6">
+            <span class="text-sm font-semibold text-[var(--color-text)]">Paiement :</span>
+            <span class="text-sm text-[var(--color-text-muted)] ml-1" id="recap-payment">1x 490&euro;</span>
+          </div>
+
+          <!-- Client info recap -->
+          <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 mb-6">
+            <div class="flex items-center justify-between mb-3">
+              <span class="text-sm font-semibold text-[var(--color-text)]">Vos informations</span>
+              <button type="button" class="text-sm text-[var(--color-accent)] hover:underline font-medium" data-goto="3">Modifier</button>
+            </div>
+            <div class="text-sm text-[var(--color-text-muted)] space-y-1" id="recap-info">
+              <!-- Filled by JS -->
+            </div>
+          </div>
+
+          <!-- Nav buttons -->
+          <div class="flex flex-col gap-4 mt-8">
+            <button type="submit" class="w-full rounded-xl bg-[var(--color-accent)] px-8 py-4 text-lg font-bold text-white transition-all hover:bg-[var(--color-accent-hover)] focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)]" style="box-shadow: 0 10px 25px rgba(232, 108, 71, 0.3);" data-umami-event="order-submit" id="btn-submit">
+              Valider ma commande
+            </button>
+            <p class="text-center text-xs text-[var(--color-text-muted)] leading-relaxed">
+              Le paiement sera à effectuer après validation.<br />Je vous recontacte sous 24h pour confirmer.
+            </p>
+            <button type="button" class="btn-back self-center inline-flex items-center gap-2 px-5 py-3 text-[var(--color-text-muted)] font-medium rounded-xl border border-[var(--color-border)] hover:bg-[var(--color-bg-alt)] transition-all" data-goto="3">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+              Retour
+            </button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  /* Step indicator */
+  .step-dot .w-10 {
+    background: transparent;
+    border-color: var(--color-border);
+    color: var(--color-text-muted);
+  }
+  .step-dot.active .w-10 {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: #fff;
+  }
+  .step-dot.done .w-10 {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+    color: #fff;
+  }
+  .step-dot span {
+    color: var(--color-text-muted);
+  }
+  .step-dot.active span,
+  .step-dot.done span {
+    color: var(--color-text);
+  }
+  .step-line {
+    background: var(--color-border);
+  }
+  .step-line.active {
+    background: var(--color-accent);
+  }
+
+  /* Step panels */
+  .step-panel {
+    display: none;
+    opacity: 0;
+    transform: translateY(16px);
+    transition: opacity 0.35s ease, transform 0.35s ease;
+  }
+  .step-panel.active {
+    display: block;
+  }
+  .step-panel.visible {
+    opacity: 1;
+    transform: translateY(0);
+  }
+
+  /* Payment radio */
+  .payment-option {
+    border-color: rgba(255, 255, 255, 0.15);
+  }
+  .payment-option.selected {
+    border-color: var(--color-accent);
+    background: rgba(232, 108, 71, 0.08);
+  }
+  .radio-circle {
+    border-color: rgba(255, 255, 255, 0.3);
+  }
+  .payment-option.selected .radio-circle {
+    border-color: var(--color-accent);
+  }
+  .radio-dot {
+    background: transparent;
+    transition: background 0.2s ease;
+  }
+  .payment-option.selected .radio-dot {
+    background: var(--color-accent);
+  }
+
+  /* Addon cards */
+  .addon-card.selected {
+    border-color: var(--color-accent);
+    background: var(--color-accent-light);
+  }
+  .addon-card.selected .addon-check {
+    background: var(--color-accent);
+    border-color: var(--color-accent);
+  }
+  .addon-card.selected .addon-check svg {
+    opacity: 1;
+  }
+
+  /* Top bar gradient for step 1 card */
+  .absolute-top-bar {
+    border-radius: 1rem 1rem 0 0;
+  }
+
+  /* Checkbox accent */
+  input[type="checkbox"] {
+    accent-color: var(--color-accent);
+  }
+
+  /* Running total sticky */
+  .running-total {
+    backdrop-filter: blur(8px);
+    background: rgba(250, 250, 248, 0.95);
+  }
+
+  /* Field validation error */
+  .field-error {
+    border-color: #EF4444 !important;
+  }
+  .error-msg {
+    color: #EF4444;
+    font-size: 0.75rem;
+    margin-top: 0.25rem;
+  }
+
+  /* Recap addon row */
+  .recap-addon-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 1.25rem;
+    border-bottom: 1px solid var(--color-border);
+  }
+  .recap-addon-row:last-child {
+    border-bottom: none;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const BASE_PRICE = 490;
+    let currentStep = 1;
+
+    const panels = document.querySelectorAll<HTMLElement>('.step-panel');
+    const dots = document.querySelectorAll<HTMLElement>('.step-dot');
+    const lines = document.querySelectorAll<HTMLElement>('.step-line');
+    const form = document.getElementById('order-form') as HTMLFormElement;
+
+    // ---- Navigation ----
+    function goToStep(step: number) {
+      // Hide current
+      panels.forEach(p => {
+        p.classList.remove('active', 'visible');
+      });
+
+      // Update dots
+      dots.forEach((dot, i) => {
+        const s = i + 1;
+        dot.classList.remove('active', 'done');
+        if (s < step) dot.classList.add('done');
+        if (s === step) dot.classList.add('active');
+      });
+
+      // Update lines
+      lines.forEach((line, i) => {
+        line.classList.toggle('active', i + 1 < step);
+      });
+
+      // Show target
+      const target = document.querySelector<HTMLElement>(`[data-step="${step}"]`);
+      if (target) {
+        target.classList.add('active');
+        // Trigger reflow for animation
+        void target.offsetWidth;
+        target.classList.add('visible');
+      }
+
+      currentStep = step;
+
+      // Scroll to top of steps section
+      const stepsSection = document.querySelector('.steps-indicator');
+      if (stepsSection) {
+        stepsSection.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      }
+
+      // If going to step 4, populate recap
+      if (step === 4) populateRecap();
+    }
+
+    // Initial state: show step 1 with animation
+    requestAnimationFrame(() => {
+      const first = document.querySelector<HTMLElement>('[data-step="1"]');
+      if (first) first.classList.add('visible');
+    });
+
+    // ---- Button handlers ----
+    document.querySelectorAll<HTMLElement>('[data-goto]').forEach(btn => {
+      btn.addEventListener('click', (e) => {
+        const goto = parseInt(btn.dataset.goto || '1', 10);
+
+        // Validate step 3 before going to 4
+        if (goto === 4 && currentStep === 3) {
+          if (!validateStep3()) return;
+        }
+
+        goToStep(goto);
+      });
+    });
+
+    // ---- Payment option toggle ----
+    document.querySelectorAll<HTMLElement>('.payment-option').forEach(opt => {
+      opt.addEventListener('click', () => {
+        document.querySelectorAll('.payment-option').forEach(o => o.classList.remove('selected'));
+        opt.classList.add('selected');
+        const radio = opt.querySelector('input[type="radio"]') as HTMLInputElement;
+        if (radio) radio.checked = true;
+        updateHiddenPayment();
+      });
+    });
+    // Init first payment option as selected
+    const firstPayment = document.querySelector<HTMLElement>('.payment-option');
+    if (firstPayment) firstPayment.classList.add('selected');
+
+    // ---- Addon cards toggle ----
+    const addonCards = document.querySelectorAll<HTMLElement>('.addon-card');
+    addonCards.forEach(card => {
+      card.addEventListener('click', () => {
+        const cb = card.querySelector('.addon-checkbox') as HTMLInputElement;
+        cb.checked = !cb.checked;
+        card.classList.toggle('selected', cb.checked);
+        updateTotal();
+      });
+    });
+
+    // ---- Running total ----
+    function getAddonsTotal(): number {
+      let sum = 0;
+      addonCards.forEach(card => {
+        const cb = card.querySelector('.addon-checkbox') as HTMLInputElement;
+        if (cb.checked) {
+          sum += parseInt(card.dataset.addonPrice || '0', 10);
+        }
+      });
+      return sum;
+    }
+
+    function updateTotal() {
+      const total = BASE_PRICE + getAddonsTotal();
+      const el = document.getElementById('running-total');
+      if (el) el.innerHTML = `${total}&euro; <span class="text-sm font-normal text-[var(--color-text-muted)]">HT</span>`;
+      // Update hidden
+      const ht = document.getElementById('hidden-total') as HTMLInputElement;
+      if (ht) ht.value = String(total);
+      updateHiddenOptions();
+      updateHiddenPayment();
+    }
+
+    function updateHiddenOptions() {
+      const names: string[] = [];
+      addonCards.forEach(card => {
+        const cb = card.querySelector('.addon-checkbox') as HTMLInputElement;
+        if (cb.checked) {
+          names.push(`${card.dataset.addonName} (+${card.dataset.addonPrice}€)`);
+        }
+      });
+      const el = document.getElementById('hidden-options') as HTMLInputElement;
+      if (el) el.value = names.length ? names.join(', ') : 'Aucune option';
+    }
+
+    function updateHiddenPayment() {
+      const checked = document.querySelector<HTMLInputElement>('input[name="paiement"]:checked');
+      const el = document.getElementById('hidden-payment') as HTMLInputElement;
+      if (checked && el) el.value = checked.value;
+    }
+
+    // ---- Step 3 validation ----
+    function validateStep3(): boolean {
+      let valid = true;
+      // Remove previous errors
+      document.querySelectorAll('.field-error').forEach(el => el.classList.remove('field-error'));
+      document.querySelectorAll('.error-msg').forEach(el => el.remove());
+
+      const requiredFields = [
+        { id: 'fullname', label: 'Nom complet' },
+        { id: 'order-email', label: 'Email' },
+        { id: 'order-phone', label: 'Téléphone' },
+        { id: 'company', label: 'Entreprise' },
+        { id: 'activity-desc', label: 'Description' },
+        { id: 'city', label: 'Ville' },
+      ];
+
+      requiredFields.forEach(f => {
+        const el = document.getElementById(f.id) as HTMLInputElement | HTMLTextAreaElement;
+        if (el && !el.value.trim()) {
+          el.classList.add('field-error');
+          const msg = document.createElement('p');
+          msg.className = 'error-msg';
+          msg.textContent = `${f.label} est requis.`;
+          el.parentElement?.appendChild(msg);
+          valid = false;
+        }
+      });
+
+      // Email format
+      const emailEl = document.getElementById('order-email') as HTMLInputElement;
+      if (emailEl && emailEl.value.trim() && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailEl.value.trim())) {
+        emailEl.classList.add('field-error');
+        const msg = document.createElement('p');
+        msg.className = 'error-msg';
+        msg.textContent = 'Veuillez entrer un email valide.';
+        emailEl.parentElement?.appendChild(msg);
+        valid = false;
+      }
+
+      // Privacy checkbox
+      const privacyCb = document.getElementById('order-privacy') as HTMLInputElement;
+      if (privacyCb && !privacyCb.checked) {
+        const msg = document.createElement('p');
+        msg.className = 'error-msg';
+        msg.textContent = 'Veuillez accepter la politique de confidentialité.';
+        privacyCb.parentElement?.parentElement?.appendChild(msg);
+        valid = false;
+      }
+
+      return valid;
+    }
+
+    // ---- Populate recap (step 4) ----
+    function populateRecap() {
+      const total = BASE_PRICE + getAddonsTotal();
+
+      // Addons list
+      const recapAddons = document.getElementById('recap-addons');
+      if (recapAddons) {
+        recapAddons.innerHTML = '';
+        addonCards.forEach(card => {
+          const cb = card.querySelector('.addon-checkbox') as HTMLInputElement;
+          if (cb.checked) {
+            const row = document.createElement('div');
+            row.className = 'recap-addon-row';
+            row.innerHTML = `
+              <span class="text-sm text-[var(--color-text)]">${card.dataset.addonName}</span>
+              <span class="text-sm font-bold text-[var(--color-text)]">+${card.dataset.addonPrice}&euro;</span>
+            `;
+            recapAddons.appendChild(row);
+          }
+        });
+      }
+
+      // Total
+      const recapTotal = document.getElementById('recap-total');
+      if (recapTotal) recapTotal.innerHTML = `${total}&euro;`;
+
+      // Payment
+      const checked = document.querySelector<HTMLInputElement>('input[name="paiement"]:checked');
+      const recapPayment = document.getElementById('recap-payment');
+      if (recapPayment && checked) recapPayment.textContent = checked.value;
+
+      // Client info
+      const recapInfo = document.getElementById('recap-info');
+      if (recapInfo) {
+        const name = (document.getElementById('fullname') as HTMLInputElement)?.value || '';
+        const email = (document.getElementById('order-email') as HTMLInputElement)?.value || '';
+        const phone = (document.getElementById('order-phone') as HTMLInputElement)?.value || '';
+        const company = (document.getElementById('company') as HTMLInputElement)?.value || '';
+        const city = (document.getElementById('city') as HTMLInputElement)?.value || '';
+
+        recapInfo.innerHTML = `
+          <p><strong>${name}</strong></p>
+          <p>${company}</p>
+          <p>${email} &middot; ${phone}</p>
+          <p>${city}</p>
+        `;
+      }
+    }
+
+    // Prevent native form submission validation on non-submit buttons
+    form?.addEventListener('submit', (e) => {
+      // Final check
+      if (!validateStep3()) {
+        e.preventDefault();
+        goToStep(3);
+      }
+    });
+  });
+</script>

@@ -58,6 +58,10 @@ export const business = {
     { name: 'Fiche Google Business', price: 90 },
     { name: 'Pack réseaux sociaux', price: 150 },
     { name: 'Blog SEO (5 articles + CMS)', price: 390 },
+    { name: 'Prise de RDV en ligne', price: 180 },
+    { name: 'Paiement en ligne', price: 250 },
+    { name: 'Galerie photos avancée', price: 90 },
+    { name: 'Animations au scroll', price: 90 },
   ],
 
   // Accompagnement post-livraison
