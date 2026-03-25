@@ -192,16 +192,27 @@ const checkIcon = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                   </div>
                   <p class="text-xs text-[var(--color-text-muted)] mt-1 leading-relaxed">{addon.desc}</p>
                 </div>
-
-                <!-- Check indicator -->
-                <div class="addon-check w-5 h-5 rounded-md border-2 border-[var(--color-border)] flex items-center justify-center flex-shrink-0 mt-0.5 transition-all absolute top-3 right-3">
-                  <svg class="w-3.5 h-3.5 text-white opacity-0 transition-opacity" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
-                </div>
               </label>
             ))}
           </div>
 
-          <p class="text-xs text-center text-[var(--color-text-muted)] mt-5">Pas besoin d'options ? Passez directement à l'étape suivante.</p>
+          <!-- Total en direct + CTA -->
+          <div class="mt-6 rounded-xl border border-[var(--color-border)] bg-white p-5">
+            <div class="flex items-center justify-between mb-4">
+              <div>
+                <span class="text-sm text-[var(--color-text-muted)]">Total estimé</span>
+                <div class="text-2xl font-extrabold text-[var(--color-text)]" id="inline-total">490€ <span class="text-sm font-normal text-[var(--color-text-muted)]">HT</span></div>
+              </div>
+              <div class="text-right">
+                <span class="text-xs text-[var(--color-text-muted)]" id="inline-addon-summary">Aucune option</span>
+              </div>
+            </div>
+            <button type="button" class="btn-next w-full inline-flex items-center justify-center gap-2 px-8 py-4 bg-[var(--color-accent)] text-white font-semibold rounded-xl hover:bg-[var(--color-accent-hover)] transition-all shadow-md text-base" data-goto="3">
+              Continuer
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+            </button>
+            <p class="text-xs text-center text-[var(--color-text-muted)] mt-3">Pas besoin d'options ? Continuez directement.</p>
+          </div>
         </div>
 
         <!-- ========== STEP 3 — Infos ========== -->
@@ -407,10 +418,13 @@ const checkIcon = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
 
   /* Addon cards */
   .addon-card { position: relative; }
-  .addon-card.selected { border-color: var(--color-accent); background: var(--color-accent-light); }
-  .addon-card.selected .addon-check { background: var(--color-accent); border-color: var(--color-accent); }
-  .addon-card.selected .addon-check svg { opacity: 1; }
-  .addon-card.selected .addon-icon { background: rgba(232, 108, 71, 0.15); }
+  .addon-card.selected {
+    border-color: var(--color-accent);
+    background: var(--color-accent-light);
+    box-shadow: 0 0 0 2px var(--color-accent), 0 4px 12px rgba(232, 108, 71, 0.15);
+  }
+  .addon-card.selected .addon-icon { background: rgba(232, 108, 71, 0.2); }
+  .addon-card.selected .addon-icon span { color: var(--color-accent-hover); }
   .addon-card.hidden-by-filter { display: none; }
 
   /* Checkbox */
@@ -580,6 +594,22 @@ const checkIcon = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
       const total = BASE_PRICE + getAddonsTotal();
       const formatted = `${total}€ <span class="text-xs font-normal text-[var(--color-text-muted)]">HT</span>`;
       if (floatingAmount) floatingAmount.innerHTML = formatted;
+
+      // Inline total (step 2)
+      const inlineTotal = document.getElementById('inline-total');
+      if (inlineTotal) inlineTotal.innerHTML = `${total}€ <span class="text-sm font-normal text-[var(--color-text-muted)]">HT</span>`;
+
+      const inlineSummary = document.getElementById('inline-addon-summary');
+      if (inlineSummary) {
+        let count = 0;
+        let addonsSum = 0;
+        addonCards.forEach(card => {
+          const cb = card.querySelector('.addon-checkbox') as HTMLInputElement;
+          if (cb.checked) { count++; addonsSum += parseInt(card.dataset.addonPrice || '0', 10); }
+        });
+        inlineSummary.textContent = count === 0 ? 'Aucune option' : `${count} option${count > 1 ? 's' : ''} (+${addonsSum}€)`;
+      }
+
       const ht = document.getElementById('hidden-total') as HTMLInputElement;
       if (ht) ht.value = String(total);
       updateHiddenOptions();
