@@ -33,38 +33,54 @@ export const business = {
 
   // Business
   description: 'Création de sites web sur mesure pour artisans, commerçants et petites entreprises du Grand Est.',
-  priceRange: '490€ - 1990€+',
+  priceRange: '490€+',
   areaServed: ['Strasbourg', 'Metz', 'Nancy', 'Colmar', 'Mulhouse'],
 
-  // Offres (3-tier actuel)
+  // Offres (2 niveaux : produit + service)
   offers: [
     {
-      name: 'Essentiel',
+      name: 'Site Vitrine',
       price: 490,
       currency: 'EUR',
-      description: 'Site vitrine 1-3 pages, design responsive, SEO de base, formulaire de contact.',
+      description: 'Site professionnel sur mesure, référencé Google & IA, Lighthouse 100, livré en 7 jours.',
     },
     {
-      name: 'Multi-pages',
-      price: 1290,
+      name: 'Projet Sur Mesure',
+      price: null, // sur devis
       currency: 'EUR',
-      description: 'Site multi-pages optimisé SEO, blog intégré, données structurées, formulaire avancé.',
-    },
-    {
-      name: 'Sur mesure',
-      price: 1990,
-      currency: 'EUR',
-      description: 'Architecture personnalisée, fonctionnalités spécifiques, accompagnement complet.',
+      description: 'Multi-pages, blog, fonctionnalités métier, stratégie SEO — devis gratuit sous 48h.',
     },
   ],
 
-  // Maintenance
-  maintenance: {
-    priceFrom: 100,
-    priceTo: 150,
-    currency: 'EUR',
-    period: 'mois',
-  },
+  // Add-ons à la carte
+  addons: [
+    { name: 'Page supplémentaire', price: 120 },
+    { name: 'Fiche Google Business', price: 90 },
+    { name: 'Pack réseaux sociaux', price: 150 },
+    { name: 'Blog SEO (5 articles + CMS)', price: 390 },
+  ],
+
+  // Accompagnement post-livraison
+  accompagnement: [
+    {
+      name: 'Autonomie',
+      price: 0,
+      period: null,
+      description: 'Votre site tourne tout seul. Vous gérez en toute indépendance.',
+    },
+    {
+      name: 'Accompagnement',
+      price: 39,
+      period: 'mois',
+      description: 'Domaine inclus, support email/WhatsApp, modifications mineures.',
+    },
+    {
+      name: 'Croissance',
+      price: 99,
+      period: 'mois',
+      description: '1 article blog/mois, 2h de modifications, rapport SEO mensuel.',
+    },
+  ],
 
   // 100 Vitrines — 🔧 MISE À JOUR ICI pour changer le compteur partout
   sitesRealises: 11,
