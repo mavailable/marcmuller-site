@@ -1,0 +1,1010 @@
+---
+// supaire.astro — Joke/parody hidden page for marketing campaign
+// NO BaseLayout, NO Header, NO Footer — completely standalone
+---
+
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>MON-SUPAIRE-SITE.COM</title>
+
+  <style>
+    /* ============================================================
+       FONTS
+       ============================================================ */
+    @font-face {
+      font-family: 'Satoshi';
+      src: url('/fonts/Satoshi-Variable.woff2') format('woff2');
+      font-weight: 100 900;
+      font-display: swap;
+    }
+
+    /* ============================================================
+       RESET & BASE
+       ============================================================ */
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { overflow-x: hidden; font-family: 'Comic Sans MS', 'Comic Sans', cursive; background: #000; }
+
+    /* ============================================================
+       PHASE 1 — FAKE LOADING / DIAL-UP
+       ============================================================ */
+    #phase1 {
+      position: fixed; inset: 0; z-index: 10000;
+      background: #000; display: flex; align-items: center; justify-content: center;
+      flex-direction: column; transition: opacity 0.5s;
+    }
+    #phase1.hidden { opacity: 0; pointer-events: none; }
+
+    .xp-dialog {
+      background: #ECE9D8; border: 2px solid #0054E3;
+      border-radius: 8px 8px 0 0; width: 380px; max-width: 90vw;
+      box-shadow: 2px 2px 10px rgba(0,0,0,0.5); font-family: 'Tahoma', 'Segoe UI', sans-serif;
+      font-size: 12px; display: none;
+    }
+    .xp-dialog.visible { display: block; }
+    .xp-titlebar {
+      background: linear-gradient(180deg, #0997FF 0%, #0054E3 100%);
+      color: white; padding: 4px 8px; font-weight: bold; font-size: 12px;
+      border-radius: 6px 6px 0 0; display: flex; justify-content: space-between; align-items: center;
+    }
+    .xp-close { background: #E04343; color: white; border: 1px solid #8B0000; border-radius: 3px;
+      width: 20px; height: 20px; font-size: 10px; cursor: pointer; display: flex; align-items: center; justify-content: center; }
+    .xp-body { padding: 16px; }
+    .xp-progress-outer {
+      background: #FFF; border: 1px solid #8B8B8B; height: 18px; border-radius: 2px; overflow: hidden; margin: 10px 0;
+    }
+    .xp-progress-inner {
+      background: linear-gradient(90deg, #0997FF 0%, #52B4FF 50%, #0997FF 100%);
+      height: 100%; width: 0%; transition: width 0.3s; border-radius: 2px;
+      background-size: 30px 18px;
+      animation: xpProgressStripe 0.5s linear infinite;
+    }
+    @keyframes xpProgressStripe {
+      0% { background-position: 0 0; }
+      100% { background-position: 30px 0; }
+    }
+    .xp-text { color: #000; margin-bottom: 8px; }
+
+    /* Error popup */
+    .xp-error {
+      position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      z-index: 10001; display: none;
+    }
+    .xp-error.visible { display: block; }
+    .xp-error .xp-body { text-align: center; }
+    .xp-btn {
+      background: linear-gradient(180deg, #FFF 0%, #E3E3DB 100%);
+      border: 1px solid #8B8B8B; border-radius: 3px; padding: 3px 20px;
+      font-family: 'Tahoma', sans-serif; font-size: 12px; cursor: pointer;
+      margin: 4px;
+    }
+    .xp-btn:active { background: #D4D0C8; }
+
+    /* IE loading bar */
+    #ie-bar {
+      position: fixed; top: 0; left: 0; height: 4px; z-index: 10002;
+      background: #0997FF; width: 0%; display: none; transition: width 0.2s;
+    }
+
+    /* ============================================================
+       PHASE 2 — THE UGLY 2000s SITE
+       ============================================================ */
+    #phase2 {
+      display: none; min-height: 100vh; position: relative;
+      background: #000033;
+      cursor: url("data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' width='32' height='32'><text y='24' font-size='24'>%E2%9C%A8</text></svg>") 16 16, auto;
+    }
+    #phase2.visible { display: block; }
+
+    /* Starfield */
+    #starfield {
+      position: fixed; inset: 0; z-index: 0; pointer-events: none;
+      background: radial-gradient(ellipse at center, #000033 0%, #000011 100%);
+    }
+    .star {
+      position: absolute; background: white; border-radius: 50%;
+      animation: starTwinkle var(--dur) ease-in-out infinite alternate;
+    }
+    @keyframes starTwinkle {
+      0% { opacity: 0.2; transform: scale(0.5); }
+      100% { opacity: 1; transform: scale(1.2); }
+    }
+
+    /* URL bar */
+    .url-bar {
+      background: #C0C0C0; border-bottom: 2px solid #808080; padding: 4px 8px;
+      font-family: 'Tahoma', sans-serif; font-size: 12px; display: flex; align-items: center; gap: 8px;
+      position: relative; z-index: 10;
+    }
+    .url-bar input {
+      flex: 1; padding: 2px 4px; border: 2px inset #C0C0C0; font-family: 'Tahoma', sans-serif; font-size: 12px;
+      background: #FFF;
+    }
+    .rec-badge {
+      background: red; color: white; font-weight: bold; font-size: 10px;
+      padding: 2px 6px; border-radius: 2px; animation: blink 0.5s infinite;
+    }
+
+    /* Blink animation */
+    @keyframes blink {
+      0%, 100% { opacity: 1; }
+      50% { opacity: 0; }
+    }
+    .blink { animation: blink 0.8s infinite; }
+
+    /* Rainbow text */
+    .rainbow {
+      background: linear-gradient(90deg, #FF0000, #FF7F00, #FFFF00, #00FF00, #0000FF, #4B0082, #8B00FF, #FF0000);
+      background-size: 400% 100%;
+      -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: rainbowShift 2s linear infinite;
+    }
+    @keyframes rainbowShift {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 400% 50%; }
+    }
+
+    /* Giant title */
+    .giant-title {
+      font-family: 'Comic Sans MS', cursive; font-size: clamp(24px, 6vw, 64px);
+      font-weight: bold; text-align: center; padding: 20px;
+      text-shadow: 3px 3px 0 #000, -1px -1px 0 #FF00FF, 2px 2px 6px rgba(255,255,0,0.8);
+      position: relative; z-index: 10;
+    }
+
+    /* Content wrapper */
+    .ugly-content {
+      max-width: 900px; margin: 0 auto; padding: 20px; position: relative; z-index: 10;
+    }
+
+    /* Fire text */
+    .fire-text {
+      font-family: Impact, sans-serif; font-size: clamp(32px, 5vw, 60px);
+      font-weight: bold; text-align: center; color: #FF4500;
+      text-shadow: 0 0 10px #FF4500, 0 0 20px #FF0000, 0 0 40px #FF6600, 0 0 80px #FF4500;
+      animation: fireFlicker 0.15s infinite alternate;
+    }
+    @keyframes fireFlicker {
+      0% { text-shadow: 0 0 10px #FF4500, 0 0 20px #FF0000, 0 0 40px #FF6600, 0 -5px 60px #FF4500; }
+      50% { text-shadow: 0 0 15px #FFFF00, 0 0 30px #FF4500, 0 0 50px #FF0000, 0 -8px 70px #FF6600; }
+      100% { text-shadow: 0 0 8px #FF4500, 0 0 18px #FF0000, 0 0 35px #FF6600, 0 -3px 55px #FF4500; }
+    }
+
+    /* Marquee styling */
+    .ugly-marquee {
+      background: #FFFF00; color: #FF0000; font-weight: bold; font-size: 16px;
+      padding: 4px 0; font-family: 'Comic Sans MS', cursive; position: relative; z-index: 10;
+    }
+    .ugly-marquee2 {
+      background: #FF00FF; color: #00FFFF; font-weight: bold; font-size: 14px;
+      padding: 4px 0; font-family: 'Comic Sans MS', cursive; position: relative; z-index: 10;
+    }
+    .ugly-marquee3 {
+      background: #00FF00; color: #000; font-weight: bold; font-size: 13px;
+      padding: 4px 0; font-family: 'Comic Sans MS', cursive; position: relative; z-index: 10;
+    }
+
+    /* Layout */
+    .ugly-layout {
+      display: flex; gap: 16px; flex-wrap: wrap; position: relative; z-index: 10;
+    }
+    .ugly-sidebar {
+      width: 180px; flex-shrink: 0;
+    }
+    .ugly-main {
+      flex: 1; min-width: 250px;
+    }
+
+    /* Sidebar menu */
+    .menu-btn {
+      display: block; width: 100%; margin: 6px 0; padding: 8px;
+      font-family: 'Comic Sans MS', cursive; font-weight: bold; font-size: 14px;
+      border: 3px outset #C0C0C0; background: #C0C0C0; cursor: pointer;
+      text-align: center; color: #000;
+    }
+    .menu-btn:hover { border-style: inset; }
+    .menu-btn.rainbow-btn {
+      background: linear-gradient(45deg, #FF0000, #FF7F00, #FFFF00, #00FF00, #00FFFF, #0000FF, #FF00FF);
+      color: #FFF; text-shadow: 1px 1px 2px #000;
+    }
+
+    /* Image placeholder */
+    .img-placeholder {
+      border: 3px dashed #FF00FF; background: #FFF; padding: 40px 20px;
+      text-align: center; color: #808080; font-size: 14px; margin: 16px 0;
+      position: relative;
+    }
+    .tape {
+      position: absolute; width: 60px; height: 20px; background: rgba(255,255,200,0.7);
+      transform: rotate(-25deg); border: 1px solid rgba(200,200,100,0.5);
+      box-shadow: 1px 1px 3px rgba(0,0,0,0.2);
+    }
+    .tape-tl { top: -8px; left: -10px; }
+    .tape-tr { top: -8px; right: -10px; transform: rotate(25deg); }
+    .tape-bl { bottom: -8px; left: -10px; transform: rotate(25deg); }
+    .tape-br { bottom: -8px; right: -10px; transform: rotate(-25deg); }
+
+    /* Cat */
+    .lolcat {
+      font-size: 80px; text-align: center; margin: 10px 0;
+      animation: catBounce 0.5s ease-in-out infinite alternate;
+    }
+    @keyframes catBounce {
+      from { transform: rotate(-5deg); }
+      to { transform: rotate(5deg); }
+    }
+
+    /* Cool badge */
+    .cool-badge {
+      display: inline-block; background: #FFD700; color: #FF0000;
+      font-weight: bold; font-size: 20px; padding: 8px 16px;
+      border: 3px solid #FF0000; transform: rotate(-5deg);
+      text-shadow: 1px 1px 0 #FFA500; margin: 10px;
+      animation: badgePulse 0.8s ease-in-out infinite alternate;
+    }
+    @keyframes badgePulse {
+      from { transform: rotate(-5deg) scale(1); }
+      to { transform: rotate(-5deg) scale(1.1); }
+    }
+
+    /* Go button */
+    .go-btn {
+      display: inline-block; background: linear-gradient(180deg, #FF0000, #CC0000);
+      color: #FFFF00; font-family: Impact, sans-serif; font-size: 48px;
+      padding: 16px 40px; border: 4px outset #FF6666; cursor: pointer;
+      text-shadow: 2px 2px 4px #000; margin: 16px;
+      animation: goBtnPulse 0.5s infinite alternate;
+    }
+    .go-btn:hover { border-style: inset; }
+    @keyframes goBtnPulse {
+      from { transform: scale(1); box-shadow: 0 0 10px #FF0000; }
+      to { transform: scale(1.05); box-shadow: 0 0 30px #FFFF00, 0 0 60px #FF0000; }
+    }
+
+    /* Bling */
+    .bling {
+      font-size: 28px; color: #FFD700; font-weight: bold;
+      text-shadow: 0 0 10px #FFD700, 0 0 20px #FFA500, 0 0 40px #FFD700;
+      animation: blingAnim 0.3s infinite alternate;
+    }
+    @keyframes blingAnim {
+      from { transform: scale(1); text-shadow: 0 0 10px #FFD700; }
+      to { transform: scale(1.1); text-shadow: 0 0 30px #FFD700, 0 0 60px #FFA500; }
+    }
+
+    /* Sparkle text */
+    .sparkle-text {
+      color: #FF0000; font-weight: bold; font-size: 22px; font-family: 'Comic Sans MS', cursive;
+      position: relative;
+    }
+    .sparkle-text::after {
+      content: '';
+      position: absolute; inset: -4px; pointer-events: none;
+      background-image: radial-gradient(circle, #FFD700 1px, transparent 1px);
+      background-size: 12px 12px;
+      animation: sparkleShift 0.5s linear infinite;
+      opacity: 0.6;
+    }
+    @keyframes sparkleShift {
+      0% { background-position: 0 0; }
+      100% { background-position: 12px 12px; }
+    }
+
+    /* Under construction */
+    .under-construction {
+      background: repeating-linear-gradient(45deg, #FFD700, #FFD700 20px, #000 20px, #000 40px);
+      padding: 8px 16px; text-align: center; color: #FF0000; font-weight: bold;
+      font-family: Impact, sans-serif; font-size: 18px; margin: 10px 0;
+      border: 3px solid #FF0000;
+    }
+    .under-construction span {
+      background: #000; padding: 2px 8px; display: inline-block;
+    }
+
+    /* Visitor counter */
+    .visitor-counter {
+      background: #000; color: #00FF00; font-family: 'Courier New', monospace;
+      padding: 8px 16px; text-align: center; font-size: 14px; margin: 10px 0;
+      border: 2px inset #808080;
+    }
+
+    /* Footer credits */
+    .ugly-footer {
+      text-align: center; padding: 20px; font-size: 11px; color: #808080;
+      font-family: 'Tahoma', sans-serif; border-top: 2px solid #C0C0C0;
+      background: #000022; position: relative; z-index: 10;
+    }
+    .ugly-footer a { color: #00FFFF; }
+
+    /* Spinning email */
+    .spin-email {
+      display: inline-block; font-size: 24px;
+      animation: spinEmail 2s linear infinite;
+    }
+    @keyframes spinEmail {
+      from { transform: rotateY(0deg); }
+      to { transform: rotateY(360deg); }
+    }
+
+    /* Popup */
+    .fake-popup {
+      position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%);
+      z-index: 9999; display: none;
+    }
+    .fake-popup.visible { display: block; }
+
+    /* Video frame */
+    .video-frame {
+      border: 4px solid #333; background: #000; border-radius: 4px;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5); margin: 16px auto; padding: 4px;
+    }
+    .video-controls {
+      background: #333; padding: 4px 8px; display: flex; gap: 8px; align-items: center;
+    }
+    .video-controls span { color: #FFF; font-size: 18px; cursor: pointer; }
+    .video-bar { flex: 1; height: 4px; background: #666; border-radius: 2px; }
+    .video-bar-fill { width: 35%; height: 100%; background: #FF0000; border-radius: 2px; }
+
+    /* Scroll hint */
+    .scroll-hint {
+      position: fixed; bottom: 20px; left: 50%; transform: translateX(-50%);
+      z-index: 9998; color: #FFF; font-family: 'Satoshi', sans-serif;
+      font-size: 16px; opacity: 0; transition: opacity 0.5s;
+      background: rgba(0,0,0,0.7); padding: 10px 20px; border-radius: 20px;
+      cursor: pointer;
+    }
+    .scroll-hint.visible { opacity: 1; animation: hintBounce 2s ease-in-out infinite; }
+    @keyframes hintBounce {
+      0%, 100% { transform: translateX(-50%) translateY(0); }
+      50% { transform: translateX(-50%) translateY(-8px); }
+    }
+
+    /* Mouse trail */
+    .trail-particle {
+      position: fixed; pointer-events: none; z-index: 9997;
+      font-size: 16px; transition: opacity 0.5s, transform 0.5s;
+    }
+
+    /* ============================================================
+       PHASE 3 — THE REVEAL
+       ============================================================ */
+    #phase3 {
+      display: none; min-height: 100vh;
+      background: #FAFAF8; color: #1A1A1A;
+      font-family: 'Satoshi', sans-serif;
+      align-items: center; justify-content: center; flex-direction: column;
+      text-align: center; padding: 40px 20px;
+    }
+    #phase3.visible {
+      display: flex;
+    }
+
+    .reveal-title {
+      font-size: clamp(32px, 6vw, 64px); font-weight: 700;
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.8s ease, transform 0.8s ease;
+      color: #1A1A1A; line-height: 1.2;
+    }
+    .reveal-title.show { opacity: 1; transform: translateY(0); }
+
+    .reveal-subtitle {
+      font-size: clamp(16px, 2.5vw, 24px); font-weight: 400;
+      color: #555; margin-top: 16px;
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.8s ease 0.4s, transform 0.8s ease 0.4s;
+    }
+    .reveal-subtitle.show { opacity: 1; transform: translateY(0); }
+
+    .reveal-price {
+      font-size: clamp(20px, 3vw, 32px); font-weight: 700;
+      color: #E86C47; margin-top: 24px;
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.8s ease 0.8s, transform 0.8s ease 0.8s;
+    }
+    .reveal-price.show { opacity: 1; transform: translateY(0); }
+
+    .reveal-cta {
+      display: inline-block; margin-top: 32px;
+      padding: 16px 32px; background: #E86C47; color: #FFF;
+      font-family: 'Satoshi', sans-serif; font-size: 18px; font-weight: 600;
+      border: none; border-radius: 8px; text-decoration: none; cursor: pointer;
+      opacity: 0; transform: translateY(20px);
+      transition: opacity 0.8s ease 1.2s, transform 0.8s ease 1.2s, background 0.3s;
+    }
+    .reveal-cta.show { opacity: 1; transform: translateY(0); }
+    .reveal-cta:hover { background: #D45A37; }
+
+    /* Glitch transition */
+    .glitch-out {
+      animation: glitchOut 0.8s forwards;
+    }
+    @keyframes glitchOut {
+      0% { filter: none; opacity: 1; }
+      20% { filter: hue-rotate(90deg) blur(2px); transform: skewX(5deg); }
+      40% { filter: hue-rotate(180deg) blur(4px); transform: skewX(-3deg) translateX(10px); }
+      60% { filter: saturate(0) blur(6px); transform: skewX(2deg) translateX(-5px); opacity: 0.5; }
+      80% { filter: blur(10px); opacity: 0.2; }
+      100% { filter: blur(20px); opacity: 0; display: none; }
+    }
+
+    /* Mobile adjustments */
+    @media (max-width: 640px) {
+      .ugly-sidebar { width: 100%; }
+      .ugly-layout { flex-direction: column; }
+      .xp-dialog { width: 95vw; }
+      .go-btn { font-size: 32px; padding: 12px 24px; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- ============================================================
+       PHASE 1 — FAKE LOADING
+       ============================================================ -->
+  <div id="phase1">
+    <!-- Dial-up connecting dialog -->
+    <div id="dialupDialog" class="xp-dialog visible">
+      <div class="xp-titlebar">
+        <span>Connexion a Internet...</span>
+        <div class="xp-close">X</div>
+      </div>
+      <div class="xp-body">
+        <p class="xp-text" id="dialupStatus">Composition du numero...</p>
+        <div class="xp-progress-outer">
+          <div class="xp-progress-inner" id="dialupProgress"></div>
+        </div>
+        <p class="xp-text" style="font-size:10px;color:#808080;" id="dialupDetail">Vitesse : 56 kbps</p>
+      </div>
+    </div>
+
+    <!-- IE Error popup -->
+    <div id="ieError" class="xp-error">
+      <div class="xp-dialog visible">
+        <div class="xp-titlebar">
+          <span>Internet Explorer</span>
+          <div class="xp-close">X</div>
+        </div>
+        <div class="xp-body">
+          <p class="xp-text" style="margin-bottom:12px;">&#9888; Internet Explorer a rencontre un probleme et doit fermer.<br><br>Si vous etiez en train de travailler, les informations que vous utilisiez sont perdues.</p>
+          <button class="xp-btn" id="ieErrorOk">OK</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toolbar popup -->
+    <div id="toolbarPopup" class="xp-error">
+      <div class="xp-dialog visible">
+        <div class="xp-titlebar">
+          <span>Installation recommandee</span>
+          <div class="xp-close">X</div>
+        </div>
+        <div class="xp-body">
+          <p class="xp-text" style="margin-bottom:12px;">Voulez-vous installer <b>17 barres d'outils</b> ?<br><small>(BonzaiBuddy, Ask Toolbar, Yahoo! Companion, CoolWebSearch...)</small></p>
+          <button class="xp-btn" id="tbOui">Oui</button>
+          <button class="xp-btn" id="tbNon">Non</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 404 flash -->
+    <div id="flash404" style="display:none;position:fixed;inset:0;background:#FFF;z-index:10003;font-family:'Tahoma',sans-serif;padding:40px;">
+      <h1 style="font-size:24px;">404 Not Found</h1>
+      <p style="margin-top:10px;">The requested URL was not found on this server.</p>
+      <hr style="margin:10px 0;">
+      <p style="font-size:12px;color:#808080;">Apache/2.0.52 (Win32) Server at mon-supaire-site.com Port 80</p>
+    </div>
+
+    <!-- IE loading bar -->
+    <div id="ie-bar"></div>
+  </div>
+
+  <!-- ============================================================
+       PHASE 2 — THE UGLY 2000s SITE
+       ============================================================ -->
+  <div id="phase2">
+    <div id="starfield"></div>
+
+    <!-- URL bar -->
+    <div class="url-bar">
+      <span style="font-size:14px;">&#127760;</span>
+      <input type="text" value="http://www.MON-SUPAIRE-SITE.COM/index.html" readonly />
+      <span class="rec-badge">&#9679; REC</span>
+    </div>
+
+    <!-- Marquee 1 -->
+    <marquee class="ugly-marquee" scrollamount="4">&#9733; BIENVENUE SUR LE MEILLEUR SITE DU MONDE &#9733; ENTREZ VOTRE EMAIL POUR GAGNER UN iPOD &#9733; SITE MIS A JOUR LE 14/02/2003 &#9733; NOUVEAU : LIVRE D'OR !!! &#9733;</marquee>
+
+    <!-- Giant title -->
+    <div class="giant-title">
+      <span class="rainbow">SITE INTERNET GRATUIT ET PAS MOCHE</span>
+    </div>
+
+    <!-- Marquee 2 (reverse) -->
+    <marquee class="ugly-marquee2" direction="right" scrollamount="3">&#9829; CLIQUEZ PARTOUT &#9829; C'EST GRATUIT &#9829; WEBMASTER CERTIFIE &#9829; 100% VIRUS FREE &#9829; MEILLEUR SITE 2003 &#9829;</marquee>
+
+    <div class="ugly-content">
+      <!-- Under construction -->
+      <div class="under-construction">
+        <span>&#9888; PAGE EN CONSTRUCTION &#9888; REVENEZ BIENTOT &#9888;</span>
+      </div>
+
+      <!-- Video frame wrapper -->
+      <div class="video-frame">
+        <div class="ugly-layout" style="padding:10px;">
+          <!-- Sidebar -->
+          <div class="ugly-sidebar">
+            <div style="text-align:center;margin-bottom:10px;">
+              <span class="cool-badge">&#9733; 100% COOL! &#9733;</span>
+            </div>
+
+            <button class="menu-btn" onclick="alert('Vous etes deja sur l\'accueil !')">&#127968; ACCUEIL</button>
+            <button class="menu-btn" onclick="alert('ERREUR 403 : Acces refuse lol')">&#128279; LIEN!!!</button>
+            <button class="menu-btn rainbow-btn" onclick="alert('Bravo ! Vous avez clique ! Rien ne se passe.')">&#127752; CLIQUEZ ICI</button>
+            <button class="menu-btn" onclick="alert('Le blog a ete pirate en 2004. Desole.')">&#128221; BLoG???!</button>
+            <button class="menu-btn" onclick="alert('Le livre d\'or est en maintenance depuis 2003')">&#128214; LIVRE D'OR</button>
+
+            <div style="margin-top:16px;text-align:center;">
+              <div class="visitor-counter">
+                Visiteur n&deg;<br><span id="visitorCount" style="font-size:18px;letter-spacing:2px;">000,012,847</span>
+              </div>
+            </div>
+
+            <div style="text-align:center;margin-top:10px;">
+              <span class="spin-email">&#9993;</span><br>
+              <span style="font-size:11px;color:#00FFFF;font-family:'Courier New',monospace;">Contact</span>
+            </div>
+          </div>
+
+          <!-- Main content -->
+          <div class="ugly-main">
+            <!-- Fire text -->
+            <div class="fire-text">&#128293; WELCOME! &#128293;</div>
+
+            <!-- LOL cat -->
+            <div class="lolcat">&#128568;</div>
+
+            <!-- Sparkle text -->
+            <p class="sparkle-text" style="text-align:center;margin:16px 0;">
+              &#10024; Texte super interessant ! &#10024;
+            </p>
+
+            <!-- Image placeholder -->
+            <div class="img-placeholder">
+              <div class="tape tape-tl"></div>
+              <div class="tape tape-tr"></div>
+              <div class="tape tape-bl"></div>
+              <div class="tape tape-br"></div>
+              <span style="font-size:40px;">&#128247;</span><br>
+              Inserez image ici<br>
+              <small style="color:#C0C0C0;">(format .bmp uniquement)</small>
+            </div>
+
+            <!-- Bling bling -->
+            <div style="text-align:center;margin:16px 0;">
+              <span class="bling">&#128142; Bling Bling &#128142;</span>
+            </div>
+
+            <!-- Big CTA -->
+            <div style="text-align:center;margin:20px 0;">
+              <p style="color:#FFFF00;font-size:20px;font-weight:bold;" class="blink">&#128073; CLIQUE SUR LE BOUTON !! &#128072;</p>
+              <div class="go-btn" onclick="alert('ERREUR FATALE : Trop de coolitude detectee !!!')">GO!</div>
+            </div>
+
+            <!-- Guestbook teaser -->
+            <div style="background:#C0C0C0;border:2px outset #FFF;padding:8px;margin:16px 0;font-family:'Tahoma',sans-serif;font-size:12px;">
+              <p><b>Derniers messages du livre d'or :</b></p>
+              <p style="color:#000080;">&#9658; <i>"tro bi1 ton site mec continu!!!"</i> — xX_Kevin_2003_Xx</p>
+              <p style="color:#008000;">&#9658; <i>"salu sa fai 2 heure ke jessaye de fermer les popups lol"</i> — DarkAnge62</p>
+              <p style="color:#800000;">&#9658; <i>"je cherche les cheat code de age of empire"</i> — PtitLoup_du_59</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Video controls -->
+        <div class="video-controls">
+          <span>&#9654;</span>
+          <span>&#9646;&#9646;</span>
+          <span>&#9632;</span>
+          <div class="video-bar"><div class="video-bar-fill"></div></div>
+          <span style="font-size:12px;color:#AAA;">03:27</span>
+        </div>
+      </div>
+
+      <!-- Marquee 3 (vertical) -->
+      <marquee class="ugly-marquee3" direction="up" scrollamount="2" style="height:40px;">
+        &#9733; TELECHARGEZ WINAMP &#9733; ICQ : 48291037 &#9733; MSN : darkwebmaster@hotmail.fr &#9733;
+      </marquee>
+
+      <!-- Bottom info -->
+      <div style="text-align:center;margin:16px 0;color:#808080;font-size:11px;font-family:'Tahoma',sans-serif;">
+        <p>Site optimise pour Internet Explorer 6 &mdash; Resolution 800x600</p>
+        <p style="margin-top:4px;">
+          <img alt="" src="data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7" width="1" height="1" />
+          Powered by FrontPage 2003 | Heberge par Free.fr
+        </p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="ugly-footer">
+      <p>Copyright &copy; 2003 MON-SUPAIRE-SITE.COM — Tous droits reserves (meme si ya rien a voler)</p>
+      <p style="margin-top:4px;">Webmaster : <span style="color:#00FF00;">xX_DarkWebMaster_Xx</span> | <span class="spin-email">&#9993;</span> darkwebmaster@hotmail.fr</p>
+      <p style="margin-top:8px;font-size:10px;color:#555;">
+        <span class="blink" style="color:#FF0000;">&#9679;</span> Cree avec passion et Paint.exe
+      </p>
+    </div>
+
+    <!-- Scroll hint -->
+    <div id="scrollHint" class="scroll-hint">Vous meritez mieux &#8595;</div>
+
+    <!-- Fake iPhone popup -->
+    <div id="iphonePopup" class="fake-popup">
+      <div class="xp-dialog visible" style="border-color:#FF0000;">
+        <div class="xp-titlebar" style="background:linear-gradient(180deg,#FF6600,#CC0000);">
+          <span>&#127881; FELICITATIONS !!!</span>
+          <div class="xp-close" onclick="document.getElementById('iphonePopup').classList.remove('visible')">X</div>
+        </div>
+        <div class="xp-body" style="text-align:center;">
+          <p style="font-size:16px;color:#FF0000;font-weight:bold;" class="blink">&#127881; FELICITATIONS ! &#127881;</p>
+          <p style="margin:8px 0;">Vous avez gagne un <b>iPhone 47 Pro Max Ultra</b> !!!</p>
+          <p style="font-size:11px;color:#808080;">*Offre soumise a l'achat de 47 sonneries a 4.99EUR/min</p>
+          <button class="xp-btn" onclick="alert('LOL non.')">RECLAMER MON PRIX</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============================================================
+       PHASE 3 — THE REVEAL
+       ============================================================ -->
+  <div id="phase3">
+    <div class="reveal-title" id="revealTitle">Vous meritez mieux.</div>
+    <div class="reveal-subtitle" id="revealSubtitle">Un site web professionnel, elegant et efficace.</div>
+    <div class="reveal-price" id="revealPrice">A partir de 490 EUR</div>
+    <a href="https://marcm.fr" class="reveal-cta" id="revealCta">Decouvrir Marc M &#8594;</a>
+  </div>
+
+  <!-- ============================================================
+       SCRIPTS
+       ============================================================ -->
+  <script>
+    // ---- Right-click disable ----
+    document.addEventListener('contextmenu', (e) => {
+      e.preventDefault();
+      alert('Nice try \u{1F60E}');
+    });
+
+    // ---- Web Audio: Dial-up modem sound ----
+    function playDialupSound() {
+      try {
+        const ctx = new (window.AudioContext || window.webkitAudioContext)();
+        const duration = 4;
+        const sr = ctx.sampleRate;
+        const buf = ctx.createBuffer(1, sr * duration, sr);
+        const data = buf.getChannelData(0);
+
+        for (let i = 0; i < data.length; i++) {
+          const t = i / sr;
+          let sample = 0;
+          if (t < 0.5) {
+            // Initial dial tones
+            sample = Math.sin(2 * Math.PI * 350 * t) * 0.3 + Math.sin(2 * Math.PI * 440 * t) * 0.3;
+          } else if (t < 1.2) {
+            // Ring
+            sample = Math.sin(2 * Math.PI * 480 * t) * 0.2 * (Math.sin(2 * Math.PI * 20 * t) > 0 ? 1 : 0);
+          } else if (t < 2.5) {
+            // Modem handshake screech
+            const freq = 1200 + Math.sin(t * 50) * 800 + Math.sin(t * 200) * 400;
+            sample = Math.sin(2 * Math.PI * freq * t) * 0.15;
+            sample += (Math.random() - 0.5) * 0.08;
+          } else if (t < 3.5) {
+            // Data negotiation noise
+            const freq = 2400 + Math.sin(t * 150) * 600;
+            sample = Math.sin(2 * Math.PI * freq * t) * 0.1;
+            sample += Math.sin(2 * Math.PI * (freq * 0.5) * t) * 0.05;
+            sample += (Math.random() - 0.5) * 0.05;
+          } else {
+            // Final connection burst
+            sample = (Math.random() - 0.5) * 0.04 * (1 - (t - 3.5) * 2);
+          }
+          data[i] = sample;
+        }
+
+        const src = ctx.createBufferSource();
+        src.buffer = buf;
+        const gain = ctx.createGain();
+        gain.gain.value = 0.4;
+        src.connect(gain);
+        gain.connect(ctx.destination);
+        src.start();
+        return ctx;
+      } catch(e) { return null; }
+    }
+
+    // ---- Web Audio: Chiptune melody ----
+    let chiptuneCtx = null;
+    let chiptuneOsc = null;
+
+    function playChiptune() {
+      try {
+        chiptuneCtx = new (window.AudioContext || window.webkitAudioContext)();
+        const melody = [
+          262, 294, 330, 349, 392, 349, 330, 294,
+          262, 330, 392, 523, 392, 330, 262, 294,
+          330, 349, 392, 440, 392, 349, 330, 294,
+          262, 0, 262, 0, 392, 0, 523, 0
+        ];
+        const noteLength = 0.18;
+        const totalTime = melody.length * noteLength;
+
+        function scheduleNotes(startTime) {
+          melody.forEach((freq, i) => {
+            if (freq === 0) return;
+            const osc = chiptuneCtx.createOscillator();
+            osc.type = 'square';
+            osc.frequency.value = freq;
+            const g = chiptuneCtx.createGain();
+            g.gain.value = 0.06;
+            g.gain.setValueAtTime(0.06, startTime + i * noteLength);
+            g.gain.exponentialRampToValueAtTime(0.001, startTime + (i + 0.9) * noteLength);
+            osc.connect(g);
+            g.connect(chiptuneCtx.destination);
+            osc.start(startTime + i * noteLength);
+            osc.stop(startTime + (i + 1) * noteLength);
+          });
+        }
+
+        // Loop the melody
+        let time = chiptuneCtx.currentTime;
+        for (let loop = 0; loop < 50; loop++) {
+          scheduleNotes(time);
+          time += totalTime;
+        }
+      } catch(e) {}
+    }
+
+    function stopChiptune() {
+      if (chiptuneCtx) {
+        chiptuneCtx.close();
+        chiptuneCtx = null;
+      }
+    }
+
+    // ---- PHASE 1 SEQUENCE ----
+    const phase1 = document.getElementById('phase1');
+    const phase2 = document.getElementById('phase2');
+    const phase3 = document.getElementById('phase3');
+    const progress = document.getElementById('dialupProgress');
+    const status = document.getElementById('dialupStatus');
+    const detail = document.getElementById('dialupDetail');
+    const ieBar = document.getElementById('ie-bar');
+    const ieError = document.getElementById('ieError');
+    const toolbarPopup = document.getElementById('toolbarPopup');
+    const flash404 = document.getElementById('flash404');
+
+    async function sleep(ms) {
+      return new Promise(r => setTimeout(r, ms));
+    }
+
+    async function runPhase1() {
+      // Start dial-up sound on first interaction or immediately
+      let audioStarted = false;
+      function startAudio() {
+        if (!audioStarted) {
+          audioStarted = true;
+          playDialupSound();
+        }
+      }
+      // Try to autoplay, fallback to click
+      startAudio();
+      document.addEventListener('click', startAudio, { once: true });
+
+      // Stuttering progress bar
+      const steps = [
+        { w: 5, d: 300 }, { w: 12, d: 200 }, { w: 15, d: 500 },
+        { w: 13, d: 300 }, { w: 18, d: 200 }, { w: 25, d: 400 },
+        { w: 22, d: 200 }, { w: 30, d: 300 }, { w: 35, d: 200 },
+        { w: 32, d: 400 }, { w: 40, d: 200 }, { w: 50, d: 300 },
+      ];
+
+      status.textContent = 'Composition du numero...';
+      for (const step of steps.slice(0, 4)) {
+        progress.style.width = step.w + '%';
+        await sleep(step.d);
+      }
+
+      status.textContent = 'Verification du nom d\'utilisateur...';
+      detail.textContent = 'Vitesse : 28.8 kbps (lol)';
+      for (const step of steps.slice(4, 8)) {
+        progress.style.width = step.w + '%';
+        await sleep(step.d);
+      }
+
+      status.textContent = 'Connexion au reseau...';
+      detail.textContent = 'Vitesse : 56 kbps (TURBO !!!)';
+      for (const step of steps.slice(8)) {
+        progress.style.width = step.w + '%';
+        await sleep(step.d);
+      }
+
+      progress.style.width = '65%';
+      status.textContent = 'Telechargement des popups...';
+      await sleep(500);
+
+      // Show IE loading bar
+      ieBar.style.display = 'block';
+      for (let i = 0; i <= 80; i += 5) {
+        ieBar.style.width = i + '%';
+        await sleep(50);
+      }
+
+      progress.style.width = '80%';
+      status.textContent = 'Presque...';
+      await sleep(400);
+
+      // IE Error popup
+      ieError.classList.add('visible');
+      await sleep(2000);
+      ieError.classList.remove('visible');
+
+      progress.style.width = '90%';
+      await sleep(300);
+
+      // Toolbar popup
+      toolbarPopup.classList.add('visible');
+      await sleep(2500);
+      toolbarPopup.classList.remove('visible');
+
+      progress.style.width = '95%';
+      ieBar.style.width = '95%';
+      await sleep(300);
+
+      // 404 flash
+      flash404.style.display = 'block';
+      await sleep(800);
+      flash404.style.display = 'none';
+
+      // Complete
+      progress.style.width = '100%';
+      ieBar.style.width = '100%';
+      status.textContent = 'Connecte !';
+      await sleep(500);
+
+      // Transition to Phase 2
+      phase1.classList.add('hidden');
+      await sleep(500);
+      phase1.style.display = 'none';
+      phase2.classList.add('visible');
+
+      // Start chiptune
+      playChiptune();
+
+      // Generate starfield
+      generateStarfield();
+
+      // Start visitor counter
+      startVisitorCounter();
+
+      // Show iPhone popup after 3s
+      setTimeout(() => {
+        document.getElementById('iphonePopup').classList.add('visible');
+      }, 3000);
+
+      // Show scroll hint after 5s
+      setTimeout(() => {
+        document.getElementById('scrollHint').classList.add('visible');
+      }, 5000);
+
+      // Start mouse trail
+      startMouseTrail();
+    }
+
+    // ---- STARFIELD ----
+    function generateStarfield() {
+      const sf = document.getElementById('starfield');
+      for (let i = 0; i < 80; i++) {
+        const star = document.createElement('div');
+        star.className = 'star';
+        const size = Math.random() * 3 + 1;
+        star.style.cssText = `
+          left: ${Math.random() * 100}%;
+          top: ${Math.random() * 100}%;
+          width: ${size}px; height: ${size}px;
+          --dur: ${Math.random() * 2 + 1}s;
+        `;
+        sf.appendChild(star);
+      }
+    }
+
+    // ---- VISITOR COUNTER ----
+    function startVisitorCounter() {
+      const el = document.getElementById('visitorCount');
+      let count = 12847;
+      setInterval(() => {
+        count += Math.floor(Math.random() * 3);
+        el.textContent = count.toLocaleString('fr-FR').replace(/\s/g, ',').padStart(11, '0');
+      }, 2000);
+    }
+
+    // ---- MOUSE TRAIL ----
+    function startMouseTrail() {
+      const sparkles = ['\u2728', '\u2B50', '\u2764\uFE0F', '\u2734\uFE0F', '\u269B\uFE0F'];
+      document.addEventListener('mousemove', (e) => {
+        if (Math.random() > 0.7) return; // throttle
+        const particle = document.createElement('div');
+        particle.className = 'trail-particle';
+        particle.textContent = sparkles[Math.floor(Math.random() * sparkles.length)];
+        particle.style.left = e.clientX + 'px';
+        particle.style.top = e.clientY + 'px';
+        document.body.appendChild(particle);
+        requestAnimationFrame(() => {
+          particle.style.opacity = '0';
+          particle.style.transform = `translateY(-30px) scale(0.5) rotate(${Math.random()*360}deg)`;
+        });
+        setTimeout(() => particle.remove(), 600);
+      });
+    }
+
+    // ---- PHASE 3 TRANSITION ----
+    let phase3Triggered = false;
+
+    function triggerPhase3() {
+      if (phase3Triggered) return;
+      phase3Triggered = true;
+
+      // Stop the music
+      stopChiptune();
+
+      // Glitch out phase 2
+      phase2.classList.add('glitch-out');
+
+      setTimeout(() => {
+        phase2.style.display = 'none';
+        phase3.classList.add('visible');
+        document.body.style.background = '#FAFAF8';
+
+        // Remove scroll hint
+        const hint = document.getElementById('scrollHint');
+        if (hint) hint.remove();
+
+        // Remove any remaining popups/trails
+        document.querySelectorAll('.trail-particle, .fake-popup').forEach(el => el.remove());
+
+        // Trigger reveal animations
+        requestAnimationFrame(() => {
+          document.getElementById('revealTitle').classList.add('show');
+          document.getElementById('revealSubtitle').classList.add('show');
+          document.getElementById('revealPrice').classList.add('show');
+          document.getElementById('revealCta').classList.add('show');
+        });
+      }, 900);
+    }
+
+    // Scroll trigger
+    window.addEventListener('scroll', () => {
+      if (!phase3Triggered && phase2.classList.contains('visible')) {
+        const scrolled = window.scrollY;
+        const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+        if (scrolled > docHeight * 0.85) {
+          triggerPhase3();
+        }
+      }
+    });
+
+    // Scroll hint click trigger
+    document.getElementById('scrollHint').addEventListener('click', () => {
+      window.scrollTo({ top: document.documentElement.scrollHeight, behavior: 'smooth' });
+      setTimeout(triggerPhase3, 800);
+    });
+
+    // ---- INIT ----
+    runPhase1();
+  </script>
+
+</body>
+</html>

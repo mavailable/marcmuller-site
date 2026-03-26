@@ -12,7 +12,8 @@ export default defineConfig({
         !page.includes('/merci') &&
         !page.includes('/thank-you') &&
         !page.includes('/graphistes') &&
-        !page.includes('/designers'),
+        !page.includes('/designers') &&
+        !page.includes('/supaire'),
       i18n: {
         defaultLocale: 'fr',
         locales: {
