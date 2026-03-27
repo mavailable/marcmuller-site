@@ -388,7 +388,9 @@ const faqItems = [
       <div class="mt-16 grid gap-8 md:grid-cols-2">
         {getProjectsForCarousel('homepage').slice(0, 4).map((p) => (
           <a href={p.url} target="_blank" rel="noopener noreferrer"
-            class="group overflow-hidden rounded-2xl border border-[var(--color-border)] bg-white shadow-sm transition-all hover:shadow-xl hover:-translate-y-1">
+            class="group overflow-hidden rounded-2xl border border-[var(--color-border)] bg-white shadow-sm transition-all hover:shadow-xl hover:-translate-y-1"
+            data-umami-event="home-project-click"
+            data-umami-event-project={p.id}>
             <div class="relative overflow-hidden" style="aspect-ratio:16/9;">
               <div class="absolute inset-0" style={`background: linear-gradient(135deg, ${p.gradientFrom}, ${p.gradientTo});`}></div>
               <img src={p.screenshot} alt={`Site web ${p.title}`}
@@ -548,10 +550,10 @@ const faqItems = [
           </div>
 
           <div class="flex flex-col sm:flex-row gap-3">
-            <a href="/commander" class="inline-flex items-center justify-center rounded-xl px-8 py-4 text-base font-semibold text-white transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5" style="background: linear-gradient(135deg, #E86C47, #D4572F); box-shadow: 0 4px 20px rgba(232, 108, 71, 0.3);">
+            <a href="/commander" class="inline-flex items-center justify-center rounded-xl px-8 py-4 text-base font-semibold text-white transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5" style="background: linear-gradient(135deg, #E86C47, #D4572F); box-shadow: 0 4px 20px rgba(232, 108, 71, 0.3);" data-umami-event="home-cta-offre">
               Commander — 490€
             </a>
-            <a href="/offre#sur-mesure" class="inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/5 px-8 py-4 text-base font-semibold text-white/85 transition-all duration-300 hover:bg-white/10 hover:border-white/30 hover:text-white">
+            <a href="/offre#sur-mesure" class="inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/5 px-8 py-4 text-base font-semibold text-white/85 transition-all duration-300 hover:bg-white/10 hover:border-white/30 hover:text-white" data-umami-event="home-cta-surmesure">
               Projet sur mesure
             </a>
           </div>
@@ -628,6 +630,7 @@ const faqItems = [
         <a
           href="/contact"
           class="inline-flex items-center justify-center rounded-lg border border-white/20 bg-white/5 px-8 py-4 font-semibold text-white/85 transition-all hover:bg-white/10 hover:border-white/30 hover:text-white"
+          data-umami-event="home-cta-contact"
         >
           Discuter d'un projet sur mesure
         </a>
@@ -810,4 +813,16 @@ const faqItems = [
 
     animate();
   }
+
+  // FAQ accordion tracking
+  document.querySelectorAll('details').forEach((el) => {
+    el.addEventListener('toggle', () => {
+      if (el.open) {
+        const question = el.querySelector('summary')?.textContent?.trim() || '';
+        if (typeof umami !== 'undefined') {
+          umami.track('faq-open', { question: question.slice(0, 80) });
+        }
+      }
+    });
+  });
 </script>

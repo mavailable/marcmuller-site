@@ -367,7 +367,7 @@ const checkIcon = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
           </button>
           <p class="text-center text-xs text-[var(--color-text-muted)] mt-3 leading-relaxed">
             Pas de paiement immédiat — je vous recontacte d'abord.<br />
-            Une question ? Appelez-moi au <a href="tel:+33688776648" class="text-[var(--color-accent)] hover:underline font-medium">06 88 77 66 48</a>
+            Une question ? Appelez-moi au <a href="tel:+33688776648" class="text-[var(--color-accent)] hover:underline font-medium" data-umami-event="commander-phone-click">06 88 77 66 48</a>
           </p>
         </div>
 
@@ -526,6 +526,9 @@ const checkIcon = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
       currentStep = step;
       if (step > maxStepReached) maxStepReached = step;
 
+      // Umami: track step transition
+      if (typeof umami !== 'undefined') umami.track(`commander-step-${step}`);
+
       // Scroll to top — force le retour en haut sur mobile
       window.scrollTo({ top: 0, behavior: 'smooth' });
 
@@ -615,6 +618,11 @@ const checkIcon = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
         card.classList.toggle('selected', cb.checked);
         updateTotal();
         updateAddonCount();
+
+        // Umami: track addon toggle
+        if (typeof umami !== 'undefined') {
+          umami.track('commander-addon-select', { name: card.dataset.addonName || '', selected: cb.checked });
+        }
       });
     });
 
@@ -710,6 +718,8 @@ const checkIcon = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
       }
 
       if (!valid) {
+        // Umami: track validation error
+        if (typeof umami !== 'undefined') umami.track('commander-validation-error');
         const firstError = document.querySelector('.field-error') as HTMLElement;
         firstError?.focus();
       }
