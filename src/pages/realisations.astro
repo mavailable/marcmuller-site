@@ -10,13 +10,36 @@ const sampleProjects = getSampleProjects();
 const allProjects = [...clientProjects, ...sampleProjects];
 const totalProjects = allProjects.length;
 
-// Collect unique sectors
-const sectors = [...new Set(allProjects.map(p => p.sector))].sort();
-
 // Slugify for URL matching
 function slugify(text: string): string {
   return text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
+
+// Merge granular sectors into broader categories for filtering
+const sectorGroups: Record<string, string[]> = {
+  'Artisanat & Commerce': ['Artisanat', 'Commerce', 'Coiffure', 'E-commerce'],
+  'Bâtiment': ['Bâtiment', 'Immobilier'],
+  'Santé & Bien-être': ['Santé', 'Bien-être', 'Sport'],
+  'Restauration': ['Restauration'],
+  'Créatif': ['Créatif'],
+  'Services & Conseil': ['Conseil', 'Juridique', 'Association'],
+  'Tourisme': ['Tourisme'],
+};
+
+// Map each project sector to its group slug
+function getSectorGroup(sector: string): string {
+  for (const [group, members] of Object.entries(sectorGroups)) {
+    if (members.includes(sector)) return slugify(group);
+  }
+  return slugify(sector);
+}
+
+// Build filter data
+const filterCategories = Object.entries(sectorGroups).map(([group, members]) => ({
+  label: group,
+  slug: slugify(group),
+  count: allProjects.filter(p => members.includes(p.sector)).length,
+})).filter(c => c.count > 0);
 ---
 
 <BaseLayout title={title} description={description} ogImage="/og-realisations.png" lang="fr" frPath="/realisations" enPath="/en/portfolio">
@@ -50,26 +73,23 @@ function slugify(text: string): string {
   </section>
 
   <!-- FILTRE PAR SECTEUR -->
-  <section class="w-full bg-[var(--color-bg)] border-b border-[var(--color-border)] px-6 py-5 md:px-8 sticky top-0 z-40 backdrop-blur-md bg-white/95">
+  <section class="w-full bg-[var(--color-bg)] border-b border-[var(--color-border)] px-6 py-5 md:px-8">
     <div class="mx-auto max-w-6xl">
-      <div class="flex flex-wrap items-center gap-2" id="sector-filters">
+      <div class="flex flex-wrap items-center justify-center gap-2" id="sector-filters">
         <button
           data-sector="all"
-          class="filter-btn filter-btn--active rounded-full px-4 py-1.5 text-xs font-medium transition-all duration-200 cursor-pointer"
+          class="filter-btn filter-btn--active rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200 cursor-pointer"
         >
-          Tous <span class="ml-1 opacity-60" id="count-all">{totalProjects}</span>
+          Tous <span class="ml-1 opacity-60">{totalProjects}</span>
         </button>
-        {sectors.map((sector) => {
-          const count = allProjects.filter(p => p.sector === sector).length;
-          return (
-            <button
-              data-sector={slugify(sector)}
-              class="filter-btn rounded-full px-4 py-1.5 text-xs font-medium transition-all duration-200 cursor-pointer"
-            >
-              {sector} <span class="ml-1 opacity-60">{count}</span>
-            </button>
-          );
-        })}
+        {filterCategories.map((cat) => (
+          <button
+            data-sector={cat.slug}
+            class="filter-btn rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200 cursor-pointer"
+          >
+            {cat.label} <span class="ml-1 opacity-60">{cat.count}</span>
+          </button>
+        ))}
       </div>
     </div>
   </section>
@@ -87,7 +107,7 @@ function slugify(text: string): string {
         {allProjects.map((project) => (
           <article
             class="project-card group relative flex flex-col overflow-hidden rounded-2xl border border-[var(--color-border)] bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
-            data-sector={slugify(project.sector)}
+            data-sector={getSectorGroup(project.sector)}
             data-sample={project.sample ? 'true' : 'false'}
           >
             {/* Screenshot */}
