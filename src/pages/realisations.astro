@@ -141,58 +141,57 @@ const totalProjects = clientProjects.length + sampleProjects.length;
         20 sites de démonstration couvrant des secteurs variés. Chacun est un site fonctionnel, avec un design adapté au métier.
       </p>
 
-      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3">
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
         {sampleProjects.map((project) => (
-          <article class="group relative flex flex-col overflow-hidden rounded-2xl border border-[var(--color-border)] bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl">
-            {/* Screenshot */}
-            <div class="relative overflow-hidden">
-              <div class="aspect-video overflow-hidden bg-neutral-100">
+          <a
+            href={project.url}
+            class="group relative flex flex-col overflow-hidden rounded-2xl border border-[var(--color-border)] bg-white shadow-sm transition-all duration-300 hover:-translate-y-1.5 hover:shadow-2xl"
+            data-umami-event={`portfolio-visit-${project.id}`}
+          >
+            {/* Browser mockup frame */}
+            <div class="relative overflow-hidden bg-neutral-900">
+              {/* Browser bar */}
+              <div class="flex items-center gap-1.5 px-3 py-2 bg-neutral-800">
+                <div class="flex gap-1">
+                  <span class="w-2 h-2 rounded-full bg-red-400/60"></span>
+                  <span class="w-2 h-2 rounded-full bg-yellow-400/60"></span>
+                  <span class="w-2 h-2 rounded-full bg-green-400/60"></span>
+                </div>
+                <div class="flex-1 mx-2 rounded-md bg-neutral-700/50 px-3 py-0.5">
+                  <span class="text-[9px] text-neutral-400 font-mono truncate block">{project.url.replace(/^\/exemples\//, '').replace(/\/$/, '')}.fr</span>
+                </div>
+              </div>
+              {/* Screenshot in browser frame */}
+              <div class="aspect-[4/3] overflow-hidden">
                 <img
                   src={project.screenshot}
-                  alt={`Capture d'écran de ${project.title}`}
-                  class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  alt={`Aperçu du site ${project.title}`}
+                  class="h-full w-full object-cover object-top transition-transform duration-700 group-hover:scale-110"
                   loading="lazy"
                 />
               </div>
-              {/* Sector badge overlay */}
-              <span class={`absolute top-3 left-3 inline-block rounded-full border px-3 py-1 text-xs font-semibold backdrop-blur-sm ${project.sectorColor}`}>
-                {project.sector}
-              </span>
-              {/* Exemple badge */}
-              <span class="absolute top-3 right-3 inline-block rounded-full border border-emerald-400/30 bg-emerald-500/20 px-3 py-1 text-xs font-semibold text-emerald-300 backdrop-blur-sm">
-                Exemple
-              </span>
+              {/* Gradient overlay on hover */}
+              <div class="absolute inset-0 top-8 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end justify-center pb-4">
+                <span class="inline-flex items-center gap-1.5 rounded-full bg-white/90 px-4 py-1.5 text-xs font-semibold text-neutral-900 shadow-lg backdrop-blur-sm">
+                  Voir le site
+                  <svg class="h-3.5 w-3.5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                </span>
+              </div>
             </div>
 
             {/* Content */}
-            <div class="flex flex-1 flex-col p-5">
-              <h3 class="mb-2 text-lg font-bold text-[var(--color-text)]">{project.title}</h3>
-              <p class="mb-4 line-clamp-2 text-sm leading-relaxed text-[var(--color-text-muted)]">
+            <div class="flex flex-1 flex-col p-4">
+              <div class="mb-2 flex items-center gap-2">
+                <h3 class="text-sm font-bold text-[var(--color-text)]">{project.title}</h3>
+                <span class={`inline-block rounded-full border px-2 py-0.5 text-[10px] font-semibold ${project.sectorColor}`}>
+                  {project.sector}
+                </span>
+              </div>
+              <p class="line-clamp-2 text-xs leading-relaxed text-[var(--color-text-muted)]">
                 {project.description}
               </p>
-
-              {/* Features pills */}
-              <div class="mb-5 flex flex-wrap gap-1.5">
-                {project.features.slice(0, 4).map((f) => (
-                  <span class="rounded-md bg-[var(--color-bg-alt)] px-2 py-0.5 text-[11px] font-medium text-[var(--color-text)]">
-                    {f}
-                  </span>
-                ))}
-              </div>
-
-              {/* Spacer to push CTA to bottom */}
-              <div class="mt-auto">
-                <a
-                  href={project.url}
-                  class="inline-flex w-full items-center justify-center gap-2 rounded-xl border border-[var(--color-border)] px-5 py-2.5 text-sm font-medium text-[var(--color-text-muted)] transition-all hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]"
-                  data-umami-event={`portfolio-visit-${project.id}`}
-                >
-                  Voir le site
-                  <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
-                </a>
-              </div>
             </div>
-          </article>
+          </a>
         ))}
       </div>
     </div>
