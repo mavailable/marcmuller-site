@@ -1,0 +1,722 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX + Technique — Marc M | Auto-audit';
+const description = 'Rapport confidentiel : simulation de 20 visites personas + audit technique complet de marcm.fr — agence web solo.';
+
+// ─── DATA ───
+const personas = [
+  { id: 1, name: 'Stephane', age: 47, situation: 'Plombier-chauffagiste, Woippy', canal: 'Google Search', maturite: 'Comparaison', device: 'Mobile', decision: 'Hesite', exp: 6, conf: 5, clarte: 8, emoji: '🔧', contexte: 'Son concurrent vient de lancer un site moderne, il perd des appels depuis 6 mois', question: '490 euros c\'est tout compris ?', reponse: 'Partiellement', commentReponse: 'Prix HT clair mais le total avec options (GBP +90, galerie +90) n\'est pas presente en pack. Pas de "budget type artisan".', impression: 'Ecran blanc 4.5s sur Samsung. Le hero apparait enfin : prix 490 euros visible, CTA clair. Se demande si c\'est trop beau pour etre vrai.', parcours: [['Hero', 'Prix et delai visibles. "Base a Metz" — c\'est local, bon point'], ['Le constat', 'Se reconnait : concurrent sur Google, lui non'], ['Chiffres', 'Compteur "0+" projets — chiffre modeste, credibilite en baisse'], ['Temoignages', 'Cherche un artisan BTP parmi les avis'], ['Offre', 'Paiement 3x165 euros rassure. Options a la carte transparentes'], ['FAQ', '"490 c\'est un template ? Non." — reponse directe et honnete']], impactTech: 'LCP 4.5s mobile = attente douloureuse entre deux chantiers. Desktop aurait ete parfait. Grade B securite invisible pour lui.', positifs: ['Prix affiche immediatement, pas de devis a demander', '"Base a Metz" — credibilite locale', 'Section "Le constat" decrit exactement sa situation', 'Paiement en 3x clairement affiche', 'FAQ directe et honnete'], frictions: ['LCP 4.5s mobile : risque d\'abandon', 'Compteur projets modeste', 'Pas d\'exemple artisan BTP en homepage', '"HT" peut creer une surprise (588 TTC)', 'Pas de garantie explicite', 'Pas d\'etude de cas chiffree avant/apres'], raison: 'Prix attractif et paiement 3x rassurant, mais 490 euros semble trop beau. Va probablement envoyer un WhatsApp plutot que commander.', changement: 'Temoignage artisan BTP local avec resultats chiffres + garantie de resultat' },
+  { id: 2, name: 'Emilie', age: 34, situation: 'Estheticienne a domicile, Montigny-les-Metz', canal: 'Google Maps', maturite: 'Decision', device: 'Mobile', decision: 'Hesite', exp: 7, conf: 7, clarte: 7, emoji: '💅', contexte: 'Ses clientes demandent un lien pour reserver, elle n\'a qu\'Instagram. A essaye Wix sans succes', question: 'Je peux payer en plusieurs fois ?', reponse: 'Oui', commentReponse: 'Page offre affiche "2x245 ou 3x165". Mais le fractionnement pour le total avec options (490+180=670) n\'est pas precise.', impression: 'Arrive depuis la fiche GBP (5 etoiles). LCP 4.5s iPhone. Hero : 490 euros, 7 jours. Different de Wix mais pas forcement plus cher sur 3 ans.', parcours: [['Hero', 'Prix 490 euros et delai 7 jours — different de Wix mais one-shot'], ['FAQ', '"C\'est pour qui ?" — voit therapeutes dans la liste, s\'identifie'], ['Offre', '3x165 euros rassurant. Option RDV +180 euros = 670 HT total, depasse le budget'], ['FAQ offre', '"Mon site m\'appartient ? Oui. Zero abonnement." — argument anti-Wix decisif'], ['Realisations', 'Cherche un site beaute/bien-etre dans les filtres']], impactTech: 'LCP 4.5s iPhone perceptible mais tolerable. Fiche GBP positive pre-dispose bien.', positifs: ['Paiement fractionne clairement affiche', '"Zero abonnement, zero lock-in" — argument anti-Wix parfait', 'Option RDV en ligne disponible', 'FAQ rassurante sur la redaction des textes'], frictions: ['Total 670 HT avec RDV depasse le budget initial', 'Pas de pack "metier beaute" a prix forfaitaire', 'Pas de demo du systeme de reservation', 'LCP mobile degrade la premiere impression'], raison: 'Le produit correspond mais le cout total (670 HT) depasse ses attentes. Va envoyer un WhatsApp pour demander si le 3x s\'applique au total.', changement: 'Pack "beaute" (site + RDV + galerie) a prix forfaitaire + exemple concret' },
+  { id: 3, name: 'Karim', age: 52, situation: 'Gerant entreprise de peinture (6 employes), Nancy', canal: 'Bouche-a-oreille', maturite: 'Decision', device: 'Desktop', decision: 'Convertit', exp: 9, conf: 8, clarte: 9, emoji: '🎨', contexte: 'WordPress lent a 25 euros/mois. Recommande par David Merly (DMulti Services)', question: 'Si je migre, je perds mon referencement ?', reponse: 'Oui', commentReponse: 'FAQ explicite : "Je reprends votre domaine, redirige l\'ancien site, preserve votre referencement." Double confirmation accueil + offre.', impression: 'Desktop 98/100 — charge instantanement. Hero professionnel, coverflow 3D impactant. "C\'est propre." Confiance pre-etablie par la recommandation.', parcours: [['Hero', 'Impression excellente sur desktop. Coverflow 3D moderne vs son WordPress vieilli'], ['Le constat', '"WordPress rame et coute cher" — decrit exactement sa situation'], ['FAQ', 'Migration traitee explicitement : domaine, redirections, SEO preserve'], ['Realisations', 'Filtre Batiment — trouve des exemples de son secteur'], ['Qui suis-je', '40 ans, Messin, entrepreneur — profil credible, pas corporate'], ['Offre', 'Section Sur Mesure pour sites complexes, devis gratuit 48h']], impactTech: 'Desktop 98/100 = le site est sa propre vitrine. La vitesse demontre la qualite du produit. Grade B securite invisible.', positifs: ['Vitesse desktop impeccable — meilleure demo possible', 'FAQ migration/referencement repond directement', 'Recommandation confirmee par la qualite du site', 'Exemples batiment dans les realisations', 'Ton direct et personnel'], frictions: ['Compteur 11+ projets modeste pour un dirigeant', 'Pas de comparatif chiffre avant/apres WordPress', 'Pas de SLA (engagement delai reponse)', 'Pas de CGV consultables'], raison: 'Recommandation + site ultra-rapide + FAQ migration = confiance maximale. Contacte via WhatsApp pour un devis sur mesure.' },
+  { id: 4, name: 'Chloe', age: 29, situation: 'Photographe independante debutante, Strasbourg', canal: 'Instagram', maturite: 'Decouverte', device: 'Mobile', decision: 'Quitte', exp: 5, conf: 4, clarte: 6, emoji: '📸', contexte: 'A vu marcm.fr dans le footer d\'un site client sur Instagram. Veut un portfolio en ligne', question: 'Portfolio photo possible ?', reponse: 'Partiellement', commentReponse: 'Le mot "portfolio" n\'apparait pas en FR. Option galerie photos +90 euros correspond mais pas formulee pour photographes.', impression: 'LCP 4.5s mobile, hesite a revenir sur Instagram. Design elegant mais cherche des exemples de portfolios photo.', parcours: [['Hero', 'Design moderne, rassure une creatrice sensible a l\'esthetique'], ['Le constat', '"Site generique qui ne vous ressemble pas" resonne'], ['Realisations', 'Cherche un photographe — ne trouve pas d\'exemple'], ['Offre', 'Galerie +90, animations +90 = 670 HT total — gros investissement pour debutante'], ['FAQ', '"Photographes" cite dans la cible mais sans exemple concret']], impactTech: 'LCP 4.5s iPhone — habituee a Instagram instantane, trouve ca lent.', positifs: ['Design du site coherent avec ses attentes esthetiques', '"Photographes" cite dans la cible', 'Option galerie a prix raisonnable', '"Construit de zero, pas un template"'], frictions: ['Aucun exemple de portfolio photographe', 'Mot "portfolio" absent du site FR', '670 HT = gros investissement sans revenus stables', 'Pas de demo galerie lightbox', 'Pas de features photographe (masonry, protection images)'], raison: 'Sans exemple de portfolio photographe, ne peut pas se projeter. Quitte et pourrait revenir si recommandation directe.', changement: 'Un exemple de site photographe dans les realisations + page dediee "createurs"' },
+  { id: 5, name: 'Jean-Marc', age: 58, situation: 'Expert-comptable associe (3 personnes), Thionville', canal: 'Google Search', maturite: 'Comparaison', device: 'Desktop', decision: 'Hesite', exp: 7, conf: 5, clarte: 7, emoji: '📊', contexte: 'Devis recu a 3500 d\'une agence. Un client lui a dit "je vous ai trouve sur Google" — il n\'a pas de site', question: 'C\'est serieux a ce prix ?', reponse: 'Partiellement', commentReponse: 'La FAQ est transparente mais le prix tres bas par rapport aux devis recus cree un doute. Pas de reference dans le secteur liberal.', impression: 'Desktop rapide, design professionnel. Le prix 490 euros le surprend — 7x moins que le devis recu. Cherche des signes de serieux.', parcours: [['Hero', '490 euros vs 3500 du devis = trop beau ? Mais le site est pro'], ['Qui suis-je', '20 ans d\'entrepreneuriat, 4 secteurs — profil atypique mais credible'], ['Realisations', 'Cherche un cabinet liberal — ne trouve pas d\'equivalent'], ['Offre', 'Tarifs transparents, options detaillees. Le "HT" le rassure (il est comptable)'], ['FAQ', 'Lit tout attentivement. "490 c\'est un template ? Non" — doit etre vrai vu la qualite du site']], impactTech: 'Desktop 98/100 — excellent. Le site demontre la competence.', positifs: ['Prix transparent et fractionnable', 'Site lui-meme est la preuve de qualite', 'FAQ complete et honnete', 'Le "HT" est un signal pro (il est comptable)'], frictions: ['490 euros = 7x moins que le devis, cree un doute', 'Pas de reference secteur liberal', 'Compteur projets modeste', 'Pas de garantie ou SLA', 'Pas de case study avec ROI chiffre'], raison: 'Interesse mais mefiant — le prix trop bas cree paradoxalement de la defiance. Va probablement appeler pour "prendre la temperature" avant de s\'engager.', changement: 'Un temoignage ou exemple dans le secteur liberal + explication du "comment c\'est possible a ce prix"' },
+  { id: 6, name: 'Lea', age: 31, situation: 'Fleuriste, boutique 3 ans, Metz centre', canal: 'ChatGPT', maturite: 'Comparaison', device: 'Mobile', decision: 'Hesite', exp: 7, conf: 6, clarte: 6, emoji: '🌸', contexte: 'ChatGPT lui a recommande marcm.fr parmi 3 options locales. Veut commande en ligne de bouquets', question: 'L\'option e-commerce gere les commandes ?', reponse: 'Partiellement', commentReponse: 'L\'option e-commerce +250 euros existe mais le perimetre exact (panier, paiement, stock) n\'est pas detaille sur le site.', impression: 'LCP 4.5s mobile. Hero pro. ChatGPT avait raison — le site est serieux. Mais cherche des details sur le e-commerce.', parcours: [['Hero', 'Confirme la recommandation IA — site pro, prix clair'], ['Offre', 'E-commerce +250 euros visible mais description courte'], ['Realisations', 'Cherche un commerce avec panier — pas evident a trouver'], ['FAQ', 'Pas de question specifique sur le e-commerce'], ['Contact', 'Hesite entre commander et demander des precisions']], impactTech: 'LCP 4.5s genant apres l\'instantaneite de ChatGPT. Grade B invisible.', positifs: ['Recommandation ChatGPT confirmee par la qualite', 'Prix base accessible', 'Metz centre = proximite rassurante', 'Options a la carte = transparence'], frictions: ['E-commerce +250 sans details (panier, stock, paiement ?)', 'Pas d\'exemple de boutique en ligne', 'LCP mobile apres ChatGPT instantane', 'Total 740 HT (site+e-commerce) = investissement'], raison: 'Interessee mais ne comprend pas exactement ce que couvre le e-commerce a 250 euros. Va contacter pour clarifier.', changement: 'Description detaillee du module e-commerce + exemple de boutique en ligne' },
+  { id: 7, name: 'Patrick', age: 61, situation: 'Menuisier ebeniste, 30 ans de metier, Sarreguemines', canal: 'Google Maps', maturite: 'Decision', device: 'Desktop', decision: 'Convertit', exp: 8, conf: 8, clarte: 8, emoji: '🪵', contexte: 'Sa fille lui a dit "papa, tu DOIS avoir un site". Prépare la transmission de son atelier', question: 'Je suis pas technique, c\'est grave ?', reponse: 'Oui', commentReponse: 'La FAQ et la methode en 4 etapes sont claires : "Je m\'occupe de tout" et "Vous n\'avez rien a ecrire". Le CMS Keystatic est simple.', impression: 'Desktop rapide. Hero elegant. "Votre site pro, livre en 7 jours" — c\'est simple et direct, pas de jargon. Le carousel montre des sites concrets.', parcours: [['Hero', 'Simple et direct — pas de jargon technique'], ['La methode', '4 etapes claires : "Vous n\'avez rien a ecrire, je m\'occupe de tout"'], ['Realisations', 'Filtre Batiment — voit des sites d\'artisans comme lui'], ['Temoignages', '"Simple, rapide et efficace" — ca lui parle'], ['FAQ', '"C\'est quoi Astro ?" — lit que c\'est plus rapide que WordPress'], ['Commander', 'Le wizard en 4 etapes est simple, pas intimidant']], impactTech: 'Desktop parfait. La vitesse du site l\'impressionne sans qu\'il sache pourquoi.', positifs: ['"Je m\'occupe de tout" repond a sa peur technique', 'Methode en 4 etapes claire et rassurante', 'Exemples artisanat dans les realisations', 'Temoignages authentiques et recents', 'Wizard de commande simple'], frictions: ['Le terme "Astro" peut intimider meme si la FAQ explique', '"CMS Keystatic" = jargon pour lui', 'Pas de video du processus', 'Sarreguemines a 45min — aimerait savoir si c\'est 100% a distance'], raison: 'La promesse "je m\'occupe de tout" + sa fille qui insiste + les exemples artisans = il se lance. Click sur Commander.', changement: 'Une video de 2min montrant le processus du debut a la fin' },
+  { id: 8, name: 'Amandine', age: 38, situation: 'Directrice marketing PME industrielle, Luxembourg', canal: 'LinkedIn', maturite: 'Decouverte', device: 'Mobile', decision: 'Quitte', exp: 6, conf: 5, clarte: 8, emoji: '💼', contexte: 'Veille pro dans le train Metz-Luxembourg, a vu un post LinkedIn sur "100 sites pour artisans"', question: 'Il fait du sur-mesure aussi ?', reponse: 'Oui', commentReponse: 'La section "Projet Sur Mesure" existe mais le positionnement global est tres TPE/artisan, pas PME.', impression: 'LCP 4.5s en 4G dans le train. Hero efficace mais "490 euros site vitrine" = pas pour sa PME. Survole rapidement.', parcours: [['Hero', '490 euros = clairement pas pour une PME industrielle'], ['Realisations', 'Parcourt 3-4 projets — que des TPE/artisans'], ['Offre', 'Voit "Projet Sur Mesure" mais sans fourchette de prix'], ['Quitte', 'En 2 minutes, comprend que ce n\'est pas son segment']], impactTech: 'LCP mobile degrade + train 4G = experience mediocre. Mais elle n\'est pas la cible.', positifs: ['Positionnement clair — elle comprend vite que c\'est pour les TPE', 'Design professionnel', 'Pourrait recommander a un artisan de son reseau'], frictions: ['Offre trop "petite" pour une PME', 'Pas de services B2B/corporate', 'Pas de fourchette pour le sur mesure'], raison: 'Hors cible. Quitte en 2 minutes mais retient le lien pour recommander a des artisans.', changement: 'Pas necessaire — persona hors cible. Le site fait bien son travail en communiquant clairement sa cible.' },
+  { id: 9, name: 'Youssef', age: 43, situation: 'Restaurateur pizzeria, Hayange', canal: 'Google Search', maturite: 'Comparaison', device: 'Mobile', decision: 'Hesite', exp: 5, conf: 5, clarte: 5, emoji: '🍕', contexte: 'Ses concurrents apparaissent sur Google avec menu et photos. A essaye Wix et abandonne', question: 'Deja fait un site de restaurant avec commande en ligne ?', reponse: 'Non', commentReponse: 'Aucun exemple de restaurant dans les realisations. E-commerce +250 pourrait fonctionner mais pas presente pour la restauration.', impression: 'LCP 4.5s Samsung A54. Hero pro mais Youssef cherche immediatement des exemples de restaurants. Le prix 490 euros l\'attire.', parcours: [['Hero', 'Prix attractif. "7 jours" — parfait, il veut aller vite'], ['Realisations', 'Filtre tous les secteurs — pas de restaurant. Deception'], ['Offre', 'E-commerce +250 mais decrit pour produits, pas commandes repas'], ['FAQ', 'Pas de question sur la restauration'], ['Contact', 'Hesite a contacter sans etre sur que Marc sache faire un site resto']], impactTech: 'LCP 4.5s mobile dans sa pizzeria entre deux services — patience limitee.', positifs: ['Prix imbattable pour la restauration', '7 jours = rapidite appreciee', 'Paiement en 3x accessible', 'Option GBP a 90 euros pertinente pour resto'], frictions: ['Aucun exemple de restaurant', 'E-commerce pas decrit pour la commande de repas', 'Pas de mention menu en ligne, horaires, reservation de table', 'LCP mobile lent', 'Pas clair si le site gere les commandes en ligne type Uber Eats'], raison: 'Le prix l\'attire mais sans exemple restaurant, il doute que Marc comprenne ses besoins specifiques (menu, commande, horaires). Pourrait contacter pour demander.', changement: 'Un exemple de site restaurant + description du module commande pour la restauration' },
+  { id: 10, name: 'Marie-Claire', age: 55, situation: 'Presidente asso culturelle (150 adherents), Metz', canal: 'Bouche-a-oreille', maturite: 'Decision', device: 'Tablette', decision: 'Convertit', exp: 8, conf: 9, clarte: 7, emoji: '🎭', contexte: 'L\'ancien site Jimdo est obsolete, l\'adherent qui le gerait a quitte. Budget vote par le bureau. Recommandee par Jennifer De Groeve', question: 'Des benevoles pourront mettre a jour le site ?', reponse: 'Oui', commentReponse: 'La FAQ mentionne le CMS Keystatic "aussi simple qu\'un Google Doc" et la page aide propose des tutoriels. L\'offre Autonomie (0 euros) confirme l\'independence.', impression: 'iPad — chargement correct. Hero rassurant. "490 euros" entre dans le budget associatif. La recommandation de Jennifer la predispose positivement.', parcours: [['Hero', '490 euros = budget OK pour l\'asso'], ['Qui suis-je', 'Marc est local, entrepreneur — pas une agence anonyme'], ['Realisations', 'Pas d\'association mais la diversite des projets rassure'], ['Offre', 'Autonomie 0 euros = parfait pour une asso. CMS pour benevoles.'], ['FAQ', '"Modifications ? CMS simple, aussi simple qu\'un Google Doc"'], ['Aide', 'Tutoriels disponibles — les benevoles pourront suivre'], ['Contact', 'Contacte via formulaire pour un devis sur mesure']], impactTech: 'Tablette iPad OK. Le site est fluide et lisible.', positifs: ['Prix dans le budget associatif', 'Autonomie 0 euros = pas d\'abonnement', 'CMS simple pour benevoles', 'Tutoriels disponibles sur /aide', 'Local et personnel — pas corporate', 'Recommandation pre-etablie'], frictions: ['Pas d\'exemple d\'association dans les realisations', 'Le mot "association" pas assez visible dans la communication', 'CMS Keystatic inconnu des benevoles', 'Pas de mention de fonctionnalites asso (adherents, agenda, newsletter)'], raison: 'Budget OK, recommandation solide, CMS simple pour benevoles. Contacte pour un devis sur mesure adapte a l\'association.', changement: 'Un exemple de site associatif + mention "associations" dans la cible homepage' },
+  { id: 11, name: 'Thomas', age: 26, situation: 'Dev web junior, Lyon (freelance le week-end)', canal: 'Perplexity', maturite: 'Decouverte', device: 'Mobile', decision: 'Quitte', exp: 7, conf: 6, clarte: 7, emoji: '💻', contexte: 'Veille technique sur les sites Astro en production en France. Curieux du stack et du modele economique', question: 'Comment il tient 490 en full custom Astro ?', reponse: 'Non', commentReponse: 'Le site ne revele pas son process de production (skills, pipeline, automatisation). Le journal a des articles SEO/business, pas technique.', impression: 'LCP 4.5s mobile — ironic pour un site qui promet la performance. Inspecte le code source : Astro, Tailwind v4, pas de JS inutile. Propre.', parcours: [['Hero', 'Note le stack dans le code source. Design soigne.'], ['Journal', 'Cherche du contenu technique — ne trouve que du SEO/business pour artisans'], ['Realisations', 'Inspecte 2-3 sites clients. Lighthouse 100/100 confirme'], ['Offre', 'Etudie le pricing — se demande comment c\'est rentable'], ['Quitte', 'Garde en memoire pour recommander']], impactTech: 'LCP 4.5s mobile note comme incoherent avec la promesse "charge en moins d\'une seconde".', positifs: ['Code source propre (Astro, Tailwind, zero bloat)', 'Sites clients Lighthouse 100/100', 'Modele economique interessant pour la veille', 'Design soigne et coherent'], frictions: ['LCP 4.5s vs promesse performance', 'Pas de contenu technique dans le journal', 'Pas d\'explication du process de production', 'Pas de page "stack technique" pour les curieux'], raison: 'Pas un prospect mais un pair. Garde marcm.fr en bookmark. Pourrait recommander a des artisans de son entourage.', changement: 'Un article technique dans le journal expliquant le stack' },
+  { id: 12, name: 'Nathalie', age: 44, situation: 'Naturopathe en cabinet, Epinal (5 ans)', canal: 'Google Search', maturite: 'Comparaison', device: 'Mobile', decision: 'Hesite', exp: 8, conf: 7, clarte: 8, emoji: '🌿', contexte: 'Divorce = budget serre. 2 devis recus (1200 et 2800 euros). Besoin de plus de clients', question: 'Vous travaillez a distance ?', reponse: 'Oui', commentReponse: 'FAQ : "Base Metz, clients toute France". La page contact confirme Lun-Ven 9h-18h. Mais pas de mention explicite du process a distance.', impression: 'LCP 4.5s iPhone 12. Le prix 490 euros est nettement inferieur a ses devis. Le design est plus pro que ce qu\'elle attendait a ce prix.', parcours: [['Hero', '490 euros vs ses devis 1200/2800 — incroyable. 7 jours aussi.'], ['Realisations', 'Trouve JD Zootherapie — c\'est le bien-etre, ca correspond !'], ['Offre', 'RDV en ligne +180 = 670 HT total. Reste 2x moins cher que son devis le moins cher'], ['FAQ', '"Clients toute France" et "couverture geo" rassurent'], ['Commander', 'Calcule 670 HT en 3x = ~225 par mois. Faisable malgre le divorce']], impactTech: 'LCP 4.5s mobile mais comparee aux sites de ses devis concurrents, c\'est correct.', positifs: ['Prix 3-4x inferieur aux devis concurrents', 'JD Zootherapie = exemple dans son secteur', 'FAQ confirme le travail a distance', 'Paiement fractionne accessible', 'Marc redige les textes — un souci en moins'], frictions: ['Epinal-Metz = distance, pas de mention du process a distance en detail', 'Total 670 HT = quand meme un investissement pendant un divorce', 'Pas de garantie de resultat', 'Le "HT" ajoute ~130 euros surprises'], raison: 'Le prix est imbattable et JD Zootherapie la rassure. Elle va contacter par WhatsApp depuis son cabinet entre deux consultations.', changement: 'Une page "Comment ca marche a distance" + temoignage d\'un client hors Metz' },
+  { id: 13, name: 'Lucas', age: 23, situation: 'Etudiant marketing digital, Strasbourg', canal: 'Instagram', maturite: 'Decouverte', device: 'Mobile', decision: 'Quitte', exp: 6, conf: 5, clarte: 7, emoji: '🎓', contexte: 'Projet d\'ecole, veut comprendre le business model. Pas de budget. Persona negatif', question: 'Comment il est rentable a 490 euros ?', reponse: 'Non', commentReponse: 'Le site ne revele pas le modele de rentabilite (automatisation, pipeline, volume). Manque un article "behind the scenes".', impression: 'LCP 4.5s iPhone SE. Design clean. Analyse le positionnement marketing avec un oeil d\'etudiant.', parcours: [['Hero', 'Note le positionnement prix/delai — efficace pour la cible'], ['Offre', 'Etudie le pricing et les options — analyse les marges potentielles'], ['Journal', 'Lit 1-2 articles — bon contenu SEO mais pas de "making-of"'], ['Quitte', 'A ce qu\'il lui faut pour son projet d\'ecole']], impactTech: 'LCP 4.5s sur iPhone SE (entree de gamme) — plus lent que les autres.', positifs: ['Positionnement clair et coherent', 'Pricing transparent', 'Contenu blog utile pour son analyse'], frictions: ['Pas de behind-the-scenes sur le modele economique', 'Hors cible — pas de budget'], raison: 'Persona negatif confirme. Repart avec des notes pour son projet d\'ecole.', changement: 'N/A — hors cible' },
+  { id: 14, name: 'Catherine', age: 50, situation: 'Proprietaire gite rural (3 chambres), Vosges', canal: 'Google Maps', maturite: 'Comparaison', device: 'Mobile', decision: 'Hesite', exp: 6, conf: 5, clarte: 5, emoji: '🏡', contexte: 'Paie 15% commission Booking = 3000 euros/an. Un site propre economiserait 50% des reservations', question: 'La reservation en ligne marche pour un gite ?', reponse: 'Partiellement', commentReponse: 'L\'option RDV +180 euros existe mais decrite pour des rendez-vous, pas des reservations de gite avec dates/disponibilites.', impression: 'LCP 4.5s Samsung. Le site parle d\'artisans et TPE — pas d\'hebergement. Se demande si c\'est adapte.', parcours: [['Hero', '490 euros vs 3000/an de commission Booking — le ROI est evident'], ['Realisations', 'Cherche tourisme/hebergement — pas d\'exemple'], ['Offre', 'RDV +180 euros mais "rendez-vous" pas "reservation de gite"'], ['FAQ', 'Pas de question sur le tourisme ou la reservation'], ['Contact', 'Hesite — le ROI est bon mais sans exemple hebergement, doute']], impactTech: 'LCP 4.5s mobile en zone rurale (connexion plus lente) — experience degradee.', positifs: ['Prix derisoire vs commission Booking', 'ROI evident des la premiere annee', 'SEO local pourrait desintermedier Booking', 'Fiche GBP +90 pertinente'], frictions: ['Aucun exemple tourisme/hebergement', 'Option "RDV" pas adaptee lexicalement pour "reservation"', 'Pas de mention de calendrier de disponibilites', 'Pas de channel manager ou sync Booking', 'Connexion rurale + LCP 4.5s = lent'], raison: 'Le ROI est evident mais sans exemple hebergement et sans clarte sur la reservation, elle hesite. Pourrait appeler pour demander.', changement: 'Un exemple de gite/chambre d\'hotes + module reservation dedie' },
+  { id: 15, name: 'Romain', age: 35, situation: 'Coach sportif, salle crossfit franchise, Nancy', canal: 'Google Search', maturite: 'Comparaison', device: 'Desktop', decision: 'Hesite', exp: 7, conf: 7, clarte: 6, emoji: '💪', contexte: 'Lance des cours en ligne. Hesite entre Squarespace et deleguer. Veut rapidite', question: 'Vente de cours en ligne avec paiement possible ?', reponse: 'Partiellement', commentReponse: 'E-commerce +250 euros pourrait fonctionner pour vendre des cours mais pas explicitement mentionne pour ce use case. RDV +180 pour reserver des seances.', impression: 'Desktop 98/100 — charge instantanement. Voit Angelo Grossi (coach) dans les realisations — bon signal. Calcule le cout Squarespace vs Marc M sur 2 ans.', parcours: [['Hero', '490 euros one-shot vs Squarespace ~35/mois (840/an). Marc gagne sur 2 ans'], ['Realisations', 'Angelo Grossi = coach, meme s\'il est different. Calendly integre.'], ['Offre', 'E-commerce +250 + RDV +180 = 920 HT total. Vs Squarespace + Calendly + Stripe'], ['FAQ', 'Lit sur Astro vs WordPress — convaincu par la performance'], ['Commander', 'Commence le wizard mais hesite au calcul du total']], impactTech: 'Desktop parfait. Le site est un argument en soi.', positifs: ['Angelo Grossi = exemple de coach', 'Desktop impeccable', 'ROI positif vs Squarespace sur 2 ans', 'Options a la carte = pas de sur-facturation', 'Calendly integre visible sur Angelo Grossi'], frictions: ['920 HT total (site + e-commerce + RDV) = budget consequent', 'E-commerce pas decrit pour la vente de cours', 'Pas d\'exemple de paiement en ligne integre', 'Pas de mention Stripe ou systeme de paiement'], raison: 'Le ROI vs Squarespace est positif mais le total 920 HT et le flou sur la vente de cours en ligne le font hesiter. Va probablement contacter avant de commander.', changement: 'Description du module e-commerce pour vente de services + exemple avec paiement integre' },
+  { id: 16, name: 'Fatima', age: 41, situation: 'Couturiere/retoucheuse, atelier a domicile, Forbach', canal: 'WhatsApp', maturite: 'Decision', device: 'Mobile', decision: 'Convertit', exp: 7, conf: 7, clarte: 9, emoji: '🧵', contexte: 'Lien marcm.fr partage dans un groupe WhatsApp de commercantes. Convaincue par la recommandation sociale', question: 'C\'est vous qui ecrivez les textes ?', reponse: 'Oui', commentReponse: 'La FAQ et la methode confirment : "Marc redige les textes apres un echange de 15 minutes." Repond directement a son frein.', impression: 'LCP 4.5s Xiaomi — lent mais elle attend (motivee par la recommandation WhatsApp). Hero simple : 490 euros, 7 jours. Pas de jargon.', parcours: [['Hero', '490 euros confirme ce que le groupe WhatsApp disait'], ['Offre', '3x165 euros — elle peut payer. Galerie +90 euros pour montrer ses creations'], ['FAQ', '"Marc redige les textes" — soulagement immediat'], ['Methode', '4 etapes simples : appel 15 min, livraison 7 jours'], ['Commander', 'Le wizard est simple. Remplit les champs basiques']], impactTech: 'LCP 4.5s Xiaomi Redmi — plus lent que les iPhones mais elle patiente grace a la motivation.', positifs: ['Prix confirme par le bouche-a-oreille social', 'Paiement en 3x accessible', '"Je redige vos textes" = soulagement', 'Galerie photos disponible pour montrer ses creations', 'Methode simple en 4 etapes'], frictions: ['LCP 4.5s sur Xiaomi entree de gamme', 'Pas d\'exemple de couturiere/artisanat textile', 'Le site est en francais soutenu — elle prefererait plus simple'], raison: 'La recommandation WhatsApp + le 3x + "je redige vos textes" repondent a ses 3 freins. Commande directement via le wizard.', changement: 'Un langage encore plus simple / des temoignages video courts' },
+  { id: 17, name: 'Sebastien', age: 33, situation: 'Consultant UX/UI freelance, Paris', canal: 'Claude AI', maturite: 'Decouverte', device: 'Desktop', decision: 'Quitte', exp: 8, conf: 8, clarte: 7, emoji: '🎯', contexte: 'Recherche veille : "sites Astro + Keystatic en production en France". Concurrent potentiel', question: 'C\'est quoi son process pour livrer en 7 jours ?', reponse: 'Non', commentReponse: 'Le process interne (skills, automatisation, pipeline) n\'est pas visible. Le journal n\'a que des articles pour artisans.', impression: 'Desktop 98/100 — impressionne par la qualite. Inspecte le code : Astro 5, Tailwind v4, Keystatic, Cloudflare. Stack modern et bien execute.', parcours: [['Hero', 'Note le positionnement prix/delai. Impressionne.'], ['Code source', 'Astro 5, Tailwind v4, zero JS inutile. Propre.'], ['Realisations', 'Inspecte 3 sites clients — Lighthouse 100/100 confirme'], ['Journal', 'Contenu pour artisans, pas technique. Deception.'], ['Offre', 'Analyse le modele. Se demande s\'il peut repliquer.'], ['Quitte', 'Bookmarke. Potentiel partenaire ou inspiration.']], impactTech: 'Desktop parfait. Le code source est la meilleure carte de visite pour un dev.', positifs: ['Code source exemplaire', 'Stack modern et bien execute', 'Lighthouse 100/100 sur tous les sites clients', 'Modele economique innovant pour le marche FR'], frictions: ['Pas de contenu technique / behind-the-scenes', 'Process de production opaque', 'Potentiellement un concurrent qui repere les failles'], raison: 'Pas un prospect, un pair/observateur. Bookmarke et pourrait devenir partenaire ou recommander pour des projets TPE.', changement: 'N/A — hors cible mais un article technique pourrait creer un reseau de devs prescripteurs' },
+  { id: 18, name: 'Isabelle', age: 48, situation: 'Gerante 2 boutiques vetements, Mulhouse', canal: 'Bouche-a-oreille', maturite: 'Decouverte', device: 'Mobile', decision: 'Quitte', exp: 5, conf: 4, clarte: 4, emoji: '👗', contexte: 'Veut e-commerce complet : 300+ refs, tailles, couleurs, livraison. Persona negatif', question: 'L\'e-commerce gere le stock et les livraisons ?', reponse: 'Non', commentReponse: 'L\'option e-commerce +250 est une boutique simple (catalogue + reservation par email), pas un PrestaShop/Shopify avec gestion de stock.', impression: 'LCP 4.5s iPhone. Voit 490 euros — trop simple pour ses besoins. Cherche des fonctionnalites e-commerce avancees.', parcours: [['Hero', '490 euros = pas pour un e-commerce de 300 references'], ['Offre', 'E-commerce +250 euros. Lit "catalogue produits, panier, reservation par email". Pas de stock, pas de livraison. Stop.'], ['Realisations', 'Aucune boutique en ligne parmi les projets'], ['Quitte', 'En 3 minutes, comprend que ce n\'est pas pour elle']], impactTech: 'LCP 4.5s mobile — sans importance, elle quitte de toute facon.', positifs: ['Le site est honnete — ne pretend pas faire du e-commerce complexe'], frictions: ['Offre e-commerce inadaptee (catalogue simple vs stock/livraison)', 'Pas de mention Shopify/PrestaShop/alternative', 'Pas de redirection vers une solution adaptee'], raison: 'Persona negatif confirme. Besoin trop complexe pour l\'offre. Quitte sans friction — le site communique clairement ses limites.', changement: 'Un message "Pour le e-commerce avance, je recommande..." avec des partenaires' },
+  { id: 19, name: 'Alexandre', age: 37, situation: 'Gerant agence immobiliere (3 agents), Metz', canal: 'Google Search', maturite: 'Comparaison', device: 'Mobile', decision: 'Quitte', exp: 5, conf: 4, clarte: 3, emoji: '🏠', contexte: 'WordPress lent (PageSpeed 23) mais attache aux plugins immo (MLS, annonces). Persona negatif', question: 'Sans WordPress, comment j\'integre mes annonces ?', reponse: 'Non', commentReponse: 'Le site ne mentionne pas l\'immobilier ni l\'integration de flux d\'annonces. La FAQ "Pas WordPress" ne repond pas a son besoin de plugins specifiques.', impression: 'LCP 4.5s iPhone. FAQ "Pas WordPress" = deal-breaker immediat. Pas de plugin immo = pas de site immo.', parcours: [['Hero', '490 euros interessant mais...'], ['FAQ', '"Pas WordPress" — comprend qu\'il n\'aura pas ses plugins immo'], ['Realisations', 'Aucune agence immobiliere'], ['Quitte', 'En 2 minutes, deal-breaker identifie']], impactTech: 'LCP 4.5s mobile amplifie la frustration. Son WordPress est lent aussi mais au moins il a ses plugins.', positifs: ['Site rapide et pro — il voit ce qu\'il rate avec WordPress'], frictions: ['Pas WordPress = pas de plugins immo (MLS, annonces, estimation)', 'Aucune mention de l\'immobilier', 'Pas d\'alternative proposee pour les flux d\'annonces', 'Pas d\'integration CRM immo'], raison: 'Persona negatif confirme. Besoin metier specifique (plugins WordPress immo) incompatible avec le stack. Quitte frustre.', changement: 'Rien de realiste — l\'immobilier necessite des outils specifiques. Un article "WordPress vs Astro : pour qui ?" pourrait qualifier en amont.' },
+  { id: 20, name: 'Sandrine', age: 45, situation: 'Coach en reconversion (ex-RH), Verdun, budget zero', canal: 'Email', maturite: 'Decouverte', device: 'Tablette', decision: 'Quitte', exp: 6, conf: 7, clarte: 6, emoji: '🌱', contexte: 'En formation coaching, pas encore de clients. Recoit un email de prospection de Marc. Persona negatif', question: 'C\'est trop tot pour un site non ?', reponse: 'Partiellement', commentReponse: 'Le site ne traite pas explicitement la question du timing. L\'article "Faut-il un blog pour son site vitrine ?" aborde indirectement le sujet mais pas "est-ce trop tot ?".', impression: 'iPad — chargement correct. Hero pro. 490 euros = investissement impossible sans revenus. Le site est bien mais ce n\'est pas le moment.', parcours: [['Hero', '490 euros — note le prix pour plus tard'], ['Journal', 'Lit "Le bouche-a-oreille ne suffit plus en 2026" — pertinent mais premature pour elle'], ['Offre', 'Note les details pour quand elle sera prete'], ['Quitte', 'Garde le lien en favori. Reviendra dans 6 mois peut-etre']], impactTech: 'iPad tablette OK. Pas de probleme technique.', positifs: ['Le site est clair et bien structure', 'Le journal a du contenu utile meme sans achat immediat', 'Prix note pour plus tard', 'Email de prospection efficace (elle est venue)'], frictions: ['Pas de contenu pour "ceux qui debutent"', 'Pas de lead magnet (guide gratuit, newsletter)', 'Pas de message "pas pret ? voici quoi faire en attendant"', 'Pas de nurturing post-visite'], raison: 'Persona negatif confirme. Trop tot, pas de budget. Mais l\'email de prospection a fonctionne et elle reviendra peut-etre. Un lead magnet capterait son email pour plus tard.', changement: 'Un guide gratuit "Preparer son activite en ligne" + newsletter pour nurturer' },
+];
+
+const avgExp = (personas.reduce((s, p) => s + p.exp, 0) / personas.length).toFixed(1);
+const avgConf = (personas.reduce((s, p) => s + p.conf, 0) / personas.length).toFixed(1);
+const avgClarte = (personas.reduce((s, p) => s + p.clarte, 0) / personas.length).toFixed(1);
+const convertis = personas.filter(p => p.decision === 'Convertit').length;
+const hesitants = personas.filter(p => p.decision === 'Hesite').length;
+const quittent = personas.filter(p => p.decision === 'Quitte').length;
+const tauxConversion = Math.round((convertis / personas.length) * 100);
+
+const canalStats = [
+  { canal: 'Google Search', total: 5, conv: 0, hesitant: 3, quitte: 2 },
+  { canal: 'Google Maps', total: 3, conv: 1, hesitant: 1, quitte: 1 },
+  { canal: 'IA (ChatGPT/Perplexity/Claude)', total: 3, conv: 0, hesitant: 1, quitte: 2 },
+  { canal: 'Reseaux sociaux', total: 2, conv: 0, hesitant: 0, quitte: 2 },
+  { canal: 'Bouche-a-oreille / WhatsApp', total: 4, conv: 3, hesitant: 0, quitte: 1 },
+  { canal: 'LinkedIn / Email', total: 3, conv: 0, hesitant: 0, quitte: 3 },
+];
+
+const maturiteStats = [
+  { label: 'Decouverte', total: 6, conv: 0, hesitant: 0, quitte: 6 },
+  { label: 'Comparaison', total: 8, conv: 0, hesitant: 7, quitte: 1 },
+  { label: 'Decision', total: 6, conv: 4, hesitant: 2, quitte: 0 },
+];
+
+const deviceStats = [
+  { label: 'Mobile', total: 12, conv: 1, hesitant: 5, quitte: 6 },
+  { label: 'Desktop', total: 6, conv: 2, hesitant: 2, quitte: 2 },
+  { label: 'Tablette', total: 2, conv: 1, hesitant: 0, quitte: 1 },
+];
+
+const frictions = [
+  { title: 'LCP mobile 4.5s', severity: 'critique', count: 12, detail: 'Tous les visiteurs mobile subissent un ecran blanc de 4-5 secondes. Risque d\'abandon eleve, surtout pour les artisans presses.' },
+  { title: 'Pas d\'exemple dans mon secteur', severity: 'haute', count: 8, detail: 'Restaurant, photographe, expert-comptable, gite, association — 8 personas cherchent un exemple de leur metier sans le trouver.' },
+  { title: 'Module e-commerce/reservation flou', severity: 'haute', count: 5, detail: 'Les options e-commerce (+250) et RDV (+180) manquent de details : commande repas, reservation gite, vente de cours, stock...' },
+  { title: 'Prix trop bas = mefiance', severity: 'haute', count: 4, detail: '490 euros vs devis concurrents 1200-3500 euros cree un doute. Pas d\'explication du "comment c\'est possible".'},
+  { title: 'Compteur projets "0+"', severity: 'moyenne', count: 3, detail: 'L\'animation JS peut bugger et afficher 0. Meme a "11+", c\'est modeste pour rassurer.' },
+  { title: 'Pas de garantie / SLA', severity: 'moyenne', count: 4, detail: 'Aucune garantie de resultat, de satisfaction, ou d\'engagement sur les delais de reponse.' },
+  { title: 'Pas de lead magnet / nurturing', severity: 'moyenne', count: 3, detail: 'Les visiteurs en decouverte (6 personas) quittent tous. Aucun mecanisme pour capter leur email et les recontacter.' },
+];
+
+const ameliorations = {
+  haute: [
+    { title: 'Optimiser le LCP mobile', detail: 'L\'image hero est trop lourde (1456 KiB d\'economies detectees par Lighthouse). Convertir en WebP/AVIF, dimensionner pour mobile, utiliser un srcset responsive. Objectif : LCP < 2.5s.', impact: '12 personas impactes' },
+    { title: 'Ajouter des exemples par secteur', detail: 'Creer 3-5 sites exemples supplementaires couvrant les secteurs manquants : restaurant, photographe, gite/hebergement, association, profession liberale. Utiliser les "sites exemples" deja dans le pipeline.', impact: '8 personas impactes' },
+    { title: 'Detailler les modules e-commerce et reservation', detail: 'Sur la page Offre, decrire precisement : e-commerce = catalogue + panier + paiement Stripe en ligne. Reservation = calendrier de dispos + choix de dates + confirmation email. Avec screenshots.', impact: '5 personas impactes' },
+    { title: 'Ajouter le schema Article aux articles de blog', detail: 'La fonction getArticleSchema() existe dans schemas.ts mais n\'est jamais appelee. Ajouter <SchemaOrg type="article" /> aux 10 articles du journal. Impact SEO immediat : rich snippets Google.', impact: 'SEO critique — 10 articles' },
+  ],
+  moyenne: [
+    { title: 'Expliquer le prix', detail: 'Ajouter une section "Comment c\'est possible a 490 euros ?" : process optimise, pas de commercial, pas de locaux, outils modernes. Transformer la mefiance en argument.', impact: '4 personas impactes' },
+    { title: 'Ajouter un Content-Security-Policy', detail: 'Le seul test echoue sur Observatory. Un CSP basique dans _headers ferait passer le grade de B a A.', impact: 'Securite — grade B → A' },
+    { title: 'Creer un lead magnet', detail: 'Un guide PDF "5 choses a preparer avant de lancer son site" + capture email. Les 6 personas en decouverte quittent tous — un lead magnet en capterait 2-3.', impact: '6 personas en decouverte' },
+    { title: 'Fixer le compteur de projets', detail: 'Afficher le vrai nombre (31 realisations) au lieu de "0+" avec une animation fragile. Ou mieux : "31 projets livres".', impact: '3 personas impactes' },
+  ],
+  discussion: [
+    { emoji: '📦', title: 'Packs metier pre-configures', detail: 'Ex : "Pack Artisan BTP" (site + GBP + galerie = 670 HT), "Pack Sante" (site + RDV = 670 HT). Simplifie le choix et augmente le panier moyen.' },
+    { emoji: '🎥', title: 'Video du processus', detail: 'Une video de 2 minutes montrant un projet de A a Z. Patrick (61 ans) et Fatima (41 ans) auraient ete convaincus plus vite.' },
+    { emoji: '📧', title: 'Nurturing post-visite', detail: 'Newsletter ou sequence email pour les visiteurs qui ne sont pas prets (Sandrine, Chloe). "Pas encore pret ? Voici quoi faire en attendant."' },
+    { emoji: '🔗', title: 'Redirection des personas negatifs', detail: 'Pour les besoins hors scope (e-commerce complexe, immo), proposer un partenaire plutot que laisser partir sans rien.' },
+  ],
+};
+
+// Desktop run: perf 98 / Mobile: 79
+const pagespeed = {
+  desktop: { perf: 98, access: 96, bp: 100, seo: 100 },
+  mobile: { perf: 79, access: 96, bp: 100, seo: 100 },
+  cwv_desktop: { lcp: '1.0s', cls: '0', tbt: '0ms', fcp: '0.3s', si: '1.2s' },
+  cwv_mobile: { lcp: '4.5s', cls: '0', tbt: '0ms', fcp: '1.1s', si: '5.8s' },
+};
+
+const observatory = { grade: 'B', score: 75, passed: 9, total: 10 };
+
+const schemaChecks = [
+  { label: 'JSON-LD present (WebSite, Person, LocalBusiness, FAQ)', ok: true },
+  { label: '@type coherent (ProfessionalService)', ok: true },
+  { label: 'name, url, description', ok: true },
+  { label: 'address + geo (entreprise locale)', ok: true },
+  { label: 'telephone', ok: true },
+  { label: 'openingHours', ok: false },
+  { label: 'image / logo', ok: true },
+  { label: 'sameAs (LinkedIn — manque WhatsApp)', ok: true },
+  { label: 'aggregateRating', ok: false },
+  { label: 'Article schema sur le journal (10 articles)', ok: false },
+  { label: 'potentialAction (SearchAction)', ok: false },
+  { label: 'Person : image, email, knowsAbout', ok: false },
+];
+
+const ogChecks = [
+  { label: 'og:title (dynamique par page)', ok: true },
+  { label: 'og:description', ok: true },
+  { label: 'og:image (/og-default.png)', ok: true },
+  { label: 'og:url (canonique)', ok: true },
+  { label: 'og:type (website / article)', ok: true },
+  { label: 'og:locale (fr_FR / en_US)', ok: true },
+  { label: 'og:site_name', ok: true },
+  { label: 'twitter:card (summary_large_image)', ok: true },
+  { label: 'twitter:site', ok: true },
+  { label: 'meta description', ok: true },
+  { label: 'canonical URL', ok: true },
+  { label: 'hreflang (FR ↔ EN)', ok: true },
+];
+
+const securityHeaders = [
+  { header: 'Strict-Transport-Security (HSTS)', ok: true },
+  { header: 'X-Content-Type-Options', ok: true },
+  { header: 'X-Frame-Options', ok: true },
+  { header: 'Referrer-Policy', ok: true },
+  { header: 'Permissions-Policy', ok: true },
+  { header: 'Content-Security-Policy (CSP)', ok: false },
+];
+
+function decisionColor(d: string) {
+  if (d === 'Convertit') return 'bg-emerald-100 text-emerald-800 border-emerald-200';
+  if (d === 'Hesite') return 'bg-amber-100 text-amber-800 border-amber-200';
+  return 'bg-red-100 text-red-800 border-red-200';
+}
+
+function decisionBorder(d: string) {
+  if (d === 'Convertit') return 'border-green-200 bg-green-50/40';
+  if (d === 'Hesite') return 'border-amber-200 bg-amber-50/40';
+  return 'border-neutral-200 bg-neutral-50/40';
+}
+
+function scoreColor(v: number) {
+  if (v >= 90) return '#22c55e';
+  if (v >= 50) return '#f59e0b';
+  return '#ef4444';
+}
+
+function cwvColor(metric: string, val: string) {
+  const n = parseFloat(val);
+  if (metric === 'lcp') return n <= 2.5 ? '#22c55e' : n <= 4 ? '#f59e0b' : '#ef4444';
+  if (metric === 'cls') return n <= 0.1 ? '#22c55e' : n <= 0.25 ? '#f59e0b' : '#ef4444';
+  if (metric === 'tbt') { const ms = parseInt(val); return ms <= 200 ? '#22c55e' : ms <= 600 ? '#f59e0b' : '#ef4444'; }
+  if (metric === 'fcp') return n <= 1.8 ? '#22c55e' : n <= 3 ? '#f59e0b' : '#ef4444';
+  return '#f59e0b';
+}
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  noindex={true}
+  lang="fr"
+  frPath="/audit/marcm"
+>
+
+  <!-- ═══════════════════ HERO ═══════════════════ -->
+  <section class="w-full relative px-6 py-16 md:px-8 md:py-24 overflow-hidden" style="background-color: #0D0D0D;">
+    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 40px 40px;"></div>
+    <div class="absolute top-20 -left-32 w-96 h-96 rounded-full opacity-10 blur-3xl" style="background: #E86C47;"></div>
+    <div class="absolute bottom-0 right-0 w-72 h-72 rounded-full opacity-5 blur-3xl" style="background: #818CF8;"></div>
+
+    <div class="mx-auto max-w-4xl relative z-10">
+      <div class="mb-4 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--color-accent)]/40">
+        <span class="w-2 h-2 rounded-full" style="background-color: #E86C47;"></span>
+        <span class="text-sm font-semibold text-white/90">Auto-audit confidentiel</span>
+      </div>
+
+      <h1 class="mb-4 text-3xl font-bold leading-tight text-white md:text-4xl lg:text-5xl">
+        Audit UX + Technique — <span class="bg-gradient-to-r from-[#E86C47] to-[#F5C8B3] bg-clip-text text-transparent">Marc M</span>
+      </h1>
+
+      <p class="text-lg text-neutral-300 md:text-xl max-w-2xl mb-8">
+        Simulation de 20 visites personas + audit technique complet de <strong class="text-white">marcm.fr</strong> — agence web solo, sites vitrines sur mesure.
+      </p>
+
+      <div class="flex flex-wrap gap-3">
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">20 personas testes</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">6 canaux d'arrivee</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">56 pages indexees</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">29 mars 2026</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ TAB BAR ═══════════════════ -->
+  <nav class="sticky top-16 md:top-20 z-40 bg-white/95 backdrop-blur border-b border-neutral-200" id="tab-bar">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-2 h-12 text-sm overflow-x-auto">
+      <button data-tab="0" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-[var(--color-accent)] bg-[var(--color-accent)]/10">Synthese</button>
+      <button data-tab="1" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">Technique</button>
+      <button data-tab="2" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">
+        Visiteurs <span class="ml-1 text-xs text-neutral-400">20</span>
+      </button>
+      <button data-tab="3" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">
+        Ameliorations <span class="ml-1 text-xs text-neutral-400">{ameliorations.haute.length + ameliorations.moyenne.length}</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════ PANELS ═══════════════════ -->
+  <div id="panels" class="flex overflow-x-auto snap-x snap-mandatory" style="-webkit-overflow-scrolling: touch; scrollbar-width: none;">
+
+    <!-- ══ PANEL 0 : SYNTHESE ══ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+
+        <!-- KPI Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="bg-white rounded-xl border border-neutral-200 p-5 text-center shadow-sm">
+            <div class="text-3xl font-bold text-[var(--color-accent)]">{tauxConversion}%</div>
+            <div class="text-sm text-neutral-500 mt-1">Taux de conversion</div>
+            <div class="text-xs text-neutral-400">{convertis} / 20 personas</div>
+          </div>
+          <div class="bg-white rounded-xl border border-neutral-200 p-5 text-center shadow-sm">
+            <div class="text-3xl font-bold text-neutral-800">{avgExp}</div>
+            <div class="text-sm text-neutral-500 mt-1">Experience / 10</div>
+          </div>
+          <div class="bg-white rounded-xl border border-neutral-200 p-5 text-center shadow-sm">
+            <div class="text-3xl font-bold text-neutral-800">{avgConf}</div>
+            <div class="text-sm text-neutral-500 mt-1">Confiance / 10</div>
+          </div>
+          <div class="bg-white rounded-xl border border-neutral-200 p-5 text-center shadow-sm">
+            <div class="text-3xl font-bold text-neutral-800">{avgClarte}</div>
+            <div class="text-sm text-neutral-500 mt-1">Clarte / 10</div>
+          </div>
+        </div>
+
+        <!-- Paradoxe principal -->
+        <div class="bg-amber-50 border border-amber-200 rounded-xl p-6">
+          <div class="flex items-start gap-3">
+            <span class="text-2xl">⚡</span>
+            <div>
+              <h3 class="font-semibold text-amber-900 mb-1">Le paradoxe principal</h3>
+              <p class="text-amber-800 text-sm leading-relaxed">
+                <strong>Le site score 100/100 en SEO et 98/100 en performance desktop</strong> — mais en mobile (70% du trafic cible), le LCP grimpe a 4.5 secondes. Resultat : <strong>le bouche-a-oreille convertit 75% des visiteurs, Google Search convertit 0%</strong>. Les visiteurs recommandes arrivent convaincus et tolerent l'attente. Les visiteurs organiques, eux, decouvrent un ecran blanc pendant 4 secondes et 8 sur 20 ne trouvent pas d'exemple dans leur secteur.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Conversion par canal -->
+        <div>
+          <h3 class="font-semibold text-neutral-800 mb-4">Conversion par canal</h3>
+          <div class="space-y-3">
+            {canalStats.map(c => {
+              const pctConv = Math.round((c.conv / c.total) * 100);
+              const pctHes = Math.round((c.hesitant / c.total) * 100);
+              const pctQuit = Math.round(((c.total - c.conv - c.hesitant) / c.total) * 100);
+              return (
+                <div class="bg-white rounded-lg border border-neutral-200 p-4">
+                  <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-medium text-neutral-800">{c.canal}</span>
+                    <span class="text-xs text-neutral-400">{c.total} personas</span>
+                  </div>
+                  <div class="flex gap-1 h-3 rounded-full overflow-hidden">
+                    {pctConv > 0 && <div class="bg-emerald-400 rounded-l-full" style={`width: ${pctConv}%`}></div>}
+                    {pctHes > 0 && <div class="bg-amber-400" style={`width: ${pctHes}%`}></div>}
+                    {pctQuit > 0 && <div class="bg-neutral-300 rounded-r-full" style={`width: ${pctQuit}%`}></div>}
+                  </div>
+                  <div class="flex gap-4 mt-2 text-xs text-neutral-500">
+                    <span class="text-emerald-600">{c.conv} convertissent</span>
+                    <span class="text-amber-600">{c.hesitant} hesitent</span>
+                    <span class="text-neutral-400">{c.total - c.conv - c.hesitant} repartent</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <!-- Conversion par maturite -->
+        <div>
+          <h3 class="font-semibold text-neutral-800 mb-4">Conversion par maturite</h3>
+          <div class="grid grid-cols-3 gap-4">
+            {maturiteStats.map(m => (
+              <div class="bg-white rounded-xl border border-neutral-200 p-5 text-center shadow-sm">
+                <div class="text-lg font-bold text-neutral-800">{Math.round((m.conv / m.total) * 100)}%</div>
+                <div class="text-sm font-medium text-neutral-600 mt-1">{m.label}</div>
+                <div class="text-xs text-neutral-400 mt-0.5">{m.conv}/{m.total} convertissent</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Conversion par device -->
+        <div>
+          <h3 class="font-semibold text-neutral-800 mb-4">Conversion par device</h3>
+          <div class="grid grid-cols-3 gap-4">
+            {deviceStats.map(d => (
+              <div class="bg-white rounded-xl border border-neutral-200 p-5 text-center shadow-sm">
+                <div class="text-lg font-bold text-neutral-800">{Math.round((d.conv / d.total) * 100)}%</div>
+                <div class="text-sm font-medium text-neutral-600 mt-1">{d.label}</div>
+                <div class="text-xs text-neutral-400 mt-0.5">{d.conv}/{d.total} — {d.hesitant} hesitent</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══ PANEL 1 : TECHNIQUE ══ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+
+        <!-- PageSpeed scores -->
+        <div>
+          <h3 class="font-semibold text-neutral-800 mb-4">PageSpeed Insights</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {(['desktop', 'mobile'] as const).map(strat => {
+              const scores = pagespeed[strat];
+              const labels = ['Performance', 'Accessibilite', 'Bonnes Pratiques', 'SEO'];
+              const vals = [scores.perf, scores.access, scores.bp, scores.seo];
+              const r = 32;
+              const circ = 2 * Math.PI * r;
+              return (
+                <div class="bg-white rounded-xl border border-neutral-200 p-5 shadow-sm">
+                  <div class="text-sm font-semibold text-neutral-500 uppercase tracking-wide mb-4">{strat === 'desktop' ? 'Desktop' : 'Mobile'}</div>
+                  <div class="grid grid-cols-2 gap-4">
+                    {vals.map((v, i) => {
+                      const col = scoreColor(v);
+                      const dashArr = `${(v / 100) * circ} ${circ}`;
+                      return (
+                        <div class="flex flex-col items-center gap-2">
+                          <svg width="80" height="80" viewBox="0 0 80 80">
+                            <circle cx="40" cy="40" r={r} fill="none" stroke="#e5e7eb" stroke-width="6"/>
+                            <circle cx="40" cy="40" r={r} fill="none" stroke={col} stroke-width="6"
+                              stroke-dasharray={dashArr} stroke-dashoffset={circ * 0.25}
+                              stroke-linecap="round" transform="rotate(-90 40 40)"/>
+                            <text x="40" y="40" text-anchor="middle" dominant-baseline="central"
+                              font-size="18" font-weight="700" fill={col}>{v}</text>
+                          </svg>
+                          <span class="text-xs text-neutral-500 text-center leading-tight">{labels[i]}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <!-- Core Web Vitals -->
+        <div>
+          <h3 class="font-semibold text-neutral-800 mb-4">Core Web Vitals</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {(['desktop', 'mobile'] as const).map(strat => {
+              const cwv = strat === 'desktop' ? pagespeed.cwv_desktop : pagespeed.cwv_mobile;
+              const metrics = [
+                { key: 'lcp', label: 'LCP', val: cwv.lcp, seuil: '< 2.5s' },
+                { key: 'cls', label: 'CLS', val: cwv.cls, seuil: '< 0.1' },
+                { key: 'tbt', label: 'TBT', val: cwv.tbt, seuil: '< 200ms' },
+                { key: 'fcp', label: 'FCP', val: cwv.fcp, seuil: '< 1.8s' },
+              ];
+              return (
+                <div class="bg-white rounded-xl border border-neutral-200 p-5 shadow-sm">
+                  <div class="text-sm font-semibold text-neutral-500 uppercase tracking-wide mb-3">{strat}</div>
+                  <div class="space-y-2">
+                    {metrics.map(m => {
+                      const col = cwvColor(m.key, m.val);
+                      return (
+                        <div class="flex justify-between items-center py-1 border-b border-neutral-100 last:border-0">
+                          <span class="text-sm text-neutral-600">{m.label}</span>
+                          <div class="flex items-center gap-2">
+                            <span class="text-xs text-neutral-400">{m.seuil}</span>
+                            <span class="font-semibold text-sm" style={`color: ${col}`}>{m.val}</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <!-- Securite -->
+        <div>
+          <h3 class="font-semibold text-neutral-800 mb-4">Securite — Mozilla Observatory</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-white rounded-xl border border-neutral-200 p-5 shadow-sm">
+              <div class="flex items-center gap-4 mb-4">
+                <div class="text-4xl font-bold" style="color: #f59e0b;">{observatory.grade}</div>
+                <div>
+                  <div class="text-xl font-bold text-neutral-800">{observatory.score}/100</div>
+                  <div class="text-sm text-neutral-400">{observatory.passed}/{observatory.total} tests reussis</div>
+                </div>
+              </div>
+              <div class="space-y-1.5">
+                {securityHeaders.map(h => (
+                  <div class="flex items-center gap-2 text-sm">
+                    <span class={h.ok ? 'text-emerald-500' : 'text-red-400'}>{h.ok ? '✓' : '✗'}</span>
+                    <span class={h.ok ? 'text-neutral-700' : 'text-neutral-400'}>{h.header}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div class="bg-emerald-50 rounded-xl border border-emerald-200 p-5">
+              <h4 class="font-semibold text-emerald-900 mb-3 text-sm">Points forts securite</h4>
+              <ul class="space-y-1.5 text-xs text-emerald-800">
+                <li class="flex items-start gap-1"><span>•</span><span>HSTS avec preload (protection maximale)</span></li>
+                <li class="flex items-start gap-1"><span>•</span><span>X-Frame-Options DENY (protection clickjacking)</span></li>
+                <li class="flex items-start gap-1"><span>•</span><span>Permissions-Policy restrictif (camera, micro, paiement bloques)</span></li>
+                <li class="flex items-start gap-1"><span>•</span><span>Zero script tiers (pas de Google Analytics, pas de tracking)</span></li>
+              </ul>
+              <div class="mt-3 pt-3 border-t border-emerald-200 text-xs text-emerald-700">
+                <strong>robots.txt</strong> : present, bots IA autorises, bots spam bloques<br/>
+                <strong>sitemap.xml</strong> : 56 URLs indexees
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Schema.org + OG -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-white rounded-xl border border-neutral-200 p-5 shadow-sm">
+            <h4 class="font-semibold text-neutral-800 mb-3 text-sm">Schema.org — Donnees structurees</h4>
+            <div class="mb-3 p-3 bg-amber-50 rounded-lg border border-amber-200">
+              <p class="text-xs text-amber-700"><strong>Bonne base mais lacune critique :</strong> les 10 articles du journal n'ont aucun schema Article. La fonction existe dans le code mais n'est jamais appelee. Impact : pas de rich snippets Google.</p>
+            </div>
+            <div class="space-y-1.5">
+              {schemaChecks.map(c => (
+                <div class="flex items-center gap-2 text-sm">
+                  <span class={c.ok ? 'text-emerald-500' : 'text-red-400'}>{c.ok ? '✓' : '✗'}</span>
+                  <span class={c.ok ? 'text-neutral-700' : 'text-neutral-400'}>{c.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div class="bg-white rounded-xl border border-neutral-200 p-5 shadow-sm">
+            <h4 class="font-semibold text-neutral-800 mb-3 text-sm">Open Graph & Meta SEO</h4>
+            <div class="mb-3 p-3 bg-emerald-50 rounded-lg border border-emerald-200">
+              <p class="text-xs text-emerald-700"><strong>Excellent — 12/12.</strong> Toutes les meta tags sont presentes et dynamiques par page. OG + Twitter Cards + hreflang FR/EN. Rien a corriger.</p>
+            </div>
+            <div class="space-y-1.5">
+              {ogChecks.map(c => (
+                <div class="flex items-center gap-2 text-sm">
+                  <span class={c.ok ? 'text-emerald-500' : 'text-red-400'}>{c.ok ? '✓' : '✗'}</span>
+                  <span class={c.ok ? 'text-neutral-700' : 'text-neutral-400'}>{c.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══ PANEL 2 : VISITEURS ══ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+        <!-- Stats row -->
+        <div class="flex gap-4 mb-8 flex-wrap">
+          <div class="bg-emerald-50 border border-emerald-200 rounded-xl px-5 py-3 text-center flex-1 min-w-28">
+            <div class="text-2xl font-bold text-emerald-700">{convertis}</div>
+            <div class="text-xs text-emerald-600">Convertissent</div>
+          </div>
+          <div class="bg-amber-50 border border-amber-200 rounded-xl px-5 py-3 text-center flex-1 min-w-28">
+            <div class="text-2xl font-bold text-amber-700">{hesitants}</div>
+            <div class="text-xs text-amber-600">Hesitent</div>
+          </div>
+          <div class="bg-neutral-100 border border-neutral-200 rounded-xl px-5 py-3 text-center flex-1 min-w-28">
+            <div class="text-2xl font-bold text-neutral-600">{quittent}</div>
+            <div class="text-xs text-neutral-500">Repartent</div>
+          </div>
+        </div>
+
+        <!-- Personas grouped by decision -->
+        {(['Convertit', 'Hesite', 'Quitte'] as const).map(dec => {
+          const group = personas.filter(p => p.decision === dec);
+          if (group.length === 0) return null;
+          const label = dec === 'Convertit' ? 'Ceux qui contactent' : dec === 'Hesite' ? 'Ceux qui hesitent' : 'Ceux qui repartent';
+          const headerClass = dec === 'Convertit' ? 'bg-emerald-600' : dec === 'Hesite' ? 'bg-amber-500' : 'bg-neutral-500';
+          return (
+            <div class="mb-8">
+              <div class={`${headerClass} text-white px-4 py-2 rounded-t-xl font-semibold text-sm`}>{label} — {group.length} personas</div>
+              <div class="border border-t-0 border-neutral-200 rounded-b-xl overflow-hidden">
+                {group.map((p, idx) => (
+                  <details class={`group ${idx < group.length - 1 ? 'border-b border-neutral-200' : ''} ${decisionBorder(p.decision)}`}>
+                    <summary class="flex items-center gap-3 p-4 cursor-pointer list-none hover:bg-neutral-50/80 transition-colors">
+                      <span class="text-xl">{p.emoji}</span>
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 flex-wrap">
+                          <span class="font-semibold text-neutral-900">{p.name}</span>
+                          <span class="text-xs text-neutral-400">{p.age} ans</span>
+                          <span class={`px-2 py-0.5 rounded-full text-xs font-medium border ${decisionColor(p.decision)}`}>{p.decision}</span>
+                        </div>
+                        <div class="text-xs text-neutral-500 mt-0.5">{p.situation} — {p.canal} / {p.device}</div>
+                      </div>
+                      <div class="hidden md:flex items-center gap-3 text-xs text-neutral-400 shrink-0">
+                        <span>Exp {p.exp}/10</span>
+                        <span>Conf {p.conf}/10</span>
+                        <span>Clarte {p.clarte}/10</span>
+                      </div>
+                      <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </summary>
+
+                    <div class="px-4 pb-5 pt-2 space-y-4 bg-white/60">
+                      <div class="bg-neutral-50 rounded-lg p-3 text-sm text-neutral-700 italic">"{p.contexte}"</div>
+
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <div class="text-xs font-semibold text-neutral-500 uppercase mb-2">Premiere impression</div>
+                          <p class="text-neutral-700">{p.impression}</p>
+                        </div>
+                        <div>
+                          <div class="text-xs font-semibold text-neutral-500 uppercase mb-2">Question cle</div>
+                          <p class="text-neutral-700 font-medium">"{p.question}"</p>
+                          <p class="text-xs mt-1"><span class={p.reponse === 'Oui' ? 'text-emerald-600' : p.reponse === 'Partiellement' ? 'text-amber-600' : 'text-red-500'}>{p.reponse}</span> — {p.commentReponse}</p>
+                        </div>
+                      </div>
+
+                      <div>
+                        <div class="text-xs font-semibold text-neutral-500 uppercase mb-2">Parcours</div>
+                        <div class="space-y-1">
+                          {p.parcours.map((step: string[], i: number) => (
+                            <div class="flex gap-2 text-sm">
+                              <span class="text-neutral-400 shrink-0">{i + 1}.</span>
+                              <span class="text-neutral-600"><strong>{step[0]}</strong> — {step[1]}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <div class="text-xs font-semibold text-emerald-600 uppercase mb-2">Points positifs</div>
+                          <ul class="space-y-1">
+                            {p.positifs.map((pt: string) => <li class="flex items-start gap-1.5 text-neutral-700"><span class="text-emerald-400 shrink-0 mt-0.5">+</span>{pt}</li>)}
+                          </ul>
+                        </div>
+                        <div>
+                          <div class="text-xs font-semibold text-red-500 uppercase mb-2">Points de friction</div>
+                          <ul class="space-y-1">
+                            {p.frictions.map((fr: string) => <li class="flex items-start gap-1.5 text-neutral-700"><span class="text-red-400 shrink-0 mt-0.5">-</span>{fr}</li>)}
+                          </ul>
+                        </div>
+                      </div>
+
+                      <div class="bg-neutral-100 rounded-lg p-3 text-sm">
+                        <span class="font-semibold text-neutral-700">{p.decision} — </span>
+                        <span class="text-neutral-600">{p.raison}</span>
+                        {p.changement && (
+                          <p class="mt-1 text-xs text-neutral-500"><em>Ce qui aurait change les choses : {p.changement}</em></p>
+                        )}
+                      </div>
+
+                      <div class="flex gap-4 text-xs text-neutral-500">
+                        <span class="flex items-center gap-1"><span class="font-medium text-neutral-700">Exp :</span> {p.exp}/10</span>
+                        <span class="flex items-center gap-1"><span class="font-medium text-neutral-700">Confiance :</span> {p.conf}/10</span>
+                        <span class="flex items-center gap-1"><span class="font-medium text-neutral-700">Clarte :</span> {p.clarte}/10</span>
+                      </div>
+                    </div>
+                  </details>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+
+    <!-- ══ PANEL 3 : AMELIORATIONS ══ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+
+        <!-- Haute priorite -->
+        <div>
+          <h3 class="font-semibold text-neutral-800 mb-4 flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-red-500"></span>
+            Le plus important
+          </h3>
+          <div class="space-y-4">
+            {ameliorations.haute.map(a => (
+              <div class="bg-white rounded-xl border-2 border-red-200 p-5 shadow-sm">
+                <div class="flex items-start justify-between gap-4 mb-3">
+                  <h4 class="font-semibold text-neutral-900">{a.title}</h4>
+                  <span class="shrink-0 px-3 py-1 bg-red-100 text-red-700 text-xs rounded-full font-medium">{a.impact}</span>
+                </div>
+                <p class="text-sm text-neutral-600 leading-relaxed">{a.detail}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Moyenne priorite -->
+        <div>
+          <h3 class="font-semibold text-neutral-800 mb-4 flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-blue-400"></span>
+            Utile aussi
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {ameliorations.moyenne.map(a => (
+              <div class="bg-white rounded-xl border border-neutral-200 p-5 shadow-sm">
+                <h4 class="font-semibold text-neutral-900 mb-2 text-sm">{a.title}</h4>
+                <p class="text-xs text-neutral-600 leading-relaxed">{a.detail}</p>
+                <div class="mt-2 text-xs text-neutral-400">{a.impact}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Discussion -->
+        <div>
+          <h3 class="font-semibold text-neutral-800 mb-4 flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-neutral-300"></span>
+            A discuter ensemble
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {ameliorations.discussion.map(a => (
+              <div class="bg-neutral-50 rounded-xl border border-neutral-200 p-5">
+                <div class="flex items-start gap-3">
+                  <span class="text-2xl">{a.emoji}</span>
+                  <div>
+                    <h4 class="font-semibold text-neutral-900 mb-1 text-sm">{a.title}</h4>
+                    <p class="text-xs text-neutral-600 leading-relaxed">{a.detail}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div><!-- /panels -->
+
+  <!-- ═══════════════════ METHODOLOGIE ═══════════════════ -->
+  <section class="bg-neutral-50 border-t border-neutral-200 py-12 px-6">
+    <div class="max-w-3xl mx-auto">
+      <h2 class="text-xl font-semibold text-neutral-800 mb-4">Methodologie</h2>
+      <ol class="space-y-3 text-sm text-neutral-600">
+        <li class="flex gap-3"><span class="font-bold text-[var(--color-accent)] shrink-0">1.</span><span><strong>Scraping complet</strong> — 12 pages de marcm.fr analysees : accueil, offre, realisations, qui suis-je, commander, contact, journal, aide, mentions legales, landing ville, robots.txt, sitemap.xml.</span></li>
+        <li class="flex gap-3"><span class="font-bold text-[var(--color-accent)] shrink-0">2.</span><span><strong>Audits techniques</strong> — Lighthouse desktop et mobile (CLI local), Mozilla Observatory API, verification Schema.org et Open Graph depuis le code source Astro.</span></li>
+        <li class="flex gap-3"><span class="font-bold text-[var(--color-accent)] shrink-0">3.</span><span><strong>20 personas construits</strong> — 6 canaux (Google Search, Maps, IA, reseaux sociaux, bouche-a-oreille, email/LinkedIn), 3 niveaux de maturite, 3 devices. 5 personas negatifs inclus.</span></li>
+        <li class="flex gap-3"><span class="font-bold text-[var(--color-accent)] shrink-0">4.</span><span><strong>20 simulations de visite</strong> — 4 agents IA en parallele avec contexte du site, absences et problemes techniques injectes.</span></li>
+        <li class="flex gap-3"><span class="font-bold text-[var(--color-accent)] shrink-0">5.</span><span><strong>Aggregation</strong> — Frictions classees par impact (nombre de personas) et severite. Ameliorations priorisees et actionnables.</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ CTA FINAL ═══════════════════ -->
+  <section class="py-16 px-6 text-center">
+    <div class="max-w-2xl mx-auto">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-3">Pret a transformer ces insights en resultats ?</h2>
+      <p class="text-neutral-600 mb-8">Ce rapport identifie des opportunites concretes. Je peux construire un site qui convertit vraiment vos visiteurs en clients.</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="/commander" class="px-6 py-3 bg-[var(--color-accent)] text-white font-semibold rounded-xl hover:opacity-90 transition-opacity">
+          Commander un site
+        </a>
+        <a href="/contact" class="px-6 py-3 border-2 border-neutral-300 text-neutral-700 font-semibold rounded-xl hover:border-neutral-400 transition-colors">
+          En discuter d'abord
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <style is:inline>
+    #panels { -ms-overflow-style: none; }
+    #panels::-webkit-scrollbar { display: none; }
+  </style>
+
+  <script is:inline>
+    const panels = document.getElementById('panels');
+    const tabs = document.querySelectorAll('.tab-btn');
+    const sections = panels.querySelectorAll('.tab-panel');
+
+    function activateTab(index) {
+      tabs.forEach((b, i) => {
+        if (i === index) {
+          b.classList.remove('text-neutral-500');
+          b.classList.add('text-[var(--color-accent)]', 'bg-[var(--color-accent)]/10');
+        } else {
+          b.classList.remove('text-[var(--color-accent)]', 'bg-[var(--color-accent)]/10');
+          b.classList.add('text-neutral-500');
+        }
+      });
+    }
+
+    tabs.forEach((btn, i) => {
+      btn.addEventListener('click', () => {
+        sections[i].scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+        activateTab(i);
+      });
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+          const idx = Array.from(sections).indexOf(entry.target);
+          if (idx >= 0) activateTab(idx);
+        }
+      });
+    }, { root: panels, threshold: 0.5 });
+
+    sections.forEach(s => observer.observe(s));
+  </script>
+
+</BaseLayout>
