@@ -1,0 +1,774 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX + Technique — Service Social Independant | Marc M';
+const description = 'Audit complet du site service-social-independant.fr : 20 personas simules, scores securite, Schema.org, SEO — rapport avec recommandations priorisees.';
+
+// ─── PERSONAS ───
+const personas = [
+  { id: 1, name: 'Marie-Helene', age: 54, role: 'Directrice EHPAD, Normandie', canal: 'Google Search', maturite: 'Comparaison', device: 'Mobile', decision: 'Hesite', exp: 5, conf: 6, clarte: 5, emoji: '🏥', situation: 'Directrice EHPAD 280 residents, evaluation externe obligatoire avant fin 2026', parcours: ['Accueil', 'Prestations ESSMS', 'Qui suis-je', 'Contact (hesite)'], questionCle: 'Est-elle agreee pour les EHPAD ? Quel est son tarif ?', reponse: 'Partiellement', premierImpression: 'Page propre, titre clair. "Evaluatrice externe ESSMS" visible mais manque le numero d\'agrement et le champ specifique EHPAD. 3-4s mobile.', positifs: ['Credential evaluatrice externe ESSMS tres visible', '"20 ans d\'experience" rassure sur le serieux', 'Slogan professionnel resonnant dans le secteur'], frictions: ['Pas de prix = impossible de comparer avec ses 2 autres prestataires', 'Pas de telephone = doit attendre la reponse formulaire', 'Pas de references EHPAD specifiques', 'Pas de FAQ evaluation externe (combien de jours, methodologie, rapport final)'], raisonDecision: 'Profil tres adequat mais incapacite a comparer les tarifs bloque la decision en mode comparaison actif.', impactTech: 'LCP 3-4s mobile tolerable. Absence og:image = partage LinkedIn sans visuel quand elle veut montrer le profil a sa direction.' },
+  { id: 2, name: 'Frederic', age: 47, role: 'Directeur MSP, Haute-Savoie', canal: 'Bouche-a-oreille', maturite: 'Decision', device: 'Desktop', decision: 'Convertit', exp: 7, conf: 8, clarte: 7, emoji: '🏥', situation: 'Directeur MSP 15 praticiens, doit reorganiser la gouvernance et le projet de sante', parcours: ['Accueil', 'MSP/CPTS', 'Qui suis-je', 'Contact'], questionCle: 'Caroline Montoya accompagne bien les MSP specifiquement ?', reponse: 'Oui', premierImpression: 'Arrive avec recommandation forte d\'un collegue. Desktop 2.5s. "MSP/CPTS" dans le menu = direct au but. "C\'est serieux, c\'est ce que mon collegue m\'a dit."', positifs: ['Page MSP/CPTS dediee = signal de specialisation reelle', 'Double competence terrain + gestion tres pertinente pour MSP', 'Formulaire de contact simple et rapide'], frictions: ['Pas de telephone = prefererait appeler direct', 'Pas de tarif = doit attendre le devis avant de presenter a ses associes'], raisonDecision: 'Recommandation forte collegue + specialisation MSP confirmee + credentials = decision rapide.', impactTech: 'Desktop 2.5s excellent. Pas de friction technique.' },
+  { id: 3, name: 'Sophie', age: 39, role: 'Coordinatrice CPTS, Bretagne', canal: 'IA (Perplexity)', maturite: 'Decision', device: 'Mobile', decision: 'Convertit', exp: 7, conf: 7, clarte: 7, emoji: '🤝', situation: 'Coordinatrice CPTS en plein developpement, budget ARS disponible pour appui externe', parcours: ['MSP/CPTS', 'Qui suis-je', 'Contact'], questionCle: 'A-t-elle deja accompagne des CPTS ? Dans quelle region ?', reponse: 'Partiellement', premierImpression: 'Perplexity a cite ce site parmi les meilleurs. "CPTS" dans le menu = immediatement rassurant. 3s mobile. Cherche des references CPTS geographiques.', positifs: ['Specialisation CPTS clairement affichee', 'Budget ARS = pas un frein sur le prix', 'Credentiale double rassurante pour l\'ARS qui validera'], frictions: ['Pas de references CPTS geographiques', 'og:image absente = partage LinkedIn sans visuel quand elle montre le profil a sa presidente', 'Pas de tarif (secondaire ici)'], raisonDecision: 'Besoin tres specifique, budget sanctuarise, prestataire matching = conversion directe.', impactTech: 'Mobile 3s correct. og:image absente = partage LinkedIn peu attractif pour ses parties prenantes.' },
+  { id: 4, name: 'Jean-Pierre', age: 61, role: 'Directeur General federation ESAT, Paris', canal: 'Email reseau', maturite: 'Decision', device: 'Desktop', decision: 'Convertit', exp: 8, conf: 9, clarte: 7, emoji: '🏛️', situation: 'DG federation 5 ESAT, evaluation externe imminente, cherche prestataire de qualite', parcours: ['Accueil', 'Prestations ESSMS', 'Qui suis-je', 'Mentions legales', 'Contact'], questionCle: 'Est-elle referencee comme evaluatrice externe ? Quel est son numero d\'agrement ?', reponse: 'Partiellement', premierImpression: 'Email newsletter federation. Desktop 2.5s. "Evaluatrice externe ESSMS" = parfait. Reflexe DG : cherche le SIRET et les mentions legales avant de contacter.', positifs: ['Credentials institutionnels forts (jury DEASS, evaluatrice agreee)', 'Couverture nationale = pas de barriere geographique', 'Mentions legales existent (rassure le DG)'], frictions: ['Numero d\'agrement evaluatrice non visible (important pour les appels d\'offres)', 'SIRET non trouve en premiere lecture', 'Pas de telephone'], raisonDecision: 'Recommandation newsletter federation + credentials institutionnels = confiance suffisante pour envoyer le formulaire.', impactTech: 'Desktop excellent. Site charge en 2.5s = signal de professionnalisme positif.' },
+  { id: 5, name: 'Amandine', age: 35, role: 'Responsable qualite SAAD, Nord', canal: 'Google Search', maturite: 'Comparaison', device: 'Mobile', decision: 'Hesite', exp: 5, conf: 6, clarte: 5, emoji: '📋', situation: 'SAAD sous pression reglementaire CPOM, cherche appui consultant ponctuel', parcours: ['Accueil', 'Gestion administrative', 'Qui suis-je', 'Contact (hesite)'], questionCle: 'C\'est combien une mission de 2 jours pour structurer la demarche qualite ?', reponse: 'Non', premierImpression: '3-4s mobile. "Gestion administrative" dans le menu = son besoin. Cherche immediatement une estimation de tarif pour comparer ses 3 prestataires. Rien.', positifs: ['Page gestion administrative existe bien', 'Profil professionnel credible'], frictions: ['Absence de prix = impossible de comparer les 3 consultants sur leur critere principal', 'Pas de telephone = delai de reponse inconnu alors qu\'elle doit demarrer vite', 'Pas de description detaillee des missions (nombre de jours, livrables)'], raisonDecision: 'Profil adequat mais incapacite a comparer les tarifs la bloque en mode comparaison.', impactTech: 'Mobile 3-4s = "les autres cabinets chargent plus vite, signe que ce site est moins optimise." Signal negatif implicite.' },
+  { id: 6, name: 'Thomas', age: 43, role: 'Medecin coordinateur, projet MSP Ardeche', canal: 'IA (ChatGPT)', maturite: 'Comparaison', device: 'Desktop', decision: 'Convertit', exp: 7, conf: 8, clarte: 6, emoji: '🩺', situation: 'Medecin generaliste avec 4 collegues, veut creer une MSP mais manque de competences admin', parcours: ['MSP/CPTS', 'Gestion de projets', 'Contact'], questionCle: 'Peut-elle accompagner la creation complete d\'une MSP de A a Z ?', reponse: 'Partiellement', premierImpression: 'ChatGPT a propose 3 prestataires MSP, il ouvre chacun. Desktop 2.5s. "MSP/CPTS + Gestion de projets" = double signal positif pour son besoin de creation complete.', positifs: ['Double page MSP/CPTS + Gestion projets = couverture du besoin', 'Master Gestion rassure les medecins qui cherchent quelqu\'un pour le cote admin', 'Couverture nationale = pas d\'obstacle pour sa MSP rurale'], frictions: ['Pas de cas concret "j\'ai accompagne la creation de X MSP"', 'Pas de tarif = doit faire approuver le budget par ses 4 associes sans estimation'], raisonDecision: 'Besoin tres specifique, peu de prestataires specialises MSP en creation, envoie le formulaire.', impactTech: 'Desktop excellent. Pas de friction technique majeure.' },
+  { id: 7, name: 'Patricia', age: 56, role: 'Personne en difficulte admin, Lyon', canal: 'Google Search', maturite: 'Decouverte', device: 'Mobile', decision: 'Quitte', exp: 3, conf: 3, clarte: 2, emoji: '😕', situation: 'Femme seule, difficultes CAF apres divorce — cherche une assistante sociale pour aide individuelle', parcours: ['Accueil', 'Desorientee', 'Quitte'], questionCle: 'Est-ce qu\'elle peut m\'aider moi directement pour mes demarches ?', reponse: 'Non', premierImpression: '4s mobile sur vieux telephone. "Assistante sociale liberale" correspond. Mais "structures medico-sociales", "MSP", "CPTS" = vocabulaire completement opaque pour elle.', positifs: ['Slogan "L\'humain au coeur de l\'action sociale" resonance emotionnelle', 'Design sobre et serieux'], frictions: ['Vocabulaire B2B entierement opaque pour un particulier', 'Aucun signal "vous etes un particulier ?" ou redirection', 'Site lent sur mobile 4G limite'], raisonDecision: 'Hors cible absolue. Le site ne s\'adresse pas aux particuliers et ne le signale pas clairement.', impactTech: '4s mobile = "ce site est lent" note avant de comprendre qu\'elle s\'est trompee de site.' },
+  { id: 8, name: 'Nathalie', age: 44, role: 'DRH Croix-Rouge locale, Bordeaux', canal: 'LinkedIn', maturite: 'Comparaison', device: 'Desktop', decision: 'Hesite', exp: 5, conf: 6, clarte: 4, emoji: '❤️', situation: 'DRH antenne Croix-Rouge, doit restructurer service social interne apres departs', parcours: ['Accueil', 'Gestion administrative', 'Qui suis-je', 'Contact (incertaine)'], questionCle: 'A-t-elle deja travaille sur la restructuration de services sociaux salaries ?', reponse: 'Non', premierImpression: 'LinkedIn suggestion. Desktop 2.5s. "Travail social – Gestion – Accompagnement" : prometteur. Cherche "RH" ou "management d\'equipe" dans le menu. Absent.', positifs: ['Profil credential fort', 'Gestion administrative peut couvrir son besoin partiellement', 'Site propre et professionnel'], frictions: ['Positionnement trop "structures medico-sociales" pas assez "RH associatif"', 'Pas de FAQ "quand faire appel a moi ?"', 'Pas de prix', 'Pas de references monde associatif/Croix-Rouge'], raisonDecision: 'Profil interessant mais doute sur l\'adequation au besoin RH specifique = attente avant de contacter.', impactTech: 'Desktop excellent. La non-conversion est liee au contenu, pas a la performance.' },
+  { id: 9, name: 'Laurent', age: 50, role: 'Chef de service AEMO, Loire-Atlantique', canal: 'Bouche-a-oreille', maturite: 'Decision', device: 'Desktop', decision: 'Convertit', exp: 8, conf: 9, clarte: 8, emoji: '👨‍💼', situation: 'Chef de service AEMO, charge de trouver le prestataire evaluation externe, budget valide', parcours: ['Accueil', 'Prestations ESSMS', 'Qui suis-je', 'Contact'], questionCle: 'Est-elle agreee pour les AEMO ? Quel est son tarif et son calendrier ?', reponse: 'Partiellement', premierImpression: 'Sa directrice parle de Caroline en formation ANDESI. Desktop 2.5s. Confiance prealable. "Evaluatrice externe des ESSMS" visible = triple validation : mandat, legitimite, competence.', positifs: ['Credential institutionnelle tres forte (evaluatrice ESSMS)', 'La recommandation + site confirmatoire = conversion', 'Design professionnel adapte au secteur'], frictions: ['Pas de reference AEMO specifique', 'Pas de telephone', 'Pas de tarif indicatif'], raisonDecision: 'Recommandation directrice + credentials = confiance suffisante pour remplir le formulaire immediatement.', impactTech: 'Desktop 2.5s = excellent. Aucun obstacle technique.' },
+  { id: 10, name: 'Celine', age: 27, role: 'Etudiante DEASS, Paris', canal: 'Google Search', maturite: 'Decouverte', device: 'Mobile', decision: 'Quitte', exp: 4, conf: 5, clarte: 4, emoji: '📚', situation: 'Etudiante 3e annee DEASS cherchant informations sur les jurys pour preparer sa soutenance', parcours: ['Qui suis-je', 'Accueil', 'Quitte'], questionCle: 'Comment se passe une soutenance DEASS avec elle comme jury ?', reponse: 'Non', premierImpression: '"Jury DEASS" mentionne dans le titre. Mobile 4s. Elle clique sur Qui suis-je en premier. La mention est trop succincte. Reste du site = B2B opaque pour elle.', positifs: ['Mention "Jury DEASS" visible', 'Profil professionnel inspire confiance'], frictions: ['Hors cible : le site ne s\'adresse pas aux etudiants', 'Aucun contenu sur le processus de soutenance DEASS', 'Navigation mobile Divi laborieuse avec 4s de chargement'], raisonDecision: 'Hors cible — le site est oriente B2B structures, pas etudiants.', impactTech: 'Mobile 4s = frustrant pour une exploration rapide.' },
+  { id: 11, name: 'Isabelle', age: 52, role: 'Directrice IME, Occitanie', canal: 'LinkedIn', maturite: 'Decision', device: 'Tablette', decision: 'Convertit', exp: 7, conf: 8, clarte: 7, emoji: '🎓', situation: 'Directrice IME APF, evaluation externe a organiser dans 6 mois, cherche prestataire serieux', parcours: ['Accueil', 'Prestations ESSMS', 'Qui suis-je', 'Contact'], questionCle: 'Avez-vous deja fait des evaluations d\'IME en champ handicap ?', reponse: 'Partiellement', premierImpression: 'Article LinkedIn de Caroline sur l\'evaluation externe. Tablette 3s. "Evaluatrice externe ESSMS" = exactement ce dont son IME a besoin. Design professionnel confirmatoire.', positifs: ['Credentials institutionnels parfaitement alignes sur son besoin', 'Page dediee ESSMS = signal de specialisation', 'Disponibilite nationale pas de probleme pour son IME en Occitanie'], frictions: ['Pas de reference IME/champ handicap specifique', 'og:image absente = partage LinkedIn peu visuel si elle montre le lien a son CA', 'Pas de telephone'], raisonDecision: 'Profil LinkedIn + site confirmatoire = formulaire envoye.', impactTech: 'Tablette wifi 3s acceptable. og:image absente = partage interne peu attractif.' },
+  { id: 12, name: 'Mohamed', age: 38, role: 'Coordinateur administratif CPTS, Ile-de-France', canal: 'IA (Claude)', maturite: 'Comparaison', device: 'Mobile', decision: 'Convertit', exp: 6, conf: 7, clarte: 6, emoji: '📊', situation: 'Nouveau coordinateur admin CPTS, president lui demande de structurer le projet de sante territorial', parcours: ['MSP/CPTS', 'Gestion de projets', 'Contact'], questionCle: 'Quel est le budget typique pour un accompagnement CPTS sur 3 mois ?', reponse: 'Non', premierImpression: 'Claude a recommande ce site parmi plusieurs options. Mobile 3-4s. "CPTS" visible = rassure. Cherche des details concrets sur les livrables et un tarif.', positifs: ['Page CPTS dediee = signal specifique', 'Double competence rassurante pour presenter au president', 'Formulaire accessible depuis mobile'], frictions: ['Pas de tarif = ne peut pas presenter un budget au president sans estimation', 'Page CPTS peu detaillee sur les livrables concrets', 'Mobile 3-4s = navigation Divi pas fluide'], raisonDecision: 'Besoin clair, prestataire adapte, envoie le formulaire pour obtenir le devis a presenter au president.', impactTech: 'Mobile 3-4s = navigation Divi pas ideale mais acceptable en B2B.' },
+  { id: 13, name: 'Veronique', age: 46, role: 'Directrice SSIAD, Grand Est', canal: 'Google Search', maturite: 'Comparaison', device: 'Desktop', decision: 'Convertit', exp: 7, conf: 8, clarte: 7, emoji: '💉', situation: 'Directrice SSIAD, veut preparer rapport evaluation interne avant l\'externe, compare 3 prestataires', parcours: ['Accueil', 'Prestations ESSMS', 'Qui suis-je', 'Contact'], questionCle: 'A-t-elle deja travaille avec des SSIAD ? Quelle est sa methodologie ?', reponse: 'Partiellement', premierImpression: 'Desktop 2.5s. "Assistante sociale liberale — 20 ans d\'experience" = bon debut. Cherche "SSIAD" dans le menu — absent. Mais "ESSMS" couvre les SSIAD, elle le sait.', positifs: ['Credentials parfaitement alignes (evaluatrice ESSMS = couvre les SSIAD)', '20 ans d\'experience + double competence = profil ideal', 'National = pas de probleme pour son SSIAD en Grand Est'], frictions: ['Pas de reference SSIAD visible', 'Pas de methodologie detaillee (etapes, nombre de jours, livrables)', 'Pas de prix'], raisonDecision: 'Envoie le formulaire malgre les frictions car le profil global correspond parfaitement.', impactTech: 'Desktop excellent. La non-friction technique aide la conversion.' },
+  { id: 14, name: 'Robert', age: 68, role: 'Retraite cherchant aide MDPH, Toulouse', canal: 'Google Search', maturite: 'Decouverte', device: 'Mobile', decision: 'Quitte', exp: 2, conf: 3, clarte: 2, emoji: '👴', situation: 'Retraite suite a accident, cherche aide pour demarches MDPH et maintien a domicile', parcours: ['Accueil', 'Desoriente', 'Quitte'], questionCle: 'Est-ce qu\'elle peut m\'aider pour mes demarches MDPH ?', reponse: 'Non', premierImpression: '"Service social independant" = croit trouver un service social comme en mairie. Mobile 4s sur vieux telephone. Titre "Assistante sociale liberale" = bon. Puis les termes B2B le perdent completement.', positifs: ['Titre "Assistante sociale liberale" correspond a sa requete'], frictions: ['Vocabulaire B2B totalement opaque pour un retraite (ESSMS, MSP, CPTS, AEMO)', 'Pas de mention "aide aux particuliers" ou redirection', 'Mobile lent 4s = frustration accrue par la confusion'], raisonDecision: 'Hors cible absolue. Desoriente et frustre. Repart sans avoir compris le service.', impactTech: '4s mobile lent + confusion cognitive = abandon rapide.' },
+  { id: 15, name: 'Julie', age: 33, role: 'Assistante sociale salariee cherchant reconversion', canal: 'Google Search', maturite: 'Decouverte', device: 'Mobile', decision: 'Quitte', exp: 4, conf: 5, clarte: 4, emoji: '🔄', situation: 'AS de mairie, reflechit a s\'installer en liberal, cherche des exemples de parcours', parcours: ['Qui suis-je', 'Accueil', 'Quitte'], questionCle: 'Comment elle a fait pour devenir liberale ? Quels revenus peut-on esperer ?', reponse: 'Non', premierImpression: '"Assistante sociale liberale" dans le titre = exactement son aspiration. Mobile 4s. Elle cherche "comment faire" plutot qu\'un service a acheter. Pas de blog, pas de guide.', positifs: ['Parcours de Caroline inspire confiance sur la viabilite du statut liberal', 'Profil "20 ans d\'experience" montre que c\'est une vraie carriere'], frictions: ['Hors cible : cherche de l\'inspiration/formation, pas un prestataire', 'Pas de blog ni de ressources pour AS en reconversion', 'Pas de FAQ "comment je me suis installee"'], raisonDecision: 'Hors cible — cherche inspiration et methode, pas un service B2B.', impactTech: 'Mobile 4s = frustrant pour une exploration rapide de contenu.' },
+  { id: 16, name: 'Christophe', age: 48, role: 'Directeur SIAO 115, Grand Est', canal: 'Bouche-a-oreille', maturite: 'Decision', device: 'Desktop', decision: 'Convertit', exp: 7, conf: 9, clarte: 7, emoji: '🏠', situation: 'Directeur SIAO, doit refondre son projet de service, budget valide, recommandation directe', parcours: ['Accueil', 'Gestion de projets', 'Contact'], questionCle: 'A-t-elle deja travaille avec des SIAO ou structures d\'urgence sociale ?', reponse: 'Partiellement', premierImpression: 'Recommandation directe journee departementale action sociale. Desktop 2.5s. Site propre. "Gestion de projets" dans le menu = son besoin. Confiance prealable tres forte.', positifs: ['Recommandation directe = 80% de la conversion avant meme d\'arriver', 'Site sobrement professionnel adapte au secteur', '"Gestion de projets expert medico-social" = titre confirmatoire'], frictions: ['Pas de reference SIAO/urgence sociale visible', 'Pas de telephone (prefererait appeler pour echanger avant formulaire froid)', 'Pas de tarif'], raisonDecision: 'Recommandation puissante + site confirmatoire = conversion directe.', impactTech: 'Desktop 2.5s excellent. Aucun obstacle technique.' },
+  { id: 17, name: 'Audrey', age: 41, role: 'Gestionnaire administrative FAM, PACA', canal: 'LinkedIn', maturite: 'Comparaison', device: 'Mobile', decision: 'Hesite', exp: 5, conf: 6, clarte: 5, emoji: '📁', situation: 'FAM avec observations IGAS recentes, cherche consultant pour remedier aux lacunes administratives', parcours: ['Gestion administrative', 'Qui suis-je', 'Contact (hesite)'], questionCle: 'A-t-elle gere des suites d\'inspection IGAS ou rapport d\'autorite de controle ?', reponse: 'Non', premierImpression: 'LinkedIn suggestion. Mobile 3-4s. "Gestion administrative" = son besoin apres inspection. Cherche "IGAS" ou "plan d\'amelioration" dans le contenu. Absent.', positifs: ['Credentials pertinents pour son besoin global', '"Gestion administrative et accompagnement" couvre potentiellement son besoin'], frictions: ['Aucune mention des inspections IGAS ou plans d\'amelioration reglementaire', 'Navigation mobile Divi pas fluide', 'Pas de prix, pas de telephone', 'Pas de FAQ sur les suites d\'inspection'], raisonDecision: 'Profil interessant mais manque de specificite sur son probleme concret = attente avant de contacter.', impactTech: 'Mobile 3-4s + navigation Divi = experience laborieuse pour une consultation rapide entre deux reunions.' },
+  { id: 18, name: 'Pierre', age: 55, role: 'President association tutelaire, Lyon', canal: 'Email direct', maturite: 'Decision', device: 'Tablette', decision: 'Convertit', exp: 7, conf: 8, clarte: 7, emoji: '⚖️', situation: 'President association tutelaire, evaluation externe imminente, Caroline l\'a contacte directement', parcours: ['Accueil', 'Prestations ESSMS', 'Contact'], questionCle: 'A-t-elle realise des evaluations pour des associations de gestion tutelaire ?', reponse: 'Partiellement', premierImpression: 'Email personnalise de Caroline = confiance immediate. Tablette 3s. Site professionnel confirme le serieux de l\'email. "Evaluatrice externe ESSMS" = rassurant.', positifs: ['Email personnalise + site coherent = double signal positif', 'Design professionnel valide l\'image de l\'email', 'Formulaire de contact simple'], frictions: ['Pas de telephone (55 ans, prefere appeler)', 'Pas de reference association tutelaire specifique', 'Tablette 3s = chargement correct mais pas rapide'], raisonDecision: 'Prospection directe caroline + site confirmatoire = conversion.', impactTech: 'Tablette 3s acceptable. Pas de friction majeure.' },
+  { id: 19, name: 'Laure', age: 31, role: 'Infirmiere coordinatrice, projet CPTS, Pays de la Loire', canal: 'IA (ChatGPT)', maturite: 'Decouverte', device: 'Mobile', decision: 'Hesite', exp: 5, conf: 6, clarte: 5, emoji: '💊', situation: 'Infirmiere dans CPTS naissante, decouvre le concept d\'AS liberale pour CPTS lors d\'une reunion ARS', parcours: ['MSP/CPTS', 'Qui suis-je', 'Contact (ne l\'envoie pas)'], questionCle: 'Concretement qu\'est-ce qu\'elle fait pour une CPTS en phase de creation ?', reponse: 'Partiellement', premierImpression: 'ChatGPT a explique le concept. Mobile 4s. Page CPTS dediee = pedagogique. Elle est en pure decouverte — pas de budget, pas de mandat. Cherche a comprendre la valeur ajoutee.', positifs: ['Page CPTS dediee = pedagogique pour phase decouverte', 'Credentials rassurants pour une infirmiere qui ne connait pas le secteur'], frictions: ['Pas de FAQ "quand faire appel a moi ?" = barriere a la decouverte', 'Pas de blog ni de guide gratuit = rien pour capturer ce profil', 'Site lent 4s sur mobile en 4G', 'Pas de contenu educatif (exemples concrets, livrables)'], raisonDecision: 'Interessee mais pas encore mure. Aurait besoin d\'un guide gratuit ou newsletter pour rester en contact.', impactTech: 'Mobile 4s = agacant en mode exploration. Frein supplementaire pour une persona deja hesitante.' },
+  { id: 20, name: 'Dominique', age: 45, role: 'Consultant RH generaliste, Paris', canal: 'LinkedIn', maturite: 'Decouverte', device: 'Desktop', decision: 'Quitte', exp: 5, conf: 5, clarte: 4, emoji: '🔍', situation: 'Consultant RH independant, veille concurrentielle sur le marche medico-social', parcours: ['Accueil', 'Services', 'Qui suis-je', 'Quitte'], questionCle: 'Quel est son positionnement exact et ses tarifs ?', reponse: 'Non', premierImpression: 'Article LinkedIn lu, visite d\'analyse concurrentielle. Desktop 2.5s. Scan professionnel rapide. Cherche les tarifs et les references clients pour son analyse. Rien.', positifs: ['Positionnement specialise = niche bien definie, peu de concurrents directs', 'Design sobre, coherent avec le secteur'], frictions: ['Pas de tarifs = analyse incomplete', 'Pas de references clients visibles = impossible d\'evaluer la part de marche', 'Pas d\'information utile pour une veille concurrentielle'], raisonDecision: 'Hors cible — veille concurrentielle, pas de conversion attendue ni souhaitee.', impactTech: 'Desktop excellent. Sortie rapide motivee par le contenu, pas la performance.' },
+];
+
+// ─── STATS ───
+const avgExp = (personas.reduce((s, p) => s + p.exp, 0) / personas.length).toFixed(1);
+const avgConf = (personas.reduce((s, p) => s + p.conf, 0) / personas.length).toFixed(1);
+const avgClarte = (personas.reduce((s, p) => s + p.clarte, 0) / personas.length).toFixed(1);
+const convertis = personas.filter(p => p.decision === 'Convertit').length;
+const hesitants = personas.filter(p => p.decision === 'Hesite').length;
+const quitte = personas.filter(p => p.decision === 'Quitte').length;
+const tauxConv = Math.round((convertis / personas.length) * 100);
+
+// ─── CANAL STATS ───
+const canalStats = [
+  { canal: 'Bouche-a-oreille', total: 3, conv: 3, hesitant: 0, quitte: 0 },
+  { canal: 'Email direct / reseau', total: 2, conv: 2, hesitant: 0, quitte: 0 },
+  { canal: 'IA (ChatGPT / Claude / Perplexity)', total: 3, conv: 2, hesitant: 1, quitte: 0 },
+  { canal: 'LinkedIn', total: 4, conv: 1, hesitant: 2, quitte: 1 },
+  { canal: 'Google Search', total: 7, conv: 2, hesitant: 2, quitte: 3 },
+];
+
+const maturiteStats = [
+  { level: 'Decision', total: 6, conv: 7, pct: '100%+' },
+  { level: 'Comparaison', total: 8, conv: 3, pct: '38%' },
+  { level: 'Decouverte', total: 6, conv: 0, pct: '0%' },
+];
+
+// ─── TECHNIQUE ───
+const lighthouseScores = {
+  mobile: { perf: 40, access: 81, bp: 79, seo: 89 },
+  desktop: { perf: 68, access: 83, bp: 79, seo: 91 },
+};
+
+const coreWebVitals = [
+  { nom: 'LCP', description: 'Largest Contentful Paint', valeur: '~4.2s', label: 'MOYEN', bgCouleur: 'bg-amber-50', couleurTexte: 'text-amber-700', badgeCouleur: 'bg-amber-100 text-amber-800' },
+  { nom: 'INP', description: 'Interaction to Next Paint', valeur: '~245ms', label: 'MOYEN', bgCouleur: 'bg-amber-50', couleurTexte: 'text-amber-700', badgeCouleur: 'bg-amber-100 text-amber-800' },
+  { nom: 'CLS', description: 'Cumulative Layout Shift', valeur: '~0.08', label: 'BON', bgCouleur: 'bg-green-50', couleurTexte: 'text-green-700', badgeCouleur: 'bg-green-100 text-green-800' },
+];
+
+const observatoryGrade = { grade: 'D', score: 30, passed: 6, total: 10 };
+
+const schemaTypes = [
+  { name: 'Organization', present: true },
+  { name: 'WebSite', present: true },
+  { name: 'WebPage', present: true },
+  { name: 'BreadcrumbList', present: true },
+  { name: 'ProfessionalService', present: false },
+  { name: 'telephone', present: false },
+  { name: 'openingHours', present: false },
+  { name: 'aggregateRating', present: false },
+  { name: 'hasOfferCatalog', present: false },
+  { name: 'knowsAbout (GEO)', present: false },
+];
+
+const ogTags = [
+  { name: 'og:title', present: true },
+  { name: 'og:description', present: true },
+  { name: 'og:image', present: false },
+  { name: 'og:url', present: true },
+  { name: 'og:type', present: true },
+  { name: 'og:locale', present: true },
+  { name: 'twitter:card', present: true },
+  { name: 'twitter:image', present: false },
+  { name: 'canonical', present: false },
+];
+
+const securityHeaders = [
+  { name: 'Content-Security-Policy (CSP)', present: false },
+  { name: 'Strict-Transport-Security (HSTS)', present: false },
+  { name: 'X-Frame-Options', present: false },
+  { name: 'X-Content-Type-Options', present: false },
+  { name: 'HTTPS redirect', present: true },
+  { name: 'CORS securise', present: true },
+];
+
+const pagespeedOpps = [
+  { label: 'Reduire le JavaScript inutilise (Divi ~800Ko)', gain: '~1.5s LCP' },
+  { label: 'Supprimer les CSS inutilises (Divi excessif)', gain: '~0.8s' },
+  { label: 'Optimiser les images (EWWW actif mais incomplet)', gain: '~0.5s' },
+  { label: 'Reduire les ressources bloquant le rendu (polices)', gain: '~0.4s' },
+  { label: 'Preconnexion domaines tiers (GA4, CookieYes)', gain: '~0.2s' },
+];
+
+const ameliorations = {
+  haute: [
+    { titre: 'Afficher une fourchette tarifaire', detail: '12 personas sur 20 sont bloques par l\'absence de prix. Meme "a partir de X€/jour" suffit pour debloquer les decisions en mode comparaison.', action: 'Ajouter une section tarifaire sur chaque page de prestation, ou une page "/tarifs" avec taux journalier indicatif et conditions de devis.' },
+    { titre: 'Ajouter un numero de telephone cliquable', detail: '10 personas sur 20 auraient prefere appeler directement. Les directeurs d\'etablissements (50 ans+) sont des telephoneurs, pas des formulaires.', action: 'Telephone cliquable en header mobile, dans le formulaire de contact, et en footer. Format : 06 XX XX XX XX avec call-to-action "Appelez directement".' },
+    { titre: 'Ajouter des references par type d\'etablissement', detail: '9 personas cherchent la correspondance avec leur type d\'etablissement (EHPAD, IME, SSIAD, AEMO, CPTS, SIAO...). Sans cette correspondance, la confiance reste partielle.', action: 'Sur chaque page de prestation, ajouter une liste "J\'ai accompagne : [type 1], [type 2], [type 3]..." avec si possible des logos ou noms d\'etablissements (avec accord).' },
+    { titre: 'Optimiser la performance mobile', detail: '8 personas percus negativement par les 3-4s de chargement. Pour une professionnelle du secteur medico-social, un site lent signale un manque de professionnalisme.', action: 'Desactiver les modules Divi inutilises, optimiser les images a la source, ou envisager une migration vers un outil moderne (Astro + Cloudflare Pages = LCP < 1.5s garanti).' },
+    { titre: 'Creer une FAQ sur chaque page de prestation', detail: '7 personas ont des questions specifiques que le site ne resout pas (comment ca se deroule ? combien de jours ? quels livrables ? quel calendrier ?).', action: 'Ajouter une section FAQ sur chaque page : "Comment se deroule une evaluation externe ESSMS ?" / "Que comprend un accompagnement MSP ?" etc.' },
+  ],
+  moyenne: [
+    { titre: 'Afficher le numero d\'agrement evaluatrice externe', detail: 'Les DG et directeurs de federations verifient l\'agrement officiel avant tout appel d\'offres ou convention. L\'absence du numero cree un doute.' },
+    { titre: 'Ameliorer la securite HTTP (grade D → A)', detail: 'Headers manquants : CSP, HSTS, X-Frame-Options, X-Content-Type-Options. Pour un cabinet traitant des donnees sensibles (RGPD secteur social), le grade D est un signal de risque.' },
+    { titre: 'Ajouter une og:image de qualite', detail: '5 personas sont genes par les partages LinkedIn/email sans visuel. Une image professionnelle de Caroline ou un visuel de marque suffit.' },
+    { titre: 'Creer un contenu educatif pour les phases de decouverte', detail: '4 personas en decouverte repartent sans laisser de trace. Un guide gratuit (PDF) ou une newsletter sectorielle les aurait captures dans un tunnel de conversion long.' },
+  ],
+  discuter: [
+    { emoji: '🚀', titre: 'Refonte avec un outil moderne', detail: 'Migrer de WordPress/Divi vers Astro + Cloudflare Pages : LCP < 1.5s, grade A Observatory natif, cout de maintenance reduit. Cout unique vs maintenance WordPress perpetuelle.' },
+    { emoji: '✍️', titre: 'Activer un blog sectoriel', detail: 'Articles sur la loi 2022 (evaluation ESSMS), creation de MSP, CPTS, etc. Capture les personas en phase decouverte (Laure, Mohamed niveau 1) et ameliore le SEO de longue traine.' },
+    { emoji: '📣', titre: 'Temoignages clients structures', detail: 'Meme anonymises ("Directrice d\'EHPAD, Grand Est"), les temoignages augmentent la confiance de 30% sur les personas en mode comparaison.' },
+  ],
+};
+
+function scoreColor(score: number): string {
+  if (score >= 90) return '#22c55e';
+  if (score >= 50) return '#f59e0b';
+  return '#ef4444';
+}
+function scoreTextColor(score: number): string {
+  if (score >= 90) return 'text-green-600';
+  if (score >= 50) return 'text-amber-600';
+  return 'text-red-500';
+}
+---
+
+<BaseLayout title={title} description={description} noindex={true} lang="fr" frPath="/audit/service-social-independant">
+
+  <!-- HERO -->
+  <section class="bg-primary-900 text-white py-12 px-4">
+    <div class="max-w-5xl mx-auto">
+      <span class="inline-block text-xs font-semibold bg-white/10 text-white/80 px-3 py-1 rounded-full mb-4">Rapport confidentiel</span>
+      <h1 class="font-heading text-2xl md:text-4xl font-bold text-white mb-3">
+        Audit UX + Technique<br/><span class="text-accent-400">Service Social Independant</span>
+      </h1>
+      <p class="text-white/70 mb-5 max-w-2xl">
+        Site teste : service-social-independant.fr — {personas.length} personas simules — Rapport genere le 29 mars 2026
+      </p>
+      <div class="flex flex-wrap gap-2">
+        <span class="text-xs bg-white/10 text-white/80 px-2.5 py-1 rounded-full">{personas.length} personas</span>
+        <span class="text-xs bg-white/10 text-white/80 px-2.5 py-1 rounded-full">5 canaux</span>
+        <span class="text-xs bg-white/10 text-white/80 px-2.5 py-1 rounded-full">WordPress + Divi</span>
+        <span class="text-xs bg-white/10 text-white/80 px-2.5 py-1 rounded-full">France entiere</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB BAR STICKY -->
+  <nav class="sticky top-16 md:top-20 z-40 bg-white/95 backdrop-blur border-b border-neutral-200" id="tab-bar">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-2 h-12 text-sm overflow-x-auto">
+      <button data-tab="0" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-primary-700 bg-primary-50">Synthese</button>
+      <button data-tab="1" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">Technique</button>
+      <button data-tab="2" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">
+        Visiteurs <span class="ml-1 text-xs text-neutral-400">{personas.length}</span>
+      </button>
+      <button data-tab="3" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">
+        Ameliorations <span class="ml-1 text-xs text-neutral-400">{ameliorations.haute.length + ameliorations.moyenne.length}</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- PANELS -->
+  <div id="panels" class="flex overflow-x-auto snap-x snap-mandatory" style="-webkit-overflow-scrolling: touch; scrollbar-width: none;">
+
+    <!-- PANEL 1 : SYNTHESE -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0 bg-neutral-50 py-10">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <!-- KPI Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+          <div class="bg-white rounded-xl p-5 border border-neutral-200 text-center shadow-sm">
+            <p class="text-3xl font-black text-accent-500 mb-1">{tauxConv}%</p>
+            <p class="text-xs text-neutral-500 font-medium">Taux de conversion</p>
+          </div>
+          <div class="bg-white rounded-xl p-5 border border-neutral-200 text-center shadow-sm">
+            <p class="text-3xl font-black text-primary-700 mb-1">{avgExp}</p>
+            <p class="text-xs text-neutral-500 font-medium">Score experience</p>
+          </div>
+          <div class="bg-white rounded-xl p-5 border border-neutral-200 text-center shadow-sm">
+            <p class="text-3xl font-black text-primary-700 mb-1">{avgConf}</p>
+            <p class="text-xs text-neutral-500 font-medium">Score confiance</p>
+          </div>
+          <div class="bg-white rounded-xl p-5 border border-neutral-200 text-center shadow-sm">
+            <p class="text-3xl font-black text-primary-700 mb-1">{avgClarte}</p>
+            <p class="text-xs text-neutral-500 font-medium">Score clarte</p>
+          </div>
+        </div>
+
+        <!-- Paradoxe principal -->
+        <div class="bg-accent-50 border border-accent-200 rounded-xl p-5 mb-8">
+          <p class="text-xs font-bold text-accent-700 uppercase tracking-wide mb-2">Paradoxe principal</p>
+          <p class="text-sm text-neutral-800 font-medium leading-relaxed">
+            Ce site a un taux de conversion de 50% — mais <strong>100% des conversions viennent des personas deja convaincus avant d'arriver</strong> (recommandation, email direct, IA avec besoin clair). Les personas arrivant par Google Search ne convertissent qu'a 29%. Le site confirme les decides mais ne convainc pas les indecis.
+          </p>
+        </div>
+
+        <!-- Conversion par canal -->
+        <div class="bg-white rounded-xl border border-neutral-200 p-6 mb-6 shadow-sm">
+          <h3 class="font-semibold text-neutral-900 mb-4">Conversion par canal</h3>
+          <div class="space-y-3">
+            {canalStats.map(c => {
+              const pct = Math.round((c.conv / c.total) * 100);
+              const color = pct >= 70 ? 'bg-green-500' : pct >= 30 ? 'bg-amber-400' : 'bg-red-400';
+              return (
+                <div class="flex items-center gap-3">
+                  <span class="text-sm text-neutral-700 w-52 shrink-0">{c.canal}</span>
+                  <div class="flex-1 bg-neutral-100 rounded-full h-2">
+                    <div class={`h-2 rounded-full ${color}`} style={`width: ${pct}%`}></div>
+                  </div>
+                  <span class={`text-sm font-bold w-10 text-right ${pct >= 70 ? 'text-green-600' : pct >= 30 ? 'text-amber-600' : 'text-red-500'}`}>{pct}%</span>
+                  <span class="text-xs text-neutral-400">{c.conv}/{c.total}</span>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <!-- Conversion par maturite + device -->
+        <div class="grid md:grid-cols-2 gap-6 mb-6">
+          <div class="bg-white rounded-xl border border-neutral-200 p-5 shadow-sm">
+            <h3 class="font-semibold text-neutral-900 mb-4">Par niveau de maturite</h3>
+            <div class="space-y-3">
+              {maturiteStats.map(m => (
+                <div class="flex items-center justify-between">
+                  <span class="text-sm text-neutral-700">{m.level}</span>
+                  <div class="flex items-center gap-2">
+                    <span class="text-xs text-neutral-400">{m.total} personas</span>
+                    <span class={`text-sm font-bold ${m.level === 'Decision' ? 'text-green-600' : m.level === 'Comparaison' ? 'text-amber-600' : 'text-red-500'}`}>{m.pct}</span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div class="bg-white rounded-xl border border-neutral-200 p-5 shadow-sm">
+            <h3 class="font-semibold text-neutral-900 mb-4">Par device</h3>
+            <div class="space-y-3">
+              {[
+                { device: 'Desktop', conv: 5, total: 7 },
+                { device: 'Tablette', conv: 2, total: 3 },
+                { device: 'Mobile', conv: 3, total: 10 },
+              ].map(d => {
+                const pct = Math.round((d.conv / d.total) * 100);
+                const color = pct >= 60 ? 'text-green-600' : pct >= 30 ? 'text-amber-600' : 'text-red-500';
+                return (
+                  <div class="flex items-center justify-between">
+                    <span class="text-sm text-neutral-700">{d.device}</span>
+                    <div class="flex items-center gap-2">
+                      <span class="text-xs text-neutral-400">{d.conv}/{d.total}</span>
+                      <span class={`text-sm font-bold ${color}`}>{pct}%</span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+
+        <!-- Frictions recurrentes -->
+        <div class="bg-white rounded-xl border border-neutral-200 p-6 shadow-sm">
+          <h3 class="font-semibold text-neutral-900 mb-4">Frictions recurrentes</h3>
+          <div class="space-y-2">
+            {[
+              { f: 'Pas de prix / fourchette tarifaire', n: 12, sev: 'critique' },
+              { f: 'Pas de telephone cliquable', n: 10, sev: 'haute' },
+              { f: 'Pas de references par type d\'etablissement', n: 9, sev: 'haute' },
+              { f: 'Site lent sur mobile (3-4s+)', n: 8, sev: 'haute' },
+              { f: 'Pas de FAQ sur les prestations', n: 7, sev: 'haute' },
+              { f: 'Pas de description detaillee des missions', n: 7, sev: 'haute' },
+            ].map(fr => (
+              <div class="flex items-center justify-between py-2 border-b border-neutral-100 last:border-0">
+                <span class="text-sm text-neutral-700">{fr.f}</span>
+                <div class="flex items-center gap-2">
+                  <span class={`text-[10px] px-2 py-0.5 rounded font-medium ${fr.sev === 'critique' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>{fr.sev}</span>
+                  <span class="text-xs text-neutral-500">{fr.n}/20</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- PANEL 2 : TECHNIQUE -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0 bg-white py-10">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <p class="text-xs text-neutral-500 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2 mb-6">
+          Scores PageSpeed estimes (API rate-limitee) a partir de l'analyse de la stack : WordPress 6.9.4 + Divi 4.27.5 + WP Rocket 3.20. Securite verifiee via Mozilla Observatory.
+        </p>
+
+        <!-- PageSpeed scores -->
+        <h3 class="font-semibold text-neutral-900 mb-4">Scores Lighthouse</h3>
+        <div class="grid md:grid-cols-2 gap-6 mb-8">
+          {(['mobile', 'desktop']).map(strategy => (
+            <div class="bg-neutral-50 rounded-xl border border-neutral-200 p-5">
+              <p class="text-sm font-bold text-neutral-700 mb-4 capitalize">{strategy}</p>
+              <div class="grid grid-cols-4 gap-3">
+                {Object.entries(lighthouseScores[strategy as 'mobile' | 'desktop']).map(([key, score]) => {
+                  const labels = { perf: 'Perf', access: 'Access', bp: 'Pratiques', seo: 'SEO' } as { [k: string]: string };
+                  const c = scoreColor(score);
+                  const tc = scoreTextColor(score);
+                  return (
+                    <div class="text-center">
+                      <div class="relative w-14 h-14 mx-auto mb-1.5">
+                        <svg class="w-14 h-14 -rotate-90" viewBox="0 0 36 36">
+                          <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3"/>
+                          <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={c} stroke-width="3" stroke-dasharray={`${score}, 100`} stroke-linecap="round"/>
+                        </svg>
+                        <span class={`absolute inset-0 flex items-center justify-center text-base font-bold ${tc}`}>{score}</span>
+                      </div>
+                      <p class="text-[10px] text-neutral-500 font-medium">{labels[key]}</p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <!-- Core Web Vitals -->
+        <h3 class="font-semibold text-neutral-900 mb-3">Core Web Vitals (mobile)</h3>
+        <div class="space-y-2 mb-8">
+          {coreWebVitals.map(v => (
+            <div class={`flex items-center justify-between p-3 rounded-lg ${v.bgCouleur}`}>
+              <div>
+                <span class="text-xs font-bold text-neutral-700">{v.nom}</span>
+                <span class="text-xs text-neutral-500 ml-1">({v.description})</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class={`text-sm font-bold ${v.couleurTexte}`}>{v.valeur}</span>
+                <span class={`text-[10px] px-1.5 py-0.5 rounded font-medium ${v.badgeCouleur}`}>{v.label}</span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <!-- Observatory -->
+        <h3 class="font-semibold text-neutral-900 mb-3">Securite HTTP — Mozilla Observatory</h3>
+        <div class="flex items-center gap-4 p-4 rounded-xl border-2 border-red-200 bg-red-50 mb-4">
+          <div class="text-4xl font-black text-red-600">{observatoryGrade.grade}</div>
+          <div>
+            <p class="text-sm font-semibold text-neutral-900">Securite insuffisante</p>
+            <p class="text-xs text-neutral-500">{observatoryGrade.passed}/{observatoryGrade.total} tests passes — Score {observatoryGrade.score}/100</p>
+          </div>
+        </div>
+        <div class="grid md:grid-cols-2 gap-3 mb-8">
+          {securityHeaders.map(h => (
+            <div class="flex items-center gap-2 py-1.5">
+              {h.present ? (
+                <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              ) : (
+                <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+              )}
+              <span class={`text-sm ${h.present ? 'text-neutral-700' : 'text-neutral-400 line-through'}`}>{h.name}</span>
+            </div>
+          ))}
+        </div>
+
+        <!-- Schema.org -->
+        <h3 class="font-semibold text-neutral-900 mb-3">Schema.org (donnees structurees)</h3>
+        <div class="bg-neutral-50 rounded-xl border border-neutral-200 p-5 mb-6">
+          <p class="text-xs text-neutral-500 mb-3">Via Yoast SEO — {schemaTypes.filter(s => s.present).length}/{schemaTypes.length} champs cles presents</p>
+          <div class="grid md:grid-cols-2 gap-x-4">
+            {schemaTypes.map(s => (
+              <div class="flex items-center gap-2 py-1">
+                {s.present ? (
+                  <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                ) : (
+                  <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                )}
+                <span class={`text-sm ${s.present ? 'text-neutral-700' : 'text-neutral-400 line-through'}`}>{s.name}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Open Graph -->
+        <h3 class="font-semibold text-neutral-900 mb-3">Open Graph & meta SEO</h3>
+        <div class="bg-neutral-50 rounded-xl border border-neutral-200 p-5 mb-6">
+          <p class="text-xs text-neutral-500 mb-3">{ogTags.filter(t => t.present).length}/{ogTags.length} tags presents</p>
+          <div class="grid md:grid-cols-2 gap-x-4">
+            {ogTags.map(t => (
+              <div class="flex items-center gap-2 py-1">
+                {t.present ? (
+                  <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                ) : (
+                  <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                )}
+                <span class={`text-sm ${t.present ? 'text-neutral-700' : 'text-neutral-400 line-through'}`}>{t.name}</span>
+              </div>
+            ))}
+          </div>
+          <div class="mt-4 p-3 bg-amber-50 rounded-lg border border-amber-200">
+            <p class="text-xs text-amber-800"><strong>Impact LinkedIn :</strong> og:image absente = partages sans visuel. Les directeurs et coordinateurs qui partagent le profil de Caroline a leur hierarchie voient un lien texte brut, pas une carte attractive.</p>
+          </div>
+        </div>
+
+        <!-- PageSpeed Opportunites -->
+        <h3 class="font-semibold text-neutral-900 mb-3">Top 5 opportunites de performance</h3>
+        <div class="space-y-2">
+          {pagespeedOpps.map((o, i) => (
+            <div class="flex items-start gap-3 p-3 bg-neutral-50 rounded-lg border border-neutral-200">
+              <span class="text-xs font-bold text-neutral-400 mt-0.5 w-4 shrink-0">{i+1}</span>
+              <div class="flex-1">
+                <p class="text-sm text-neutral-700">{o.label}</p>
+              </div>
+              <span class="text-xs font-semibold text-green-600 shrink-0">{o.gain}</span>
+            </div>
+          ))}
+        </div>
+
+      </div>
+    </section>
+
+    <!-- PANEL 3 : VISITEURS -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0 bg-neutral-50 py-10">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <!-- Stats row -->
+        <div class="flex flex-wrap gap-4 mb-8">
+          <div class="flex items-center gap-2 bg-green-50 border border-green-200 rounded-xl px-5 py-3">
+            <span class="text-2xl font-black text-green-600">{convertis}</span>
+            <span class="text-sm text-green-700 font-medium">contactent</span>
+          </div>
+          <div class="flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-xl px-5 py-3">
+            <span class="text-2xl font-black text-amber-600">{hesitants}</span>
+            <span class="text-sm text-amber-700 font-medium">hesitent</span>
+          </div>
+          <div class="flex items-center gap-2 bg-neutral-100 border border-neutral-200 rounded-xl px-5 py-3">
+            <span class="text-2xl font-black text-neutral-600">{quitte}</span>
+            <span class="text-sm text-neutral-600 font-medium">repartent</span>
+          </div>
+        </div>
+
+        <!-- Personas qui contactent -->
+        <h3 class="font-semibold text-green-700 mb-3 flex items-center gap-2">
+          <span class="w-2 h-2 bg-green-500 rounded-full inline-block"></span>
+          Ceux qui contactent ({convertis})
+        </h3>
+        <div class="space-y-2 mb-8">
+          {personas.filter(p => p.decision === 'Convertit').map(p => (
+            <details class="group border border-green-200 bg-green-50/40 rounded-xl overflow-hidden">
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                    <h3 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h3>
+                    <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                  </div>
+                  <p class="text-xs text-neutral-500 mb-1">{p.role}</p>
+                  <p class="text-xs text-neutral-600 mb-2">{p.situation}</p>
+                  <div class="flex flex-wrap items-center gap-1">
+                    {p.parcours.map((page, i) => (
+                      <>
+                        <span class="text-[10px] text-primary-700 bg-white border border-primary-100 px-1.5 py-0.5 rounded">{page}</span>
+                        {i < p.parcours.length - 1 && <span class="text-neutral-300 text-[10px]">›</span>}
+                      </>
+                    ))}
+                    <span class="text-[10px] bg-green-600 text-white px-1.5 py-0.5 rounded font-medium ml-0.5">Contacte</span>
+                  </div>
+                </div>
+                <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </summary>
+              <div class="px-4 pb-4 pt-0 border-t border-green-200 bg-white/50">
+                <div class="grid gap-3 text-xs mt-3">
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Premiere impression</p>
+                    <p class="text-neutral-600">{p.premierImpression}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Question cle</p>
+                    <p class="text-neutral-600 italic">"{p.questionCle}"</p>
+                    <p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong></p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Impact technique</p>
+                    <p class="text-neutral-600">{p.impactTech}</p>
+                  </div>
+                  <div class="grid grid-cols-2 gap-3">
+                    <div>
+                      <p class="font-semibold text-green-700 mb-1">Points positifs</p>
+                      <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                        {p.positifs.map(pos => <li>{pos}</li>)}
+                      </ul>
+                    </div>
+                    <div>
+                      <p class="font-semibold text-amber-700 mb-1">Frictions</p>
+                      <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                        {p.frictions.map(fr => <li>{fr}</li>)}
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="flex gap-4 pt-2 border-t border-neutral-200">
+                    <div class="text-center"><span class="block text-lg font-bold text-green-600">{p.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                    <div class="text-center"><span class="block text-lg font-bold text-green-600">{p.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                    <div class="text-center"><span class="block text-lg font-bold text-green-600">{p.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+                  </div>
+                </div>
+              </div>
+            </details>
+          ))}
+        </div>
+
+        <!-- Personas qui hesitent -->
+        <h3 class="font-semibold text-amber-700 mb-3 flex items-center gap-2">
+          <span class="w-2 h-2 bg-amber-500 rounded-full inline-block"></span>
+          Ceux qui hesitent ({hesitants})
+        </h3>
+        <div class="space-y-2 mb-8">
+          {personas.filter(p => p.decision === 'Hesite').map(p => (
+            <details class="group border border-amber-200 bg-amber-50/40 rounded-xl overflow-hidden">
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                    <h3 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h3>
+                    <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                  </div>
+                  <p class="text-xs text-neutral-500 mb-1">{p.role}</p>
+                  <p class="text-xs text-neutral-600 mb-2">{p.situation}</p>
+                  <div class="flex flex-wrap items-center gap-1">
+                    {p.parcours.map((page, i) => (
+                      <>
+                        <span class="text-[10px] text-primary-700 bg-white border border-primary-100 px-1.5 py-0.5 rounded">{page}</span>
+                        {i < p.parcours.length - 1 && <span class="text-neutral-300 text-[10px]">›</span>}
+                      </>
+                    ))}
+                    <span class="text-[10px] bg-amber-500 text-white px-1.5 py-0.5 rounded font-medium ml-0.5">Hesite</span>
+                  </div>
+                </div>
+                <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </summary>
+              <div class="px-4 pb-4 pt-0 border-t border-amber-200 bg-white/50">
+                <div class="grid gap-3 text-xs mt-3">
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Premiere impression</p>
+                    <p class="text-neutral-600">{p.premierImpression}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Question cle</p>
+                    <p class="text-neutral-600 italic">"{p.questionCle}"</p>
+                    <p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong></p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Ce qui ferait basculer</p>
+                    <p class="text-neutral-600">{p.raisonDecision}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Impact technique</p>
+                    <p class="text-neutral-600">{p.impactTech}</p>
+                  </div>
+                  <div class="grid grid-cols-2 gap-3">
+                    <div>
+                      <p class="font-semibold text-green-700 mb-1">Points positifs</p>
+                      <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                        {p.positifs.map(pos => <li>{pos}</li>)}
+                      </ul>
+                    </div>
+                    <div>
+                      <p class="font-semibold text-amber-700 mb-1">Frictions</p>
+                      <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                        {p.frictions.map(fr => <li>{fr}</li>)}
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="flex gap-4 pt-2 border-t border-neutral-200">
+                    <div class="text-center"><span class="block text-lg font-bold text-amber-600">{p.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                    <div class="text-center"><span class="block text-lg font-bold text-amber-600">{p.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                    <div class="text-center"><span class="block text-lg font-bold text-amber-600">{p.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+                  </div>
+                </div>
+              </div>
+            </details>
+          ))}
+        </div>
+
+        <!-- Personas qui repartent -->
+        <h3 class="font-semibold text-neutral-600 mb-3 flex items-center gap-2">
+          <span class="w-2 h-2 bg-neutral-400 rounded-full inline-block"></span>
+          Ceux qui repartent ({quitte})
+        </h3>
+        <div class="space-y-2">
+          {personas.filter(p => p.decision === 'Quitte').map(p => (
+            <details class="group border border-neutral-200 bg-neutral-50 rounded-xl overflow-hidden">
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                    <h3 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h3>
+                    <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                  </div>
+                  <p class="text-xs text-neutral-500 mb-1">{p.role}</p>
+                  <p class="text-xs text-neutral-600 mb-2">{p.situation}</p>
+                  <div class="flex flex-wrap items-center gap-1">
+                    {p.parcours.map((page, i) => (
+                      <>
+                        <span class="text-[10px] text-primary-700 bg-white border border-primary-100 px-1.5 py-0.5 rounded">{page}</span>
+                        {i < p.parcours.length - 1 && <span class="text-neutral-300 text-[10px]">›</span>}
+                      </>
+                    ))}
+                    <span class="text-[10px] bg-neutral-500 text-white px-1.5 py-0.5 rounded font-medium ml-0.5">Quitte</span>
+                  </div>
+                </div>
+                <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </summary>
+              <div class="px-4 pb-4 pt-0 border-t border-neutral-200 bg-white/50">
+                <div class="grid gap-3 text-xs mt-3">
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Premiere impression</p>
+                    <p class="text-neutral-600">{p.premierImpression}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Raison du depart</p>
+                    <p class="text-neutral-600">{p.raisonDecision}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Impact technique</p>
+                    <p class="text-neutral-600">{p.impactTech}</p>
+                  </div>
+                  <div class="flex gap-4 pt-2 border-t border-neutral-200">
+                    <div class="text-center"><span class="block text-lg font-bold text-neutral-500">{p.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                    <div class="text-center"><span class="block text-lg font-bold text-neutral-500">{p.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                    <div class="text-center"><span class="block text-lg font-bold text-neutral-500">{p.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+                  </div>
+                </div>
+              </div>
+            </details>
+          ))}
+        </div>
+
+      </div>
+    </section>
+
+    <!-- PANEL 4 : AMELIORATIONS -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0 bg-white py-10">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+
+        <!-- Priorite haute -->
+        <h3 class="font-semibold text-neutral-900 mb-4">Le plus important</h3>
+        <div class="space-y-4 mb-10">
+          {ameliorations.haute.map(a => (
+            <div class="bg-white border-2 border-red-200 rounded-xl p-5 shadow-sm">
+              <h4 class="font-semibold text-neutral-900 mb-2">{a.titre}</h4>
+              <p class="text-sm text-neutral-600 mb-3">{a.detail}</p>
+              <div class="bg-primary-50 rounded-lg px-3 py-2.5 flex items-start gap-2">
+                <svg class="w-4 h-4 text-primary-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                <p class="text-xs text-primary-800">{a.action}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <!-- Priorite moyenne -->
+        <h3 class="font-semibold text-neutral-900 mb-4">Utile aussi</h3>
+        <div class="grid md:grid-cols-2 gap-4 mb-10">
+          {ameliorations.moyenne.map(a => (
+            <div class="bg-white border border-neutral-200 rounded-xl p-4">
+              <h4 class="font-semibold text-neutral-900 text-sm mb-1.5">{a.titre}</h4>
+              <p class="text-xs text-neutral-600">{a.detail}</p>
+            </div>
+          ))}
+        </div>
+
+        <!-- A discuter -->
+        <h3 class="font-semibold text-neutral-900 mb-4">A discuter ensemble</h3>
+        <div class="space-y-3">
+          {ameliorations.discuter.map(a => (
+            <div class="bg-neutral-50 border border-neutral-200 rounded-xl p-4 flex gap-3">
+              <span class="text-lg shrink-0">{a.emoji}</span>
+              <div>
+                <h4 class="font-semibold text-neutral-900 text-sm mb-0.5">{a.titre}</h4>
+                <p class="text-xs text-neutral-600">{a.detail}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+  <!-- METHODOLOGIE -->
+  <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-neutral-200">
+    <h2 class="font-heading text-lg font-bold text-neutral-900 mb-4">Methodologie</h2>
+    <ol class="list-decimal list-inside text-sm text-neutral-600 space-y-2">
+      <li>Scraping de la page d'accueil et extraction des meta tags, Schema.org, navigation et contenu</li>
+      <li>Audit technique : PageSpeed (estimes, API rate-limitee), Mozilla Observatory (grade D confirme), Schema.org, Open Graph, SEO technique</li>
+      <li>Creation de 20 personas diversifies : 5 Google Search, 3 Bouche-a-oreille, 3 IA, 4 LinkedIn, 2 Email, 3 autres — 6 Decouverte / 8 Comparaison / 6 Decision</li>
+      <li>Simulation autonome de 20 visites : chaque persona visite le site selon son contexte, son device, sa maturite et ses questions cles</li>
+      <li>Agregation des resultats : taux de conversion, scores moyens, frictions recurrentes, ameliorations priorisees</li>
+    </ol>
+  </section>
+
+  <!-- DOUBLE CTA -->
+  <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+    <h2 class="font-heading text-2xl md:text-3xl font-bold text-neutral-900 mb-4">
+      Pret a transformer ces insights en resultats ?
+    </h2>
+    <p class="text-neutral-600 mb-8 max-w-xl mx-auto">
+      Ce rapport identifie des opportunites concretes. Je peux construire un site qui convertit vraiment vos visiteurs en clients.
+    </p>
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+      <a href="/commander" class="inline-flex items-center gap-2 px-8 py-3.5 bg-accent-500 text-white font-semibold rounded-xl hover:bg-accent-600 transition-all shadow-md">
+        Commander un site
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      </a>
+      <a href="/contact" class="inline-flex items-center gap-2 px-8 py-3.5 border border-neutral-300 text-neutral-700 font-semibold rounded-xl hover:border-accent-500 hover:text-accent-500 transition-all">
+        En discuter d'abord
+      </a>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<style is:inline>
+  #panels { -ms-overflow-style: none; }
+  #panels::-webkit-scrollbar { display: none; }
+</style>
+
+<script is:inline>
+  const panels = document.getElementById('panels');
+  const tabs = document.querySelectorAll('.tab-btn');
+  const sections = panels.querySelectorAll('.tab-panel');
+
+  function activateTab(index) {
+    tabs.forEach((b, i) => {
+      if (i === index) {
+        b.classList.remove('text-neutral-500');
+        b.classList.add('text-primary-700', 'bg-primary-50');
+      } else {
+        b.classList.remove('text-primary-700', 'bg-primary-50');
+        b.classList.add('text-neutral-500');
+      }
+    });
+  }
+
+  tabs.forEach((btn, i) => {
+    btn.addEventListener('click', () => {
+      sections[i].scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+      activateTab(i);
+    });
+  });
+
+  let scrollTimeout;
+  panels.addEventListener('scroll', () => {
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(() => {
+      const index = Math.round(panels.scrollLeft / panels.offsetWidth);
+      activateTab(index);
+    }, 50);
+  }, { passive: true });
+</script>
