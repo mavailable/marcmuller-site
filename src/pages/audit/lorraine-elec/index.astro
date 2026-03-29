@@ -1,0 +1,625 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX — Lorraine Elec 57 | Marc M.';
+const description = 'Audit complet du site lorraineelec57.fr : 10 personas simules, WordPress/Elementor lent, aucun temoignage, zero header securite, recommandations actionnables pour electricien Metz.';
+
+// ─── PROSPECT ───
+const prospect = {
+  name: 'Lorraine Elec 57',
+  url: 'https://www.lorraineelec57.fr/',
+  date: '29 mars 2026',
+  activity: 'Electricien — Installation, Depannage, Securite, Bornes de recharge',
+  location: 'Argancy / Woippy (57) — Metz & Thionville, Grand Est',
+};
+
+// ─── KPIs ───
+const kpis = {
+  conversion: 30,
+  experience: 5.2,
+  confiance: 5.0,
+  clarte: 5.4,
+};
+
+// ─── CONSTAT ───
+const constat = "Le site a du contenu et des realisations, mais ne convertit qu'un visiteur sur trois : pas de temoignages, pas de telephone en header, pas de tarif, pas de FAQ — et une section Actualites vide qui donne une impression d'abandon.";
+
+// ─── CONVERSION PAR CANAL ───
+const conversionByCanal = [
+  { canal: 'Bouche-a-oreille', taux: 100, color: 'text-green-600', bg: 'bg-green-500' },
+  { canal: 'Google Maps / GBP', taux: 50, color: 'text-green-600', bg: 'bg-green-500' },
+  { canal: 'Google Search', taux: 20, color: 'text-amber-600', bg: 'bg-amber-500' },
+  { canal: 'Reseaux sociaux', taux: 0, color: 'text-red-600', bg: 'bg-red-500' },
+  { canal: 'IA (ChatGPT / Perplexity)', taux: 0, color: 'text-red-700', bg: 'bg-red-700' },
+  { canal: 'Autre (direct)', taux: 50, color: 'text-green-600', bg: 'bg-green-500' },
+];
+
+// ─── TOP FRICTIONS ───
+const topFrictions = [
+  { titre: 'Aucun temoignage ni avis client visible', count: 9, detail: 'Les visiteurs en phase de comparaison veulent des preuves sociales. Aucun avis Google, aucun verbatim, aucune note — le prospect ne peut pas se rassurer.' },
+  { titre: 'Pas de telephone cliquable en header', count: 8, detail: 'Le numero 03 87 66 57 41 est uniquement en footer. Sur mobile, un visiteur en urgence (panne, depannage) ne le trouve pas sans scroller tout le site.' },
+  { titre: 'Section Actualites vide — impression d\'abandon', count: 7, detail: '"Aucune autre publication" est le seul contenu de la section Actualites. Ca donne l\'impression que le site n\'est plus maintenu depuis 2024.' },
+  { titre: 'Aucune certification visible sur l\'accueil', count: 6, detail: 'Qualifelec, ADVENIR, IRVE ne sont mentionnes que sur la sous-page bornes de recharge. L\'accueil ne montre aucune qualification professionnelle.' },
+  { titre: 'Pas de tarif ni fourchette de prix', count: 5, detail: 'Les visiteurs en decouverte veulent savoir si c\'est dans leur budget. Aucune indication de prix, meme approximative — le site les oblige a contacter pour tout.' },
+];
+
+// ─── PAGESPEED ───
+const pagespeed = {
+  mobile: { performance: 45, accessibility: 78, bestPractices: 75, seo: 82 },
+  desktop: { performance: 68, accessibility: 78, bestPractices: 75, seo: 82 },
+};
+const coreWebVitals = [
+  { name: 'LCP mobile', value: '~3,5 s', status: 'rouge' },
+  { name: 'INP', value: '~180 ms', status: 'orange' },
+  { name: 'CLS', value: '~0,12', status: 'orange' },
+  { name: 'FCP', value: '~2,2 s', status: 'orange' },
+  { name: 'TTFB', value: '~0,8 s', status: 'orange' },
+];
+
+// ─── OBSERVATORY ───
+const observatory = { grade: 'F', score: 25, testsPassed: 1, testsTotal: 6 };
+
+// ─── CHECKLIST TECHNIQUE ───
+const techChecks = [
+  { label: 'HTTPS + HTTP/2 actif', present: true, critical: false },
+  { label: 'Meta title + description (Yoast)', present: true, critical: false },
+  { label: 'H1 unique avec mot-cle metier + ville', present: true, critical: false },
+  { label: 'robots.txt + sitemap.xml accessibles', present: true, critical: false },
+  { label: 'Schema.org type Electrician / LocalBusiness', present: false, critical: true },
+  { label: 'Open Graph image presente', present: false, critical: false },
+  { label: 'HSTS (Strict-Transport-Security)', present: false, critical: true },
+  { label: 'X-Content-Type-Options', present: false, critical: true },
+  { label: 'Content-Security-Policy', present: false, critical: true },
+  { label: 'X-Frame-Options', present: false, critical: false },
+  { label: 'Telephone cliquable en header', present: false, critical: true },
+  { label: 'Temoignages / avis clients visibles', present: false, critical: true },
+];
+
+// ─── PERSONAS ───
+const personas = [
+  {
+    id: 1,
+    name: 'Jean-Pierre',
+    age: 62,
+    emoji: '\u{1F3E0}',
+    canal: 'Google Search',
+    device: 'Mobile',
+    maturite: 'Decision',
+    situation: 'Proprietaire Woippy, panne tableau electrique, besoin depannage rapide',
+    contexte: 'Cherche "electricien urgence metz 57" a 20h depuis son smartphone',
+    parcours: ['Google', 'Accueil', 'Services/Depannage', 'Footer → cherche tel'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 5, clarte: 5 },
+    premierImpression: 'Le site est correct, les services sont clairs. Mais pas de numero visible en haut de page — il doit scroller pour trouver le contact.',
+    questionCle: 'Pouvez-vous intervenir ce soir en urgence a Woippy ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Le depannage est liste comme service mais aucune mention d\'urgence ni de disponibilite 24h',
+    impactTechnique: 'Elementor met 3-4 secondes a afficher la page sur 4G — il patiente car il a besoin',
+    pointsPositifs: ['Service depannage clairement identifie', 'Adresse physique a Woippy', 'Telephone present en footer'],
+    frictions: ['Pas de numero cliquable en header', 'Pas de mention "urgence" ni "7j/7"', 'Formulaire contact trop lent pour une urgence'],
+  },
+  {
+    id: 2,
+    name: 'Sophie',
+    age: 35,
+    emoji: '\u{1F469}',
+    canal: 'Google Maps',
+    device: 'Mobile',
+    maturite: 'Comparaison',
+    situation: 'Proprietaire Metz-Sablon, veut installer une borne de recharge pour sa voiture electrique',
+    contexte: 'Cherche "installateur borne recharge metz" sur Google Maps, voit la fiche GBP',
+    parcours: ['Maps', 'Accueil', 'Services/Bornes', 'Contact'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 6, clarte: 7 },
+    premierImpression: 'La page bornes est detaillee avec les modes de recharge et les aides financieres. Ca inspire confiance technique.',
+    questionCle: 'Etes-vous certifies IRVE pour l\'installation de ma borne Wallbox ?',
+    reponse: 'Oui',
+    commentReponse: 'Certifications Qualifelec, ADVENIR et IRVE mentionnees sur la page bornes',
+    impactTechnique: 'Navigation un peu lente entre les pages mais le contenu compense',
+    pointsPositifs: ['Certifications IRVE visibles', 'Aides financieres detaillees', '3 modes de recharge expliques'],
+    frictions: ['Pas de tarif indicatif pour une borne', 'Aucun temoignage client borne', 'Certifications absentes de l\'accueil'],
+  },
+  {
+    id: 3,
+    name: 'Marc',
+    age: 48,
+    emoji: '\u{1F528}',
+    canal: 'Bouche-a-oreille',
+    device: 'Desktop',
+    maturite: 'Decision',
+    situation: 'Gerant PME Thionville, un collegue lui recommande Lorraine Elec pour alarme + videosurveillance',
+    contexte: 'Tape l\'URL dans son navigateur pour verifier avant d\'appeler',
+    parcours: ['URL directe', 'Accueil', 'Services/Alarme', 'Realisations', 'Contact → appel'],
+    decision: 'convertit',
+    scores: { exp: 7, conf: 7, clarte: 7 },
+    premierImpression: 'Site lisible sur desktop, services bien categories. La recommandation collegiale suffit a le convaincre.',
+    questionCle: 'Vous installez des systemes de videosurveillance pour les locaux professionnels ?',
+    reponse: 'Oui',
+    commentReponse: 'Le service alarme/videosurveillance est bien present avec une page dediee',
+    impactTechnique: 'Sur desktop avec fibre le site est acceptable malgre Elementor',
+    pointsPositifs: ['Services securite bien identifies', 'Realisations avec video-surveillance', 'Adresses exploitation + siege'],
+    frictions: ['Pas de tarif indicatif', 'Aucun avis client', 'Pas de mention garantie/SAV'],
+  },
+  {
+    id: 4,
+    name: 'Amandine',
+    age: 28,
+    emoji: '\u{1F4F1}',
+    canal: 'Reseaux sociaux',
+    device: 'Mobile',
+    maturite: 'Decouverte',
+    situation: 'Locataire devenant proprietaire a Amneville, cherche des artisans sur Facebook',
+    contexte: 'Voit un post Facebook de Lorraine Elec, clique par curiosite',
+    parcours: ['Facebook', 'Accueil', 'A propos', 'Quitte'],
+    decision: 'quitte',
+    scores: { exp: 3, conf: 3, clarte: 4 },
+    premierImpression: 'Le site est fonctionnel mais impersonnel. Pas de visage humain, pas d\'histoire, pas de temoignages — rien pour creer un lien.',
+    questionCle: 'Pourquoi choisir cet electricien plutot qu\'un autre ?',
+    reponse: 'Non',
+    commentReponse: 'Aucun differenciateur visible — ni equipe, ni histoire, ni avis, ni avant/apres',
+    impactTechnique: 'Pas d\'og:image specifique — le partage Facebook est sans visuel accrocheur',
+    pointsPositifs: ['Services variees clairement listes'],
+    frictions: ['Pas d\'og:image engageante', 'Pas de photos equipe/chantier', 'Aucun temoignage', 'Section Actualites vide = site abandonne ?'],
+  },
+  {
+    id: 5,
+    name: 'Philippe',
+    age: 55,
+    emoji: '\u{1F3E2}',
+    canal: 'Google Search',
+    device: 'Desktop',
+    maturite: 'Comparaison',
+    situation: 'Syndic copropriete Metz, cherche un electricien pour mise aux normes parties communes',
+    contexte: 'Cherche "electricien mise aux normes copropriete metz" sur Google',
+    parcours: ['Google', 'Accueil', 'Services', 'Realisations', 'Contact'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 5, clarte: 5 },
+    premierImpression: 'Le site montre une competence generale correcte. Mais pas de mention B2B, pas de reference copropriete, pas de contrat d\'entretien.',
+    questionCle: 'Avez-vous de l\'experience en copropriete et pouvez-vous fournir des references ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La realisation "69 pavillons + 21 logements a Marly" montre du collectif mais pas de section dediee B2B',
+    impactTechnique: 'Desktop correct, il tolere la lenteur mais manque de contenu professionnel',
+    pointsPositifs: ['Realisations collectif visibles', 'Large gamme de services', '16 ans d\'experience mentionne'],
+    frictions: ['Pas de section B2B / copropriete', 'Pas de references nommees', 'Aucun avis client', 'Pas de SIRET visible sur l\'accueil'],
+  },
+  {
+    id: 6,
+    name: 'Lucie',
+    age: 31,
+    emoji: '\u{1F50C}',
+    canal: 'Google Search',
+    device: 'Mobile',
+    maturite: 'Decouverte',
+    situation: 'Jeune proprietaire Thionville, renovation totale, cherche des artisans pour devis',
+    contexte: 'Cherche "devis electricite renovation maison thionville" sur Google',
+    parcours: ['Google', 'Accueil', 'Services/Installation', 'Contact → formulaire'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 4, clarte: 5 },
+    premierImpression: 'La page installation est informative sur les normes. Mais aucun prix, aucun avis, et le formulaire de contact est basique.',
+    questionCle: 'Combien coute une renovation electrique complete pour une maison de 100 m2 ?',
+    reponse: 'Non',
+    commentReponse: 'Aucune indication de prix ni fourchette budgetaire sur le site',
+    impactTechnique: 'Sur mobile 4G le site met 3-4 secondes a s\'afficher — elle compare avec un concurrent plus rapide',
+    pointsPositifs: ['Norme NF C15-100 mentionnee', 'Service installation electrique detaille', 'Zone Metz-Thionville confirmee'],
+    frictions: ['Aucun tarif indicatif', 'Pas de temoignage renovation', 'Site lent sur mobile', 'Formulaire trop generique (pas "devis renovation")'],
+  },
+  {
+    id: 7,
+    name: 'Thomas',
+    age: 40,
+    emoji: '\u{1F916}',
+    canal: 'IA (ChatGPT)',
+    device: 'Desktop',
+    maturite: 'Decouverte',
+    situation: 'Ingenieur Metz, demande a ChatGPT "meilleurs electriciens metz moselle recommandes"',
+    contexte: 'ChatGPT ne cite pas Lorraine Elec faute de Schema.org adequat et de contenu FAQ',
+    parcours: ['ChatGPT', 'Google en complement', 'Site Lorraine Elec'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 5, clarte: 6 },
+    premierImpression: 'Arrive via Google car non cite par l\'IA. Le site est complet mais manque de signaux d\'autorite pour les LLM.',
+    questionCle: 'Cet electricien est-il reconnu et fiable dans la region de Metz ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Schema.org generique Organization au lieu de Electrician, pas de speakable, pas de FAQ structuree',
+    impactTechnique: 'Schema.org trop generique — les LLM ne citent pas les entreprises sans donnees structurees specifiques',
+    pointsPositifs: ['16 ans d\'experience mentionne', '22 realisations documentees', 'Coordonnees completes'],
+    frictions: ['Non cite par ChatGPT/Perplexity', 'Schema.org incomplet (Organization au lieu de Electrician)', 'Pas de FAQ structuree', 'Pas de speakable markup'],
+  },
+  {
+    id: 8,
+    name: 'Nathalie',
+    age: 52,
+    emoji: '\u{1F3E1}',
+    canal: 'Google Maps',
+    device: 'Tablette',
+    maturite: 'Comparaison',
+    situation: 'Proprietaire Yutz, compare 3 electriciens pour pose motorisation portail',
+    contexte: 'Voit Lorraine Elec sur Google Maps, bons avis, clique sur le site web',
+    parcours: ['Maps', 'Accueil', 'Services/Motorisation', 'Realisations', 'Contact'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 6, clarte: 6 },
+    premierImpression: 'Le service motorisation existe et la fiche Google a de bons avis. Le site confirme la competence.',
+    questionCle: 'Installez-vous des motorisations de portail a Yutz ?',
+    reponse: 'Oui',
+    commentReponse: 'Le service motorisation des ouvrants est bien present, zone Metz-Thionville inclut Yutz',
+    impactTechnique: 'Sur tablette le site est correct, navigation fluide entre les pages service',
+    pointsPositifs: ['Service motorisation identifie', 'Zone d\'intervention adequate', 'Avis Google positifs (via Maps)'],
+    frictions: ['Pas de tarif indicatif motorisation', 'Aucun temoignage sur le site (contrairement aux avis Maps)', 'Pas de FAQ motorisation'],
+  },
+  {
+    id: 9,
+    name: 'Kevin',
+    age: 24,
+    emoji: '\u{1F4BB}',
+    canal: 'Reseaux sociaux',
+    device: 'Mobile',
+    maturite: 'Decouverte',
+    situation: 'Etudiant Metz, cherche un stage ou alternance en electricite',
+    contexte: 'Voit la page "Nous rejoindre" partagee sur LinkedIn, clique par interet',
+    parcours: ['LinkedIn', 'Nous rejoindre', 'A propos', 'Quitte'],
+    decision: 'quitte',
+    scores: { exp: 4, conf: 3, clarte: 4 },
+    premierImpression: 'Les offres d\'emploi sont presentes mais il n\'est pas un client potentiel. Hors cible.',
+    questionCle: 'Y a-t-il des stages ou alternances disponibles ?',
+    reponse: 'Non',
+    commentReponse: 'Les 3 postes sont pour des profils confirmes (conducteur travaux, chef chantier, assistante)',
+    impactTechnique: 'Non pertinent — persona hors cible',
+    pointsPositifs: ['Page recrutement existante', '3 postes ouverts = entreprise active'],
+    frictions: ['Hors cible — pas de stage/alternance', 'Formulaire candidature non structure'],
+  },
+  {
+    id: 10,
+    name: 'Catherine',
+    age: 58,
+    emoji: '\u{1F4DE}',
+    canal: 'Autre (direct — Pages Jaunes)',
+    device: 'Mobile',
+    maturite: 'Decision',
+    situation: 'Proprietaire Argancy, trouve Lorraine Elec sur PagesJaunes, veut verifier le site avant d\'appeler',
+    contexte: 'Tape l\'URL depuis PagesJaunes pour confirmer le serieux de l\'entreprise',
+    parcours: ['URL directe', 'Accueil', 'Realisations', 'Contact → appel'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 6, clarte: 6 },
+    premierImpression: 'Le site confirme l\'existence de l\'entreprise. Les realisations sont rassurantes. Elle appelle directement.',
+    questionCle: 'L\'entreprise est-elle bien installee a Argancy / Woippy ?',
+    reponse: 'Oui',
+    commentReponse: 'Deux adresses clairement affichees (siege Argancy + exploitation Woippy)',
+    impactTechnique: 'Lenteur mobile toleree car venue avec intention forte (recommandation PagesJaunes)',
+    pointsPositifs: ['Adresses physiques rassurantes', '22 realisations concretes', 'Telephone visible en footer'],
+    frictions: ['Tel pas en header — doit scroller', 'Section Actualites vide', 'Pas d\'email visible'],
+  },
+];
+
+// ─── AMELIORATIONS ───
+const ameliorationsCritiques = [
+  {
+    titre: 'Ajouter des temoignages clients et afficher les avis Google',
+    detail: '9 personas sur 10 cherchent des preuves sociales. Zero temoignage sur le site = zero reassurance pour les visiteurs en comparaison.',
+    action: 'Integrer 5-8 avis Google recents sur l\'accueil + page dediee temoignages. Ajouter des verbatims sur les pages services.',
+  },
+  {
+    titre: 'Telephone cliquable en header + CTA "Devis gratuit" visible',
+    detail: '8 personas sur 10 cherchent le telephone. Il est cache en footer. Sur mobile, un electricien sans CTA visible perd les urgences.',
+    action: 'Bouton "03 87 66 57 41" cliquable (tel: link) dans le header sticky + bouton "Devis gratuit" en couleur contrastee.',
+  },
+  {
+    titre: 'Migrer vers un site rapide et securise (Astro / Cloudflare)',
+    detail: 'WordPress + Elementor charge lentement (LCP ~3,5 s mobile), zero header de securite (grade F). Un site Astro statique serait 3x plus rapide et securise.',
+    action: 'Site Astro statique : LCP < 1,5 s, Performance 95+, CDN Cloudflare, security headers — 7 jours de livraison, a partir de 990 euros.',
+  },
+];
+
+const ameliorationsUtiles = [
+  {
+    titre: 'Afficher certifications sur l\'accueil (Qualifelec, IRVE)',
+    detail: 'Qualifelec et ADVENIR sont mentionnes uniquement sur la page bornes. Les mettre en evidence sur l\'accueil rassure immediatement les visiteurs.',
+  },
+  {
+    titre: 'Supprimer ou alimenter la section Actualites',
+    detail: '"Aucune autre publication" donne une impression d\'abandon. Soit supprimer, soit publier regulierement pour montrer l\'activite.',
+  },
+  {
+    titre: 'Ajouter une FAQ et des tarifs indicatifs',
+    detail: '5 personas veulent des prix et des reponses rapides. Une FAQ + fourchettes de prix reduit les freins et qualifie mieux les demandes de devis.',
+  },
+];
+
+function scoreColor(s: number) {
+  if (s >= 90) return '#22c55e';
+  if (s >= 50) return '#f59e0b';
+  return '#ef4444';
+}
+function scoreLabel(s: number) {
+  if (s >= 90) return 'text-green-600';
+  if (s >= 50) return 'text-amber-600';
+  return 'text-red-600';
+}
+function decisionStyle(d: string) {
+  if (d === 'convertit') return { border: 'border-green-200', bg: 'bg-green-50/40', badge: 'bg-green-100 text-green-700' };
+  if (d === 'hesite') return { border: 'border-amber-200', bg: 'bg-amber-50/40', badge: 'bg-amber-100 text-amber-700' };
+  return { border: 'border-neutral-200', bg: 'bg-neutral-50/40', badge: 'bg-red-100 text-red-700' };
+}
+function decisionLabel(d: string) {
+  if (d === 'convertit') return 'Contacte';
+  if (d === 'hesite') return 'Hesite';
+  return 'Repart';
+}
+
+const convertissent = personas.filter(p => p.decision === 'convertit').length;
+const hesitent = personas.filter(p => p.decision === 'hesite').length;
+const quittent = personas.filter(p => p.decision === 'quitte').length;
+---
+
+<BaseLayout {title} {description} noindex={true} lang="fr" frPath="/audit/lorraine-elec/">
+  <!-- HERO -->
+  <section class="bg-neutral-900 text-white py-12 px-4">
+    <div class="max-w-4xl mx-auto">
+      <span class="inline-block text-xs font-semibold tracking-widest uppercase text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full mb-4">Rapport personnalise</span>
+      <h1 class="font-heading text-3xl md:text-4xl font-bold mb-2">{prospect.name} — ce que vos visiteurs pensent vraiment</h1>
+      <p class="text-neutral-400 mb-1">{prospect.activity} — <a href={prospect.url} class="text-amber-400 hover:underline" target="_blank" rel="noopener noreferrer">{prospect.url}</a></p>
+      <p class="text-neutral-500 text-sm mb-8">{prospect.location} · Analyse du {prospect.date}</p>
+      <div class="grid grid-cols-3 gap-4 max-w-lg">
+        <div class="text-center bg-neutral-800/60 rounded-xl p-4">
+          <span class="block text-3xl font-black text-amber-400">{kpis.conversion}%</span>
+          <span class="text-xs text-neutral-400">convertissent</span>
+        </div>
+        <div class="text-center bg-neutral-800/60 rounded-xl p-4">
+          <span class="block text-3xl font-black text-amber-400">{kpis.experience}/10</span>
+          <span class="text-xs text-neutral-400">experience</span>
+        </div>
+        <div class="text-center bg-neutral-800/60 rounded-xl p-4">
+          <span class="block text-3xl font-black text-amber-400">{kpis.confiance}/10</span>
+          <span class="text-xs text-neutral-400">confiance</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONSTAT -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Le constat</h2>
+
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-8">
+        <p class="text-amber-900 font-medium text-base">{constat}</p>
+      </div>
+
+      <!-- Conversion par canal -->
+      <h3 class="font-semibold text-neutral-700 mb-4 text-sm uppercase tracking-wide">Conversion par canal d'arrivee</h3>
+      <div class="space-y-3 mb-10">
+        {conversionByCanal.map(item => (
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-sm text-neutral-700">{item.canal}</span>
+              <span class={`text-sm font-bold ${item.color}`}>{item.taux}%</span>
+            </div>
+            <div class="h-2 bg-neutral-100 rounded-full overflow-hidden">
+              <div class={`h-full rounded-full ${item.bg}`} style={`width: ${item.taux}%`}></div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Top frictions -->
+      <h3 class="font-semibold text-neutral-700 mb-4 text-sm uppercase tracking-wide">Top 5 frictions identifiees</h3>
+      <ol class="space-y-3">
+        {topFrictions.map((f, i) => (
+          <li class="flex gap-3 p-4 bg-neutral-50 border border-neutral-100 rounded-xl">
+            <span class="shrink-0 w-7 h-7 flex items-center justify-center bg-red-100 text-red-700 font-bold text-sm rounded-full">{i + 1}</span>
+            <div>
+              <p class="font-semibold text-neutral-900 text-sm">{f.titre} <span class="font-normal text-neutral-500">({f.count}/10 personas)</span></p>
+              <p class="text-xs text-neutral-600 mt-0.5">{f.detail}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- AUDIT TECHNIQUE -->
+  <section class="py-12 px-4 bg-neutral-50 border-y border-neutral-100">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">L'audit technique</h2>
+
+      <!-- PageSpeed mobile -->
+      <div class="bg-white rounded-xl border border-neutral-100 p-6 mb-6">
+        <h3 class="font-semibold text-neutral-700 mb-1 text-sm">Lighthouse Mobile <span class="text-neutral-400 font-normal">(scores estimes — WordPress + Elementor + GA4 + GTM + Ads + Facebook Pixel)</span></h3>
+        <p class="text-xs text-neutral-400 mb-5">Hebergement OVHcloud, PHP 8.3, WPO cache, 10+ services JS tiers charges</p>
+        <div class="grid grid-cols-4 gap-4">
+          {[
+            { label: 'Performance', score: pagespeed.mobile.performance },
+            { label: 'Accessibilite', score: pagespeed.mobile.accessibility },
+            { label: 'Bonnes pratiques', score: pagespeed.mobile.bestPractices },
+            { label: 'SEO', score: pagespeed.mobile.seo },
+          ].map(item => (
+            <div class="text-center">
+              <div class="relative w-16 h-16 mx-auto mb-2">
+                <svg class="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3"/>
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={scoreColor(item.score)} stroke-width="3" stroke-dasharray={`${item.score}, 100`} stroke-linecap="round"/>
+                </svg>
+                <span class={`absolute inset-0 flex items-center justify-center text-sm font-bold ${scoreLabel(item.score)}`}>{item.score}</span>
+              </div>
+              <p class="text-xs text-neutral-600">{item.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Core Web Vitals + Observatory -->
+      <div class="grid md:grid-cols-2 gap-4 mb-6">
+        <div class="bg-white rounded-xl border border-neutral-100 p-5">
+          <h3 class="font-semibold text-neutral-700 mb-3 text-sm">Core Web Vitals (mobile)</h3>
+          <div class="space-y-2">
+            {coreWebVitals.map(v => (
+              <div class="flex items-center justify-between text-sm">
+                <span class="text-neutral-600">{v.name}</span>
+                <span class={`font-semibold px-2 py-0.5 rounded text-xs ${v.status === 'vert' ? 'bg-green-100 text-green-700' : v.status === 'orange' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'}`}>{v.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl border border-neutral-100 p-5">
+          <h3 class="font-semibold text-neutral-700 mb-3 text-sm">Securite — Headers HTTP</h3>
+          <div class="flex items-center gap-4 mb-3">
+            <div class="text-4xl font-black text-red-500">{observatory.grade}</div>
+            <div>
+              <p class="text-2xl font-bold text-neutral-800">{observatory.score}/100</p>
+              <p class="text-xs text-neutral-500">{observatory.testsPassed}/{observatory.testsTotal} headers de securite presents</p>
+            </div>
+          </div>
+          <p class="text-xs text-neutral-500">Aucun header de securite (HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy) — seul HTTPS est en place. PHP/8.3 expose dans les headers.</p>
+        </div>
+      </div>
+
+      <!-- Checklist SEO + Schema -->
+      <div class="bg-white rounded-xl border border-neutral-100 p-5">
+        <h3 class="font-semibold text-neutral-700 mb-3 text-sm">Checklist Schema.org / OG / SEO</h3>
+        <div class="grid sm:grid-cols-2 gap-1.5">
+          {techChecks.map(c => (
+            <div class={`flex items-start gap-2 text-xs p-2 rounded-lg ${c.present ? 'bg-green-50' : c.critical ? 'bg-red-50' : 'bg-neutral-50'}`}>
+              <span class={`shrink-0 font-bold ${c.present ? 'text-green-600' : 'text-red-500'}`}>{c.present ? '\u2713' : '\u2717'}</span>
+              <span class={c.present ? 'text-neutral-700' : c.critical ? 'text-red-700 font-medium' : 'text-neutral-500'}>{c.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VISITEURS SIMULES -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs simules</h2>
+      <p class="text-neutral-500 mb-6 text-sm">
+        Sur 10 visiteurs simules :
+        <span class="font-semibold text-green-600">{convertissent} contactent</span>,
+        <span class="font-semibold text-amber-600">{hesitent} hesitent</span>,
+        <span class="font-semibold text-neutral-600">{quittent} repartent</span> sans agir.
+      </p>
+
+      <div class="space-y-3">
+        {personas.map(p => {
+          const ds = decisionStyle(p.decision);
+          const avgScore = Math.round((p.scores.exp + p.scores.conf + p.scores.clarte) / 3 * 10) / 10;
+          return (
+            <details class={`group border ${ds.border} ${ds.bg} rounded-xl overflow-hidden`}>
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                    <h3 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h3>
+                    <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    <span class={`text-[11px] px-1.5 py-0.5 rounded font-medium ${ds.badge}`}>{decisionLabel(p.decision)}</span>
+                  </div>
+                  <p class="text-xs text-neutral-500">{p.situation}</p>
+                </div>
+                <div class="text-right shrink-0">
+                  <span class="text-xs font-bold text-neutral-600">{avgScore}/10</span>
+                  <svg class="w-5 h-5 text-neutral-400 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                </div>
+              </summary>
+              <div class="px-4 pb-4 pt-3 border-t border-neutral-100 bg-white/70">
+                <div class="grid gap-3 text-xs">
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Premiere impression</p>
+                    <p class="text-neutral-600">{p.premierImpression}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Parcours</p>
+                    <p class="text-neutral-500">{p.parcours.join(' \u2192 ')}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Question cle</p>
+                    <p class="text-neutral-600 italic">"{p.questionCle}"</p>
+                    <p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong> — {p.commentReponse}</p>
+                  </div>
+                  <div class="text-xs text-neutral-500 bg-neutral-50 rounded-lg px-3 py-2">
+                    Impact technique : {p.impactTechnique}
+                  </div>
+                  <div class="grid sm:grid-cols-2 gap-3">
+                    <div>
+                      <p class="font-semibold text-green-700 mb-1">Points positifs</p>
+                      <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                        {p.pointsPositifs.map(pp => <li>{pp}</li>)}
+                      </ul>
+                    </div>
+                    <div>
+                      <p class="font-semibold text-amber-700 mb-1">Frictions</p>
+                      <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                        {p.frictions.map(fr => <li>{fr}</li>)}
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="flex gap-4 text-xs">
+                    <span class="text-neutral-500">Experience : <strong>{p.scores.exp}/10</strong></span>
+                    <span class="text-neutral-500">Confiance : <strong>{p.scores.conf}/10</strong></span>
+                    <span class="text-neutral-500">Clarte : <strong>{p.scores.clarte}/10</strong></span>
+                  </div>
+                </div>
+              </div>
+            </details>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  <!-- RECOMMANDATIONS -->
+  <section class="py-12 px-4 bg-neutral-50 border-y border-neutral-100">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Nos recommandations</h2>
+
+      <h3 class="text-sm font-semibold uppercase tracking-wide text-red-600 mb-4">Le plus important — 3 actions critiques</h3>
+      <div class="grid gap-4 mb-10">
+        {ameliorationsCritiques.map((a, i) => (
+          <div class="bg-white border-l-4 border-red-400 rounded-r-xl p-5 shadow-sm">
+            <div class="flex items-start gap-3">
+              <span class="shrink-0 w-7 h-7 flex items-center justify-center bg-red-100 text-red-700 font-bold text-sm rounded-full">{i + 1}</span>
+              <div>
+                <h4 class="font-semibold text-neutral-900 mb-1">{a.titre}</h4>
+                <p class="text-sm text-neutral-600 mb-2">{a.detail}</p>
+                <p class="text-xs bg-red-50 text-red-800 px-3 py-2 rounded-lg"><strong>Action :</strong> {a.action}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <h3 class="text-sm font-semibold uppercase tracking-wide text-amber-600 mb-4">Utile aussi — 3 ameliorations recommandees</h3>
+      <div class="grid sm:grid-cols-3 gap-4">
+        {ameliorationsUtiles.map(a => (
+          <div class="bg-white border border-amber-200 rounded-xl p-4">
+            <h4 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h4>
+            <p class="text-xs text-neutral-600">{a.detail}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="bg-neutral-900 text-white py-16 px-4">
+    <div class="max-w-3xl mx-auto text-center">
+      <h2 class="font-heading text-2xl md:text-3xl font-bold mb-4">
+        {kpis.conversion}% de vos visiteurs vous contactent.<br/>
+        <span class="text-amber-400">On peut faire beaucoup mieux.</span>
+      </h2>
+      <p class="text-neutral-300 mb-8 max-w-xl mx-auto text-sm">
+        Ce rapport identifie 3 actions prioritaires : des temoignages clients, un telephone visible en header,
+        et un site moderne et rapide. Je construis des sites d'artisans qui convertissent vraiment — a partir de 990 euros,
+        livre en 7 jours.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="/commander" class="inline-flex items-center gap-2 px-8 py-3.5 bg-[var(--color-accent)] text-white font-semibold rounded-xl hover:opacity-90 transition-all shadow-md">
+          Je veux un site qui convertit
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a href="/contact" class="inline-flex items-center gap-2 px-8 py-3.5 border border-neutral-600 text-neutral-300 font-semibold rounded-xl hover:border-amber-400 hover:text-amber-400 transition-all">
+          En discuter d'abord
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

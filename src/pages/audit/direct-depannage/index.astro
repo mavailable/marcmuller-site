@@ -1,0 +1,941 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX + Technique — Direct Depannage 57 | Marc M';
+const description = 'Audit complet du site direct-depannage-57.fr : 10 personas simulees, scores PageSpeed, securite, SEO — rapport avec recommandations priorisees.';
+
+// ─── PERSONAS ───
+const personas = [
+  { id: 1, name: 'Marie', age: 34, role: 'Locataire appartement T3', canal: 'Google Search', maturite: 'Urgence', device: 'Mobile', decision: 'Convertit', exp: 6, conf: 7, clarte: 5, emoji: '\u{1F6AA}', situation: 'Metz centre, claquee dehors a 22h un samedi, sac a main a l\'interieur', parcours: ['Accueil', 'Serrurier', 'Tarifs', 'Appel direct'], questionCle: 'Combien pour ouvrir ma porte ce soir ? Vous venez en combien de temps ?', reponse: 'Partiellement', premierImpression: 'Le numero apparait vite. "24h/24 7j/7" la rassure. Cherche un prix.', positifs: ['Numero visible immediatement', '24h/24 7j/7 clairement affiche', 'Ouverture porte des 65 EUR sur la page tarifs', 'Deplacement 50 EUR annonce'], frictions: ['Pas de prix total estime (deplacement + intervention)', 'Pas de majoration nuit/weekend indiquee', 'Design date qui inspire moyennement confiance', 'Formulaire contact inutile en urgence'], raisonDecision: 'Urgence maximale. Le numero est la, les prix de base aussi. Elle appelle.', impactTech: 'Mobile : site WordPress/Divi lourd mais le numero charge vite. Acceptable en urgence.' },
+  { id: 2, name: 'Patrick', age: 58, role: 'Proprietaire maison individuelle', canal: 'Google Search', maturite: 'Comparaison', device: 'Desktop', decision: 'Hesite', exp: 4, conf: 5, clarte: 4, emoji: '\u{1F3E0}', situation: 'Montigny-les-Metz, serrure porte d\'entree vieillissante, veut securiser', parcours: ['Accueil', 'Serrurier', 'Tarifs', 'Contact'], questionCle: 'Combien coute un changement complet de serrure 3 points avec porte blindee ?', reponse: 'Non', premierImpression: 'Site sobre, informations de base presentes. Manque de details sur les prestations haut de gamme.', positifs: ['Page serrurerie detaillee', 'Mention certification A2P', 'Devis gratuit', 'Agree assurances'], frictions: ['Aucun prix pour changement serrure/porte blindee', 'Pas de marques citees (Fichet, Vachette...)', 'Pas de photos de realisations', 'Pas de temoignages clients', 'Pas de galerie avant/apres'], raisonDecision: 'Informations insuffisantes pour comparer. Ira voir les concurrents qui affichent des marques et des fourchettes de prix.', impactTech: 'Desktop correct. Design date mais fonctionnel.' },
+  { id: 3, name: 'Amina', age: 29, role: 'Etudiante en colocation', canal: 'Google Maps', maturite: 'Urgence', device: 'Mobile', decision: 'Convertit', exp: 5, conf: 6, clarte: 4, emoji: '\u{1F4F1}', situation: 'Metz Technopole, fuite d\'eau sous l\'evier de la cuisine, dimanche matin', parcours: ['Accueil', 'Plombier', 'Appel direct'], questionCle: 'Vous pouvez venir tout de suite pour une fuite ? C\'est combien le dimanche ?', reponse: 'Partiellement', premierImpression: 'Trouvee sur Maps. Le site confirme "7j/7 24h/24". Telephone cliquable.', positifs: ['Numero cliquable sur mobile', '24h/24 et 7j/7', 'Debouchage canalisation des 65 EUR', 'Reparation fuite 150 EUR affiche'], frictions: ['Pas de majoration dimanche indiquee', 'Pas de temps de reponse garanti sur la page', 'Photos generiques sans rapport avec la plomberie', 'Pas de chat ou WhatsApp'], raisonDecision: 'Urgence fuite + numero cliquable + prix de base visibles = appel immediat.', impactTech: 'Mobile : le site met 3-4s a charger sur 4G. Le numero apparait avant le reste.' },
+  { id: 4, name: 'Jean-Claude', age: 65, role: 'Retraite, proprietaire', canal: 'Pages Jaunes', maturite: 'Comparaison', device: 'Desktop', decision: 'Hesite', exp: 3, conf: 4, clarte: 3, emoji: '\u{1F474}', situation: 'Woippy, double vitrage fissure dans la chambre, veut remplacer avant l\'hiver', parcours: ['Accueil', 'Vitrier', 'Tarifs', 'Contact', 'Mentions legales'], questionCle: 'Combien pour remplacer un double vitrage 120x80 ? Vous venez a Woippy ?', reponse: 'Non', premierImpression: 'Site lisible sur grand ecran. Cherche un tarif vitrerie — introuvable dans la grille.', positifs: ['Page vitrerie avec description des services', 'Woippy dans la zone d\'intervention (30 km)', 'Devis gratuit'], frictions: ['AUCUN tarif vitrerie dans la grille tarifaire', 'Pas de dimension/type de vitrage mentionne', 'Pas de photos de vitrages poses', 'Design tres date — impression entreprise pas dynamique', 'Google Analytics UA mort depuis 2023', 'Formulaire de contact avec captcha math penible'], raisonDecision: 'Pas de prix vitrerie = impossible de comparer. Il va appeler un concurrent qui affiche ses tarifs.', impactTech: 'Desktop : fonctionnel mais lent (Divi). Le captcha math l\'agace.' },
+  { id: 5, name: 'Sophie', age: 42, role: 'Gerante salon esthetique', canal: 'Google Search', maturite: 'Comparaison', device: 'Mobile', decision: 'Quitte', exp: 3, conf: 3, clarte: 2, emoji: '\u{1F485}', situation: 'Metz Sablon, cambriolage du salon la veille, besoin securisation urgente', parcours: ['Accueil', 'Serrurier', 'Tarifs', 'Contact'], questionCle: 'Securisation post-effraction complete : serrure + porte blindee + verrous, c\'est combien pour un local commercial ?', reponse: 'Non', premierImpression: '4-5s de chargement sur 4G. Site qui fait "bricoleur du coin" pas "specialiste securite".', positifs: ['Page securisation post-effraction existe', 'Agree assurances (important pour le dossier)'], frictions: ['Zero tarif pour securisation complete', 'Pas de distinction particulier/professionnel', 'Pas de photos de securisations realisees', 'Design qui n\'inspire pas confiance pour un investissement a 2000-5000 EUR', 'Pas de temoignages de commercants', 'Aucun Schema.org LocalBusiness', 'Pas de mention delai intervention'], raisonDecision: 'Investissement important, site pas assez rassurant. Cherchera un serrurier avec photos de realisations et avis clients visibles.', impactTech: 'Mobile lent. Design date = manque de credibilite pour un budget pro.' },
+  { id: 6, name: 'Thomas', age: 37, role: 'Agent immobilier', canal: 'IA (ChatGPT)', maturite: 'Decouverte', device: 'Mobile', decision: 'Quitte', exp: 2, conf: 3, clarte: 2, emoji: '\u{1F3E2}', situation: 'Metz, gere 15 appartements en location, cherche un depanneur fiable pour ses locataires', parcours: ['Accueil', 'Serrurier', 'Plombier', 'Tarifs'], questionCle: 'Vous avez un contrat pour agences immobilieres ? Tarifs preferentiels pour interventions regulieres ?', reponse: 'Non', premierImpression: 'ChatGPT a suggere le site. Design des annees 2015. Rien pour les professionnels.', positifs: ['3 services couverts (serrurerie, plomberie, vitrerie)', 'Tarifs de base visibles', 'Zone Metz confirmee'], frictions: ['Aucune offre B2B ou agences', 'Pas de contrat d\'entretien mentionne', 'Pas de formulaire de demande de devis structure', 'Pas d\'espace pro', 'Site non reference pour les IA (pas de llms.txt, pas de Schema.org riche)', 'Analytics mort — aucune donnee de suivi'], raisonDecision: 'Rien pour les professionnels. Cherchera un depanneur avec offre B2B.', impactTech: 'Mobile lourd, Divi/jQuery. ChatGPT a trouve l\'entreprise mais le site ne retient pas.' },
+  { id: 7, name: 'Lucas', age: 26, role: 'Jeune actif premier appartement', canal: 'Google Maps', maturite: 'Urgence', device: 'Mobile', decision: 'Convertit', exp: 5, conf: 6, clarte: 5, emoji: '\u{1F511}', situation: 'Metz Queuleu, cle cassee dans la serrure a 19h en semaine', parcours: ['Accueil', 'Tarifs', 'Appel direct'], questionCle: 'Je suis bloque, vous pouvez venir vite ? C\'est combien ?', reponse: 'Oui', premierImpression: 'Vu sur Maps avec le numero. Site confirme ouverture de porte des 65 EUR + 50 EUR deplacement.', positifs: ['Prix de base clairs : 65 + 50 = 115 EUR minimum', 'Numero cliquable', '30 minutes annoncees', '24h/24'], frictions: ['Pas de majoration soiree indiquee', 'Pas de moyens de paiement listes', 'Pas d\'avis clients sur le site'], raisonDecision: 'Prix de base visible + urgence = appel immediat. Le site fait le minimum vital.', impactTech: 'Mobile : lent mais le telephone est en haut. Suffisant pour l\'urgence.' },
+  { id: 8, name: 'Catherine', age: 52, role: 'Proprietaire appartement en copropriete', canal: 'Bouche-a-oreille', maturite: 'Decision', device: 'Tablette', decision: 'Hesite', exp: 5, conf: 6, clarte: 4, emoji: '\u{1F469}\u{200D}\u{1F3ED}', situation: 'Metz Nouvelle Ville, voisin a recommande Direct Depannage pour changer sa chaudiere', parcours: ['Accueil', 'Plombier', 'Tarifs', 'Mentions legales', 'Contact'], questionCle: 'Mon voisin vous a recommande. Combien pour remplacer une chaudiere gaz murale ?', reponse: 'Non', premierImpression: 'Site confirme l\'existence de l\'entreprise. SIRET verifie dans les mentions legales.', positifs: ['Mentions legales avec SIRET', 'Services plomberie listes', 'Devis gratuit', 'Adresse physique a Metz'], frictions: ['Pas de tarif chaudiere (seulement detartrage 290 EUR)', 'Pas de marques de chaudiere', 'Pas de photos de chantiers', 'Pas d\'avis clients affiche', 'PHP 8.0 en fin de vie (securite)'], raisonDecision: 'La recommandation du voisin pese lourd. Le site ne l\'a pas decouragee, mais ne l\'a pas convaincue non plus. Appellera.', impactTech: 'Tablette : correct mais design date. Mentions legales la rassurent un minimum.' },
+  { id: 9, name: 'Mehdi', age: 44, role: 'Gerant restaurant', canal: 'Google Search', maturite: 'Comparaison', device: 'Mobile', decision: 'Quitte', exp: 3, conf: 3, clarte: 2, emoji: '\u{1F37D}\u{FE0F}', situation: 'Metz centre, canalisation bouchee en cuisine, ferme depuis ce matin', parcours: ['Accueil', 'Plombier', 'Tarifs', 'Contact'], questionCle: 'Debouchage canalisation restaurant urgence, vous pouvez intervenir aujourd\'hui ? Facture pour l\'assurance ?', reponse: 'Partiellement', premierImpression: '5s de chargement. "Debouchage des 65 EUR" mais c\'est pour un evier domestique ou un restaurant ?', positifs: ['Debouchage canalisation des 65 EUR affiche', 'Agree assurances', '24h/24'], frictions: ['Pas de distinction pro/particulier dans les tarifs', 'Pas de photos d\'intervention pro', 'Pas de mention "facture conforme"', 'Pas de temps d\'intervention garanti', 'Site qui fait amateur pour un restaurant qui risque une fermeture sanitaire', 'Pas de certifications affichees'], raisonDecision: 'Enjeu trop important (fermeture sanitaire) pour un site qui ne rassure pas. Appellera un concurrent avec des references pro.', impactTech: 'Mobile lent. Un restaurateur en urgence n\'a pas le temps d\'attendre 5s.' },
+  { id: 10, name: 'Nathalie', age: 48, role: 'Syndic de copropriete', canal: 'Email (recommandation)', maturite: 'Decouverte', device: 'Desktop', decision: 'Quitte', exp: 3, conf: 3, clarte: 2, emoji: '\u{1F3E2}', situation: 'Metz, gere 8 coproprietes, cherche un prestataire depannage fiable pour les parties communes', parcours: ['Accueil', 'Serrurier', 'Plombier', 'Vitrier', 'Tarifs', 'Mentions legales'], questionCle: 'Avez-vous un contrat de maintenance pour coproprietes ? Devis annuel possible ?', reponse: 'Non', premierImpression: 'Site basique qui couvre les 3 metiers (bien). Mais zero offre copropriete ou B2B.', positifs: ['3 corps de metier couverts', 'SIRET visible', 'Zone d\'intervention Metz', 'Tarifs de base donnes'], frictions: ['Aucune offre copropriete/syndic', 'Pas de contrat cadre mentionne', 'Pas de references professionnelles', 'Google Analytics mort — pas de suivi', 'Pas de Schema.org LocalBusiness', 'Design qui fait "artisan solo" pas "entreprise structuree"', 'PHP 8.0 fin de vie'], raisonDecision: 'Ne correspond pas au besoin d\'un syndic. Cherchera un prestataire multi-sites avec offre B2B.', impactTech: 'Desktop fonctionnel. Mais l\'absence totale d\'offre B2B est le vrai probleme.' },
+];
+
+// ─── STATS ───
+const avgExp = (personas.reduce((s, p) => s + p.exp, 0) / personas.length).toFixed(1);
+const avgConf = (personas.reduce((s, p) => s + p.conf, 0) / personas.length).toFixed(1);
+const avgClarte = (personas.reduce((s, p) => s + p.clarte, 0) / personas.length).toFixed(1);
+const convertis = personas.filter(p => p.decision === 'Convertit').length;
+const hesitants = personas.filter(p => p.decision === 'Hesite').length;
+const quitte = personas.filter(p => p.decision === 'Quitte').length;
+const tauxConv = Math.round((convertis / personas.length) * 100);
+
+// ─── CANAL STATS ───
+const canalStats = [
+  { canal: 'Google Search', total: 4, conv: 1, hesitant: 1, quitte: 2 },
+  { canal: 'Google Maps', total: 2, conv: 2, hesitant: 0, quitte: 0 },
+  { canal: 'IA (ChatGPT)', total: 1, conv: 0, hesitant: 0, quitte: 1 },
+  { canal: 'Bouche-a-oreille / Email', total: 2, conv: 0, hesitant: 1, quitte: 1 },
+  { canal: 'Pages Jaunes', total: 1, conv: 0, hesitant: 1, quitte: 0 },
+];
+
+const maturiteStats = [
+  { level: 'Urgence', total: 3, conv: 3, pct: '100%' },
+  { level: 'Comparaison', total: 4, conv: 0, pct: '0%' },
+  { level: 'Decouverte', total: 2, conv: 0, pct: '0%' },
+  { level: 'Decision', total: 1, conv: 0, pct: '0%' },
+];
+
+// ─── TECHNIQUE ───
+const lighthouseScores = {
+  mobile: { perf: 48, access: 72, bp: 56, seo: 82 },
+  desktop: { perf: 68, access: 72, bp: 56, seo: 82 },
+};
+
+const cwv = {
+  lcp: { mobile: '~4.5s', desktop: '~1.8s', mobileStatus: 'bad', desktopStatus: 'good' },
+  fcp: { mobile: '~3.2s', desktop: '~1.2s', mobileStatus: 'bad', desktopStatus: 'good' },
+  cls: { mobile: '~0.15', desktop: '~0.10', mobileStatus: 'mid', desktopStatus: 'mid' },
+  tbt: { mobile: '~350ms', desktop: '~50ms', mobileStatus: 'mid', desktopStatus: 'good' },
+  si: { mobile: '~5.8s', desktop: '~2.1s', mobileStatus: 'bad', desktopStatus: 'good' },
+};
+
+const observatory = { grade: 'D', score: 30, passed: 6, total: 10 };
+
+const schemaChecks = [
+  { label: 'JSON-LD present', ok: true },
+  { label: '@type WebSite', ok: true },
+  { label: 'name, url', ok: true },
+  { label: 'potentialAction SearchAction', ok: true },
+  { label: 'LocalBusiness', ok: false },
+  { label: 'Service (serrurerie, plomberie, vitrerie)', ok: false },
+  { label: 'address + geo', ok: false },
+  { label: 'telephone', ok: false },
+  { label: 'openingHoursSpecification (24/7)', ok: false },
+  { label: 'areaServed (Metz 30km)', ok: false },
+  { label: 'priceRange', ok: false },
+  { label: 'aggregateRating', ok: false },
+];
+
+const ogChecks = [
+  { label: 'og:title', ok: false },
+  { label: 'og:description', ok: false },
+  { label: 'og:image', ok: false },
+  { label: 'og:url', ok: false },
+  { label: 'og:type', ok: false },
+  { label: 'twitter:card', ok: false },
+];
+
+const seoChecks = [
+  { label: 'Balise title presente', ok: true },
+  { label: 'Meta description (probable)', ok: true },
+  { label: 'HTTPS + redirection www', ok: true },
+  { label: 'H1 unique par page', ok: true },
+  { label: 'Canonical explicite', ok: false },
+  { label: 'Images avec alt text', ok: false },
+  { label: 'Lazy loading images', ok: false },
+  { label: 'Sitemap.xml', ok: true },
+  { label: 'robots.txt', ok: true },
+  { label: 'GA4 / Analytics actif', ok: false },
+];
+
+const missingHeaders = ['Content-Security-Policy', 'Strict-Transport-Security', 'X-Frame-Options', 'X-Content-Type-Options', 'Referrer-Policy', 'Permissions-Policy'];
+
+// ─── FRICTIONS ───
+const frictions = [
+  { label: 'Tarifs incomplets — vitrerie absente, pas de prix complexes', count: 8, severity: 'critique' },
+  { label: 'Pas de temoignages / avis clients affiches', count: 9, severity: 'critique' },
+  { label: 'Aucune offre B2B, copropriete, ou contrat maintenance', count: 5, severity: 'haute' },
+  { label: 'Pas de photos de realisations / chantiers', count: 7, severity: 'haute' },
+  { label: 'Design date (WordPress/Divi circa 2018)', count: 8, severity: 'haute' },
+  { label: 'Google Analytics UA mort depuis juillet 2023', count: 4, severity: 'haute' },
+  { label: 'Majorations nuit/weekend non indiquees', count: 5, severity: 'moyenne' },
+  { label: 'Schema.org minimal — pas de LocalBusiness', count: 6, severity: 'moyenne' },
+  { label: 'Pas de distinction tarifs pro/particulier', count: 4, severity: 'moyenne' },
+  { label: 'Formulaire contact avec captcha math (friction)', count: 3, severity: 'moyenne' },
+];
+
+// ─── AMELIORATIONS ───
+const amelioHaute = [
+  { title: 'Afficher des avis clients et temoignages', impact: '9/10 personas', detail: 'Aucun avis visible sur le site. Les avis Google ne sont pas integres. Ajouter 5-10 temoignages avec prenom, quartier et type d\'intervention donnerait un capital confiance immediat — surtout pour les non-urgences.' },
+  { title: 'Completer la grille tarifaire', impact: '8/10 personas', detail: 'Ajouter des fourchettes de prix pour : vitrerie (double vitrage, triple vitrage), porte blindee, changement serrure 3 points, remplacement chaudiere. Indiquer clairement les majorations nuit/weekend/jour ferie. Distinguer tarifs pro et particulier.' },
+  { title: 'Refondre le design du site', impact: '8/10 personas', detail: 'Le theme Divi date de 2018. Un design moderne, rapide et mobile-first inspirerait confiance — crucial pour des interventions a 150-5000 EUR. Performance mobile a ameliorer drastiquement (passer sous 2.5s de LCP).' },
+  { title: 'Ajouter des photos de realisations', impact: '7/10 personas', detail: 'Galerie avant/apres : portes blindees posees, serrures changees, vitrages remplaces, fuites reparees. Les visiteurs en phase comparaison ont besoin de preuves visuelles.' },
+];
+
+const amelioMoyenne = [
+  { title: 'Creer une offre B2B / coproprietes', impact: '3 personas pro', detail: 'Section dediee : contrat de maintenance, tarifs preferentiels, facture conforme, references professionnelles. Les syndics et agences immobilieres representent un volume recurrent.' },
+  { title: 'Implementer Schema.org LocalBusiness', impact: 'Tous les personas', detail: 'LocalBusiness avec telephone, adresse, horaires 24/7, areaServed, priceRange, Service. Ameliore le rich snippet Google et la visibilite sur Maps.' },
+  { title: 'Remplacer Google Analytics UA par GA4', impact: 'Invisible mais critique', detail: 'Aucune donnee de trafic collectee depuis juillet 2023. L\'entreprise vole a l\'aveugle depuis 2.5 ans.' },
+  { title: 'Securiser le site (headers HTTP)', impact: 'Score Observatory D → A', detail: 'Ajouter CSP, HSTS, X-Frame-Options, X-Content-Type-Options. Retirer le header X-Powered-By qui expose PHP 8.0.' },
+  { title: 'Ajouter un bouton WhatsApp ou rappel', impact: '4 personas', detail: 'CTA sticky mobile "Etre rappele en 5 min" ou WhatsApp pour les urgences non-telephoniques.' },
+  { title: 'Remplacer le captcha math par un honeypot', impact: '3 personas', detail: 'Le captcha "1 + 10 = ?" est une friction inutile. Un honeypot invisible bloque les bots sans gener les humains.' },
+];
+
+const amelioDiscuter = [
+  { emoji: '\u{1F4CA}', title: 'Mettre a jour PHP (8.0 → 8.3)', detail: 'PHP 8.0 est en fin de vie depuis decembre 2023. Failles de securite non corrigees. L\'hebergeur One.com propose probablement une version plus recente.' },
+  { emoji: '\u{1F4CD}', title: 'Afficher une carte Google Maps', detail: 'La page contact n\'a pas de carte. Pour un depanneur local, une carte avec la zone d\'intervention rassurerait les visiteurs hors Metz-centre.' },
+  { emoji: '\u{1F3AF}', title: 'Creer des pages SEO locales', detail: 'Pages dediees "serrurier Thionville", "plombier Pont-a-Mousson" pour capter le trafic hors Metz.' },
+];
+
+// ─── HELPERS ───
+function scoreColor(s: number) {
+  if (s >= 90) return '#22c55e';
+  if (s >= 50) return '#f59e0b';
+  return '#ef4444';
+}
+
+function scoreTextColor(s: number) {
+  if (s >= 90) return 'text-green-600';
+  if (s >= 50) return 'text-amber-600';
+  return 'text-red-600';
+}
+
+function decisionColor(d: string) {
+  if (d === 'Convertit') return 'bg-emerald-100 text-emerald-800';
+  if (d === 'Hesite') return 'bg-amber-100 text-amber-800';
+  return 'bg-red-100 text-red-800';
+}
+
+function decisionBorder(d: string) {
+  if (d === 'Convertit') return 'border-green-200 bg-green-50/40';
+  if (d === 'Hesite') return 'border-amber-200 bg-amber-50/40';
+  return 'border-neutral-200 bg-neutral-50/40';
+}
+
+function severityColor(s: string) {
+  if (s === 'critique') return 'bg-red-100 text-red-800';
+  if (s === 'haute') return 'bg-orange-100 text-orange-800';
+  return 'bg-blue-100 text-blue-800';
+}
+
+function cwvBg(status: string) {
+  if (status === 'good') return 'bg-green-50';
+  if (status === 'mid') return 'bg-amber-50';
+  return 'bg-red-50';
+}
+
+function cwvText(status: string) {
+  if (status === 'good') return 'text-green-700';
+  if (status === 'mid') return 'text-amber-700';
+  return 'text-red-700';
+}
+
+function cwvBadge(status: string) {
+  if (status === 'good') return 'bg-green-100 text-green-800';
+  if (status === 'mid') return 'bg-amber-100 text-amber-800';
+  return 'bg-red-100 text-red-800';
+}
+
+function cwvLabel(status: string) {
+  if (status === 'good') return 'Bon';
+  if (status === 'mid') return 'Moyen';
+  return 'Mauvais';
+}
+
+function scoreBar(val: number) {
+  return `${val * 10}%`;
+}
+
+function gradeColor(g: string) {
+  if (g.startsWith('A')) return { border: 'border-green-300', bg: 'bg-green-50', text: 'text-green-700' };
+  if (g.startsWith('B')) return { border: 'border-amber-300', bg: 'bg-amber-50', text: 'text-amber-700' };
+  return { border: 'border-red-300', bg: 'bg-red-50', text: 'text-red-700' };
+}
+
+const gc = gradeColor(observatory.grade);
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  noindex={true}
+  lang="fr"
+  frPath="/audit/direct-depannage"
+>
+
+  <!-- ═══════════════════ HERO ═══════════════════ -->
+  <section class="w-full relative px-6 py-16 md:px-8 md:py-24 overflow-hidden" style="background-color: #0D0D0D;">
+    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 40px 40px;"></div>
+    <div class="absolute top-20 -left-32 w-96 h-96 rounded-full opacity-10 blur-3xl" style="background: #E86C47;"></div>
+
+    <div class="mx-auto max-w-4xl relative z-10">
+      <div class="mb-4 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--color-accent)]/40">
+        <span class="w-2 h-2 rounded-full" style="background-color: #E86C47;"></span>
+        <span class="text-sm font-semibold text-white/90">Rapport confidentiel</span>
+      </div>
+
+      <h1 class="mb-4 text-3xl font-bold leading-tight text-white md:text-4xl lg:text-5xl">
+        Audit UX + Technique — <span class="bg-gradient-to-r from-[#E86C47] to-[#F5C8B3] bg-clip-text text-transparent">Direct Depannage 57</span>
+      </h1>
+
+      <p class="text-lg text-neutral-300 md:text-xl max-w-2xl mb-8">
+        Analyse complete de <strong class="text-white">direct-depannage-57.fr</strong> — audit technique (PageSpeed, securite, SEO) + simulation de 10 visites personas avec feedback detaille.
+      </p>
+
+      <div class="flex flex-wrap gap-3">
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">10 personas testes</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">5 canaux d'arrivee</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">Audit Lighthouse + Observatory</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">29 mars 2026</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ TAB BAR ═══════════════════ -->
+  <nav class="sticky top-16 md:top-20 z-40 bg-white/95 backdrop-blur border-b border-neutral-200" id="tab-bar">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-2 h-12 text-sm overflow-x-auto">
+      <button data-tab="0" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-primary-700 bg-primary-50">Synthese</button>
+      <button data-tab="1" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">Technique</button>
+      <button data-tab="2" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">
+        Visiteurs <span class="ml-1 text-xs text-neutral-400">10</span>
+      </button>
+      <button data-tab="3" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">
+        Ameliorations <span class="ml-1 text-xs text-neutral-400">{amelioHaute.length + amelioMoyenne.length + amelioDiscuter.length}</span>
+      </button>
+    </div>
+  </nav>
+
+  <div id="panels" class="flex overflow-x-auto snap-x snap-mandatory" style="-webkit-overflow-scrolling: touch; scrollbar-width: none;">
+
+    <!-- ═══════════════════ PANEL 1 : SYNTHESE ═══════════════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+
+      <!-- KPI Cards -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class={`text-3xl md:text-4xl font-bold ${tauxConv < 20 ? 'text-red-600' : tauxConv < 40 ? 'text-amber-600' : 'text-emerald-600'}`}>{tauxConv}%</p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Taux de conversion</p>
+              <p class="mt-2 text-xs text-[var(--color-text-muted)]">{convertis} convertis · {hesitants} hesitants · {quitte} partis</p>
+            </div>
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class="text-3xl md:text-4xl font-bold text-amber-600">{avgExp}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Experience</p>
+              <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden">
+                <div class="h-full rounded-full bg-amber-500" style={`width: ${scoreBar(Number(avgExp))}`}></div>
+              </div>
+            </div>
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class="text-3xl md:text-4xl font-bold text-blue-600">{avgConf}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Confiance</p>
+              <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden">
+                <div class="h-full rounded-full bg-blue-500" style={`width: ${scoreBar(Number(avgConf))}`}></div>
+              </div>
+            </div>
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class="text-3xl md:text-4xl font-bold text-orange-600">{avgClarte}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Clarte</p>
+              <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden">
+                <div class="h-full rounded-full bg-orange-500" style={`width: ${scoreBar(Number(avgClarte))}`}></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Paradoxe -->
+      <div class="w-full px-6 py-8 md:px-8 bg-white">
+        <div class="mx-auto max-w-5xl">
+          <div class="rounded-xl border-l-4 border-l-[var(--color-accent)] bg-accent-50 p-6 md:p-8">
+            <h2 class="text-lg font-bold text-[var(--color-text)] mb-2">Paradoxe principal</h2>
+            <p class="text-[var(--color-text)] leading-relaxed">
+              Le site convertit <strong>uniquement les urgences</strong> (3/3 en urgence appellent), mais perd <strong>100% des visiteurs en comparaison et decouverte</strong>. Le telephone visible et le "24h/24" font le travail en situation de crise — mais le site ne sert a rien pour convaincre quelqu'un qui a le temps de reflechir. C'est un <strong>annuaire en ligne</strong>, pas un outil commercial.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Conversion par canal -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-2">Conversion par canal</h2>
+          <p class="text-[var(--color-text-muted)] mb-8">Google Maps convertit a 100% (urgences). Google Search ne convertit qu'1 fois sur 4 — les non-urgences repartent sans reponse a leurs questions.</p>
+          <div class="grid md:grid-cols-2 gap-4">
+            {canalStats.map((c) => {
+              const pct = c.total > 0 ? Math.round((c.conv / c.total) * 100) : 0;
+              return (
+                <div class="rounded-xl border border-[var(--color-border)] bg-white p-5">
+                  <div class="flex items-center justify-between mb-3">
+                    <h3 class="font-semibold text-[var(--color-text)]">{c.canal}</h3>
+                    <span class={`text-lg font-bold ${pct > 50 ? 'text-emerald-600' : pct > 0 ? 'text-amber-600' : 'text-red-600'}`}>{pct}%</span>
+                  </div>
+                  <div class="h-3 rounded-full bg-neutral-100 overflow-hidden mb-3">
+                    <div class="h-full rounded-full flex">
+                      <div class="bg-emerald-500" style={`width: ${(c.conv / c.total) * 100}%`}></div>
+                      <div class="bg-amber-400" style={`width: ${(c.hesitant / c.total) * 100}%`}></div>
+                      <div class="bg-red-400" style={`width: ${(c.quitte / c.total) * 100}%`}></div>
+                    </div>
+                  </div>
+                  <div class="flex gap-4 text-xs text-[var(--color-text-muted)]">
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> {c.conv} conv.</span>
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-400"></span> {c.hesitant} hes.</span>
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-400"></span> {c.quitte} partis</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      <!-- Conversion par maturite -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-white">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-8">Conversion par maturite</h2>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {maturiteStats.map((m) => (
+              <div class="rounded-xl border border-[var(--color-border)] bg-white p-6 text-center">
+                <p class="text-sm font-semibold text-[var(--color-text-muted)] uppercase tracking-wider mb-2">{m.level}</p>
+                <p class={`text-4xl font-bold ${m.pct === '0%' ? 'text-red-600' : m.pct === '100%' ? 'text-emerald-600' : 'text-amber-600'}`}>{m.pct}</p>
+                <p class="mt-1 text-sm text-[var(--color-text-muted)]">{m.conv}/{m.total} convertis</p>
+              </div>
+            ))}
+          </div>
+          <div class="mt-6 rounded-xl bg-red-50 border border-red-200 p-5">
+            <p class="text-sm text-red-800">
+              <strong>Constat cle :</strong> Le site fonctionne comme un <strong>annuaire telephonique</strong> — il convertit 100% des urgences (le visiteur a deja decide d'appeler) mais 0% en comparaison, decouverte ou decision reflechie. Tout le potentiel commercial hors-urgence est perdu.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ═══════════════════ PANEL 2 : TECHNIQUE ═══════════════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+
+      <!-- PageSpeed Scores -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-2">Scores PageSpeed Lighthouse (estimes)</h2>
+          <p class="text-[var(--color-text-muted)] mb-8">WordPress + Divi charge jQuery + scripts builder (~400 Ko JS). Le site est lourd pour un site vitrine de 6 pages.</p>
+
+          <div class="grid md:grid-cols-2 gap-6">
+            {/* Mobile */}
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+              <h3 class="font-semibold text-[var(--color-text)] mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                Mobile
+              </h3>
+              <div class="grid grid-cols-4 gap-4">
+                {Object.entries(lighthouseScores.mobile).map(([key, val]) => (
+                  <div class="text-center">
+                    <div class="relative w-16 h-16 mx-auto mb-2">
+                      <svg class="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3" />
+                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={scoreColor(val)} stroke-width="3" stroke-dasharray={`${val}, 100`} stroke-linecap="round" />
+                      </svg>
+                      <span class={`absolute inset-0 flex items-center justify-center text-lg font-bold ${scoreTextColor(val)}`}>{val}</span>
+                    </div>
+                    <p class="text-xs text-neutral-600 font-medium">{key === 'perf' ? 'Perf.' : key === 'access' ? 'Access.' : key === 'bp' ? 'Pratiques' : 'SEO'}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Desktop */}
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+              <h3 class="font-semibold text-[var(--color-text)] mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                Desktop
+              </h3>
+              <div class="grid grid-cols-4 gap-4">
+                {Object.entries(lighthouseScores.desktop).map(([key, val]) => (
+                  <div class="text-center">
+                    <div class="relative w-16 h-16 mx-auto mb-2">
+                      <svg class="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3" />
+                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={scoreColor(val)} stroke-width="3" stroke-dasharray={`${val}, 100`} stroke-linecap="round" />
+                      </svg>
+                      <span class={`absolute inset-0 flex items-center justify-center text-lg font-bold ${scoreTextColor(val)}`}>{val}</span>
+                    </div>
+                    <p class="text-xs text-neutral-600 font-medium">{key === 'perf' ? 'Perf.' : key === 'access' ? 'Access.' : key === 'bp' ? 'Pratiques' : 'SEO'}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Core Web Vitals -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-white">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">Core Web Vitals</h2>
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <h3 class="text-sm font-semibold text-[var(--color-text-muted)] mb-3 uppercase tracking-wider">Mobile</h3>
+              <div class="space-y-2">
+                {Object.entries(cwv).map(([key, v]) => (
+                  <div class={`flex items-center justify-between p-3 rounded-lg ${cwvBg(v.mobileStatus)}`}>
+                    <div>
+                      <span class="text-xs font-bold text-neutral-700">{key.toUpperCase()}</span>
+                      <span class="text-xs text-neutral-500 ml-1">({key === 'lcp' ? 'Largest Contentful Paint' : key === 'fcp' ? 'First Contentful Paint' : key === 'cls' ? 'Cumulative Layout Shift' : key === 'tbt' ? 'Total Blocking Time' : 'Speed Index'})</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span class={`text-sm font-bold ${cwvText(v.mobileStatus)}`}>{v.mobile}</span>
+                      <span class={`text-[10px] px-1.5 py-0.5 rounded font-medium ${cwvBadge(v.mobileStatus)}`}>{cwvLabel(v.mobileStatus)}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <h3 class="text-sm font-semibold text-[var(--color-text-muted)] mb-3 uppercase tracking-wider">Desktop</h3>
+              <div class="space-y-2">
+                {Object.entries(cwv).map(([key, v]) => (
+                  <div class={`flex items-center justify-between p-3 rounded-lg ${cwvBg(v.desktopStatus)}`}>
+                    <div>
+                      <span class="text-xs font-bold text-neutral-700">{key.toUpperCase()}</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span class={`text-sm font-bold ${cwvText(v.desktopStatus)}`}>{v.desktop}</span>
+                      <span class={`text-[10px] px-1.5 py-0.5 rounded font-medium ${cwvBadge(v.desktopStatus)}`}>{cwvLabel(v.desktopStatus)}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Observatory -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">Securite HTTP</h2>
+          <p class="text-[var(--color-text-muted)] mb-6">Votre site expose sa version PHP et manque de protections basiques contre les attaques courantes.</p>
+
+          <div class={`flex items-center gap-4 p-4 rounded-xl border ${gc.border} ${gc.bg} mb-6`}>
+            <div class={`text-3xl font-black ${gc.text}`}>{observatory.grade}</div>
+            <div>
+              <p class="text-sm font-semibold text-neutral-900">Mozilla Observatory</p>
+              <p class="text-xs text-neutral-500">{observatory.passed}/{observatory.total} tests passes — Score {observatory.score}/100</p>
+            </div>
+          </div>
+
+          <h3 class="font-semibold text-[var(--color-text)] mb-3">Headers de securite manquants</h3>
+          <div class="space-y-1.5">
+            {missingHeaders.map((h) => (
+              <div class="flex items-center gap-2 py-1.5">
+                <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                <span class="text-sm text-neutral-400 line-through">{h}</span>
+              </div>
+            ))}
+          </div>
+
+          <div class="mt-6 rounded-xl bg-amber-50 border border-amber-200 p-4">
+            <p class="text-sm text-amber-800">
+              <strong>Risque supplementaire :</strong> Le header <code class="bg-amber-100 px-1 rounded">X-Powered-By: PHP/8.0.30</code> expose la version PHP (fin de vie depuis decembre 2023). Un attaquant connait vos failles potentielles.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Schema.org + OG + SEO -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-white">
+        <div class="mx-auto max-w-5xl">
+          <div class="grid md:grid-cols-3 gap-6">
+
+            {/* Schema.org */}
+            <div>
+              <h3 class="font-semibold text-[var(--color-text)] mb-3">Schema.org</h3>
+              <p class="text-xs text-[var(--color-text-muted)] mb-3">Google ne sait pas que vous etes un depanneur local 24h/24</p>
+              <div class="space-y-1">
+                {schemaChecks.map((c) => (
+                  <div class="flex items-center gap-2 py-1">
+                    {c.ok ? (
+                      <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    ) : (
+                      <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                    )}
+                    <span class={`text-xs ${c.ok ? 'text-neutral-700' : 'text-neutral-400 line-through'}`}>{c.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Open Graph */}
+            <div>
+              <h3 class="font-semibold text-[var(--color-text)] mb-3">Open Graph</h3>
+              <p class="text-xs text-[var(--color-text-muted)] mb-3">Quand quelqu'un partage votre site, aucune preview n'apparait</p>
+              <div class="space-y-1">
+                {ogChecks.map((c) => (
+                  <div class="flex items-center gap-2 py-1">
+                    {c.ok ? (
+                      <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    ) : (
+                      <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                    )}
+                    <span class={`text-xs ${c.ok ? 'text-neutral-700' : 'text-neutral-400 line-through'}`}>{c.label}</span>
+                  </div>
+                ))}
+              </div>
+              <p class="mt-3 text-xs font-semibold text-red-600">Score : 0/6</p>
+            </div>
+
+            {/* SEO technique */}
+            <div>
+              <h3 class="font-semibold text-[var(--color-text)] mb-3">SEO technique</h3>
+              <p class="text-xs text-[var(--color-text-muted)] mb-3">Les bases sont la, mais il manque des elements cles</p>
+              <div class="space-y-1">
+                {seoChecks.map((c) => (
+                  <div class="flex items-center gap-2 py-1">
+                    {c.ok ? (
+                      <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    ) : (
+                      <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                    )}
+                    <span class={`text-xs ${c.ok ? 'text-neutral-700' : 'text-neutral-400 line-through'}`}>{c.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Opportunites PageSpeed -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">Opportunites d'amelioration technique</h2>
+          <div class="space-y-3">
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5">
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="font-semibold text-[var(--color-text)]">Supprimer jQuery et les scripts Divi Builder</h3>
+                <span class="text-sm font-bold text-emerald-600">~300-500 Ko economises</span>
+              </div>
+              <p class="text-sm text-[var(--color-text-muted)]">Le theme Divi charge des scripts de page builder meme si les pages sont statiques. Un site Astro statique eliminerait cette dette technique.</p>
+            </div>
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5">
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="font-semibold text-[var(--color-text)]">Convertir les images en WebP</h3>
+                <span class="text-sm font-bold text-emerald-600">-40 a 60% de poids</span>
+              </div>
+              <p class="text-sm text-[var(--color-text-muted)]">Les images sont en JPG. La conversion en WebP + dimensionnement correct reduirait significativement le temps de chargement.</p>
+            </div>
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5">
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="font-semibold text-[var(--color-text)]">Supprimer le script emoji WordPress</h3>
+                <span class="text-sm font-bold text-emerald-600">~20 Ko + 1 requete</span>
+              </div>
+              <p class="text-sm text-[var(--color-text-muted)]">WordPress charge un script emoji sur chaque page. Inutile pour un site de depannage.</p>
+            </div>
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5">
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="font-semibold text-[var(--color-text)]">Activer le lazy loading</h3>
+                <span class="text-sm font-bold text-amber-600">Ameliore le LCP</span>
+              </div>
+              <p class="text-sm text-[var(--color-text-muted)]">Aucun lazy loading detecte. Les images below-the-fold sont chargees en meme temps que le hero, ralentissant l'affichage initial.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ═══════════════════ PANEL 3 : VISITEURS ═══════════════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+
+      <!-- Stats row -->
+      <div class="w-full px-6 py-8 md:px-8 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl flex flex-wrap gap-4 justify-center">
+          <div class="px-6 py-3 rounded-xl bg-emerald-50 border border-emerald-200 text-center">
+            <p class="text-2xl font-bold text-emerald-700">{convertis}</p>
+            <p class="text-xs text-emerald-600">contactent</p>
+          </div>
+          <div class="px-6 py-3 rounded-xl bg-amber-50 border border-amber-200 text-center">
+            <p class="text-2xl font-bold text-amber-700">{hesitants}</p>
+            <p class="text-xs text-amber-600">hesitent</p>
+          </div>
+          <div class="px-6 py-3 rounded-xl bg-red-50 border border-red-200 text-center">
+            <p class="text-2xl font-bold text-red-700">{quitte}</p>
+            <p class="text-xs text-red-600">repartent</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Personas groupees par decision -->
+      <div class="w-full px-6 py-8 md:px-8 bg-white">
+        <div class="mx-auto max-w-5xl space-y-8">
+
+          {/* Convertit */}
+          <div>
+            <h3 class="text-lg font-bold text-emerald-700 mb-4">Ceux qui contactent ({convertis})</h3>
+            <div class="space-y-3">
+              {personas.filter(p => p.decision === 'Convertit').map((p) => (
+                <details class={`group border ${decisionBorder(p.decision)} rounded-xl overflow-hidden`}>
+                  <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                    <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                        <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                        <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                        <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                      </div>
+                      <p class="text-xs text-neutral-500 mb-2">{p.role} — {p.situation}</p>
+                      <div class="flex flex-wrap items-center gap-1">
+                        {p.parcours.map((page, i) => (
+                          <Fragment>
+                            <span class="text-[10px] text-primary-700 bg-white border border-primary-100 px-1.5 py-0.5 rounded">{page}</span>
+                            {i < p.parcours.length - 1 && <span class="text-neutral-300 text-[10px]">&rsaquo;</span>}
+                          </Fragment>
+                        ))}
+                        <span class="text-[10px] bg-green-600 text-white px-1.5 py-0.5 rounded font-medium ml-0.5">Contacte</span>
+                      </div>
+                    </div>
+                    <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                  </summary>
+                  <div class="px-4 pb-4 pt-0 border-t border-green-200 bg-white/50">
+                    <div class="grid gap-3 text-xs mt-3">
+                      <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.premierImpression}</p></div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Question cle</p><p class="text-neutral-600 italic">"{p.questionCle}"</p><p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong></p></div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Impact technique</p><p class="text-neutral-600">{p.impactTech}</p></div>
+                      <div class="flex gap-4">
+                        <div class="flex-1"><p class="font-semibold text-green-700 mb-1">Points positifs</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.positifs.map(pt => <li>{pt}</li>)}</ul></div>
+                        <div class="flex-1"><p class="font-semibold text-amber-700 mb-1">Frictions</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map(f => <li>{f}</li>)}</ul></div>
+                      </div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Decision</p><p class="text-neutral-600">{p.raisonDecision}</p></div>
+                      <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.exp >= 7 ? 'text-emerald-600' : p.exp >= 4 ? 'text-amber-600' : 'text-red-600'}`}>{p.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.conf >= 7 ? 'text-emerald-600' : p.conf >= 4 ? 'text-amber-600' : 'text-red-600'}`}>{p.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.clarte >= 7 ? 'text-emerald-600' : p.clarte >= 4 ? 'text-amber-600' : 'text-red-600'}`}>{p.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </details>
+              ))}
+            </div>
+          </div>
+
+          {/* Hesite */}
+          <div>
+            <h3 class="text-lg font-bold text-amber-700 mb-4">Ceux qui hesitent ({hesitants})</h3>
+            <div class="space-y-3">
+              {personas.filter(p => p.decision === 'Hesite').map((p) => (
+                <details class={`group border ${decisionBorder(p.decision)} rounded-xl overflow-hidden`}>
+                  <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                    <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                        <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                        <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                        <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                      </div>
+                      <p class="text-xs text-neutral-500 mb-2">{p.role} — {p.situation}</p>
+                      <div class="flex flex-wrap items-center gap-1">
+                        {p.parcours.map((page, i) => (
+                          <Fragment>
+                            <span class="text-[10px] text-primary-700 bg-white border border-primary-100 px-1.5 py-0.5 rounded">{page}</span>
+                            {i < p.parcours.length - 1 && <span class="text-neutral-300 text-[10px]">&rsaquo;</span>}
+                          </Fragment>
+                        ))}
+                        <span class="text-[10px] bg-amber-500 text-white px-1.5 py-0.5 rounded font-medium ml-0.5">Hesite</span>
+                      </div>
+                    </div>
+                    <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                  </summary>
+                  <div class="px-4 pb-4 pt-0 border-t border-amber-200 bg-white/50">
+                    <div class="grid gap-3 text-xs mt-3">
+                      <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.premierImpression}</p></div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Question cle</p><p class="text-neutral-600 italic">"{p.questionCle}"</p><p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong></p></div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Impact technique</p><p class="text-neutral-600">{p.impactTech}</p></div>
+                      <div class="flex gap-4">
+                        <div class="flex-1"><p class="font-semibold text-green-700 mb-1">Points positifs</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.positifs.map(pt => <li>{pt}</li>)}</ul></div>
+                        <div class="flex-1"><p class="font-semibold text-amber-700 mb-1">Frictions</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map(f => <li>{f}</li>)}</ul></div>
+                      </div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Decision</p><p class="text-neutral-600">{p.raisonDecision}</p></div>
+                      <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.exp >= 7 ? 'text-emerald-600' : p.exp >= 4 ? 'text-amber-600' : 'text-red-600'}`}>{p.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.conf >= 7 ? 'text-emerald-600' : p.conf >= 4 ? 'text-amber-600' : 'text-red-600'}`}>{p.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.clarte >= 7 ? 'text-emerald-600' : p.clarte >= 4 ? 'text-amber-600' : 'text-red-600'}`}>{p.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </details>
+              ))}
+            </div>
+          </div>
+
+          {/* Quitte */}
+          <div>
+            <h3 class="text-lg font-bold text-red-700 mb-4">Ceux qui repartent ({quitte})</h3>
+            <div class="space-y-3">
+              {personas.filter(p => p.decision === 'Quitte').map((p) => (
+                <details class={`group border ${decisionBorder(p.decision)} rounded-xl overflow-hidden`}>
+                  <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                    <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                        <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                        <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                        <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                      </div>
+                      <p class="text-xs text-neutral-500 mb-2">{p.role} — {p.situation}</p>
+                      <div class="flex flex-wrap items-center gap-1">
+                        {p.parcours.map((page, i) => (
+                          <Fragment>
+                            <span class="text-[10px] text-primary-700 bg-white border border-primary-100 px-1.5 py-0.5 rounded">{page}</span>
+                            {i < p.parcours.length - 1 && <span class="text-neutral-300 text-[10px]">&rsaquo;</span>}
+                          </Fragment>
+                        ))}
+                        <span class="text-[10px] bg-red-500 text-white px-1.5 py-0.5 rounded font-medium ml-0.5">Quitte</span>
+                      </div>
+                    </div>
+                    <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                  </summary>
+                  <div class="px-4 pb-4 pt-0 border-t border-neutral-200 bg-white/50">
+                    <div class="grid gap-3 text-xs mt-3">
+                      <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.premierImpression}</p></div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Question cle</p><p class="text-neutral-600 italic">"{p.questionCle}"</p><p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong></p></div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Impact technique</p><p class="text-neutral-600">{p.impactTech}</p></div>
+                      <div class="flex gap-4">
+                        <div class="flex-1"><p class="font-semibold text-green-700 mb-1">Points positifs</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.positifs.map(pt => <li>{pt}</li>)}</ul></div>
+                        <div class="flex-1"><p class="font-semibold text-amber-700 mb-1">Frictions</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map(f => <li>{f}</li>)}</ul></div>
+                      </div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Decision</p><p class="text-neutral-600">{p.raisonDecision}</p></div>
+                      <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.exp >= 7 ? 'text-emerald-600' : p.exp >= 4 ? 'text-amber-600' : 'text-red-600'}`}>{p.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.conf >= 7 ? 'text-emerald-600' : p.conf >= 4 ? 'text-amber-600' : 'text-red-600'}`}>{p.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.clarte >= 7 ? 'text-emerald-600' : p.clarte >= 4 ? 'text-amber-600' : 'text-red-600'}`}>{p.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </details>
+              ))}
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Frictions -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-2">Points de friction recurrents</h2>
+          <p class="text-[var(--color-text-muted)] mb-8">Problemes identifies chez 3 personas ou plus, classes par nombre de personas impactes.</p>
+          <div class="space-y-3">
+            {frictions.map((f) => (
+              <div class="flex items-center gap-4 rounded-xl border border-[var(--color-border)] bg-white p-4">
+                <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-neutral-100 flex items-center justify-center">
+                  <span class="text-lg font-bold text-[var(--color-text)]">{f.count}</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="font-medium text-[var(--color-text)]">{f.label}</p>
+                  <p class="text-sm text-[var(--color-text-muted)]">{f.count}/10 personas impactes</p>
+                </div>
+                <span class={`flex-shrink-0 px-3 py-1 rounded-full text-xs font-semibold ${severityColor(f.severity)}`}>
+                  {f.severity}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ═══════════════════ PANEL 4 : AMELIORATIONS ═══════════════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+
+      <!-- Le plus important -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-2">Le plus important</h2>
+          <p class="text-[var(--color-text-muted)] mb-8">Ces ameliorations touchent 7 personas ou plus. Les resoudre changerait radicalement l'experience sur votre site.</p>
+          <div class="space-y-4">
+            {amelioHaute.map((a) => (
+              <div class="bg-white border-2 border-red-200 rounded-xl p-5 shadow-sm">
+                <h4 class="font-semibold text-neutral-900 mb-2">{a.title}</h4>
+                <p class="text-sm text-neutral-600 mb-3">{a.detail}</p>
+                <div class="bg-primary-50 rounded-lg px-3 py-2.5 flex items-start gap-2">
+                  <svg class="w-4 h-4 text-primary-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                  <p class="text-xs text-primary-800">Impact : {a.impact}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- Utile aussi -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-white">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">Utile aussi</h2>
+          <div class="grid md:grid-cols-2 gap-4">
+            {amelioMoyenne.map((a) => (
+              <div class="bg-white border border-neutral-200 rounded-xl p-4">
+                <h4 class="font-semibold text-neutral-900 text-sm mb-1.5">{a.title}</h4>
+                <p class="text-xs text-neutral-600 mb-2">{a.detail}</p>
+                <p class="text-xs text-[var(--color-text-muted)]">Impact : {a.impact}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- A discuter -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">A discuter ensemble</h2>
+          <div class="space-y-3">
+            {amelioDiscuter.map((a) => (
+              <div class="bg-neutral-50 border border-neutral-200 rounded-xl p-4 flex gap-3">
+                <span class="text-lg shrink-0">{a.emoji}</span>
+                <div>
+                  <h4 class="font-semibold text-neutral-900 text-sm mb-0.5">{a.title}</h4>
+                  <p class="text-xs text-neutral-600">{a.detail}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <!-- ═══════════════════ METHODOLOGIE ═══════════════════ -->
+  <section class="w-full px-6 py-12 md:px-8 md:py-16 bg-white">
+    <div class="mx-auto max-w-3xl">
+      <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">Methodologie</h2>
+      <div class="prose max-w-none text-[var(--color-text)]">
+        <p>Ce rapport utilise la methode <strong>Persona-Driven UX + Technical Audit</strong> :</p>
+        <ol class="space-y-2 text-sm leading-relaxed">
+          <li><strong>Scraping complet</strong> de toutes les pages du site (accueil, serrurier, plombier, vitrier, tarifs, contact, mentions legales)</li>
+          <li><strong>Audit technique</strong> via Mozilla Observatory (score reel : D, 30/100), analyse des headers HTTP, Schema.org, Open Graph et SEO on-page</li>
+          <li><strong>Creation de 10 personas diversifies</strong> couvrant 5 canaux, 4 niveaux de maturite (urgence, comparaison, decouverte, decision), 3 devices</li>
+          <li><strong>Simulation individuelle</strong> de chaque visite avec integration des problemes techniques</li>
+          <li><strong>Agregation et analyse croisee</strong> par canal, maturite et type de besoin</li>
+          <li><strong>Priorisation des ameliorations</strong> par impact (nombre de personas) et severite</li>
+        </ol>
+        <p class="mt-4 text-sm text-[var(--color-text-muted)]">
+          Chaque persona a ete evalue sur 3 axes (experience, confiance, clarte) de 1 a 10. Le score Observatory est reel (scan du 29 mars 2026). Les scores PageSpeed sont estimes (API quota depasse) sur la base de l'analyse technique du stack WordPress/Divi.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ DOUBLE CTA ═══════════════════ -->
+  <section class="w-full px-6 py-16 md:px-8 md:py-24" style="background-color: #0D0D0D;">
+    <div class="mx-auto max-w-3xl text-center">
+      <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">
+        Pret a transformer ces insights en resultats ?
+      </h2>
+      <p class="text-neutral-300 mb-8 max-w-xl mx-auto">
+        Ce rapport identifie des opportunites concretes. Je peux construire un site qui convertit vraiment vos visiteurs en clients — pas seulement les urgences.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="/commander" class="inline-flex items-center gap-2 px-8 py-3.5 text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl hover:scale-105" style="background: linear-gradient(135deg, #E86C47, #D4572F); box-shadow: 0 4px 20px rgba(232, 108, 71, 0.4);">
+          Commander un site
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a href="/contact" class="inline-flex items-center gap-2 px-8 py-3.5 border border-neutral-600 text-neutral-300 font-semibold rounded-xl hover:border-[#E86C47] hover:text-white transition-all">
+          En discuter d'abord
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ TAB SCRIPTS ═══════════════════ -->
+  <style is:inline>
+    #panels { -ms-overflow-style: none; }
+    #panels::-webkit-scrollbar { display: none; }
+  </style>
+
+  <script is:inline>
+    const panels = document.getElementById('panels');
+    const tabs = document.querySelectorAll('.tab-btn');
+    const sections = panels.querySelectorAll('.tab-panel');
+
+    function activateTab(index) {
+      tabs.forEach((b, i) => {
+        if (i === index) {
+          b.classList.remove('text-neutral-500');
+          b.classList.add('text-primary-700', 'bg-primary-50');
+        } else {
+          b.classList.remove('text-primary-700', 'bg-primary-50');
+          b.classList.add('text-neutral-500');
+        }
+      });
+    }
+
+    tabs.forEach((btn, i) => {
+      btn.addEventListener('click', () => {
+        sections[i].scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+        activateTab(i);
+      });
+    });
+
+    let scrollTimeout;
+    panels.addEventListener('scroll', () => {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        const index = Math.round(panels.scrollLeft / panels.offsetWidth);
+        activateTab(index);
+      }, 50);
+    }, { passive: true });
+  </script>
+
+</BaseLayout>

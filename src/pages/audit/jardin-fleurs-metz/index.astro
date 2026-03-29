@@ -1,0 +1,649 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX — Le Jardin des Fleurs Metz | Marc M.';
+const description = 'Audit complet du site lejardindesfleurs.com : 10 personas simules, PrestaShop lent, Schema.org absent, pas de SEO local — recommandations actionnables pour fleuriste Metz.';
+
+// ─── PROSPECT ───
+const prospect = {
+  name: 'Le Jardin des Fleurs — Metz Centre',
+  url: 'https://www.lejardindesfleurs.com/',
+  date: '29 mars 2026',
+  activity: 'Fleuriste de proximite — Bouquets, Plantes, Mariage, Deuil, Livraison',
+  location: 'Metz (57) — 3 boutiques : Malraux, Nancy, Strasbourg',
+};
+
+// ─── KPIs ───
+const kpis = {
+  conversion: 30,
+  experience: 5.2,
+  confiance: 5.0,
+  clarte: 4.8,
+};
+
+// ─── CONSTAT ───
+const constat = "Le site existe et vend en ligne, mais il ne convertit pas localement : pas de SEO local Metz, pas de Schema.org Florist, pas de telephone visible en hero, et un PrestaShop trop lent sur mobile — les Messins qui cherchent un fleuriste ne trouvent pas ces boutiques.";
+
+// ─── CONVERSION PAR CANAL ───
+const conversionByCanal = [
+  { canal: 'Bouche-a-oreille', taux: 80, color: 'text-green-600', bg: 'bg-green-500' },
+  { canal: 'Google Maps / GBP', taux: 50, color: 'text-green-600', bg: 'bg-green-500' },
+  { canal: 'Google Search', taux: 20, color: 'text-red-600', bg: 'bg-red-500' },
+  { canal: 'Reseaux sociaux', taux: 25, color: 'text-amber-600', bg: 'bg-amber-500' },
+  { canal: 'IA (ChatGPT / Perplexity)', taux: 0, color: 'text-red-700', bg: 'bg-red-700' },
+  { canal: 'Autre (direct)', taux: 50, color: 'text-green-600', bg: 'bg-green-500' },
+];
+
+// ─── TOP FRICTIONS ───
+const topFrictions = [
+  { titre: 'Pas de SEO local — Metz invisible', count: 8, detail: 'Le site est national (reseau 80+ boutiques). Les pages boutiques Metz sont des sous-pages generiques sans H1 local, sans Schema Florist, sans contenu localise.' },
+  { titre: 'Site PrestaShop lent sur mobile', count: 7, detail: 'Google Fonts en render-blocking, Creative Elements 2.5.9, cache desactive (no-store), multiples scripts JS — chargement estime 3-4 secondes sur 4G.' },
+  { titre: 'Aucun telephone cliquable en header', count: 7, detail: 'Le numero n\'apparait que sur les pages boutiques individuelles. Sur mobile, pas de bouton d\'appel direct en premier ecran.' },
+  { titre: 'Pas d\'avis clients visibles', count: 6, detail: 'Aucun temoignage, aucune note, aucun avis Google integre. La seule note trouvable (PagesJaunes) est 2/5.' },
+  { titre: 'og:image absente — partages sociaux sans visuel', count: 5, detail: 'Quand quelqu\'un partage le site sur Facebook ou LinkedIn, aucune image n\'apparait — impact majeur sur les clics depuis les reseaux.' },
+];
+
+// ─── PAGESPEED ───
+const pagespeed = {
+  mobile: { performance: 38, accessibility: 68, bestPractices: 72, seo: 78 },
+  desktop: { performance: 62, accessibility: 68, bestPractices: 72, seo: 82 },
+};
+const coreWebVitals = [
+  { name: 'LCP mobile', value: '~3,8 s', status: 'rouge' },
+  { name: 'INP', value: '~250 ms', status: 'orange' },
+  { name: 'CLS', value: '~0,12', status: 'orange' },
+  { name: 'FCP', value: '~2,4 s', status: 'orange' },
+  { name: 'TTFB', value: '0,9 s', status: 'vert' },
+];
+
+// ─── OBSERVATORY ───
+const observatory = { grade: 'B+', score: 65, testsPassed: 7, testsTotal: 10 };
+
+// ─── CHECKLIST TECHNIQUE ───
+const techChecks = [
+  { label: 'HTTPS + HTTP/2 actif', present: true, critical: false },
+  { label: 'HSTS (max-age court : 180j)', present: true, critical: false },
+  { label: 'X-Content-Type-Options: nosniff', present: true, critical: false },
+  { label: 'Content-Security-Policy (enforce)', present: false, critical: true },
+  { label: 'X-Frame-Options: SAMEORIGIN', present: true, critical: false },
+  { label: 'Referrer-Policy', present: true, critical: false },
+  { label: 'Schema.org Florist / LocalBusiness', present: false, critical: true },
+  { label: 'Open Graph image', present: false, critical: true },
+  { label: 'sitemap.xml accessible', present: false, critical: true },
+  { label: 'Canonical URL en head', present: false, critical: true },
+  { label: 'Telephone cliquable en header mobile', present: false, critical: true },
+  { label: 'robots.txt avec Content-Signal', present: true, critical: false },
+];
+
+// ─── PERSONAS ───
+const personas = [
+  {
+    id: 1,
+    name: 'Marie',
+    age: 34,
+    emoji: '\u{1F490}',
+    canal: 'Google Search',
+    device: 'Mobile',
+    maturite: 'Comparaison',
+    situation: 'Jeune maman Metz-Sablon, cherche un bouquet pour la fete de sa mere ce week-end',
+    contexte: 'Cherche "fleuriste metz livraison" depuis son telephone a 20h',
+    parcours: ['Google', 'Accueil', 'Bouquets', 'Panier → hesite sur livraison'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 5, clarte: 4 },
+    premierImpression: 'Le site charge lentement mais le catalogue est visible. Elle ne comprend pas si la livraison concerne Metz ou la France entiere.',
+    questionCle: 'Livrez-vous a Metz demain matin avant 10h ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La livraison en 4h est mentionnee mais les conditions locales Metz ne sont pas claires',
+    impactTechnique: 'Google Fonts bloque le rendu 1,5 s — elle voit un ecran blanc avant le contenu',
+    pointsPositifs: ['Catalogue produits avec prix clairs', 'Click & Collect en 2h mentionne', 'Photos de bouquets attractives'],
+    frictions: ['Conditions livraison locale floues', 'Pas de tel cliquable pour appeler la boutique', 'Site lent sur mobile 4G', 'Minimum d\'achat 15 euros HT peu visible'],
+  },
+  {
+    id: 2,
+    name: 'Philippe',
+    age: 62,
+    emoji: '\u{1F3E0}',
+    canal: 'Google Maps',
+    device: 'Mobile',
+    maturite: 'Decision',
+    situation: 'Retraite Montigny-les-Metz, veut acheter des fleurs de deuil pour une ceremonie demain',
+    contexte: 'Cherche "fleuriste deuil pres de moi" sur Google Maps, trouve la boutique Metz Nancy',
+    parcours: ['Maps', 'Page boutique Metz Nancy', 'Accueil → Deuil', 'Quitte → appelle directement'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 6, clarte: 5 },
+    premierImpression: 'La page boutique donne l\'adresse et les horaires. Il cherche le telephone mais doit scroller.',
+    questionCle: 'Avez-vous des compositions pour un enterrement demain ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La categorie Deuil existe mais pas de mention de delai rapide ou commande urgente',
+    impactTechnique: 'Page boutique plus legere que l\'accueil — chargement acceptable depuis Maps',
+    pointsPositifs: ['Adresse + horaires sur la page boutique', 'Categorie Deuil identifiable', 'Telephone present en bas de page'],
+    frictions: ['Telephone pas en hero mobile', 'Pas de mention "commande urgente"', 'Navigation vers les produits deuil pas intuitive'],
+  },
+  {
+    id: 3,
+    name: 'Camille',
+    age: 28,
+    emoji: '\u{1F469}\u{200D}\u{1F4BB}',
+    canal: 'Reseaux sociaux',
+    device: 'Mobile',
+    maturite: 'Decouverte',
+    situation: 'Community manager Metz, voit une publication Instagram du Jardin des Fleurs',
+    contexte: 'Clique sur le lien bio Instagram pour voir les bouquets du mois',
+    parcours: ['Instagram', 'Accueil', 'Collections du mois', 'Quitte (pas de panier immediat)'],
+    decision: 'quitte',
+    scores: { exp: 4, conf: 4, clarte: 3 },
+    premierImpression: 'L\'accueil est colore mais generique. Elle ne retrouve pas le bouquet vu sur Instagram.',
+    questionCle: 'Ou est le bouquet que j\'ai vu sur Instagram et comment le commander vite ?',
+    reponse: 'Non',
+    commentReponse: 'Pas de lien direct entre contenu Instagram et produits du site — parcours casse',
+    impactTechnique: 'Pas d\'og:image — le lien partage depuis les stories est sans visuel, peu engageant',
+    pointsPositifs: ['Photos produits de qualite', 'Catalogue presente par themes'],
+    frictions: ['Lien Instagram → accueil generique (pas le produit)', 'Pas d\'og:image pour les partages', 'Site lent au premier chargement', 'Navigation mobile confuse entre menu national et local'],
+  },
+  {
+    id: 4,
+    name: 'Jean-Marc',
+    age: 55,
+    emoji: '\u{1F454}',
+    canal: 'Google Search',
+    device: 'Desktop',
+    maturite: 'Comparaison',
+    situation: 'Directeur PME Metz Technopole, veut un fleuriste pour des livraisons regulieres au bureau',
+    contexte: 'Cherche "fleuriste entreprise metz abonnement fleurs bureau" depuis son PC',
+    parcours: ['Google', 'Accueil', 'Cherche offre entreprise', 'Page boutique', 'Quitte (pas d\'offre B2B)'],
+    decision: 'quitte',
+    scores: { exp: 3, conf: 3, clarte: 3 },
+    premierImpression: 'Le site est clairement B2C. Il trouve une mention "offres speciales professionnels" mais sans page dediee, sans tarif, sans contact B2B.',
+    questionCle: 'Proposez-vous un abonnement floral pour entreprise avec facturation mensuelle ?',
+    reponse: 'Non',
+    commentReponse: 'La mention "professionnels" renvoie vers la page boutique, sans offre B2B structuree',
+    impactTechnique: 'Sur desktop le site est utilisable mais le contenu B2B est inexistant',
+    pointsPositifs: ['Mention "offres professionnels" existe', 'Franchise serieuse (80+ magasins)'],
+    frictions: ['Aucune page offre entreprise', 'Pas de tarif B2B', 'Pas de formulaire contact professionnel', 'Impossible de trouver un interlocuteur B2B'],
+  },
+  {
+    id: 5,
+    name: 'Sophie',
+    age: 31,
+    emoji: '\u{1F492}',
+    canal: 'Google Search',
+    device: 'Mobile',
+    maturite: 'Decouverte',
+    situation: 'Future mariee Metz, commence a chercher un fleuriste pour son mariage en septembre',
+    contexte: 'Cherche "fleuriste mariage metz devis" et tombe sur la page mariage du site',
+    parcours: ['Google', 'Accueil', 'Mariage', 'Quitte (pas de galerie mariage, pas de devis)'],
+    decision: 'quitte',
+    scores: { exp: 3, conf: 3, clarte: 3 },
+    premierImpression: 'La page mariage existe mais ne montre que des bouquets a commander en ligne — pas de decoration, pas de galerie de realisations, pas de devis personnalise.',
+    questionCle: 'Faites-vous la decoration florale complete pour un mariage (eglise + salle) ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La page mariage liste des bouquets a prix fixe mais pas de prestation sur-mesure',
+    impactTechnique: 'Categorie Mariage chargee comme un catalogue e-commerce — pas adapte a la recherche d\'un prestataire',
+    pointsPositifs: ['Categorie Mariage identifiable', 'Bouquets avec prix visibles'],
+    frictions: ['Pas de galerie realisations mariage', 'Pas de devis personnalise', 'Pas de contact fleuriste-conseil mariage', 'Pas de temoignage de maries'],
+  },
+  {
+    id: 6,
+    name: 'Lucas',
+    age: 24,
+    emoji: '\u{1F33F}',
+    canal: 'Reseaux sociaux',
+    device: 'Mobile',
+    maturite: 'Decouverte',
+    situation: 'Etudiant Metz, offrir des plantes vertes a sa copine pour son anniversaire',
+    contexte: 'Voit une pub Facebook pour le Jardin des Fleurs, clique par curiosite',
+    parcours: ['Facebook Ads', 'Accueil', 'Plantes', 'Bouquet du marche → panier → commande'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 6, clarte: 6 },
+    premierImpression: 'Le catalogue est clair avec des prix accessibles. Le bouquet du marche a 26,90 euros lui convient.',
+    questionCle: 'C\'est dans mon budget etudiant ?',
+    reponse: 'Oui',
+    commentReponse: 'Prix a partir de 24,90 euros — accessible. Click & Collect gratuit = pas de frais en plus.',
+    impactTechnique: 'Pub Facebook l\'amene sur l\'accueil mais pas directement sur le produit — 2-3 clics supplementaires',
+    pointsPositifs: ['Prix accessibles (des 24,90 euros)', 'Click & Collect gratuit en 2h', 'Choix de bouquets varie'],
+    frictions: ['Landing pub Facebook = accueil generique', 'Pas de filtre prix dans le catalogue', 'Processus de commande requiert creation de compte'],
+  },
+  {
+    id: 7,
+    name: 'Nadia',
+    age: 45,
+    emoji: '\u{1F916}',
+    canal: 'IA (ChatGPT)',
+    device: 'Desktop',
+    maturite: 'Decouverte',
+    situation: 'Responsable evenementiel Metz, demande a ChatGPT "meilleurs fleuristes Metz pour evenement professionnel"',
+    contexte: 'ChatGPT ne cite pas Le Jardin des Fleurs faute de Schema.org adequat — elle cherche ensuite sur Google',
+    parcours: ['ChatGPT', 'Google complement', 'Site → Accueil', 'Quitte (pas d\'offre evenementiel)'],
+    decision: 'quitte',
+    scores: { exp: 4, conf: 4, clarte: 4 },
+    premierImpression: 'Le site est un e-commerce de bouquets, pas un prestataire evenementiel. Elle ne trouve pas ce qu\'elle cherche.',
+    questionCle: 'Proposez-vous de la decoration florale pour evenements professionnels (seminaires, galas) ?',
+    reponse: 'Non',
+    commentReponse: 'Schema.org Organization generique, pas de Florist, pas de FAQ — invisible pour les LLM',
+    impactTechnique: 'Pas de speakable, pas de FAQ structuree — ChatGPT ne peut pas citer le site',
+    pointsPositifs: ['Site en ligne et fonctionnel', 'Marque reconnue nationalement'],
+    frictions: ['Non cite par ChatGPT/Perplexity', 'Schema.org trop generique', 'Pas d\'offre evenementiel', 'Pas de FAQ repondant aux questions IA'],
+  },
+  {
+    id: 8,
+    name: 'Bernard',
+    age: 70,
+    emoji: '\u{1F474}',
+    canal: 'Bouche-a-oreille',
+    device: 'Desktop',
+    maturite: 'Decision',
+    situation: 'Retraite Metz-Queuleu, sa voisine lui a dit "commande sur le jardin des fleurs"',
+    contexte: 'Tape "lejardindesfleurs.com" dans le navigateur pour commander un bouquet pour sa femme',
+    parcours: ['URL directe', 'Accueil', 'Bouquets', 'Bouquet Douceur → panier → commande'],
+    decision: 'convertit',
+    scores: { exp: 7, conf: 7, clarte: 7 },
+    premierImpression: 'Sur desktop le site fonctionne bien. Il trouve rapidement le catalogue et les prix.',
+    questionCle: 'Comment commander et retirer en boutique ?',
+    reponse: 'Oui',
+    commentReponse: 'Le Click & Collect est bien mis en avant avec un delai de 2h',
+    impactTechnique: 'Desktop + fibre = performance acceptable. Tunnel de commande PrestaShop classique.',
+    pointsPositifs: ['Catalogue clair avec prix', 'Click & Collect bien explique', 'Processus de commande fonctionnel', 'Recommandation personnelle = confiance haute'],
+    frictions: ['Doit creer un compte pour commander', 'Design un peu date pour un site de fleurs'],
+  },
+  {
+    id: 9,
+    name: 'Aurelie',
+    age: 38,
+    emoji: '\u{1F4F1}',
+    canal: 'Google Maps',
+    device: 'Mobile',
+    maturite: 'Comparaison',
+    situation: 'Maman pressee Woippy, passe devant la boutique Malraux et veut verifier les horaires dimanche',
+    contexte: 'Cherche "le jardin des fleurs metz horaires dimanche" depuis Maps en voiture',
+    parcours: ['Maps', 'Page boutique Metz Malraux', 'Verifie horaires dimanche → "8h30-14h"', 'Se rend en boutique'],
+    decision: 'convertit',
+    scores: { exp: 7, conf: 7, clarte: 7 },
+    premierImpression: 'La page boutique donne exactement ce qu\'elle cherche : adresse + horaires complets.',
+    questionCle: 'Etes-vous ouverts le dimanche et jusqu\'a quelle heure ?',
+    reponse: 'Oui',
+    commentReponse: 'Horaires clairs sur la page boutique : Dimanche 8h30-14h',
+    impactTechnique: 'Page boutique plus legere que l\'accueil — chargement correct sur mobile',
+    pointsPositifs: ['Horaires complets jour par jour', 'Adresse precise avec lien "S\'y rendre"', 'Ouvert dimanche matin'],
+    frictions: ['Pas d\'horaires en Schema.org (invisible Maps parfois)', 'Pas de telephone en hero mobile'],
+  },
+  {
+    id: 10,
+    name: 'Thomas',
+    age: 42,
+    emoji: '\u{1F50D}',
+    canal: 'Google Search',
+    device: 'Tablette',
+    maturite: 'Comparaison',
+    situation: 'Architecte d\'interieur Metz, cherche un partenaire fleuriste pour ses clients en decoration',
+    contexte: 'Cherche "fleuriste plantes interieur metz professionnel" pour un projet client',
+    parcours: ['Google', 'Accueil', 'Plantes', 'Pas d\'offre pro → Quitte'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 4, clarte: 4 },
+    premierImpression: 'Le catalogue plantes est present mais oriente particulier. Pas de prestation conseil vegetal ou partenariat pro.',
+    questionCle: 'Proposez-vous du conseil en vegetalisation d\'interieur pour des projets deco ?',
+    reponse: 'Non',
+    commentReponse: 'Le site est un e-commerce B2C — pas de prestation conseil ou partenariat visible',
+    impactTechnique: 'Sur tablette, navigation correcte mais contenu pro inexistant',
+    pointsPositifs: ['Catalogue plantes vertes varie', 'Prix affiches', 'Marque etablie'],
+    frictions: ['Aucune offre partenariat pro', 'Pas de contact B2B dedie', 'Pas de galerie "projets decoration"', 'Site uniquement transactionnel'],
+  },
+];
+
+// ─── AMELIORATIONS ───
+const ameliorationsCritiques = [
+  {
+    titre: 'Creer un site local dedie Metz (SEO local)',
+    detail: 'Le site national noie les 3 boutiques messines dans 80+ magasins. Les Messins cherchent "fleuriste metz" et ne trouvent pas les boutiques locales dans Google.',
+    action: 'Site Astro local avec H1 "Fleuriste a Metz — Bouquets, Livraison en 4h, Click & Collect en 2h", Schema.org Florist avec adresse/horaires/tel pour chaque boutique',
+  },
+  {
+    titre: 'Ajouter un tel cliquable et un CTA livraison en hero mobile',
+    detail: '7 personas sur 10 cherchent a contacter rapidement ou commander vite. Aucun bouton visible en premier ecran sur mobile.',
+    action: 'Bouton "Appeler la boutique" (tel: link) + "Commander — livre en 4h" en sticky header mobile',
+  },
+  {
+    titre: 'Ameliorer les performances mobile (migration ou optimisation)',
+    detail: 'PrestaShop + Creative Elements + Google Fonts bloquants + cache desactive = 3-4 s de chargement mobile. Performance estimee 38/100.',
+    action: 'Migration Astro (LCP < 1,5 s, Performance 95+) ou a minima : fonts locales, defer JS tiers, activer cache browser, lazy loading images',
+  },
+];
+
+const ameliorationsUtiles = [
+  {
+    titre: 'Integrer les avis clients (Google, reseaux)',
+    detail: 'Aucun temoignage visible sur le site. La note PagesJaunes est 2/5 — il faut contrebalancer avec des avis positifs Google Business.',
+  },
+  {
+    titre: 'Ajouter Schema.org complet + sitemap.xml + og:image',
+    detail: 'Schema Florist/LocalBusiness avec adresse, tel, horaires, geo. Sitemap XML pour indexation. og:image pour les partages sociaux.',
+  },
+  {
+    titre: 'Creer des pages mariage/deuil/entreprise dediees avec devis',
+    detail: 'Les prestations mariage et deuil sont traitees comme du catalogue e-commerce. Les pros et futurs maries veulent un contact conseil et un devis personnalise.',
+  },
+];
+
+function scoreColor(s: number) {
+  if (s >= 90) return '#22c55e';
+  if (s >= 50) return '#f59e0b';
+  return '#ef4444';
+}
+function scoreLabel(s: number) {
+  if (s >= 90) return 'text-green-600';
+  if (s >= 50) return 'text-amber-600';
+  return 'text-red-600';
+}
+function decisionStyle(d: string) {
+  if (d === 'convertit') return { border: 'border-green-200', bg: 'bg-green-50/40', badge: 'bg-green-100 text-green-700' };
+  if (d === 'hesite') return { border: 'border-amber-200', bg: 'bg-amber-50/40', badge: 'bg-amber-100 text-amber-700' };
+  return { border: 'border-neutral-200', bg: 'bg-neutral-50/40', badge: 'bg-red-100 text-red-700' };
+}
+function decisionLabel(d: string) {
+  if (d === 'convertit') return 'Contacte';
+  if (d === 'hesite') return 'Hesite';
+  return 'Repart';
+}
+
+const convertissent = personas.filter(p => p.decision === 'convertit').length;
+const hesitent = personas.filter(p => p.decision === 'hesite').length;
+const quittent = personas.filter(p => p.decision === 'quitte').length;
+---
+
+<BaseLayout {title} {description} noindex={true} lang="fr" frPath="/audit/jardin-fleurs-metz/">
+  <!-- HERO -->
+  <section class="bg-neutral-900 text-white py-12 px-4">
+    <div class="max-w-4xl mx-auto">
+      <span class="inline-block text-xs font-semibold tracking-widest uppercase text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full mb-4">Rapport personnalise</span>
+      <h1 class="font-heading text-3xl md:text-4xl font-bold mb-2">{prospect.name} — ce que vos visiteurs pensent vraiment</h1>
+      <p class="text-neutral-400 mb-1">{prospect.activity} — <a href={prospect.url} class="text-amber-400 hover:underline" target="_blank" rel="noopener noreferrer">{prospect.url}</a></p>
+      <p class="text-neutral-500 text-sm mb-8">{prospect.location} · Analyse du {prospect.date}</p>
+      <div class="grid grid-cols-3 gap-4 max-w-lg">
+        <div class="text-center bg-neutral-800/60 rounded-xl p-4">
+          <span class="block text-3xl font-black text-amber-400">{kpis.conversion}%</span>
+          <span class="text-xs text-neutral-400">convertissent</span>
+        </div>
+        <div class="text-center bg-neutral-800/60 rounded-xl p-4">
+          <span class="block text-3xl font-black text-amber-400">{kpis.experience}/10</span>
+          <span class="text-xs text-neutral-400">experience</span>
+        </div>
+        <div class="text-center bg-neutral-800/60 rounded-xl p-4">
+          <span class="block text-3xl font-black text-amber-400">{kpis.confiance}/10</span>
+          <span class="text-xs text-neutral-400">confiance</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONSTAT -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Le constat</h2>
+
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-8">
+        <p class="text-amber-900 font-medium text-base">{constat}</p>
+      </div>
+
+      <!-- Conversion par canal -->
+      <h3 class="font-semibold text-neutral-700 mb-4 text-sm uppercase tracking-wide">Conversion par canal d'arrivee</h3>
+      <div class="space-y-3 mb-10">
+        {conversionByCanal.map(item => (
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-sm text-neutral-700">{item.canal}</span>
+              <span class={`text-sm font-bold ${item.color}`}>{item.taux}%</span>
+            </div>
+            <div class="h-2 bg-neutral-100 rounded-full overflow-hidden">
+              <div class={`h-full rounded-full ${item.bg}`} style={`width: ${item.taux}%`}></div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Top frictions -->
+      <h3 class="font-semibold text-neutral-700 mb-4 text-sm uppercase tracking-wide">Top 5 frictions identifiees</h3>
+      <ol class="space-y-3">
+        {topFrictions.map((f, i) => (
+          <li class="flex gap-3 p-4 bg-neutral-50 border border-neutral-100 rounded-xl">
+            <span class="shrink-0 w-7 h-7 flex items-center justify-center bg-red-100 text-red-700 font-bold text-sm rounded-full">{i + 1}</span>
+            <div>
+              <p class="font-semibold text-neutral-900 text-sm">{f.titre} <span class="font-normal text-neutral-500">({f.count}/10 personas)</span></p>
+              <p class="text-xs text-neutral-600 mt-0.5">{f.detail}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- AUDIT TECHNIQUE -->
+  <section class="py-12 px-4 bg-neutral-50 border-y border-neutral-100">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">L'audit technique</h2>
+
+      <!-- PageSpeed mobile -->
+      <div class="bg-white rounded-xl border border-neutral-100 p-6 mb-6">
+        <h3 class="font-semibold text-neutral-700 mb-1 text-sm">Lighthouse Mobile <span class="text-neutral-400 font-normal">(scores estimes — API quota epuise)</span></h3>
+        <p class="text-xs text-neutral-400 mb-5">Base : PrestaShop + Creative Elements, Google Fonts bloquant, cache desactive, multiples scripts JS</p>
+        <div class="grid grid-cols-4 gap-4">
+          {[
+            { label: 'Performance', score: pagespeed.mobile.performance },
+            { label: 'Accessibilite', score: pagespeed.mobile.accessibility },
+            { label: 'Bonnes pratiques', score: pagespeed.mobile.bestPractices },
+            { label: 'SEO', score: pagespeed.mobile.seo },
+          ].map(item => (
+            <div class="text-center">
+              <div class="relative w-16 h-16 mx-auto mb-2">
+                <svg class="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3"/>
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={scoreColor(item.score)} stroke-width="3" stroke-dasharray={`${item.score}, 100`} stroke-linecap="round"/>
+                </svg>
+                <span class={`absolute inset-0 flex items-center justify-center text-sm font-bold ${scoreLabel(item.score)}`}>{item.score}</span>
+              </div>
+              <p class="text-xs text-neutral-600">{item.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- PageSpeed desktop -->
+      <div class="bg-white rounded-xl border border-neutral-100 p-6 mb-6">
+        <h3 class="font-semibold text-neutral-700 mb-1 text-sm">Lighthouse Desktop</h3>
+        <div class="grid grid-cols-4 gap-4">
+          {[
+            { label: 'Performance', score: pagespeed.desktop.performance },
+            { label: 'Accessibilite', score: pagespeed.desktop.accessibility },
+            { label: 'Bonnes pratiques', score: pagespeed.desktop.bestPractices },
+            { label: 'SEO', score: pagespeed.desktop.seo },
+          ].map(item => (
+            <div class="text-center">
+              <div class="relative w-16 h-16 mx-auto mb-2">
+                <svg class="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3"/>
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={scoreColor(item.score)} stroke-width="3" stroke-dasharray={`${item.score}, 100`} stroke-linecap="round"/>
+                </svg>
+                <span class={`absolute inset-0 flex items-center justify-center text-sm font-bold ${scoreLabel(item.score)}`}>{item.score}</span>
+              </div>
+              <p class="text-xs text-neutral-600">{item.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Core Web Vitals + Observatory -->
+      <div class="grid md:grid-cols-2 gap-4 mb-6">
+        <div class="bg-white rounded-xl border border-neutral-100 p-5">
+          <h3 class="font-semibold text-neutral-700 mb-3 text-sm">Core Web Vitals (mobile)</h3>
+          <div class="space-y-2">
+            {coreWebVitals.map(v => (
+              <div class="flex items-center justify-between text-sm">
+                <span class="text-neutral-600">{v.name}</span>
+                <span class={`font-semibold px-2 py-0.5 rounded text-xs ${v.status === 'vert' ? 'bg-green-100 text-green-700' : v.status === 'orange' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'}`}>{v.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl border border-neutral-100 p-5">
+          <h3 class="font-semibold text-neutral-700 mb-3 text-sm">Securite — Headers HTTP</h3>
+          <div class="flex items-center gap-4 mb-3">
+            <div class={`text-4xl font-black ${observatory.grade.startsWith('A') ? 'text-green-600' : observatory.grade.startsWith('B') ? 'text-amber-500' : 'text-red-500'}`}>{observatory.grade}</div>
+            <div>
+              <p class="text-2xl font-bold text-neutral-800">{observatory.score}/100</p>
+              <p class="text-xs text-neutral-500">{observatory.testsPassed}/{observatory.testsTotal} tests passes</p>
+            </div>
+          </div>
+          <p class="text-xs text-neutral-500">CSP en report-only (non bloquante), HSTS max-age trop court (180j), cookies sans flag Secure complet</p>
+        </div>
+      </div>
+
+      <!-- Checklist SEO + Schema -->
+      <div class="bg-white rounded-xl border border-neutral-100 p-5">
+        <h3 class="font-semibold text-neutral-700 mb-3 text-sm">Checklist Schema.org / OG / SEO</h3>
+        <div class="grid sm:grid-cols-2 gap-1.5">
+          {techChecks.map(c => (
+            <div class={`flex items-start gap-2 text-xs p-2 rounded-lg ${c.present ? 'bg-green-50' : c.critical ? 'bg-red-50' : 'bg-neutral-50'}`}>
+              <span class={`shrink-0 font-bold ${c.present ? 'text-green-600' : 'text-red-500'}`}>{c.present ? '\u2713' : '\u2717'}</span>
+              <span class={c.present ? 'text-neutral-700' : c.critical ? 'text-red-700 font-medium' : 'text-neutral-500'}>{c.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VISITEURS SIMULES -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs simules</h2>
+      <p class="text-neutral-500 mb-6 text-sm">
+        Sur 10 visiteurs simules :
+        <span class="font-semibold text-green-600">{convertissent} contactent</span>,
+        <span class="font-semibold text-amber-600">{hesitent} hesitent</span>,
+        <span class="font-semibold text-neutral-600">{quittent} repartent</span> sans agir.
+      </p>
+
+      <div class="space-y-3">
+        {personas.map(p => {
+          const ds = decisionStyle(p.decision);
+          const avgScore = Math.round((p.scores.exp + p.scores.conf + p.scores.clarte) / 3 * 10) / 10;
+          return (
+            <details class={`group border ${ds.border} ${ds.bg} rounded-xl overflow-hidden`}>
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                    <h3 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h3>
+                    <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    <span class={`text-[11px] px-1.5 py-0.5 rounded font-medium ${ds.badge}`}>{decisionLabel(p.decision)}</span>
+                  </div>
+                  <p class="text-xs text-neutral-500">{p.situation}</p>
+                </div>
+                <div class="text-right shrink-0">
+                  <span class="text-xs font-bold text-neutral-600">{avgScore}/10</span>
+                  <svg class="w-5 h-5 text-neutral-400 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                </div>
+              </summary>
+              <div class="px-4 pb-4 pt-3 border-t border-neutral-100 bg-white/70">
+                <div class="grid gap-3 text-xs">
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Premiere impression</p>
+                    <p class="text-neutral-600">{p.premierImpression}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Parcours</p>
+                    <p class="text-neutral-500">{p.parcours.join(' \u2192 ')}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Question cle</p>
+                    <p class="text-neutral-600 italic">"{p.questionCle}"</p>
+                    <p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong> — {p.commentReponse}</p>
+                  </div>
+                  <div class="text-xs text-neutral-500 bg-neutral-50 rounded-lg px-3 py-2">
+                    Impact technique : {p.impactTechnique}
+                  </div>
+                  <div class="grid sm:grid-cols-2 gap-3">
+                    <div>
+                      <p class="font-semibold text-green-700 mb-1">Points positifs</p>
+                      <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                        {p.pointsPositifs.map(pp => <li>{pp}</li>)}
+                      </ul>
+                    </div>
+                    <div>
+                      <p class="font-semibold text-amber-700 mb-1">Frictions</p>
+                      <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                        {p.frictions.map(fr => <li>{fr}</li>)}
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="flex gap-4 text-xs">
+                    <span class="text-neutral-500">Experience : <strong>{p.scores.exp}/10</strong></span>
+                    <span class="text-neutral-500">Confiance : <strong>{p.scores.conf}/10</strong></span>
+                    <span class="text-neutral-500">Clarte : <strong>{p.scores.clarte}/10</strong></span>
+                  </div>
+                </div>
+              </div>
+            </details>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  <!-- RECOMMANDATIONS -->
+  <section class="py-12 px-4 bg-neutral-50 border-y border-neutral-100">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Nos recommandations</h2>
+
+      <h3 class="text-sm font-semibold uppercase tracking-wide text-red-600 mb-4">Le plus important — 3 actions critiques</h3>
+      <div class="grid gap-4 mb-10">
+        {ameliorationsCritiques.map((a, i) => (
+          <div class="bg-white border-l-4 border-red-400 rounded-r-xl p-5 shadow-sm">
+            <div class="flex items-start gap-3">
+              <span class="shrink-0 w-7 h-7 flex items-center justify-center bg-red-100 text-red-700 font-bold text-sm rounded-full">{i + 1}</span>
+              <div>
+                <h4 class="font-semibold text-neutral-900 mb-1">{a.titre}</h4>
+                <p class="text-sm text-neutral-600 mb-2">{a.detail}</p>
+                <p class="text-xs bg-red-50 text-red-800 px-3 py-2 rounded-lg"><strong>Action :</strong> {a.action}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <h3 class="text-sm font-semibold uppercase tracking-wide text-amber-600 mb-4">Utile aussi — 3 ameliorations recommandees</h3>
+      <div class="grid sm:grid-cols-3 gap-4">
+        {ameliorationsUtiles.map(a => (
+          <div class="bg-white border border-amber-200 rounded-xl p-4">
+            <h4 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h4>
+            <p class="text-xs text-neutral-600">{a.detail}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="bg-neutral-900 text-white py-16 px-4">
+    <div class="max-w-3xl mx-auto text-center">
+      <h2 class="font-heading text-2xl md:text-3xl font-bold mb-4">
+        {kpis.conversion}% de vos visiteurs vous contactent.<br/>
+        <span class="text-amber-400">On peut faire beaucoup mieux.</span>
+      </h2>
+      <p class="text-neutral-300 mb-8 max-w-xl mx-auto text-sm">
+        Ce rapport identifie 3 actions critiques : un site local optimise, un CTA telephone
+        visible, et des performances mobiles dignes de ce nom. Je construis des sites de
+        commercants qui convertissent vraiment — a partir de 990 euros, livre en 7 jours.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="/commander" class="inline-flex items-center gap-2 px-8 py-3.5 bg-[var(--color-accent)] text-white font-semibold rounded-xl hover:opacity-90 transition-all shadow-md">
+          Je veux un site qui convertit
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a href="/contact" class="inline-flex items-center gap-2 px-8 py-3.5 border border-neutral-600 text-neutral-300 font-semibold rounded-xl hover:border-amber-400 hover:text-amber-400 transition-all">
+          En discuter d'abord
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

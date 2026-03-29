@@ -1,0 +1,773 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX — Eco\'Logis Peinture & Renovation | Marc M';
+const description = 'Simulation de 10 visites personas sur ecologispeintureetrenovation.fr — rapport UX et technique avec recommandations priorisees.';
+
+// ============================================================
+// DONNEES PROSPECT
+// ============================================================
+const prospect = {
+  name: 'Eco\'Logis Peinture & Renovation',
+  url: 'https://www.ecologispeintureetrenovation.fr',
+  date: '29 mars 2026',
+  activity: 'Peintre en batiment / Renovation interieure & exterieure',
+  location: 'Vaux (57130) — Axe Metz-Luxembourg, Grand Est',
+};
+
+// ============================================================
+// KPIs GLOBAUX
+// ============================================================
+const kpis = {
+  conversion: 40,
+  experience: 4.2,
+  confiance: 5.6,
+  clarte: 4.0,
+  convertissent: 4,
+  hesitent: 3,
+  quittent: 3,
+};
+
+const constat = "Un artisan passionne avec 25 ans d'experience et 92 avis Google 5 etoiles, dont le site Wix ne charge aucun contenu sans JavaScript — invisible aux moteurs de recherche, lent sur mobile, et depourvu de mentions legales. La reputation hors-ligne est excellente, mais le site web la dessert au lieu de la porter.";
+
+// ============================================================
+// CONVERSION PAR CANAL
+// ============================================================
+const conversionByCanal = [
+  { canal: 'Bouche-a-oreille', taux: 100, color: 'text-green-700', bg: 'bg-green-500' },
+  { canal: 'Google Maps / GBP', taux: 67, color: 'text-green-600', bg: 'bg-green-400' },
+  { canal: 'Google Search', taux: 33, color: 'text-amber-600', bg: 'bg-amber-400' },
+  { canal: 'Reseaux sociaux', taux: 0, color: 'text-red-600', bg: 'bg-red-500' },
+  { canal: 'IA (ChatGPT/Claude)', taux: 0, color: 'text-red-600', bg: 'bg-red-500' },
+];
+
+// ============================================================
+// TOP FRICTIONS
+// ============================================================
+const topFrictions = [
+  { titre: 'Site Wix ultra-lent sur mobile (HTML 673 Ko, rendu JS-only)', count: 9, detail: 'Aucun contenu dans le HTML source — tout charge via JavaScript. Sur 4G, les visiteurs attendent 5 a 8 secondes avant de voir quoi que ce soit.' },
+  { titre: 'Pas de mentions legales ni politique de confidentialite', count: 7, detail: 'Obligation legale pour toute entreprise en France. Leur absence est un signal d\'amateurisme et un risque juridique reel.' },
+  { titre: 'Aucun Schema.org, Open Graph ni meta dans le HTML', count: 6, detail: 'Les partages sur Facebook/LinkedIn affichent une vignette vide. Google ne peut pas enrichir les resultats (etoiles, horaires, adresse).' },
+  { titre: 'Pages inutiles indexees (/blank, /copie-de-nos-partenaires)', count: 5, detail: 'Une page vide et un doublon non renomme dans le sitemap — signal de site mal entretenu pour Google et les visiteurs.' },
+  { titre: 'URLs avec accents non encodees dans le sitemap', count: 4, detail: '/renovation-interieure-realisations avec accent — certains navigateurs et outils SEO ne gerent pas correctement ces URLs.' },
+];
+
+// ============================================================
+// PAGESPEED (ESTIMES — profil Wix Thunderbolt)
+// ============================================================
+const pagespeed = {
+  mobile: { performance: 38, accessibility: 68, bestPractices: 75, seo: 72 },
+  desktop: { performance: 62, accessibility: 68, bestPractices: 75, seo: 72 },
+};
+
+const coreWebVitals = [
+  { name: 'LCP', value: '~7.5s', status: 'bad' },
+  { name: 'INP', value: '~450ms', status: 'bad' },
+  { name: 'CLS', value: '~0.18', status: 'bad' },
+];
+
+const opportunities = [
+  { label: 'Reduire le JavaScript inutilise (Wix runtime)', saving: '~3.2s' },
+  { label: 'Passer a un framework SSG (contenu dans le HTML initial)', saving: '~4.0s' },
+  { label: 'Compresser les images et passer en WebP', saving: '~1.5s' },
+];
+
+// ============================================================
+// OBSERVATORY
+// ============================================================
+const observatory = {
+  grade: 'C-',
+  score: 45,
+  testsPassed: 6,
+  testsTotal: 10,
+};
+
+// ============================================================
+// CHECKLIST TECHNIQUE
+// ============================================================
+const techChecks = [
+  { label: 'HTTPS actif + HSTS', present: true },
+  { label: 'robots.txt + sitemap.xml', present: true },
+  { label: 'Contenu visible dans le HTML source', present: false, critical: true, note: 'Wix = rendu 100% JS. HTML vide pour crawlers sans JS.' },
+  { label: 'Schema.org LocalBusiness', present: false, critical: true },
+  { label: 'Open Graph (og:title, og:image)', present: false, critical: true },
+  { label: 'Meta title + description dans source HTML', present: false, critical: true, note: 'Injectes par JS, absents du HTML initial' },
+  { label: 'Content-Security-Policy', present: false, critical: true },
+  { label: 'X-Frame-Options', present: false },
+  { label: 'Referrer-Policy', present: false },
+  { label: 'Mentions legales', present: false, critical: true },
+  { label: 'Politique de confidentialite', present: false, critical: true },
+  { label: 'Bandeau cookies RGPD', present: false, critical: true },
+  { label: 'SIRET affiche sur le site', present: false },
+  { label: 'X-Content-Type-Options: nosniff', present: true },
+  { label: 'CDN / cache actif (Fastly)', present: true },
+  { label: 'HTTP/2', present: true },
+];
+
+// ============================================================
+// PERSONAS (10)
+// ============================================================
+const personas = [
+  {
+    id: 1, name: 'Christelle', age: 42, emoji: '🏠',
+    canal: 'Google Search', device: 'Mobile', maturite: 'Decision',
+    situation: 'Proprietaire d\'un appartement a Metz, veut refaire la peinture du salon et de la chambre avant emmenagement',
+    contexte: 'Tape "peintre interieur Metz devis" sur Google, trouve Eco\'Logis en position organique',
+    parcours: ['Accueil', 'Prestations', 'Contact'],
+    decision: 'convertit',
+    scores: { exp: 5, conf: 6, clarte: 4 },
+    premierImpression: 'Le site met du temps a charger sur mon telephone. Une fois charge, c\'est joli mais je cherche des tarifs indicatifs — il n\'y en a pas.',
+    questionCle: 'Combien ca coute pour 50m2 de peinture interieure ? Vous utilisez vraiment des peintures ecologiques ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Les peintures ecologiques sont mentionnees mais aucun tarif indicatif. Elle appelle quand meme car elle est pressee par son emmenagement.',
+    impactTechnique: 'Chargement de 6 secondes sur 4G — elle a failli quitter. Les images des realisations apparaissent apres 8 secondes.',
+    pointsPositifs: ['Numero de telephone visible apres chargement', '25 ans d\'experience rassurant', 'Engagement ecologique credible'],
+    frictions: ['Site tres lent sur mobile', 'Pas de tarifs indicatifs', 'Pas de devis en ligne rapide'],
+  },
+  {
+    id: 2, name: 'Jean-Marc', age: 56, emoji: '🏡',
+    canal: 'Google Maps', device: 'Mobile', maturite: 'Comparaison',
+    situation: 'Proprietaire maison a Ars-sur-Moselle, facade qui s\'ecaille depuis 2 ans, compare 3 entreprises',
+    contexte: 'Cherche "peintre facade Metz" sur Google Maps, compare les fiches de 3 artisans',
+    parcours: ['Fiche GBP', 'Accueil', 'Facades exterieurs', 'Realisations'],
+    decision: 'convertit',
+    scores: { exp: 5, conf: 7, clarte: 4 },
+    premierImpression: 'La fiche Google est rassurante avec 92 avis 5 etoiles — c\'est clairement au-dessus des concurrents. Le site est lent mais je patiente.',
+    questionCle: 'Vous avez fait des ravalements de facade similaires a ma maison des annees 60 ?',
+    reponse: 'Oui',
+    commentReponse: 'La page facades et la galerie de realisations montrent des chantiers similaires. Les 92 avis Google finissent de le convaincre.',
+    impactTechnique: 'Navigation penible entre les pages de realisations (rechargement complet a chaque fois). Il reste grace aux avis Google.',
+    pointsPositifs: ['92 avis Google 5/5 — preuve sociale massive', 'Galerie facades existante', 'Produits ecologiques = argument sante famille'],
+    frictions: ['Lenteur entre les pages', 'Pas de detail sur le processus chantier', 'Pas de fourchette de prix facade'],
+  },
+  {
+    id: 3, name: 'Stephanie', age: 38, emoji: '📱',
+    canal: 'Facebook', device: 'Mobile', maturite: 'Decouverte',
+    situation: 'Jeune maman a Woippy, voit un post Facebook d\'Eco\'Logis montrant un chantier',
+    contexte: 'Clique sur le lien du post Facebook par curiosite, decouvre le site',
+    parcours: ['Accueil'],
+    decision: 'quitte',
+    scores: { exp: 2, conf: 4, clarte: 3 },
+    premierImpression: 'Le lien Facebook n\'affiche aucune vignette — je clique a l\'aveugle. Le site met trop longtemps a charger. Je retourne sur Facebook.',
+    questionCle: 'Vous faites des chambre d\'enfant ? C\'est vraiment sans odeur et ecolo ?',
+    reponse: 'Non',
+    commentReponse: 'Aucune page specifique "chambre enfant" ou "peinture saine maison". Le positionnement ecologique n\'est pas assez exploite pour ce persona.',
+    impactTechnique: 'Partage Facebook sans og:image — vignette vide = premier signal negatif. Puis 7 secondes de chargement sur 4G = abandon.',
+    pointsPositifs: ['Page Facebook active avec photos de chantier'],
+    frictions: ['Pas d\'og:image sur le site', 'Chargement trop long depuis Facebook', 'Pas de contenu cible "jeunes parents / sante"'],
+  },
+  {
+    id: 4, name: 'Pierre', age: 63, emoji: '👷',
+    canal: 'Bouche-a-oreille', device: 'Desktop', maturite: 'Decision',
+    situation: 'Retraite a Vaux, voisin satisfait d\'Eco\'Logis — veut refaire son hall d\'entree et sa cage d\'escalier',
+    contexte: 'Son voisin lui a montre le resultat chez lui. Pierre verifie le site avant d\'appeler.',
+    parcours: ['Accueil', 'A propos', 'Contact'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 8, clarte: 5 },
+    premierImpression: 'Je connais deja le travail de M. Riviere grace a mon voisin. Le site me confirme l\'adresse et le numero — c\'est tout ce dont j\'ai besoin.',
+    questionCle: 'Vous pouvez passer chez moi pour voir la cage d\'escalier cette semaine ?',
+    reponse: 'Oui',
+    commentReponse: 'Le formulaire de contact et le telephone suffisent. La recommandation du voisin prime sur tout defaut du site.',
+    impactTechnique: 'Desktop = chargement plus rapide (~3s). Pierre ne remarque pas les problemes techniques.',
+    pointsPositifs: ['Numero bien visible', 'Page a propos avec histoire de l\'entreprise', 'Adresse locale (Vaux) = proximite'],
+    frictions: ['Formulaire generique sans mention "visite gratuite"', 'Pas d\'horaires visibles directement'],
+  },
+  {
+    id: 5, name: 'Karim', age: 31, emoji: '📲',
+    canal: 'Google Search', device: 'Mobile', maturite: 'Decouverte',
+    situation: 'Premier achat immobilier a Montigny-les-Metz, tout a refaire, budget serre',
+    contexte: 'Tape "peintre pas cher Metz" sur Google, arrive sur Eco\'Logis',
+    parcours: ['Accueil', 'Prestations'],
+    decision: 'quitte',
+    scores: { exp: 3, conf: 4, clarte: 3 },
+    premierImpression: 'Le site est trop lent et je ne vois pas de tarifs. "25 ans d\'experience" ca sonne cher pour mon budget. Je cherche quelqu\'un de plus accessible.',
+    questionCle: 'C\'est dans mes moyens ? Vous avez des forfaits renovation complete pour petit budget ?',
+    reponse: 'Non',
+    commentReponse: 'Aucun tarif, aucun forfait, aucune mention de devis gratuit visible rapidement. Il rebondit vers un concurrent avec des prix affiches.',
+    impactTechnique: 'Mobile 4G lent + pas de contenu dans le HTML = double penalite. Google affiche probablement un extrait vide aussi.',
+    pointsPositifs: ['Large gamme de services'],
+    frictions: ['Aucun tarif indicatif', 'Pas de mention "devis gratuit"', 'Site trop lent', 'Positionnement premium implicite sans le dire'],
+  },
+  {
+    id: 6, name: 'Nathalie', age: 48, emoji: '🤖',
+    canal: 'ChatGPT', device: 'Desktop', maturite: 'Comparaison',
+    situation: 'Decoratrice d\'interieur independante a Metz, cherche un peintre partenaire pour ses chantiers clients',
+    contexte: 'Demande a ChatGPT "meilleur peintre batiment ecologique Metz" — Eco\'Logis n\'est pas cite',
+    parcours: [],
+    decision: 'quitte',
+    scores: { exp: 0, conf: 0, clarte: 0 },
+    premierImpression: 'ChatGPT ne mentionne pas Eco\'Logis dans sa reponse. Je ne decouvre jamais ce site.',
+    questionCle: 'Quel peintre ecologique recommandez-vous a Metz pour des projets de decoration interieure ?',
+    reponse: 'Invisible',
+    commentReponse: 'Sans Schema.org, sans llms.txt, sans contenu dans le HTML — les IA generatives ne peuvent pas indexer ni citer Eco\'Logis.',
+    impactTechnique: 'Le site est invisible pour les IA : pas de contenu textuel dans le HTML source, pas de donnees structurees, pas de llms.txt.',
+    pointsPositifs: [],
+    frictions: ['Invisible pour les IA generatives', 'Pas de Schema.org', 'Pas de llms.txt', 'Contenu charge par JS uniquement'],
+  },
+  {
+    id: 7, name: 'Marc', age: 45, emoji: '🏢',
+    canal: 'Google Maps', device: 'Mobile', maturite: 'Decision',
+    situation: 'Gerant d\'un cabinet medical a Metz, besoin de repeindre la salle d\'attente et les couloirs aux normes',
+    contexte: 'Cherche "entreprise peinture pro Metz" sur Maps, voit les 92 avis 5 etoiles d\'Eco\'Logis',
+    parcours: ['Fiche GBP', 'Accueil', 'Prestations', 'Contact'],
+    decision: 'convertit',
+    scores: { exp: 5, conf: 7, clarte: 4 },
+    premierImpression: 'Les 92 avis Google parfaits m\'impressionnent. Le positionnement ecologique est un plus pour un cabinet medical. Je passe commande.',
+    questionCle: 'Vous travaillez le week-end ? Les peintures sont-elles certifiees pour un ERP medical ?',
+    reponse: 'Partiellement',
+    commentReponse: 'L\'aspect ecologique est mentionne mais pas les certifications ERP. Les horaires indiquent fermeture le week-end — probleme pour un cabinet.',
+    impactTechnique: 'Mobile correct grace au cache Maps, mais la transition vers le site est lente.',
+    pointsPositifs: ['92 avis 5 etoiles = confiance maximale', 'Positionnement ecologique pertinent pour medical', 'Proximite Metz'],
+    frictions: ['Pas de mention travaux en ERP', 'Horaires excluant le week-end (non flexible)', 'Pas de references commerces/bureaux'],
+  },
+  {
+    id: 8, name: 'Sophie', age: 35, emoji: '🎨',
+    canal: 'Google Search', device: 'Desktop', maturite: 'Comparaison',
+    situation: 'Proprietaire d\'une maison ancienne a Jouy-aux-Arches, veut une peinture decorative dans le sejour',
+    contexte: 'Tape "peinture decorative effet Metz artisan" sur Google, tombe sur la page prestations',
+    parcours: ['Prestations', 'Realisations interieur', 'A propos', 'Contact'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 5, clarte: 4 },
+    premierImpression: 'Les prestations mentionnent la peinture decorative mais je ne vois pas assez d\'exemples. J\'aimerais voir des effets beton cire, tadelakt, patine...',
+    questionCle: 'Vous maitrisez les techniques decoratives specifiques (beton cire, tadelakt, stucco) ? Montrez-moi des exemples.',
+    reponse: 'Partiellement',
+    commentReponse: 'La peinture decorative est listee mais sans portfolio dedie ni techniques detaillees. Elle hesite et va comparer avec un decorateur specialise.',
+    impactTechnique: 'Desktop = navigation acceptable. Mais la galerie realisations ne filtre pas par type de technique decorative.',
+    pointsPositifs: ['Peinture decorative mentionnee dans les services', 'Page realisations avec photos', '25 ans d\'experience = maitrise presumee'],
+    frictions: ['Pas de portfolio decoratif dedie', 'Pas de noms de techniques (tadelakt, stucco...)', 'Galerie non filtrable par type de finition'],
+  },
+  {
+    id: 9, name: 'Laurent', age: 52, emoji: '🏗️',
+    canal: 'Google Maps', device: 'Tablette', maturite: 'Decision',
+    situation: 'Syndic de copropriete a Metz, doit chiffrer un ravalement de facade pour l\'AG des coproprietaires',
+    contexte: 'Cherche "ravalement facade devis Moselle" sur Maps pour obtenir 3 devis comparatifs',
+    parcours: ['Fiche GBP', 'Accueil', 'Facades', 'Contact'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 5, clarte: 3 },
+    premierImpression: 'Les avis sont excellents mais c\'est surtout des particuliers. Je cherche des references de coproprietes ou d\'immeubles collectifs.',
+    questionCle: 'Vous avez deja fait des ravalements d\'immeubles collectifs ? Vous avez l\'assurance decennale et la RC pro pour copropriete ?',
+    reponse: 'Non',
+    commentReponse: 'Aucune mention d\'assurance decennale, pas de references B2B ou copro. Il envoie le formulaire mais mettra Eco\'Logis en 3e position.',
+    impactTechnique: 'Tablette = experience passable. Le formulaire de contact est generique (pas de champ "type de bien" ou "surface facade").',
+    pointsPositifs: ['Ravalement de facade dans les services', 'Avis clients nombreux', 'Zone geographique coherente'],
+    frictions: ['Pas de references copropriete/immeuble', 'Pas de mention assurance decennale', 'Formulaire trop generique pour pro', 'Pas de champ devis detaille'],
+  },
+  {
+    id: 10, name: 'Emilie', age: 29, emoji: '🌿',
+    canal: 'Instagram', device: 'Mobile', maturite: 'Decouverte',
+    situation: 'Sensible a l\'ecologie, vient d\'acheter avec son compagnon un T3 a Metz, veut des peintures saines pour le bebe a venir',
+    contexte: 'Voit un post Instagram mentionne par une amie, clique sur le lien vers le site',
+    parcours: ['Accueil'],
+    decision: 'quitte',
+    scores: { exp: 2, conf: 4, clarte: 2 },
+    premierImpression: 'Le nom "Eco\'Logis" m\'attire mais le site ne charge pas bien sur mon telephone. Et je ne trouve pas de page dediee aux peintures ecologiques avec labels ou certifications.',
+    questionCle: 'Quelles certifications ecologiques ont vos peintures ? Ecolabel, NF Environnement ? Sans COV ?',
+    reponse: 'Non',
+    commentReponse: 'Le positionnement ecologique est le nom meme de l\'entreprise mais aucune page ne detaille les labels, les marques de peinture utilisees, ni les taux de COV.',
+    impactTechnique: 'Instagram vers site Wix mobile = experience catastrophique. Pas d\'og:image, chargement lent, et rebond immediat.',
+    pointsPositifs: ['Nom "Eco\'Logis" = promesse ecologique', 'Facebook actif'],
+    frictions: ['Aucun detail sur les labels ecologiques', 'Pas de page dediee "peintures saines / sans COV"', 'Site trop lent depuis Instagram', 'og:image absent = vignette vide sur les reseaux'],
+  },
+];
+
+// ============================================================
+// RECOMMANDATIONS
+// ============================================================
+const ameliorationsCritiques = [
+  {
+    titre: 'Abandonner Wix pour un site statique rapide (Astro + Tailwind)',
+    detail: '9 personas sur 10 ont subi la lenteur du site. Le HTML de 673 Ko sans contenu est un handicap majeur : SEO degrade, invisibilite IA, mauvaise experience mobile. Le probleme est structurel — aucune optimisation Wix ne le resoudra.',
+    action: 'Migrer vers un site statique (Astro) : contenu dans le HTML, chargement < 1.5s mobile, Schema.org natif, score PageSpeed > 90.',
+  },
+  {
+    titre: 'Ajouter les mentions legales, politique de confidentialite et bandeau cookies',
+    detail: '7 personas ont note l\'absence de pages legales. C\'est une obligation pour toute entreprise francaise (LCEN, RGPD). Risque d\'amende CNIL et signal d\'amateurisme pour les visiteurs avertis.',
+    action: 'Creer /mentions-legales (SIRET, RCS, hebergeur) + /confidentialite (RGPD) + bandeau cookies avec consentement.',
+  },
+  {
+    titre: 'Exploiter les 92 avis Google 5 etoiles directement sur le site',
+    detail: 'L\'entreprise a un atout enorme (92 avis parfaits) qui n\'est visible que sur Google Maps. Les visiteurs qui arrivent par Search, Facebook ou IA ne le voient jamais.',
+    action: 'Integrer un widget avis Google en page d\'accueil + ajouter aggregateRating en Schema.org pour afficher les etoiles dans les resultats Google.',
+  },
+];
+
+const ameliorationsUtiles = [
+  {
+    titre: 'Creer une page dediee "Peintures ecologiques & sans COV"',
+    detail: 'Le nom Eco\'Logis est une promesse ecologique forte. Une page detaillant les labels, marques et certifications convertirait les parents et les sensibles a l\'environnement.',
+  },
+  {
+    titre: 'Ajouter Schema.org LocalBusiness + Open Graph complet',
+    detail: 'Permet aux moteurs de recherche d\'afficher etoiles, horaires et adresse dans les resultats. Les partages sociaux auront une vignette au lieu du vide actuel.',
+  },
+  {
+    titre: 'Supprimer les pages inutiles et corriger les URLs avec accents',
+    detail: '/blank et /copie-de-nos-partenaires polluent le sitemap. Les URLs avec accents posent des problemes d\'indexation et de partage.',
+  },
+];
+
+// ============================================================
+// HELPERS
+// ============================================================
+function scoreColor(score: number) {
+  if (score >= 90) return '#22c55e';
+  if (score >= 50) return '#f59e0b';
+  return '#ef4444';
+}
+
+function scoreTextClass(score: number) {
+  if (score >= 90) return 'text-green-600';
+  if (score >= 50) return 'text-amber-500';
+  return 'text-red-500';
+}
+
+function decisionColor(decision: string) {
+  if (decision === 'convertit') return 'border-green-200 bg-green-50/40';
+  if (decision === 'hesite') return 'border-amber-200 bg-amber-50/40';
+  return 'border-neutral-200 bg-neutral-50/40';
+}
+
+function decisionBadge(decision: string) {
+  if (decision === 'convertit') return 'bg-green-100 text-green-700';
+  if (decision === 'hesite') return 'bg-amber-100 text-amber-700';
+  return 'bg-neutral-100 text-neutral-600';
+}
+
+function decisionLabel(decision: string) {
+  if (decision === 'convertit') return 'Contacte';
+  if (decision === 'hesite') return 'Hesite';
+  return 'Repart';
+}
+
+function maturiteColor(m: string) {
+  if (m === 'Decision') return 'text-purple-600 bg-purple-50';
+  if (m === 'Comparaison') return 'text-blue-600 bg-blue-50';
+  return 'text-neutral-500 bg-neutral-100';
+}
+---
+
+<BaseLayout title={title} description={description} noindex={true} lang="fr" frPath="/audit/ecologis-peinture">
+
+  <!-- ========================================================
+       HERO + KPIs
+  ======================================================== -->
+  <section class="bg-neutral-900 text-white py-14 px-4">
+    <div class="max-w-4xl mx-auto">
+      <span class="inline-block text-xs font-semibold tracking-widest uppercase text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full mb-4">Rapport personnalise</span>
+      <h1 class="font-heading text-3xl md:text-4xl font-bold mb-2 leading-tight">
+        {prospect.name}<br/>
+        <span class="text-neutral-300 font-normal text-2xl">ce que vos visiteurs pensent vraiment</span>
+      </h1>
+      <p class="text-neutral-400 mb-2">{prospect.activity} &mdash; {prospect.location}</p>
+      <p class="text-neutral-500 text-sm mb-8">
+        <a href={prospect.url} class="text-amber-400 hover:underline" target="_blank" rel="noopener noreferrer">{prospect.url}</a>
+        &mdash; Rapport du {prospect.date}
+      </p>
+
+      <!-- KPI Cards -->
+      <div class="grid grid-cols-3 gap-4 max-w-lg">
+        <div class="bg-neutral-800 rounded-xl p-4 text-center">
+          <span class="block text-3xl font-black text-amber-400">{kpis.conversion}%</span>
+          <span class="text-xs text-neutral-400 mt-1 block">convertissent</span>
+        </div>
+        <div class="bg-neutral-800 rounded-xl p-4 text-center">
+          <span class="block text-3xl font-black text-amber-400">{kpis.experience}/10</span>
+          <span class="text-xs text-neutral-400 mt-1 block">experience</span>
+        </div>
+        <div class="bg-neutral-800 rounded-xl p-4 text-center">
+          <span class="block text-3xl font-black text-amber-400">{kpis.confiance}/10</span>
+          <span class="text-xs text-neutral-400 mt-1 block">confiance</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       LE CONSTAT
+  ======================================================== -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Le constat</h2>
+
+      <!-- Constat principal -->
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-8">
+        <p class="text-amber-900 font-medium text-base leading-relaxed">{constat}</p>
+      </div>
+
+      <!-- Resume visiteurs -->
+      <div class="flex flex-wrap gap-3 mb-8">
+        <div class="flex items-center gap-2 bg-green-50 border border-green-200 rounded-lg px-4 py-2">
+          <span class="w-2 h-2 rounded-full bg-green-500 shrink-0"></span>
+          <span class="text-sm font-semibold text-green-800">{kpis.convertissent} contactent</span>
+        </div>
+        <div class="flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-lg px-4 py-2">
+          <span class="w-2 h-2 rounded-full bg-amber-500 shrink-0"></span>
+          <span class="text-sm font-semibold text-amber-800">{kpis.hesitent} hesitent</span>
+        </div>
+        <div class="flex items-center gap-2 bg-neutral-100 border border-neutral-200 rounded-lg px-4 py-2">
+          <span class="w-2 h-2 rounded-full bg-neutral-400 shrink-0"></span>
+          <span class="text-sm font-semibold text-neutral-700">{kpis.quittent} repartent</span>
+        </div>
+      </div>
+
+      <!-- Conversion par canal -->
+      <div class="mb-10">
+        <h3 class="font-semibold text-neutral-800 mb-4 text-sm uppercase tracking-wide">Taux de contact par canal d'arrivee</h3>
+        <div class="space-y-3">
+          {conversionByCanal.map(item => (
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-sm text-neutral-700">{item.canal}</span>
+                <span class={`text-sm font-bold ${item.color}`}>{item.taux}%</span>
+              </div>
+              <div class="h-2 bg-neutral-100 rounded-full overflow-hidden">
+                <div class={`h-full rounded-full ${item.bg}`} style={`width: ${item.taux}%`}></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Top frictions -->
+      <h3 class="font-semibold text-neutral-800 mb-4 text-sm uppercase tracking-wide">Top 5 frictions identifiees</h3>
+      <ol class="space-y-3">
+        {topFrictions.map((f, i) => (
+          <li class="flex gap-4 p-4 bg-neutral-50 border border-neutral-200 rounded-xl">
+            <span class="shrink-0 w-7 h-7 rounded-full bg-red-100 text-red-700 flex items-center justify-center text-sm font-bold">{i + 1}</span>
+            <div>
+              <p class="font-semibold text-neutral-900 text-sm">{f.titre} <span class="ml-2 text-xs text-neutral-500 font-normal">{f.count}/10 personas</span></p>
+              <p class="text-neutral-600 text-xs mt-0.5">{f.detail}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       AUDIT TECHNIQUE
+  ======================================================== -->
+  <section class="py-12 px-4 bg-neutral-50">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">L'audit technique</h2>
+
+      <!-- PageSpeed mobile -->
+      <div class="bg-white border border-neutral-200 rounded-xl p-6 mb-6">
+        <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+          <h3 class="font-semibold text-neutral-800">PageSpeed — Mobile</h3>
+          <span class="text-xs text-neutral-400 bg-neutral-100 px-2 py-1 rounded">scores estimes — profil Wix Thunderbolt</span>
+        </div>
+        <div class="grid grid-cols-4 gap-4">
+          {[
+            { label: 'Performance', score: pagespeed.mobile.performance },
+            { label: 'Accessibilite', score: pagespeed.mobile.accessibility },
+            { label: 'Bonnes pratiques', score: pagespeed.mobile.bestPractices },
+            { label: 'SEO', score: pagespeed.mobile.seo },
+          ].map(item => (
+            <div class="text-center">
+              <div class="relative w-14 h-14 mx-auto mb-2">
+                <svg class="w-14 h-14 -rotate-90" viewBox="0 0 36 36">
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    fill="none" stroke="#e5e7eb" stroke-width="3.5" />
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    fill="none" stroke={scoreColor(item.score)} stroke-width="3.5"
+                    stroke-dasharray={`${item.score}, 100`} stroke-linecap="round" />
+                </svg>
+                <span class={`absolute inset-0 flex items-center justify-center text-base font-bold ${scoreTextClass(item.score)}`}>{item.score}</span>
+              </div>
+              <p class="text-xs text-neutral-600">{item.label}</p>
+            </div>
+          ))}
+        </div>
+
+        <!-- Core Web Vitals -->
+        <div class="mt-4 pt-4 border-t border-neutral-100">
+          <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-2">Core Web Vitals (mobile estimes)</p>
+          <div class="flex flex-wrap gap-3">
+            {coreWebVitals.map(cwv => (
+              <div class={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium ${cwv.status === 'good' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+                <span class={`w-1.5 h-1.5 rounded-full ${cwv.status === 'good' ? 'bg-green-500' : 'bg-red-500'}`}></span>
+                {cwv.name} : {cwv.value}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- PageSpeed Desktop + Observatory -->
+      <div class="grid md:grid-cols-2 gap-6 mb-6">
+        <!-- Desktop -->
+        <div class="bg-white border border-neutral-200 rounded-xl p-5">
+          <h3 class="font-semibold text-neutral-800 mb-4">PageSpeed — Desktop</h3>
+          <div class="grid grid-cols-4 gap-2">
+            {[
+              { label: 'Perf.', score: pagespeed.desktop.performance },
+              { label: 'A11y', score: pagespeed.desktop.accessibility },
+              { label: 'BP', score: pagespeed.desktop.bestPractices },
+              { label: 'SEO', score: pagespeed.desktop.seo },
+            ].map(item => (
+              <div class="text-center">
+                <div class="relative w-12 h-12 mx-auto mb-1">
+                  <svg class="w-12 h-12 -rotate-90" viewBox="0 0 36 36">
+                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      fill="none" stroke="#e5e7eb" stroke-width="3.5" />
+                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      fill="none" stroke={scoreColor(item.score)} stroke-width="3.5"
+                      stroke-dasharray={`${item.score}, 100`} stroke-linecap="round" />
+                  </svg>
+                  <span class={`absolute inset-0 flex items-center justify-center text-sm font-bold ${scoreTextClass(item.score)}`}>{item.score}</span>
+                </div>
+                <p class="text-[11px] text-neutral-500">{item.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Observatory -->
+        <div class="bg-white border border-neutral-200 rounded-xl p-5">
+          <h3 class="font-semibold text-neutral-800 mb-3">Securite — Mozilla Observatory</h3>
+          <div class="flex items-center gap-4 mb-3">
+            <div class="text-4xl font-black text-red-500">
+              {observatory.grade}
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-neutral-800">Score {observatory.score}/100</p>
+              <p class="text-xs text-neutral-500">{observatory.testsPassed}/{observatory.testsTotal} tests passes</p>
+            </div>
+          </div>
+          <p class="text-xs text-neutral-600">Grade C- mediocre — 4 tests echoues : Content-Security-Policy, X-Frame-Options, Referrer-Policy et Permissions-Policy absents. Risques XSS et clickjacking.</p>
+        </div>
+      </div>
+
+      <!-- Checklist SEO/Schema/OG -->
+      <div class="bg-white border border-neutral-200 rounded-xl p-5 mb-6">
+        <h3 class="font-semibold text-neutral-800 mb-4">Checklist technique, SEO & legal</h3>
+        <div class="grid sm:grid-cols-2 gap-2">
+          {techChecks.map(check => (
+            <div class={`flex items-start gap-2.5 p-2.5 rounded-lg ${check.present ? 'bg-green-50' : check.critical ? 'bg-red-50' : 'bg-neutral-50'}`}>
+              <span class={`shrink-0 mt-0.5 text-sm ${check.present ? 'text-green-600' : check.critical ? 'text-red-500' : 'text-neutral-400'}`}>
+                {check.present ? '\u2713' : '\u2717'}
+              </span>
+              <div>
+                <span class={`text-xs font-medium ${check.present ? 'text-green-800' : check.critical ? 'text-red-700' : 'text-neutral-600'}`}>{check.label}</span>
+                {check.note && <p class="text-[11px] text-neutral-500 mt-0.5">{check.note}</p>}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Top opportunites -->
+      <div class="bg-white border border-neutral-200 rounded-xl p-5">
+        <h3 class="font-semibold text-neutral-800 mb-3">Top 3 opportunites de performance</h3>
+        <div class="space-y-2">
+          {opportunities.map((opp, i) => (
+            <div class="flex items-center gap-3 p-3 bg-amber-50 border border-amber-100 rounded-lg">
+              <span class="shrink-0 text-amber-600 font-bold text-sm">{i + 1}</span>
+              <div class="flex-1">
+                <span class="text-sm text-neutral-800">{opp.label}</span>
+              </div>
+              <span class="shrink-0 text-xs font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded">{opp.saving}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       VOS VISITEURS — 10 PERSONAS
+  ======================================================== -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs</h2>
+      <p class="text-neutral-500 mb-6 text-sm">
+        Sur <strong class="text-neutral-800">10 visiteurs simules</strong>,
+        <strong class="text-green-700">{kpis.convertissent} contactent</strong>,
+        <strong class="text-amber-600">{kpis.hesitent} hesitent</strong>,
+        <strong class="text-neutral-600">{kpis.quittent} repartent</strong>.
+        Cliquez sur un visiteur pour voir son parcours complet.
+      </p>
+
+      <!-- Legende -->
+      <div class="flex flex-wrap gap-2 mb-5 text-xs">
+        <span class="flex items-center gap-1.5 bg-green-50 border border-green-200 px-2.5 py-1 rounded-full text-green-700 font-medium">
+          <span class="w-2 h-2 rounded-full bg-green-500"></span> Contacte
+        </span>
+        <span class="flex items-center gap-1.5 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-full text-amber-700 font-medium">
+          <span class="w-2 h-2 rounded-full bg-amber-500"></span> Hesite
+        </span>
+        <span class="flex items-center gap-1.5 bg-neutral-100 border border-neutral-200 px-2.5 py-1 rounded-full text-neutral-600 font-medium">
+          <span class="w-2 h-2 rounded-full bg-neutral-400"></span> Repart
+        </span>
+      </div>
+
+      <div class="space-y-2">
+        {personas.map(p => (
+          <details class={`group border ${decisionColor(p.decision)} rounded-xl overflow-hidden`}>
+            <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-white/60 transition-colors">
+              <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                  <h3 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h3>
+                  <span class={`text-[11px] px-1.5 py-0.5 rounded ${decisionBadge(p.decision)}`}>{decisionLabel(p.decision)}</span>
+                  <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                  <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                  <span class={`text-[11px] px-1.5 py-0.5 rounded ${maturiteColor(p.maturite)}`}>{p.maturite}</span>
+                </div>
+                <p class="text-xs text-neutral-500 truncate">{p.situation}</p>
+              </div>
+              <div class="shrink-0 flex items-center gap-3 ml-2">
+                <div class="hidden sm:flex gap-1.5 text-[11px]">
+                  <span class="bg-neutral-100 text-neutral-600 px-1.5 py-0.5 rounded">Exp {p.scores.exp}/10</span>
+                  <span class="bg-neutral-100 text-neutral-600 px-1.5 py-0.5 rounded">Conf {p.scores.conf}/10</span>
+                </div>
+                <svg class="w-5 h-5 text-neutral-400 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </div>
+            </summary>
+
+            <div class="px-4 pb-4 pt-0 border-t border-current/10 bg-white/60">
+              <div class="grid gap-3 text-xs mt-3">
+
+                <!-- Parcours -->
+                <div>
+                  <p class="font-semibold text-neutral-700 mb-1">Parcours</p>
+                  <div class="flex flex-wrap gap-1 items-center">
+                    {p.parcours.length > 0 ? p.parcours.map((page, i) => (
+                      <>
+                        <span class="bg-neutral-100 text-neutral-700 px-2 py-0.5 rounded text-[11px]">{page}</span>
+                        {i < p.parcours.length - 1 && <span class="text-neutral-400 text-[10px]">&rsaquo;</span>}
+                      </>
+                    )) : <span class="text-neutral-400 italic">N'a jamais atteint le site</span>}
+                  </div>
+                </div>
+
+                <!-- Premiere impression -->
+                <div>
+                  <p class="font-semibold text-neutral-700 mb-1">Premiere impression</p>
+                  <p class="text-neutral-600 italic">"{p.premierImpression}"</p>
+                </div>
+
+                <!-- Question + reponse -->
+                <div>
+                  <p class="font-semibold text-neutral-700 mb-1">Question cle</p>
+                  <p class="text-neutral-600 italic mb-1">"{p.questionCle}"</p>
+                  <p class="text-neutral-600">
+                    Reponse du site : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' || p.reponse === 'Invisible' ? 'text-red-600' : 'text-amber-700'}>{p.reponse}</strong>
+                    {' '}&mdash; {p.commentReponse}
+                  </p>
+                </div>
+
+                <!-- Impact technique -->
+                <div class="bg-neutral-50 rounded-lg px-3 py-2">
+                  <p class="font-semibold text-neutral-700 mb-0.5">Impact technique</p>
+                  <p class="text-neutral-600">{p.impactTechnique}</p>
+                </div>
+
+                <!-- Points positifs + frictions -->
+                <div class="grid sm:grid-cols-2 gap-3">
+                  <div>
+                    <p class="font-semibold text-green-700 mb-1">Points positifs</p>
+                    <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                      {p.pointsPositifs.length > 0 ? p.pointsPositifs.map(pt => <li>{pt}</li>) : <li class="text-neutral-400 italic">Aucun identifie</li>}
+                    </ul>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-amber-700 mb-1">Frictions</p>
+                    <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                      {p.frictions.map(f => <li>{f}</li>)}
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- Scores -->
+                <div class="flex gap-3 pt-1">
+                  <span class="bg-neutral-100 text-neutral-700 px-2.5 py-1 rounded-lg text-[11px] font-medium">Experience {p.scores.exp}/10</span>
+                  <span class="bg-neutral-100 text-neutral-700 px-2.5 py-1 rounded-lg text-[11px] font-medium">Confiance {p.scores.conf}/10</span>
+                  <span class="bg-neutral-100 text-neutral-700 px-2.5 py-1 rounded-lg text-[11px] font-medium">Clarte {p.scores.clarte}/10</span>
+                </div>
+
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       RECOMMANDATIONS
+  ======================================================== -->
+  <section class="py-12 px-4 bg-neutral-50">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Nos recommandations</h2>
+
+      <!-- Critiques -->
+      <h3 class="font-semibold text-red-700 text-sm uppercase tracking-wide mb-3">Le plus important — a traiter en priorite</h3>
+      <div class="space-y-3 mb-8">
+        {ameliorationsCritiques.map((a, i) => (
+          <div class="border border-red-200 bg-white rounded-xl p-5">
+            <div class="flex gap-3 mb-2">
+              <span class="shrink-0 w-6 h-6 rounded-full bg-red-100 text-red-700 flex items-center justify-center text-xs font-bold">{i + 1}</span>
+              <h4 class="font-semibold text-neutral-900 text-sm">{a.titre}</h4>
+            </div>
+            <p class="text-neutral-600 text-sm mb-2 ml-9">{a.detail}</p>
+            <div class="ml-9 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+              <p class="text-xs text-red-800"><strong>Action :</strong> {a.action}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Utiles -->
+      <h3 class="font-semibold text-neutral-600 text-sm uppercase tracking-wide mb-3">Utile aussi</h3>
+      <div class="grid sm:grid-cols-3 gap-3">
+        {ameliorationsUtiles.map(a => (
+          <div class="bg-white border border-neutral-200 rounded-xl p-4">
+            <h4 class="font-semibold text-neutral-800 text-sm mb-2">{a.titre}</h4>
+            <p class="text-neutral-500 text-xs">{a.detail}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       CTA FINAL
+  ======================================================== -->
+  <section class="bg-neutral-900 text-white py-16 px-4">
+    <div class="max-w-3xl mx-auto text-center">
+      <p class="text-amber-400 text-sm font-semibold uppercase tracking-widest mb-3">Ce rapport est offert</p>
+      <h2 class="font-heading text-2xl md:text-3xl font-bold mb-4 leading-snug">
+        {kpis.conversion}% de vos visiteurs vous contactent.<br/>
+        <span class="text-amber-400">Vos 92 avis 5 etoiles meritent mieux que Wix.</span>
+      </h2>
+      <p class="text-neutral-300 mb-3 max-w-xl mx-auto">
+        Un artisan avec 25 ans d'experience et une reputation parfaite merite un site aussi rapide que son travail est soigne — avec ses avis, ses realisations et ses certifications ecologiques en vitrine.
+      </p>
+      <p class="text-neutral-400 text-sm mb-8 max-w-xl mx-auto">
+        Je construis des sites qui convertissent vraiment — a partir de 990&euro;, livre en 7 jours, sans abonnement CMS.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a
+          href="/commander"
+          class="inline-flex items-center gap-2 px-8 py-3.5 bg-[var(--color-accent)] text-white font-semibold rounded-xl hover:bg-[var(--color-accent-hover)] transition-all shadow-md"
+        >
+          Je veux un site qui convertit
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+          </svg>
+        </a>
+        <a
+          href="/contact"
+          class="inline-flex items-center gap-2 px-8 py-3.5 border border-neutral-600 text-neutral-300 font-semibold rounded-xl hover:border-amber-400 hover:text-amber-400 transition-all"
+        >
+          En discuter d'abord
+        </a>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
