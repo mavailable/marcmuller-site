@@ -1,0 +1,1116 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+// ==================== DATA ====================
+
+const prospect = {
+  name: 'Cyril Regard',
+  url: 'https://cyrilregard.com/',
+  date: '29 mars 2026',
+  activity: 'Magicien-Mentaliste professionnel',
+  location: 'Reims — France & Europe',
+};
+
+const kpis = {
+  conversion: 30,
+  experience: 5.4,
+  confiance: 7.1,
+  clarte: 4.4,
+};
+
+const paradox = "Le site convertit 100% des personnes deja decidees — et 0% des autres. Les references clients (LVMH, Rolls Royce, Le Bristol) sont le meilleur argument commercial du site, mais elles intimident activement les profils a budget moyen qui pourraient etre des clients reels.";
+
+const conversionByCanal = [
+  { canal: 'Bouche-a-oreille', taux: 100, color: 'green' },
+  { canal: 'YouTube', taux: 100, color: 'green' },
+  { canal: 'Email (newsletter)', taux: 100, color: 'green' },
+  { canal: 'LinkedIn', taux: 50, color: 'orange' },
+  { canal: 'Instagram', taux: 0, color: 'red' },
+  { canal: 'Google Search', taux: 0, color: 'red' },
+  { canal: 'Google Maps', taux: 0, color: 'red' },
+  { canal: 'IA (ChatGPT, Perplexity, Claude)', taux: 0, color: 'red' },
+];
+
+const conversionByMaturite = [
+  { label: 'Decouverte', taux: 0, total: 6, convertis: 0 },
+  { label: 'Comparaison', taux: 0, total: 8, convertis: 0 },
+  { label: 'Decision', taux: 100, total: 6, convertis: 6 },
+];
+
+const conversionByDevice = [
+  { label: 'Mobile', taux: 40, total: 10, convertis: 4 },
+  { label: 'Desktop', taux: 25, total: 8, convertis: 2 },
+  { label: 'Tablette', taux: 0, total: 2, convertis: 0 },
+];
+
+// PageSpeed scores
+const pagespeed = {
+  mobile: {
+    performance: 91,
+    accessibility: 93,
+    bestPractices: 100,
+    seo: 100,
+  },
+  desktop: {
+    performance: 76,
+    accessibility: 93,
+    bestPractices: 100,
+    seo: 100,
+  },
+};
+
+const coreWebVitals = [
+  { name: 'LCP', desc: 'Largest Contentful Paint', mobile: '3.3s', desktop: '0.9s', mobileStatus: 'medium', desktopStatus: 'good' },
+  { name: 'CLS', desc: 'Cumulative Layout Shift', mobile: '0.01', desktop: '0.636', mobileStatus: 'good', desktopStatus: 'bad' },
+  { name: 'TBT', desc: 'Total Blocking Time', mobile: '0ms', desktop: '0ms', mobileStatus: 'good', desktopStatus: 'good' },
+  { name: 'FCP', desc: 'First Contentful Paint', mobile: '1.4s', desktop: '0.4s', mobileStatus: 'good', desktopStatus: 'good' },
+];
+
+const observatory = {
+  grade: 'D-',
+  score: 25,
+  testsPassed: 5,
+  testsTotal: 10,
+};
+
+const missingHeaders = [
+  'Content-Security-Policy (CSP)',
+  'Strict-Transport-Security (HSTS)',
+  'X-Content-Type-Options',
+  'X-Frame-Options',
+  'Referrer-Policy',
+  'Permissions-Policy',
+];
+
+const schemaChecks = [
+  { label: 'JSON-LD present', present: true },
+  { label: 'Type Person + Organization', present: true },
+  { label: 'Type LocalBusiness', present: true },
+  { label: 'Nom + URL + Description', present: true },
+  { label: 'Telephone', present: true },
+  { label: 'Image / Logo', present: true },
+  { label: 'sameAs (reseaux sociaux)', present: true },
+  { label: 'Adresse coherente (Paris vs Reims)', present: false, critical: true },
+  { label: 'openingHours', present: false },
+  { label: 'aggregateRating (avis Google)', present: false },
+  { label: 'areaServed complet', present: false },
+];
+
+const ogChecks = [
+  { label: 'og:title', present: true },
+  { label: 'og:description', present: true },
+  { label: 'og:image', present: true },
+  { label: 'og:url', present: true },
+  { label: 'og:type', present: true },
+  { label: 'twitter:card', present: true },
+  { label: 'twitter:image', present: false },
+];
+
+const seoChecks = [
+  { label: 'Redirection HTTP vers HTTPS', present: true },
+  { label: 'Sitemap XML accessible', present: true },
+  { label: 'robots.txt accessible', present: true },
+  { label: 'robots.txt autorise l\'indexation', present: true },
+  { label: 'Meta title sur chaque page', present: true },
+  { label: 'Meta description sur chaque page', present: true },
+  { label: 'Balise canonical', present: true },
+  { label: 'Alt text descriptifs sur les images', present: false },
+  { label: 'Un seul H1 par page', present: false, critical: true },
+  { label: 'Pages geographiques dediees', present: true },
+  { label: 'Site bilingue FR / EN', present: true },
+];
+
+const opportunities = [
+  { title: 'Corriger le CLS desktop (0.636)', savings: 'UX critique' },
+  { title: 'Reduire le JavaScript inutilise', savings: '~160ms mobile' },
+  { title: 'Optimiser la livraison des images', savings: 'Poids page' },
+  { title: 'Reduire les requetes bloquant le rendu', savings: 'Rendu initial' },
+  { title: 'Ajouter les headers de securite', savings: 'Grade D- → A' },
+];
+
+// Personas data
+const personas = [
+  {
+    id: 1, name: 'Aurelie', age: 38, emoji: '🏦',
+    canal: 'Google Search', device: 'Desktop', maturite: 'Comparaison',
+    situation: 'Responsable evenements d\'entreprise, banque regionale 500 salaries, Strasbourg',
+    contexte: 'Soiree annuelle juin, 150 personnes, budget 2000-3500€. Compare 4 prestataires.',
+    parcours: ['Accueil', 'Evenement entreprise', 'Logos clients', 'Temoignages', 'Contact'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 7, clarte: 4 },
+    premierImpression: 'Ambiance premium convaincante. Mais le CLS desktop provoque un saut de layout visible au chargement. "Le site bugue ou quoi ?"',
+    questionCle: 'Combien coute une soiree d\'entreprise avec Cyril Regard ?',
+    reponse: 'Non',
+    commentReponse: 'Aucun tarif, aucune fourchette, pas de "a partir de". Elle ne sait pas si son budget de 2500€ est realiste ou derisoire.',
+    impactTechnique: 'CLS 0.636 desktop : saut visuel note. Risque blocage proxy bancaire si HSTS absent.',
+    pointsPositifs: ['21 logos grands comptes visibles : credibilite corporate immediate', 'Temoignage nominatif CEO Moet & Chandon : rassurant', 'Rubrique "evenement entreprise" presente'],
+    frictions: ['CLS desktop : impression de bug au premier chargement', 'Zero tarif : impossible de pre-qualifier sans contacter', 'Pas de delai de reponse sur Contact', 'Pas de dossier de presse telechargeable'],
+  },
+  {
+    id: 2, name: 'Thomas', age: 44, emoji: '🏭',
+    canal: 'Bouche-a-oreille', device: 'Mobile', maturite: 'Decision',
+    situation: 'Directeur General PME 80 personnes, Epernay (40 km de Reims)',
+    contexte: 'Soiree 20 ans entreprise dans 8 semaines. A vu Cyril en prestation chez un ami. Decision quasi prise.',
+    parcours: ['Accueil', 'Cherche numero', 'Contact', 'Formulaire'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 8, clarte: 6 },
+    premierImpression: 'Reconnait "son" magicien immediatement. Pas de CLS sur mobile. Chargement fluide. Il cherche juste un moyen de contacter rapidement.',
+    questionCle: 'Comment le contacter rapidement pour verifier sa disponibilite ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Formulaire present mais pas de numero click-to-call visible en 5 secondes sur mobile. Il finit par remplir le formulaire.',
+    impactTechnique: 'Mobile 91/100 - chargement acceptable. Pas de CLS sur mobile.',
+    pointsPositifs: ['Pas de CLS sur mobile : aucun bug visuel', 'Il connait deja Cyril : le site confirme', 'Les references confirment son choix'],
+    frictions: ['Numero de telephone non visible au premier coup d\'oeil mobile', 'Pas de lien click-to-call dans le header', 'Pas de calendrier de disponibilite en ligne'],
+  },
+  {
+    id: 3, name: 'Sophie', age: 51, emoji: '🏦',
+    canal: 'LinkedIn', device: 'Desktop', maturite: 'Decision',
+    situation: 'DRH grand groupe bancaire (3000 salaries), Paris',
+    contexte: 'Seminaire direction annuel, 80 personnes, budget 5-8k€. Cherche quelque chose de vraiment different.',
+    parcours: ['Accueil', 'Logos (LVMH !)', 'Temoignage Lambert', 'Version EN', 'Contact'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 8, clarte: 6 },
+    premierImpression: 'CLS desktop au chargement. "C\'est etrange, le site s\'est reorganise sous mes yeux." Elle continue car elle est en mode decision.',
+    questionCle: 'Ce prestataire est-il vraiment au niveau des grandes entreprises ?',
+    reponse: 'Oui',
+    commentReponse: 'LVMH, Le Bristol, Veuve Clicquot, Rolls Royce — exactement ce qu\'il faut pour justifier le choix en interne. Temoignage CEO Moet : decisif.',
+    impactTechnique: 'CLS perturbant mais non bloquant. Risque securite D- si proxy bancaire strict bloque les sites sans HSTS.',
+    pointsPositifs: ['Logos C-suite : argument ultime pour valider en interne', 'Temoignage Lambert : crédibilite de premier rang', 'Bilinguisme : signe de serieux international'],
+    frictions: ['CLS desktop : premiere impression technique negative', 'Pas de dossier de presse PDF : doit construire elle-meme l\'argumentaire interne', 'Pas d\'etudes de cas : "qu\'a-t-il fait pour LVMH exactement ?"'],
+  },
+  {
+    id: 4, name: 'James', age: 36, emoji: '🇬🇧',
+    canal: 'IA (ChatGPT)', device: 'Desktop', maturite: 'Comparaison',
+    situation: 'Event manager agence internationale, Londres',
+    contexte: 'Evenement corporate Paris, 150 personnes, budget 8-12k€. Cherche un magicien bilingue.',
+    parcours: ['Version EN', 'Logos', 'Cherche video', 'Cherche pricing', 'Contact'],
+    decision: 'hesite',
+    scores: { exp: 4, conf: 6, clarte: 4 },
+    premierImpression: 'CLS desktop immediate. "The site glitched." Pour un event manager londonien a 8-12k€, un site premium qui bug = contradiction de positionnement.',
+    questionCle: 'Is he available for international events and what\'s the approximate investment?',
+    reponse: 'Partiellement',
+    commentReponse: 'International OK. Pricing totalement absent. Il ne peut pas pre-qualifier Cyril pour son client sans une fourchette.',
+    impactTechnique: 'CLS 0.636 desktop : critere potentiellement eliminatoire pour un event manager tech-savvy.',
+    pointsPositifs: ['Version anglaise professionnelle et idiomatique', 'References internationales (LVMH, BMW, Le Bristol)', 'Temoignages nominatifs de haut niveau'],
+    frictions: ['CLS desktop : "the site glitched" — dissonance avec le positionnement premium', 'Zero pricing : impossible de pre-qualifier le budget', 'Videos peu visibles : pas de demo immediate', 'Pas de Calendly / lien "Book a call"'],
+  },
+  {
+    id: 5, name: 'Camille', age: 29, emoji: '💻',
+    canal: 'Instagram', device: 'Mobile', maturite: 'Decouverte',
+    situation: 'Chargee de communication startup tech, Paris',
+    contexte: 'Afterwork equipe 25 personnes possible, budget max 1500€. Pas encore de date. Pas decideure finale.',
+    parcours: ['Accueil', 'Cherche videos', 'Evenement entreprise', 'Cherche prix', 'Flamingo'],
+    decision: 'quitte',
+    scores: { exp: 5, conf: 6, clarte: 3 },
+    premierImpression: '"Wow c\'est vraiment pro, c\'est pas un magicien de foire." Venue pour des videos — ne les trouve pas facilement.',
+    questionCle: 'Est-ce accessible pour une startup avec un petit budget ?',
+    reponse: 'Non',
+    commentReponse: 'Logos LVMH/Rolls Royce + zero prix = auto-exclusion immediate. Elle suppose que c\'est hors budget sans meme contacter.',
+    impactTechnique: 'Mobile OK, pas de CLS. Le probleme est le contenu, pas la technique.',
+    pointsPositifs: ['Ambiance visuelle premium sans bug mobile', 'Salon des Illusions a 50€ = seule offre avec prix affiché', 'Les temoignages inspirent confiance'],
+    frictions: ['Videos non accessibles immediatement apres Instagram', 'Zero prix : auto-exclusion des petits budgets', 'Logos ultra-premium intimidants pour une startup', 'Pas de formule "petit groupe / afterwork"'],
+  },
+  {
+    id: 6, name: 'Marc', age: 47, emoji: '🚗',
+    canal: 'Google Search', device: 'Mobile', maturite: 'Comparaison',
+    situation: 'Responsable commercial concession BMW, Reims',
+    contexte: 'Lancement modele, 60 clients VIP, cocktail dinatoire, dans 6 semaines. Compare 3 prestataires.',
+    parcours: ['Accueil', 'Refs (BMW !)', 'Evenement entreprise', 'Cherche tarifs', 'Contact'],
+    decision: 'hesite',
+    scores: { exp: 6, conf: 8, clarte: 5 },
+    premierImpression: 'Site pro, sombre, premium. Cherche BMW dans les refs — le trouve. "C\'est le bon."',
+    questionCle: 'Quel est le tarif pour un cocktail de 60 personnes a Reims ?',
+    reponse: 'Non',
+    commentReponse: 'BMW confirme la pertinence, mais zero tarif. Il contacte aussi les concurrents qui ont affiche une fourchette.',
+    impactTechnique: 'Mobile fluide, pas de CLS. Performance OK. La technique n\'est pas le probleme.',
+    pointsPositifs: ['BMW visible dans les references : signal fort pour lui', 'Close-up cocktail mentionne : correspond exactement a son besoin', 'Temoignage CEO grand compte : credibilite'],
+    frictions: ['Absence totale de tarifs : doit "s\'exposer" pour avoir un chiffre', 'Numero de telephone peu visible sur mobile', 'Pas de delai de reponse : il a 6 semaines, chaque jour compte'],
+  },
+  {
+    id: 7, name: 'Isabelle', age: 55, emoji: '💼',
+    canal: 'Bouche-a-oreille', device: 'Mobile', maturite: 'Decision',
+    situation: 'Directrice cabinet de conseil (Paris)',
+    contexte: 'Diner de gala 40 personnes (30 ans cabinet), budget 4-6k€, dans 10 semaines. Recommandation directe.',
+    parcours: ['Accueil', 'Veuve Clicquot (refs)', 'Temoignages', 'Contact'],
+    decision: 'convertit',
+    scores: { exp: 7, conf: 9, clarte: 6 },
+    premierImpression: 'Validation en 3 secondes. "C\'est pro, c\'est le bon niveau." Cherche Veuve Clicquot — le trouve.',
+    questionCle: 'Comment le contacter pour verifier sa disponibilite ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Formulaire present, mais pas de numero direct ni WhatsApp. Elle remplit quand meme — decision deja prise.',
+    impactTechnique: 'Mobile rapide, aucun probleme technique. La confiance est deja installee avant la visite.',
+    pointsPositifs: ['Veuve Clicquot dans les refs : validation contextuelle parfaite', 'Design sobre et luxueux coherent avec son gala', 'Temoignages nominatifs de dirigeants'],
+    frictions: ['Pas de numero direct ou WhatsApp pour contact rapide', 'Formulaire standard sans option "urgent"', 'Pas de mention du delai de reponse'],
+  },
+  {
+    id: 8, name: 'Lucas', age: 32, emoji: '🃏',
+    canal: 'Instagram', device: 'Mobile', maturite: 'Decouverte',
+    situation: 'Ingenieur logiciel, amateur de magie (close-up), Lyon',
+    contexte: 'Pas de besoin precis. Tombe sur des videos de close-up. Peut-etre l\'anniversaire de sa copine.',
+    parcours: ['Accueil', 'Cherche videos', 'Flamingo (prix)', 'Salon des Illusions', 'Quitte'],
+    decision: 'quitte',
+    scores: { exp: 4, conf: 6, clarte: 4 },
+    premierImpression: 'Decalage entre Instagram (vivant, spontane) et le site (statique, solennel). Cherche des videos — ne les voit pas facilement.',
+    questionCle: 'C\'est quoi exactement le Flamingo ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Prix affiche (29.90€) mais description insuffisamment engageante pour un achat impulsif. Manque de storytelling et de photos HD du design.',
+    impactTechnique: 'Mobile OK. Se sent hors-cible (site fait pour DRH, pas pour amateurs de magie).',
+    pointsPositifs: ['Flamingo a un prix affiche : seul produit accessible du site', 'Chiffres (2500 spectacles) inspirent confiance', 'Esthetique premium coherente'],
+    frictions: ['Pas de video visible immediatement sur mobile', 'Positionnement tres B2B/luxe : se sent hors cible', 'Description Flamingo insuffisante pour un achat impulsif', 'Salon a Reims : geographiquement inaccessible (Lyon)'],
+  },
+  {
+    id: 9, name: 'Pierre-Henri', age: 42, emoji: '⚙️',
+    canal: 'IA (Perplexity)', device: 'Desktop', maturite: 'Comparaison',
+    situation: 'DRH groupe industriel (2500 salaries), Neuilly-sur-Seine',
+    contexte: 'Seminaire direction 4 mois, 120 personnes, budget ~10k€. Compare 5 prestataires.',
+    parcours: ['Accueil (CLS)', 'Cherche dossier de presse', 'Refs (EDF)', 'Temoignages', 'Contact'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 6, clarte: 4 },
+    premierImpression: 'CLS desktop violent au chargement. "Il y a un probleme sur ce site." Note mentalement : site pas totalement entretenu.',
+    questionCle: 'Y a-t-il un dossier de presentation a telecharger ?',
+    reponse: 'Non',
+    commentReponse: 'Aucun PDF, aucun kit media, aucune plaquette commerciale. Il ne peut pas presenter Cyril en CODIR sans document.',
+    impactTechnique: 'CLS 0.636 = signal de manque de rigueur pour un profil analytique. Desktop 76/100.',
+    pointsPositifs: ['21 logos grands comptes impressionnants (EDF credibilise le secteur)', 'Temoignages C-level nominatifs', 'Site bilingue : signe professionnel'],
+    frictions: ['CLS desktop : impression de bug = site mal entretenu', 'Pas de dossier de presse : ne peut pas valider en CODIR', 'Pas de tarif : Cyril passe en option B faute d\'info', 'Pas d\'etude de cas seminaire de direction'],
+  },
+  {
+    id: 10, name: 'Nina', age: 27, emoji: '🎓',
+    canal: 'Google Search', device: 'Mobile', maturite: 'Comparaison',
+    situation: 'Chargee d\'evenements association anciens eleves Grandes Ecoles, Paris',
+    contexte: 'Soiree annuelle 80 personnes dans 2 mois, budget serre 800-1500€.',
+    parcours: ['Accueil', 'Cherche tarifs', 'Refs (LVMH/TF1)', 'Salon 50€', 'Contact (non)'],
+    decision: 'quitte',
+    scores: { exp: 5, conf: 7, clarte: 3 },
+    premierImpression: '"C\'est vraiment pro." Immediatement sur la defensive : "C\'est probablement hors budget." Cherche les tarifs en 5 secondes — rien.',
+    questionCle: 'Y a-t-il une formule accessible pour une association ?',
+    reponse: 'Non',
+    commentReponse: 'Logos LVMH/TF1 = repoussoir pour un petit budget. Pas de signal d\'accessibilite. Elle suppose le pire et ne contacte pas.',
+    impactTechnique: 'Mobile OK. La technique n\'est pas le probleme — le contenu la repousse.',
+    pointsPositifs: ['Page geographique Paris pertinente', 'Salon a 50€/billet = seule offre avec prix affiche', 'Design professionnel rassurant sur la qualite'],
+    frictions: ['Positionnement ultra-premium : LVMH/Rolls = "pas pour moi"', 'Zero prix : auto-exclusion avant contact', 'Aucun signal d\'accessibilite (petits groupes, PME)', 'Peur de demander un devis et d\'avoir l\'air ridicule'],
+  },
+  {
+    id: 11, name: 'Edouard', age: 60, emoji: '🎭',
+    canal: 'Google Maps', device: 'Tablette', maturite: 'Decouverte',
+    situation: 'Retraite ingenieur, Reims. Cherche une sortie originale avec petits-enfants (10 et 13 ans).',
+    contexte: 'Week-end libre, envie d\'un spectacle atypique pour les vacances de Paques.',
+    parcours: ['Accueil', 'Salon des Illusions', 'Prix (50€)', 'Dates (sold out)', 'Quitte'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 6, clarte: 4 },
+    premierImpression: 'Visuellement elegant. Trouve le Salon des Illusions. Prix 50€ : calcule 150€ pour 3. Marque une pause.',
+    questionCle: 'Le spectacle est-il adapte aux enfants de 10-13 ans ?',
+    reponse: 'Non',
+    commentReponse: 'Aucune mention d\'age, de public cible, de badge "tous publics". Les visuels et le positionnement suggerent un public adulte.',
+    impactTechnique: 'Leger saut CLS variable sur tablette. Chargement acceptable sur WiFi.',
+    pointsPositifs: ['Prix Salon clairement affiche (seul tarif du site)', 'Concept de salle intime original', 'Lien de reservation fonctionnel'],
+    frictions: ['Aucune indication "adapte aux enfants / a partir de X ans"', 'Dates sold out ou une seule disponible : frustration', 'Pas de liste d\'attente', '150€ pour 3 places sans garantie d\'accroche des enfants'],
+  },
+  {
+    id: 12, name: 'Sarah', age: 34, emoji: '🥂',
+    canal: 'LinkedIn', device: 'Desktop', maturite: 'Comparaison',
+    situation: 'Responsable marketing marque de champagne premium, Reims',
+    contexte: 'Plusieurs evenements annuels a animer (soirees presse, diners, Paris/Londres/Geneve). Budget 20-30k€/an.',
+    parcours: ['Accueil (CLS)', 'Refs (Moet, Veuve !)', 'Temoignages', 'Cherche partenaires', 'Contact'],
+    decision: 'hesite',
+    scores: { exp: 6, conf: 7, clarte: 5 },
+    premierImpression: 'CLS desktop. "Le site bug ?" Puis les logos Veuve Clicquot et Moet s\'affichent. "Parfait, il connait notre univers."',
+    questionCle: 'Travaille-t-il regulierement avec les maisons de champagne ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Logos Moet et Veuve visibles = reponse implicite. Mais aucun cas client, aucun partenariat long terme mentionne.',
+    impactTechnique: 'CLS desktop perturbant x2 (plusieurs pages). Dissonance contenu luxe / bug technique.',
+    pointsPositifs: ['References champagne/luxe impeccables (Moet, Veuve)', 'Zone Europe mentionnee (Paris, Monaco, Geneve)', 'Temoignages nominatifs de dirigeants'],
+    frictions: ['CLS desktop : saut de layout multiple pages', 'Pas de section "partenaires / collaboration long terme"', 'Zero pricing : pre-qualification impossible', 'Pas de dossier de presse pour validation interne'],
+  },
+  {
+    id: 13, name: 'Michael', age: 39, emoji: '🇺🇸',
+    canal: 'Google Search (EN)', device: 'Desktop', maturite: 'Comparaison',
+    situation: 'Event manager americain expatrie a Paris (500 salaries, budget 5-8k€)',
+    contexte: 'Soiree de Noel europeenne, 200 personnes, anglais requis. Compare 4 prestataires.',
+    parcours: ['Version EN', 'Refs', 'Videos', 'Cherche pricing', 'Contact'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 6, clarte: 4 },
+    premierImpression: 'CLS desktop immediate. "The site is glitching." Pour un event manager americain, un site "buggue" est une contradiction de positionnement immediate.',
+    questionCle: 'Can we schedule a quick call to discuss the event?',
+    reponse: 'Partiellement',
+    commentReponse: 'Formulaire present mais pas de Calendly, pas de numero international, pas de reponse sous X heures annoncee.',
+    impactTechnique: 'CLS x2 en naviguant sur plusieurs pages. Inacceptable pour un profil tech-savvy. Desktop 76/100.',
+    pointsPositifs: ['Version anglaise professionnelle et idiomatique', 'References internationales reconnues', 'Videos de performance disponibles'],
+    frictions: ['CLS desktop : "this site is broken" — critere eliminatoire potentiel', 'Zero pricing : ne peut pas pre-qualifier le budget', 'Pas de Calendly ni numero +33 visible', 'Pas de mention de capacite pour 200 personnes'],
+  },
+  {
+    id: 14, name: 'Helene', age: 48, emoji: '💎',
+    canal: 'Bouche-a-oreille', device: 'Mobile', maturite: 'Decision',
+    situation: 'Directrice artistique agence communication luxe, Paris',
+    contexte: 'Lancement collection joaillerie, 50 invites ultra-premium, budget 6-10k€, dans 5 semaines.',
+    parcours: ['Accueil', 'Logos (Le Bristol !)', 'Scroll rapide', 'Contact (appel direct)'],
+    decision: 'convertit',
+    scores: { exp: 7, conf: 9, clarte: 6 },
+    premierImpression: 'LCP 3.3s — 3 secondes d\'attente. Puis le hero s\'affiche : ambiance luxueux, coherent avec l\'univers joaillerie. "Le Bristol ne m\'a pas menti."',
+    questionCle: 'Comment le joindre directement ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Numero de telephone cliquable present. Mais pas de WhatsApp ni email en header accessible immediatement sans scroll.',
+    impactTechnique: 'LCP 3.3s tolere. Mobile 91/100, pas de CLS. La page est stable et fluide.',
+    pointsPositifs: ['Univers visuel parfaitement aligne avec le luxe ultra-premium', 'Logo Le Bristol = validation externe de premier niveau', 'Numero cliquable mobile present', 'Temoignages dirigeants rassurent pour validation interne'],
+    frictions: ['LCP 3.3s : 3 secondes d\'ecran vide pour une personne pressee', 'Pas de WhatsApp ou contact urgent en evidence', 'Formulaire standard sans option "urgent / moins de 6 semaines"'],
+  },
+  {
+    id: 15, name: 'Tom', age: 24, emoji: '🎴',
+    canal: 'YouTube', device: 'Mobile', maturite: 'Decision',
+    situation: 'Etudiant, amateur de magie close-up (3 ans de pratique), Paris',
+    contexte: 'Achat plaisir jeu de cartes Flamingo (29.90€ dans son budget etudiant).',
+    parcours: ['Accueil', 'Menu', 'Flamingo', 'Prix (29.90€)', 'Tutoriels (inclus)', 'Commander'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 7, clarte: 5 },
+    premierImpression: 'Arrive en cherchant directement "Flamingo". Ambiance premium coherente avec l\'univers magie close-up qu\'il aime.',
+    questionCle: 'Le jeu de cartes Flamingo est-il en stock ?',
+    reponse: 'Non',
+    commentReponse: 'Aucune indication de stock ou de delai d\'expedition. Il commande quand meme mais en croisant les doigts.',
+    impactTechnique: 'Mobile 91/100, LCP tolere par un acheteur motive. Pas de CLS mobile.',
+    pointsPositifs: ['Prix clairement affiche (29.90€ + 6€ port)', 'Tutoriels video inclus : argument decisif pour un praticien', 'Esthetique premium valorise le produit'],
+    frictions: ['Aucun badge stock / delai expedition : anxiete avant commande', 'Nombre et qualite des photos HD du jeu sur mobile', 'Pas de FAQ produit (format, finition, nombre de cartes)'],
+  },
+  {
+    id: 16, name: 'Charlotte', age: 33, emoji: '💒',
+    canal: 'Instagram', device: 'Mobile', maturite: 'Decouverte',
+    situation: 'Wedding planner independante, Paris + province',
+    contexte: 'Construit son carnet prestataires premium. Cherche "le" magicien a recommander a ses clients mariage.',
+    parcours: ['Accueil', 'Evenement prive (mariage)', 'Refs (Le Bristol, Veuve)', 'Cherche partenaires', 'Contact (peut-etre)'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 7, clarte: 3 },
+    premierImpression: '"C\'est exactement l\'esthetique que mes clients attendent." Cherche une section mariage structuree et une section wedding planners.',
+    questionCle: 'Quelle est la zone d\'intervention et les formules pour les mariages ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Zone nationale OK implicitement. Mais formules mariages absentes, zero fourchette, pas de section prescripteurs.',
+    impactTechnique: 'LCP 3.3s sur 4G peut atteindre 4-5s. Mobile sinon OK.',
+    pointsPositifs: ['Esthetique parfaitement alignee avec ses clients premium', 'References Le Bristol et Veuve Clicquot tres credibilisantes', 'Zone nationale visible via pages geographiques'],
+    frictions: ['Pas de section "wedding planners / prescripteurs"', 'Zero fourchette de prix : ne peut pas budgetiser pour ses clients', 'Pas de temoignage d\'un couple ou d\'un WP', 'Delai de reponse inconnu : si pas de reponse en 48h, elle passe'],
+  },
+  {
+    id: 17, name: 'Bernard', age: 63, emoji: '👴',
+    canal: 'Google Maps', device: 'Tablette', maturite: 'Decouverte',
+    situation: 'Retraite, Chalons-en-Champagne (50 km de Reims)',
+    contexte: 'Vacances de Paques dans 3 jours, sortie avec petits-enfants. 50€ × 3 = 150€ = cher pour une sortie familiale.',
+    parcours: ['Accueil', 'Salon des Illusions', 'Prix (150€ pour 3)', 'Cherche "enfants"', 'Quitte'],
+    decision: 'quitte',
+    scores: { exp: 4, conf: 6, clarte: 4 },
+    premierImpression: '"C\'est beau mais c\'est pour les entreprises, ca..." Positionnement adulte percu immediatement.',
+    questionCle: 'Le spectacle est-il adapte aux enfants de 10-13 ans ?',
+    reponse: 'Non',
+    commentReponse: 'Nulle part le site ne mentionne l\'adaptation aux enfants. L\'ambiance suggere un public adulte averti.',
+    impactTechnique: 'Leger saut CLS sur tablette. Chargement acceptable.',
+    pointsPositifs: ['Prix Salon clairement affiche', 'Concept de salle intime original', 'Localisation Reims affichee'],
+    frictions: ['Aucune indication "adapte aux enfants / a partir de X ans"', 'Ambiance et visuels entierement adulte', '150€ pour une sortie sans certitude d\'accroche enfants', 'Dates sold out : pas d\'alternative immediate'],
+  },
+  {
+    id: 18, name: 'Priya', age: 41, emoji: '📊',
+    canal: 'IA (Claude)', device: 'Desktop', maturite: 'Comparaison',
+    situation: 'Consultante en strategie, groupe pharmaceutique, Boulogne-Billancourt',
+    contexte: 'Incentive 6 semaines, 30 personnes, budget 15k€. Compare 6 prestataires sur tableau Excel.',
+    parcours: ['Accueil (CLS note)', 'Refs (logos copiés)', 'Temoignages (frases copiees)', 'Cherche prix (vide)', 'Cherche avis Google (manquants)'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 6, clarte: 4 },
+    premierImpression: 'CLS desktop violent note explicitement. "Bug d\'affichage. Je note." Ouvre son tableau Excel.',
+    questionCle: 'Quelle est la fourchette de prix pour 30 personnes a Paris ?',
+    reponse: 'Non',
+    commentReponse: 'Zero information tarifaire. La colonne "Prix indicatif" de son tableau reste vide avec un point d\'interrogation rouge.',
+    impactTechnique: 'CLS 0.636 desktop = "signal de mauvaise maintenance" pour une consultante analytique. Desktop 76/100.',
+    pointsPositifs: ['References clients exceptionnelles pour le secteur corporate', 'Temoignages nominatifs : exactement ce qu\'elle cherche', 'Couverture Paris confirmee', 'Bilinguisme = professionnel'],
+    frictions: ['CLS desktop = premier contact visuellement chaotique', 'ZERO prix : colonne la plus importante = vide', 'Avis Google mentionnes mais non integres : non verifiables', 'Pas de page "Formules corporate" structurees'],
+  },
+  {
+    id: 19, name: 'Julien', age: 30, emoji: '🎉',
+    canal: 'Google Search', device: 'Mobile', maturite: 'Decouverte',
+    situation: 'Charge de communication PME, Troyes (80 km de Reims)',
+    contexte: 'Anniversaire surprise directeur (50 ans), equipe 15 personnes, budget collecte 500€.',
+    parcours: ['Accueil', 'Logos (LVMH/Rolls → "pas pour nous")', 'Cherche tarifs (rien)', 'Evenement prive (sans prix)', 'Quitte'],
+    decision: 'quitte',
+    scores: { exp: 4, conf: 7, clarte: 2 },
+    premierImpression: '"Waouh, c\'est classe. Trop classe pour mon budget." L\'effet premium joue contre la conversion des la premiere seconde.',
+    questionCle: 'Y a-t-il une formule abordable pour un petit groupe ?',
+    reponse: 'Non',
+    commentReponse: 'Auto-exclusion maximale. Il ne prend meme pas le risque du formulaire : "peur d\'avoir l\'air idiot avec mes 500€".',
+    impactTechnique: 'Mobile OK, pas de CLS. La technique n\'est pas le probleme.',
+    pointsPositifs: ['Qualite visuelle confirme que c\'est un vrai professionnel', 'Navigation mobile correcte'],
+    frictions: ['Positionnement ultra-premium : logos LVMH/Rolls = "pas pour moi"', 'ZERO prix = suppose automatiquement hors budget', 'Aucune formule courte ou entree de gamme mentionnee', 'La peur de "l\'air ridicule" paralyse avant le formulaire'],
+  },
+  {
+    id: 20, name: 'Anne-Laure', age: 52, emoji: '🏆',
+    canal: 'Email (newsletter)', device: 'Desktop', maturite: 'Decision',
+    situation: 'PDG PME familiale (120 salaries, cosmetique), Reims',
+    contexte: '40 ans de l\'entreprise dans 4 mois, 80 personnes. A rencontre Cyril en vrai il y a 2 ans — souvenir tres positif.',
+    parcours: ['Accueil', 'Evenement entreprise', 'Refs (confirme niveau)', 'Temoignages', 'Contact (envoie)'],
+    decision: 'convertit',
+    scores: { exp: 7, conf: 9, clarte: 6 },
+    premierImpression: 'CLS desktop note mais elle s\'en moque. "C\'est lui, c\'est bien ce que je pensais." Le souvenir de la rencontre reelle s\'active.',
+    questionCle: 'Prend-il en charge des soirees de 80 personnes a Reims ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Les references grands comptes permettent de deduire "oui". Mais aucune confirmation explicite de capacite ou de format.',
+    impactTechnique: 'CLS desktop percu mais ne bloque pas une decideure motivee.',
+    pointsPositifs: ['References perfectly alignees avec son univers corporate', 'Temoignages dirigeants : langage identitaire', 'Localisation Reims = logistique simplifiee'],
+    frictions: ['Pas de mention de capacite max pour les evenements', 'CLS au chargement', 'Pas de numero de telephone direct pour un contact immediat'],
+  },
+];
+
+const convertissent = personas.filter(p => p.decision === 'convertit');
+const hesitent = personas.filter(p => p.decision === 'hesite');
+const quittent = personas.filter(p => p.decision === 'quitte');
+
+// Ameliorations
+const ameliorationsCritiques = [
+  {
+    titre: 'Corriger le CLS desktop (0.636 → < 0.1)',
+    detail: 'Un CLS de 0.636 est 6 fois au-dessus du seuil "mauvais" (0.25). Chaque visiteur desktop voit le contenu sauter visuellement au chargement. Pour un prestataire premium a 5-10k€, c\'est une contradiction de positionnement. James pense "the site glitched", Pierre-Henri note "site mal entretenu", Priya inscrit un signe negatif dans son tableau Excel.',
+    action: 'Ajouter des attributs width et height sur toutes les images, preloader les polices (font-display: swap), eviter les insertions dynamiques dans le viewport initial. Corriger via Lighthouse Desktop → "Avoid large layout shifts".',
+  },
+  {
+    titre: 'Afficher une fourchette de prix indicative',
+    detail: '14 personas sur 20 sont impactes par l\'absence de prix. Camille, Nina et Julien s\'auto-excluent avant meme de contacter. Aurelie, Marc, Sarah, Michael et Priya contactent les concurrents qui affichent une fourchette en priorite. Le positionnement luxe "sans prix" est volontaire — mais une FAQ "Quel est votre budget minimum ?" ou "A partir de X€ pour 50 personnes" cree une porte d\'entree sans trahir le positionnement.',
+    action: 'Ajouter une section FAQ sur la page "Evenement d\'entreprise" avec des questions de pre-qualification budgetaire. Ou une mention "Formules a partir de X€" en bas de page. Sans prix precis, juste une fourchette permettant de se positionner.',
+  },
+  {
+    titre: 'Rendre les videos accessibles immediatement',
+    detail: 'Camille, Lucas, James et Michael arrivent avec l\'attente de voir Cyril en action (Instagram, YouTube, IA). Sur le site, les videos sont en lazy-load sans embed direct visible. La promesse Instagram n\'est pas honoree sur le site. C\'est une rupture de parcours critique pour 5+ personas.',
+    action: 'Integrer une video de close-up (30-60 secondes, autoplay muted) directement visible dans le premier fold de la homepage. Ou une thumbnail video tres visible avec un play button. Priorite sur mobile.',
+  },
+  {
+    titre: 'Creer un dossier de presse PDF telechargeable',
+    detail: 'Sophie, Aurelie, Pierre-Henri, Sarah, Michael et Helene ont besoin d\'un document pour valider le choix de Cyril en interne (CODIR, direction, client joaillier). Sans support documentaire, ils doivent "vendre" Cyril a leurs superieurs avec leurs propres mots. C\'est un frein reel a la conversion B2B.',
+    action: 'Creer un dossier de presse de 4-6 pages (PDF) : biographie, positionnement, types de prestations, references emblematiques (avec logos), temoignages selectionnes, contact. Disponible en FR et EN. Bouton de telechargement sur la page "Evenement d\'entreprise".',
+  },
+  {
+    titre: 'Afficher un delai de reponse sur la page Contact',
+    detail: '8+ personas B2B ont une deadline et comparent aussi les prestataires sur leur reactivite. Sans indication de delai, envoyer un formulaire est un "saut dans le vide" : quand vais-je recevoir une reponse ? Si un concurrent affiche "reponse sous 24h ouvrées", il a l\'avantage.',
+    action: 'Ajouter une seule ligne en haut du formulaire : "Je reponds a toutes les demandes sous 24 heures ouvrées." Optionnel : ajouter un numero de telephone cliquable (tel:) en evidence.',
+  },
+];
+
+const ameliorationsUtiles = [
+  { titre: 'Indication public pour le Salon des Illusions', detail: 'Edouard et Bernard repartent car ils ne savent pas si le spectacle convient a leurs petits-enfants. Une phrase suffit : "Spectacle tout public — recommande a partir de 12 ans". Ca recupere immediatement les visiteurs Google Maps avec enfants.' },
+  { titre: 'Numero telephone cliquable en evidence sur mobile', detail: 'Thomas, Marc et Helene veulent appeler en 10 secondes. Un lien tel: visible dans le header mobile (ou sticky) convertit les leads chauds sans friction. Actuellement, trouver le numero sur mobile demande trop de temps.' },
+  { titre: 'Integrer les avis Google dynamiquement', detail: 'Priya, Michael et Pierre-Henri veulent des avis verifiables. Les "5 etoiles Google" sont mentionnes sur le site mais sans widget, sans lien, sans nombre. Un widget Google Reviews ou un lien direct vers la fiche GBP suffit.' },
+  { titre: 'Section "Wedding Planners / Prescripteurs"', detail: 'Charlotte et Sarah voudraient une porte d\'entree B2B2B. Une phrase en bas de la page "Evenement prive" : "Vous etes wedding planner ou organisateur evenementiel ? Contactez-moi pour discuter de partenariat." C\'est un canal multiplicateur a zero cout.' },
+  { titre: 'Optimiser le LCP mobile (3.3s → < 2.5s)', detail: 'Helene, Charlotte et Camille sont impactees par le LCP mobile. Preloader l\'image hero (fetchpriority="high"), convertir les images en WebP, ajouter un attribut loading="eager" sur la premiere image visible.' },
+];
+
+const ameliorationsDiscuter = [
+  { emoji: '🏷️', titre: 'Badge stock + delai expedition sur la page Flamingo', detail: '"En stock — Expedie sous 48h" est une information manquante qui cree de l\'anxiete avant l\'achat. Tom convertit quand meme, mais cette ligne doublerait sa serenite.' },
+  { emoji: '👥', titre: 'Mention de la capacite max pour les evenements', detail: 'Anne-Laure et Michael ne trouvent pas de reponse explicite sur les formats "grand groupe". Une ligne du type "Interventions possibles de 15 a 500 personnes" sur la page entreprise.' },
+  { emoji: '🗺️', titre: 'Corriger l\'incoherence Schema.org adresse (Paris vs Reims)', detail: 'Le Schema.org LocalBusiness indique Paris mais la base est Reims. Cette incoherence peut perturber Google Maps et la recherche locale. Impact SEO a corriger.' },
+  { emoji: '🔒', titre: 'Ajouter les headers de securite (HSTS, CSP, X-Frame-Options)', detail: 'Le grade D- Mozilla Observatory est un risque de proxy d\'entreprise pour Sophie (banque) et Pierre-Henri (industrie). L\'ajout des headers via .htaccess ou Cloudflare prend moins d\'une heure.' },
+  { emoji: '⭐', titre: 'Integrer aggregateRating dans le Schema.org', detail: 'Les 5 etoiles Google sont un argument de vente non exploite en SEO. Un aggregateRating bien forme peut afficher les etoiles directement dans les resultats Google.' },
+];
+
+function getScoreColor(score: number): string {
+  if (score >= 90) return '#22c55e';
+  if (score >= 50) return '#f59e0b';
+  return '#ef4444';
+}
+
+function getScoreTextClass(score: number): string {
+  if (score >= 90) return 'text-green-600';
+  if (score >= 50) return 'text-amber-500';
+  return 'text-red-500';
+}
+
+function getScoreLabel(score: number): string {
+  if (score >= 90) return 'Bon';
+  if (score >= 50) return 'A ameliorer';
+  return 'Mauvais';
+}
+
+function getCwvBg(status: string): string {
+  if (status === 'good') return 'bg-green-50';
+  if (status === 'medium') return 'bg-amber-50';
+  return 'bg-red-50';
+}
+
+function getCwvText(status: string): string {
+  if (status === 'good') return 'text-green-700';
+  if (status === 'medium') return 'text-amber-700';
+  return 'text-red-700';
+}
+
+function getCwvBadge(status: string): string {
+  if (status === 'good') return 'bg-green-100 text-green-800';
+  if (status === 'medium') return 'bg-amber-100 text-amber-800';
+  return 'bg-red-100 text-red-800';
+}
+
+function getCwvLabel(status: string): string {
+  if (status === 'good') return 'Bon';
+  if (status === 'medium') return 'Moyen';
+  return 'Mauvais';
+}
+
+function getBarColor(taux: number): string {
+  if (taux >= 60) return 'bg-green-500';
+  if (taux >= 30) return 'bg-amber-500';
+  return 'bg-red-400';
+}
+
+const psLabels: Record<string, string> = { performance: 'Performance', accessibility: 'Accessibilite', bestPractices: 'Bonnes Pratiques', seo: 'SEO' };
+---
+
+<BaseLayout
+  title={`Audit UX + Technique — ${prospect.name}`}
+  description={`Rapport d'audit complet du site ${prospect.url} : 20 personas, scores techniques, ameliorations priorisees.`}
+  noindex={true}
+  lang="fr"
+  frPath={`/audit/cyrilregard`}
+>
+
+<!-- HERO -->
+<section class="bg-primary-900 text-white py-16 md:py-20">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <span class="inline-block text-[11px] font-semibold uppercase tracking-wider bg-white/10 backdrop-blur px-3 py-1 rounded-full mb-6">
+      Rapport confidentiel
+    </span>
+    <h1 class="font-heading text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+      Audit UX + Technique
+    </h1>
+    <p class="text-xl md:text-2xl text-primary-200 font-medium mb-2">{prospect.name}</p>
+    <p class="text-primary-300 mb-6">{prospect.activity} — {prospect.location}</p>
+    <div class="flex flex-wrap gap-2 text-xs">
+      <span class="bg-white/10 px-3 py-1.5 rounded-lg">20 personas simulees</span>
+      <span class="bg-white/10 px-3 py-1.5 rounded-lg">8 canaux d'arrivee</span>
+      <span class="bg-white/10 px-3 py-1.5 rounded-lg">{prospect.date}</span>
+      <a href={prospect.url} target="_blank" rel="noopener" class="bg-white/10 px-3 py-1.5 rounded-lg hover:bg-white/20 transition-colors">{prospect.url}</a>
+    </div>
+  </div>
+</section>
+
+<!-- TAB BAR -->
+<nav class="sticky top-16 md:top-20 z-40 bg-white/95 backdrop-blur border-b border-neutral-200" id="tab-bar">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-2 h-12 text-sm overflow-x-auto">
+    <button data-tab="0" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-primary-700 bg-primary-50">Synthese</button>
+    <button data-tab="1" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">Technique</button>
+    <button data-tab="2" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">
+      Visiteurs <span class="ml-1 text-xs text-neutral-400">20</span>
+    </button>
+    <button data-tab="3" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">
+      Ameliorations <span class="ml-1 text-xs text-neutral-400">{ameliorationsCritiques.length + ameliorationsUtiles.length}</span>
+    </button>
+  </div>
+</nav>
+
+<!-- PANELS -->
+<div id="panels" class="flex overflow-x-auto snap-x snap-mandatory" style="-webkit-overflow-scrolling: touch; scrollbar-width: none;">
+
+  <!-- ==================== PANEL 1: SYNTHESE ==================== -->
+  <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+      <!-- KPI Cards -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+        <div class="bg-white border border-neutral-200 rounded-xl p-5 text-center">
+          <p class="text-3xl font-bold text-amber-500">{kpis.conversion}%</p>
+          <p class="text-xs text-neutral-500 mt-1">Taux de conversion</p>
+        </div>
+        <div class="bg-white border border-neutral-200 rounded-xl p-5 text-center">
+          <p class="text-3xl font-bold text-amber-500">{kpis.experience}/10</p>
+          <p class="text-xs text-neutral-500 mt-1">Experience moyenne</p>
+        </div>
+        <div class="bg-white border border-neutral-200 rounded-xl p-5 text-center">
+          <p class="text-3xl font-bold text-green-600">{kpis.confiance}/10</p>
+          <p class="text-xs text-neutral-500 mt-1">Confiance moyenne</p>
+        </div>
+        <div class="bg-white border border-neutral-200 rounded-xl p-5 text-center">
+          <p class="text-3xl font-bold text-amber-500">{kpis.clarte}/10</p>
+          <p class="text-xs text-neutral-500 mt-1">Clarte moyenne</p>
+        </div>
+      </div>
+
+      <!-- Paradoxe -->
+      <div class="bg-accent-50 border border-accent-200 rounded-xl p-5 mb-10">
+        <p class="text-sm font-semibold text-accent-800 mb-1">Le paradoxe principal</p>
+        <p class="text-sm text-accent-700">{paradox}</p>
+      </div>
+
+      <!-- Conversion par canal -->
+      <h2 class="font-heading text-xl font-bold text-neutral-900 mb-4">Conversion par canal d'arrivee</h2>
+      <div class="space-y-3 mb-10">
+        {conversionByCanal.map(c => (
+          <div class="flex items-center gap-3">
+            <span class="text-sm text-neutral-700 w-52 shrink-0">{c.canal}</span>
+            <div class="flex-1 bg-neutral-100 rounded-full h-5 overflow-hidden">
+              <div class={`h-full rounded-full ${getBarColor(c.taux)}`} style={`width: ${Math.max(c.taux, 2)}%`}></div>
+            </div>
+            <span class={`text-sm font-bold w-12 text-right ${c.taux >= 60 ? 'text-green-600' : c.taux >= 30 ? 'text-amber-600' : 'text-red-500'}`}>{c.taux}%</span>
+          </div>
+        ))}
+      </div>
+
+      <!-- Conversion par maturite -->
+      <h2 class="font-heading text-xl font-bold text-neutral-900 mb-4">Conversion par maturite</h2>
+      <div class="grid grid-cols-3 gap-4 mb-10">
+        {conversionByMaturite.map(m => (
+          <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
+            <p class="text-sm font-medium text-neutral-600 mb-1">{m.label}</p>
+            <p class={`text-2xl font-bold ${m.taux >= 50 ? 'text-green-600' : m.taux >= 20 ? 'text-amber-500' : 'text-red-500'}`}>{m.taux}%</p>
+            <p class="text-xs text-neutral-400 mt-1">{m.convertis}/{m.total} personas</p>
+          </div>
+        ))}
+      </div>
+      <div class="bg-red-50 border border-red-200 rounded-xl p-4 mb-10">
+        <p class="text-sm text-red-800"><strong>Alerte :</strong> le site convertit 0% des visiteurs en mode Decouverte et 0% en mode Comparaison. Ce sont les 14 personas les plus nombreux. Seules les personnes deja decidees avant d'arriver sur le site convertissent — ce qui represente seulement 30% de la simulation.</p>
+      </div>
+
+      <!-- Conversion par device -->
+      <h2 class="font-heading text-xl font-bold text-neutral-900 mb-4">Conversion par device</h2>
+      <div class="grid grid-cols-3 gap-4">
+        {conversionByDevice.map(d => (
+          <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
+            <p class="text-sm font-medium text-neutral-600 mb-1">{d.label}</p>
+            <p class={`text-2xl font-bold ${d.taux >= 50 ? 'text-green-600' : d.taux >= 20 ? 'text-amber-500' : 'text-red-500'}`}>{d.taux}%</p>
+            <p class="text-xs text-neutral-400 mt-1">{d.convertis}/{d.total} personas</p>
+          </div>
+        ))}
+      </div>
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mt-4">
+        <p class="text-sm text-amber-800"><strong>Desktop :</strong> le CLS 0.636 degrade l'experience de tous les visiteurs desktop. Les 2 conversions desktop sont des personnes deja decidees qui ont "surveca" au bug visuel. Sur 6 personas desktop en Comparaison ou Decouverte : 0 conversion.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== PANEL 2: TECHNIQUE ==================== -->
+  <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+      <!-- PageSpeed Mobile -->
+      <h2 class="font-heading text-xl font-bold text-neutral-900 mb-6">PageSpeed — Mobile</h2>
+      <div class="grid grid-cols-4 gap-4 mb-8">
+        {Object.entries(pagespeed.mobile).map(([key, score]) => (
+          <div class="text-center">
+            <div class="relative w-16 h-16 mx-auto mb-2">
+              <svg class="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3" />
+                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={getScoreColor(score)} stroke-width="3" stroke-dasharray={`${score}, 100`} stroke-linecap="round" />
+              </svg>
+              <span class={`absolute inset-0 flex items-center justify-center text-lg font-bold ${getScoreTextClass(score)}`}>{score}</span>
+            </div>
+            <p class="text-xs text-neutral-600 font-medium">{psLabels[key]}</p>
+          </div>
+        ))}
+      </div>
+
+      <!-- PageSpeed Desktop -->
+      <h2 class="font-heading text-xl font-bold text-neutral-900 mb-4">PageSpeed — Desktop</h2>
+      <div class="bg-red-50 border border-red-200 rounded-xl p-3 mb-4 flex items-start gap-2">
+        <svg class="w-4 h-4 text-red-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"/></svg>
+        <p class="text-xs text-red-800"><strong>CLS desktop critique : 0.636</strong> — Le seuil "mauvais" est 0.25. Ce score est 2.5x au-dessus du seuil critique. Cause : images sans dimensions, polices avec flash ou elements en lazy-load inseres dans le viewport.</p>
+      </div>
+      <div class="grid grid-cols-4 gap-4 mb-10">
+        {Object.entries(pagespeed.desktop).map(([key, score]) => (
+          <div class="text-center">
+            <div class="relative w-16 h-16 mx-auto mb-2">
+              <svg class="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3" />
+                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={getScoreColor(score)} stroke-width="3" stroke-dasharray={`${score}, 100`} stroke-linecap="round" />
+              </svg>
+              <span class={`absolute inset-0 flex items-center justify-center text-lg font-bold ${getScoreTextClass(score)}`}>{score}</span>
+            </div>
+            <p class="text-xs text-neutral-600 font-medium">{psLabels[key]}</p>
+          </div>
+        ))}
+      </div>
+
+      <!-- Core Web Vitals -->
+      <h2 class="font-heading text-xl font-bold text-neutral-900 mb-4">Core Web Vitals</h2>
+      <div class="grid md:grid-cols-2 gap-3 mb-10">
+        {coreWebVitals.map(cwv => (
+          <div>
+            <p class="text-[10px] text-neutral-400 mb-1 font-medium">MOBILE</p>
+            <div class={`flex items-center justify-between p-3 rounded-lg ${getCwvBg(cwv.mobileStatus)} mb-1`}>
+              <div>
+                <span class="text-xs font-bold text-neutral-700">{cwv.name}</span>
+                <span class="text-xs text-neutral-500 ml-1">({cwv.desc})</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class={`text-sm font-bold ${getCwvText(cwv.mobileStatus)}`}>{cwv.mobile}</span>
+                <span class={`text-[10px] px-1.5 py-0.5 rounded font-medium ${getCwvBadge(cwv.mobileStatus)}`}>{getCwvLabel(cwv.mobileStatus)}</span>
+              </div>
+            </div>
+            <p class="text-[10px] text-neutral-400 mb-1 font-medium">DESKTOP</p>
+            <div class={`flex items-center justify-between p-3 rounded-lg ${getCwvBg(cwv.desktopStatus)}`}>
+              <div>
+                <span class="text-xs font-bold text-neutral-700">{cwv.name}</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class={`text-sm font-bold ${getCwvText(cwv.desktopStatus)}`}>{cwv.desktop}</span>
+                <span class={`text-[10px] px-1.5 py-0.5 rounded font-medium ${getCwvBadge(cwv.desktopStatus)}`}>{getCwvLabel(cwv.desktopStatus)}</span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Securite -->
+      <h2 class="font-heading text-xl font-bold text-neutral-900 mb-4">Securite — Mozilla Observatory</h2>
+      <div class="flex items-center gap-6 mb-6">
+        <div class="text-center">
+          <p class="text-4xl font-bold text-red-500">{observatory.grade}</p>
+          <p class="text-xs text-neutral-500 mt-1">Grade</p>
+        </div>
+        <div class="text-center">
+          <p class="text-4xl font-bold text-red-500">{observatory.score}</p>
+          <p class="text-xs text-neutral-500 mt-1">Score / 100</p>
+        </div>
+        <div class="text-center">
+          <p class="text-2xl font-bold text-amber-500">{observatory.testsPassed}/{observatory.testsTotal}</p>
+          <p class="text-xs text-neutral-500 mt-1">Tests passes</p>
+        </div>
+      </div>
+      <div class="mb-10">
+        <p class="text-sm font-semibold text-neutral-700 mb-3">Headers HTTP manquants</p>
+        <div class="space-y-2">
+          {missingHeaders.map(h => (
+            <div class="flex items-center gap-2 text-sm text-red-700">
+              <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+              {h}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Schema.org -->
+      <h2 class="font-heading text-xl font-bold text-neutral-900 mb-4">Schema.org (donnees structurees)</h2>
+      <div class="grid md:grid-cols-2 gap-2 mb-10">
+        {schemaChecks.map(c => (
+          <div class={`flex items-center gap-2 text-sm p-2 rounded-lg ${c.present ? 'text-green-700 bg-green-50' : c.critical ? 'text-red-700 bg-red-50' : 'text-neutral-500 bg-neutral-50'}`}>
+            {c.present
+              ? <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              : <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            }
+            {c.label}
+            {!c.present && c.critical && <span class="text-[10px] bg-red-100 text-red-700 px-1 rounded ml-auto">critique</span>}
+          </div>
+        ))}
+      </div>
+
+      <!-- Open Graph -->
+      <h2 class="font-heading text-xl font-bold text-neutral-900 mb-4">Open Graph & Meta SEO</h2>
+      <div class="grid md:grid-cols-2 gap-2 mb-10">
+        {ogChecks.map(c => (
+          <div class={`flex items-center gap-2 text-sm p-2 rounded-lg ${c.present ? 'text-green-700 bg-green-50' : 'text-neutral-500 bg-neutral-50'}`}>
+            {c.present
+              ? <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              : <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            }
+            {c.label}
+          </div>
+        ))}
+      </div>
+
+      <!-- SEO technique -->
+      <h2 class="font-heading text-xl font-bold text-neutral-900 mb-4">SEO technique</h2>
+      <div class="grid md:grid-cols-2 gap-2 mb-10">
+        {seoChecks.map(c => (
+          <div class={`flex items-center gap-2 text-sm p-2 rounded-lg ${c.present ? 'text-green-700 bg-green-50' : c.critical ? 'text-red-700 bg-red-50' : 'text-neutral-500 bg-neutral-50'}`}>
+            {c.present
+              ? <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              : <svg class="w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            }
+            {c.label}
+            {!c.present && c.critical && <span class="text-[10px] bg-red-100 text-red-700 px-1 rounded ml-auto">critique</span>}
+          </div>
+        ))}
+      </div>
+
+      <!-- Opportunites -->
+      <h2 class="font-heading text-xl font-bold text-neutral-900 mb-4">Opportunites prioritaires</h2>
+      <div class="space-y-2">
+        {opportunities.map((o, i) => (
+          <div class="flex items-center justify-between bg-white border border-neutral-200 rounded-lg p-3">
+            <div class="flex items-center gap-3">
+              <span class="text-sm font-bold text-neutral-400 w-5">#{i+1}</span>
+              <span class="text-sm text-neutral-800">{o.title}</span>
+            </div>
+            <span class={`text-xs font-medium px-2 py-1 rounded ${i === 0 ? 'bg-red-100 text-red-700' : 'bg-neutral-100 text-neutral-600'}`}>{o.savings}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== PANEL 3: VISITEURS ==================== -->
+  <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+      <!-- Stats row -->
+      <div class="grid grid-cols-3 gap-4 mb-10">
+        <div class="bg-green-50 border border-green-200 rounded-xl p-4 text-center">
+          <p class="text-3xl font-bold text-green-600">{convertissent.length}</p>
+          <p class="text-xs text-green-700 mt-1">Contactent</p>
+        </div>
+        <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-center">
+          <p class="text-3xl font-bold text-amber-500">{hesitent.length}</p>
+          <p class="text-xs text-amber-700 mt-1">Hesitent</p>
+        </div>
+        <div class="bg-red-50 border border-red-200 rounded-xl p-4 text-center">
+          <p class="text-3xl font-bold text-red-500">{quittent.length}</p>
+          <p class="text-xs text-red-700 mt-1">Repartent</p>
+        </div>
+      </div>
+
+      <!-- Convertissent -->
+      <h3 class="font-heading text-lg font-bold text-green-700 mb-4">Ceux qui contactent ({convertissent.length})</h3>
+      <div class="space-y-3 mb-10">
+        {convertissent.map(p => (
+          <details class="group border border-green-200 bg-green-50/30 rounded-xl overflow-hidden">
+            <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+              <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                  <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                  <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                  <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                </div>
+                <p class="text-xs text-neutral-500 mb-2">{p.situation}</p>
+                <p class="text-xs text-neutral-600 mb-2.5">{p.contexte}</p>
+                <div class="flex flex-wrap items-center gap-1">
+                  {p.parcours.map((page, i) => (
+                    <Fragment>
+                      <span class="text-[10px] text-primary-700 bg-white border border-primary-100 px-1.5 py-0.5 rounded">{page}</span>
+                      {i < p.parcours.length - 1 && <span class="text-neutral-300 text-[10px]">›</span>}
+                    </Fragment>
+                  ))}
+                  <span class="text-[10px] bg-green-600 text-white px-1.5 py-0.5 rounded font-medium ml-0.5">Contacte</span>
+                </div>
+              </div>
+              <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <div class="px-4 pb-4 pt-0 border-t border-green-200 bg-white/50">
+              <div class="grid gap-3 text-xs mt-3">
+                <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.premierImpression}</p></div>
+                <div><p class="font-semibold text-neutral-700 mb-1">Question cle</p><p class="text-neutral-600 italic">"{p.questionCle}"</p><p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong> — {p.commentReponse}</p></div>
+                <div><p class="font-semibold text-neutral-700 mb-1">Impact technique</p><p class="text-neutral-600">{p.impactTechnique}</p></div>
+                <div class="flex gap-4">
+                  <div class="flex-1"><p class="font-semibold text-green-700 mb-1">Points positifs</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.pointsPositifs.map(pp => <li>{pp}</li>)}</ul></div>
+                  <div class="flex-1"><p class="font-semibold text-amber-700 mb-1">Frictions</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map(f => <li>{f}</li>)}</ul></div>
+                </div>
+                <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                  <div class="text-center"><span class={`block text-lg font-bold ${p.scores.exp >= 7 ? 'text-green-600' : p.scores.exp >= 5 ? 'text-amber-500' : 'text-red-500'}`}>{p.scores.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                  <div class="text-center"><span class={`block text-lg font-bold ${p.scores.conf >= 7 ? 'text-green-600' : p.scores.conf >= 5 ? 'text-amber-500' : 'text-red-500'}`}>{p.scores.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                  <div class="text-center"><span class={`block text-lg font-bold ${p.scores.clarte >= 7 ? 'text-green-600' : p.scores.clarte >= 5 ? 'text-amber-500' : 'text-red-500'}`}>{p.scores.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+                </div>
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+
+      <!-- Hesitent -->
+      <h3 class="font-heading text-lg font-bold text-amber-600 mb-4">Ceux qui hesitent ({hesitent.length})</h3>
+      <div class="space-y-3 mb-10">
+        {hesitent.map(p => (
+          <details class="group border border-amber-200 bg-amber-50/30 rounded-xl overflow-hidden">
+            <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+              <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                  <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                  <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                  <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                </div>
+                <p class="text-xs text-neutral-500 mb-2">{p.situation}</p>
+                <p class="text-xs text-neutral-600 mb-2.5">{p.contexte}</p>
+                <div class="flex flex-wrap items-center gap-1">
+                  {p.parcours.map((page, i) => (
+                    <Fragment>
+                      <span class="text-[10px] text-primary-700 bg-white border border-primary-100 px-1.5 py-0.5 rounded">{page}</span>
+                      {i < p.parcours.length - 1 && <span class="text-neutral-300 text-[10px]">›</span>}
+                    </Fragment>
+                  ))}
+                  <span class="text-[10px] bg-amber-500 text-white px-1.5 py-0.5 rounded font-medium ml-0.5">Hesite</span>
+                </div>
+              </div>
+              <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <div class="px-4 pb-4 pt-0 border-t border-amber-200 bg-white/50">
+              <div class="grid gap-3 text-xs mt-3">
+                <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.premierImpression}</p></div>
+                <div><p class="font-semibold text-neutral-700 mb-1">Question cle</p><p class="text-neutral-600 italic">"{p.questionCle}"</p><p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong> — {p.commentReponse}</p></div>
+                <div><p class="font-semibold text-neutral-700 mb-1">Impact technique</p><p class="text-neutral-600">{p.impactTechnique}</p></div>
+                <div class="flex gap-4">
+                  <div class="flex-1"><p class="font-semibold text-green-700 mb-1">Points positifs</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.pointsPositifs.map(pp => <li>{pp}</li>)}</ul></div>
+                  <div class="flex-1"><p class="font-semibold text-amber-700 mb-1">Frictions</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map(f => <li>{f}</li>)}</ul></div>
+                </div>
+                <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                  <div class="text-center"><span class={`block text-lg font-bold ${p.scores.exp >= 7 ? 'text-green-600' : p.scores.exp >= 5 ? 'text-amber-500' : 'text-red-500'}`}>{p.scores.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                  <div class="text-center"><span class={`block text-lg font-bold ${p.scores.conf >= 7 ? 'text-green-600' : p.scores.conf >= 5 ? 'text-amber-500' : 'text-red-500'}`}>{p.scores.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                  <div class="text-center"><span class={`block text-lg font-bold ${p.scores.clarte >= 7 ? 'text-green-600' : p.scores.clarte >= 5 ? 'text-amber-500' : 'text-red-500'}`}>{p.scores.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+                </div>
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+
+      <!-- Quittent -->
+      <h3 class="font-heading text-lg font-bold text-neutral-500 mb-4">Ceux qui repartent ({quittent.length})</h3>
+      <div class="space-y-3">
+        {quittent.map(p => (
+          <details class="group border border-neutral-200 bg-neutral-50/40 rounded-xl overflow-hidden">
+            <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+              <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                  <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                  <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                  <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                </div>
+                <p class="text-xs text-neutral-500 mb-2">{p.situation}</p>
+                <p class="text-xs text-neutral-600 mb-2.5">{p.contexte}</p>
+                <div class="flex flex-wrap items-center gap-1">
+                  {p.parcours.map((page, i) => (
+                    <Fragment>
+                      <span class="text-[10px] text-primary-700 bg-white border border-primary-100 px-1.5 py-0.5 rounded">{page}</span>
+                      {i < p.parcours.length - 1 && <span class="text-neutral-300 text-[10px]">›</span>}
+                    </Fragment>
+                  ))}
+                  <span class="text-[10px] bg-neutral-400 text-white px-1.5 py-0.5 rounded font-medium ml-0.5">Quitte</span>
+                </div>
+              </div>
+              <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <div class="px-4 pb-4 pt-0 border-t border-neutral-200 bg-white/50">
+              <div class="grid gap-3 text-xs mt-3">
+                <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.premierImpression}</p></div>
+                <div><p class="font-semibold text-neutral-700 mb-1">Question cle</p><p class="text-neutral-600 italic">"{p.questionCle}"</p><p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong> — {p.commentReponse}</p></div>
+                <div><p class="font-semibold text-neutral-700 mb-1">Impact technique</p><p class="text-neutral-600">{p.impactTechnique}</p></div>
+                <div class="flex gap-4">
+                  <div class="flex-1"><p class="font-semibold text-green-700 mb-1">Points positifs</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.pointsPositifs.map(pp => <li>{pp}</li>)}</ul></div>
+                  <div class="flex-1"><p class="font-semibold text-amber-700 mb-1">Frictions</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map(f => <li>{f}</li>)}</ul></div>
+                </div>
+                <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                  <div class="text-center"><span class={`block text-lg font-bold ${p.scores.exp >= 7 ? 'text-green-600' : p.scores.exp >= 5 ? 'text-amber-500' : 'text-red-500'}`}>{p.scores.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                  <div class="text-center"><span class={`block text-lg font-bold ${p.scores.conf >= 7 ? 'text-green-600' : p.scores.conf >= 5 ? 'text-amber-500' : 'text-red-500'}`}>{p.scores.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                  <div class="text-center"><span class={`block text-lg font-bold ${p.scores.clarte >= 7 ? 'text-green-600' : p.scores.clarte >= 5 ? 'text-amber-500' : 'text-red-500'}`}>{p.scores.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+                </div>
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== PANEL 4: AMELIORATIONS ==================== -->
+  <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+      <!-- Le plus important -->
+      <h2 class="font-heading text-xl font-bold text-neutral-900 mb-6">Le plus important</h2>
+      <div class="space-y-4 mb-12">
+        {ameliorationsCritiques.map(a => (
+          <div class="bg-white border-2 border-red-200 rounded-xl p-5 shadow-sm">
+            <h4 class="font-semibold text-neutral-900 mb-2">{a.titre}</h4>
+            <p class="text-sm text-neutral-600 mb-3">{a.detail}</p>
+            <div class="bg-primary-50 rounded-lg px-3 py-2.5 flex items-start gap-2">
+              <svg class="w-4 h-4 text-primary-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+              <p class="text-xs text-primary-800">{a.action}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Utile aussi -->
+      <h2 class="font-heading text-xl font-bold text-neutral-900 mb-6">Utile aussi</h2>
+      <div class="grid md:grid-cols-2 gap-4 mb-12">
+        {ameliorationsUtiles.map(a => (
+          <div class="bg-white border border-neutral-200 rounded-xl p-4">
+            <h4 class="font-semibold text-neutral-900 text-sm mb-1.5">{a.titre}</h4>
+            <p class="text-xs text-neutral-600">{a.detail}</p>
+          </div>
+        ))}
+      </div>
+
+      <!-- A discuter ensemble -->
+      <h2 class="font-heading text-xl font-bold text-neutral-900 mb-6">A discuter ensemble</h2>
+      <div class="space-y-3 mb-12">
+        {ameliorationsDiscuter.map(a => (
+          <div class="bg-neutral-50 border border-neutral-200 rounded-xl p-4 flex gap-3">
+            <span class="text-lg shrink-0">{a.emoji}</span>
+            <div>
+              <h4 class="font-semibold text-neutral-900 text-sm mb-0.5">{a.titre}</h4>
+              <p class="text-xs text-neutral-600">{a.detail}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- METHODOLOGIE -->
+<section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-neutral-200">
+  <h2 class="font-heading text-xl font-bold text-neutral-900 mb-4">Methodologie</h2>
+  <ol class="list-decimal list-inside space-y-2 text-sm text-neutral-600">
+    <li><strong>Scraping complet</strong> — Les 7 pages du site ont ete analysees : contenu, structure, meta-donnees, images, liens, version francaise et anglaise.</li>
+    <li><strong>Audit technique</strong> — Scores Lighthouse (mobile + desktop), Mozilla Observatory (securite), Schema.org, Open Graph, SEO technique.</li>
+    <li><strong>20 personas</strong> — Profils realistes couvrant 8 canaux d'arrivee (dont 3 IA), 3 niveaux de maturite, 3 types d'appareils. Profils B2B corporate, B2C evenements prives, Salon des Illusions, amateurs de magie (Flamingo).</li>
+    <li><strong>Simulation de visites</strong> — Chaque persona parcourt le site avec ses attentes, ses criteres et ses freins. Le feedback tient compte des problemes techniques reels (CLS desktop, LCP mobile, securite D-).</li>
+    <li><strong>Agregation</strong> — Les 20 feedbacks sont compiles en metriques (taux de conversion par canal / maturite / device) et ameliorations priorisees par impact.</li>
+  </ol>
+</section>
+
+<!-- CTA FINAL -->
+<section class="bg-primary-900 text-white py-16">
+  <div class="max-w-3xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+    <h2 class="font-heading text-2xl md:text-3xl font-bold mb-4">Pret a transformer ces insights en resultats ?</h2>
+    <p class="text-primary-200 mb-8 text-lg">Ce rapport est un point de depart. Je peux vous aider a corriger le CLS, creer le dossier de presse, optimiser la page Contact — et mesurer l'impact.</p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="/commander" class="inline-flex items-center justify-center px-6 py-3 bg-accent-500 hover:bg-accent-600 text-white font-semibold rounded-xl transition-colors">
+        Commander un site
+      </a>
+      <a href="/contact" class="inline-flex items-center justify-center px-6 py-3 bg-white/10 hover:bg-white/20 text-white font-semibold rounded-xl transition-colors">
+        En discuter d'abord
+      </a>
+    </div>
+  </div>
+</section>
+
+<style is:inline>
+  #panels { -ms-overflow-style: none; }
+  #panels::-webkit-scrollbar { display: none; }
+</style>
+
+<script is:inline>
+  const panels = document.getElementById('panels');
+  const tabs = document.querySelectorAll('.tab-btn');
+  const sections = panels.querySelectorAll('.tab-panel');
+
+  function activateTab(index) {
+    tabs.forEach((b, i) => {
+      if (i === index) {
+        b.classList.remove('text-neutral-500');
+        b.classList.add('text-primary-700', 'bg-primary-50');
+      } else {
+        b.classList.remove('text-primary-700', 'bg-primary-50');
+        b.classList.add('text-neutral-500');
+      }
+    });
+  }
+
+  tabs.forEach((btn, i) => {
+    btn.addEventListener('click', () => {
+      sections[i].scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+      activateTab(i);
+    });
+  });
+
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach(entry => {
+      if (entry.isIntersecting) {
+        const index = Array.from(sections).indexOf(entry.target);
+        if (index !== -1) activateTab(index);
+      }
+    });
+  }, { root: panels, threshold: 0.5 });
+
+  sections.forEach(s => observer.observe(s));
+</script>
+
+</BaseLayout>
