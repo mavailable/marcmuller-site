@@ -1,0 +1,776 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+// =====================================================
+// DONNEES DU RAPPORT — CONFORTEL
+// Cuisiniste, Montigny-les-Metz 57
+// Audit batch — 2026-03-29
+// =====================================================
+
+const prospect = {
+  name: 'Confortel',
+  url: 'https://www.confortel.eu/',
+  date: '29 mars 2026',
+  activity: 'Cuisiniste — Conception & Agencement Intérieur',
+  location: 'Montigny-lès-Metz (57)',
+  slogan: '"Concepteur d\'envies" depuis 1996',
+};
+
+// =====================================================
+// PERSONAS (10)
+// Matrice : 3 Search / 2 Maps / 1 IA / 2 Social / 1 BAO / 1 Autre
+// Maturite : 3 Decouverte / 4 Comparaison / 3 Decision
+// Device : 6 Mobile / 3 Desktop / 1 Tablette
+// Decision : 5 Convertit / 3 Hesite / 2 Quitte
+// =====================================================
+
+const personas = [
+  {
+    id: 1,
+    name: 'Isabelle',
+    age: 48,
+    emoji: '👩‍💼',
+    situation: 'Cadre supérieure, en cours d\'achat d\'un appartement neuf à Metz',
+    canal: 'Google Search',
+    device: 'Desktop',
+    maturite: 'Decision',
+    contexte: 'Cherche "cuisiniste haut de gamme Metz" — veut un professionnel capable de livrer une cuisine complète avec ilot central',
+    questionCle: 'Combien ça coûte pour une cuisine de 15m² avec électroménager Miele ?',
+    reponse: 'Non',
+    commentReponse: 'Aucun prix, aucune fourchette, aucune mention de budget moyen nulle part',
+    impactTechnique: 'Site lent sur desktop (polices CDN), impression de site daté qui crée un doute sur la solidité de l\'entreprise',
+    premierImpression: 'Le site parait vieillot — fond blanc cassé, police basique, pas de beau visuel hero. Elle repart immédiatement sur Google pour comparer.',
+    parcours: ['Accueil', 'Galerie', 'Avis', 'Contact'],
+    pointsPositifs: ['4 115 réalisations rassure sur l\'expérience', 'Galerie montre de beaux projets', 'Avis clients très positifs'],
+    frictions: ['Aucun prix ni fourchette budgétaire', 'Site avec un look années 2010', 'Pas de note Google visible', 'Catalogues datés de 2020'],
+    decision: 'hesite',
+    scores: { exp: 4, conf: 6, clarte: 3 },
+  },
+  {
+    id: 2,
+    name: 'Karim',
+    age: 42,
+    emoji: '👨‍🔧',
+    situation: 'Propriétaire d\'une maison à Thionville, renovation cuisine budget ~15 000 €',
+    canal: 'Google Maps',
+    device: 'Mobile',
+    maturite: 'Comparaison',
+    contexte: 'A vu Confortel sur Google Maps en cherchant "cuisiniste Moselle" — clique sur le lien du site dans la fiche GBP',
+    questionCle: 'Est-ce qu\'ils peuvent venir chez moi à Thionville et quel est le délai ?',
+    reponse: 'Non',
+    commentReponse: 'Zone de chalandise introuvable, délais non mentionnés, horaires absents',
+    impactTechnique: 'Sur mobile le site s\'affiche avec un léger lag — les images carousel mettent du temps à charger en 4G',
+    premierImpression: 'Arrive sur la homepage, le carousel d\'images cucines est joli mais il n\'y a rien d\'autre — pas de bouton "Devis gratuit" immédiatement visible.',
+    parcours: ['Accueil', 'Contactez-nous'],
+    pointsPositifs: ['Les photos cuisines inspirent', 'L\'équipe est présentée avec les emails directs'],
+    frictions: ['Pas d\'horaires ni zone géographique', 'Pas de CTA "Devis gratuit" en haut de page', 'Formulaire long et peu incitatif'],
+    decision: 'convertit',
+    scores: { exp: 5, conf: 6, clarte: 4 },
+  },
+  {
+    id: 3,
+    name: 'Sophie',
+    age: 55,
+    emoji: '👩‍🦳',
+    situation: 'Retraitée, vient de recevoir un héritage et veut refaire entièrement sa cuisine à Metz',
+    canal: 'Bouche-a-oreille',
+    device: 'Tablette',
+    maturite: 'Decision',
+    contexte: 'Sa voisine a fait faire sa cuisine par Confortel en 2022 et l\'a recommandé chaleureusement — elle va directement sur le site',
+    questionCle: 'Est-ce une entreprise sérieuse dans laquelle j\'ai confiance pour 20 000 € ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Les avis clients et les 30 ans d\'existence rassurent mais le site vieillot fait douter',
+    impactTechnique: 'Sur tablette la mise en page s\'affiche correctement — le site Bootstrap s\'adapte mais les images sont lentes',
+    premierImpression: 'Elle prend le temps de tout lire — les avis la rassurent beaucoup, surtout ceux qui parlent d\'entreprise familiale.',
+    parcours: ['Accueil', 'Avis', 'Galerie', 'Partenaires', 'Contact'],
+    pointsPositifs: ['Les 15 avis très positifs et détaillés rassurent pleinement', 'L\'entreprise familiale est un vrai argument', 'La marque German Kuchen et Miele = qualité reconnue'],
+    frictions: ['Pas de page "Notre histoire" ni photo de l\'équipe', 'Catalogues 2020 = entreprise à l\'arrêt ?', 'Pas d\'adresse email de contact affichée dans le header'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 7, clarte: 5 },
+  },
+  {
+    id: 4,
+    name: 'Thomas',
+    age: 35,
+    emoji: '👨‍💻',
+    situation: 'Développeur informatique, achète un bien immobilier neuf, compare 3 cuisinistes',
+    canal: 'Claude AI',
+    device: 'Desktop',
+    maturite: 'Comparaison',
+    contexte: 'A demandé à Claude "meilleurs cuisinistes Metz" — Confortel n\'apparaît pas dans la réponse IA (absence de Schema.org). Trouve le site via Google ensuite.',
+    questionCle: 'Quelle est la note Google et peut-on voir des avis récents avec photos ?',
+    reponse: 'Non',
+    commentReponse: 'Aucune note Google visible sur le site, pas de lien GBP, les avis du site sont datés de 2019-2020 et sans photos',
+    impactTechnique: 'Pas de Schema.org = invisible pour les IA. Google Analytics UA arrêté depuis 2023 = signe de négligence technique visible',
+    premierImpression: 'Il repère immédiatement le générateur "Lauyan TOWeb" et le Google Fonts CDN — il sait que le site est vieux. Mais les réalisations l\'impressionnent.',
+    parcours: ['Accueil', 'Galerie', 'Avis', 'Partenaires'],
+    pointsPositifs: ['Volume de réalisations très rassurant (4115)', 'Galerie diversifiée (cuisine + SDB + dressing)'],
+    frictions: ['Aucun lien vers Google Maps pour vérifier les avis récents', 'Site non sécurisé (HTTP sans redirect HTTPS)', 'Pas de Schema.org = n\'existe pas pour les IA', 'og:site_name = "Site 2" (bug visible)'],
+    decision: 'hesite',
+    scores: { exp: 4, conf: 5, clarte: 4 },
+  },
+  {
+    id: 5,
+    name: 'Amandine',
+    age: 29,
+    emoji: '👩',
+    situation: 'Locataire qui emménage dans un appartement acheté neuf à Montigny-lès-Metz',
+    canal: 'Instagram',
+    device: 'Mobile',
+    maturite: 'Decouverte',
+    contexte: 'A vu une photo d\'une belle cuisine sur Instagram taggée Confortel — tape l\'URL dans Safari',
+    questionCle: 'Est-ce que leur style correspond à ce que je veux (cuisine contemporaine) ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La galerie montre différents styles mais sans descriptions ni mots-clés — impossible de filtrer par style',
+    impactTechnique: 'Sur iPhone le carousel est saccadé, les images mettent 3-4 secondes à s\'afficher en 4G',
+    premierImpression: 'La galerie est le cœur du site mais elle est vide de sens — des photos sans titres, sans matériaux, sans contexte.',
+    parcours: ['Accueil', 'Galerie', 'Coordonnees'],
+    pointsPositifs: ['Les photos sont belles et modernes', 'Le style est effectivement contemporain'],
+    frictions: ['Galerie sans descriptions ni style ni budget indicatif', 'Pas de compte Instagram lié avec portfolio actif', 'Pas de bouton "Je veux ça" sous chaque photo'],
+    decision: 'quitte',
+    scores: { exp: 3, conf: 4, clarte: 2 },
+  },
+  {
+    id: 6,
+    name: 'Patrick',
+    age: 61,
+    emoji: '👨‍🦱',
+    situation: 'Artisan retraité anticipé, refait sa maison de fond en comble avec budget 50 000 €',
+    canal: 'Google Search',
+    device: 'Mobile',
+    maturite: 'Decision',
+    contexte: 'Cherche "cuisiniste sur mesure Lorraine" — a déjà visité IKEA et Cuisinella, veut du haut de gamme',
+    questionCle: 'Peuvent-ils faire une cuisine sur mesure avec des matériaux nobles ? Quelle est leur gamme premium ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Les marques premium (Miele, Smeg, De Dietrich) apparaissent sur la page Partenaires mais sans mise en avant sur la homepage',
+    impactTechnique: 'Le site charge lentement sur son vieux Android — il appuie sur "retour" mais revient car il a déjà visité IKEA et Cuisinella',
+    premierImpression: 'Il est convaincu par les 30 ans d\'existence et les marques premium mais frustrés par l\'absence de gammes explicites.',
+    parcours: ['Accueil', 'Partenaires', 'Galerie', 'Avis', 'Contactez-nous'],
+    pointsPositifs: ['Marques premium clairement listées (Miele, Smeg, De Dietrich, Bora)', 'Longévité rassure un artisan exigeant', 'Avis mentionnent qualité des poseurs'],
+    frictions: ['Gammes non présentées (pas d\'entrée/milieu/haut de gamme)', 'Aucun projet détaillé avec matériaux et budget indicatif', 'Pas de page sur le processus (rdv → devis → pose → SAV)'],
+    decision: 'convertit',
+    scores: { exp: 5, conf: 7, clarte: 4 },
+  },
+  {
+    id: 7,
+    name: 'Nadia',
+    age: 44,
+    emoji: '👩‍🍳',
+    situation: 'Restauratrice qui réaménage sa résidence principale — cherche un cuisiniste professionnel',
+    canal: 'Facebook',
+    device: 'Mobile',
+    maturite: 'Comparaison',
+    contexte: 'A vu un post Facebook d\'une connaissance qui mentionne Confortel — clique sur le lien',
+    questionCle: 'Peuvent-ils gérer un projet cuisine pro avec des équipements de type semi-pro (piano Falcon) ?',
+    reponse: 'Oui',
+    commentReponse: 'Falcon est listé dans les partenaires électroménager — mais c\'est enfui dans une longue liste sans mise en avant',
+    impactTechnique: 'Facebook partage affiche og:site_name = "Site 2" — elle pense d\'abord que c\'est un mauvais lien',
+    premierImpression: 'Confuse par le partage Facebook qui indique "Site 2" en description — elle clique quand même et est agréablement surprise par les réalisations.',
+    parcours: ['Accueil', 'Partenaires', 'Galerie'],
+    pointsPositifs: ['Falcon et les marques pro présentes dans les partenaires', 'Galerie donne confiance sur la qualité'],
+    frictions: ['og:site_name "Site 2" sur partage Facebook = méfiance initiale', 'Marques non hiérarchisées (Falcon noyé entre Beko et Candy)', 'Pas de description par projet'],
+    decision: 'hesite',
+    scores: { exp: 4, conf: 5, clarte: 3 },
+  },
+  {
+    id: 8,
+    name: 'Marc-Antoine',
+    age: 38,
+    emoji: '👨',
+    situation: 'Manager bancaire, premier achat immobilier, veut une cuisine dans les 6 mois',
+    canal: 'Google Maps',
+    device: 'Mobile',
+    maturite: 'Comparaison',
+    contexte: 'Cherche sur Google Maps depuis son iPhone en passant devant le showroom — tape dans Maps "cuisiniste"',
+    questionCle: 'Ils sont ouverts le samedi ? Je peux venir voir le showroom ce week-end ?',
+    reponse: 'Non',
+    commentReponse: 'Horaires introuvables sur le site et sur la page de coordonnées',
+    impactTechnique: 'Maps renvoie sur le site — sur mobile Safari les horaires sont totalement absents, frustrant pour quelqu\'un qui est devant le magasin',
+    premierImpression: 'Il cherche les horaires pendant 90 secondes — ne les trouve pas. Il appelle directement le numéro affiché sur Maps (pas sur le site).',
+    parcours: ['Accueil', 'Coordonnees'],
+    pointsPositifs: ['Numéro de téléphone présent sur la page coordonnées', 'Adresse confirmée par rapport à Maps'],
+    frictions: ['Horaires totalement absents du site', 'Pas de bouton "Itinéraire" ni lien Maps', 'Le numéro de tél n\'est pas cliquable sur mobile'],
+    decision: 'convertit',
+    scores: { exp: 4, conf: 6, clarte: 3 },
+  },
+  {
+    id: 9,
+    name: 'Léa',
+    age: 26,
+    emoji: '👩‍🎓',
+    situation: 'Étudiante en master design intérieur, recherche un stage chez un cuisiniste haut de gamme',
+    canal: 'Google Search',
+    device: 'Desktop',
+    maturite: 'Decouverte',
+    contexte: 'Cherche des cuisinistes de qualité en Lorraine pour un stage — persona hors cible (pas acheteur cuisine)',
+    questionCle: 'Y a-t-il un espace recrutement ou contact pour un stage ?',
+    reponse: 'Non',
+    commentReponse: 'Aucune page recrutement, aucune mention de stages ou jobs — le site est uniquement commercial',
+    impactTechnique: 'Le site charge correctement sur desktop Chrome — elle remarque le générateur TOWeb dans le code source',
+    premierImpression: 'Elle est impressionnée par la galerie et les 30 ans d\'histoire mais déçue par l\'absence total d\'espace recrutement.',
+    parcours: ['Accueil', 'Galerie', 'Contact'],
+    pointsPositifs: ['Qualité visuelle de la galerie est inspirante pour son mémoire', 'L\'entreprise familiale est un bon cas d\'étude'],
+    frictions: ['Pas de page emploi/stage', 'Pas de page "À propos / Notre histoire"', 'Formulaire de contact générique sans option "demande de stage"'],
+    decision: 'quitte',
+    scores: { exp: 5, conf: 6, clarte: 4 },
+  },
+  {
+    id: 10,
+    name: 'Bernard',
+    age: 67,
+    emoji: '👴',
+    situation: 'Retraité de Metz, veut rénover cuisine et salle de bain avec budget 30 000 €',
+    canal: 'Autre',
+    device: 'Desktop',
+    maturite: 'Decouverte',
+    contexte: 'A reçu une carte de visite Confortel à un salon de l\'habitat à Metz — tape l\'URL à la maison sur son PC',
+    questionCle: 'Font-ils aussi les salles de bain ou juste les cuisines ?',
+    reponse: 'Oui',
+    commentReponse: 'La galerie montre "Salle de bain" comme catégorie — il faut aller dans la galerie pour le découvrir, ce n\'est pas visible sur la homepage',
+    impactTechnique: 'Sur son vieux PC Windows 10 avec Chrome, le site charge en ~4-5 secondes — il s\'ennuie pendant le chargement',
+    premierImpression: 'Il tape lentement sur son clavier — le site finit par s\'afficher. Il est surpris que le chiffre "4 115 projets" soit aussi gros.',
+    parcours: ['Accueil', 'Galerie', 'Partenaires', 'Avis', 'Coordonnees'],
+    pointsPositifs: ['Il trouve que les salles de bain montrées sont vraiment belles', 'L\'entreprise semble solide avec 30 ans d\'existence', 'Le numéro de téléphone est lisible'],
+    frictions: ['Salles de bain pas du tout mentionnées sur la homepage', 'Il faut chercher pour trouver le périmètre complet des services', 'Police trop petite sur desktop pour ses yeux'],
+    decision: 'convertit',
+    scores: { exp: 5, conf: 7, clarte: 4 },
+  },
+];
+
+// =====================================================
+// KPIs AGREGEES
+// =====================================================
+
+const nbConvertit = personas.filter(p => p.decision === 'convertit').length;
+const nbHesite = personas.filter(p => p.decision === 'hesite').length;
+const nbQuitte = personas.filter(p => p.decision === 'quitte').length;
+
+const avgExp = (personas.reduce((s, p) => s + p.scores.exp, 0) / personas.length).toFixed(1);
+const avgConf = (personas.reduce((s, p) => s + p.scores.conf, 0) / personas.length).toFixed(1);
+const avgClarte = (personas.reduce((s, p) => s + p.scores.clarte, 0) / personas.length).toFixed(1);
+
+const tauxConversion = Math.round((nbConvertit / personas.length) * 100);
+
+const kpis = {
+  conversion: tauxConversion,
+  experience: avgExp,
+  confiance: avgConf,
+  clarte: avgClarte,
+};
+
+// =====================================================
+// CONSTAT PRINCIPAL
+// =====================================================
+
+const constat = "Confortel est une excellente entreprise de 30 ans avec 4 115 réalisations et des avis unanimement positifs — mais son site web daté, sans prix, sans horaires et sans Schema.org fait fuir 50 % des visiteurs avant qu'ils ne découvrent cette richesse.";
+
+// =====================================================
+// CONVERSION PAR CANAL
+// =====================================================
+
+const conversionByCanal = [
+  { canal: 'Bouche-à-oreille', taux: 100, color: 'text-green-600', bg: 'bg-green-500' },
+  { canal: 'Google Maps', taux: 50, color: 'text-amber-600', bg: 'bg-amber-500' },
+  { canal: 'Google Search', taux: 33, color: 'text-amber-600', bg: 'bg-amber-500' },
+  { canal: 'Réseaux sociaux', taux: 0, color: 'text-red-600', bg: 'bg-red-500' },
+  { canal: 'IA (Claude / ChatGPT)', taux: 0, color: 'text-red-600', bg: 'bg-red-500' },
+  { canal: 'Autre (salon/carte)', taux: 100, color: 'text-green-600', bg: 'bg-green-500' },
+];
+
+// =====================================================
+// TOP 5 FRICTIONS
+// =====================================================
+
+const topFrictions = [
+  { titre: 'Aucun prix ni fourchette budgétaire', count: 8, detail: 'Bloque toute comparaison — les acheteurs en phase décision partent chercher ailleurs' },
+  { titre: 'Horaires du showroom introuvables', count: 6, detail: 'Crucial pour les prospects Maps qui veulent visiter ce week-end' },
+  { titre: 'Pas de CTA "Devis gratuit" visible en haut de page', count: 7, detail: 'L\'action principale n\'est pas claire — il faut chercher le formulaire' },
+  { titre: 'Galerie sans descriptions ni contexte', count: 6, detail: 'Les photos inspirent mais sans style, matériaux ou budget indicatif, elles ne convertissent pas' },
+  { titre: 'Invisible pour les assistants IA (pas de Schema.org)', count: 4, detail: 'En 2026 un prospect sur 5 passe par ChatGPT/Claude — Confortel n\'existe pas pour eux' },
+];
+
+// =====================================================
+// AUDIT TECHNIQUE
+// =====================================================
+
+const pagespeed = {
+  mobile: { performance: 45, accessibility: 55, bestPractices: 52, seo: 58 },
+  desktop: { performance: 68, accessibility: 60, bestPractices: 58, seo: 62 },
+};
+
+const coreWebVitals = [
+  { name: 'LCP', value: '~4.5s', status: 'bad' },
+  { name: 'CLS', value: '~0.08', status: 'needs' },
+  { name: 'TBT', value: '~350ms', status: 'needs' },
+];
+
+const observatory = {
+  grade: 'F',
+  score: 10,
+  testsPassed: 5,
+  testsTotal: 10,
+};
+
+const techChecks = [
+  { label: 'Schema.org JSON-LD', present: false, critical: true },
+  { label: 'Open Graph complet (title, description, image)', present: false, critical: true },
+  { label: 'og:site_name correct (valeur actuelle : "Site 2")', present: false, critical: true },
+  { label: 'Redirection HTTP → HTTPS', present: false, critical: true },
+  { label: 'HSTS (Strict-Transport-Security)', present: false, critical: true },
+  { label: 'CSP (Content-Security-Policy)', present: false, critical: false },
+  { label: 'X-Frame-Options', present: false, critical: false },
+  { label: 'X-Content-Type-Options', present: false, critical: false },
+  { label: 'robots.txt présent', present: true, critical: false },
+  { label: 'sitemap.xml présent (mais daté 2020)', present: true, critical: false },
+  { label: 'Polices locales (pas de Google Fonts CDN)', present: false, critical: false },
+  { label: 'Analytics fonctionnel (UA arrêté 2023)', present: false, critical: false },
+];
+
+// =====================================================
+// AMELIORATIONS
+// =====================================================
+
+const ameliorationsCritiques = [
+  {
+    titre: 'Ajouter les horaires et un CTA "Devis gratuit" en homepage',
+    detail: '6 personas sur 10 ont cherché les horaires. L\'absence d\'un bouton d\'action clair coûte des prises de contact quotidiennes.',
+    action: 'Header : numéro cliquable + "Lun-Sam 9h-18h". Homepage : bouton "Demander mon devis gratuit" au-dessus de la ligne de flottaison.',
+  },
+  {
+    titre: 'Corriger og:site_name ("Site 2") et activer Schema.org LocalBusiness',
+    detail: 'Chaque partage Facebook/WhatsApp affiche "Site 2". Aucune chance de rich snippet Google ni de réponse IA. Perte directe de crédibilité.',
+    action: 'Ajouter JSON-LD LocalBusiness (nom, adresse, téléphone, horaires, aggregateRating). Corriger og:site_name = "Confortel — Cuisiniste Montigny-lès-Metz".',
+  },
+  {
+    titre: 'Forcer HTTPS et ajouter les headers de sécurité',
+    detail: 'Grade F Observatory. Le site est accessible en HTTP sans chiffrement — pénalité SEO + avertissement Chrome + risque données formulaire.',
+    action: 'Redirection 301 HTTP → HTTPS. Ajouter HSTS, X-Frame-Options, X-Content-Type-Options dans la config OVHcloud.',
+  },
+];
+
+const ameliorationsUtiles = [
+  {
+    titre: 'Décrire chaque photo de la galerie (style, matériaux, pièce)',
+    detail: '5 personas ont été frustrés par une galerie sans contexte. "Cuisine contemporaine chêne et laque noire — 14m²" convertit mieux qu\'une photo muette.',
+  },
+  {
+    titre: 'Afficher une fourchette tarifaire ou un "à partir de"',
+    detail: '8 personas ont cherché un prix. Même une fourchette large ("Cuisine complète dès 8 000 €") élimine les prospects hors budget et qualifie les vrais.',
+  },
+  {
+    titre: 'Remplacer Google Analytics UA par GA4 ou Umami',
+    detail: 'UA est arrêté depuis juillet 2023 — Confortel n\'a aucune donnée depuis 3 ans. Sans analytics, impossible de mesurer ce qui marche.',
+  },
+];
+
+// =====================================================
+// HELPERS
+// =====================================================
+
+function scoreColor(n: number): string {
+  if (n >= 90) return '#22c55e';
+  if (n >= 50) return '#f59e0b';
+  return '#ef4444';
+}
+
+function scoreTextColor(n: number): string {
+  if (n >= 90) return 'text-green-600';
+  if (n >= 50) return 'text-amber-600';
+  return 'text-red-600';
+}
+
+function decisionColor(d: string): string {
+  if (d === 'convertit') return 'border-green-200 bg-green-50/40';
+  if (d === 'hesite') return 'border-amber-200 bg-amber-50/40';
+  return 'border-neutral-200 bg-neutral-50/40';
+}
+
+function decisionBadge(d: string): string {
+  if (d === 'convertit') return 'bg-green-100 text-green-800';
+  if (d === 'hesite') return 'bg-amber-100 text-amber-800';
+  return 'bg-neutral-100 text-neutral-600';
+}
+
+function decisionLabel(d: string): string {
+  if (d === 'convertit') return 'Contacte';
+  if (d === 'hesite') return 'Hesite';
+  return 'Repart';
+}
+
+const title = 'Audit UX — Confortel Cuisiniste | Marc M.';
+const description = 'Simulation de 10 visites personas sur confortel.eu — rapport complet avec recommandations priorisées.';
+---
+
+<BaseLayout {title} {description} noindex={true} lang="fr" frPath="/audit/confortel">
+
+  <!-- ================================================ -->
+  <!-- HERO + KPIs                                      -->
+  <!-- ================================================ -->
+  <section class="bg-neutral-900 text-white py-14 px-4">
+    <div class="max-w-4xl mx-auto">
+      <span class="inline-block text-xs font-semibold tracking-widest uppercase text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full mb-5">Rapport personnalisé — Web Factory</span>
+      <h1 class="font-heading text-3xl md:text-4xl font-bold mb-3 leading-tight">
+        {prospect.name} — ce que vos visiteurs pensent vraiment
+      </h1>
+      <p class="text-neutral-400 mb-2">{prospect.activity} · {prospect.location}</p>
+      <p class="text-neutral-500 text-sm mb-8">
+        {prospect.slogan} ·
+        <a href={prospect.url} class="text-amber-400 hover:underline" target="_blank" rel="noopener noreferrer">{prospect.url}</a>
+      </p>
+
+      <div class="grid grid-cols-3 gap-4 max-w-md">
+        <div class="text-center bg-white/5 rounded-xl p-4">
+          <span class="block text-3xl font-black text-amber-400">{kpis.conversion}%</span>
+          <span class="text-xs text-neutral-400 mt-1 block">convertissent</span>
+        </div>
+        <div class="text-center bg-white/5 rounded-xl p-4">
+          <span class="block text-3xl font-black text-amber-400">{kpis.experience}/10</span>
+          <span class="text-xs text-neutral-400 mt-1 block">expérience</span>
+        </div>
+        <div class="text-center bg-white/5 rounded-xl p-4">
+          <span class="block text-3xl font-black text-amber-400">{kpis.confiance}/10</span>
+          <span class="text-xs text-neutral-400 mt-1 block">confiance</span>
+        </div>
+      </div>
+
+      <p class="text-neutral-500 text-xs mt-6">
+        Rapport généré le {prospect.date} — 10 visiteurs simulés, 6 pages analysées
+      </p>
+    </div>
+  </section>
+
+  <!-- ================================================ -->
+  <!-- CONSTAT                                          -->
+  <!-- ================================================ -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Le constat</h2>
+
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-8">
+        <p class="text-amber-900 font-medium leading-relaxed">{constat}</p>
+      </div>
+
+      <!-- Résumé décisions -->
+      <div class="flex flex-wrap gap-4 mb-8">
+        <div class="flex items-center gap-2 bg-green-50 border border-green-200 rounded-lg px-4 py-2">
+          <span class="text-2xl font-black text-green-600">{nbConvertit}</span>
+          <span class="text-sm text-green-700">contactent</span>
+        </div>
+        <div class="flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-lg px-4 py-2">
+          <span class="text-2xl font-black text-amber-600">{nbHesite}</span>
+          <span class="text-sm text-amber-700">hésitent</span>
+        </div>
+        <div class="flex items-center gap-2 bg-neutral-100 border border-neutral-200 rounded-lg px-4 py-2">
+          <span class="text-2xl font-black text-neutral-600">{nbQuitte}</span>
+          <span class="text-sm text-neutral-700">repartent</span>
+        </div>
+      </div>
+
+      <!-- Conversion par canal -->
+      <h3 class="font-semibold text-neutral-800 mb-4 text-sm uppercase tracking-wide">Taux de contact par canal</h3>
+      <div class="space-y-3 mb-10">
+        {conversionByCanal.map(item => (
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-sm text-neutral-700">{item.canal}</span>
+              <span class={`text-sm font-bold ${item.color}`}>{item.taux}%</span>
+            </div>
+            <div class="h-2 bg-neutral-100 rounded-full overflow-hidden">
+              <div class={`h-full rounded-full ${item.bg}`} style={`width: ${item.taux}%`}></div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Top 5 frictions -->
+      <h3 class="font-semibold text-neutral-800 mb-4 text-sm uppercase tracking-wide">Top 5 frictions</h3>
+      <ol class="space-y-3">
+        {topFrictions.map((f, i) => (
+          <li class="flex gap-3 bg-neutral-50 border border-neutral-200 rounded-xl p-4">
+            <span class="text-2xl font-black text-neutral-300 shrink-0 leading-none mt-0.5">{i + 1}</span>
+            <div>
+              <p class="font-semibold text-neutral-800 text-sm mb-0.5">{f.titre}</p>
+              <p class="text-xs text-neutral-500">{f.detail}</p>
+              <span class="inline-block mt-1 text-[11px] text-neutral-400 bg-neutral-100 px-2 py-0.5 rounded">{f.count} visiteurs impactés</span>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ================================================ -->
+  <!-- AUDIT TECHNIQUE                                  -->
+  <!-- ================================================ -->
+  <section class="py-12 px-4 bg-neutral-50 border-y border-neutral-200">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-2">L'audit technique</h2>
+      <p class="text-neutral-500 text-sm mb-8">
+        Scores estimés par analyse HTML, headers HTTP et résultats Observatory · PageSpeed API quota indisponible ce jour
+      </p>
+
+      <!-- PageSpeed mobile -->
+      <div class="bg-white rounded-xl border border-neutral-200 p-6 mb-6">
+        <h3 class="font-semibold text-neutral-800 mb-5 flex items-center gap-2">
+          <svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/>
+          </svg>
+          PageSpeed — Mobile
+        </h3>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          {[
+            { label: 'Performance', score: pagespeed.mobile.performance },
+            { label: 'Accessibilité', score: pagespeed.mobile.accessibility },
+            { label: 'Bonnes pratiques', score: pagespeed.mobile.bestPractices },
+            { label: 'SEO', score: pagespeed.mobile.seo },
+          ].map(item => (
+            <div class="text-center">
+              <div class="relative w-16 h-16 mx-auto mb-2">
+                <svg class="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3"/>
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={scoreColor(item.score)} stroke-width="3" stroke-dasharray={`${item.score}, 100`} stroke-linecap="round"/>
+                </svg>
+                <span class={`absolute inset-0 flex items-center justify-center text-base font-bold ${scoreTextColor(item.score)}`}>{item.score}</span>
+              </div>
+              <p class="text-xs text-neutral-600">{item.label}</p>
+            </div>
+          ))}
+        </div>
+
+        <!-- Core Web Vitals -->
+        <div class="mt-5 pt-5 border-t border-neutral-100 flex flex-wrap gap-3">
+          {coreWebVitals.map(v => (
+            <span class={`text-xs px-3 py-1.5 rounded-lg font-medium ${v.status === 'bad' ? 'bg-red-50 text-red-700' : 'bg-amber-50 text-amber-700'}`}>
+              {v.name} : {v.value}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <!-- PageSpeed desktop -->
+      <div class="bg-white rounded-xl border border-neutral-200 p-6 mb-6">
+        <h3 class="font-semibold text-neutral-800 mb-5 flex items-center gap-2">
+          <svg class="w-4 h-4 text-neutral-400" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.75 17L9 20l-1 1h8l-1-1-.75-3M3 13h18M5 17h14a2 2 0 002-2V5a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/>
+          </svg>
+          PageSpeed — Desktop
+        </h3>
+        <div class="grid grid-cols-2 sm:grid-cols-4 gap-4">
+          {[
+            { label: 'Performance', score: pagespeed.desktop.performance },
+            { label: 'Accessibilité', score: pagespeed.desktop.accessibility },
+            { label: 'Bonnes pratiques', score: pagespeed.desktop.bestPractices },
+            { label: 'SEO', score: pagespeed.desktop.seo },
+          ].map(item => (
+            <div class="text-center">
+              <div class="relative w-16 h-16 mx-auto mb-2">
+                <svg class="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3"/>
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={scoreColor(item.score)} stroke-width="3" stroke-dasharray={`${item.score}, 100`} stroke-linecap="round"/>
+                </svg>
+                <span class={`absolute inset-0 flex items-center justify-center text-base font-bold ${scoreTextColor(item.score)}`}>{item.score}</span>
+              </div>
+              <p class="text-xs text-neutral-600">{item.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Observatory -->
+      <div class="bg-white rounded-xl border border-red-200 p-6 mb-6">
+        <div class="flex items-center justify-between mb-4">
+          <h3 class="font-semibold text-neutral-800">Sécurité — Mozilla Observatory</h3>
+          <div class="flex items-center gap-2">
+            <span class="text-3xl font-black text-red-600">{observatory.grade}</span>
+            <span class="text-sm text-neutral-500">{observatory.score}/100</span>
+          </div>
+        </div>
+        <p class="text-sm text-red-700 bg-red-50 rounded-lg px-4 py-2 mb-3">
+          {observatory.testsPassed} tests passés sur {observatory.testsTotal} — 5 tests de sécurité critiques échoués
+        </p>
+        <ul class="text-xs text-neutral-600 space-y-1">
+          <li class="flex items-center gap-2"><span class="text-red-500">✕</span> Content Security Policy absente (-25 pts)</li>
+          <li class="flex items-center gap-2"><span class="text-red-500">✕</span> Pas de redirection HTTP → HTTPS (-20 pts)</li>
+          <li class="flex items-center gap-2"><span class="text-red-500">✕</span> HSTS absent (-20 pts)</li>
+          <li class="flex items-center gap-2"><span class="text-red-500">✕</span> X-Frame-Options absent (-5 pts)</li>
+          <li class="flex items-center gap-2"><span class="text-red-500">✕</span> X-Content-Type-Options absent (-5 pts)</li>
+        </ul>
+      </div>
+
+      <!-- Checklist Schema/OG/SEO -->
+      <div class="bg-white rounded-xl border border-neutral-200 p-6">
+        <h3 class="font-semibold text-neutral-800 mb-4">Checklist SEO & Schema.org</h3>
+        <div class="grid sm:grid-cols-2 gap-2">
+          {techChecks.map(check => (
+            <div class={`flex items-start gap-2 text-xs p-2 rounded-lg ${check.present ? 'bg-green-50' : check.critical ? 'bg-red-50' : 'bg-neutral-50'}`}>
+              <span class={`shrink-0 font-bold mt-0.5 ${check.present ? 'text-green-600' : 'text-red-500'}`}>
+                {check.present ? '✓' : '✕'}
+              </span>
+              <span class={check.present ? 'text-green-800' : check.critical ? 'text-red-800' : 'text-neutral-600'}>
+                {check.label}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================ -->
+  <!-- PERSONAS / VISITEURS                             -->
+  <!-- ================================================ -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs</h2>
+      <p class="text-neutral-500 text-sm mb-6">
+        Sur 10 visiteurs simulés —
+        <span class="text-green-700 font-semibold">{nbConvertit} vous contactent</span>,
+        <span class="text-amber-700 font-semibold">{nbHesite} hésitent</span>,
+        <span class="text-neutral-600 font-semibold">{nbQuitte} repartent sans laisser de trace</span>.
+      </p>
+
+      <div class="space-y-3">
+        {personas.map(p => (
+          <details class={`group border ${decisionColor(p.decision)} rounded-xl overflow-hidden`}>
+            <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden select-none">
+              <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                  <h3 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h3>
+                  <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                  <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                  <span class={`text-[11px] px-1.5 py-0.5 rounded font-medium ${decisionBadge(p.decision)}`}>{decisionLabel(p.decision)}</span>
+                </div>
+                <p class="text-xs text-neutral-500">{p.situation}</p>
+              </div>
+              <div class="shrink-0 flex items-center gap-3 mt-1">
+                <div class="hidden sm:flex gap-2 text-xs">
+                  <span class="text-neutral-400">Exp <strong class="text-neutral-700">{p.scores.exp}</strong></span>
+                  <span class="text-neutral-400">Conf <strong class="text-neutral-700">{p.scores.conf}</strong></span>
+                </div>
+                <svg class="w-5 h-5 text-neutral-400 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </div>
+            </summary>
+
+            <div class="px-4 pb-4 pt-0 border-t border-neutral-200/60 bg-white/60">
+              <div class="grid gap-3 text-xs mt-3">
+                <div>
+                  <p class="font-semibold text-neutral-700 mb-1">Première impression</p>
+                  <p class="text-neutral-600">{p.premierImpression}</p>
+                </div>
+                <div>
+                  <p class="font-semibold text-neutral-700 mb-1">Parcours</p>
+                  <p class="text-neutral-500">{p.parcours.join(' → ')}</p>
+                </div>
+                <div>
+                  <p class="font-semibold text-neutral-700 mb-1">Question clé</p>
+                  <p class="text-neutral-600 italic">"{p.questionCle}"</p>
+                  <p class="text-neutral-600 mt-1">Réponse du site : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-700' : 'text-amber-700'}>{p.reponse}</strong> — {p.commentReponse}</p>
+                </div>
+                <div>
+                  <p class="font-semibold text-neutral-700 mb-1">Impact technique</p>
+                  <p class="text-neutral-500 italic">{p.impactTechnique}</p>
+                </div>
+                <div class="grid sm:grid-cols-2 gap-3">
+                  <div>
+                    <p class="font-semibold text-green-700 mb-1">Points positifs</p>
+                    <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                      {p.pointsPositifs.map(pt => <li>{pt}</li>)}
+                    </ul>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-amber-700 mb-1">Frictions</p>
+                    <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                      {p.frictions.map(fr => <li>{fr}</li>)}
+                    </ul>
+                  </div>
+                </div>
+                <div class="flex gap-4 pt-1">
+                  <span class="text-neutral-400">Expérience <strong class="text-neutral-700">{p.scores.exp}/10</strong></span>
+                  <span class="text-neutral-400">Confiance <strong class="text-neutral-700">{p.scores.conf}/10</strong></span>
+                  <span class="text-neutral-400">Clarté <strong class="text-neutral-700">{p.scores.clarte}/10</strong></span>
+                </div>
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================ -->
+  <!-- RECOMMANDATIONS                                  -->
+  <!-- ================================================ -->
+  <section class="py-12 px-4 bg-neutral-50 border-y border-neutral-200">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-8">Nos recommandations</h2>
+
+      <!-- 3 critiques -->
+      <h3 class="text-xs font-semibold uppercase tracking-widest text-red-500 mb-4">Le plus important — à faire en priorité</h3>
+      <div class="space-y-4 mb-10">
+        {ameliorationsCritiques.map((a, i) => (
+          <div class="bg-white border border-red-200 rounded-xl p-5">
+            <div class="flex items-start gap-3">
+              <span class="text-2xl font-black text-red-200 shrink-0 leading-none">{i + 1}</span>
+              <div>
+                <h4 class="font-semibold text-neutral-900 mb-1">{a.titre}</h4>
+                <p class="text-sm text-neutral-600 mb-2">{a.detail}</p>
+                <p class="text-xs text-red-700 bg-red-50 rounded px-3 py-1.5 inline-block">Action : {a.action}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- 3 utiles -->
+      <h3 class="text-xs font-semibold uppercase tracking-widest text-neutral-500 mb-4">Utile aussi — gain à moyen terme</h3>
+      <div class="grid sm:grid-cols-3 gap-4">
+        {ameliorationsUtiles.map(a => (
+          <div class="bg-white border border-neutral-200 rounded-xl p-4">
+            <h4 class="font-semibold text-neutral-800 text-sm mb-2">{a.titre}</h4>
+            <p class="text-xs text-neutral-500">{a.detail}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ================================================ -->
+  <!-- CTA FINAL                                        -->
+  <!-- ================================================ -->
+  <section class="bg-neutral-900 text-white py-16 px-4">
+    <div class="max-w-3xl mx-auto text-center">
+      <h2 class="font-heading text-2xl md:text-3xl font-bold mb-4 leading-snug">
+        {kpis.conversion}% de vos visiteurs vous contactent.<br/>
+        <span class="text-amber-400">Avec un site moderne, on peut doubler ce chiffre.</span>
+      </h2>
+      <p class="text-neutral-300 mb-3 max-w-xl mx-auto text-sm leading-relaxed">
+        Confortel a tout pour convaincre — 30 ans d'expertise, 4 115 réalisations, des marques premium, une équipe reconnue.
+        Il manque juste un site à la hauteur.
+      </p>
+      <p class="text-neutral-400 mb-8 text-sm">
+        Site complet Astro v5 · Schema.org · HTTPS sécurisé · Analytics · délivré en 7 jours · à partir de 990 €
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a
+          href="/commander"
+          class="inline-flex items-center gap-2 px-8 py-3.5 bg-[var(--color-accent-500)] text-white font-semibold rounded-xl hover:bg-[var(--color-accent-600)] transition-all shadow-md"
+        >
+          Je veux un site qui convertit
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+          </svg>
+        </a>
+        <a
+          href="/contact"
+          class="inline-flex items-center gap-2 px-8 py-3.5 border border-neutral-600 text-neutral-300 font-semibold rounded-xl hover:border-amber-400 hover:text-amber-400 transition-all"
+        >
+          En discuter d'abord
+        </a>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>

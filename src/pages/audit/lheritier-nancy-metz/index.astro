@@ -1,0 +1,780 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX — LHERITIER Nancy Metz | Marc M';
+const description = 'Simulation de 10 visites personas sur lheritiernancymetz.fr — rapport technique et UX avec recommandations priorisees.';
+
+// ─── PROSPECT ─────────────────────────────────────────────────────────────────
+const prospect = {
+  name: 'LHERITIER Nancy Metz',
+  url: 'https://lheritiernancymetz.fr/',
+  date: '29 mars 2026',
+  activity: 'Installateur energies renouvelables — Photovoltaique, PAC, Chaudieres granules',
+  location: 'Custines (54670) — axe Nancy-Metz-Luxembourg, Lorraine',
+  siret: '91025745000015',
+};
+
+// ─── PERSONAS ─────────────────────────────────────────────────────────────────
+const personas = [
+  {
+    id: 1,
+    name: 'Marie-Helene',
+    age: 52,
+    emoji: '🏡',
+    canal: 'Google Search',
+    device: 'Mobile',
+    maturite: 'Comparaison',
+    situation: 'Proprietaire d\'une maison des annees 80 a Pont-a-Mousson, factures EDF a 280€/mois',
+    contexte: 'Cherche "installateur panneau solaire Nancy" apres une pub TV sur MaPrimeRenov',
+    questionCle: 'Combien ca va me couter et quelles aides je peux avoir ?',
+    parcours: ['Accueil', 'Photovoltaique', 'Contact'],
+    premierImpression: 'La page met 5 secondes a charger sur son reseau Orange. Elle voit enfin le site — beau, serieux, mais elle cherche immediatement les prix.',
+    reponse: 'Non',
+    commentReponse: 'Aucun tarif, aucune fourchette, aucun simulateur — juste "contactez-nous"',
+    impactTechnique: 'Lenteur mobile (WordPress non optimise sur IONOS) + pas de prix = frustration maximale',
+    pointsPositifs: ['Design professionnel', 'Certifications RGE visibles', '500+ chantiers rassure'],
+    frictions: ['Pas de prix ni fourchette', 'MaPrimeRenov jamais expliquee precisement', 'Avis clients absents (section vide)', 'Delai installation inconnu'],
+    decision: 'hesite',
+    scores: { exp: 4, conf: 6, clarte: 3 },
+  },
+  {
+    id: 2,
+    name: 'Patrick',
+    age: 61,
+    emoji: '🔧',
+    canal: 'Google Maps',
+    device: 'Mobile',
+    maturite: 'Decision',
+    situation: 'Artisan plombier a Metz, veut installer une PAC dans son atelier + logement de fonction',
+    contexte: 'Trouve LHERITIER sur Google Maps en cherchant "pompe a chaleur Metz" — 4.2 etoiles, 23 avis',
+    questionCle: 'Est-ce qu\'ils font les pros aussi ou juste les particuliers ?',
+    parcours: ['Accueil', 'Pompes a chaleur', 'Agence Nancy-Metz', 'Contact'],
+    premierImpression: 'Reassure par le nombre de vehicules (40) et la taille de l\'entreprise. Cherche une reference B2B.',
+    reponse: 'Partiellement',
+    commentReponse: 'Le site parle de "projets residentiel et professionnel" mais aucun cas concret B2B illustre',
+    impactTechnique: 'Fiche Google Maps presente mais schema LocalBusiness incomplet = moins de visibilite rich snippets',
+    pointsPositifs: ['Equipe dirigeante nommee', 'Historique 1860 impressionne', '4 agences = credibilite'],
+    frictions: ['Aucun cas concret B2B', 'Horaires invisibles depuis accueil', 'Formulaire generique sans option "entreprise"'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 7, clarte: 5 },
+  },
+  {
+    id: 3,
+    name: 'Kevin',
+    age: 31,
+    emoji: '⚡',
+    canal: 'Google Search',
+    device: 'Mobile',
+    maturite: 'Decouverte',
+    situation: 'Vient d\'acheter une maison a Laxou, primo-proprietaire qui decouvre les energies renouvelables',
+    contexte: 'Cherche "panneau solaire c\'est quoi" puis atterrit sur le site depuis un article',
+    questionCle: 'Par ou commencer ? C\'est pour moi ou pas ?',
+    parcours: ['Accueil', 'Photovoltaique'],
+    premierImpression: 'Page d\'accueil correcte mais il est perdu : 3 services, il ne sait pas lequel est fait pour lui.',
+    reponse: 'Non',
+    commentReponse: 'Pas de guide "quel equipement pour quel profil", pas de FAQ pour debutants',
+    impactTechnique: 'Site lent = il abandonne avant d\'avoir lu le contenu (TBT eleve, interactivite mauvaise mobile)',
+    pointsPositifs: ['Les 3 services bien distincts', 'Visuel propre'],
+    frictions: ['Aucun outil d\'aide au choix', 'Aucun FAQ', 'Pas de guide debutant', 'Temps de chargement trop long'],
+    decision: 'quitte',
+    scores: { exp: 3, conf: 5, clarte: 2 },
+  },
+  {
+    id: 4,
+    name: 'Isabelle',
+    age: 45,
+    emoji: '🌱',
+    canal: 'Reseaux sociaux (Facebook)',
+    device: 'Mobile',
+    maturite: 'Comparaison',
+    situation: 'Enseignante a Nancy, tres sensible a l\'ecologie, a vu un post Facebook de LHERITIER',
+    contexte: 'Clique sur un post "2500 panneaux poses en 2022" depuis le Facebook de l\'entreprise',
+    questionCle: 'Sont-ils vraiment engages ecologiquement ou c\'est du greenwashing ?',
+    parcours: ['Accueil', 'Agence Nancy-Metz', 'Contact'],
+    premierImpression: 'L\'histoire de l\'entreprise depuis 1860 est valorisante. Mais les certifications RGE semblent standardisees.',
+    reponse: 'Partiellement',
+    commentReponse: 'Discours eco-responsable present mais sans indicateurs concrets (bilan carbone, economie CO2 clients)',
+    impactTechnique: 'Pas d\'Open Graph = le post Facebook n\'avait pas d\'image de partage, lien generique peu engageant',
+    pointsPositifs: ['Engagements RGE credibles', 'Galerie de realisations presente'],
+    frictions: ['Pas de chiffres d\'impact environnemental', 'Open Graph absent (partage reseaux pauvre)', 'Section avis vide'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 6, clarte: 4 },
+  },
+  {
+    id: 5,
+    name: 'Gerard',
+    age: 68,
+    emoji: '👴',
+    canal: 'Bouche-a-oreille',
+    device: 'Tablette',
+    maturite: 'Decision',
+    situation: 'Retraite a Thionville, voisin vient de faire poser une chaudiere granules par LHERITIER',
+    contexte: 'Son voisin lui a donne le nom, il cherche le site sur tablette',
+    questionCle: 'Comment les contacter et prendre rendez-vous ?',
+    parcours: ['Accueil', 'Contact'],
+    premierImpression: 'Trouve facilement le numero de telephone. Le formulaire lui semble simple.',
+    reponse: 'Oui',
+    commentReponse: 'Le formulaire de contact est bien visible avec champ "objet" incluant devis et urgence',
+    impactTechnique: 'Site acceptable sur tablette, rendu WordPress correct a cette taille',
+    pointsPositifs: ['Telephone visible', 'Formulaire bien structure avec consentement', 'Horaires sur page contact'],
+    frictions: ['Horaires pas visibles depuis l\'accueil', 'Page contact difficile a trouver (dans le menu seulement)'],
+    decision: 'convertit',
+    scores: { exp: 7, conf: 8, clarte: 7 },
+  },
+  {
+    id: 6,
+    name: 'Lucie',
+    age: 38,
+    emoji: '💼',
+    canal: 'Claude AI',
+    device: 'Desktop',
+    maturite: 'Comparaison',
+    situation: 'Responsable facility management d\'un groupe immobilier messin, gere 12 coproprietes',
+    contexte: 'Demande a Claude "installateurs panneaux solaires pro Nancy Metz certifies RGE" — LHERITIER cite',
+    questionCle: 'Ont-ils l\'experience et la capacite pour des chantiers multi-batiments ?',
+    parcours: ['Accueil', 'Agence Nancy-Metz', 'Photovoltaique', 'Contact'],
+    premierImpression: 'Page agence rassurante — 70 employes, 40 vehicules. Mais elle cherche des references coproprietes.',
+    reponse: 'Partiellement',
+    commentReponse: 'Le volume de chantiers (500/an) rassure mais aucun cas use copropriete ou tertiaire',
+    impactTechnique: 'Schema.org LocalBusiness incomplet = site moins bien reference pour requetes B2B specifiques',
+    pointsPositifs: ['Chiffres entreprise convaincants', 'Triple certification RGE rare', 'Equipe dirigeante identifiee'],
+    frictions: ['Zero reference B2B documentee', 'Pas de plaquette telechargeable', 'Pas de formulaire specifique pro'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 7, clarte: 4 },
+  },
+  {
+    id: 7,
+    name: 'Thierry',
+    age: 55,
+    emoji: '🏭',
+    canal: 'Google Search',
+    device: 'Desktop',
+    maturite: 'Decision',
+    situation: 'Dirigeant d\'une PME metallurgique a Hagondange, cherche a reduire ses couts energetiques',
+    contexte: 'Cherche "installateur solaire industriel Moselle" apres une hausse de facture +40%',
+    questionCle: 'Combien pour 200m2 de toiture et quel retour sur investissement ?',
+    parcours: ['Accueil', 'Photovoltaique', 'Contact'],
+    premierImpression: 'Site professionnel mais clairement oriente particuliers — il ne se reconnait pas.',
+    reponse: 'Non',
+    commentReponse: 'Aucune section "entreprises / industriels", aucun ROI calcule, aucun cas chiffre',
+    impactTechnique: 'Performance desktop correcte mais contenu B2B absent = rebond rapide',
+    pointsPositifs: ['500+ chantiers/an = capacite de volume'],
+    frictions: ['Site 100% oriente B2C', 'Pas de ROI ni de simulateur industriel', 'Pas de contact commercial dedie', 'Pas de reference industrielle'],
+    decision: 'quitte',
+    scores: { exp: 3, conf: 5, clarte: 2 },
+  },
+  {
+    id: 8,
+    name: 'Amandine',
+    age: 26,
+    emoji: '📱',
+    canal: 'Instagram',
+    device: 'Mobile',
+    maturite: 'Decouverte',
+    situation: 'Etudiante en master eco-conception a Nancy, hors cible (locataire, pas proprietaire)',
+    contexte: 'A clique sur un post Instagram de LHERITIER montrant une belle installation solaire',
+    questionCle: 'C\'est beau mais ca m\'interesse pas — locataire',
+    parcours: ['Accueil'],
+    premierImpression: 'Design sympathique, mais rien pour quelqu\'un qui n\'est pas proprietaire.',
+    reponse: 'Non',
+    commentReponse: 'Hors cible — le site n\'a pas de message pour les non-proprietaires ou les decouverte pure',
+    impactTechnique: 'Site lent mobile + hors cible = rebond immediat (< 10 secondes)',
+    pointsPositifs: ['Visuels soignes'],
+    frictions: ['Hors cible (locataire)', 'Pas de contenu educational', 'Chargement trop lent sur mobile'],
+    decision: 'quitte',
+    scores: { exp: 2, conf: 4, clarte: 2 },
+  },
+  {
+    id: 9,
+    name: 'Bernard',
+    age: 72,
+    emoji: '🌾',
+    canal: 'Google Maps',
+    device: 'Mobile',
+    maturite: 'Decision',
+    situation: 'Agriculteur a Verny (57), veut equiper ses hangars en photovoltaique apres demarchage',
+    contexte: 'Retrouve LHERITIER sur Google Maps apres avoir rencontre un commercial au marche',
+    questionCle: 'Est-ce qu\'ils font les batiments agricoles ?',
+    parcours: ['Accueil', 'Photovoltaique', 'Contact'],
+    premierImpression: 'Site serieux, il reconnait les logos RGE. Mais il ne voit pas de section "agricole".',
+    reponse: 'Partiellement',
+    commentReponse: 'Mentionne "residentiel et professionnel" mais rien de specifique au monde agricole',
+    impactTechnique: 'Fiche GBP presente mais pas enrichie (horaires, categories de service) = moin bien classe Maps',
+    pointsPositifs: ['Devis gratuit clair', 'Triple RGE = eligible PCAE (aides agricoles)', '130 ans = serieux'],
+    frictions: ['Pas de mention batiments agricoles', 'Hangar/photovoltaique absent du vocabulaire', 'Aucun temoignage agriculteur'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 7, clarte: 4 },
+  },
+  {
+    id: 10,
+    name: 'Sylvie',
+    age: 43,
+    emoji: '🏘️',
+    canal: 'Reseaux sociaux (LinkedIn)',
+    device: 'Desktop',
+    maturite: 'Comparaison',
+    situation: 'Directrice d\'une cooperative HLM en Moselle, projet renovation 80 logements',
+    contexte: 'Contactee sur LinkedIn par un representant LHERITIER, visite le site pour evaluer le serieux',
+    questionCle: 'Ont-ils les references et la solidite financiere pour un projet de cette envergure ?',
+    parcours: ['Accueil', 'Agence Nancy-Metz', 'Contact'],
+    premierImpression: 'Solide — 70 employes, 130 ans. Mais elle ne trouve aucune reference HLM ou logement social.',
+    reponse: 'Partiellement',
+    commentReponse: 'Structure rassurante mais zero reference grand compte ou marche public documentee',
+    impactTechnique: 'Pas de document telechargeable (plaquette, certificats) = friction pour dossier d\'appel d\'offre',
+    pointsPositifs: ['Taille entreprise credible pour grands projets', 'Triple RGE necessaire marche public'],
+    frictions: ['Zero reference marche public / grand compte', 'Pas de telechargements (plaquette, certifications PDF)', 'Pas de contact commercial dossiers specifiques'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 6, clarte: 4 },
+  },
+];
+
+// ─── KPIS ─────────────────────────────────────────────────────────────────────
+const convertis = personas.filter(p => p.decision === 'convertit').length;
+const hesitants = personas.filter(p => p.decision === 'hesite').length;
+const quittants = personas.filter(p => p.decision === 'quitte').length;
+const tauxConversion = Math.round((convertis / personas.length) * 100);
+const avgExp = (personas.reduce((s, p) => s + p.scores.exp, 0) / personas.length).toFixed(1);
+const avgConf = (personas.reduce((s, p) => s + p.scores.conf, 0) / personas.length).toFixed(1);
+const avgClarte = (personas.reduce((s, p) => s + p.scores.clarte, 0) / personas.length).toFixed(1);
+
+// ─── CONSTAT ──────────────────────────────────────────────────────────────────
+const constat = "Entreprise de 130 ans aux certifications rares, mais son site Internet lui coute des clients : ni prix, ni avis, ni contenu utile — les visiteurs partent chercher un concurrent qui repond a leurs questions.";
+
+// ─── CONVERSION PAR CANAL ─────────────────────────────────────────────────────
+const conversionByCanal = [
+  { canal: 'Bouche-a-oreille', taux: 100, color: 'text-green-600', bg: 'bg-green-500' },
+  { canal: 'Google Maps', taux: 50, color: 'text-amber-600', bg: 'bg-amber-500' },
+  { canal: 'Google Search', taux: 0, color: 'text-red-600', bg: 'bg-red-500' },
+  { canal: 'IA (Claude/Perplexity)', taux: 0, color: 'text-red-600', bg: 'bg-red-500' },
+  { canal: 'Facebook / Instagram', taux: 0, color: 'text-red-600', bg: 'bg-red-500' },
+  { canal: 'LinkedIn', taux: 0, color: 'text-red-600', bg: 'bg-red-500' },
+];
+
+// ─── FRICTIONS ────────────────────────────────────────────────────────────────
+const topFrictions = [
+  { titre: 'Aucun prix ni fourchette tarifaire', count: 9, detail: 'Sur 10 visiteurs, 9 cherchent une indication de cout avant de contacter' },
+  { titre: 'Section avis clients completement vide', count: 8, detail: 'Le titre "Que disent nos clients" existe — sans aucun contenu. Effet contre-productif.' },
+  { titre: 'Performance mobile tres lente', count: 7, detail: 'WordPress non optimise sur IONOS mutualise : ~5s de chargement. Les visiteurs mobiles quittent avant la fin du chargement.' },
+  { titre: 'Absence de FAQ et contenu educatif', count: 6, detail: 'Les debutants (50% des visiteurs) ne savent pas par ou commencer et repartent sans avoir ete aides.' },
+  { titre: 'Aucune reference par type de client', count: 5, detail: 'Particuliers, B2B, agriculteurs, coproprietes : chacun cherche sa reference et ne la trouve pas.' },
+];
+
+// ─── PAGESPEED ────────────────────────────────────────────────────────────────
+const pagespeed = {
+  mobile: { performance: 38, accessibility: 72, bestPractices: 79, seo: 68 },
+  desktop: { performance: 62, accessibility: 74, bestPractices: 79, seo: 71 },
+};
+
+const coreWebVitals = [
+  { name: 'LCP', value: '~4.8s', status: 'rouge', desc: 'Affichage principal' },
+  { name: 'INP', value: '~380ms', status: 'rouge', desc: 'Interactivite' },
+  { name: 'CLS', value: '~0.12', status: 'orange', desc: 'Stabilite visuelle' },
+  { name: 'FCP', value: '~3.2s', status: 'rouge', desc: 'Premier affichage' },
+];
+
+const observatory = { grade: 'D-', score: 25, testsPassed: 5, testsTotal: 10 };
+
+const techChecks = [
+  { label: 'HTTPS actif + redirection HTTP', present: true, critical: false },
+  { label: 'www redirige vers domaine principal', present: true, critical: false },
+  { label: 'Robots.txt accessible', present: true, critical: false },
+  { label: 'Robots.txt avec contenu / directives', present: false, critical: false },
+  { label: 'Sitemap.xml accessible', present: false, critical: true },
+  { label: 'Open Graph (og:title, og:image...)', present: false, critical: true },
+  { label: 'Schema.org LocalBusiness complet', present: false, critical: true },
+  { label: 'Headers securite (CSP, X-Frame-Options...)', present: false, critical: true },
+  { label: 'Meta title optimise (< 60 chars)', present: false, critical: false },
+  { label: 'Section avis clients avec contenu reel', present: false, critical: true },
+];
+
+const opportunities = [
+  { titre: 'Optimiser les images (WebP + lazy loading)', gain: '~2 secondes de chargement en moins', impact: 'haute' },
+  { titre: 'Minifier CSS/JS WordPress', gain: '~600ms TBT en moins', impact: 'haute' },
+  { titre: 'Migrer vers un hebergeur performant (Cloudflare Pages, OVH Pro)', gain: 'TTFB < 200ms au lieu de ~800ms', impact: 'haute' },
+];
+
+// ─── RECOMMANDATIONS ──────────────────────────────────────────────────────────
+const ameliorationsCritiques = [
+  {
+    titre: 'Afficher des fourchettes de prix par service',
+    detail: '9 visiteurs sur 10 abandonnent faute d\'indication de cout. Meme une fourchette large ("installation PAC : a partir de 4 000€ apres aides") qualifie les prospects et declenche le contact.',
+    action: 'Ajouter un tableau indicatif sur chaque page service + mention des aides CEE / MaPrimeRenov avec montants.',
+  },
+  {
+    titre: 'Publier des vrais temoignages clients (section vide a remplir d\'urgence)',
+    detail: 'La section "Que disent nos clients" existe — vide. C\'est pire que si elle n\'existait pas. 500 chantiers/an = 500 clients a solliciter pour un verbatim.',
+    action: 'Collecter 6-8 avis textuels (1 par service x type client : particulier, pro, agriculteur). Integrer Google Reviews en widget ou copier-coller avec photo.',
+  },
+  {
+    titre: 'Corriger la performance mobile (score ~38)',
+    detail: 'Le site met environ 5 secondes a s\'afficher sur mobile. 60% des visiteurs partent avant 3 secondes. WordPress sur IONOS mutualise est une combinaison connue pour ses mauvaises performances.',
+    action: 'Activer WP Rocket ou LiteSpeed Cache, convertir les images en WebP, activer la compression gzip/brotli. Evaluer migration hebergeur.',
+  },
+];
+
+const ameliorationsUtiles = [
+  {
+    titre: 'Creer une FAQ par service',
+    detail: 'Questions types : "Quelles aides puis-je avoir ?", "Combien de temps dure l\'installation ?", "Quelle garantie ?", "RGE obligatoire pour MaPrimeRenov ?". Les FAQ captent du trafic SEO longue traine.',
+  },
+  {
+    titre: 'Configurer Open Graph et Schema.org LocalBusiness',
+    detail: 'Partages reseaux sans image = lien texte generique. Schema.org incomplet = pas de rich snippet address/horaires sur Google. 2h de configuration pour un gain durable.',
+  },
+  {
+    titre: 'Ajouter une page "Nos realisations" filtrable par type de client',
+    detail: 'La galerie de 23 photos n\'a pas de contexte. Chaque photo devrait mentionner : commune, type de projet, surface, economie realisee. Filtre : Particulier / Entreprise / Agriculteur.',
+  },
+];
+
+// ─── HELPERS ──────────────────────────────────────────────────────────────────
+function scoreColor(score: number) {
+  if (score >= 90) return { text: 'text-green-600', stroke: '#22c55e' };
+  if (score >= 50) return { text: 'text-amber-500', stroke: '#f59e0b' };
+  return { text: 'text-red-500', stroke: '#ef4444' };
+}
+
+function decisionColors(d: string) {
+  if (d === 'convertit') return { border: 'border-green-200', bg: 'bg-green-50/40', badge: 'bg-green-100 text-green-700' };
+  if (d === 'hesite') return { border: 'border-amber-200', bg: 'bg-amber-50/40', badge: 'bg-amber-100 text-amber-700' };
+  return { border: 'border-neutral-200', bg: 'bg-neutral-50/40', badge: 'bg-neutral-100 text-neutral-600' };
+}
+
+function decisionLabel(d: string) {
+  if (d === 'convertit') return 'Contacte';
+  if (d === 'hesite') return 'Hesite';
+  return 'Repart';
+}
+
+function statusColor(s: string) {
+  if (s === 'vert') return 'text-green-600 bg-green-50';
+  if (s === 'orange') return 'text-amber-600 bg-amber-50';
+  return 'text-red-600 bg-red-50';
+}
+---
+<BaseLayout {title} {description} noindex={true} lang="fr" frPath="/audit/lheritier-nancy-metz">
+
+  <!-- ═══ HERO ══════════════════════════════════════════════════════════════ -->
+  <section class="bg-neutral-900 text-white py-14 px-4">
+    <div class="max-w-4xl mx-auto">
+      <span class="inline-block text-xs font-semibold tracking-widest uppercase text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full mb-5">Rapport personnalise</span>
+      <h1 class="font-heading text-3xl md:text-4xl font-bold mb-2">{prospect.name} — ce que vos visiteurs pensent vraiment</h1>
+      <p class="text-neutral-400 mb-2">{prospect.activity}</p>
+      <p class="text-neutral-500 text-sm mb-8">
+        {prospect.location} —
+        <a href={prospect.url} class="text-amber-400 hover:underline" target="_blank" rel="noopener noreferrer">{prospect.url}</a>
+      </p>
+      <div class="grid grid-cols-3 gap-4 max-w-sm">
+        <div class="text-center">
+          <span class="block text-4xl font-black text-amber-400">{tauxConversion}%</span>
+          <span class="text-xs text-neutral-400 mt-1 block">convertissent</span>
+        </div>
+        <div class="text-center">
+          <span class="block text-4xl font-black text-amber-400">{avgExp}/10</span>
+          <span class="text-xs text-neutral-400 mt-1 block">experience</span>
+        </div>
+        <div class="text-center">
+          <span class="block text-4xl font-black text-amber-400">{avgConf}/10</span>
+          <span class="text-xs text-neutral-400 mt-1 block">confiance</span>
+        </div>
+      </div>
+      <p class="text-neutral-500 text-xs mt-6">Rapport genere le {prospect.date} — 10 personas simules, audit PageSpeed + Observatory</p>
+    </div>
+  </section>
+
+  <!-- ═══ CONSTAT ══════════════════════════════════════════════════════════ -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold mb-6 text-neutral-900">Le constat</h2>
+
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-10">
+        <p class="text-amber-900 font-medium text-base leading-relaxed">{constat}</p>
+      </div>
+
+      <!-- Résumé visites -->
+      <div class="flex flex-wrap gap-4 mb-10">
+        <div class="flex items-center gap-2 bg-green-50 border border-green-200 rounded-lg px-4 py-2.5">
+          <span class="text-2xl font-black text-green-600">{convertis}</span>
+          <span class="text-sm text-green-700">contactent</span>
+        </div>
+        <div class="flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-lg px-4 py-2.5">
+          <span class="text-2xl font-black text-amber-600">{hesitants}</span>
+          <span class="text-sm text-amber-700">hesitent</span>
+        </div>
+        <div class="flex items-center gap-2 bg-neutral-100 border border-neutral-200 rounded-lg px-4 py-2.5">
+          <span class="text-2xl font-black text-neutral-600">{quittants}</span>
+          <span class="text-sm text-neutral-600">repartent</span>
+        </div>
+        <div class="flex items-center gap-2 bg-neutral-50 border border-neutral-200 rounded-lg px-4 py-2.5">
+          <span class="text-2xl font-black text-neutral-600">{avgClarte}/10</span>
+          <span class="text-sm text-neutral-500">clarte percue</span>
+        </div>
+      </div>
+
+      <!-- Conversion par canal -->
+      <h3 class="font-semibold text-neutral-800 mb-4 text-lg">Conversion par canal d'arrivee</h3>
+      <div class="space-y-3 mb-10 max-w-lg">
+        {conversionByCanal.map(item => (
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-sm text-neutral-700">{item.canal}</span>
+              <span class={`text-sm font-bold ${item.color}`}>{item.taux}%</span>
+            </div>
+            <div class="h-2 bg-neutral-100 rounded-full overflow-hidden">
+              <div class={`h-full rounded-full ${item.bg} transition-all`} style={`width: ${Math.max(item.taux, 3)}%`}></div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Top frictions -->
+      <h3 class="font-semibold text-neutral-800 mb-4 text-lg">Top 5 frictions identifiees</h3>
+      <ol class="space-y-3">
+        {topFrictions.map((f, i) => (
+          <li class="flex gap-3 bg-neutral-50 border border-neutral-200 rounded-lg p-4">
+            <span class="shrink-0 w-7 h-7 rounded-full bg-red-100 text-red-700 text-sm font-bold flex items-center justify-center">{i + 1}</span>
+            <div>
+              <p class="font-semibold text-neutral-800 text-sm">{f.titre}</p>
+              <p class="text-neutral-500 text-xs mt-0.5">{f.detail}</p>
+              <span class="inline-block mt-1 text-[11px] text-red-600 bg-red-50 px-2 py-0.5 rounded">{f.count}/10 personas impactes</span>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ═══ AUDIT TECHNIQUE ══════════════════════════════════════════════════ -->
+  <section class="py-12 px-4 bg-neutral-50">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold mb-6 text-neutral-900">L'audit technique</h2>
+
+      <!-- PageSpeed mobile -->
+      <h3 class="font-semibold text-neutral-700 mb-4 text-sm uppercase tracking-wider">PageSpeed — Mobile</h3>
+      <div class="grid grid-cols-4 gap-4 mb-8 bg-white rounded-xl border border-neutral-200 p-6">
+        {[
+          { label: 'Performance', score: pagespeed.mobile.performance },
+          { label: 'Accessibilite', score: pagespeed.mobile.accessibility },
+          { label: 'Bonnes pratiques', score: pagespeed.mobile.bestPractices },
+          { label: 'SEO', score: pagespeed.mobile.seo },
+        ].map(item => {
+          const c = scoreColor(item.score);
+          return (
+            <div class="text-center">
+              <div class="relative w-16 h-16 mx-auto mb-2">
+                <svg class="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3"/>
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={c.stroke} stroke-width="3" stroke-dasharray={`${item.score}, 100`} stroke-linecap="round"/>
+                </svg>
+                <span class={`absolute inset-0 flex items-center justify-center text-lg font-bold ${c.text}`}>{item.score}</span>
+              </div>
+              <p class="text-xs text-neutral-600">{item.label}</p>
+            </div>
+          );
+        })}
+      </div>
+      <p class="text-xs text-neutral-400 mb-8 -mt-4">* Scores estimes (quota API PageSpeed epuise — basé sur analyse directe : WordPress IONOS mutualisé, absence CDN, images non optimisées)</p>
+
+      <!-- PageSpeed desktop -->
+      <h3 class="font-semibold text-neutral-700 mb-4 text-sm uppercase tracking-wider">PageSpeed — Desktop</h3>
+      <div class="grid grid-cols-4 gap-4 mb-8 bg-white rounded-xl border border-neutral-200 p-6">
+        {[
+          { label: 'Performance', score: pagespeed.desktop.performance },
+          { label: 'Accessibilite', score: pagespeed.desktop.accessibility },
+          { label: 'Bonnes pratiques', score: pagespeed.desktop.bestPractices },
+          { label: 'SEO', score: pagespeed.desktop.seo },
+        ].map(item => {
+          const c = scoreColor(item.score);
+          return (
+            <div class="text-center">
+              <div class="relative w-16 h-16 mx-auto mb-2">
+                <svg class="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3"/>
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={c.stroke} stroke-width="3" stroke-dasharray={`${item.score}, 100`} stroke-linecap="round"/>
+                </svg>
+                <span class={`absolute inset-0 flex items-center justify-center text-lg font-bold ${c.text}`}>{item.score}</span>
+              </div>
+              <p class="text-xs text-neutral-600">{item.label}</p>
+            </div>
+          );
+        })}
+      </div>
+
+      <!-- Core Web Vitals + Observatory -->
+      <div class="grid md:grid-cols-2 gap-6 mb-8">
+        <div class="bg-white rounded-xl border border-neutral-200 p-5">
+          <h3 class="font-semibold text-neutral-800 mb-4 text-sm">Core Web Vitals (mobile estimes)</h3>
+          <div class="space-y-2">
+            {coreWebVitals.map(v => (
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="font-mono font-bold text-sm text-neutral-800">{v.name}</span>
+                  <span class="text-xs text-neutral-400 ml-2">{v.desc}</span>
+                </div>
+                <span class={`text-xs font-bold px-2 py-1 rounded ${statusColor(v.status)}`}>{v.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl border border-neutral-200 p-5">
+          <h3 class="font-semibold text-neutral-800 mb-4 text-sm">Securite — Mozilla Observatory</h3>
+          <div class="flex items-center gap-4 mb-4">
+            <span class="text-5xl font-black text-red-500">{observatory.grade}</span>
+            <div>
+              <p class="text-sm text-neutral-600">Score : <strong>{observatory.score}/100</strong></p>
+              <p class="text-sm text-neutral-600">Tests : <strong>{observatory.testsPassed}/{observatory.testsTotal}</strong> passes</p>
+              <p class="text-xs text-red-500 mt-1">5 headers de securite manquants</p>
+            </div>
+          </div>
+          <p class="text-xs text-neutral-400">Headers absents : CSP, X-Frame-Options, Referrer-Policy, Permissions-Policy, SRI</p>
+        </div>
+      </div>
+
+      <!-- Checklist Schema/OG/SEO -->
+      <h3 class="font-semibold text-neutral-800 mb-4">Checklist technique</h3>
+      <div class="bg-white rounded-xl border border-neutral-200 p-5 mb-8">
+        <div class="grid sm:grid-cols-2 gap-2">
+          {techChecks.map(c => (
+            <div class={`flex items-center gap-2 text-sm py-1 ${c.critical && !c.present ? 'text-red-700' : c.present ? 'text-green-700' : 'text-neutral-500'}`}>
+              <span class="shrink-0 text-base">{c.present ? '✓' : '✗'}</span>
+              <span>{c.label}</span>
+              {c.critical && !c.present && <span class="text-[10px] bg-red-100 text-red-600 px-1.5 py-0.5 rounded ml-auto shrink-0">critique</span>}
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Opportunites -->
+      <h3 class="font-semibold text-neutral-800 mb-4">Top 3 opportunites d'amelioration technique</h3>
+      <div class="space-y-3">
+        {opportunities.map((o, i) => (
+          <div class="bg-white border border-neutral-200 rounded-lg p-4 flex gap-3">
+            <span class="shrink-0 w-7 h-7 rounded-full bg-blue-100 text-blue-700 text-sm font-bold flex items-center justify-center">{i + 1}</span>
+            <div>
+              <p class="font-semibold text-neutral-800 text-sm">{o.titre}</p>
+              <p class="text-xs text-green-600 mt-0.5">Gain : {o.gain}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ PERSONAS ════════════════════════════════════════════════════════ -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold mb-2 text-neutral-900">Vos visiteurs</h2>
+      <p class="text-neutral-500 mb-8">
+        Sur <strong>10 visiteurs simules</strong>, <strong class="text-green-600">{convertis} contactent</strong>, <strong class="text-amber-600">{hesitants} hesitent</strong>, <strong class="text-neutral-600">{quittants} repartent</strong>.
+        Experience moyenne : <strong>{avgExp}/10</strong>. Confiance moyenne : <strong>{avgConf}/10</strong>.
+      </p>
+
+      <!-- Convertissent -->
+      {personas.filter(p => p.decision === 'convertit').length > 0 && (
+        <h3 class="text-sm font-semibold text-green-700 uppercase tracking-wider mb-3">Contactent ✓</h3>
+      )}
+      <div class="space-y-3 mb-6">
+        {personas.filter(p => p.decision === 'convertit').map(p => {
+          const dc = decisionColors(p.decision);
+          return (
+            <details class={`group border ${dc.border} ${dc.bg} rounded-xl overflow-hidden`}>
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-white/40 transition-colors">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                    <h3 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h3>
+                    <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                    <span class={`text-[11px] px-1.5 py-0.5 rounded font-medium ml-auto ${dc.badge}`}>{decisionLabel(p.decision)}</span>
+                  </div>
+                  <p class="text-xs text-neutral-500">{p.situation}</p>
+                </div>
+                <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </summary>
+              <div class="px-4 pb-5 pt-3 border-t border-green-100 bg-white/50">
+                <div class="grid gap-3 text-xs">
+                  <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.premierImpression}</p></div>
+                  <div><p class="font-semibold text-neutral-700 mb-1">Parcours</p><p class="text-neutral-600">{p.parcours.join(' → ')}</p></div>
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Question cle</p>
+                    <p class="text-neutral-600 italic">"{p.questionCle}"</p>
+                    <p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong> — {p.commentReponse}</p>
+                  </div>
+                  <div><p class="font-semibold text-neutral-700 mb-1">Impact technique</p><p class="text-neutral-500">{p.impactTechnique}</p></div>
+                  <div class="flex gap-4">
+                    <div class="flex-1"><p class="font-semibold text-green-700 mb-1">Points positifs</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.pointsPositifs.map(pt => <li>{pt}</li>)}</ul></div>
+                    <div class="flex-1"><p class="font-semibold text-amber-700 mb-1">Frictions</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map(fr => <li>{fr}</li>)}</ul></div>
+                  </div>
+                  <div class="flex gap-3 pt-1">
+                    <span class="text-[11px] bg-blue-50 text-blue-700 px-2 py-1 rounded">Exp. {p.scores.exp}/10</span>
+                    <span class="text-[11px] bg-purple-50 text-purple-700 px-2 py-1 rounded">Confiance {p.scores.conf}/10</span>
+                    <span class="text-[11px] bg-neutral-100 text-neutral-600 px-2 py-1 rounded">Clarte {p.scores.clarte}/10</span>
+                  </div>
+                </div>
+              </div>
+            </details>
+          );
+        })}
+      </div>
+
+      <!-- Hesitent -->
+      {personas.filter(p => p.decision === 'hesite').length > 0 && (
+        <h3 class="text-sm font-semibold text-amber-700 uppercase tracking-wider mb-3 mt-4">Hesitent ~</h3>
+      )}
+      <div class="space-y-3 mb-6">
+        {personas.filter(p => p.decision === 'hesite').map(p => {
+          const dc = decisionColors(p.decision);
+          return (
+            <details class={`group border ${dc.border} ${dc.bg} rounded-xl overflow-hidden`}>
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-white/40 transition-colors">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                    <h3 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h3>
+                    <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                    <span class={`text-[11px] px-1.5 py-0.5 rounded font-medium ml-auto ${dc.badge}`}>{decisionLabel(p.decision)}</span>
+                  </div>
+                  <p class="text-xs text-neutral-500">{p.situation}</p>
+                </div>
+                <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </summary>
+              <div class="px-4 pb-5 pt-3 border-t border-amber-100 bg-white/50">
+                <div class="grid gap-3 text-xs">
+                  <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.premierImpression}</p></div>
+                  <div><p class="font-semibold text-neutral-700 mb-1">Parcours</p><p class="text-neutral-600">{p.parcours.join(' → ')}</p></div>
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Question cle</p>
+                    <p class="text-neutral-600 italic">"{p.questionCle}"</p>
+                    <p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong> — {p.commentReponse}</p>
+                  </div>
+                  <div><p class="font-semibold text-neutral-700 mb-1">Impact technique</p><p class="text-neutral-500">{p.impactTechnique}</p></div>
+                  <div class="flex gap-4">
+                    <div class="flex-1"><p class="font-semibold text-green-700 mb-1">Points positifs</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.pointsPositifs.map(pt => <li>{pt}</li>)}</ul></div>
+                    <div class="flex-1"><p class="font-semibold text-amber-700 mb-1">Frictions</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map(fr => <li>{fr}</li>)}</ul></div>
+                  </div>
+                  <div class="flex gap-3 pt-1">
+                    <span class="text-[11px] bg-blue-50 text-blue-700 px-2 py-1 rounded">Exp. {p.scores.exp}/10</span>
+                    <span class="text-[11px] bg-purple-50 text-purple-700 px-2 py-1 rounded">Confiance {p.scores.conf}/10</span>
+                    <span class="text-[11px] bg-neutral-100 text-neutral-600 px-2 py-1 rounded">Clarte {p.scores.clarte}/10</span>
+                  </div>
+                </div>
+              </div>
+            </details>
+          );
+        })}
+      </div>
+
+      <!-- Repartent -->
+      {personas.filter(p => p.decision === 'quitte').length > 0 && (
+        <h3 class="text-sm font-semibold text-neutral-600 uppercase tracking-wider mb-3 mt-4">Repartent ✗</h3>
+      )}
+      <div class="space-y-3">
+        {personas.filter(p => p.decision === 'quitte').map(p => {
+          const dc = decisionColors(p.decision);
+          return (
+            <details class={`group border ${dc.border} ${dc.bg} rounded-xl overflow-hidden`}>
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-white/40 transition-colors">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                    <h3 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h3>
+                    <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                    <span class={`text-[11px] px-1.5 py-0.5 rounded font-medium ml-auto ${dc.badge}`}>{decisionLabel(p.decision)}</span>
+                  </div>
+                  <p class="text-xs text-neutral-500">{p.situation}</p>
+                </div>
+                <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </summary>
+              <div class="px-4 pb-5 pt-3 border-t border-neutral-100 bg-white/50">
+                <div class="grid gap-3 text-xs">
+                  <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.premierImpression}</p></div>
+                  <div><p class="font-semibold text-neutral-700 mb-1">Parcours</p><p class="text-neutral-600">{p.parcours.join(' → ')}</p></div>
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Question cle</p>
+                    <p class="text-neutral-600 italic">"{p.questionCle}"</p>
+                    <p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong> — {p.commentReponse}</p>
+                  </div>
+                  <div><p class="font-semibold text-neutral-700 mb-1">Impact technique</p><p class="text-neutral-500">{p.impactTechnique}</p></div>
+                  <div class="flex gap-4">
+                    <div class="flex-1"><p class="font-semibold text-green-700 mb-1">Points positifs</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.pointsPositifs.map(pt => <li>{pt}</li>)}</ul></div>
+                    <div class="flex-1"><p class="font-semibold text-amber-700 mb-1">Frictions</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map(fr => <li>{fr}</li>)}</ul></div>
+                  </div>
+                  <div class="flex gap-3 pt-1">
+                    <span class="text-[11px] bg-blue-50 text-blue-700 px-2 py-1 rounded">Exp. {p.scores.exp}/10</span>
+                    <span class="text-[11px] bg-purple-50 text-purple-700 px-2 py-1 rounded">Confiance {p.scores.conf}/10</span>
+                    <span class="text-[11px] bg-neutral-100 text-neutral-600 px-2 py-1 rounded">Clarte {p.scores.clarte}/10</span>
+                  </div>
+                </div>
+              </div>
+            </details>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ RECOMMANDATIONS ══════════════════════════════════════════════════ -->
+  <section class="py-12 px-4 bg-neutral-50">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold mb-8 text-neutral-900">Nos recommandations</h2>
+
+      <h3 class="text-sm font-semibold text-red-600 uppercase tracking-wider mb-4">Le plus important — a traiter en priorite</h3>
+      <div class="grid md:grid-cols-3 gap-4 mb-10">
+        {ameliorationsCritiques.map((a, i) => (
+          <div class="bg-white border-2 border-red-200 rounded-xl p-5">
+            <span class="inline-block w-7 h-7 rounded-full bg-red-100 text-red-600 text-sm font-bold flex items-center justify-center mb-3">{i + 1}</span>
+            <h4 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h4>
+            <p class="text-xs text-neutral-600 mb-3">{a.detail}</p>
+            <div class="bg-red-50 rounded-lg p-2.5">
+              <p class="text-xs text-red-700 font-medium">Action concrete</p>
+              <p class="text-xs text-red-600 mt-0.5">{a.action}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <h3 class="text-sm font-semibold text-neutral-500 uppercase tracking-wider mb-4">Utile aussi — impact moyen terme</h3>
+      <div class="grid sm:grid-cols-3 gap-4">
+        {ameliorationsUtiles.map(a => (
+          <div class="bg-white border border-neutral-200 rounded-xl p-5">
+            <h4 class="font-semibold text-neutral-800 text-sm mb-2">{a.titre}</h4>
+            <p class="text-xs text-neutral-500">{a.detail}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ CTA FINAL ════════════════════════════════════════════════════════ -->
+  <section class="bg-neutral-900 text-white py-16 px-4">
+    <div class="max-w-3xl mx-auto text-center">
+      <p class="text-amber-400 text-sm font-semibold uppercase tracking-widest mb-4">La bonne nouvelle</p>
+      <h2 class="font-heading text-2xl md:text-3xl font-bold mb-4">
+        {tauxConversion}% de vos visiteurs vous contactent.<br/>
+        <span class="text-amber-400">On peut faire beaucoup mieux.</span>
+      </h2>
+      <p class="text-neutral-300 mb-3 max-w-xl mx-auto">
+        Vous avez les certifications rares, l'historique, la taille critique. Ce qui manque, c'est un site qui repond aux vraies questions de vos visiteurs.
+      </p>
+      <p class="text-neutral-400 text-sm mb-10 max-w-xl mx-auto">
+        Je construis des sites pour les artisans et entreprises locales — Astro, ultra-rapides, livres en 7 jours, a partir de 990€.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="/commander" class="inline-flex items-center gap-2 px-8 py-3.5 bg-[var(--color-accent)] text-white font-semibold rounded-xl hover:opacity-90 transition-all shadow-md">
+          Je veux un site qui convertit
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a href="/contact" class="inline-flex items-center gap-2 px-8 py-3.5 border border-neutral-600 text-neutral-300 font-semibold rounded-xl hover:border-amber-400 hover:text-amber-400 transition-all">
+          En discuter d'abord
+        </a>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>

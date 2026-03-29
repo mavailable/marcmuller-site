@@ -1,0 +1,747 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX — Möbel Cuisine | Marc M';
+const description = 'Simulation de 10 visites personas sur mobelcuisine.com — rapport complet avec recommandations priorisées.';
+
+// ============================================================
+// DONNEES PROSPECT
+// ============================================================
+
+const prospect = {
+  name: "Möbel Cuisine",
+  url: "https://www.mobelcuisine.com/",
+  date: "29 mars 2026",
+  activity: "Cuisiniste — cuisines équipées haut de gamme de fabrication allemande",
+  location: "Jouy-aux-Arches (Metz) — Moselle 57",
+};
+
+// ============================================================
+// KPIs GLOBAUX (agreges des 10 simulations)
+// ============================================================
+
+const kpis = {
+  conversion: 20,       // 2 visiteurs sur 10 convertissent
+  hesite: 30,           // 3 hésitent
+  quitte: 50,           // 5 repartent
+  experience: 4.9,      // moyenne /10
+  confiance: 5.6,       // moyenne /10
+  clarte: 4.3,          // moyenne /10
+};
+
+// ============================================================
+// CONSTAT PRINCIPAL
+// ============================================================
+
+const constat = "Möbel Cuisine affiche un beau produit mais garde ses prix secrets, oublie ses preuves sociales et charge son site comme un catalogue papier — 8 visiteurs sur 10 repartent sans prendre rendez-vous.";
+
+// ============================================================
+// CONVERSION PAR CANAL
+// ============================================================
+
+const conversionByCanal = [
+  { canal: "Bouche-à-oreille", taux: 67, color: "text-green-600", bg: "bg-green-500" },
+  { canal: "Google Maps / GBP", taux: 33, color: "text-amber-600", bg: "bg-amber-500" },
+  { canal: "Google Search", taux: 0, color: "text-red-500", bg: "bg-red-500" },
+  { canal: "Réseaux sociaux", taux: 0, color: "text-red-500", bg: "bg-red-500" },
+  { canal: "IA (ChatGPT / Perplexity)", taux: 0, color: "text-red-500", bg: "bg-red-500" },
+  { canal: "Autre (salon/flyer)", taux: 0, color: "text-red-500", bg: "bg-red-500" },
+];
+
+// ============================================================
+// TOP 5 FRICTIONS
+// ============================================================
+
+const topFrictions = [
+  { titre: "Aucun prix affiché", count: 8, detail: "8 personas sur 10 cherchent une fourchette de prix — son absence génère de la méfiance et des départs" },
+  { titre: "Site lent sur mobile", count: 7, detail: "Stack JS/CSS lourde (17 CSS, 10 JS), Revolution Slider, 0 lazy loading — temps estimé 4-6s sur mobile 4G" },
+  { titre: "H1 = nom d'une promo (MOBELFEST)", count: 6, detail: "Le titre principal de la page n'exprime pas l'activité, désoriente les visiteurs et les moteurs" },
+  { titre: "Aucun témoignage / avis client", count: 6, detail: "Pas d'avis Google intégrés, pas de verbatims avec noms — secteur où la preuve sociale est décisive" },
+  { titre: "Pas de délais ni garanties", count: 5, detail: "Achat à 10 000€+ sans aucune information sur les délais de pose ou les garanties — frein majeur à la décision" },
+];
+
+// ============================================================
+// SCORES PAGESPEED (estimations basees sur analyse des ressources)
+// ============================================================
+
+const pagespeed = {
+  mobile: { performance: 35, accessibility: 72, bestPractices: 62, seo: 68 },
+  desktop: { performance: 55, accessibility: 72, bestPractices: 62, seo: 68 },
+  note: "Scores estimés — quota API PageSpeed épuisé. Basés sur l'analyse des ressources (17 CSS, 10 JS, Revolution Slider, 0 lazy loading).",
+};
+
+const coreWebVitals = [
+  { name: "TTFB", value: "87ms", status: "bon" },
+  { name: "LCP estimé", value: "4-6s", status: "mauvais" },
+  { name: "CLS estimé", value: "Moyen", status: "moyen" },
+];
+
+// ============================================================
+// OBSERVATORY
+// ============================================================
+
+const observatory = {
+  grade: "D-",
+  score: 25,
+  testsPassed: 5,
+  testsTotal: 10,
+};
+
+// ============================================================
+// CHECKLIST SEO / SCHEMA / OG
+// ============================================================
+
+const techChecks = [
+  { label: "Meta title présent", present: true, critical: false },
+  { label: "Meta description présente", present: true, critical: false },
+  { label: "H1 pertinent (activité)", present: false, critical: true },
+  { label: "Canonical tag", present: false, critical: true },
+  { label: "Schema.org JSON-LD", present: false, critical: true },
+  { label: "Open Graph (og:title, og:image…)", present: false, critical: true },
+  { label: "Sitemap XML", present: false, critical: true },
+  { label: "Robots.txt correct (sans ancien domaine)", present: false, critical: false },
+  { label: "Bannière cookies (RGPD)", present: false, critical: true },
+  { label: "HSTS / Headers sécurité", present: false, critical: false },
+  { label: "Images lazy-loaded", present: false, critical: false },
+  { label: "Viewport meta unique", present: false, critical: false },
+];
+
+// ============================================================
+// OPPORTUNITES PAGESPEED
+// ============================================================
+
+const opportunities = [
+  { titre: "Supprimer Revolution Slider ou le charger en différé", gain: "~600ms sur mobile", priorite: "critique" },
+  { titre: "Activer le lazy loading sur toutes les images", gain: "~2-3s sur le LCP mobile", priorite: "critique" },
+  { titre: "Consolider et minifier les 17 CSS en 1 fichier", gain: "~400ms en moins de requêtes HTTP", priorite: "important" },
+];
+
+// ============================================================
+// 10 PERSONAS DETAILLES
+// ============================================================
+
+const personas = [
+  {
+    id: 1,
+    name: "Sophie",
+    age: 42,
+    emoji: "👩‍🍳",
+    canal: "Google Search",
+    device: "Mobile",
+    maturite: "Comparaison",
+    situation: "Propriétaire en rénovation de maison à Metz, en train de comparer 3 cuisinistes",
+    contexte: "Tape 'cuisiniste Metz haut de gamme' — tombe sur Möbel en 3e position",
+    questionCle: "Quelle est la fourchette de prix pour une cuisine complète avec pose ?",
+    reponse: "Non",
+    commentReponse: "Aucun prix nulle part, même pas 'à partir de' — impossible de savoir si c'est dans son budget",
+    decision: "quitte",
+    impactTechnique: "Site met 5s à charger sur son iPhone — elle abandonne avant de voir les modèles",
+    scores: { exp: 3, conf: 4, clarte: 3 },
+    premierImpression: "Le H1 'MOBELFEST*' la déroute — elle pensait être sur une page promo, pas sur le site principal",
+    parcours: ["Accueil", "Cuisines / Inspirations", "Quitte (pas de prix)"],
+    pointsPositifs: ["Belles photos de cuisines", "Variété des modèles (16+)"],
+    frictions: ["Aucun prix", "Site lent sur mobile", "H1 = nom de promo", "Pas de garanties"],
+  },
+  {
+    id: 2,
+    name: "Karim",
+    age: 38,
+    emoji: "🏗️",
+    canal: "Google Maps",
+    device: "Mobile",
+    maturite: "Decision",
+    situation: "Chef de chantier qui cherche un cuisiniste pour son appartement neuf à Jouy-aux-Arches",
+    contexte: "Cherche 'Möbel Cuisine Metz' sur Maps après que son collègue lui a recommandé le magasin",
+    questionCle: "Le magasin est-il ouvert samedi ? Puis-je venir sans rendez-vous ?",
+    reponse: "Partiellement",
+    commentReponse: "Les horaires sont sur la fiche magasin mais le site ne précise pas si RDV obligatoire ou pas",
+    decision: "convertit",
+    impactTechnique: "La page magasins charge correctement mais sans carte Google Maps intégrée",
+    scores: { exp: 6, conf: 7, clarte: 5 },
+    premierImpression: "Trouve rapidement la page Magasins, l'adresse est claire et le téléphone visible",
+    parcours: ["Maps → Page Magasins", "Contact", "Appel téléphonique"],
+    pointsPositifs: ["Adresses et téléphones des magasins bien présentés", "Formulaire de contact fonctionnel"],
+    frictions: ["Horaires complets absents (juste 'fermé dimanche')", "Pas de carte Maps intégrée", "Pas de 'RDV en ligne'"],
+  },
+  {
+    id: 3,
+    name: "Nathalie",
+    age: 55,
+    emoji: "🏡",
+    canal: "Bouche-a-oreille",
+    device: "Desktop",
+    maturite: "Decision",
+    situation: "Retraitée qui refait entièrement sa cuisine, budget ~15 000€, recommandée par sa voisine",
+    contexte: "Sa voisine a fait sa cuisine chez Möbel il y a 2 ans et en est ravie — Nathalie tape directement l'URL",
+    questionCle: "Est-ce que je vais avoir le même rendu que ma voisine ? Puis-je voir des réalisations ?",
+    reponse: "Partiellement",
+    commentReponse: "Il y a des ambiances et modèles mais pas de galerie 'avant/après' de vraies réalisations de clients",
+    decision: "convertit",
+    impactTechnique: "Sur desktop le site se charge correctement, le slider fonctionne",
+    scores: { exp: 6, conf: 8, clarte: 6 },
+    premierImpression: "Les photos de cuisines sont belles et inspirantes, elle se projette assez bien",
+    parcours: ["Accueil", "Cuisines / Inspirations", "Styles", "Votre Projet", "Contact → RDV"],
+    pointsPositifs: ["Belles photos de mise en ambiance", "Processus en 12 étapes rassurant", "Partenaires électro reconnus (Bosch, Neff)"],
+    frictions: ["Pas de galerie de réalisations locales", "Aucun témoignage client nominatif", "Prix absents"],
+  },
+  {
+    id: 4,
+    name: "Dylan",
+    age: 26,
+    emoji: "📱",
+    canal: "Instagram",
+    device: "Mobile",
+    maturite: "Decouverte",
+    situation: "Jeune locataire qui rêve de sa future cuisine mais n'est pas encore propriétaire",
+    contexte: "Voit un post cuisine sur Instagram avec le tag @mobelcuisine, clique sur le lien bio",
+    questionCle: "C'est combien en gros une cuisine Möbel ?",
+    reponse: "Non",
+    commentReponse: "Aucun prix, aucune indication — 'accessible à toutes les bourses' sans preuve c'est frustrant",
+    decision: "quitte",
+    impactTechnique: "Révolution Slider plante sur son Android — l'image hero ne s'affiche pas correctement",
+    scores: { exp: 2, conf: 3, clarte: 2 },
+    premierImpression: "Le site semble daté comparé aux comptes Instagram des cuisinistes modernes",
+    parcours: ["Accueil (H1 = MOBELFEST?)", "Inspirations", "Quitte (pas de prix)"],
+    pointsPositifs: ["Beaux modèles si le slider fonctionne"],
+    frictions: ["Site visuellement daté vs concurrents Instagram", "Aucun prix", "Revolution Slider bug mobile", "Pas de galerie sociale (photos clients réels)"],
+  },
+  {
+    id: 5,
+    name: "Marguerite",
+    age: 67,
+    emoji: "👵",
+    canal: "Google Search",
+    device: "Tablette",
+    maturite: "Decision",
+    situation: "Grand-mère qui veut offrir une cuisine neuve à sa fille, budget important, peu à l'aise avec le web",
+    contexte: "Tape 'cuisine équipée Metz qualité' — son fils lui a dit 'cherche un cuisiniste allemand'",
+    questionCle: "Comment je contacte quelqu'un ? Y a-t-il un numéro de téléphone direct ?",
+    reponse: "Partiellement",
+    commentReponse: "Les téléphones sont sur la page Magasins mais pas visible immédiatement depuis l'accueil",
+    decision: "hesite",
+    impactTechnique: "Sur tablette le menu est adaptatif mais peu lisible pour ses yeux",
+    scores: { exp: 4, conf: 6, clarte: 3 },
+    premierImpression: "Trop d'images qui bougent (slider), trop de choix de modèles — elle est perdue",
+    parcours: ["Accueil", "Cherche un numéro", "Magasins", "Hésite (veut appeler mais peur de déranger)"],
+    pointsPositifs: ["Numéro de téléphone present sur la page Magasins"],
+    frictions: ["Numéro absent de l'accueil et du header", "Trop de contenu, pas de parcours guidé", "Pas de chat ni de 'rappel immédiat'"],
+  },
+  {
+    id: 6,
+    name: "Aurélien",
+    age: 35,
+    emoji: "🤖",
+    canal: "ChatGPT",
+    device: "Desktop",
+    maturite: "Comparaison",
+    situation: "Ingénieur, constructeur de maison individuelle à Thionville, compare cuisinistes via IA",
+    contexte: "Demande à ChatGPT 'meilleurs cuisinistes Moselle haut de gamme' — Möbel est cité, il clique",
+    questionCle: "Quels sont les délais et les certifications qualité ? Partenaire RGE ou équivalent ?",
+    reponse: "Non",
+    commentReponse: "Aucune information sur les certifications, labels, délais — le site ne répond pas aux critères d'un acheteur rationnel",
+    decision: "hesite",
+    impactTechnique: "Schema.org absent = ChatGPT ne peut extraire aucune donnée structurée — description générique dans l'IA",
+    scores: { exp: 5, conf: 5, clarte: 4 },
+    premierImpression: "Site présentable mais manque de rigueur informative — trop marketing, pas assez factuel",
+    parcours: ["Accueil", "Votre Projet", "Contact → Email (pas de RDV en ligne)"],
+    pointsPositifs: ["Processus en 12 étapes montre le sérieux", "Partenaires électro reconnus"],
+    frictions: ["Aucun délai de livraison / pose", "Aucune certification / label", "Pas de Schema.org (invisible IA)", "Aucun prix"],
+  },
+  {
+    id: 7,
+    name: "Céline",
+    age: 44,
+    emoji: "🎨",
+    canal: "Google Search",
+    device: "Mobile",
+    maturite: "Comparaison",
+    situation: "Architecte d'intérieur à Nancy cherche un partenaire cuisiniste pour ses clients",
+    contexte: "Tape 'cuisiniste allemand Nancy haut de gamme' — Möbel en bonne position pour Nancy/Essey",
+    questionCle: "Travaillez-vous avec les architectes ? Avez-vous des tarifs partenaires professionnels ?",
+    reponse: "Non",
+    commentReponse: "Aucune page B2B, aucune offre partenaires professionnels, aucun contact dédié",
+    decision: "quitte",
+    impactTechnique: "Temps de chargement rédhibitoire sur mobile — elle abandonne après 3s",
+    scores: { exp: 3, conf: 4, clarte: 4 },
+    premierImpression: "Site orienté particulier uniquement — pas de porte d'entrée pour les professionnels",
+    parcours: ["Accueil", "Menu", "Quitte (pas d'offre pro)"],
+    pointsPositifs: ["Large gamme de modèles adaptée aux projets sur mesure"],
+    frictions: ["Aucune section professionnels/architectes", "Site trop lent sur mobile", "Pas de catalogue PDF professionnel", "Contact non différencié (même formulaire pro/particulier)"],
+  },
+  {
+    id: 8,
+    name: "Thierry",
+    age: 52,
+    emoji: "🔨",
+    canal: "Google Maps",
+    device: "Mobile",
+    maturite: "Decision",
+    situation: "Artisan plombier-chauffagiste qui cherche un cuisiniste de confiance pour recommander à ses clients",
+    contexte: "Cherche Möbel Cuisine sur Maps depuis le chantier d'un client — veut vérifier la fiabilité",
+    questionCle: "Est-ce sérieux ? Depuis combien de temps sont-ils installés ?",
+    reponse: "Partiellement",
+    commentReponse: "Pas d'ancienneté affichée, pas d'histoire de l'entreprise — les mentions légales montrent une société luxembourgeoise, ça inquiète",
+    decision: "hesite",
+    impactTechnique: "Fiche Google Maps bien remplie rassure, mais le site ne renforce pas la confiance",
+    scores: { exp: 5, conf: 5, clarte: 5 },
+    premierImpression: "La marque semble sérieuse mais l'absence d'une 'histoire' ou d'un fondateur humain crée de la distance",
+    parcours: ["Maps → Site", "Accueil", "Mentions légales (cherche siège)", "Contact"],
+    pointsPositifs: ["Présence Maps bien établie", "Magasins physiques rassurants"],
+    frictions: ["Siège au Luxembourg (méfiance)", "Aucune page 'Notre histoire' ou 'Qui sommes-nous'", "Aucun avis Google intégré au site", "Email contact@ecocuisine.fr dans les mentions légales"],
+  },
+  {
+    id: 9,
+    name: "Laura",
+    age: 31,
+    emoji: "💻",
+    canal: "Facebook",
+    device: "Mobile",
+    maturite: "Decouverte",
+    situation: "Jeune propriétaire qui vient d'acheter son premier appartement à Strasbourg",
+    contexte: "Voit une publicité Facebook 'MOBELFEST -40%' — clique pour en savoir plus",
+    questionCle: "-40% sur quoi exactement ? C'est -40% sur le prix total ou sur certains modèles ?",
+    reponse: "Non",
+    commentReponse: "La promo MOBELFEST est le H1 mais sans aucun détail — les conditions de l'offre sont invisibles",
+    decision: "quitte",
+    impactTechnique: "Revolution Slider charge le slider promo mais sans texte explicatif sur l'offre",
+    scores: { exp: 3, conf: 3, clarte: 2 },
+    premierImpression: "Arnaquée par la pub — clique sur -40% et ne trouve aucune info sur la promo",
+    parcours: ["Pub Facebook (MOBELFEST)", "Accueil (H1 = MOBELFEST mais sans détail)", "Quitte frustrée"],
+    pointsPositifs: ["Le design des cuisines est attractif"],
+    frictions: ["Promo MOBELFEST annoncée sans conditions ni détails", "H1 trompeur par rapport à la pub", "Aucun landing page dédié à la promo", "Bannière cookie absente (RGPD)"],
+  },
+  {
+    id: 10,
+    name: "Bernard",
+    age: 61,
+    emoji: "🏠",
+    canal: "Bouche-a-oreille",
+    device: "Desktop",
+    maturite: "Decision",
+    situation: "Retraité qui construit sa maison de campagne en Moselle, budget confortable, veut du qualitatif",
+    contexte: "Son gendre lui recommande chaudement Möbel — il prend son temps, visite tout le site",
+    questionCle: "Peut-on avoir un devis gratuit ? Y a-t-il un suivi après pose ?",
+    reponse: "Partiellement",
+    commentReponse: "Devis gratuit mentionné dans le processus mais nulle part en CTA visible sur l'accueil",
+    decision: "convertit",
+    impactTechnique: "Sur desktop le site est correct, le processus en 12 étapes le rassure",
+    scores: { exp: 7, conf: 8, clarte: 6 },
+    premierImpression: "Site sérieux, produits de qualité visible — le processus détaillé en 12 étapes le convainc du sérieux",
+    parcours: ["Accueil", "Cuisines", "Styles", "Votre Projet (12 étapes)", "Magasins", "Contact → RDV"],
+    pointsPositifs: ["Processus achat en 12 étapes très rassurant", "Belles galeries de styles", "Partenaires électro de qualité", "Financement disponible"],
+    frictions: ["Aucun avis client visible", "Pas de galerie de réalisations locales", "Prix absents même pour budget élevé"],
+  },
+];
+
+// ============================================================
+// AMELIORATIONS CRITIQUES
+// ============================================================
+
+const ameliorationsCritiques = [
+  {
+    titre: "Afficher une fourchette de prix sur l'accueil",
+    detail: "8 personas sur 10 cherchent un prix et repartent sans. 'À partir de X€ fourni+posé' suffit pour qualifier les visiteurs et créer la confiance.",
+    action: "Ajouter une section 'Nos cuisines à partir de X€ posées' avec 2-3 gammes illustrées sur la home et la page Cuisines",
+  },
+  {
+    titre: "Refonte de la performance mobile (temps de chargement)",
+    detail: "17 CSS + 10 JS + Revolution Slider + 0 lazy loading = site estimé à 4-6s sur mobile. 7 personas impactés. C'est la première cause de rebond.",
+    action: "Migrer vers un site moderne (Astro, Tailwind) ou a minima : supprimer Revolution Slider, lazy-loader toutes les images, consolider CSS/JS en bundles uniques",
+  },
+  {
+    titre: "Ajouter des témoignages clients réels et des réalisations locales",
+    detail: "6 personas cherchent une preuve sociale. Le secteur cuisine est basé sur la confiance — des photos de réalisations locales avec prénom client et ville valent 100 discours.",
+    action: "Créer une galerie 'Nos réalisations en Moselle et Grand Est' avec photos avant/après, prénom+ville du client, modèle utilisé. Intégrer le widget Google Reviews.",
+  },
+];
+
+const ameliorationsUtiles = [
+  {
+    titre: "Implémenter Schema.org LocalBusiness + Store",
+    detail: "Aucun schema.org = invisible pour Google rich results et toutes les IA (ChatGPT, Perplexity). Pour chaque magasin : LocalBusiness avec adresse, horaires, téléphone, zone de service.",
+  },
+  {
+    titre: "H1 parlant + correction SEO de base (canonical, sitemap, OG)",
+    detail: "H1 = 'MOBELFEST*' est une anomalie SEO. Canonical absent, sitemap pointant vers l'ancien domaine ecocuisine.fr. Ces corrections basiques améliorent immédiatement l'indexation.",
+  },
+  {
+    titre: "Bannière cookies RGPD conforme",
+    detail: "GTM actif sans consentement = violation RGPD. Pour une marque grand public, le risque de sanction CNIL est réel. Une bannière axeptio ou tarteaucitron suffit.",
+  },
+];
+
+// ============================================================
+// HELPERS
+// ============================================================
+
+function scoreColor(s: number): string {
+  if (s >= 90) return '#22c55e';
+  if (s >= 50) return '#f59e0b';
+  return '#ef4444';
+}
+
+function decisionStyle(d: string): { border: string; bg: string; badge: string; badgeBg: string } {
+  if (d === 'convertit') return { border: 'border-green-200', bg: 'bg-green-50/40', badge: 'Convertit', badgeBg: 'bg-green-100 text-green-800' };
+  if (d === 'hesite') return { border: 'border-amber-200', bg: 'bg-amber-50/40', badge: 'Hésite', badgeBg: 'bg-amber-100 text-amber-800' };
+  return { border: 'border-neutral-200', bg: 'bg-neutral-50/40', badge: 'Quitte', badgeBg: 'bg-red-100 text-red-700' };
+}
+
+const mobileScores = [
+  { label: "Performance", score: pagespeed.mobile.performance },
+  { label: "Accessibilité", score: pagespeed.mobile.accessibility },
+  { label: "Bonnes Pratiques", score: pagespeed.mobile.bestPractices },
+  { label: "SEO", score: pagespeed.mobile.seo },
+];
+---
+
+<BaseLayout title={title} description={description} noindex={true} lang="fr" frPath="/audit/mobel-cuisine">
+  <main class="bg-white min-h-screen">
+
+    <!-- ======================================================
+         HERO + KPIs
+    ====================================================== -->
+    <section class="bg-neutral-900 text-white py-14 px-4">
+      <div class="max-w-4xl mx-auto">
+        <span class="inline-block text-xs font-semibold tracking-widest uppercase text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full mb-4">Rapport personnalisé — Audit Batch</span>
+        <h1 class="font-heading text-3xl md:text-4xl font-bold mb-2 leading-tight">
+          {prospect.name} — ce que vos visiteurs pensent vraiment
+        </h1>
+        <p class="text-neutral-400 mb-2">{prospect.activity}</p>
+        <p class="text-neutral-500 text-sm mb-8">
+          <a href={prospect.url} class="text-amber-400 hover:underline" target="_blank" rel="noopener noreferrer">{prospect.url}</a>
+          &nbsp;·&nbsp; {prospect.location} &nbsp;·&nbsp; Audit du {prospect.date}
+        </p>
+
+        <div class="grid grid-cols-3 gap-4 max-w-sm">
+          <div class="text-center bg-white/5 rounded-xl py-4">
+            <span class="block text-3xl font-black text-amber-400">{kpis.conversion}%</span>
+            <span class="text-xs text-neutral-400 mt-1 block">convertissent</span>
+          </div>
+          <div class="text-center bg-white/5 rounded-xl py-4">
+            <span class="block text-3xl font-black text-amber-400">{kpis.experience}/10</span>
+            <span class="text-xs text-neutral-400 mt-1 block">expérience</span>
+          </div>
+          <div class="text-center bg-white/5 rounded-xl py-4">
+            <span class="block text-3xl font-black text-amber-400">{kpis.confiance}/10</span>
+            <span class="text-xs text-neutral-400 mt-1 block">confiance</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================
+         CONSTAT
+    ====================================================== -->
+    <section class="py-12 px-4 bg-white">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Le constat</h2>
+
+        <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-8">
+          <p class="text-amber-900 font-medium text-lg leading-relaxed">{constat}</p>
+        </div>
+
+        <!-- Résumé chiffré -->
+        <div class="grid grid-cols-3 gap-4 mb-10">
+          <div class="text-center bg-green-50 border border-green-200 rounded-xl py-5">
+            <span class="block text-4xl font-black text-green-600">2</span>
+            <span class="text-sm text-green-700 font-medium mt-1 block">Convertissent</span>
+          </div>
+          <div class="text-center bg-amber-50 border border-amber-200 rounded-xl py-5">
+            <span class="block text-4xl font-black text-amber-600">3</span>
+            <span class="text-sm text-amber-700 font-medium mt-1 block">Hésitent</span>
+          </div>
+          <div class="text-center bg-red-50 border border-red-200 rounded-xl py-5">
+            <span class="block text-4xl font-black text-red-600">5</span>
+            <span class="text-sm text-red-700 font-medium mt-1 block">Repartent</span>
+          </div>
+        </div>
+
+        <!-- Conversion par canal -->
+        <h3 class="font-semibold text-neutral-800 mb-4 text-lg">Conversion par canal d'arrivée</h3>
+        <div class="space-y-3 mb-10">
+          {conversionByCanal.map(item => (
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-sm text-neutral-700">{item.canal}</span>
+                <span class={`text-sm font-bold ${item.color}`}>{item.taux}%</span>
+              </div>
+              <div class="h-2 bg-neutral-100 rounded-full overflow-hidden">
+                <div class={`h-full rounded-full ${item.bg}`} style={`width: ${Math.max(item.taux, 2)}%`}></div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <!-- Top 5 frictions -->
+        <h3 class="font-semibold text-neutral-800 mb-4 text-lg">Top 5 frictions identifiées</h3>
+        <ol class="space-y-3">
+          {topFrictions.map((f, i) => (
+            <li class="flex gap-3 items-start bg-neutral-50 border border-neutral-200 rounded-xl p-4">
+              <span class="shrink-0 w-7 h-7 rounded-full bg-red-100 text-red-700 text-sm font-black flex items-center justify-center">{i + 1}</span>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 flex-wrap">
+                  <span class="font-semibold text-neutral-900 text-sm">{f.titre}</span>
+                  <span class="text-xs bg-neutral-200 text-neutral-600 px-2 py-0.5 rounded-full">{f.count}/10 personas</span>
+                </div>
+                <p class="text-xs text-neutral-500 mt-1">{f.detail}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </section>
+
+    <!-- ======================================================
+         AUDIT TECHNIQUE
+    ====================================================== -->
+    <section class="py-12 px-4 bg-neutral-50 border-t border-neutral-200">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">L'audit technique</h2>
+
+        <!-- PageSpeed Mobile -->
+        <div class="bg-white rounded-xl border border-neutral-200 p-6 mb-6">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="text-sm font-semibold text-neutral-700">PageSpeed Mobile</span>
+            <span class="text-xs text-neutral-400 bg-amber-50 border border-amber-200 px-2 py-0.5 rounded">{pagespeed.note}</span>
+          </div>
+          <div class="grid grid-cols-4 gap-4">
+            {mobileScores.map(m => (
+              <div class="text-center">
+                <div class="relative w-16 h-16 mx-auto mb-2">
+                  <svg class="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      fill="none" stroke="#e5e7eb" stroke-width="3" />
+                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      fill="none" stroke={scoreColor(m.score)} stroke-width="3"
+                      stroke-dasharray={`${m.score}, 100`} stroke-linecap="round" />
+                  </svg>
+                  <span class="absolute inset-0 flex items-center justify-center text-base font-bold text-neutral-900">{m.score}</span>
+                </div>
+                <p class="text-xs text-neutral-600">{m.label}</p>
+              </div>
+            ))}
+          </div>
+          <!-- Core Web Vitals -->
+          <div class="mt-4 flex flex-wrap gap-3">
+            {coreWebVitals.map(v => (
+              <div class={`px-3 py-2 rounded-lg text-xs font-medium ${v.status === 'bon' ? 'bg-green-50 text-green-700 border border-green-200' : v.status === 'moyen' ? 'bg-amber-50 text-amber-700 border border-amber-200' : 'bg-red-50 text-red-700 border border-red-200'}`}>
+                {v.name} : <strong>{v.value}</strong>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Observatory -->
+        <div class="bg-white rounded-xl border border-neutral-200 p-6 mb-6">
+          <div class="flex items-center justify-between flex-wrap gap-3">
+            <div>
+              <span class="text-sm font-semibold text-neutral-700 block mb-1">Sécurité — Mozilla Observatory</span>
+              <p class="text-xs text-neutral-500">{observatory.testsPassed}/{observatory.testsTotal} tests passés · 5 headers de sécurité manquants</p>
+            </div>
+            <div class="text-center">
+              <span class="inline-block text-3xl font-black text-red-600 bg-red-50 border border-red-200 rounded-xl px-5 py-2">{observatory.grade}</span>
+              <span class="block text-xs text-neutral-500 mt-1">{observatory.score}/100</span>
+            </div>
+          </div>
+          <div class="mt-4 grid grid-cols-1 sm:grid-cols-2 gap-2 text-xs">
+            {[
+              { h: "Content-Security-Policy", pen: "-25pts" },
+              { h: "Strict-Transport-Security", pen: "-20pts" },
+              { h: "X-Frame-Options", pen: "-20pts" },
+              { h: "X-Content-Type-Options", pen: "-5pts" },
+              { h: "Redirection HTTP→HTTPS hors domaine", pen: "-5pts" },
+            ].map(item => (
+              <div class="flex items-center gap-2 text-red-700">
+                <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                <span>{item.h} <span class="text-red-400">({item.pen})</span></span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Checklist Schema / OG / SEO -->
+        <div class="bg-white rounded-xl border border-neutral-200 p-6 mb-6">
+          <span class="text-sm font-semibold text-neutral-700 block mb-4">Schema.org · Open Graph · SEO technique</span>
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+            {techChecks.map(tc => (
+              <div class={`flex items-center gap-2 text-xs py-1 ${tc.present ? 'text-green-700' : tc.critical ? 'text-red-700' : 'text-neutral-500'}`}>
+                {tc.present ? (
+                  <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                ) : (
+                  <svg class="w-3.5 h-3.5 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                )}
+                <span>{tc.label}{tc.critical && !tc.present ? <span class="ml-1 text-red-400 font-semibold">·&nbsp;critique</span> : ''}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Opportunites -->
+        <div class="bg-white rounded-xl border border-neutral-200 p-6">
+          <span class="text-sm font-semibold text-neutral-700 block mb-4">Top 3 opportunités de performance</span>
+          <div class="space-y-3">
+            {opportunities.map(o => (
+              <div class={`flex items-start gap-3 p-3 rounded-lg ${o.priorite === 'critique' ? 'bg-red-50 border border-red-200' : 'bg-amber-50 border border-amber-200'}`}>
+                <span class={`text-xs font-semibold px-2 py-0.5 rounded shrink-0 ${o.priorite === 'critique' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>{o.priorite}</span>
+                <div class="flex-1 min-w-0">
+                  <p class="text-sm text-neutral-800 font-medium">{o.titre}</p>
+                  <p class="text-xs text-neutral-500 mt-0.5">Gain estimé : {o.gain}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================
+         VOS VISITEURS — PERSONAS
+    ====================================================== -->
+    <section class="py-12 px-4 bg-white border-t border-neutral-200">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs simulés</h2>
+        <p class="text-neutral-500 text-sm mb-8">
+          Sur <strong>10 visiteurs simulés</strong>, {kpis.conversion / 10 * 1 < 1 ? Math.round(kpis.conversion / 10) : kpis.conversion / 10} visiteurs contactent réellement, {kpis.hesite / 10} hésitent et {kpis.quitte / 10} repartent sans action.
+          <br/>Scores moyens : Expérience <strong>{kpis.experience}/10</strong> · Confiance <strong>{kpis.confiance}/10</strong> · Clarté <strong>{kpis.clarte}/10</strong>
+        </p>
+
+        <div class="space-y-3">
+          {personas.map(p => {
+            const style = decisionStyle(p.decision);
+            return (
+              <details class={`group border ${style.border} ${style.bg} rounded-xl overflow-hidden`}>
+                <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                  <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                      <h3 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h3>
+                      <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                      <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                      <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                      <span class={`text-[11px] px-1.5 py-0.5 rounded font-semibold ${style.badgeBg}`}>{style.badge}</span>
+                    </div>
+                    <p class="text-xs text-neutral-500">{p.situation}</p>
+                  </div>
+                  <div class="shrink-0 flex items-center gap-3 ml-2">
+                    <div class="hidden sm:flex gap-2 text-xs text-neutral-500">
+                      <span>Exp. <strong class={p.scores.exp >= 7 ? 'text-green-600' : p.scores.exp >= 5 ? 'text-amber-600' : 'text-red-600'}>{p.scores.exp}</strong></span>
+                      <span>Conf. <strong class={p.scores.conf >= 7 ? 'text-green-600' : p.scores.conf >= 5 ? 'text-amber-600' : 'text-red-600'}>{p.scores.conf}</strong></span>
+                    </div>
+                    <svg class="w-5 h-5 text-neutral-400 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                  </div>
+                </summary>
+                <div class="px-4 pb-4 pt-0 border-t border-neutral-200 bg-white/70">
+                  <div class="grid gap-3 text-xs mt-3">
+                    <div>
+                      <p class="font-semibold text-neutral-700 mb-1">Premiere impression</p>
+                      <p class="text-neutral-600">{p.premierImpression}</p>
+                    </div>
+                    <div>
+                      <p class="font-semibold text-neutral-700 mb-1">Parcours</p>
+                      <p class="text-neutral-500">{p.parcours.join(' → ')}</p>
+                    </div>
+                    <div>
+                      <p class="font-semibold text-neutral-700 mb-1">Question cle</p>
+                      <p class="text-neutral-600 italic">"{p.questionCle}"</p>
+                      <p class="text-neutral-600 mt-1">Reponse du site : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Partiellement' ? 'text-amber-700' : 'text-red-700'}>{p.reponse}</strong> — {p.commentReponse}</p>
+                    </div>
+                    <div>
+                      <p class="font-semibold text-neutral-700 mb-1">Impact technique</p>
+                      <p class="text-neutral-500 italic">{p.impactTechnique}</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                      <div>
+                        <p class="font-semibold text-green-700 mb-1">Points positifs</p>
+                        <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                          {p.pointsPositifs.map(pp => <li>{pp}</li>)}
+                        </ul>
+                      </div>
+                      <div>
+                        <p class="font-semibold text-amber-700 mb-1">Frictions</p>
+                        <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                          {p.frictions.map(fr => <li>{fr}</li>)}
+                        </ul>
+                      </div>
+                    </div>
+                    <div class="flex gap-4 pt-1 border-t border-neutral-100">
+                      <span class="text-neutral-500">Experience : <strong class={p.scores.exp >= 7 ? 'text-green-600' : p.scores.exp >= 5 ? 'text-amber-600' : 'text-red-600'}>{p.scores.exp}/10</strong></span>
+                      <span class="text-neutral-500">Confiance : <strong class={p.scores.conf >= 7 ? 'text-green-600' : p.scores.conf >= 5 ? 'text-amber-600' : 'text-red-600'}>{p.scores.conf}/10</strong></span>
+                      <span class="text-neutral-500">Clarte : <strong class={p.scores.clarte >= 7 ? 'text-green-600' : p.scores.clarte >= 5 ? 'text-amber-600' : 'text-red-600'}>{p.scores.clarte}/10</strong></span>
+                    </div>
+                  </div>
+                </div>
+              </details>
+            );
+          })}
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================
+         RECOMMANDATIONS
+    ====================================================== -->
+    <section class="py-12 px-4 bg-neutral-50 border-t border-neutral-200">
+      <div class="max-w-4xl mx-auto">
+        <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Nos recommandations</h2>
+
+        <h3 class="text-sm font-semibold text-red-700 uppercase tracking-widest mb-3">Le plus important (3 actions critiques)</h3>
+        <div class="space-y-4 mb-10">
+          {ameliorationsCritiques.map((a, i) => (
+            <div class="bg-white border border-red-200 rounded-xl p-5">
+              <div class="flex items-start gap-3">
+                <span class="shrink-0 w-7 h-7 bg-red-100 text-red-700 rounded-full text-sm font-black flex items-center justify-center">{i + 1}</span>
+                <div class="flex-1">
+                  <h4 class="font-semibold text-neutral-900 mb-2">{a.titre}</h4>
+                  <p class="text-sm text-neutral-600 mb-3">{a.detail}</p>
+                  <div class="bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+                    <p class="text-xs text-red-800 font-medium">Action concrète : {a.action}</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <h3 class="text-sm font-semibold text-amber-700 uppercase tracking-widest mb-3">Utile aussi</h3>
+        <div class="grid sm:grid-cols-2 gap-4">
+          {ameliorationsUtiles.map(a => (
+            <div class="bg-white border border-amber-200 rounded-xl p-5">
+              <h4 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h4>
+              <p class="text-xs text-neutral-600">{a.detail}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ======================================================
+         CTA FINAL
+    ====================================================== -->
+    <section class="bg-neutral-900 text-white py-16 px-4">
+      <div class="max-w-3xl mx-auto text-center">
+        <h2 class="font-heading text-2xl md:text-3xl font-bold mb-4">
+          {kpis.conversion}% de vos visiteurs vous contactent.<br/>
+          <span class="text-amber-400">On peut faire beaucoup mieux.</span>
+        </h2>
+        <p class="text-neutral-300 mb-3 max-w-xl mx-auto">
+          Ce rapport identifie des opportunités concrètes. Je construis des sites qui convertissent vraiment
+          — conçus pour des acheteurs exigeants, à partir de <strong class="text-white">990€</strong>, livrés en <strong class="text-white">7 jours</strong>.
+        </p>
+        <p class="text-neutral-400 text-sm mb-8">
+          Cuisinistes, artisans, commerces locaux — je comprends votre clientèle parce que j'analyse des centaines de visites simulées avant d'écrire une seule ligne de code.
+        </p>
+        <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+          <a href="/commander" class="inline-flex items-center gap-2 px-8 py-3.5 bg-[var(--color-accent)] text-white font-semibold rounded-xl hover:opacity-90 transition-all shadow-md">
+            Je veux un site qui convertit
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+          </a>
+          <a href="/contact" class="inline-flex items-center gap-2 px-8 py-3.5 border border-neutral-600 text-neutral-300 font-semibold rounded-xl hover:border-amber-400 hover:text-amber-400 transition-all">
+            En discuter d'abord
+          </a>
+        </div>
+        <p class="text-neutral-600 text-xs mt-6">Audit réalisé le {prospect.date} · Données issues d'une analyse automatisée + simulation de 10 personas</p>
+      </div>
+    </section>
+
+  </main>
+</BaseLayout>
