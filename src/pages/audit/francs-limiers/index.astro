@@ -1,0 +1,403 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX — Les Francs Limiers | Marc M';
+const description = 'Simulation de 20 visites personas sur lesfrancslimiers.com — rapport complet avec recommandations priorisées.';
+
+// Data
+const personas = [
+  { id: 1, name: 'Sandrine', age: 47, role: 'Directrice office de tourisme', canal: 'Google Search', maturite: 'Comparaison', device: 'Desktop', decision: 'Hésite', exp: 6, conf: 7, clarte: 5 },
+  { id: 2, name: 'Julien', age: 34, role: 'Gérant escape game', canal: 'Google Maps', maturite: 'Décision', device: 'Mobile', decision: 'Hésite', exp: 5, conf: 7, clarte: 5 },
+  { id: 3, name: 'Nathalie', age: 52, role: 'Resp. événementiel', canal: 'Bouche-à-oreille', maturite: 'Comparaison', device: 'Desktop', decision: 'Convertit', exp: 6, conf: 6, clarte: 6 },
+  { id: 4, name: 'Mehdi', age: 29, role: 'Chargé de com start-up', canal: 'Instagram', maturite: 'Découverte', device: 'Mobile', decision: 'Quitte', exp: 3, conf: 5, clarte: 3 },
+  { id: 5, name: 'Claire', age: 41, role: 'Directrice château-musée', canal: 'Google Search', maturite: 'Comparaison', device: 'Mobile', decision: 'Hésite', exp: 5, conf: 7, clarte: 4 },
+  { id: 6, name: 'Thomas', age: 38, role: 'Responsable RH', canal: 'ChatGPT', maturite: 'Comparaison', device: 'Mobile', decision: 'Hésite', exp: 5, conf: 6, clarte: 6 },
+  { id: 7, name: 'Élise', age: 31, role: 'Organisatrice événements', canal: 'LinkedIn', maturite: 'Découverte', device: 'Mobile', decision: 'Quitte', exp: 6, conf: 7, clarte: 4 },
+  { id: 8, name: 'François', age: 56, role: 'Maire', canal: 'Google Search', maturite: 'Décision', device: 'Desktop', decision: 'Hésite', exp: 4, conf: 5, clarte: 6 },
+  { id: 9, name: 'Amira', age: 27, role: 'Médiation culturelle', canal: 'Perplexity', maturite: 'Comparaison', device: 'Mobile', decision: 'Convertit', exp: 6, conf: 6, clarte: 5 },
+  { id: 10, name: 'Laurent', age: 44, role: 'Directeur centre loisirs', canal: 'Newsletter', maturite: 'Comparaison', device: 'Mobile', decision: 'Hésite', exp: 5, conf: 6, clarte: 4 },
+  { id: 11, name: 'Sophie', age: 36, role: 'Présidente asso parents', canal: 'Facebook', maturite: 'Découverte', device: 'Mobile', decision: 'Quitte', exp: 4, conf: 6, clarte: 3 },
+  { id: 12, name: 'Guillaume', age: 49, role: 'Passionné escape game', canal: 'Google Search', maturite: 'Découverte', device: 'Desktop', decision: 'Quitte', exp: 6, conf: 8, clarte: 4 },
+  { id: 13, name: 'Margaux', age: 33, role: 'Chargée projets département', canal: 'Instagram', maturite: 'Comparaison', device: 'Mobile', decision: 'Convertit', exp: 7, conf: 8, clarte: 6 },
+  { id: 14, name: 'Pierre', age: 61, role: 'Directeur EHPAD', canal: 'Bouche-à-oreille', maturite: 'Décision', device: 'Tablette', decision: 'Convertit', exp: 5, conf: 7, clarte: 3 },
+  { id: 15, name: 'Léa', age: 26, role: 'Étudiante Game Design', canal: 'Google Search', maturite: 'Découverte', device: 'Mobile', decision: 'Quitte', exp: 3, conf: 7, clarte: 2 },
+  { id: 16, name: 'Christophe', age: 43, role: 'Gérant 2 escape games', canal: 'Google Maps', maturite: 'Décision', device: 'Mobile', decision: 'Hésite', exp: 5, conf: 6, clarte: 5 },
+  { id: 17, name: 'Fatima', age: 39, role: 'Directrice MJC', canal: 'Claude AI', maturite: 'Comparaison', device: 'Desktop', decision: 'Hésite', exp: 6, conf: 7, clarte: 5 },
+  { id: 18, name: 'Antoine', age: 30, role: 'Chef de projet agence', canal: 'QR code salon', maturite: 'Découverte', device: 'Mobile', decision: 'Quitte', exp: 5, conf: 7, clarte: 4 },
+  { id: 19, name: 'Valérie', age: 55, role: 'Particulière (B2C)', canal: 'Google Maps', maturite: 'Découverte', device: 'Mobile', decision: 'Quitte', exp: 1, conf: 2, clarte: 1 },
+  { id: 20, name: 'Romain', age: 35, role: 'Resp. animation parc', canal: 'Bouche-à-oreille', maturite: 'Décision', device: 'Mobile', decision: 'Hésite', exp: 5, conf: 6, clarte: 4 },
+];
+
+const avgExp = (personas.reduce((s, p) => s + p.exp, 0) / personas.length).toFixed(1);
+const avgConf = (personas.reduce((s, p) => s + p.conf, 0) / personas.length).toFixed(1);
+const avgClarte = (personas.reduce((s, p) => s + p.clarte, 0) / personas.length).toFixed(1);
+const convertis = personas.filter(p => p.decision === 'Convertit').length;
+const hesitants = personas.filter(p => p.decision === 'Hésite').length;
+const quitte = personas.filter(p => p.decision === 'Quitte').length;
+
+const frictions = [
+  { label: 'Aucun prix / fourchette tarifaire', count: 18, severity: 'critique' },
+  { label: 'Pas de téléphone ni email visible', count: 14, severity: 'critique' },
+  { label: 'Pas de témoignages clients textuels', count: 12, severity: 'haute' },
+  { label: 'Portfolio sans profondeur (budget, résultats, contraintes)', count: 10, severity: 'haute' },
+  { label: 'Zone d\'intervention non précisée', count: 7, severity: 'haute' },
+  { label: 'Équipe de 2 sans mention de réseau', count: 6, severity: 'moyenne' },
+  { label: 'Pas de SAV/maintenance mentionné', count: 4, severity: 'haute' },
+  { label: 'Confusion B2B / B2C (trafic Google Maps)', count: 2, severity: 'moyenne' },
+];
+
+const ameliorations = [
+  { priority: 'haute', title: 'Ajouter des fourchettes tarifaires par service', impact: '18/20 personas', detail: 'Même une fourchette large ("à partir de X€") qualifie les prospects et débloque les dossiers de subvention.' },
+  { priority: 'haute', title: 'Afficher un numéro de téléphone', impact: '14/20 personas', detail: 'Un numéro visible sur chaque page. Alternative : bouton "Demander un rappel sous 24h".' },
+  { priority: 'haute', title: 'Ajouter des témoignages clients', impact: '12/20 personas', detail: 'Un verbatim par type de client : élu, exploitant, responsable événementiel, médiateur culturel.' },
+  { priority: 'haute', title: 'Enrichir les fiches portfolio', impact: '10/20 personas', detail: 'Ajouter par projet : commanditaire, contraintes, délai réel, résultats/retours clients.' },
+  { priority: 'haute', title: 'Préciser la zone d\'intervention', impact: '7/20 personas', detail: '"Nous intervenons dans toute la France" + carte des réalisations.' },
+  { priority: 'moyenne', title: 'Section SAV / maintenance post-livraison', impact: '4/20 (exploitants)', detail: 'Détailler garantie, délais d\'intervention, maintenance préventive, pièces de rechange.' },
+  { priority: 'moyenne', title: 'Capacité multi-projets simultanés', impact: '3/20 personas', detail: 'Mentionner le réseau de partenaires/artisans. Rassurer sur la capacité de production.' },
+  { priority: 'moyenne', title: 'Quantifier les tarifs solidaires', impact: '3/20 personas', detail: 'Donner un pourcentage ou exemple concret. "Tarifs solidaires" sans chiffre = argument creux.' },
+  { priority: 'moyenne', title: 'Bandeau désambiguïsation B2B / B2C', impact: 'Réduction rebond Maps', detail: '"Vous cherchez un escape game à jouer ? Découvrez les salles que nous avons créées" avec liens.' },
+];
+
+const canalStats = [
+  { canal: 'Google Search', total: 5, conv: 0, hesitant: 3, quitte: 2 },
+  { canal: 'Google Maps', total: 3, conv: 0, hesitant: 2, quitte: 1 },
+  { canal: 'IA (ChatGPT / Claude / Perplexity)', total: 3, conv: 1, hesitant: 1, quitte: 0 },
+  { canal: 'Réseaux sociaux', total: 4, conv: 1, hesitant: 0, quitte: 3 },
+  { canal: 'Bouche-à-oreille', total: 3, conv: 2, hesitant: 1, quitte: 0 },
+  { canal: 'Autres (email, QR)', total: 2, conv: 0, hesitant: 1, quitte: 1 },
+];
+
+const maturiteStats = [
+  { level: 'Découverte', total: 6, conv: 0, pct: '0%' },
+  { level: 'Comparaison', total: 8, conv: 3, pct: '38%' },
+  { level: 'Décision', total: 6, conv: 1, pct: '17%' },
+];
+
+function decisionColor(d: string) {
+  if (d === 'Convertit') return 'bg-emerald-100 text-emerald-800';
+  if (d === 'Hésite') return 'bg-amber-100 text-amber-800';
+  return 'bg-red-100 text-red-800';
+}
+
+function severityColor(s: string) {
+  if (s === 'critique') return 'bg-red-100 text-red-800';
+  if (s === 'haute') return 'bg-orange-100 text-orange-800';
+  return 'bg-blue-100 text-blue-800';
+}
+
+function priorityColor(p: string) {
+  if (p === 'haute') return 'border-l-red-500';
+  return 'border-l-amber-500';
+}
+
+function scoreBar(val: number) {
+  return `${val * 10}%`;
+}
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  noindex={true}
+  lang="fr"
+  frPath="/audit/francs-limiers"
+>
+
+  <!-- ═══════════════════ HERO ═══════════════════ -->
+  <section class="w-full relative px-6 py-16 md:px-8 md:py-24 overflow-hidden" style="background-color: #0D0D0D;">
+    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 40px 40px;"></div>
+    <div class="absolute top-20 -left-32 w-96 h-96 rounded-full opacity-10 blur-3xl" style="background: #E86C47;"></div>
+
+    <div class="mx-auto max-w-4xl relative z-10">
+      <div class="mb-4 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--color-accent)]/40">
+        <span class="w-2 h-2 rounded-full" style="background-color: #E86C47;"></span>
+        <span class="text-sm font-semibold text-white/90">Rapport confidentiel</span>
+      </div>
+
+      <h1 class="mb-4 text-3xl font-bold leading-tight text-white md:text-4xl lg:text-5xl">
+        Audit UX — <span class="bg-gradient-to-r from-[#E86C47] to-[#F5C8B3] bg-clip-text text-transparent">Les Francs Limiers</span>
+      </h1>
+
+      <p class="text-lg text-neutral-300 md:text-xl max-w-2xl mb-8">
+        Simulation de 20 visites personas sur <strong class="text-white">lesfrancslimiers.com</strong>. Chaque persona est un visiteur réaliste avec son profil, son canal d'arrivée, ses attentes et ses freins.
+      </p>
+
+      <div class="flex flex-wrap gap-3">
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">20 personas testés</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">7 canaux d'arrivée</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">29 mars 2026</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ SCORES CLÉS ═══════════════════ -->
+  <section class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+    <div class="mx-auto max-w-5xl">
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+
+        <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+          <p class="text-3xl md:text-4xl font-bold text-red-600">30%</p>
+          <p class="mt-1 text-sm text-[var(--color-text-muted)]">Taux de conversion</p>
+          <p class="mt-2 text-xs text-[var(--color-text-muted)]">{convertis} convertis · {hesitants} hésitants · {quitte} partis</p>
+        </div>
+
+        <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+          <p class="text-3xl md:text-4xl font-bold text-amber-600">{avgExp}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+          <p class="mt-1 text-sm text-[var(--color-text-muted)]">Expérience</p>
+          <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden">
+            <div class="h-full rounded-full bg-amber-500" style={`width: ${scoreBar(Number(avgExp))}`}></div>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+          <p class="text-3xl md:text-4xl font-bold text-blue-600">{avgConf}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+          <p class="mt-1 text-sm text-[var(--color-text-muted)]">Confiance</p>
+          <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden">
+            <div class="h-full rounded-full bg-blue-500" style={`width: ${scoreBar(Number(avgConf))}`}></div>
+          </div>
+        </div>
+
+        <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+          <p class="text-3xl md:text-4xl font-bold text-orange-600">{avgClarte}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+          <p class="mt-1 text-sm text-[var(--color-text-muted)]">Clarté</p>
+          <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden">
+            <div class="h-full rounded-full bg-orange-500" style={`width: ${scoreBar(Number(avgClarte))}`}></div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ PARADOXE + SYNTHÈSE ═══════════════════ -->
+  <section class="w-full px-6 py-12 md:px-8 md:py-16 bg-white">
+    <div class="mx-auto max-w-5xl">
+
+      <div class="mb-12 rounded-xl border-l-4 border-l-[var(--color-accent)] bg-accent-50 p-6 md:p-8">
+        <h2 class="text-lg font-bold text-[var(--color-text)] mb-2">Paradoxe principal</h2>
+        <p class="text-[var(--color-text)] leading-relaxed">
+          Les personas en <strong>décision</strong> (prêts à acheter) convertissent moins <strong>(17%)</strong> que ceux en <strong>comparaison (38%)</strong>. Le site convainc sur le <em>"quoi"</em> (création escape game) mais échoue sur le <em>"comment opérationnel"</em> — prix, délais, SAV, technique — exactement ce que les décideurs en fin de parcours ont besoin.
+        </p>
+      </div>
+
+      <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">Les 20 personas</h2>
+
+      <!-- Table desktop -->
+      <div class="hidden md:block overflow-x-auto rounded-xl border border-[var(--color-border)]">
+        <table class="w-full text-sm">
+          <thead>
+            <tr class="bg-neutral-50 text-left text-[var(--color-text-muted)]">
+              <th class="px-4 py-3 font-semibold">#</th>
+              <th class="px-4 py-3 font-semibold">Prénom</th>
+              <th class="px-4 py-3 font-semibold">Rôle</th>
+              <th class="px-4 py-3 font-semibold">Canal</th>
+              <th class="px-4 py-3 font-semibold">Maturité</th>
+              <th class="px-4 py-3 font-semibold text-center">Exp.</th>
+              <th class="px-4 py-3 font-semibold text-center">Conf.</th>
+              <th class="px-4 py-3 font-semibold text-center">Clarté</th>
+              <th class="px-4 py-3 font-semibold">Décision</th>
+            </tr>
+          </thead>
+          <tbody>
+            {personas.map((p, i) => (
+              <tr class={`border-t border-[var(--color-border)] ${i % 2 === 0 ? 'bg-white' : 'bg-neutral-50/50'}`}>
+                <td class="px-4 py-3 text-[var(--color-text-muted)]">{p.id}</td>
+                <td class="px-4 py-3 font-medium text-[var(--color-text)]">{p.name}</td>
+                <td class="px-4 py-3 text-[var(--color-text-muted)]">{p.role}</td>
+                <td class="px-4 py-3 text-[var(--color-text-muted)]">{p.canal}</td>
+                <td class="px-4 py-3 text-[var(--color-text-muted)]">{p.maturite}</td>
+                <td class="px-4 py-3 text-center font-medium">{p.exp}</td>
+                <td class="px-4 py-3 text-center font-medium">{p.conf}</td>
+                <td class="px-4 py-3 text-center font-medium">{p.clarte}</td>
+                <td class="px-4 py-3">
+                  <span class={`inline-flex px-2.5 py-1 rounded-full text-xs font-semibold ${decisionColor(p.decision)}`}>
+                    {p.decision}
+                  </span>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      <!-- Cards mobile -->
+      <div class="md:hidden space-y-3">
+        {personas.map((p) => (
+          <div class="rounded-xl border border-[var(--color-border)] bg-white p-4">
+            <div class="flex items-start justify-between mb-2">
+              <div>
+                <p class="font-semibold text-[var(--color-text)]">{p.id}. {p.name}, {p.age} ans</p>
+                <p class="text-sm text-[var(--color-text-muted)]">{p.role}</p>
+              </div>
+              <span class={`inline-flex px-2.5 py-1 rounded-full text-xs font-semibold ${decisionColor(p.decision)}`}>
+                {p.decision}
+              </span>
+            </div>
+            <div class="flex flex-wrap gap-2 text-xs text-[var(--color-text-muted)]">
+              <span class="px-2 py-1 rounded bg-neutral-100">{p.canal}</span>
+              <span class="px-2 py-1 rounded bg-neutral-100">{p.maturite}</span>
+              <span class="px-2 py-1 rounded bg-neutral-100">{p.device}</span>
+            </div>
+            <div class="mt-3 flex gap-4 text-xs">
+              <span>Exp. <strong>{p.exp}</strong>/10</span>
+              <span>Conf. <strong>{p.conf}</strong>/10</span>
+              <span>Clarté <strong>{p.clarte}</strong>/10</span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════ CONVERSION PAR CANAL ═══════════════════ -->
+  <section class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+    <div class="mx-auto max-w-5xl">
+      <h2 class="text-2xl font-bold text-[var(--color-text)] mb-2">Conversion par canal</h2>
+      <p class="text-[var(--color-text-muted)] mb-8">Le bouche-à-oreille est le seul canal qui convertit bien (67%). Tous les autres souffrent du même problème : le site ne confirme pas assez les attentes générées en amont.</p>
+
+      <div class="grid md:grid-cols-2 gap-4">
+        {canalStats.map((c) => {
+          const pct = c.total > 0 ? Math.round((c.conv / c.total) * 100) : 0;
+          return (
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="font-semibold text-[var(--color-text)]">{c.canal}</h3>
+                <span class={`text-lg font-bold ${pct > 50 ? 'text-emerald-600' : pct > 0 ? 'text-amber-600' : 'text-red-600'}`}>{pct}%</span>
+              </div>
+              <div class="h-3 rounded-full bg-neutral-100 overflow-hidden mb-3">
+                <div class="h-full rounded-full flex">
+                  <div class="bg-emerald-500" style={`width: ${(c.conv / c.total) * 100}%`}></div>
+                  <div class="bg-amber-400" style={`width: ${(c.hesitant / c.total) * 100}%`}></div>
+                  <div class="bg-red-400" style={`width: ${(c.quitte / c.total) * 100}%`}></div>
+                </div>
+              </div>
+              <div class="flex gap-4 text-xs text-[var(--color-text-muted)]">
+                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> {c.conv} conv.</span>
+                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-400"></span> {c.hesitant} hés.</span>
+                <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-400"></span> {c.quitte} partis</span>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ CONVERSION PAR MATURITÉ ═══════════════════ -->
+  <section class="w-full px-6 py-12 md:px-8 md:py-16 bg-white">
+    <div class="mx-auto max-w-5xl">
+      <h2 class="text-2xl font-bold text-[var(--color-text)] mb-8">Conversion par maturité</h2>
+
+      <div class="grid md:grid-cols-3 gap-4">
+        {maturiteStats.map((m) => (
+          <div class="rounded-xl border border-[var(--color-border)] bg-white p-6 text-center">
+            <p class="text-sm font-semibold text-[var(--color-text-muted)] uppercase tracking-wider mb-2">{m.level}</p>
+            <p class={`text-4xl font-bold ${m.pct === '0%' ? 'text-red-600' : m.pct === '17%' ? 'text-amber-600' : 'text-emerald-600'}`}>{m.pct}</p>
+            <p class="mt-1 text-sm text-[var(--color-text-muted)]">{m.conv}/{m.total} convertis</p>
+          </div>
+        ))}
+      </div>
+
+      <div class="mt-6 rounded-xl bg-amber-50 border border-amber-200 p-5">
+        <p class="text-sm text-amber-800">
+          <strong>Attention :</strong> le site perd les visiteurs en phase de <strong>décision</strong> (17% de conversion), qui sont pourtant les plus proches de l'achat. Ils ont besoin de détails opérationnels (prix, SAV, technique) que le site ne fournit pas.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ FRICTIONS ═══════════════════ -->
+  <section class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+    <div class="mx-auto max-w-5xl">
+      <h2 class="text-2xl font-bold text-[var(--color-text)] mb-2">Points de friction récurrents</h2>
+      <p class="text-[var(--color-text-muted)] mb-8">Problèmes identifiés chez 2 personas ou plus, classés par nombre de personas impactés.</p>
+
+      <div class="space-y-3">
+        {frictions.map((f) => (
+          <div class="flex items-center gap-4 rounded-xl border border-[var(--color-border)] bg-white p-4">
+            <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-neutral-100 flex items-center justify-center">
+              <span class="text-lg font-bold text-[var(--color-text)]">{f.count}</span>
+            </div>
+            <div class="flex-1 min-w-0">
+              <p class="font-medium text-[var(--color-text)]">{f.label}</p>
+              <p class="text-sm text-[var(--color-text-muted)]">{f.count}/20 personas impactés</p>
+            </div>
+            <span class={`flex-shrink-0 px-3 py-1 rounded-full text-xs font-semibold ${severityColor(f.severity)}`}>
+              {f.severity}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ AMÉLIORATIONS ═══════════════════ -->
+  <section class="w-full px-6 py-12 md:px-8 md:py-16 bg-white">
+    <div class="mx-auto max-w-5xl">
+      <h2 class="text-2xl font-bold text-[var(--color-text)] mb-2">Améliorations proposées</h2>
+      <p class="text-[var(--color-text-muted)] mb-8">Classées par priorité d'impact. Chaque amélioration est actionnable, localisée et justifiée.</p>
+
+      <div class="space-y-4">
+        {ameliorations.map((a, i) => (
+          <div class={`rounded-xl border border-[var(--color-border)] border-l-4 ${priorityColor(a.priority)} bg-white p-5`}>
+            <div class="flex items-start gap-3">
+              <span class="flex-shrink-0 w-8 h-8 rounded-lg bg-neutral-100 flex items-center justify-center text-sm font-bold text-[var(--color-text-muted)]">{i + 1}</span>
+              <div>
+                <div class="flex flex-wrap items-center gap-2 mb-1">
+                  <h3 class="font-semibold text-[var(--color-text)]">{a.title}</h3>
+                  <span class={`px-2 py-0.5 rounded text-xs font-semibold ${a.priority === 'haute' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>
+                    Priorité {a.priority}
+                  </span>
+                </div>
+                <p class="text-sm text-[var(--color-text-muted)] mb-1">Impact : {a.impact}</p>
+                <p class="text-sm text-[var(--color-text)] leading-relaxed">{a.detail}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ MÉTHODOLOGIE ═══════════════════ -->
+  <section class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+    <div class="mx-auto max-w-3xl">
+      <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">Méthodologie</h2>
+      <div class="prose max-w-none text-[var(--color-text)]">
+        <p>Ce rapport est basé sur la méthode <strong>Persona-Driven UX Testing</strong> :</p>
+        <ol class="space-y-2 text-sm leading-relaxed">
+          <li><strong>Scraping complet</strong> de toutes les pages du site (accueil, services, portfolio, valeurs, qui sommes-nous, contact, étude 2024)</li>
+          <li><strong>Création de 20 personas diversifiés</strong> couvrant 7 canaux d'arrivée, 3 niveaux de maturité, 3 types de devices, et incluant des personas négatifs</li>
+          <li><strong>Simulation individuelle</strong> de chaque visite : première impression, parcours section par section, réponse à la question clé, points positifs/négatifs, décision finale</li>
+          <li><strong>Agrégation et analyse croisée</strong> par canal, maturité et device pour identifier les patterns récurrents</li>
+          <li><strong>Priorisation des améliorations</strong> par nombre de personas impactés et sévérité de la friction</li>
+        </ol>
+        <p class="mt-4 text-sm text-[var(--color-text-muted)]">
+          Chaque persona a été évalué sur 3 axes (expérience, confiance, clarté) avec un score de 1 à 10. Les résultats reflètent l'expérience simulée d'un visiteur réel confronté au contenu actuel du site.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ CTA ═══════════════════ -->
+  <section class="w-full px-6 py-16 md:px-8 md:py-24" style="background-color: #0D0D0D;">
+    <div class="mx-auto max-w-3xl text-center">
+      <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">
+        Prêt à transformer ces insights en résultats ?
+      </h2>
+      <p class="text-neutral-300 mb-8 max-w-xl mx-auto">
+        Ce rapport identifie des améliorations concrètes et actionnables. Discutons ensemble de la stratégie de mise en œuvre.
+      </p>
+      <a
+        href="https://marcm.fr/contact"
+        class="inline-flex items-center justify-center gap-2 rounded-lg px-8 py-3.5 text-base font-semibold text-white transition-all duration-300 shadow-lg hover:shadow-xl hover:scale-105"
+        style="background: linear-gradient(135deg, #E86C47, #D4572F); box-shadow: 0 4px 20px rgba(232, 108, 71, 0.4);"
+      >
+        Discutons de votre site
+        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" /></svg>
+      </a>
+    </div>
+  </section>
+
+</BaseLayout>
