@@ -12,15 +12,49 @@ const breadcrumbs = [
   { name: 'Nom de domaine OVH', url: `${business.url}/aide/domaine-ovh/` },
 ];
 
-const howToSteps = [
-  { name: 'Allez sur OVH', text: 'Rendez-vous sur ovh.com et cliquez sur "Noms de domaine" dans le menu principal.' },
-  { name: 'Cherchez votre domaine', text: 'Tapez le nom souhaité (ex. mon-entreprise.fr) dans la barre de recherche. OVH vous indique s\'il est disponible et propose des alternatives.' },
-  { name: 'Choisissez l\'extension', text: 'Privilégiez le .fr si votre clientèle est en France. Le .com est un bon complément. Comptez environ 7 €/an pour un .fr.' },
-  { name: 'Créez votre compte OVH', text: 'Si c\'est votre première commande, créez un compte OVH avec votre email professionnel. Gardez bien vos identifiants.' },
-  { name: 'Passez commande', text: 'Ajoutez le domaine au panier. Décochez les options inutiles (hébergement, email OVH — on n\'en a pas besoin). Validez et payez.' },
-  { name: 'Désignez-moi comme contact technique', text: 'Dans votre espace client OVH, allez dans la gestion de votre domaine puis "Contacts". Remplacez le contact technique par mon identifiant OVH : uo9730-ovh. Vous restez propriétaire du domaine — le contact technique me permet uniquement de configurer les DNS pour pointer vers votre site.' },
-  { name: 'Confirmez-moi que c\'est fait', text: 'Envoyez-moi un message par email ou WhatsApp avec le nom de domaine acheté. Je recevrai la demande de contact technique de mon côté et je pourrai lancer la configuration DNS.' },
+const steps = [
+  {
+    name: 'Allez sur la page Noms de domaine d\'OVH',
+    text: 'Cliquez sur le lien ci-dessous pour accéder directement à la page de recherche de noms de domaine.',
+    link: { href: 'https://www.ovhcloud.com/fr/domains/', label: 'Ouvrir OVH — Noms de domaine' },
+    image: '/images/aide/ovh-recherche-domaine.webp',
+    imageAlt: 'Page de recherche de noms de domaine sur OVH — barre de recherche et extensions disponibles',
+  },
+  {
+    name: 'Cherchez votre domaine',
+    text: 'Tapez le nom souhaité (ex. mon-entreprise.fr) dans la barre de recherche en haut de page. OVH vous indique immédiatement s\'il est disponible et propose des alternatives.',
+  },
+  {
+    name: 'Choisissez l\'extension',
+    text: 'Privilégiez le .fr si votre clientèle est en France. Le .com est un bon complément. Comptez environ 7 €/an pour un .fr.',
+  },
+  {
+    name: 'Créez votre compte OVH',
+    text: 'Si c\'est votre première commande, cliquez sur "Créer un compte" sur la page de connexion. Utilisez votre email professionnel et notez bien vos identifiants.',
+    link: { href: 'https://www.ovh.com/auth/?onsuccess=https%3A%2F%2Fwww.ovh.com%2Fmanager&ovhSubsidiary=FR', label: 'Ouvrir la page de connexion OVH' },
+    image: '/images/aide/ovh-connexion.webp',
+    imageAlt: 'Page de connexion OVH — formulaire pour se connecter ou créer un compte',
+  },
+  {
+    name: 'Passez commande',
+    text: 'Ajoutez le domaine au panier. Décochez les options inutiles (hébergement, email OVH — on n\'en a pas besoin). Validez et payez.',
+    tip: 'Seul le nom de domaine est nécessaire. Votre site sera hébergé ailleurs — c\'est inclus dans ma prestation.',
+  },
+  {
+    name: 'Désignez-moi comme contact technique',
+    text: 'Connectez-vous à votre espace client OVH, puis accédez à la gestion des contacts de votre domaine. Remplacez le contact technique par mon identifiant :',
+    code: 'uo9730-ovh',
+    detail: 'Vous restez propriétaire du domaine. Le contact technique me permet uniquement de configurer les DNS pour pointer vers votre site.',
+    link: { href: 'https://help.ovhcloud.com/csm/fr-dns-domain-contact-management?id=kb_article_view&sysparm_article=KB0058104', label: 'Voir le guide OVH "Gérer les contacts"' },
+    path: 'Espace client > Noms de domaine > votre-domaine.fr > Contacts',
+  },
+  {
+    name: 'Confirmez-moi que c\'est fait',
+    text: 'Envoyez-moi un message par email ou WhatsApp avec le nom de domaine acheté. Je recevrai la demande de contact technique de mon côté et je pourrai lancer la configuration DNS.',
+  },
 ];
+
+const howToSteps = steps.map(s => ({ name: s.name, text: s.text }));
 
 const faq = [
   {
@@ -87,8 +121,8 @@ const faq = [
       <article class="rounded-xl bg-white border border-[var(--color-border)] p-8 md:p-12 shadow-sm">
 
         <!-- Steps -->
-        <div class="space-y-8">
-          {howToSteps.map((step, i) => (
+        <div class="space-y-10">
+          {steps.map((step, i) => (
             <div class="flex gap-5">
               <div class="flex-shrink-0 flex items-center justify-center w-10 h-10 rounded-full bg-[var(--color-accent)] text-white font-bold text-sm shadow-md">
                 {i + 1}
@@ -96,6 +130,53 @@ const faq = [
               <div class="flex-1 pt-1.5">
                 <h2 class="text-lg font-bold text-[var(--color-text)] mb-2">{step.name}</h2>
                 <p class="text-[var(--color-text-muted)] leading-relaxed">{step.text}</p>
+
+                {/* Code block (identifiant OVH) */}
+                {step.code && (
+                  <div class="mt-3 rounded-lg bg-[#0D0D0D] px-5 py-3 inline-flex items-center gap-3">
+                    <code class="text-lg font-mono font-bold text-white tracking-wide">{step.code}</code>
+                    <span class="text-xs text-neutral-400">(mon identifiant OVH)</span>
+                  </div>
+                )}
+
+                {/* Additional detail */}
+                {step.detail && (
+                  <p class="mt-2 text-sm text-[var(--color-text-muted)] leading-relaxed">{step.detail}</p>
+                )}
+
+                {/* Navigation path */}
+                {step.path && (
+                  <div class="mt-3 rounded-lg bg-neutral-50 border border-neutral-200 px-4 py-2.5">
+                    <p class="text-xs font-semibold text-neutral-500 mb-1">Chemin dans l'espace client</p>
+                    <p class="text-sm font-mono text-neutral-700">{step.path}</p>
+                  </div>
+                )}
+
+                {/* Tip */}
+                {step.tip && (
+                  <div class="mt-3 rounded-lg bg-amber-50 border border-amber-200 px-4 py-2.5">
+                    <p class="text-sm text-amber-700">{step.tip}</p>
+                  </div>
+                )}
+
+                {/* External link */}
+                {step.link && (
+                  <a href={step.link.href} target="_blank" rel="noopener noreferrer"
+                    class="mt-3 inline-flex items-center gap-2 rounded-lg border border-[var(--color-accent)]/20 bg-[var(--color-accent)]/5 px-4 py-2.5 text-sm font-semibold text-[var(--color-accent)] hover:bg-[var(--color-accent)]/10 transition-colors"
+                    data-umami-event="aide-domaine-lien-externe" data-umami-event-url={step.link.href}>
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                    {step.link.label}
+                  </a>
+                )}
+
+                {/* Screenshot */}
+                {step.image && (
+                  <div class="mt-4 rounded-lg border border-[var(--color-border)] overflow-hidden shadow-sm">
+                    <img src={step.image} alt={step.imageAlt} width="1280" height="900" loading="lazy" decoding="async" class="w-full h-auto" />
+                  </div>
+                )}
               </div>
             </div>
           ))}
