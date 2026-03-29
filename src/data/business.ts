@@ -87,6 +87,17 @@ export const business = {
     },
   ],
 
+  // Visite Mystère — produit d'analyse UX par personas IA
+  visiteMystere: {
+    name: 'Visite Mystère',
+    tagline: '20 prospects IA visitent votre site et vous disent pourquoi ils n\'appellent pas.',
+    tiers: [
+      { name: 'Gratuit', price: 0, personas: 5, description: '5 visiteurs simulés, résumé + 1 recommandation, par email.' },
+      { name: 'Complet', price: 90, personas: 20, description: '20 visiteurs simulés, rapport interactif, audit technique, recommandations priorisées, page dédiée.' },
+    ],
+    rapportsGeneres: 26,
+  },
+
   // 100 Vitrines — 🔧 MISE À JOUR ICI pour changer le compteur partout
   sitesRealises: 11,
   sitesTotal: 100,
