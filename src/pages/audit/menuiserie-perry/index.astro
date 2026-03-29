@@ -1,0 +1,816 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX + Technique — Menuiserie Perry | Marc M';
+const description = 'Rapport confidentiel : simulation de 20 visites personas + audit technique complet de menuiserie-perry.com.';
+
+// ─── DATA ───
+const personas = [
+  { id: 1, name: 'Thierry', age: 58, situation: 'Chef d\'entreprise, Remiremont', canal: 'Google Search', maturite: 'Comparaison', device: 'Desktop', decision: 'Hesite', exp: 5, conf: 6, clarte: 4, emoji: '👔', contexte: 'Facture chauffage +30%, 12 fenetres simple vitrage', question: 'Combien ca va me couter pour 12 fenetres PVC double vitrage ?', reponse: 'Non', commentReponse: 'Aucun prix, aucune fourchette, aucun exemple de devis.', impression: 'Le hero "Fabricant francais de menuiseries PVC" est clair. Design un peu date mais serieux. Les certifications RGE et Deceuninck rassurent.', parcours: [['Accueil', '"500 clients satisfaits" mais zero temoignage concret'], ['Fenetres PVC', 'Contenu technique solide, partenaire Deceuninck, mais aucun prix'], ['Realisations', '16 photos sans descriptions — impossible de se projeter'], ['Devis', 'Formulaire trop generique, pas de champ quantite']], impactTech: 'LCP 3.2s sur desktop acceptable en fibre. Le double GTM gaspille des ressources.', positifs: ['Fabricant local depuis 1947', 'Certifications RGE, Deceuninck, CEKAL', 'Gamme complete PVC/bois/alu'], frictions: ['Aucune indication de prix', 'Pas de temoignages clients', 'Realisations sans descriptions'], raison: 'Le site confirme le serieux mais l\'absence de prix empeche de comparer avec Tryba.', changement: 'Une fourchette de prix et 3 temoignages clients le feraient basculer.' },
+  { id: 2, name: 'Amandine', age: 34, situation: 'Infirmiere, La Bresse', canal: 'Google Maps', maturite: 'Decision', device: 'Mobile', decision: 'Convertit', exp: 4, conf: 6, clarte: 5, emoji: '👩‍⚕️', contexte: 'Maison a renover, fenetres PVC + porte d\'entree', question: 'Quels sont leurs horaires pour passer a l\'atelier ?', reponse: 'Non', commentReponse: 'L\'adresse est presente mais les horaires sont totalement absents.', impression: 'Site lent sur mobile (5-7s). Elle comprend que c\'est un fabricant local. Les cibles tactiles sont trop petites.', parcours: [['Fenetres PVC', 'Fabrication locale, Deceuninck — rassurant'], ['Portes d\'entree', 'Visuels limites pour choisir un style'], ['Realisations', 'Photos sans filtre par categorie'], ['Devis', 'Remplit le formulaire malgre le dropdown mono-produit']], impactTech: 'Mobile 3.2 MB penible en 4G vosgien. Cibles tactiles trop petites avec bebe dans les bras.', positifs: ['Fabricant local', 'RGE pour les aides', 'Numero cliquable sur mobile'], frictions: ['Site lent sur mobile', 'Horaires absents', 'Formulaire mono-produit'], raison: 'En phase de decision, le site confirme l\'essentiel. Elle remplit le formulaire malgre les frictions.', changement: 'Horaires affiches + formulaire multi-produit accelereraient la conversion.' },
+  { id: 3, name: 'Claude', age: 72, situation: 'Retraite SNCF, Vagney', canal: 'Bouche-a-oreille', maturite: 'Decision', device: 'Desktop', decision: 'Convertit', exp: 7, conf: 8, clarte: 7, emoji: '👴', contexte: 'Volets roulants en panne + porte d\'entree, recommande par son voisin', question: 'Comment je les appelle ?', reponse: 'Oui', commentReponse: 'Le numero 06 85 26 51 43 est visible. Il le note et appellera.', impression: '"Menuiserie Perry" — il reconnait le nom. Le site confirme ce que son voisin lui a dit.', parcours: [['Accueil', 'Trouve le numero de telephone'], ['Volets', 'Confirme qu\'ils font des volets — OK'], ['Contact', 'Verifie l\'adresse — Rupt-sur-Moselle, il connait']], impactTech: 'LCP 3.2s en ADSL a Vagney — un peu long mais il est patient.', positifs: ['Numero de telephone facilement trouvable', 'Adresse a proximite', '"Depuis 1947" rassure un retraite'], frictions: ['Horaires non affiches', 'Pas de bouton "Appelez-nous" visible'], raison: 'Pre-convaincu par le bouche-a-oreille. Le site n\'avait qu\'a donner le numero.', changement: 'Des horaires d\'appel affiches eviteraient un appel sans reponse.' },
+  { id: 4, name: 'Sophie', age: 41, situation: 'Architecte d\'interieur, Epinal', canal: 'Google Search', maturite: 'Decouverte', device: 'Mobile', decision: 'Hesite', exp: 3, conf: 5, clarte: 4, emoji: '📐', contexte: 'Projet client maison de caractere, dimensions non standard', question: 'Savent-ils faire du sur-mesure pour des dimensions atypiques ?', reponse: 'Partiellement', commentReponse: 'La page porte cochere mentionne le sur-mesure, mais rien sur les fenetres.', impression: 'Hero "menuiseries PVC" — pas de mention du sur-mesure. Le site semble oriente grand public.', parcours: [['Fenetres bois', 'Techniquement interessant mais rien sur le hors-cote'], ['Porte cochere', 'Enfin le mot "sur-mesure" — la seule page pertinente'], ['Realisations', 'Impossible de voir du sur-mesure sans descriptions'], ['Formulaire pro', 'Existe mais sans infos sur les conditions pro']], impactTech: 'Mobile lent, cibles tactiles petites. En tant qu\'architecte, elle juge le site severement.', positifs: ['Fabricant (pas revendeur)', 'Page porte cochere montre l\'expertise patrimoine', 'Formulaire pro dedie'], frictions: ['Aucune page "Sur-mesure"', 'Realisations sans contexte', 'Blog mort', 'Pas de delais'], raison: 'Voit le potentiel mais manque d\'informations concretes pour recommander a son client.', changement: 'Une page "Sur-mesure & Professionnels" avec exemples de dimensions atypiques.' },
+  { id: 5, name: 'Mehdi', age: 29, situation: 'Developpeur web, Saint-Die', canal: 'IA (ChatGPT)', maturite: 'Comparaison', device: 'Mobile', decision: 'Quitte', exp: 2, conf: 3, clarte: 3, emoji: '💻', contexte: 'Premier achat, fenetres annees 70, veut du triple vitrage', question: 'Combien ca coute et qu\'en disent les clients ?', reponse: 'Non', commentReponse: 'Zero prix et zero avis client. Les deux infos les plus importantes sont absentes.', impression: 'Site le plus lent des 3 onglets ouverts. Design date. En tant que dev, il remarque le GTM en double et le logo de 775 KB.', parcours: [['Accueil', '"500 clients satisfaits" sans preuve — argument vide'], ['Fenetres PVC', 'Triple vitrage pas mis en avant'], ['Realisations', 'Pas d\'alt text — il inspecte le code source'], ['Blog', '2 articles COVID 2020 — ferme immediatement']], impactTech: 'Le site est le plus lent de ses 3 comparaisons. En 2026, c\'est eliminatoire sur mobile.', positifs: ['Fabricant local depuis 1947', 'ChatGPT l\'a recommande'], frictions: ['Site le plus lent des 3', 'Aucun prix', 'Aucun avis client', 'Blog mort', 'Formulaire basique'], raison: 'Le site ne repond a aucune de ses deux questions. Il se concentre sur les 2 autres options.', changement: 'Site rapide (<2s mobile) + avis Google integres + fourchettes de prix.' },
+  { id: 6, name: 'Francoise', age: 66, situation: 'Retraitee, Gerardmer', canal: 'Google Maps', maturite: 'Comparaison', device: 'Tablette', decision: 'Hesite', exp: 5, conf: 6, clarte: 4, emoji: '🏔️', contexte: '5 fenetres a remplacer pour location saisonniere', question: 'En combien de temps ce sera pose ?', reponse: 'Non', commentReponse: 'Aucune mention de delai de fabrication ou de pose, nulle part sur le site.', impression: '"Fabricant francais" rassure. Le chargement est lent sur tablette Wi-Fi. Le logo 775 KB met du temps.', parcours: [['Fenetres PVC', 'Performances thermiques, Deceuninck — bon contenu'], ['Realisations', 'Photos sans legendes ni contexte'], ['Devis', 'Formulaire simple mais elle hesite sans connaitre le delai'], ['Contact', 'Note le numero, appellera lundi']], impactTech: 'Tablette Wi-Fi en maison de vacances — le site de 3.2 MB charge en 4-5s.', positifs: ['Fabricant depuis 1947', 'RGE et Deceuninck', 'Zone couvre Gerardmer'], frictions: ['Aucun delai mentionne', 'Pas de fourchette de prix', 'Pas de temoignages', 'Pas de FAQ'], raison: 'Rassure partiellement mais sans delai, elle va appeler lundi. 50% de chance qu\'elle oublie.', changement: 'Un encart "Delai moyen : devis sous 48h, pose sous 3-6 semaines" suffirait.' },
+  { id: 7, name: 'Lucas', age: 25, situation: 'Etudiant BTS menuiserie, Epinal', canal: 'Facebook', maturite: 'Decouverte', device: 'Mobile', decision: 'Quitte', exp: 3, conf: 5, clarte: 2, emoji: '🎓', contexte: 'Cherche un stage, curiosite professionnelle', question: 'Est-ce qu\'ils prennent des stagiaires ?', reponse: 'Non', commentReponse: 'Aucune information recrutement, stage ou vie d\'entreprise.', impression: '"Fabricant francais de menuiseries PVC" ne lui parle pas. Pas de section recrutement visible.', parcours: [['Accueil', 'Rien sur l\'emploi ou les stages'], ['Realisations', 'Photos interessantes mais sans descriptions techniques'], ['Fenetres bois', 'Contenu oriente client, pas technique-metier']], impactTech: 'Mobile lent, cibles tactiles petites. Digital native habitue a des sites instantanes.', positifs: ['Fabricant (pas revendeur) — interessant pour un BTS', 'Anciennete 1947'], frictions: ['Zero contenu recrutement', 'Pas de page equipe/atelier', 'Blog mort'], raison: 'Le site ne s\'adresse pas a lui. Persona negatif, hors cible commerciale.', changement: 'Une page "Rejoignez-nous" + photos d\'atelier suffiraient.' },
+  { id: 8, name: 'Nathalie', age: 48, situation: 'Gerante de gite, Plombieres', canal: 'Google Search', maturite: 'Comparaison', device: 'Desktop', decision: 'Hesite', exp: 5, conf: 6, clarte: 4, emoji: '🏡', contexte: 'Classement gite menace, 8 fenetres + 2 portes-fenetres', question: 'Sont-ils RGE et peuvent-ils equiper un gite complet ?', reponse: 'Partiellement', commentReponse: 'RGE confirme, mais rien ne demontre la capacite a gerer un chantier complet multi-produits.', impression: 'Les 5 certifications impressionnent — plus que les concurrents. Mais pas de mention aides RGE.', parcours: [['Fenetres PVC', 'Contenu technique correct, aucune mention d\'aides'], ['Portes-fenetres', 'Idem — pas d\'aides financieres'], ['Realisations', 'Pas de chantier gite visible'], ['Blog', '2 articles COVID — aucun article renovation energetique']], impactTech: 'Desktop fibre — LCP 3.2s tolerable mais les concurrents chargent plus vite.', positifs: ['5 certifications (plus que les concurrents)', 'Fabricant depuis 1947', 'Gamme complete', 'Proximite Plombieres'], frictions: ['Aucune mention aides RGE/MaPrimeRenov\'', 'Pas de references pro/gites', 'Formulaire pas multi-produit', 'Blog mort'], raison: 'Les certifications sont un bon point mais le manque d\'info sur les aides la freine.', changement: 'Page "Aides et financement" + references professionnelles declencheraient le devis.' },
+  { id: 9, name: 'Jean-Marc', age: 55, situation: 'Artisan plombier, Rupt-sur-Moselle', canal: 'Bouche-a-oreille', maturite: 'Decision', device: 'Mobile', decision: 'Convertit', exp: 5, conf: 8, clarte: 5, emoji: '🔧', contexte: 'Portail motorise, connait les Perry de reputation', question: 'Quels modeles de portails proposent-ils ?', reponse: 'Partiellement', commentReponse: 'PVC et alu motorises, mais aucun catalogue de modeles ou coloris.', impression: 'Il connait deja l\'entreprise. Le site confirme qu\'ils font des portails.', parcours: [['Portails', 'Options PVC/alu/motorisation — pas de catalogue visuel'], ['Realisations', 'Cherche des photos de portails sans succes'], ['Devis', 'Selectionne "Autres" car pas d\'option portail — agacant']], impactTech: 'Mobile 4G a Rupt, zone semi-rurale. Les 3.2 MB chargent lentement.', positifs: ['Confirme que Perry fait des portails', 'Numero direct', 'Meme commune'], frictions: ['Pas de catalogue modeles', 'Pas d\'option "portail" dans le formulaire', 'Realisations non categorisees'], raison: 'Deja decide par le bouche-a-oreille. Remplit le formulaire ET appellera demain.', changement: 'Un catalogue visuel de portails et "portail" dans le dropdown du formulaire.' },
+  { id: 10, name: 'Emilie', age: 38, situation: 'Resp. marketing, Epinal', canal: 'IA (Perplexity)', maturite: 'Comparaison', device: 'Mobile', decision: 'Quitte', exp: 3, conf: 3, clarte: 4, emoji: '📊', contexte: 'Baie vitree coulissante salon-jardin, compare 4 menuisiers', question: 'Qu\'est-ce que les clients precedents en pensent ?', reponse: 'Non', commentReponse: 'Aucun temoignage, aucun avis integre. "500 clients satisfaits" sans preuve.', impression: 'Site le plus lent de ses 4 onglets. "500 clients satisfaits" sans aucun avis — elle sait que c\'est un argument faible.', parcours: [['Realisations', 'Photos sans legendes, sans contexte — inutilisable'], ['Fenetres', 'Pas de page "baie vitree coulissante"'], ['Blog', '2 articles COVID 2020 — signal negatif fort'], ['Devis', 'Formulaire basique sans configurateur']], impactTech: 'Mobile le plus lent de ses 4 onglets. Perry recharge partiellement quand elle switch entre onglets.', positifs: ['Fabricant depuis 1947', '5 certifications', 'Gamme complete'], frictions: ['Zero preuve sociale', 'Blog mort', 'Pas de page baie vitree', 'Formulaire basique', 'Site lent'], raison: 'Elimine Perry de sa shortlist. Les 3 concurrents ont des avis, des galeries commentees et des formulaires modernes.', changement: 'Widget Google Reviews + etudes de cas avant/apres + page baies vitrees.' },
+  { id: 11, name: 'Patrick', age: 63, situation: 'Retraite EDF, La Bresse', canal: 'Google Maps', maturite: 'Comparaison', device: 'Desktop', decision: 'Hesite', exp: 5, conf: 5, clarte: 6, emoji: '🛠️', contexte: 'Porte garage sectionnelle en panne, hesite avec Leroy Merlin', question: 'C\'est competitif par rapport a Leroy Merlin ?', reponse: 'Non', commentReponse: 'Aucun prix. Leroy Merlin affiche 899 EUR en ligne. Perry = inconnu.', impression: '"Fabrication francaise" est un bon point face a Leroy Merlin. La page portes de garage est pertinente.', parcours: [['Portes de garage', 'Descriptions techniques (sectionnelle, basculante, motorisee) — bien'], ['Realisations', '16 photos sans legendes — impossible d\'identifier une porte de garage'], ['Devis', '"Porte de garage" dans le dropdown — bon point']], impactTech: 'Desktop fibre — LCP 3.2s correct. Le logo 775 KB ralentit le rendu initial.', positifs: ['Page dediee portes de garage', 'Argument fabrication francaise', '"Porte de garage" dans le formulaire'], frictions: ['Aucun prix face a Leroy Merlin', 'Realisations sans legendes', 'Pas d\'horaires', 'Pas de delai'], raison: 'Apprecie l\'artisan local mais ne peut pas comparer sans prix. Appellera mais risque de choisir Leroy Merlin par defaut.', changement: 'Fourchette "a partir de 1 200 EUR pose comprise" + temoignage porte de garage.' },
+  { id: 12, name: 'Manon', age: 31, situation: 'Locataire, Nancy (150 km)', canal: 'Facebook', maturite: 'Decouverte', device: 'Mobile', decision: 'Quitte', exp: 3, conf: 4, clarte: 5, emoji: '📱', contexte: 'Clic de curiosite depuis Facebook — PERSONA NEGATIF', question: '', reponse: '', commentReponse: 'Locataire hors zone, aucun besoin en menuiserie.', impression: '"Menuiseries PVC" — pas concernee. Locataire a Nancy, 150 km, hors zone.', parcours: [['Accueil', 'Scroll 5 secondes — rien ne la concerne'], ['Clic accidentel', 'Cibles tactiles trop petites, se retrouve sur fenetres PVC']], impactTech: 'Mobile 3.2 MB sur 4G — chargement inacceptable pour un scroll de curiosite.', positifs: ['Le message "fabrication francaise" est clair'], frictions: ['Chargement trop lent', 'Aucun contenu partageable', 'Blog mort'], raison: 'Persona negatif. Hors cible a tous les niveaux.', changement: 'Un blog vivant avec photos avant/apres pourrait generer du partage social.' },
+  { id: 13, name: 'Bernard', age: 70, situation: 'Retraite agriculteur, Bussang', canal: 'Google Search', maturite: 'Decision', device: 'Desktop', decision: 'Convertit', exp: 7, conf: 7, clarte: 8, emoji: '🚜', contexte: 'Porte cochere vermoulue, securite du materiel agricole', question: 'Restaurent-ils les portes cocheres en bois massif ?', reponse: 'Oui', commentReponse: 'Page dediee + FAQ confirmant restauration, bois massif, delai 6-10 semaines.', impression: 'Tombe directement sur la page porte cochere via Google. "Sur mesure dans les Vosges" — parfait.', parcours: [['Porte cochere', 'Contenu detaille : restauration, bois massif, FAQ riche — REPONSE A SA QUESTION'], ['Realisations', 'Cherche des photos de portes cocheres — une seule photo'], ['Devis', 'Selectionne "Autres" (pas d\'option porte cochere) et decrit son besoin']], impactTech: 'Desktop fibre — acceptable. LCP 3.2s ne le derange pas, il lit progressivement.', positifs: ['Page dediee porte cochere avec FAQ', 'Restauration patrimoine', 'Proximite (8 km)', 'Delai annonce 6-10 semaines'], frictions: ['Une seule photo de porte cochere', 'Pas d\'option "porte cochere" dans le formulaire', 'Pas de prix indicatif'], raison: 'La page porte cochere repond parfaitement a son besoin. C\'est la seule page du site avec une FAQ riche.', changement: 'Plus de photos avant/apres portes cocheres + option dans le formulaire.' },
+  { id: 14, name: 'Aurelie', age: 36, situation: 'Gestionnaire RH, Remiremont', canal: 'Google Search', maturite: 'Comparaison', device: 'Mobile', decision: 'Quitte', exp: 3, conf: 4, clarte: 4, emoji: '👶', contexte: 'Motoriser volets battants, bebe dans les bras', question: 'Peuvent-ils motoriser mes volets existants ?', reponse: 'Non', commentReponse: 'La page volets parle de motorisation mais uniquement pour roulants/coulissants, pas de retrofit battants.', impression: 'Page volets s\'affiche. "Sommeil reparateur" l\'interpelle avec un bebe. Mais le chargement est lent.', parcours: [['Volets', 'Section motorisation generique, pas de mention Somfy ni retrofit'], ['Devis', 'Abandonne le formulaire mobile — bebe qui s\'agite, champ message trop petit']], impactTech: 'Mobile 4-5s en 4G. Navigation une main avec bebe — cibles tactiles penalisantes.', positifs: ['Page dediee volets avec motorisation', 'Remiremont dans la zone'], frictions: ['Pas de reponse sur retrofit volets battants', 'Aucune marque Somfy mentionnee', 'Pas de FAQ volets', 'Mobile penible'], raison: 'Ne trouve pas la reponse a sa question specifique. Retourne sur Google/Somfy.', changement: 'FAQ "Peut-on motoriser des volets battants ?" + mention Somfy + temoignage.' },
+  { id: 15, name: 'Karim', age: 42, situation: 'Entrepreneur BTP, Epinal', canal: 'IA (Claude)', maturite: 'Comparaison', device: 'Mobile', decision: 'Hesite', exp: 4, conf: 4, clarte: 3, emoji: '🏗️', contexte: 'Cherche fournisseur PVC pro, 10-15 fenetres/mois', question: 'Quels delais et tarifs pour les professionnels ?', reponse: 'Non', commentReponse: 'Aucun tarif pro, catalogue, ou conditions B2B. Le formulaire pro est une coquille vide.', impression: 'Repere le bouton "Professionnel" — bonne surprise. Mais le popup est generique.', parcours: [['Popup pro', 'Formulaire dedie mais sans infos sur conditions pro'], ['Fenetres PVC', 'Contenu oriente particulier, pas pro'], ['Accueil', '"Livraison France entiere" — encourageant pour un pro']], impactTech: 'Mobile sur chantier, 4G faible. Les 3.2 MB sont penalisant. Performance critique.', positifs: ['Formulaire pro dedie', 'Livraison France entiere', 'Fabricant local'], frictions: ['Zero info tarifaire pro', 'Pas de catalogue technique', 'Certifications peu visibles', 'Pas de page espace pro'], raison: 'A rempli le formulaire pro par acquit de conscience. Attend la reponse.', changement: 'Page "Espace pro" avec catalogue PDF, grille tarifaire, contact commercial dedie.' },
+  { id: 16, name: 'Christiane', age: 75, situation: 'Veuve, Cornimont', canal: 'Bouche-a-oreille', maturite: 'Decision', device: 'Tablette', decision: 'Hesite', exp: 3, conf: 5, clarte: 3, emoji: '👵', contexte: 'Fenetres qui ferment mal, fille a choisi Perry', question: 'Comment je les appelle ?', reponse: 'Partiellement', commentReponse: 'Le numero existe mais pas assez visible. Pas d\'horaires. Pas de gros bouton "Appelez-nous".', impression: 'Site lent sur tablette. Texte petit. Elle cherche instinctivement un numero de telephone en haut de page.', parcours: [['Accueil', 'Cherche le telephone — pas visible immediatement'], ['Contact', 'Trouve le numero mais cibles tactiles trop petites'], ['Popup pro', 'S\'ouvre par erreur — confusion, stress']], impactTech: 'Tablette Wi-Fi basique, LCP ~5-6s. Logo 775 KB la fait attendre. "Ca bug."', positifs: ['"Depuis 1947" rassure', 'Rupt-sur-Moselle a 5 km', 'Numero de portable (06) — humain'], frictions: ['Cibles tactiles trop petites (arthrose)', 'Popup non sollicitee', 'Pas d\'horaires d\'appel', 'Formulaire trop complexe'], raison: 'A note le numero mais n\'appellera pas seule. Attendra sa fille dimanche.', changement: 'Gros bouton "Appelez-nous" + horaires + "Devis gratuit a domicile".' },
+  { id: 17, name: 'Antoine', age: 22, situation: 'Etudiant, Strasbourg (170 km)', canal: 'Facebook', maturite: 'Decouverte', device: 'Mobile', decision: 'Quitte', exp: 4, conf: 0, clarte: 4, emoji: '🎒', contexte: 'Clic curiosite groupe Facebook — PERSONA NEGATIF', question: '', reponse: '', commentReponse: 'Aucun besoin. Locataire, hors zone, pas de budget.', impression: '"Rupt-sur-Moselle, c\'est ou ?" Aucune pertinence geographique pour un Strasbourgeois.', parcours: [['Accueil', '2 secondes de lecture — "pas pour moi"']], impactTech: 'Mobile 4G, 3.2 MB = catastrophe. Il a failli quitter avant que le hero ne s\'affiche.', positifs: [], frictions: ['Temps de chargement inacceptable', 'Zone d\'intervention pas visible immediatement'], raison: 'Persona negatif. Hors cible a tous les niveaux. 12 secondes sur le site.', changement: 'Rien ne devrait changer pour ce profil. Afficher la zone dans le hero eviterait de fausser les analytics.' },
+  { id: 18, name: 'Sandrine', age: 45, situation: 'Directrice agence immo, Remiremont', canal: 'Google Search', maturite: 'Comparaison', device: 'Desktop', decision: 'Quitte', exp: 4, conf: 4, clarte: 3, emoji: '🏢', contexte: 'Devis groupe 3 appartements, fenetres classees F au DPE', question: 'Font-ils des prix pour un lot de 3 appartements ?', reponse: 'Non', commentReponse: 'Aucune mention de tarif degressif, devis groupe, ou partenariat immobilier.', impression: 'Entreprise familiale, pas un prestataire B2B structure. Design "artisan local".', parcours: [['Fenetres', 'Pas de performances thermiques (Uw, Sw) pour le DPE'], ['Popup pro', 'Vague, pas adapte a l\'immobilier'], ['Realisations', 'Aucune reference multi-logements'], ['Blog', 'Mort — aucun article renovation energetique']], impactTech: 'Desktop fibre — LCP 3.2s tolerable. Le vrai probleme est le contenu, pas la technique.', positifs: ['RGE', 'Anciennete', 'Proximite Remiremont', 'Popup pro montre une intention'], frictions: ['Pas d\'offre B2B/lot', 'Pas de Uw/Sw pour DPE', 'Pas de references pro', 'Blog mort'], raison: 'Perry ne se distingue pas sur le creneau B2B/immobilier. Passe au concurrent suivant.', changement: 'Page "Professionnels" + performances thermiques + references multi-logements.' },
+  { id: 19, name: 'Dominique', age: 52, situation: 'Resp. technique commune, Saulxures', canal: 'Email', maturite: 'Decouverte', device: 'Mobile', decision: 'Hesite', exp: 4, conf: 6, clarte: 3, emoji: '🏛️', contexte: 'Future renovation salle des fetes, en veille', question: 'Ont-ils deja travaille avec des collectivites ?', reponse: 'Non', commentReponse: 'Aucune mention marches publics, collectivites, ERP ou batiments communaux.', impression: 'Reconnait Perry — c\'est le menuisier du coin. Pas de surprise.', parcours: [['Fenetres/Portes', 'Parcourt les gammes par curiosite technique'], ['Realisations', 'Que du residentiel — pas de batiment public'], ['Contact', 'Note le numero dans ses contacts pro']], impactTech: 'Mobile 4G, site lent. En tant que responsable technique, il juge le professionnalisme.', positifs: ['Proximite immediate (3 km)', 'RGE', 'Gamme complete'], frictions: ['Zero mention collectivites/marches publics', 'Pas de fiches techniques', 'Pas de references publiques'], raison: 'En veille. Le site ne renforce pas sa position. Un concurrent avec une page "Collectivites" le doublera.', changement: 'Page "Collectivites & Marches Publics" + 2-3 references communales.' },
+  { id: 20, name: 'Yann', age: 33, situation: 'Chef cuisinier, Luxeuil (60 km)', canal: 'PagesJaunes', maturite: 'Decouverte', device: 'Mobile', decision: 'Hesite', exp: 3, conf: 4, clarte: 2, emoji: '👨‍🍳', contexte: 'Vitrine de restaurant felee, remplacement urgent', question: 'Se deplacent-ils jusqu\'a Luxeuil pour une vitrine ?', reponse: 'Non', commentReponse: 'La zone d\'intervention n\'est pas indiquee. Luxeuil est a 60 km, en limite.', impression: '"Rupt-sur-Moselle" — il ne sait pas ou c\'est. La distance n\'est indiquee nulle part.', parcours: [['Accueil', 'Cherche "vitrines" et "zone d\'intervention" — trouve les vitrines dans les services'], ['Autres realisations', 'Contenu maigre sur les vitrines commerciales'], ['Contact', 'Hesite — remplit un formulaire ou appelle ?']], impactTech: 'Mobile en cuisine, reseau faible. 3.2 MB = 5-7s de chargement. Doigts gras + cibles petites.', positifs: ['Vitrines dans la liste des services', 'Numero de portable direct'], frictions: ['Zone d\'intervention absente', 'Pas de contenu "vitrines commerciales"', 'Pas de notion d\'urgence/depannage', 'Pas d\'horaires'], raison: 'Va probablement appeler parce que le besoin est urgent. Mais l\'appel sera hesitant.', changement: 'Carte zone d\'intervention + page "Vitrines commerciales" + bandeau urgence.' },
+];
+
+const avgExp = (personas.reduce((s, p) => s + p.exp, 0) / personas.length).toFixed(1);
+const avgConf = (personas.filter(p => p.conf > 0).reduce((s, p) => s + p.conf, 0) / personas.filter(p => p.conf > 0).length).toFixed(1);
+const avgClarte = (personas.reduce((s, p) => s + p.clarte, 0) / personas.length).toFixed(1);
+const convertis = personas.filter(p => p.decision === 'Convertit').length;
+const hesitants = personas.filter(p => p.decision === 'Hesite').length;
+const quittent = personas.filter(p => p.decision === 'Quitte').length;
+const tauxConversion = Math.round((convertis / personas.length) * 100);
+
+const canalStats = [
+  { canal: 'Google Search', total: 6, conv: 1, hesitant: 3, quitte: 2 },
+  { canal: 'Google Maps', total: 3, conv: 1, hesitant: 2, quitte: 0 },
+  { canal: 'IA (ChatGPT / Perplexity / Claude)', total: 3, conv: 0, hesitant: 1, quitte: 2 },
+  { canal: 'Reseaux sociaux (Facebook)', total: 3, conv: 0, hesitant: 0, quitte: 3 },
+  { canal: 'Bouche-a-oreille', total: 3, conv: 2, hesitant: 1, quitte: 0 },
+  { canal: 'Autres (email, PagesJaunes)', total: 2, conv: 0, hesitant: 2, quitte: 0 },
+];
+
+const maturiteStats = [
+  { level: 'Decouverte', total: 6, conv: 0, pct: '0%' },
+  { level: 'Comparaison', total: 9, conv: 0, pct: '0%' },
+  { level: 'Decision', total: 5, conv: 4, pct: '80%' },
+];
+
+const deviceStats = [
+  { device: 'Mobile', total: 12, conv: 2, pct: '17%' },
+  { device: 'Desktop', total: 6, conv: 2, pct: '33%' },
+  { device: 'Tablette', total: 2, conv: 0, pct: '0%' },
+];
+
+const frictions = [
+  { label: 'Pas d\'avis ni temoignages clients', count: 12, severity: 'critique' },
+  { label: 'Site trop lent sur mobile (3.2 MB)', count: 12, severity: 'critique' },
+  { label: 'Aucun prix ni fourchette indicative', count: 11, severity: 'critique' },
+  { label: 'Galerie realisations sans descriptions', count: 11, severity: 'critique' },
+  { label: 'Cibles tactiles trop petites (mobile)', count: 8, severity: 'haute' },
+  { label: 'Blog mort depuis 2020', count: 7, severity: 'haute' },
+  { label: 'Formulaire de devis trop basique', count: 7, severity: 'haute' },
+  { label: 'Pas de FAQ sur les pages produit', count: 5, severity: 'haute' },
+  { label: 'Horaires d\'ouverture non affiches', count: 5, severity: 'haute' },
+  { label: 'Pas de page A propos / Equipe', count: 5, severity: 'moyenne' },
+];
+
+const ameliorations = {
+  haute: [
+    { title: 'Integrer un widget d\'avis Google', impact: '12/20 personas', detail: 'Afficher la note moyenne et les 5-10 derniers avis Google sur l\'accueil et chaque page produit. "500 clients satisfaits" sans preuve est contre-productif.' },
+    { title: 'Optimiser les performances mobile', impact: '12/20 personas', detail: 'Convertir le logo en WebP (775 KB a 40 KB), supprimer le GTM en double (-174 KB), lazy-load images. Objectif : passer de 3.2 MB a moins de 1 MB.' },
+    { title: 'Ajouter des fourchettes de prix', impact: '11/20 personas', detail: '"Fenetre PVC double vitrage : a partir de X EUR pose comprise" sur chaque page. Meme une fourchette large qualifie les prospects et debloque les comparaisons.' },
+    { title: 'Legender et categoriser les realisations', impact: '11/20 personas', detail: 'Pour chaque photo : type de projet, materiau, ville. Ajouter des filtres par categorie. Idealement : avant/apres avec contexte du chantier.' },
+    { title: 'Ajouter des FAQ (modele page porte cochere)', impact: '5/20 personas', detail: 'La page porte cochere est la seule avec FAQ — et c\'est la seule qui convertit bien. Repliquer ce modele sur toutes les pages produit.' },
+    { title: 'Ameliorer le formulaire de devis', impact: '7/20 personas', detail: 'Multi-selection produits, champ quantite, upload photo, champ descriptif. Ajouter "portail" et "porte cochere" dans le dropdown.' },
+  ],
+  moyenne: [
+    { title: 'Afficher les horaires d\'ouverture', impact: '5/20 personas', detail: 'Dans le header, footer et page contact : "Lun-Ven 8h-18h". Ajouter un gros bouton "Appelez-nous" visible sur mobile.' },
+    { title: 'Creer une page A propos', impact: '5/20 personas', detail: '77 ans d\'histoire inexploites. Photos d\'atelier, de l\'equipe, chronologie depuis 1947, valeurs. Argument commercial majeur.' },
+    { title: 'Securiser le site (grade D vers A)', impact: '3/20 personas', detail: 'Ajouter HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy via Cloudflare ou .htaccess.' },
+    { title: 'Ajouter Schema.org LocalBusiness', impact: 'SEO global', detail: 'Google ne comprend pas que Perry est une menuiserie locale. Ajouter adresse, telephone, horaires, services, zone de service.' },
+    { title: 'Supprimer ou relancer le blog', impact: '7/20 personas', detail: 'Un blog mort depuis 6 ans est pire que pas de blog. Soit le supprimer, soit publier 5-10 articles metier.' },
+  ],
+  discussion: [
+    { title: 'Creer un espace Professionnels & Collectivites', emoji: '💼', detail: 'Catalogue PDF, tarifs pro, references chantiers, formulaire adapte. 3 personas B2B frustres.' },
+    { title: 'Ajouter des pages SEO par ville', emoji: '🎯', detail: '"Menuiserie Gerardmer", "Menuiserie Epinal", "Menuiserie Saint-Die" pour capter le trafic local.' },
+    { title: 'Creer des etudes de cas avant/apres', emoji: '🏗️', detail: '5 chantiers documentes avec contexte, photos, temoignage client. Argument de persuasion ultime.' },
+    { title: 'Ajouter WhatsApp ou chat en ligne', emoji: '📱', detail: 'Canal prefere des 25-40 ans. Mehdi, Emilie et Aurelie ne veulent pas appeler un 06.' },
+  ],
+};
+
+// PageSpeed data
+const pagespeed = {
+  desktop: { perf: 73, access: 93, bp: 100, seo: 92 },
+  mobile: { perf: 48, access: 90, bp: 98, seo: 88 },
+  cwv: { lcp: '3.2s', cls: '0.099', tbt: '0ms', fcp: '1.4s' },
+};
+
+const observatory = { grade: 'D', score: 30, passed: 5, total: 10 };
+
+const schemaChecks = [
+  { label: 'JSON-LD present', ok: true },
+  { label: 'WebPage + BreadcrumbList', ok: true },
+  { label: 'WebSite + SearchAction', ok: true },
+  { label: 'LocalBusiness', ok: false },
+  { label: 'Adresse + geo', ok: false },
+  { label: 'Telephone', ok: false },
+  { label: 'Horaires d\'ouverture', ok: false },
+  { label: 'Services / Product', ok: false },
+  { label: 'Logo / Image', ok: true },
+  { label: 'sameAs (reseaux sociaux)', ok: false },
+  { label: 'aggregateRating', ok: false },
+];
+
+const ogChecks = [
+  { label: 'title', ok: true },
+  { label: 'description', ok: true },
+  { label: 'og:image', ok: true },
+  { label: 'og:url', ok: true },
+  { label: 'og:type', ok: true },
+  { label: 'canonical', ok: true },
+  { label: 'viewport', ok: true },
+  { label: 'twitter:card', ok: false },
+  { label: 'twitter:image', ok: false },
+  { label: 'Meta description (accueil trop courte)', ok: false },
+  { label: 'Title accueil (nom repete)', ok: false },
+];
+
+const securityHeaders = [
+  { header: 'HSTS', ok: false },
+  { header: 'X-Frame-Options', ok: false },
+  { header: 'X-Content-Type-Options', ok: false },
+  { header: 'Referrer-Policy', ok: false },
+  { header: 'Permissions-Policy', ok: false },
+  { header: 'Content-Security-Policy', ok: false },
+  { header: 'HTTP vers HTTPS', ok: true },
+  { header: 'Cookies securises', ok: true },
+  { header: 'CORS correct', ok: true },
+];
+
+function decisionColor(d: string) {
+  if (d === 'Convertit') return 'bg-emerald-100 text-emerald-800 border-emerald-200';
+  if (d === 'Hesite') return 'bg-amber-100 text-amber-800 border-amber-200';
+  return 'bg-red-100 text-red-800 border-red-200';
+}
+
+function decisionBorder(d: string) {
+  if (d === 'Convertit') return 'border-green-200 bg-green-50/40';
+  if (d === 'Hesite') return 'border-amber-200 bg-amber-50/40';
+  return 'border-neutral-200 bg-neutral-50/40';
+}
+
+function severityColor(s: string) {
+  if (s === 'critique') return 'bg-red-100 text-red-800';
+  if (s === 'haute') return 'bg-orange-100 text-orange-800';
+  return 'bg-blue-100 text-blue-800';
+}
+
+function scoreColor(v: number) {
+  if (v >= 90) return '#22c55e';
+  if (v >= 50) return '#f59e0b';
+  return '#ef4444';
+}
+
+function scoreBar(val: number) {
+  return `${val * 10}%`;
+}
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  noindex={true}
+  lang="fr"
+  frPath="/audit/menuiserie-perry"
+>
+
+  <!-- ═══════════════════ HERO ═══════════════════ -->
+  <section class="w-full relative px-6 py-16 md:px-8 md:py-24 overflow-hidden" style="background-color: #0D0D0D;">
+    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 40px 40px;"></div>
+    <div class="absolute top-20 -left-32 w-96 h-96 rounded-full opacity-10 blur-3xl" style="background: #E86C47;"></div>
+
+    <div class="mx-auto max-w-4xl relative z-10">
+      <div class="mb-4 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--color-accent)]/40">
+        <span class="w-2 h-2 rounded-full" style="background-color: #E86C47;"></span>
+        <span class="text-sm font-semibold text-white/90">Rapport confidentiel</span>
+      </div>
+
+      <h1 class="mb-4 text-3xl font-bold leading-tight text-white md:text-4xl lg:text-5xl">
+        Audit UX + Technique — <span class="bg-gradient-to-r from-[#E86C47] to-[#F5C8B3] bg-clip-text text-transparent">Menuiserie Perry</span>
+      </h1>
+
+      <p class="text-lg text-neutral-300 md:text-xl max-w-2xl mb-8">
+        Simulation de 20 visites personas + audit technique complet de <strong class="text-white">menuiserie-perry.com</strong>. Chaque persona est un visiteur realiste avec son profil, son canal d'arrivee et ses attentes.
+      </p>
+
+      <div class="flex flex-wrap gap-3">
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">20 personas testes</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">6 canaux d'arrivee</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">17 pages analysees</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">29 mars 2026</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ TAB BAR ═══════════════════ -->
+  <nav class="sticky top-16 md:top-20 z-40 bg-white/95 backdrop-blur border-b border-neutral-200" id="tab-bar">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-2 h-12 text-sm overflow-x-auto">
+      <button data-tab="0" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-[var(--color-accent)] bg-[var(--color-accent)]/10">Synthese</button>
+      <button data-tab="1" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">Technique</button>
+      <button data-tab="2" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">
+        Visiteurs <span class="ml-1 text-xs text-neutral-400">20</span>
+      </button>
+      <button data-tab="3" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">
+        Ameliorations <span class="ml-1 text-xs text-neutral-400">{ameliorations.haute.length + ameliorations.moyenne.length + ameliorations.discussion.length}</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════ PANELS ═══════════════════ -->
+  <div id="panels" class="flex overflow-x-auto snap-x snap-mandatory" style="-webkit-overflow-scrolling: touch; scrollbar-width: none;">
+
+    <!-- ═══════════ PANEL 1 : SYNTHÈSE ═══════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+
+      <!-- KPI Cards -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class="text-3xl md:text-4xl font-bold text-red-600">{tauxConversion}%</p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Taux de conversion</p>
+              <p class="mt-2 text-xs text-[var(--color-text-muted)]">{convertis} convertis · {hesitants} hesitants · {quittent} partis</p>
+            </div>
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class="text-3xl md:text-4xl font-bold text-amber-600">{avgExp}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Experience</p>
+              <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden">
+                <div class="h-full rounded-full bg-amber-500" style={`width: ${scoreBar(Number(avgExp))}`}></div>
+              </div>
+            </div>
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class="text-3xl md:text-4xl font-bold text-blue-600">{avgConf}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Confiance</p>
+              <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden">
+                <div class="h-full rounded-full bg-blue-500" style={`width: ${scoreBar(Number(avgConf))}`}></div>
+              </div>
+            </div>
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class="text-3xl md:text-4xl font-bold text-orange-600">{avgClarte}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Clarte</p>
+              <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden">
+                <div class="h-full rounded-full bg-orange-500" style={`width: ${scoreBar(Number(avgClarte))}`}></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Paradoxe -->
+      <div class="w-full px-6 py-8 md:px-8 bg-white">
+        <div class="mx-auto max-w-5xl">
+          <div class="rounded-xl border-l-4 border-l-[var(--color-accent)] bg-[var(--color-accent)]/5 p-6 md:p-8">
+            <h2 class="text-lg font-bold text-[var(--color-text)] mb-2">Paradoxe principal</h2>
+            <p class="text-[var(--color-text)] leading-relaxed">
+              Le site de Menuiserie Perry <strong>ne vend pas — il confirme</strong>. Les 4 conversions proviennent exclusivement de visiteurs en phase de <strong>decision</strong> (80% de conversion), deja convaincus par le bouche-a-oreille ou un besoin tres specifique. Le site n'a convaincu <strong>aucun</strong> visiteur en phase de comparaison (0/9). Perry perd systematiquement les prospects qui comparent — exactement ceux qui representent le plus gros volume.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Conversion par canal -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-2">Conversion par canal</h2>
+          <p class="text-[var(--color-text-muted)] mb-8">Le bouche-a-oreille est le seul canal qui convertit bien (67%). Le site echoue totalement avec les visiteurs IA (0%) et reseaux sociaux (0%).</p>
+          <div class="grid md:grid-cols-2 gap-4">
+            {canalStats.map((c) => {
+              const pct = c.total > 0 ? Math.round((c.conv / c.total) * 100) : 0;
+              return (
+                <div class="rounded-xl border border-[var(--color-border)] bg-white p-5">
+                  <div class="flex items-center justify-between mb-3">
+                    <h3 class="font-semibold text-[var(--color-text)]">{c.canal}</h3>
+                    <span class={`text-lg font-bold ${pct > 50 ? 'text-emerald-600' : pct > 0 ? 'text-amber-600' : 'text-red-600'}`}>{pct}%</span>
+                  </div>
+                  <div class="h-3 rounded-full bg-neutral-100 overflow-hidden mb-3">
+                    <div class="h-full rounded-full flex">
+                      <div class="bg-emerald-500" style={`width: ${(c.conv / c.total) * 100}%`}></div>
+                      <div class="bg-amber-400" style={`width: ${(c.hesitant / c.total) * 100}%`}></div>
+                      <div class="bg-red-400" style={`width: ${(c.quitte / c.total) * 100}%`}></div>
+                    </div>
+                  </div>
+                  <div class="flex gap-4 text-xs text-[var(--color-text-muted)]">
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> {c.conv} conv.</span>
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-400"></span> {c.hesitant} hes.</span>
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-400"></span> {c.quitte} partis</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      <!-- Conversion par maturité -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-white">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-8">Conversion par maturite</h2>
+          <div class="grid md:grid-cols-3 gap-4">
+            {maturiteStats.map((m) => (
+              <div class="rounded-xl border border-[var(--color-border)] bg-white p-6 text-center">
+                <p class="text-sm font-semibold text-[var(--color-text-muted)] uppercase tracking-wider mb-2">{m.level}</p>
+                <p class={`text-4xl font-bold ${m.pct === '0%' ? 'text-red-600' : 'text-emerald-600'}`}>{m.pct}</p>
+                <p class="mt-1 text-sm text-[var(--color-text-muted)]">{m.conv}/{m.total} convertis</p>
+              </div>
+            ))}
+          </div>
+          <div class="mt-6 rounded-xl bg-red-50 border border-red-200 p-5">
+            <p class="text-sm text-red-800">
+              <strong>Alerte :</strong> 0% de conversion en decouverte ET en comparaison. Le site ne joue <strong>aucun role</strong> dans la persuasion — il confirme seulement les decisions prises ailleurs (bouche-a-oreille, fiche Google).
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Conversion par device -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-8">Conversion par device</h2>
+          <div class="grid md:grid-cols-3 gap-4">
+            {deviceStats.map((d) => (
+              <div class="rounded-xl border border-[var(--color-border)] bg-white p-6 text-center">
+                <p class="text-sm font-semibold text-[var(--color-text-muted)] uppercase tracking-wider mb-2">{d.device}</p>
+                <p class={`text-4xl font-bold ${d.pct === '0%' ? 'text-red-600' : Number(d.pct.replace('%','')) > 25 ? 'text-amber-600' : 'text-amber-600'}`}>{d.pct}</p>
+                <p class="mt-1 text-sm text-[var(--color-text-muted)]">{d.conv}/{d.total} convertis</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ═══════════ PANEL 2 : TECHNIQUE ═══════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+
+      <!-- PageSpeed Scores -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-8">PageSpeed Insights</h2>
+
+          <div class="grid md:grid-cols-2 gap-8">
+            <!-- Desktop -->
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+              <h3 class="text-lg font-semibold text-[var(--color-text)] mb-6 text-center">Desktop</h3>
+              <div class="grid grid-cols-4 gap-4">
+                {[
+                  { label: 'Performance', score: pagespeed.desktop.perf },
+                  { label: 'Accessibilite', score: pagespeed.desktop.access },
+                  { label: 'Bonnes Pratiques', score: pagespeed.desktop.bp },
+                  { label: 'SEO', score: pagespeed.desktop.seo },
+                ].map((item) => (
+                  <div class="text-center">
+                    <div class="relative w-16 h-16 mx-auto mb-2">
+                      <svg class="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3" />
+                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={scoreColor(item.score)} stroke-width="3" stroke-dasharray={`${item.score}, 100`} stroke-linecap="round" />
+                      </svg>
+                      <span class="absolute inset-0 flex items-center justify-center text-lg font-bold" style={`color: ${scoreColor(item.score)}`}>{item.score}</span>
+                    </div>
+                    <p class="text-xs text-neutral-600 font-medium">{item.label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <!-- Mobile (estimated) -->
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+              <h3 class="text-lg font-semibold text-[var(--color-text)] mb-1 text-center">Mobile</h3>
+              <p class="text-xs text-center text-[var(--color-text-muted)] mb-6">(estime — quota API epuisee)</p>
+              <div class="grid grid-cols-4 gap-4">
+                {[
+                  { label: 'Performance', score: pagespeed.mobile.perf },
+                  { label: 'Accessibilite', score: pagespeed.mobile.access },
+                  { label: 'Bonnes Pratiques', score: pagespeed.mobile.bp },
+                  { label: 'SEO', score: pagespeed.mobile.seo },
+                ].map((item) => (
+                  <div class="text-center">
+                    <div class="relative w-16 h-16 mx-auto mb-2">
+                      <svg class="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3" />
+                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={scoreColor(item.score)} stroke-width="3" stroke-dasharray={`${item.score}, 100`} stroke-linecap="round" />
+                      </svg>
+                      <span class="absolute inset-0 flex items-center justify-center text-lg font-bold" style={`color: ${scoreColor(item.score)}`}>{item.score}</span>
+                    </div>
+                    <p class="text-xs text-neutral-600 font-medium">{item.label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <!-- Core Web Vitals -->
+          <div class="mt-8 space-y-3">
+            <h3 class="text-lg font-semibold text-[var(--color-text)] mb-4">Core Web Vitals (desktop)</h3>
+            <div class="flex items-center justify-between p-3 rounded-lg bg-red-50">
+              <div><span class="text-xs font-bold text-neutral-700">LCP</span> <span class="text-xs text-neutral-500 ml-1">(Largest Contentful Paint)</span></div>
+              <div class="flex items-center gap-2">
+                <span class="text-sm font-bold text-red-600">{pagespeed.cwv.lcp}</span>
+                <span class="text-[10px] px-1.5 py-0.5 rounded font-medium bg-red-100 text-red-700">Mauvais</span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between p-3 rounded-lg bg-green-50">
+              <div><span class="text-xs font-bold text-neutral-700">CLS</span> <span class="text-xs text-neutral-500 ml-1">(Cumulative Layout Shift)</span></div>
+              <div class="flex items-center gap-2">
+                <span class="text-sm font-bold text-green-600">{pagespeed.cwv.cls}</span>
+                <span class="text-[10px] px-1.5 py-0.5 rounded font-medium bg-green-100 text-green-700">Bon</span>
+              </div>
+            </div>
+            <div class="flex items-center justify-between p-3 rounded-lg bg-green-50">
+              <div><span class="text-xs font-bold text-neutral-700">TBT</span> <span class="text-xs text-neutral-500 ml-1">(Total Blocking Time, proxy INP)</span></div>
+              <div class="flex items-center gap-2">
+                <span class="text-sm font-bold text-green-600">{pagespeed.cwv.tbt}</span>
+                <span class="text-[10px] px-1.5 py-0.5 rounded font-medium bg-green-100 text-green-700">Bon</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Opportunités -->
+          <div class="mt-8 rounded-xl border border-[var(--color-border)] bg-white p-6">
+            <h3 class="text-lg font-semibold text-[var(--color-text)] mb-4">Principales opportunites</h3>
+            <div class="space-y-3 text-sm">
+              <div class="flex items-start gap-3"><span class="text-red-500 font-bold shrink-0">1.</span><div><strong>JavaScript inutilise</strong> — gain 463 KB. Google Tag Manager charge en double (2 x 174 KB).</div></div>
+              <div class="flex items-start gap-3"><span class="text-red-500 font-bold shrink-0">2.</span><div><strong>Logo PNG 775 KB</strong> — devrait etre &lt; 50 KB en WebP. C'est l'image la plus lourde du site.</div></div>
+              <div class="flex items-start gap-3"><span class="text-red-500 font-bold shrink-0">3.</span><div><strong>Poids total 3.2 MB</strong> — objectif recommande &lt; 1 MB. Budget 3x trop eleve.</div></div>
+              <div class="flex items-start gap-3"><span class="text-amber-500 font-bold shrink-0">4.</span><div><strong>CSS inutilise</strong> — 12 KB de Font Awesome (Elementor) non utilise.</div></div>
+              <div class="flex items-start gap-3"><span class="text-amber-500 font-bold shrink-0">5.</span><div><strong>Cache navigateur bloque</strong> — <code>Cache-Control: no-store</code> empeche la restauration page.</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Sécurité Observatory -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-white">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-8">Securite HTTP</h2>
+          <div class="flex items-center gap-4 p-4 rounded-xl border border-red-200 bg-red-50 mb-8">
+            <div class="text-3xl font-black text-red-600">{observatory.grade}</div>
+            <div>
+              <p class="text-sm font-semibold text-neutral-900">Mozilla Observatory</p>
+              <p class="text-xs text-neutral-500">{observatory.passed}/{observatory.total} tests passes — Score {observatory.score}/100</p>
+            </div>
+          </div>
+          <div class="grid md:grid-cols-2 gap-3">
+            {securityHeaders.map((h) => (
+              <div class="flex items-center gap-2 py-1.5">
+                {h.ok ? (
+                  <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                ) : (
+                  <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                )}
+                <span class={`text-sm ${h.ok ? 'text-neutral-700' : 'text-neutral-400 line-through'}`}>{h.header}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- Schema.org -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <div class="grid md:grid-cols-2 gap-8">
+            <div>
+              <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">Schema.org</h2>
+              <div class="space-y-1">
+                {schemaChecks.map((c) => (
+                  <div class="flex items-center gap-2 py-1.5">
+                    {c.ok ? (
+                      <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    ) : (
+                      <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                    )}
+                    <span class={`text-sm ${c.ok ? 'text-neutral-700' : 'text-neutral-400 line-through'}`}>{c.label}</span>
+                  </div>
+                ))}
+              </div>
+              <p class="mt-4 text-xs text-red-600 font-medium">Google ne comprend pas que Perry est une entreprise locale de menuiserie.</p>
+            </div>
+            <div>
+              <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">Open Graph & Meta</h2>
+              <div class="space-y-1">
+                {ogChecks.map((c) => (
+                  <div class="flex items-center gap-2 py-1.5">
+                    {c.ok ? (
+                      <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    ) : (
+                      <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                    )}
+                    <span class={`text-sm ${c.ok ? 'text-neutral-700' : 'text-neutral-400 line-through'}`}>{c.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ═══════════ PANEL 3 : VISITEURS ═══════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+
+          <!-- Stats row -->
+          <div class="flex flex-wrap gap-4 mb-8">
+            <div class="flex items-center gap-2 px-4 py-2 rounded-lg bg-green-100 text-green-800 text-sm font-medium">
+              <span class="w-2 h-2 rounded-full bg-green-500"></span> {convertis} contactent
+            </div>
+            <div class="flex items-center gap-2 px-4 py-2 rounded-lg bg-amber-100 text-amber-800 text-sm font-medium">
+              <span class="w-2 h-2 rounded-full bg-amber-500"></span> {hesitants} hesitent
+            </div>
+            <div class="flex items-center gap-2 px-4 py-2 rounded-lg bg-red-100 text-red-800 text-sm font-medium">
+              <span class="w-2 h-2 rounded-full bg-red-500"></span> {quittent} repartent
+            </div>
+          </div>
+
+          <!-- Ceux qui contactent -->
+          <h3 class="text-lg font-bold text-green-700 mb-4">Ceux qui contactent</h3>
+          <div class="space-y-3 mb-10">
+            {personas.filter(p => p.decision === 'Convertit').map((p) => (
+              <details class={`group border ${decisionBorder(p.decision)} rounded-xl overflow-hidden`}>
+                <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                  <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                      <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                      <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                      <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    </div>
+                    <p class="text-xs text-neutral-500 mb-1">{p.situation}</p>
+                    <p class="text-xs text-neutral-600 mb-2">{p.contexte}</p>
+                    <div class="flex flex-wrap items-center gap-1">
+                      {p.parcours.map(([page]: string[], idx: number) => (
+                        <><span class="text-[10px] text-[var(--color-accent)] bg-white border border-[var(--color-accent)]/20 px-1.5 py-0.5 rounded">{page}</span>{idx < p.parcours.length - 1 && <span class="text-neutral-300 text-[10px]">›</span>}</>
+                      ))}
+                      <span class="text-[10px] bg-green-600 text-white px-1.5 py-0.5 rounded font-medium ml-0.5">Contacte</span>
+                    </div>
+                  </div>
+                  <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                </summary>
+                <div class="px-4 pb-4 pt-0 border-t border-green-200 bg-white/50">
+                  <div class="grid gap-3 text-xs mt-3">
+                    <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.impression}</p></div>
+                    <div><p class="font-semibold text-neutral-700 mb-1">Parcours detaille</p>
+                      <ol class="list-decimal list-inside space-y-1 text-neutral-600">
+                        {p.parcours.map(([section, reaction]: string[]) => (<li><strong>{section}</strong> — {reaction}</li>))}
+                      </ol>
+                    </div>
+                    {p.question && <div><p class="font-semibold text-neutral-700 mb-1">Question cle</p><p class="text-neutral-600 italic">"{p.question}"</p><p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong> — {p.commentReponse}</p></div>}
+                    <div><p class="font-semibold text-neutral-700 mb-1">Impact technique</p><p class="text-neutral-600">{p.impactTech}</p></div>
+                    <div class="flex gap-4">
+                      <div class="flex-1"><p class="font-semibold text-green-700 mb-1">Points positifs</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.positifs.map((pt: string) => (<li>{pt}</li>))}</ul></div>
+                      <div class="flex-1"><p class="font-semibold text-amber-700 mb-1">Frictions</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map((f: string) => (<li>{f}</li>))}</ul></div>
+                    </div>
+                    <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                      <div class="text-center"><span class="block text-lg font-bold text-green-600">{p.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                      <div class="text-center"><span class="block text-lg font-bold text-blue-600">{p.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                      <div class="text-center"><span class="block text-lg font-bold text-orange-600">{p.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+                    </div>
+                  </div>
+                </div>
+              </details>
+            ))}
+          </div>
+
+          <!-- Ceux qui hésitent -->
+          <h3 class="text-lg font-bold text-amber-700 mb-4">Ceux qui hesitent</h3>
+          <div class="space-y-3 mb-10">
+            {personas.filter(p => p.decision === 'Hesite').map((p) => (
+              <details class={`group border ${decisionBorder(p.decision)} rounded-xl overflow-hidden`}>
+                <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                  <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                      <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                      <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                      <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    </div>
+                    <p class="text-xs text-neutral-500 mb-1">{p.situation}</p>
+                    <p class="text-xs text-neutral-600 mb-2">{p.contexte}</p>
+                  </div>
+                  <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                </summary>
+                <div class="px-4 pb-4 pt-0 border-t border-amber-200 bg-white/50">
+                  <div class="grid gap-3 text-xs mt-3">
+                    <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.impression}</p></div>
+                    <div><p class="font-semibold text-neutral-700 mb-1">Parcours</p>
+                      <ol class="list-decimal list-inside space-y-1 text-neutral-600">
+                        {p.parcours.map(([section, reaction]: string[]) => (<li><strong>{section}</strong> — {reaction}</li>))}
+                      </ol>
+                    </div>
+                    {p.question && <div><p class="font-semibold text-neutral-700 mb-1">Question cle</p><p class="text-neutral-600 italic">"{p.question}"</p><p class="text-neutral-600 mt-1">Reponse : <strong>{p.reponse}</strong> — {p.commentReponse}</p></div>}
+                    <div><p class="font-semibold text-amber-700 mb-1">Ce qui ferait basculer</p><p class="text-neutral-600">{p.changement}</p></div>
+                    <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                      <div class="text-center"><span class="block text-lg font-bold text-amber-600">{p.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                      <div class="text-center"><span class="block text-lg font-bold text-blue-600">{p.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                      <div class="text-center"><span class="block text-lg font-bold text-orange-600">{p.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+                    </div>
+                  </div>
+                </div>
+              </details>
+            ))}
+          </div>
+
+          <!-- Ceux qui repartent -->
+          <h3 class="text-lg font-bold text-red-700 mb-4">Ceux qui repartent</h3>
+          <div class="space-y-3">
+            {personas.filter(p => p.decision === 'Quitte').map((p) => (
+              <details class={`group border ${decisionBorder(p.decision)} rounded-xl overflow-hidden`}>
+                <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                  <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                      <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                      <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                      <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    </div>
+                    <p class="text-xs text-neutral-500 mb-1">{p.situation}</p>
+                    <p class="text-xs text-neutral-600">{p.raison}</p>
+                  </div>
+                  <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                </summary>
+                <div class="px-4 pb-4 pt-0 border-t border-neutral-200 bg-white/50">
+                  <div class="grid gap-3 text-xs mt-3">
+                    <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.impression}</p></div>
+                    {p.question && <div><p class="font-semibold text-neutral-700 mb-1">Question cle</p><p class="text-neutral-600 italic">"{p.question}"</p><p class="text-neutral-600 mt-1">Reponse : <strong>{p.reponse}</strong> — {p.commentReponse}</p></div>}
+                    <div><p class="font-semibold text-red-700 mb-1">Ce qui l'aurait retenu</p><p class="text-neutral-600">{p.changement}</p></div>
+                    <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                      <div class="text-center"><span class="block text-lg font-bold text-red-600">{p.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                      {p.conf > 0 && <div class="text-center"><span class="block text-lg font-bold text-blue-600">{p.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>}
+                      <div class="text-center"><span class="block text-lg font-bold text-orange-600">{p.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+                    </div>
+                  </div>
+                </div>
+              </details>
+            ))}
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ═══════════ PANEL 4 : AMÉLIORATIONS ═══════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+
+          <!-- Le plus important -->
+          <h3 class="text-lg font-bold text-red-700 mb-4">Le plus important</h3>
+          <div class="space-y-4 mb-12">
+            {ameliorations.haute.map((a) => (
+              <div class="bg-white border-2 border-red-200 rounded-xl p-5 shadow-sm">
+                <h4 class="font-semibold text-neutral-900 mb-2">{a.title}</h4>
+                <p class="text-sm text-neutral-600 mb-3">{a.detail}</p>
+                <div class="bg-[var(--color-accent)]/5 rounded-lg px-3 py-2.5 flex items-start gap-2">
+                  <svg class="w-4 h-4 text-[var(--color-accent)] mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                  <p class="text-xs text-[var(--color-accent)]">Impact : {a.impact}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <!-- Utile aussi -->
+          <h3 class="text-lg font-bold text-neutral-700 mb-4">Utile aussi</h3>
+          <div class="grid md:grid-cols-2 gap-4 mb-12">
+            {ameliorations.moyenne.map((a) => (
+              <div class="bg-white border border-neutral-200 rounded-xl p-4">
+                <h4 class="font-semibold text-neutral-900 text-sm mb-1.5">{a.title}</h4>
+                <p class="text-xs text-neutral-600">{a.detail}</p>
+                <p class="text-xs text-[var(--color-text-muted)] mt-2">Impact : {a.impact}</p>
+              </div>
+            ))}
+          </div>
+
+          <!-- A discuter -->
+          <h3 class="text-lg font-bold text-neutral-700 mb-4">A discuter ensemble</h3>
+          <div class="space-y-3 mb-12">
+            {ameliorations.discussion.map((a) => (
+              <div class="bg-neutral-50 border border-neutral-200 rounded-xl p-4 flex gap-3">
+                <span class="text-lg shrink-0">{a.emoji}</span>
+                <div>
+                  <h4 class="font-semibold text-neutral-900 text-sm mb-0.5">{a.title}</h4>
+                  <p class="text-xs text-neutral-600">{a.detail}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <!-- Frictions -->
+          <h3 class="text-lg font-bold text-[var(--color-text)] mb-4">Points de friction recurrents</h3>
+          <div class="space-y-3">
+            {frictions.map((f) => (
+              <div class="flex items-center gap-4 rounded-xl border border-[var(--color-border)] bg-white p-4">
+                <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-neutral-100 flex items-center justify-center">
+                  <span class="text-lg font-bold text-[var(--color-text)]">{f.count}</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="font-medium text-[var(--color-text)]">{f.label}</p>
+                  <p class="text-sm text-[var(--color-text-muted)]">{f.count}/20 personas impactes</p>
+                </div>
+                <span class={`flex-shrink-0 px-3 py-1 rounded-full text-xs font-semibold ${severityColor(f.severity)}`}>
+                  {f.severity}
+                </span>
+              </div>
+            ))}
+          </div>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div><!-- /panels -->
+
+  <!-- ═══════════════════ MÉTHODOLOGIE ═══════════════════ -->
+  <section class="w-full px-6 py-12 md:px-8 md:py-16 bg-white">
+    <div class="mx-auto max-w-3xl">
+      <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">Methodologie</h2>
+      <div class="prose max-w-none text-[var(--color-text)]">
+        <p>Ce rapport combine un <strong>audit technique</strong> et un <strong>test UX par personas</strong> :</p>
+        <ol class="space-y-2 text-sm leading-relaxed">
+          <li><strong>Scraping complet</strong> des 17 pages du site (contenu, meta, Schema.org, images)</li>
+          <li><strong>Audit technique</strong> : PageSpeed Insights (desktop), Mozilla Observatory, Schema.org, Open Graph, SEO technique</li>
+          <li><strong>Creation de 20 personas diversifies</strong> couvrant 6 canaux, 3 niveaux de maturite, 3 devices, dont 3 personas negatifs et 3 personas IA</li>
+          <li><strong>Simulation individuelle</strong> de chaque visite en integrant les donnees techniques (vitesse, securite, Schema.org) dans l'evaluation</li>
+          <li><strong>Agregation et analyse croisee</strong> par canal, maturite et device</li>
+          <li><strong>Priorisation des ameliorations</strong> par nombre de personas impactes et severite</li>
+        </ol>
+        <p class="mt-4 text-sm text-[var(--color-text-muted)]">
+          Les scores reflètent l'experience simulee d'un visiteur reel confronte au contenu et aux performances actuels du site.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ CTA ═══════════════════ -->
+  <section class="w-full px-6 py-16 md:px-8 md:py-24" style="background-color: #0D0D0D;">
+    <div class="mx-auto max-w-3xl text-center">
+      <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">
+        Pret a transformer ces insights en resultats ?
+      </h2>
+      <p class="text-neutral-300 mb-8 max-w-xl mx-auto">
+        Ce rapport identifie des opportunites concretes. Je peux construire un site qui convertit vraiment vos visiteurs en clients.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="/commander" class="inline-flex items-center gap-2 px-8 py-3.5 text-white font-semibold rounded-xl transition-all shadow-md hover:shadow-xl hover:scale-105" style="background: linear-gradient(135deg, #E86C47, #D4572F); box-shadow: 0 4px 20px rgba(232, 108, 71, 0.4);">
+          Commander un site
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a href="/contact" class="inline-flex items-center gap-2 px-8 py-3.5 border border-neutral-600 text-neutral-300 font-semibold rounded-xl hover:border-[#E86C47] hover:text-[#E86C47] transition-all">
+          En discuter d'abord
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ TAB JS ═══════════════════ -->
+  <style is:inline>
+    #panels { -ms-overflow-style: none; }
+    #panels::-webkit-scrollbar { display: none; }
+  </style>
+
+  <script is:inline>
+    const panels = document.getElementById('panels');
+    const tabs = document.querySelectorAll('.tab-btn');
+    const sections = panels.querySelectorAll('.tab-panel');
+
+    function activateTab(index) {
+      tabs.forEach((b, i) => {
+        if (i === index) {
+          b.classList.remove('text-neutral-500');
+          b.classList.add('text-[var(--color-accent)]', 'bg-[var(--color-accent)]/10');
+        } else {
+          b.classList.remove('text-[var(--color-accent)]', 'bg-[var(--color-accent)]/10');
+          b.classList.add('text-neutral-500');
+        }
+      });
+    }
+
+    tabs.forEach((btn, i) => {
+      btn.addEventListener('click', () => {
+        sections[i].scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+        activateTab(i);
+      });
+    });
+
+    let scrollTimeout;
+    panels.addEventListener('scroll', () => {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        const index = Math.round(panels.scrollLeft / panels.offsetWidth);
+        activateTab(index);
+      }, 50);
+    }, { passive: true });
+  </script>
+
+</BaseLayout>
