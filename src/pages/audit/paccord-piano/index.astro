@@ -1,0 +1,728 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = "Audit UX + Technique — P'accord Piano | Marc M";
+const description = "Audit complet du site paccord-piano.fr : 20 personas, scores PageSpeed, securite, Schema.org, recommandations priorisees.";
+
+// ── Data ──
+const personas = [
+  { id: 1, name: "Francoise", age: 67, situation: "Retraitee Education nationale, Chartres", canal: "Google Search", maturite: "Comparaison", device: "Desktop", decision: "Hesite", exp: 6, conf: 4, clarte: 7, emoji: "👩‍🏫", parcours: ["Accueil", "L'artisan", "Calculateur (28000)", "Services", "Contact", "Cherche avis"], premierImpression: "Positionnement geographique clair. Cherche instinctivement un numero de telephone en haut de page — ne le trouve pas.", questionCle: "Est-ce aussi competent que M. Lefevre qui s'occupait de mon piano depuis 20 ans ?", reponseQuestion: "Non", commentReponse: "Le site liste les diplomes mais sans temoignages, Francoise ne peut pas evaluer la qualite du travail.", impactTechnique: "Desktop OK (LCP 1.5s). Pas de frustration technique.", positifs: ["Positionnement geographique clair", "Diplome BMA ITEMM mentionne", "Calculateur de prix transparent (90€ pour Chartres)", "Numero de telephone visible dans la section contact"], frictions: ["Zero temoignage client — point bloquant principal", "Pas de mention des marques de piano travaillees", "8 ans d'experience parait modeste vs 30 ans de son ancien accordeur", "Pas d'horaires affiches"], raisonDecision: "Le site est propre et le tarif clair, mais elle a besoin de preuves sociales. Elle va chercher des avis Google.", cequiChangerait: "3-5 temoignages clients, mention des marques travaillees, photo de Simon en intervention" },
+  { id: 2, name: "Julien", age: 34, situation: "Dev web teletravail, Mainvilliers (3 km)", canal: "Google Maps", maturite: "Decision", device: "Mobile", decision: "Convertit", exp: 5, conf: 6, clarte: 8, emoji: "💻", parcours: ["Fiche Google Maps", "Accueil (attend 6.6s...)", "Calculateur (28300 → 90€)", "Formulaire RDV", "Envoie"], premierImpression: "Le site met 6.6 secondes a charger. Pour un dev web, c'est une eternite. Le CLS fait bouger le contenu — il leve les yeux au ciel.", questionCle: "Combien ca coute et quand est-ce qu'il peut passer ?", reponseQuestion: "Partiellement", commentReponse: "Le 'combien' est parfait (90€ via calculateur). Le 'quand' n'est pas du tout traite : pas de delai moyen, pas de calendrier.", impactTechnique: "LCP 6.6s — attente frustrante. CLS deplace le contenu pendant le chargement.", positifs: ["Calculateur de prix parfait pour son besoin", "Tarif competitif (90€)", "Formulaire de contact fonctionnel", "Site simple, pas surcharge"], frictions: ["LCP 6.6s mobile — frustrant pour un dev web", "CLS 0.137 — contenu qui bouge", "Pas d'indication de delai de reponse", "Pas de systeme de reservation en ligne"], raisonDecision: "Motive et proche geographiquement. Le formulaire est envoie. Si Simon repond sous 24h, c'est regle.", cequiChangerait: "" },
+  { id: 3, name: "Helene", age: 45, situation: "Prof de piano, Dreux (35 km)", canal: "Bouche-a-oreille", maturite: "Decision", device: "Mobile", decision: "Hesite", exp: 5, conf: 6, clarte: 5, emoji: "🎹", parcours: ["Lien SMS collegue", "Accueil", "L'artisan (lit ITEMM)", "Services (harmonisation)", "Cherche 'piano a queue'", "Contact"], premierImpression: "A priori positif grace a la recommandation. Le mot 'queue' n'apparait nulle part sur le site — premiere inquietude.", questionCle: "Est-ce qu'il a l'habitude de travailler sur des pianos a queue ?", reponseQuestion: "Non", commentReponse: "Le mot 'queue' n'apparait nulle part. Le BMA ITEMM implique une formation tous types, mais ce n'est pas explicite.", impactTechnique: "LCP 6.6s mobile — elle patiente grace a la recommandation.", positifs: ["BMA ITEMM — elle connait ce diplome", "Double formation technicien + pianiste", "La recommandation compense les manques"], frictions: ["Aucune mention de pianos a queue", "Harmonisation 'sur devis' sans detail technique", "Pas de portfolio de realisations", "Pianos d'occasion tous des droits entree de gamme"], raisonDecision: "Va appeler pour poser la question directement. Si Simon est convaincant au telephone, elle prendra RDV.", cequiChangerait: "Mention 'pianos droits et a queue', temoignages de musiciens pros, prestation 'preparation concert'" },
+  { id: 4, name: "Romain", age: 28, situation: "Chef de projet com, Boulogne (90 km)", canal: "ChatGPT", maturite: "Comparaison", device: "Mobile", decision: "Quitte", exp: 4, conf: 4, clarte: 5, emoji: "🤖", parcours: ["Lien ChatGPT", "Accueil", "Pianos d'occasion", "Verifie garantie + livraison", "Retour ChatGPT"], premierImpression: "ChatGPT mentionne P'accord Piano parmi les options. Le site charge lentement. 'Chartres — c'est loin.'", questionCle: "Est-ce que je peux venir essayer et est-ce qu'il livre sur Boulogne ?", reponseQuestion: "Partiellement", commentReponse: "'Sur RDV' confirme l'essai mais pas d'adresse precise. Livraison gratuite 80 km — Boulogne est a 90 km, aucun tarif pour le supplement.", impactTechnique: "LCP 6.6s mobile — en mode comparaison, la lenteur le pousse vers les concurrents plus rapides.", positifs: ["Prix attractifs avec garantie 5 ans", "Services inclus (accord, harmonisation, polish)", "Banquette incluse"], frictions: ["4 pianos seulement — stock tres limite", "Pas de photos detaillees ni video sonore", "Livraison 80 km — Boulogne a 90 km, pas de tarif supplement", "Pas d'avis clients sur les pianos achetes"], raisonDecision: "Choix trop limite, info insuffisante pour un achat a distance, deplacement Chartres trop lourd pour 2 pianos dans son budget.", cequiChangerait: "Plus de pianos, fiches detaillees (photos, audio), tarif livraison explicite au-dela de 80 km" },
+  { id: 5, name: "Martine", age: 72, situation: "Retraitee, Illiers-Combray (25 km)", canal: "Google Search", maturite: "Decouverte", device: "Desktop", decision: "Quitte", exp: 4, conf: 3, clarte: 4, emoji: "👵", parcours: ["Accueil", "L'artisan", "Accords + calculateur", "Services (expertise 60€)", "Cherche FAQ", "Hesite", "Ferme"], premierImpression: "Site propre sur desktop. Intimidee par le vocabulaire technique. Cherche une reponse a 'mon piano peut-il etre sauve ?'", questionCle: "Est-ce que mon vieux Pleyel vaut encore le coup d'etre accorde ou c'est de l'argent perdu ?", reponseQuestion: "Non", commentReponse: "Le site ne mentionne jamais les pianos anciens, les pianos non entretenus depuis longtemps, ni les marques francaises historiques.", impactTechnique: "Desktop OK. L'absence de temoignages la prive d'un element de reassurance crucial.", positifs: ["Calculateur de prix clair", "L'expertise a 60€ existe", "Site lisible, pas surcharge", "Numero de telephone visible"], frictions: ["Aucun contenu rassurant pour les vieux pianos", "Pas de FAQ", "Pas de mention Pleyel/Erard/Gaveau", "Pas de photos avant/apres restauration", "'Sur devis' sans fourchette — anxiogene"], raisonDecision: "N'a pas trouve de reponse a sa question et n'a pas ete rassuree emotionnellement. Reporte sa decision indefiniment.", cequiChangerait: "Section 'Votre piano dort depuis des annees ?', parcours expertise 60€, avant/apres, temoignage client similaire" },
+  { id: 6, name: "Sebastien", age: 41, situation: "Gerant bar-restaurant, Rambouillet (50 km)", canal: "Facebook", maturite: "Comparaison", device: "Mobile", decision: "Hesite", exp: 4, conf: 5, clarte: 5, emoji: "🍷", parcours: ["Post Facebook", "Accueil", "L'artisan", "Calculateur (78120)", "Services", "Contact"], premierImpression: "Hero charge en 6+ secondes. 'C'est un accordeur solo, pas une boite.' Cherche un indice de travail avec des pros.", questionCle: "Est-ce qu'il propose un forfait annuel pour un piano de restaurant ?", reponseQuestion: "Non", commentReponse: "Aucune offre de contrat d'entretien, aucun forfait multi-interventions, aucune mention de clientele professionnelle.", impactTechnique: "LCP 6.6s sur iPhone 13 — gerant presse entre deux services, 6 secondes c'est trop.", positifs: ["Calculateur de prix concret", "Double competence technicien + pianiste", "Numero de telephone accessible"], frictions: ["Aucune offre 'contrat entretien' ou 'forfait pro'", "Aucune mention de clients professionnels", "Pas d'horaires d'intervention affiches", "Temps de chargement mobile frustrant"], raisonDecision: "Simon semble competent mais l'absence de forfait pro l'empeche de se projeter. Il enregistre le numero pour appeler 'quand il aura 5 minutes'.", cequiChangerait: "Section 'Professionnels' avec forfait annuel, references pro, creneaux d'intervention" },
+  { id: 7, name: "Claire", age: 38, situation: "Infirmiere liberale, Epernon (20 km)", canal: "Google Maps", maturite: "Comparaison", device: "Mobile", decision: "Hesite", exp: 5, conf: 5, clarte: 7, emoji: "🩺", parcours: ["Google Maps", "Accueil", "L'artisan", "Calculateur (28230 → ~90€)", "Compare avec SAV Yamaha", "Cherche avis Google"], premierImpression: "Positionnement local confirme. Priorite : comparer le prix avec le technicien Yamaha agree.", questionCle: "C'est moins cher qu'un technicien Yamaha officiel et c'est aussi bien ?", reponseQuestion: "Partiellement", commentReponse: "Le calculateur montre ~90€ vs 120-140€ chez Yamaha. Mais pour 'aussi bien', aucun temoignage ni certification.", impactTechnique: "LCP 6.6s sur Pixel 8 — moins critique en pause dejeuner chez elle, mais impression de site pas optimise.", positifs: ["Prix competitif vs SAV Yamaha", "Proximite geographique parfaite (20 km)", "Diplome ITEMM rassurant", "Calculateur = reponse rapide au prix"], frictions: ["Aucun temoignage visible", "Pas de mention d'experience sur Yamaha", "Google Fonts et absence banniere cookies — signaux negatifs subtils"], raisonDecision: "Prix attractif et proximite, mais l'absence de temoignages bloque. Va verifier les avis Google Maps et demander a une amie pianiste.", cequiChangerait: "3-4 temoignages, mention 'toutes marques', garantie satisfaction" },
+  { id: 8, name: "Dominique", age: 59, situation: "Directeur ecole musique, Nogent-le-Rotrou (60 km)", canal: "Bouche-a-oreille", maturite: "Decision", device: "Tablette", decision: "Convertit", exp: 5, conf: 6, clarte: 5, emoji: "🎵", parcours: ["Lien recu", "Accueil", "L'artisan (ITEMM)", "Calculateur (28400)", "Services", "Appelle directement"], premierImpression: "Confirmation rapide : c'est le bon site. En mode action — besoin d'un devis pour 5 pianos avant le CA dans 10 jours.", questionCle: "Pouvez-vous me faire un devis forfaitaire pour 5 pianos droits ?", reponseQuestion: "Non", commentReponse: "Le calculateur donne un prix unitaire. Pas de forfait multi-pianos, pas de tarif collectivite, pas de formulaire devis.", impactTechnique: "Tablette OK mais CLS 0.137 provoque un saut de layout agacant.", positifs: ["BMA ITEMM = argument pour le CA", "Recommandation directe d'un pair", "Numero de telephone pour contact rapide", "Base tarifaire visible"], frictions: ["Pas de forfait multi-pianos", "Formulaire pas adapte aux demandes professionnelles", "Pas de mention 'ecoles de musique' ou 'collectivites'"], raisonDecision: "Le bouche-a-oreille fait le travail. Il appelle directement Simon. Le site a servi d'annuaire.", cequiChangerait: "" },
+  { id: 9, name: "Amira", age: 31, situation: "UX designer, Versailles (70 km)", canal: "Perplexity", maturite: "Decouverte", device: "Mobile", decision: "Quitte", exp: 3, conf: 3, clarte: 5, emoji: "🎨", parcours: ["Lien Perplexity", "Accueil", "L'artisan", "Services", "Pianos d'occasion (gamme basse)", "Analyse UX pro"], premierImpression: "En tant qu'UX designer, elle evalue le site avant de lire le contenu. Webflow basique, chargement lent, pas de photo dans le hero.", questionCle: "Est-ce qu'il a deja travaille sur des Bosendorfer ?", reponseQuestion: "Non", commentReponse: "Aucune mention de marque specifique. Aucune galerie. La page pianos d'occasion (gamme basse) envoie un signal contradictoire.", impactTechnique: "LCP 6.6s — en tant qu'UX designer, c'est un defaut redhibitoire. Pour elle, un site mal concu reflete un prestataire inattentif.", positifs: ["BMA ITEMM une fois verifie", "Double competence pertinente", "Calculateur original"], frictions: ["Aucune mention de marques haut de gamme", "Page pianos d'occasion = signal 'entree de gamme'", "Pas de portfolio ni photos d'interventions", "Problemes techniques multiples (CLS, contraste, cookies)"], raisonDecision: "Le site ne fournit aucun signal de specialisation haut de gamme. Elle ne confiera pas son Bosendorfer 170 a un accordeur dont elle ne peut pas verifier l'experience.", cequiChangerait: "Section 'Marques et specialites', photos d'interventions haut de gamme, temoignages de pianistes pros" },
+  { id: 10, name: "Thomas", age: 26, situation: "Etudiant informatique, Orleans (75 km)", canal: "Facebook", maturite: "Decouverte", device: "Mobile", decision: "Quitte", exp: 3, conf: 5, clarte: 7, emoji: "🎓", parcours: ["Video Facebook", "Accueil (scroll 3s)", "Retour Facebook"], premierImpression: "Clic curieux depuis une video Facebook. 'Ah ok, un mec qui accorde des pianos. Cool.' Pas d'engagement.", questionCle: "Aucune — visite de curiosite pure", reponseQuestion: "N/A", commentReponse: "Pas de besoin, pas de question. Visite de 45-60 secondes.", impactTechnique: "LCP 6.6s sur Xiaomi milieu de gamme — possiblement 8-9 secondes en pratique. Pire experience technique.", positifs: ["Calculateur = element interactif qui retient 10 secondes", "Pianos d'occasion = interet inattendu ('1200€ = moins que mon PC gaming')"], frictions: ["Temps de chargement catastrophique sur appareil milieu de gamme", "Pas de contenu viral ou partageable", "CLS fait cliquer sur le mauvais element"], raisonDecision: "Aucun besoin, aucune motivation. Le site n'a rien pour transformer la curiosite en engagement.", cequiChangerait: "Rien — ce persona n'est pas convertible. La question est le ciblage pub Facebook." },
+  { id: 11, name: "Genevieve", age: 74, situation: "Retraitee, Chateaudun (45 km)", canal: "PagesJaunes", maturite: "Decouverte", device: "Desktop", decision: "Convertit", exp: 4, conf: 5, clarte: 3, emoji: "📞", parcours: ["PagesJaunes", "Accueil", "Scroll lent", "Cherche le numero", "Section Contact", "Note le numero"], premierImpression: "Cherche un numero de telephone en haut de page. Ne le voit pas. 'Ou est le numero ?'", questionCle: "C'est quoi le numero de telephone pour appeler directement ?", reponseQuestion: "Oui", commentReponse: "Le numero est dans la section Contact, mais elle a du scroller toute la page pour le trouver — 2-3 minutes de recherche.", impactTechnique: "PC ancien avec Edge non mis a jour — chargement encore plus lent. Le CLS fait 'sauter' la page.", positifs: ["Le numero de telephone existe", "Le nom P'accord Piano est clair", "Mention de Chartres rassure geographiquement"], frictions: ["Numero introuvable sans scroller toute la page", "Pas d'horaires — ne sait pas quand appeler", "Pas d'adresse physique visible", "Contraste insuffisant pour ses yeux"], raisonDecision: "Elle a trouve le numero. C'est tout ce qu'elle voulait. Elle appellera demain matin.", cequiChangerait: "" },
+  { id: 12, name: "Nicolas", age: 43, situation: "Cadre commercial, Luce (5 km)", canal: "Google Search", maturite: "Comparaison", device: "Mobile", decision: "Hesite", exp: 5, conf: 5, clarte: 6, emoji: "👔", parcours: ["Google", "Accueil", "Pianos d'occasion", "Compare prix", "L'artisan", "Contact"], premierImpression: "Cherche un piano pour son fils de 14 ans. Tombe sur P'accord Piano. 'C'est un accordeur... il vend aussi ?'", questionCle: "Est-ce qu'il y a un piano correct pour mon fils a moins de 1500€ avec une vraie garantie ?", reponseQuestion: "Partiellement", commentReponse: "Un piano a 1200€ avec garantie 5 ans existe. Mais pas assez de details (photos, etat, historique) pour juger.", impactTechnique: "LCP 6.6s sur Samsung S23. Le partage WhatsApp a sa femme montre un apercu vide (pas d'OG tags).", positifs: ["Page dediee pianos d'occasion", "Garantie 5 ans — argument fort vs Leboncoin", "Livraison 80 km incluse", "Fourchette de prix lisible"], frictions: ["4 pianos = stock limite vs Leboncoin", "Pas de fiche technique detaillee par piano", "Pas de photo HD ni video son", "Partage WhatsApp = apercu vide (pas d'OG)"], raisonDecision: "Le piano a 1200€ avec garantie 5 ans est interessant, mais il est en comparaison avec Leboncoin. 50% de chance de revenir dans 2-3 jours.", cequiChangerait: "Fiches produit completes, photos multiples, guide 'Comment choisir son premier piano'" },
+  { id: 13, name: "Sophie", age: 52, situation: "Notaire, Chartres — Steinway B", canal: "Google Maps", maturite: "Comparaison", device: "Mobile", decision: "Quitte", exp: 4, conf: 3, clarte: 5, emoji: "⚖️", parcours: ["Google Maps", "Accueil", "L'artisan (cherche Steinway)", "Services", "Pas de portfolio", "Quitte"], premierImpression: "'C'est un petit artisan... est-ce qu'il connait les Steinway ?' Premiere reaction froide.", questionCle: "Est-ce qu'il a le niveau pour s'occuper d'un Steinway B ?", reponseQuestion: "Non", commentReponse: "Rien ne permet de determiner l'expertise sur Steinway. Pas de marques citees, pas de photos, pas de temoignages de pianistes exigeants.", impactTechnique: "CLS fait sauter la page — percu comme 'pas professionnel' par une habituee aux sites premium.", positifs: ["BMA ITEMM = formation reconnue", "Prix competitif vs accordeur parisien (90€ vs 180€)", "Proximite Chartres", "Double casquette pianiste"], frictions: ["Aucune mention pianos a queue ou marques premium", "Pas de portfolio d'interventions haut de gamme", "Pas de temoignages de pianistes confirmes", "Positionnement tarifaire bas = signal 'entree de gamme'"], raisonDecision: "Ne prendra pas le risque de confier un Steinway B (60 000€+) sans preuves d'expertise. Cherchera un technicien agree Steinway.", cequiChangerait: "Liste de marques travaillees, photos interventions sur queues, temoignages pianistes exigeants" },
+  { id: 14, name: "Etienne", age: 36, situation: "Ingenieur son, Mantes-la-Jolie (80 km)", canal: "Claude (IA)", maturite: "Comparaison", device: "Desktop", decision: "Quitte", exp: 4, conf: 3, clarte: 4, emoji: "🎙️", parcours: ["Lien Claude", "Accueil", "L'artisan", "Services (harmonisation)", "Pas de portfolio audio", "Contact (hesite)", "Quitte"], premierImpression: "Claude ne peut pas bien recommander le site (pas de Schema.org, pas de llms.txt). Design correct sur grand ecran mais CLS visible.", questionCle: "Est-ce que Simon peut modifier le timbre de mon piano pour qu'il sonne plus mat en studio ?", reponseQuestion: "Non", commentReponse: "Pas de vocabulaire technique sur le travail de timbre, pas d'exemple audio, pas de mention de pianos de studio.", impactTechnique: "Desktop OK. Mais l'absence de Schema.org signifie que Claude ne peut pas recommander efficacement.", positifs: ["Formation ITEMM solide", "Double profil pertinent pour les nuances sonores", "Email disponible pour brief technique", "Prix competitif"], frictions: ["Aucune mention d'harmonisation avancee ou timbre studio", "Pas de contenu audio/video", "Pas de Schema.org = invisible pour IA", "80 km = limite de zone, pas clair"], raisonDecision: "Le site ne contient aucun signal d'expertise harmonisation studio. Il n'appellera pas a l'aveugle pour un besoin aussi pointu.", cequiChangerait: "Detail technique harmonisation, samples audio avant/apres, Schema.org Service, llms.txt" },
+  { id: 15, name: "Valerie", age: 48, situation: "Resp. admin lycee prive, Chartres", canal: "Google Search", maturite: "Decision", device: "Mobile", decision: "Hesite", exp: 4, conf: 5, clarte: 5, emoji: "🏫", parcours: ["Google", "Accueil", "Calculateur (28000 → 90€ × 3)", "Services", "Contact", "Hesite a appeler"], premierImpression: "En mode decision rapide — devis pour 3 pianos avant vendredi. Cherche 'devis', 'collectivite', 'etablissement'. Ne trouve pas.", questionCle: "Pouvez-vous me fournir un devis pour 3 pianos avant vendredi ?", reponseQuestion: "Partiellement", commentReponse: "Le site permet de contacter Simon et les tarifs indicatifs sont visibles, mais pas de processus de devis structure ni de mention delai.", impactTechnique: "LCP 6.6s sur iPhone SE (petit ecran) = penible. CLS amplifie la frustration.", positifs: ["Tarifs affiches clairement", "Proximite Chartres", "Numero de telephone disponible", "Formation ITEMM = gage pour un etablissement"], frictions: ["Pas de parcours 'professionnel' ou 'etablissement'", "Pas de formulaire devis structure", "Pas de mention 'devis gratuit sous 24-48h'", "Pas de tarif degressif multi-pianos"], raisonDecision: "Va tenter un appel. Si Simon decroche et confirme devis sous 48h, elle convertit. Si repondeur, elle passe au concurrent.", cequiChangerait: "Formulaire devis pro, mention 'collectivites', tarif degressif, delai reponse" },
+  { id: 16, name: "Marc P.", age: 55, situation: "Plombier, Bonneval (30 km)", canal: "QR code flyer", maturite: "Decouverte", device: "Mobile", decision: "Hesite", exp: 4, conf: 4, clarte: 5, emoji: "🔧", parcours: ["QR code", "Accueil", "L'artisan", "Services (reparation)", "Pianos d'occasion", "Favori"], premierImpression: "Le hero met du temps a s'afficher. Le nom P'accord Piano le fait sourire. Ca fait artisan local, rassurant.", questionCle: "Ca vaut le coup de reparer un vieux piano avec des touches cassees ou c'est plus simple d'en racheter un ?", reponseQuestion: "Non", commentReponse: "Aucun contenu sur ce dilemme classique. Pas de grille 'reparer vs remplacer', pas de fourchette reparation, pas de FAQ.", impactTechnique: "LCP 6.6s sur Samsung A54 en 4G semi-rural — possiblement encore pire. A failli quitter.", positifs: ["Numero de telephone visible", "Calculateur original", "Page pianos d'occasion avec garantie 5 ans", "Ton artisan local"], frictions: ["Aucune info sur tarifs/faisabilite reparations", "Pas de FAQ 'mon piano est vieux'", "Pas d'horaires d'appel", "Pas de photos avant/apres reparation"], raisonDecision: "Curiosite la, mais pas de reponse. Sans contenu rassurant, il remet l'appel a plus tard.", cequiChangerait: "Section 'Piano abime ? Voici comment savoir s'il vaut le coup', fourchette prix reparation, photos avant/apres" },
+  { id: 17, name: "Pauline", age: 30, situation: "Graphiste, Nantes (380 km) — HORS ZONE", canal: "Facebook", maturite: "Decouverte", device: "Mobile", decision: "Quitte", exp: 3, conf: 5, clarte: 3, emoji: "🚫", parcours: ["Facebook ami", "Accueil", "Cherche 'piano numerique'", "Comprend que c'est acoustique", "Quitte"], premierImpression: "Accordeur a Chartres — c'est a 380 km. Cherche une info sur les pianos numeriques. N'en trouve pas.", questionCle: "Est-ce qu'il repare aussi les pianos numeriques ?", reponseQuestion: "Non (par omission)", commentReponse: "Le site ne mentionne jamais les pianos numeriques, ni pour dire qu'il les repare, ni pour dire qu'il ne les repare pas.", impactTechnique: "LCP 6.6s — impatiente, elle donne 3 secondes max. En tant que graphiste, le CLS et le contraste la font tiquer.", positifs: ["Nom et metier clairs des le hero", "Calculateur = idee originale"], frictions: ["Aucune mention de ce que Simon ne fait PAS", "Pas de zone de chalandise claire sur le hero", "Preview Facebook probablement vide (pas d'OG)"], raisonDecision: "Double disqualification — piano numerique + Nantes. Le site ne l'a pas aidee a le comprendre rapidement.", cequiChangerait: "FAQ 'Reparation pianos numeriques ?' avec redirection, carte zone d'intervention" },
+  { id: 18, name: "Jean-Pierre", age: 63, situation: "Medecin, Chartres — Bechstein + Steinway M", canal: "Bouche-a-oreille", maturite: "Decision", device: "Desktop", decision: "Convertit", exp: 6, conf: 7, clarte: 6, emoji: "🩺", parcours: ["Lien SMS ami notaire", "Accueil", "L'artisan (BMA, 8 ans)", "Services", "Contact → note le numero"], premierImpression: "Propre, professionnel, artisan local. Confirme la recommandation de son ami. Cherche immediatement le numero.", questionCle: "Quel est le numero pour prendre rendez-vous ?", reponseQuestion: "Oui", commentReponse: "Le numero est dans la section Contact. Il l'a trouve apres un scroll.", impactTechnique: "Desktop fibre — LCP acceptable. CLS le gene un peu mais il est patient.", positifs: ["Numero present et accessible", "Qualification BMA ITEMM rassurante", "Calculateur montre la transparence", "Le site confirme la recommandation du notaire"], frictions: ["Numero pas dans le header", "Pas d'horaires", "Pas de mention pianos haut de gamme", "Pas de temoignages"], raisonDecision: "La recommandation du notaire fait 80% du travail. Le site confirme le minimum. Il appellera demain matin.", cequiChangerait: "" },
+  { id: 19, name: "Camille", age: 22, situation: "Etudiante musicologie, Paris 5e (90 km)", canal: "Google Maps", maturite: "Decouverte", device: "Mobile", decision: "Quitte", exp: 3, conf: 5, clarte: 7, emoji: "🎓", parcours: ["Google Maps", "Pianos d'occasion", "Voit les prix (1200-4000€)", "Ferme"], premierImpression: "Cherche un piano pas cher. Clique directement sur 'Pianos d'occasion'. Voit les prix. Budget inadapte.", questionCle: "Y a un piano a 400€ ?", reponseQuestion: "Non", commentReponse: "Minimum 1200€. Son budget est exclu sans alternative proposee.", impactTechnique: "LCP 6.6s sur iPhone 12 mini en 4G — a failli quitter avant le chargement. CLS sur petit ecran = genant.", positifs: ["Prix clairement affiches", "Garantie 5 ans mentionnee"], frictions: ["Aucun piano sous 1200€", "Pas de guide 'quel budget pour un premier piano'", "CLS sur petit ecran (5.4\")", "Distance 90 km > livraison 80 km"], raisonDecision: "Budget inadequat (500€ vs 1200€ minimum). Double disqualification avec la distance.", cequiChangerait: "Guide 'acheter son premier piano' avec tranches budget et alternatives" },
+  { id: 20, name: "Abdel", age: 39, situation: "Resp. logistique, Chartres — devis 90€", canal: "Email (devis)", maturite: "Decision", device: "Mobile", decision: "Quitte", exp: 3, conf: 3, clarte: 4, emoji: "💰", parcours: ["Email signature", "Accueil", "L'artisan (BMA)", "Calculateur (verifie 90€)", "Cherche justification pro vs black", "Quitte"], premierImpression: "Revient sur le site pour se convaincre de payer 90€ vs 50€ au black du beau-frere. Cherche des arguments.", questionCle: "Pourquoi je paierais 90€ alors que le cousin de ma femme le fait pour 50€ ?", reponseQuestion: "Non", commentReponse: "Le site n'aborde jamais la concurrence informelle. Pas de FAQ, pas de comparaison pro vs amateur, pas de mention credit d'impot.", impactTechnique: "LCP 6.6s — l'attente diminue sa motivation deja fragile.", positifs: ["Prix transparent via calculateur", "Qualification BMA = argument reel", "Devis recu par email = process pro"], frictions: ["AUCUN contenu justifiant tarif pro vs black", "Pas de mention assurance RC Pro", "Pas de garantie sur l'accord", "Pas de mention credit d'impot 50% (SAP)", "Pas de temoignages", "SIRET pas visible hors mentions legales"], raisonDecision: "Le site ne donne aucun argument concret pour justifier 40€ de plus. Le beau-frere gagne.", cequiChangerait: "FAQ 'Pourquoi un pro ?', assurance, garantie rappel gratuit, credit d'impot = 45€ net < 50€ black" },
+];
+
+const avgExp = (personas.reduce((s, p) => s + p.exp, 0) / personas.length).toFixed(1);
+const avgConf = (personas.reduce((s, p) => s + p.conf, 0) / personas.length).toFixed(1);
+const avgClarte = (personas.reduce((s, p) => s + p.clarte, 0) / personas.length).toFixed(1);
+const convertis = personas.filter(p => p.decision === 'Convertit').length;
+const hesitants = personas.filter(p => p.decision === 'Hesite').length;
+const quittent = personas.filter(p => p.decision === 'Quitte').length;
+
+// Lighthouse scores
+const mobile = { perf: 68, access: 92, bp: 100, seo: 100 };
+const desktop = { perf: 90, access: 91, bp: 100, seo: 100 };
+const cwv = {
+  lcp: { mobile: '6.6 s', desktop: '1.5 s', mobileLabel: 'Mauvais', desktopLabel: 'Bon' },
+  cls: { mobile: '0.137', desktop: '0.128', mobileLabel: 'A ameliorer', desktopLabel: 'A ameliorer' },
+  tbt: { mobile: '60 ms', desktop: '0 ms', mobileLabel: 'Bon', desktopLabel: 'Bon' },
+};
+const observatory = { grade: 'C-', score: 45, passed: 6, failed: 4 };
+const obsTests = [
+  { name: 'Content Security Policy (CSP)', pass: false, impact: '-25 pts' },
+  { name: 'X-Frame-Options', pass: false, impact: '-20 pts' },
+  { name: 'X-Content-Type-Options', pass: false, impact: '-5 pts' },
+  { name: 'Subresource Integrity (SRI)', pass: false, impact: '-5 pts' },
+  { name: 'Referrer-Policy', pass: false, impact: '0 pts' },
+  { name: 'Cross-Origin Resource Policy', pass: false, impact: '0 pts' },
+  { name: 'HTTPS Redirection', pass: true, impact: '+0' },
+  { name: 'Strict-Transport-Security (HSTS)', pass: true, impact: '+0' },
+  { name: 'Cookies (HttpOnly + SameSite)', pass: true, impact: '+5' },
+  { name: 'CORS', pass: true, impact: '+0' },
+];
+const schemaChecks = [
+  { label: 'JSON-LD present', present: false },
+  { label: '@type LocalBusiness', present: false },
+  { label: 'name, url, description', present: false },
+  { label: 'address + geo', present: false },
+  { label: 'telephone', present: false },
+  { label: 'openingHours', present: false },
+  { label: 'image / logo', present: false },
+  { label: 'sameAs (reseaux sociaux)', present: false },
+  { label: 'aggregateRating', present: false },
+  { label: 'Service / priceRange', present: false },
+];
+const ogChecks = [
+  { label: 'og:title', present: false },
+  { label: 'og:description', present: false },
+  { label: 'og:image', present: false },
+  { label: 'og:url', present: false },
+  { label: 'og:type', present: false },
+  { label: 'twitter:card', present: false },
+];
+
+const canalStats = [
+  { canal: 'Google Search', total: 4, conv: 0, hesitant: 3, quitte: 1 },
+  { canal: 'Google Maps / GBP', total: 4, conv: 1, hesitant: 1, quitte: 2 },
+  { canal: 'IA (ChatGPT / Perplexity / Claude)', total: 3, conv: 0, hesitant: 0, quitte: 3 },
+  { canal: 'Facebook', total: 3, conv: 0, hesitant: 1, quitte: 2 },
+  { canal: 'Bouche-a-oreille', total: 3, conv: 2, hesitant: 1, quitte: 0 },
+  { canal: 'Autres (annuaire, QR, email)', total: 3, conv: 1, hesitant: 1, quitte: 1 },
+];
+
+const maturiteStats = [
+  { level: 'Decouverte', total: 7, conv: 1, pct: '14%' },
+  { level: 'Comparaison', total: 7, conv: 0, pct: '0%' },
+  { level: 'Decision', total: 6, conv: 3, pct: '50%' },
+];
+
+const frictions = [
+  { label: "Absence totale de temoignages / avis clients", count: 15, severity: 'critique' },
+  { label: "Pas de FAQ", count: 9, severity: 'critique' },
+  { label: "LCP mobile 6.6s — site trop lent sur telephone", count: 13, severity: 'haute' },
+  { label: "Pas de portfolio / photos de realisations", count: 8, severity: 'haute' },
+  { label: "Pas de segmentation visiteur (pro, haut de gamme, vieux piano)", count: 7, severity: 'haute' },
+  { label: "Numero de telephone absent du header", count: 4, severity: 'moyenne' },
+  { label: "Pas d'horaires affiches", count: 4, severity: 'moyenne' },
+  { label: "Aucune mention de pianos a queue ou marques travaillees", count: 4, severity: 'moyenne' },
+  { label: "Schema.org et Open Graph absents", count: 3, severity: 'moyenne' },
+];
+
+const ameliorations = {
+  haute: [
+    { title: "Ajouter des temoignages clients", impact: "15/20 personas", detail: "5-8 temoignages avec prenom, ville, type de piano. Section dediee entre Services et Contact. C'est le frein n°1 a la conversion.", action: "Demander a 5 clients existants un avis (meme 2 phrases suffisent). Afficher prenom, ville et type de piano." },
+    { title: "Creer une FAQ complete", impact: "9/20 personas", detail: "8-10 questions couvrant : vieux piano, pianos a queue, pourquoi un pro, tarifs, zone, delais, marques travaillees.", action: "Rediger les reponses aux 12 questions sans reponse identifiees dans ce rapport." },
+    { title: "Optimiser la performance mobile", impact: "13/20 personas", detail: "LCP sous 2.5s, CLS sous 0.1. Conversion mobile : 8% vs 33% desktop.", action: "Passer les polices en local, compresser les images en WebP, differer le JS non critique." },
+    { title: "Ajouter un portfolio de realisations", impact: "8/20 personas", detail: "Photos avant/apres, exemples d'interventions, marques travaillees. Les profils haut de gamme et pros quittent sans preuves visuelles.", action: "Photographier les prochaines interventions (meme au smartphone). Creer une galerie simple." },
+    { title: "Segmenter le contenu par profil", impact: "7/20 personas", detail: "Section 'Professionnels' (forfaits, collectivites, contrats), mention claire des pianos a queue et marques haut de gamme.", action: "Ajouter une section 'Professionnels et collectivites' avec forfait annuel et references." },
+  ],
+  moyenne: [
+    { title: "Telephone dans le header", impact: "4/20 personas", detail: "Bouton 'Appeler' clickable sur mobile. C'est la premiere chose que cherchent les seniors et les decideurs." },
+    { title: "Afficher les horaires", impact: "4/20 personas", detail: "'Disponible du lundi au samedi, 8h-19h' dans le header ou la section Contact." },
+    { title: "Schema.org JSON-LD + Open Graph", impact: "3/20 personas + SEO", detail: "LocalBusiness, Service, Product, og:title/image/description. Invisible pour les IA = 0% conversion IA." },
+    { title: "Lister les marques et types de pianos", impact: "4/20 personas", detail: "'J'interviens sur droits et a queue — Yamaha, Kawai, Steinway, Pleyel, Bosendorfer...'" },
+  ],
+  discuter: [
+    { title: "Forfait pro / contrat annuel", emoji: "📋", detail: "Decision commerciale. 3 personas cherchaient un forfait (restaurant, ecole, lycee)." },
+    { title: "Mentionner le credit d'impot 50%", emoji: "💰", detail: "Si eligible SAP, 90€ deviennent 45€ nets — moins cher que le black a 50€. Argument decisif." },
+    { title: "Enrichir les fiches pianos d'occasion", emoji: "🎹", detail: "Photos multiples, audio, dimensions, historique. Comparer avec Le Bon Coin." },
+    { title: "Guide d'achat premier piano", emoji: "📖", detail: "Positionnement expert/conseil pour capter les futurs acheteurs." },
+  ],
+};
+
+function decisionColor(d: string) {
+  if (d === 'Convertit') return 'bg-emerald-100 text-emerald-800';
+  if (d === 'Hesite') return 'bg-amber-100 text-amber-800';
+  return 'bg-red-100 text-red-800';
+}
+function decisionBorder(d: string) {
+  if (d === 'Convertit') return 'border-green-200 bg-green-50/40';
+  if (d === 'Hesite') return 'border-amber-200 bg-amber-50/40';
+  return 'border-neutral-200 bg-neutral-50/40';
+}
+function severityColor(s: string) {
+  if (s === 'critique') return 'bg-red-100 text-red-800';
+  if (s === 'haute') return 'bg-orange-100 text-orange-800';
+  return 'bg-blue-100 text-blue-800';
+}
+function scoreColor(v: number) {
+  if (v >= 90) return '#22c55e';
+  if (v >= 50) return '#f59e0b';
+  return '#ef4444';
+}
+function scoreTextColor(v: number) {
+  if (v >= 90) return 'text-green-600';
+  if (v >= 50) return 'text-amber-600';
+  return 'text-red-600';
+}
+function scoreBar(val: number) {
+  return `${val * 10}%`;
+}
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  noindex={true}
+  lang="fr"
+  frPath="/audit/paccord-piano"
+>
+
+  <!-- ═══════════════ HERO ═══════════════ -->
+  <section class="w-full relative px-6 py-16 md:px-8 md:py-24 overflow-hidden" style="background-color: #0D0D0D;">
+    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 40px 40px;"></div>
+    <div class="mx-auto max-w-4xl relative z-10">
+      <div class="mb-4 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--color-accent)]/40">
+        <span class="w-2 h-2 rounded-full" style="background-color: var(--color-accent);"></span>
+        <span class="text-sm font-semibold text-white/90">Rapport confidentiel</span>
+      </div>
+      <h1 class="mb-4 text-3xl font-bold leading-tight text-white md:text-4xl lg:text-5xl">
+        Audit UX + Technique — <span class="text-[var(--color-accent)]">P'accord Piano</span>
+      </h1>
+      <p class="text-lg text-neutral-300 md:text-xl max-w-2xl mb-8">
+        Simulation de 20 visites personas sur <strong class="text-white">paccord-piano.fr</strong> + audit technique complet (PageSpeed, securite, SEO, Schema.org).
+      </p>
+      <div class="flex flex-wrap gap-3">
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">20 personas</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">6 canaux</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">8 audits techniques</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">29 mars 2026</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ TAB BAR ═══════════════ -->
+  <nav class="sticky top-16 md:top-20 z-40 bg-white/95 backdrop-blur border-b border-neutral-200" id="tab-bar">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-2 h-12 text-sm overflow-x-auto">
+      <button data-tab="0" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-[var(--color-accent)] bg-[var(--color-accent)]/10">Synthese</button>
+      <button data-tab="1" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">Technique</button>
+      <button data-tab="2" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">Visiteurs <span class="ml-1 text-xs text-neutral-400">20</span></button>
+      <button data-tab="3" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">Ameliorations <span class="ml-1 text-xs text-neutral-400">{ameliorations.haute.length + ameliorations.moyenne.length + ameliorations.discuter.length}</span></button>
+    </div>
+  </nav>
+
+  <div id="panels" class="flex overflow-x-auto snap-x snap-mandatory" style="-webkit-overflow-scrolling: touch; scrollbar-width: none;">
+
+  <!-- ═══════════════ PANEL 1 : SYNTHESE ═══════════════ -->
+  <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+
+    <!-- KPI cards -->
+    <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+      <div class="mx-auto max-w-5xl">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+          <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+            <p class="text-3xl md:text-4xl font-bold text-red-600">20%</p>
+            <p class="mt-1 text-sm text-[var(--color-text-muted)]">Taux de conversion</p>
+            <p class="mt-2 text-xs text-[var(--color-text-muted)]">{convertis} convertis · {hesitants} hesitants · {quittent} partis</p>
+          </div>
+          <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+            <p class="text-3xl md:text-4xl font-bold text-amber-600">{avgExp}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+            <p class="mt-1 text-sm text-[var(--color-text-muted)]">Experience</p>
+            <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden"><div class="h-full rounded-full bg-amber-500" style={`width: ${scoreBar(Number(avgExp))}`}></div></div>
+          </div>
+          <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+            <p class="text-3xl md:text-4xl font-bold text-blue-600">{avgConf}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+            <p class="mt-1 text-sm text-[var(--color-text-muted)]">Confiance</p>
+            <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden"><div class="h-full rounded-full bg-blue-500" style={`width: ${scoreBar(Number(avgConf))}`}></div></div>
+          </div>
+          <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+            <p class="text-3xl md:text-4xl font-bold text-orange-600">{avgClarte}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+            <p class="mt-1 text-sm text-[var(--color-text-muted)]">Clarte</p>
+            <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden"><div class="h-full rounded-full bg-orange-500" style={`width: ${scoreBar(Number(avgClarte))}`}></div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Paradoxe -->
+    <div class="w-full px-6 py-8 md:px-8 bg-white">
+      <div class="mx-auto max-w-5xl">
+        <div class="rounded-xl border-l-4 border-l-[var(--color-accent)] bg-[var(--color-accent)]/5 p-6 md:p-8">
+          <h2 class="text-lg font-bold text-[var(--color-text)] mb-2">Paradoxe principal</h2>
+          <p class="text-[var(--color-text)] leading-relaxed">
+            Le site a un <strong>outil de conversion excellent</strong> (le calculateur de prix par code postal) entoure d'un <strong>desert de reassurance</strong>. Le calculateur repond a "combien ?", mais personne ne repond a "pourquoi vous ?". <strong>0% de conversion en phase comparaison</strong> — les visiteurs obtiennent le prix en 10 secondes puis quittent faute de preuves que le service vaut ce prix.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Conversion par canal -->
+    <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+      <div class="mx-auto max-w-5xl">
+        <h2 class="text-2xl font-bold text-[var(--color-text)] mb-2">Conversion par canal</h2>
+        <p class="text-[var(--color-text-muted)] mb-8">Le bouche-a-oreille est le seul canal qui convertit (67%). Le site ne convertit pas en autonome.</p>
+        <div class="grid md:grid-cols-2 gap-4">
+          {canalStats.map((c) => {
+            const pct = c.total > 0 ? Math.round((c.conv / c.total) * 100) : 0;
+            return (
+              <div class="rounded-xl border border-[var(--color-border)] bg-white p-5">
+                <div class="flex items-center justify-between mb-3">
+                  <h3 class="font-semibold text-[var(--color-text)] text-sm">{c.canal}</h3>
+                  <span class={`text-lg font-bold ${pct > 50 ? 'text-emerald-600' : pct > 0 ? 'text-amber-600' : 'text-red-600'}`}>{pct}%</span>
+                </div>
+                <div class="h-3 rounded-full bg-neutral-100 overflow-hidden mb-3">
+                  <div class="h-full rounded-full flex">
+                    <div class="bg-emerald-500" style={`width: ${(c.conv / c.total) * 100}%`}></div>
+                    <div class="bg-amber-400" style={`width: ${(c.hesitant / c.total) * 100}%`}></div>
+                    <div class="bg-red-400" style={`width: ${(c.quitte / c.total) * 100}%`}></div>
+                  </div>
+                </div>
+                <div class="flex gap-4 text-xs text-[var(--color-text-muted)]">
+                  <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> {c.conv}</span>
+                  <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-400"></span> {c.hesitant}</span>
+                  <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-400"></span> {c.quitte}</span>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </div>
+
+    <!-- Conversion par maturite -->
+    <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-white">
+      <div class="mx-auto max-w-5xl">
+        <h2 class="text-2xl font-bold text-[var(--color-text)] mb-8">Conversion par maturite</h2>
+        <div class="grid md:grid-cols-3 gap-4">
+          {maturiteStats.map((m) => (
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-6 text-center">
+              <p class="text-sm font-semibold text-[var(--color-text-muted)] uppercase tracking-wider mb-2">{m.level}</p>
+              <p class={`text-4xl font-bold ${m.pct === '0%' ? 'text-red-600' : Number(m.pct.replace('%','')) < 30 ? 'text-amber-600' : 'text-emerald-600'}`}>{m.pct}</p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">{m.conv}/{m.total} convertis</p>
+            </div>
+          ))}
+        </div>
+        <div class="mt-6 rounded-xl bg-red-50 border border-red-200 p-5">
+          <p class="text-sm text-red-800">
+            <strong>Alerte :</strong> le site ne convertit <strong>aucun</strong> visiteur en phase de <strong>comparaison</strong> (0/7). Ces visiteurs sont interesses mais le site ne fournit pas assez d'elements pour les convaincre (pas de temoignages, pas de portfolio, pas de FAQ).
+          </p>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ═══════════════ PANEL 2 : TECHNIQUE ═══════════════ -->
+  <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+
+    <!-- PageSpeed -->
+    <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+      <div class="mx-auto max-w-5xl">
+        <h2 class="text-2xl font-bold text-[var(--color-text)] mb-2">Scores PageSpeed (Lighthouse)</h2>
+        <p class="text-[var(--color-text-muted)] mb-8">Mesures sur le terrain. Le score de performance mobile (68) est le point faible principal.</p>
+
+        <div class="grid md:grid-cols-2 gap-8">
+          {[{ label: 'Mobile', scores: mobile }, { label: 'Desktop', scores: desktop }].map(({ label, scores }) => (
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+              <h3 class="font-semibold text-[var(--color-text)] mb-6 text-center">{label}</h3>
+              <div class="grid grid-cols-4 gap-4">
+                {[
+                  { name: 'Performance', val: scores.perf },
+                  { name: 'Accessibilite', val: scores.access },
+                  { name: 'Bonnes Pratiques', val: scores.bp },
+                  { name: 'SEO', val: scores.seo },
+                ].map(({ name, val }) => (
+                  <div class="text-center">
+                    <div class="relative w-16 h-16 mx-auto mb-2">
+                      <svg class="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3" />
+                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={scoreColor(val)} stroke-width="3" stroke-dasharray={`${val}, 100`} stroke-linecap="round" />
+                      </svg>
+                      <span class={`absolute inset-0 flex items-center justify-center text-lg font-bold ${scoreTextColor(val)}`}>{val}</span>
+                    </div>
+                    <p class="text-xs text-neutral-600 font-medium">{name}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <!-- Core Web Vitals -->
+        <h3 class="text-lg font-bold text-[var(--color-text)] mt-10 mb-4">Core Web Vitals</h3>
+        <div class="space-y-3">
+          {[
+            { name: 'LCP', desc: 'Largest Contentful Paint', mVal: cwv.lcp.mobile, mLabel: cwv.lcp.mobileLabel, dVal: cwv.lcp.desktop, dLabel: cwv.lcp.desktopLabel },
+            { name: 'CLS', desc: 'Cumulative Layout Shift', mVal: cwv.cls.mobile, mLabel: cwv.cls.mobileLabel, dVal: cwv.cls.desktop, dLabel: cwv.cls.desktopLabel },
+            { name: 'TBT', desc: 'Total Blocking Time', mVal: cwv.tbt.mobile, mLabel: cwv.tbt.mobileLabel, dVal: cwv.tbt.desktop, dLabel: cwv.tbt.desktopLabel },
+          ].map(({ name, desc, mVal, mLabel, dVal, dLabel }) => (
+            <div class="flex flex-col md:flex-row gap-3">
+              <div class={`flex-1 flex items-center justify-between p-3 rounded-lg ${mLabel === 'Bon' ? 'bg-green-50' : mLabel === 'Mauvais' ? 'bg-red-50' : 'bg-amber-50'}`}>
+                <div>
+                  <span class="text-xs font-bold text-neutral-700">{name}</span>
+                  <span class="text-xs text-neutral-500 ml-1">Mobile</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class={`text-sm font-bold ${mLabel === 'Bon' ? 'text-green-700' : mLabel === 'Mauvais' ? 'text-red-700' : 'text-amber-700'}`}>{mVal}</span>
+                  <span class={`text-[10px] px-1.5 py-0.5 rounded font-medium ${mLabel === 'Bon' ? 'bg-green-200 text-green-800' : mLabel === 'Mauvais' ? 'bg-red-200 text-red-800' : 'bg-amber-200 text-amber-800'}`}>{mLabel}</span>
+                </div>
+              </div>
+              <div class={`flex-1 flex items-center justify-between p-3 rounded-lg ${dLabel === 'Bon' ? 'bg-green-50' : dLabel === 'Mauvais' ? 'bg-red-50' : 'bg-amber-50'}`}>
+                <div>
+                  <span class="text-xs font-bold text-neutral-700">{name}</span>
+                  <span class="text-xs text-neutral-500 ml-1">Desktop</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class={`text-sm font-bold ${dLabel === 'Bon' ? 'text-green-700' : dLabel === 'Mauvais' ? 'text-red-700' : 'text-amber-700'}`}>{dVal}</span>
+                  <span class={`text-[10px] px-1.5 py-0.5 rounded font-medium ${dLabel === 'Bon' ? 'bg-green-200 text-green-800' : dLabel === 'Mauvais' ? 'bg-red-200 text-red-800' : 'bg-amber-200 text-amber-800'}`}>{dLabel}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <!-- Securite -->
+    <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-white">
+      <div class="mx-auto max-w-5xl">
+        <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">Securite HTTP — Mozilla Observatory</h2>
+        <div class="flex items-center gap-4 p-4 rounded-xl border border-red-200 bg-red-50 mb-8">
+          <div class="text-3xl font-black text-red-600">{observatory.grade}</div>
+          <div>
+            <p class="text-sm font-semibold text-neutral-900">Votre site manque de protections de securite basiques</p>
+            <p class="text-xs text-neutral-500">{observatory.passed}/{observatory.passed + observatory.failed} tests passes — Score {observatory.score}/100</p>
+          </div>
+        </div>
+        <div class="grid md:grid-cols-2 gap-2">
+          {obsTests.map((t) => (
+            <div class="flex items-center gap-2 py-1.5 px-2">
+              {t.pass ? (
+                <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+              ) : (
+                <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+              )}
+              <span class={`text-sm ${t.pass ? 'text-neutral-700' : 'text-neutral-400'}`}>{t.name}</span>
+              <span class="text-xs text-neutral-400 ml-auto">{t.impact}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+
+    <!-- Schema.org + OG -->
+    <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+      <div class="mx-auto max-w-5xl">
+        <div class="grid md:grid-cols-2 gap-8">
+          <div>
+            <h2 class="text-xl font-bold text-[var(--color-text)] mb-2">Schema.org</h2>
+            <p class="text-sm text-red-600 font-medium mb-4">Aucune donnee structuree detectee</p>
+            <p class="text-xs text-[var(--color-text-muted)] mb-4">Google ne comprend pas que c'est un artisan accordeur a Chartres. Pas de rich snippet dans les resultats de recherche.</p>
+            <div class="space-y-1">
+              {schemaChecks.map((c) => (
+                <div class="flex items-center gap-2 py-1">
+                  <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                  <span class="text-sm text-neutral-400 line-through">{c.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div>
+            <h2 class="text-xl font-bold text-[var(--color-text)] mb-2">Open Graph</h2>
+            <p class="text-sm text-red-600 font-medium mb-4">Aucun tag detecte</p>
+            <p class="text-xs text-[var(--color-text-muted)] mb-4">Les partages sur Facebook, WhatsApp et LinkedIn n'affichent aucun apercu. Perte de visibilite.</p>
+            <div class="space-y-1">
+              {ogChecks.map((c) => (
+                <div class="flex items-center gap-2 py-1">
+                  <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="3"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                  <span class="text-sm text-neutral-400 line-through">{c.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ═══════════════ PANEL 3 : VISITEURS ═══════════════ -->
+  <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+    <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+      <div class="mx-auto max-w-5xl">
+
+        <!-- Stats row -->
+        <div class="flex flex-wrap gap-4 mb-8">
+          <span class="px-4 py-2 rounded-lg bg-emerald-100 text-emerald-800 font-semibold text-sm">{convertis} contactent</span>
+          <span class="px-4 py-2 rounded-lg bg-amber-100 text-amber-800 font-semibold text-sm">{hesitants} hesitent</span>
+          <span class="px-4 py-2 rounded-lg bg-red-100 text-red-800 font-semibold text-sm">{quittent} repartent</span>
+        </div>
+
+        <!-- Convertis -->
+        <h2 class="text-xl font-bold text-emerald-700 mb-4">Ceux qui contactent</h2>
+        <div class="space-y-3 mb-10">
+          {personas.filter(p => p.decision === 'Convertit').map((p) => (
+            <details class={`group border ${decisionBorder(p.decision)} rounded-xl overflow-hidden`}>
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                    <h3 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h3>
+                    <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                  </div>
+                  <p class="text-xs text-neutral-500 mb-2">{p.situation}</p>
+                  <div class="flex flex-wrap items-center gap-1">
+                    {p.parcours.map((page, i) => (
+                      <Fragment>
+                        {i > 0 && <span class="text-neutral-300 text-[10px]">&rsaquo;</span>}
+                        <span class={`text-[10px] px-1.5 py-0.5 rounded ${i === p.parcours.length - 1 ? 'bg-green-600 text-white font-medium' : 'text-[var(--color-accent)] bg-white border border-[var(--color-accent)]/20'}`}>{page}</span>
+                      </Fragment>
+                    ))}
+                  </div>
+                </div>
+                <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </summary>
+              <div class="px-4 pb-4 pt-0 border-t border-green-200 bg-white/50">
+                <div class="grid gap-3 text-xs mt-3">
+                  <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.premierImpression}</p></div>
+                  <div><p class="font-semibold text-neutral-700 mb-1">Question cle</p><p class="text-neutral-600 italic">"{p.questionCle}"</p><p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponseQuestion}</strong> — {p.commentReponse}</p></div>
+                  <div><p class="font-semibold text-neutral-700 mb-1">Impact technique</p><p class="text-neutral-600">{p.impactTechnique}</p></div>
+                  <div class="flex gap-4">
+                    <div class="flex-1"><p class="font-semibold text-green-700 mb-1">Points positifs</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.positifs.map(pt => <li>{pt}</li>)}</ul></div>
+                    <div class="flex-1"><p class="font-semibold text-amber-700 mb-1">Frictions</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map(f => <li>{f}</li>)}</ul></div>
+                  </div>
+                  <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                    <div class="text-center"><span class="block text-lg font-bold text-emerald-600">{p.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                    <div class="text-center"><span class="block text-lg font-bold text-blue-600">{p.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                    <div class="text-center"><span class="block text-lg font-bold text-orange-600">{p.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+                  </div>
+                </div>
+              </div>
+            </details>
+          ))}
+        </div>
+
+        <!-- Hesitants -->
+        <h2 class="text-xl font-bold text-amber-700 mb-4">Ceux qui hesitent</h2>
+        <div class="space-y-3 mb-10">
+          {personas.filter(p => p.decision === 'Hesite').map((p) => (
+            <details class={`group border ${decisionBorder(p.decision)} rounded-xl overflow-hidden`}>
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                    <h3 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h3>
+                    <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                  </div>
+                  <p class="text-xs text-neutral-500 mb-2">{p.situation}</p>
+                  <div class="flex flex-wrap items-center gap-1">
+                    {p.parcours.map((page, i) => (
+                      <Fragment>
+                        {i > 0 && <span class="text-neutral-300 text-[10px]">&rsaquo;</span>}
+                        <span class="text-[10px] text-[var(--color-accent)] bg-white border border-[var(--color-accent)]/20 px-1.5 py-0.5 rounded">{page}</span>
+                      </Fragment>
+                    ))}
+                  </div>
+                </div>
+                <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </summary>
+              <div class="px-4 pb-4 pt-0 border-t border-amber-200 bg-white/50">
+                <div class="grid gap-3 text-xs mt-3">
+                  <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.premierImpression}</p></div>
+                  <div><p class="font-semibold text-neutral-700 mb-1">Question cle</p><p class="text-neutral-600 italic">"{p.questionCle}"</p><p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponseQuestion}</strong> — {p.commentReponse}</p></div>
+                  <div><p class="font-semibold text-neutral-700 mb-1">Impact technique</p><p class="text-neutral-600">{p.impactTechnique}</p></div>
+                  <div class="flex gap-4">
+                    <div class="flex-1"><p class="font-semibold text-green-700 mb-1">Points positifs</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.positifs.map(pt => <li>{pt}</li>)}</ul></div>
+                    <div class="flex-1"><p class="font-semibold text-amber-700 mb-1">Frictions</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map(f => <li>{f}</li>)}</ul></div>
+                  </div>
+                  {p.cequiChangerait && <div class="bg-[var(--color-accent)]/5 rounded-lg px-3 py-2.5"><p class="font-semibold text-neutral-700 mb-1">Ce qui ferait basculer</p><p class="text-neutral-600">{p.cequiChangerait}</p></div>}
+                  <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                    <div class="text-center"><span class="block text-lg font-bold text-amber-600">{p.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                    <div class="text-center"><span class="block text-lg font-bold text-blue-600">{p.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                    <div class="text-center"><span class="block text-lg font-bold text-orange-600">{p.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+                  </div>
+                </div>
+              </div>
+            </details>
+          ))}
+        </div>
+
+        <!-- Quittent -->
+        <h2 class="text-xl font-bold text-red-700 mb-4">Ceux qui repartent</h2>
+        <div class="space-y-3">
+          {personas.filter(p => p.decision === 'Quitte').map((p) => (
+            <details class={`group border ${decisionBorder(p.decision)} rounded-xl overflow-hidden`}>
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                    <h3 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h3>
+                    <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                  </div>
+                  <p class="text-xs text-neutral-500 mb-2">{p.situation}</p>
+                  <p class="text-xs text-red-600">{p.raisonDecision}</p>
+                </div>
+                <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </summary>
+              <div class="px-4 pb-4 pt-0 border-t border-neutral-200 bg-white/50">
+                <div class="grid gap-3 text-xs mt-3">
+                  <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.premierImpression}</p></div>
+                  <div><p class="font-semibold text-neutral-700 mb-1">Question cle</p><p class="text-neutral-600 italic">"{p.questionCle}"</p><p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponseQuestion}</strong> — {p.commentReponse}</p></div>
+                  <div class="flex gap-4">
+                    <div class="flex-1"><p class="font-semibold text-green-700 mb-1">Points positifs</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.positifs.map(pt => <li>{pt}</li>)}</ul></div>
+                    <div class="flex-1"><p class="font-semibold text-red-700 mb-1">Frictions</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map(f => <li>{f}</li>)}</ul></div>
+                  </div>
+                  {p.cequiChangerait && <div class="bg-neutral-50 rounded-lg px-3 py-2.5"><p class="font-semibold text-neutral-700 mb-1">Ce qui aurait pu le retenir</p><p class="text-neutral-600">{p.cequiChangerait}</p></div>}
+                  <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                    <div class="text-center"><span class="block text-lg font-bold text-red-600">{p.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                    <div class="text-center"><span class="block text-lg font-bold text-blue-600">{p.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                    <div class="text-center"><span class="block text-lg font-bold text-orange-600">{p.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+                  </div>
+                </div>
+              </div>
+            </details>
+          ))}
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ PANEL 4 : AMELIORATIONS ═══════════════ -->
+  <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+    <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+      <div class="mx-auto max-w-5xl">
+
+        <!-- Frictions recurrentes -->
+        <h2 class="text-2xl font-bold text-[var(--color-text)] mb-2">Points de friction recurrents</h2>
+        <p class="text-[var(--color-text-muted)] mb-8">Classes par nombre de personas impactes.</p>
+        <div class="space-y-3 mb-16">
+          {frictions.map((f) => (
+            <div class="flex items-center gap-4 rounded-xl border border-[var(--color-border)] bg-white p-4">
+              <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-neutral-100 flex items-center justify-center">
+                <span class="text-lg font-bold text-[var(--color-text)]">{f.count}</span>
+              </div>
+              <div class="flex-1 min-w-0">
+                <p class="font-medium text-[var(--color-text)]">{f.label}</p>
+                <p class="text-sm text-[var(--color-text-muted)]">{f.count}/20 personas</p>
+              </div>
+              <span class={`flex-shrink-0 px-3 py-1 rounded-full text-xs font-semibold ${severityColor(f.severity)}`}>{f.severity}</span>
+            </div>
+          ))}
+        </div>
+
+        <!-- Le plus important -->
+        <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">Le plus important</h2>
+        <div class="space-y-4 mb-12">
+          {ameliorations.haute.map((a) => (
+            <div class="bg-white border-2 border-red-200 rounded-xl p-5 shadow-sm">
+              <h4 class="font-semibold text-neutral-900 mb-1">{a.title}</h4>
+              <p class="text-xs text-[var(--color-text-muted)] mb-2">Impact : {a.impact}</p>
+              <p class="text-sm text-neutral-600 mb-3">{a.detail}</p>
+              <div class="bg-[var(--color-accent)]/5 rounded-lg px-3 py-2.5 flex items-start gap-2">
+                <svg class="w-4 h-4 text-[var(--color-accent)] mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                <p class="text-xs text-neutral-800">{a.action}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <!-- Utile aussi -->
+        <h2 class="text-xl font-bold text-[var(--color-text)] mb-4">Utile aussi</h2>
+        <div class="grid md:grid-cols-2 gap-4 mb-12">
+          {ameliorations.moyenne.map((a) => (
+            <div class="bg-white border border-neutral-200 rounded-xl p-4">
+              <h4 class="font-semibold text-neutral-900 text-sm mb-1">{a.title}</h4>
+              <p class="text-xs text-[var(--color-text-muted)] mb-1">Impact : {a.impact}</p>
+              <p class="text-xs text-neutral-600">{a.detail}</p>
+            </div>
+          ))}
+        </div>
+
+        <!-- A discuter -->
+        <h2 class="text-xl font-bold text-[var(--color-text)] mb-4">A discuter ensemble</h2>
+        <div class="space-y-3">
+          {ameliorations.discuter.map((a) => (
+            <div class="bg-neutral-50 border border-neutral-200 rounded-xl p-4 flex gap-3">
+              <span class="text-lg shrink-0">{a.emoji}</span>
+              <div>
+                <h4 class="font-semibold text-neutral-900 text-sm mb-0.5">{a.title}</h4>
+                <p class="text-xs text-neutral-600">{a.detail}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  </div><!-- /panels -->
+
+  <!-- ═══════════════ METHODOLOGIE ═══════════════ -->
+  <section class="w-full px-6 py-12 md:px-8 md:py-16 bg-white">
+    <div class="mx-auto max-w-3xl">
+      <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">Methodologie</h2>
+      <div class="prose max-w-none text-[var(--color-text)]">
+        <ol class="space-y-2 text-sm leading-relaxed">
+          <li><strong>Scraping complet</strong> des 5 pages du site (accueil, pianos d'occasion, contact, mentions legales, CGV)</li>
+          <li><strong>Audit technique</strong> : Lighthouse (mobile + desktop), Mozilla Observatory, Schema.org, Open Graph, SEO technique</li>
+          <li><strong>Creation de 20 personas diversifies</strong> couvrant 6 canaux d'arrivee, 3 niveaux de maturite, 3 types de devices, 3 personas negatifs et 3 personas IA</li>
+          <li><strong>Simulation individuelle</strong> de chaque visite avec injection des resultats techniques (LCP, CLS, securite)</li>
+          <li><strong>Agregation et analyse croisee</strong> par canal, maturite et device</li>
+          <li><strong>Priorisation des ameliorations</strong> par nombre de personas impactes et severite</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════ CTA ═══════════════ -->
+  <section class="w-full px-6 py-16 md:px-8 md:py-24" style="background-color: #0D0D0D;">
+    <div class="mx-auto max-w-3xl text-center">
+      <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">
+        Pret a transformer ces insights en resultats ?
+      </h2>
+      <p class="text-neutral-300 mb-8 max-w-xl mx-auto">
+        Ce rapport identifie des opportunites concretes. Je peux construire un site qui convertit vraiment vos visiteurs en clients.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="/commander" class="inline-flex items-center gap-2 px-8 py-3.5 bg-[var(--color-accent)] text-white font-semibold rounded-xl hover:opacity-90 transition-all shadow-md">
+          Commander un site
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a href="/contact" class="inline-flex items-center gap-2 px-8 py-3.5 border border-neutral-600 text-neutral-300 font-semibold rounded-xl hover:border-white hover:text-white transition-all">
+          En discuter d'abord
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <style is:inline>
+    #panels { -ms-overflow-style: none; }
+    #panels::-webkit-scrollbar { display: none; }
+  </style>
+
+  <script is:inline>
+    const panels = document.getElementById('panels');
+    const tabs = document.querySelectorAll('.tab-btn');
+    const sections = panels.querySelectorAll('.tab-panel');
+
+    function activateTab(index) {
+      tabs.forEach((b, i) => {
+        if (i === index) {
+          b.classList.remove('text-neutral-500');
+          b.classList.add('text-[var(--color-accent)]', 'bg-[var(--color-accent)]/10');
+        } else {
+          b.classList.remove('text-[var(--color-accent)]', 'bg-[var(--color-accent)]/10');
+          b.classList.add('text-neutral-500');
+        }
+      });
+    }
+
+    tabs.forEach((btn, i) => {
+      btn.addEventListener('click', () => {
+        sections[i].scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+        activateTab(i);
+      });
+    });
+
+    let scrollTimeout;
+    panels.addEventListener('scroll', () => {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        const index = Math.round(panels.scrollLeft / panels.offsetWidth);
+        activateTab(index);
+      }, 50);
+    }, { passive: true });
+  </script>
+
+</BaseLayout>
