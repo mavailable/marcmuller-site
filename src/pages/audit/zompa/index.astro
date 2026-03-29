@@ -1,0 +1,758 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX + Technique — Zompa Design | Marc M';
+const description = 'Rapport confidentiel : simulation de 20 visites personas + audit technique complet de zompa.fr — graphiste escape games.';
+
+// ─── DATA ───
+const personas = [
+  { id: 1, name: 'Mathieu', age: 38, situation: 'Gerant de salle escape game, Lyon', canal: 'Google Search', maturite: 'Comparaison', device: 'Desktop', decision: 'Hesite', exp: 6, conf: 7, clarte: 4, emoji: '🔍', contexte: 'Ouvre une 4e salle "Victorian detective", a eu de mauvaises experiences avec un graphiste generaliste', question: 'Peut-elle livrer 15 documents d\'ambiance victoriens d\'ici 4 mois pour quel budget ?', reponse: 'Partiellement', commentReponse: 'Le delai 2-3 mois est en FAQ (4 mois faisable), mais le budget est totalement absent.', impression: 'Hero fort, specialisation claire. Logos Netflix/WB/DC rassurent un gerant de salle. LCP 3.9s acceptable en desktop.', parcours: [['Accueil', 'Logos Netflix/WB/DC tres rassurants — il reconnait les clients haut de gamme'], ['Portfolio', 'Batman et Stranger Things = meme registre que son projet victorien'], ['Services', 'Aucun prix, frustration — "comment je compare avec les autres prestataires ?"'], ['FAQ', 'Delai 2-3 mois trouve mais enfui'], ['Contact', 'Formulaire sans telephone — frein pour un achat B2B']], impactTech: 'LCP 3.9s desktop acceptable. Securite C- invisible pour Mathieu mais absence de SIRET problematique pour un bon de commande.', positifs: ['Portfolio licences majeures (Netflix, WB, DC)', 'Specialisation escape game ultra-claire', 'Univers graphique coherent et professionnel', 'Delai 2-3 mois rassurant pour son echance a 4 mois'], frictions: ['Aucun prix ni fourchette', 'Pas de telephone pour un achat B2B significatif', 'Pas de verbatims clients malgre des references premium', 'SIRET absent'], raison: 'Portfolio trop convaincant pour partir mais absence de prix empeche la comparaison.', changement: 'Une fourchette tarifaire indicative et un numero de telephone feraient basculer vers la prise de contact.' },
+  { id: 2, name: 'Sophie', age: 29, situation: 'Chargee de projet chez un editeur de jeux (Paris)', canal: 'LinkedIn', maturite: 'Decision', device: 'Mobile', decision: 'Hesite', exp: 4, conf: 6, clarte: 4, emoji: '📚', contexte: 'Veut lancer une gamme de jeux d\'enquete premium avant Noel, urgence apres avoir vu un post LinkedIn sur Stranger Things', question: 'Est-elle disponible dans les 2 prochains mois ?', reponse: 'Non', commentReponse: 'Delai 2-3 mois en FAQ mais disponibilite temps reel totalement absente.', impression: 'Arrive avec forte intention depuis LinkedIn. LCP 9.2s catastrophique sur mobile — CLS 0.197 provoque des decalages pendant le chargement.', parcours: [['Accueil (lent)', 'Logo Hachette visible — signal editeur pertinent'], ['Portfolio', 'Projets editeurs pertinents (Detective Box, Hachette)'], ['Contact', 'Cherche un telephone pour une conversation rapide — trouve uniquement un formulaire']], impactTech: 'LCP 9.2s mobile redibitoire — en deplacement entre deux reunions, une DA ne patiente pas 9 secondes. CLS 0.197 visible.', positifs: ['Hachette directement dans les logos', 'Specialisation documents d\'enquete — exactement son besoin', 'Reponse promis en 24h'], frictions: ['Chargement mobile catastrophique (9.2s LCP)', 'Aucune info sur la disponibilite actuelle', 'Pas de telephone pour son urgence', 'CLS mobile instabilise la navigation'], raison: 'Trop de frictions au moment de passer a l\'action. La lenteur mobile peut provoquer l\'abandon.', changement: 'Numero de telephone visible + badge "Disponible pour nouveaux projets — depart dans X semaines".' },
+  { id: 3, name: 'Romain', age: 25, situation: 'Game designer freelance, Bordeaux', canal: 'Instagram', maturite: 'Decouverte', device: 'Mobile', decision: 'Quitte', exp: 3, conf: 5, clarte: 2, emoji: '🎲', contexte: 'Cree son 1er jeu d\'enquete en boite, budget < 2 000 EUR, ebloui par les visuels Batman sur Instagram', question: 'Combien ca coute pour 5-6 documents ?', reponse: 'Non', commentReponse: 'Absolument aucune information tarifaire sur le site.', impression: 'Coherence Instagram-site forte. LCP 9.2s mobile : attente. Portfolio impressionnant mais references Netflix/WB l\'intimident — "c\'est pas pour moi."', parcours: [['Portfolio', 'Qualite convaincante mais grosses references intimidantes'], ['Services', 'Aucun prix, frustration immmediate'], ['FAQ', 'Delais trouves mais pas de tarifs'], ['Quitte', 'Sans prix, impossible d\'evaluer si c\'est dans son budget']], impactTech: 'LCP 9.2s mobile depuis Instagram — tolérance a l\'attente tres faible sur mobile. CLS visible.', positifs: ['Coherence visuelle forte avec Instagram', 'Portfolio montre exactement les documents qu\'il cherche', 'Specialisation rassurante'], frictions: ['Aucun prix — raison principale de depart', 'Chargement lent depuis Instagram', 'References ultra-premium intimidantes pour un petit projet', 'Formulaire comme seul canal exploratoire'], raison: 'Absence totale de prix + references haut de gamme = part en supposant "c\'est hors de mon budget".', changement: 'Une ligne "documents d\'ambiance a partir de X EUR la piece" ou FAQ "vous travaillez avec des petits projets ?".' },
+  { id: 4, name: 'Claire', age: 44, situation: 'Directrice agence evenementielle team-building, Nantes', canal: 'Bouche-a-oreille', maturite: 'Decision', device: 'Mobile', decision: 'Hesite', exp: 5, conf: 6, clarte: 5, emoji: '🎪', contexte: 'Escape game mobile barnum pour 200 personnes en septembre, recommandee par un confrere APEC', question: 'Elle a de l\'experience avec des barnums pour team-building entreprise ?', reponse: 'Partiellement', commentReponse: 'Barnums mentionnes dans les services, Koezio dans les logos — mais aucun cas client team-building corporate visible.', impression: 'Recommandation chaude compensant le LCP 9.2s mobile. Cherche "barnum team-building" — non visible en accueil.', parcours: [['Accueil', 'Koezio dans les logos — pertinent mais pas de reference corporate'], ['Services (Decors imprimes)', 'Barnums mentionnes — OK'], ['Portfolio', 'Pas de cas client team-building corporate'], ['Contact', 'Pas de telephone — frein decisif pour une directrice d\'agence']], impactTech: 'LCP 9.2s penible meme avec forte motivation. SIRET absent = probleme administratif pour un bon de commande agence.', positifs: ['Koezio dans les references', 'Barnums bien mentionnes dans les services', 'Recommandation compensant les lacunes'], frictions: ['Aucun cas client team-building/corporate visible', 'Pas de telephone pour valider rapidement', 'SIRET absent — obstacle B2B', 'Delai septembre non evalue'], raison: 'La recommandation est suffisamment forte pour ne pas partir, mais les lacunes ralentissent la decision.', changement: 'Cas client Koezio developpe avec photos barnum + SIRET en footer + numero de telephone.' },
+  { id: 5, name: 'Nicolas', age: 52, situation: 'Directeur creatif agence com, Paris', canal: 'Reference directe', maturite: 'Decision', device: 'Desktop', decision: 'Convertit', exp: 7, conf: 8, clarte: 6, emoji: '🎬', contexte: 'A lu un article sur Batman Escape Paris, cherche une graphiste pour un projet sous licence entertainment', question: 'A-t-elle l\'experience pour des contraintes de charte de licence internationale ?', reponse: 'Partiellement', commentReponse: 'Batman (WB/DC) et Stranger Things (Netflix) prouvent l\'experience mais le site ne verbalise jamais ce savoir-faire.', impression: 'Desktop LCP 3.9s acceptable. WB/DC, Netflix, Ubisoft en page d\'accueil — parfait pour un directeur creatif. Premiere impression tres positive.', parcours: [['Accueil', 'Logos licences majeures — exactement ce qu\'il cherchait'], ['Portfolio Batman + Stranger Things', 'Passe du temps — qualite d\'execution convaincante'], ['A propos', 'Cherche "process licence/NDA" — ne trouve pas explicitement'], ['Contact', 'Formulaire OK pour un profil asynchrone']], impactTech: 'LCP desktop acceptable. Securite C- non visible en navigation normale. SIRET absent peut poser probleme pour le contrat agence.', positifs: ['References licences majeures exactement comme attendu', 'Univers graphique desktop coherent et premium', 'Specialisation revendiquee', 'Batman + Stranger Things impliquent des processus licence deja maitrise'], frictions: ['Page a-propos ne verbalise pas le process "licence internationale"', 'Pas de verbatims clients de licencies (WB, Netflix)', 'SIRET absent — probleme pour le contrat', 'Aucune mention de NDA/confidentialite'], raison: 'References Batman et Stranger Things sont des preuves suffisantes pour un profil qui lit entre les lignes.', changement: 'Un paragraphe "gestion de licences" dans a-propos + case studies avec contexte contractuel.' },
+  { id: 6, name: 'Anais', age: 31, situation: 'Graphiste generaliste freelance, Toulouse', canal: 'Google Search', maturite: 'Comparaison', device: 'Mobile', decision: 'Quitte', exp: 6, conf: 7, clarte: 5, emoji: '🖌️', contexte: 'Cherche a se specialiser en escape game — visite de veille concurrentielle', question: 'Comment elle se positionne et quels sont ses tarifs ?', reponse: 'Partiellement', commentReponse: 'Positionnement limpide, tarifs totalement absents.', impression: 'Graphiste elle-meme, analyse le positionnement avec un oeil professionnel. Site lent sur mobile.', parcours: [['Services', 'Note la segmentation 5 offres — utile pour sa propre reflexion'], ['Portfolio', 'Impressed par Netflix/WB/Hachette — benchmark de marche'], ['FAQ', 'Cherche tarifs — "forfait personnalise" = mur'], ['Quitte', 'Bookmarke le site comme reference concurrentielle']], impactTech: 'LCP 9.2s mobile — elle note "site lourd" comme indicateur du niveau technique.', positifs: ['Positionnement tres clair et assume', 'Clients grands comptes = benchmark precieux', 'Identite visuelle forte et analysable'], frictions: ['Zero tarif impossible de se situer', 'Pas de temoignages sur la relation client', 'Absence de blog ou process detail'], raison: 'Repart avec portfolio comme reference mais sans info tarifaire. Visite d\'etude non commerciale.', changement: 'N/A — persona non-cliente' },
+  { id: 7, name: 'Tom', age: 22, situation: 'Etudiant game design, Strasbourg', canal: 'Instagram', maturite: 'Decouverte', device: 'Mobile', decision: 'Quitte', exp: 4, conf: 7, clarte: 5, emoji: '🎓', contexte: 'Fan de @zompa_design depuis 6 mois, clique sur le lien du profil', question: 'Est-ce qu\'elle repond aux messages de petits crateurs ?', reponse: 'Non', commentReponse: 'Aucun signal d\'ouverture aux petits createurs/etudiants. Formulaire trop professionnel.', impression: 'LCP 9.2s mobile — commence a scroller Instagram dans un autre onglet pendant le chargement.', parcours: [['Portfolio', 'Plonge dedans pendant de longues minutes — visite de fan'], ['A propos', 'Cherche l\'histoire personnelle de Laurie'], ['Retourne sur Instagram', 'Pas de porte d\'entree adaptee a son profil']], impactTech: 'LCP 9.2s + CLS 0.197 — site qui "saute" pendant le chargement, impression de site pas fini.', positifs: ['Esthetique coherente avec Instagram', 'Portfolio inspirant pour ses propres projets', 'Positionement unique et distinctif'], frictions: ['Aucun pont entre le site et Instagram', 'Formulaire trop formel pour une demarche fan', 'Pas de contenu "behind the scenes"', 'Aucune raison de revenir ou de marquer le site'], raison: 'Repart impressionne sans avoir trouve de porte d\'entree adaptee. Ira sur Instagram pour un DM.', changement: 'Lien Instagram prooeminent + blog actif avec coulisses creatives.' },
+  { id: 8, name: 'Isabelle', age: 46, situation: 'Responsable marketing grand parc de loisirs (50+ salles), Bruxelles', canal: 'LinkedIn', maturite: 'Comparaison', device: 'Desktop', decision: 'Hesite', exp: 6, conf: 6, clarte: 4, emoji: '🏢', contexte: 'Son agence graphique habituelle a ferme — urgence de trouver un remplacant pour Q3', question: 'Peut-elle gerer 3 salles en parallele sur l\'annee ?', reponse: 'Non', commentReponse: 'Aucune info sur la capacite de production, le rythme de travail, les partenaires.', impression: 'Desktop LCP 3.9s acceptable. Koezio dans le portfolio — signal grand parc pertinent.', parcours: [['Accueil', 'Grands clients rassurants, specialisation OK'], ['Portfolio', 'Koezio confirme — mais pas d\'info sur la volumetrie'], ['A propos', 'Cherche "equipe ? sous-traitants ?" — aucune reponse'], ['FAQ', 'Delai 2-3 mois x 3 salles = planning problematique'], ['Contact', 'Soumet formulaire avec demande d\'appel telephonique']], impactTech: 'LCP desktop acceptable. CLS 0.143 provoque micro-decalages. Securite C- risque si elle soumet des briefs confidentiels.', positifs: ['Koezio (parc de loisirs) — directement pertinent', 'Services couvrent ses 3 types de besoins', 'Identite visuelle professionnelle'], frictions: ['Aucune indication de capacite production', 'Pas de temoignages verbatims clients', 'Fourchettes tarifaires absentes', 'Formulaire sans option "partenariat long terme"'], raison: 'Tres interessee mais bloquee sur la question capacite/volume. Contacte mais avec d\'autres prestataires en parallele.', changement: 'Page a-propos mentionnant le reseau de partenaires/sous-traitants + Calendly pour un appel.' },
+  { id: 9, name: 'Julien', age: 34, situation: 'Co-fondateur salle escape game, Lille', canal: 'Bouche-a-oreille', maturite: 'Decision', device: 'Mobile', decision: 'Convertit', exp: 6, conf: 8, clarte: 5, emoji: '🕵️', contexte: 'Renovation salle "polar 1930", ami a deja travaille avec Zompa — recommandation chaude', question: 'Le style correspond-il a mon theme polar annees 30 ?', reponse: 'Partiellement', commentReponse: 'Batman (Art Deco) approche le registre mais aucun projet "polar 1930" explicite — Julien doit inferer.', impression: 'Recommandation de confiance — le site doit confirmer, pas convaincre. LCP 9.2s teste sa patience mais il persiste.', parcours: [['Accueil', 'Validation immediate — "l\'ami avait raison, ca a de la gueule"'], ['Portfolio', 'Batman (annees 30 Art Deco) — le plus proche de son theme'], ['Services', '"Documents de jeu" = exactement son besoin'], ['Contact', 'Remplit le formulaire avec le brief polar 1930']], impactTech: 'LCP 9.2s penible pour quelqu\'un d\'enthousiaste. CLS risque de faire "rater" un visuel pertinent.', positifs: ['Recommandation neutralise 80% des objections', 'Polyvalence stylistique (Batman → proche polar)', 'Proximite geographique Roubaix/Lille — confiance supplementaire'], frictions: ['Portfolio non filtrable par style/epoque', 'Pas de prix — doit soumettre formulaire sans budget indicatif', 'Pas de telephone pour les personnes en phase de decision'], raison: 'Recommandation + portfolio + proximite geographique = contact envoye.', changement: 'Filtres portfolio par style/univers + fourchette tarifaire indicative.' },
+  { id: 10, name: 'Marie', age: 39, situation: 'Directrice ecole primaire, Nantes', canal: 'Google Search', maturite: 'Decouverte', device: 'Tablette', decision: 'Quitte', exp: 4, conf: 5, clarte: 3, emoji: '🏫', contexte: 'Projet escape game pedagogique, budget APE 500 EUR', question: 'Elle travaille avec des ecoles et quel est le prix pour un petit projet ?', reponse: 'Non', commentReponse: 'Aucune mention du secteur educatif, des associations, ni des petits budgets.', impression: 'L\'univers sombre et entertainment la frappe immediatement. Premier doute : "est-ce que c\'est pour moi ?"', parcours: [['Accueil', 'Univers "grandeur et complexite" — se demande si ses 500 EUR sont la'], ['Services', 'Pas de mention "projet scolaire" ou "budget serre"'], ['Portfolio', 'Netflix et Hachette = hors de sa categorie'], ['FAQ', 'Pas de reponse sur les petits budgets'], ['Quitte', 'Suppose que c\'est trop cher, retourne vers une plateforme freelance']], impactTech: 'Sur tablette, chargement intermediate. La lenteur amplifie ses doutes.', positifs: ['Portfolio montre les "faux journaux" qu\'elle imagine pour son escape'], frictions: ['Positionnement grand compte = effet d\'exclusion fort', 'Aucune fourchette de prix', 'Formulaire pro intimide'], raison: 'Aucun signal qui lui dit qu\'elle est la bienvenue avec son profil et son budget.', changement: 'FAQ "vous travaillez aussi avec les ecoles et associations ?" + mention de la possibilite de petits projets.' },
+  { id: 11, name: 'Alexandre', age: 41, situation: 'Producteur executif societe de production audiovisuelle, Paris', canal: 'Reference directe', maturite: 'Comparaison', device: 'Desktop', decision: 'Hesite', exp: 6, conf: 6, clarte: 4, emoji: '🎥', contexte: 'Developpement d\'une experience immersive pour une serie Netflix France — a vu le projet Stranger Things dans une newsletter', question: 'Elle a travaille sous NDA pour Netflix — elle peut faire pareil pour nous ?', reponse: 'Non', commentReponse: 'NDA/confidentialite jamais mentionnes meme si implies par le projet Stranger Things.', impression: 'Desktop acceptable. Portfolio Stranger Things convaincant visuellement. Cherche le process licence/NDA et ne le trouve pas.', parcours: [['Accueil', 'Logos Netflix, WB, Ubisoft — satisfaisant'], ['Portfolio Stranger Things', 'Visuels de qualite — mais pas de contexte contractuel'], ['Services', 'Rien sur les licences, la confidentialite, la gestion de droits'], ['A propos', 'Cherche experience ayants droit — contenu oriente creatif, pas juridique']], impactTech: 'Desktop acceptable. Site "solo" peut sembler sous-dimensionne pour un projet de licence de serie.', positifs: ['Projet Stranger Things = reference Netflix directe et rassurante', 'Qualite d\'execution convaincante', 'Identite graphique premium coherente'], frictions: ['NDA/confidentialite jamais mentionnes', 'Pas de description du process licence', 'Pas de temoignages de responsables licences (Netflix, WB)', 'Impression "trop solo" pour un projet de serie'], raison: 'Visuels convainquants mais question centrale non repondue. Continue d\'evaluer d\'autres prestataires.', changement: 'Section "gestion de licences" dans services/a-propos + mention NDA + case study Batman avec contexte WB.' },
+  { id: 12, name: 'Celine', age: 36, situation: 'Gerante salle escape game, Strasbourg', canal: 'Google Search', maturite: 'Comparaison', device: 'Mobile', decision: 'Hesite', exp: 3, conf: 5, clarte: 3, emoji: '🚪', contexte: 'Cree sa 2e salle, veut de vrais props immersifs — sa 1ere salle avait des props achetes en ligne', question: 'Quel budget pour refaire les decors d\'une salle de 80 m² ?', reponse: 'Non', commentReponse: 'Aucune information tarifaire nulle part.', impression: 'LCP 9.2s mobile — dans sa salle, entre deux groupes. Quand ca s\'affiche, le visuel est beau mais references Netflix/WB perccues comme "hors budget".', parcours: [['Accueil (lent)', 'Scroll rapide, pertinent mais aucun signal de prix'], ['Services', 'Categories bien decrites mais zero tarif'], ['Portfolio', 'Qualite evidente mais Netflix/WB intimidants — "c\'est pas mon budget"'], ['Contact', 'Reticente a remplir un formulaire sans budget indicatif']], impactTech: 'LCP 9.2s dans un contexte d\'usage debout entre deux groupes = abandon tres probable.', positifs: ['Services correspondent exactement a son besoin', 'Specialisation escape game claire et rassurante'], frictions: ['LCP 9.2s en usage mobile en salle — abandon avant le contenu', 'Aucun prix', 'References luxe percues comme excluantes', 'Formulaire seul sans telephone'], raison: 'Lenteur + absence de prix + effet "haut de gamme" excluant. Retourne sur Google pour trouver un concurrent avec des tarifs.', changement: 'Performance mobile < 3s + fourchette tarifaire par type de projet.' },
+  { id: 13, name: 'Pierre', age: 27, situation: 'Community manager marque jeux de societe, Lyon', canal: 'LinkedIn', maturite: 'Decouverte', device: 'Mobile', decision: 'Quitte', exp: 4, conf: 6, clarte: 5, emoji: '📱', contexte: 'Veille creative, pas de projet immmediat — liked un article LinkedIn sur l\'immersion visuelle', question: 'N/A — visite de curiosite', reponse: 'N/A', commentReponse: 'Pas de question specifique — visite de veille', impression: 'LCP 9.2s mobile depuis LinkedIn en pause dejeuner — attend, commence a scroller autre chose.', parcours: [['Accueil', 'Visuels frappants quand ca se charge enfin'], ['Portfolio', 'Ouvre 1-2 projets — inspection visuelle en mode scroll'], ['Retourne LinkedIn', 'Aucun mecanisme de retention : pas de newsletter, pas de CTA decouverte']], impactTech: 'LCP 9.2s redibitoire pour un visiteur sans intention d\'achat sur mobile.', positifs: ['Identite visuelle memorisable si la page se charge', 'References impressionnantes meme pour un CM en veille'], frictions: ['LCP 9.2s — abandon probable avant la premiere impression', 'Aucun mecanisme de retention (newsletter, Instagram en avant)', 'Pas de contenu "behind the scenes" pour un CM'], raison: 'Repart sans memoriser l\'URL. Peut liker le post LinkedIn mais ne reviendra pas.', changement: 'Lien Instagram prooeminent + performance mobile correcte = retention possible.' },
+  { id: 14, name: 'Laura', age: 32, situation: 'Graphiste & game designer, Bordeaux', canal: 'Instagram', maturite: 'Comparaison', device: 'Mobile', decision: 'Hesite', exp: 5, conf: 6, clarte: 4, emoji: '✏️', contexte: 'Co-cree un jeu d\'enquete Kickstarter pour juin 2026, cherche a deleguer l\'illustration', question: 'Elle peut travailler avec une autre creative sur un projet Kickstarter ?', reponse: 'Non', commentReponse: 'Site 100% centre sur la relation client-prestataire, aucune mention de co-creation entre pairs.', impression: 'LCP 9.2s patient car venue d\'Instagram en mode exploration. Connexion esthetique immediate.', parcours: [['Accueil', 'Univers visuel dans son registre — connexion immediate'], ['A propos', 'Cherche "collaboration, co-creation, travail avec d\'autres creatifs" — rien'], ['Portfolio Hachette', 'Proche de son projet Kickstarter'], ['Contact', 'Hesite — peur d\'etre mal categorisee en envoyant un formulaire pro']], impactTech: 'LCP 9.2s patient (venue d\'Instagram, mode exploration). CLS peu important car elle inspecte visuellement.', positifs: ['Univers esthetique dans son registre', 'Portfolio Hachette (escape game book) proche de son projet', 'Specialisation jeu et narration graphique'], frictions: ['Aucune mention de collaboration entre creatifs — demande atypique', 'Budget Kickstarter serre + pas de fourchette basse', 'Formulaire pro intimidant pour une demarche pair-a-pair'], raison: 'Adéquation creative forte mais cas d\'usage non valide. Ira probablement sur Instagram pour un DM.', changement: 'FAQ "travaillez-vous avec d\'autres creatifs ?" + mention de l\'ouverture aux collaborations.' },
+  { id: 15, name: 'Bruno', age: 49, situation: 'Gerant franchise 5 salles escape game, Paris', canal: 'Bouche-a-oreille', maturite: 'Decision', device: 'Desktop', decision: 'Hesite', exp: 5, conf: 5, clarte: 3, emoji: '🏆', contexte: 'Refonte graphique complete de 5 salles sur 18 mois, gros budget, recommande lors d\'un salon pro', question: 'Peut-elle gerer 5 salles sur 18 mois seule, ou a-t-elle des partenaires ?', reponse: 'Non', commentReponse: 'Aucune info sur la capacite de production. Tous les signaux disent "solo" sans rassurer sur la capacite.', impression: 'Mode validation, pas decouverte. Desktop LCP 3.9s OK. Cherche un signal de capacite industrielle des les 5 premieres secondes.', parcours: [['Accueil', 'Logos clients impressionnants — cherche signe d\'equipe/capacite, ne trouve pas'], ['A propos', 'Presentation de Laurie seule — aucun reseau mentionne'], ['Portfolio', 'Batman 3000 m², Netflix — "comment une seule personne gere ca ?"'], ['FAQ', '2-3 mois x 5 salles = 10-15 mois en serie — problematique'], ['Contact', 'Pas de telephone — frein pour un contrat 18 mois']], impactTech: 'Desktop correct. Absence de Calendly ou telephone = signal solo-entrepreneur peu compatible avec un contrat 18 mois.', positifs: ['Portfolio haute qualite incontestable (Batman 3000 m², Netflix)', 'Specialisation parfaitement alignee', 'Recommandation predispose favorablement'], frictions: ['Zero info sur capacite de production — point critique', 'Pas de mention de partenaires/reseau', 'Pas de telephone ni Calendly pour un projet de cette ampleur', 'Pas de page "programme multi-sites"'], raison: 'Qualite validee, capacite pas. Rappellera la personne qui l\'a recommande pour obtenir les infos que le site ne donne pas.', changement: 'Section "grands projets" avec mention reseau/partenaires + telephone + Calendly.' },
+  { id: 16, name: 'Emma', age: 23, situation: 'Micro-entrepreneuse, Montpellier', canal: 'Google Search', maturite: 'Decouverte', device: 'Mobile', decision: 'Quitte', exp: 4, conf: 6, clarte: 7, emoji: '📲', contexte: 'Monte un escape game numerique (app mobile), budget 1 500 EUR', question: 'Combien pour illustrer une app de jeu ?', reponse: 'Non', commentReponse: 'Service "Design web immersif" concerne les faux sites escape game, pas les apps mobiles. Mauvaise cible.', impression: 'LCP 9.2s mobile. Le site filtre efficacement — Emma comprend vite que ce n\'est pas pour elle.', parcours: [['Accueil', '"Graphiste escape games" — restrictif'], ['Services', '"Design web immersif" : espoir puis confusion (faux sites, pas apps)'], ['Portfolio', 'Aucune interface app — confirme la mauvaise adresse']], impactTech: 'LCP 9.2s mobile pour une visite qui dure moins de 2 minutes.', positifs: ['Positionnement clair — elle sait rapidement que c\'est pas pour elle (filtre naturel)'], frictions: ['Aucune illustration d\'app/interface dans le portfolio', '"Design web immersif" mal nomme pour sa recherche', 'LCP lent pour une visite courte'], raison: 'Mauvaise cible — le site remplit son role de filtre. Elle cherche un graphiste app/UI.', changement: 'N/A — persona hors cible. Filtre naturel efficace.' },
+  { id: 17, name: 'Karim', age: 45, situation: 'Responsable developpement business enseigne loisirs, Bordeaux', canal: 'Reference directe', maturite: 'Comparaison', device: 'Desktop', decision: 'Hesite', exp: 6, conf: 6, clarte: 5, emoji: '📊', contexte: 'Explore diversification vers l\'escape game pour son comite de direction — projet hypothetique', question: 'Zompa Design peut gerer un projet corporate de grande envergure ?', reponse: 'Partiellement', commentReponse: 'Ubisoft et Hachette suggerent la capacite grands groupes mais aucune section corporate/grands comptes.', impression: 'Desktop LCP 3.9s acceptable. Arrive depuis la presse. Portfolio impressionnant. Cherche signal de scalabilite.', parcours: [['Accueil', 'Logos grands clients — encourageant'], ['Portfolio', 'Ubisoft, Hachette — grands groupes identifies'], ['Services', 'Pas de section "grands comptes" ou "corporate"'], ['A propos', 'Freelance seule — inquietude sur la scalabilite']], impactTech: 'Desktop acceptable. Absence de telephone agacant pour un profil qui veut "tater le terrain" par un appel rapide.', positifs: ['References Ubisoft + Hachette = grands groupes credibles', 'Design professionnel et premium', 'Blog potentiellement pertinent si articles grands projets'], frictions: ['Aucune page "grands comptes"/"corporate"', 'Pas de telephone pour un contact exploratoire', 'Freelance = doute sur la scalabilite', 'Projet encore hypothetique — formulaire trop engagement'], raison: 'Met le site en favori. Reviendra si le projet se confirme.', changement: 'Section "projets d\'envergure" ou "je collabore avec [partenaires]" + telephone + Calendly.' },
+  { id: 18, name: 'Stephanie', age: 37, situation: 'Chargee de communication Hachette Games, Paris', canal: 'LinkedIn', maturite: 'Decision', device: 'Tablette', decision: 'Convertit', exp: 7, conf: 8, clarte: 8, emoji: '📖', contexte: 'Cliente existante (livre Leonaroo de Vinci), veut re-engager pour nouveau titre escape game 2027', question: 'Le site est-il a jour et representatif du niveau actuel ?', reponse: 'Partiellement', commentReponse: 'Visuellement coherent mais dates des projets peu visibles — ne peut pas evaluer la fraicheur.', impression: 'Cliente existante — visite de confirmation, pas de decouverte. Se sent "chez Laurie" immediatement.', parcours: [['Portfolio', 'Cherche les projets recents — les projets 2024-2025 valident la dynamique'], ['Services', 'Verifie que "design web immersif" est toujours propose'], ['Blog', 'Article dec 2025 rassure sur l\'activite'], ['Contact', 'Reprend contact via email direct (a deja l\'adresse)']], impactTech: 'Tablette : CLS 0.197 provoque des sauts de mise en page au chargement. Securite C- risque si elle partage l\'URL en interne (alerte IT).', positifs: ['Univers immediatement reconnaissable — se sent "chez Laurie"', 'Projets 2024-2025 confirment la dynamique', 'Blog actif (dec 2025) rassure', 'Services coherents avec son nouveau brief'], frictions: ['Dates des projets peu visibles — fraicheur du portfolio non evaluable', 'Pas de temoignages verbatims — utile pour son dossier interne', 'Securite C- potentiellement bloquante si lien partage en IT Hachette'], raison: 'Cliente existante avec projet concret — le site ne doit pas devoir convaincre mais juste ne pas decevoir. Reussit.', changement: 'Dater les projets portfolio + citation Hachette en testimonial.' },
+  { id: 19, name: 'Paul', age: 17, situation: 'Lyceen, Clermont-Ferrand', canal: 'Google Search', maturite: 'Decouverte', device: 'Mobile', decision: 'Quitte', exp: 6, conf: 8, clarte: 5, emoji: '⭐', contexte: 'Passione d\'escape games, curiosite sur le metier, aucun budget', question: 'Comment elle a commence et c\'est quoi le metier ?', reponse: 'Partiellement', commentReponse: 'Page a-propos parle du parcours mais orientee clients, pas pour les curieux/aspirants.', impression: 'LCP 9.2s mobile — voit les visuels arriver lentement. A 17 ans, 9 secondes c\'est une eternite depuis TikTok.', parcours: [['Portfolio', 'Plonge dedans — Netflix, Batman = paradis pour un fan'], ['A propos', 'Cherche l\'histoire personnelle de Laurie — trouve des bribes'], ['Blog', 'Si un article sur le process creatif, il le lit. Sinon, repart.']], impactTech: 'LCP 9.2s + CLS sur mobile — tolerance ultra-faible pour un digital native TikTok.', positifs: ['Portfolio reveur', 'Identite visuelle du site inspire la vocation', 'References Netflix et Batman relient au monde qu\'il connait et adore'], frictions: ['LCP 9.2s — perd patience avant les meilleurs projets', 'A-propos ecrit pour des clients B2B, pas pour des curieux', 'Pas de lien Instagram prooeminent — c\'est la ou il voudrait "suivre"', 'Formulaire comme seule interaction — il ne va pas "demander un devis"'], raison: 'Non-client — le site n\'est pas fait pour lui. Ambassadeur potentiel non capte.', changement: 'Lien Instagram prooeminent = Paul devient follower et prescripteur organique. Cout zero.' },
+  { id: 20, name: 'Nadege', age: 42, situation: 'Directrice artistique agence pub, Lille', canal: 'Reference directe', maturite: 'Decision', device: 'Mobile', decision: 'Hesite', exp: 5, conf: 7, clarte: 4, emoji: '🛍️', contexte: 'Pop-up store retail luxe en decembre 2026, a rencontre Laurie en conference sur l\'immersion visuelle', question: 'Elle peut adapter son style escape game a un contexte retail premium ?', reponse: 'Non', commentReponse: 'Site entierement escape game — aucun exemple de style retail/luxe/festif.', impression: 'Arrive de la conference avec bonne impression de Laurie. LCP 9.2s mobile le soir — signal negatif pour une DA exigeante.', parcours: [['Portfolio', 'Cherche "retail, luxe, activation marque" — ne trouve que escape game'], ['Services', '"Decors imprimes" et "accessoires" proches de son besoin mais contexte 100% escape'], ['Contact', 'Prefere un LinkedIn direct qu\'un formulaire pour une relation deja amorcee']], impactTech: 'LCP 9.2s mobile le soir — DA habituee aux sites agences premium, la lenteur est un signal negatif de coherence.', positifs: ['Relation personnelle con conference compense largement les lacunes du site', 'Services (decors imprimes, accessoires) techniquement proches de son besoin', 'Univers creatif fort et singulier'], frictions: ['Aucun exemple retail/luxe/premium — doit extrapoler la polyvalence stylistique', 'Chargement lent pour une DA exigeante', 'Pas de telephone pour une relation deja initiee en face-a-face', 'Aucun temoignage de clients hors escape game'], raison: 'Ira sur LinkedIn direct. La conversion depend entierement de la reponse de Laurie, pas du site.', changement: 'Section "je m\'adapte a vos univers" avec 2-3 exemples hors escape game + telephone.' },
+];
+
+const avgExp = (personas.reduce((s, p) => s + p.exp, 0) / personas.length).toFixed(1);
+const avgConf = (personas.reduce((s, p) => s + p.conf, 0) / personas.length).toFixed(1);
+const avgClarte = (personas.reduce((s, p) => s + p.clarte, 0) / personas.length).toFixed(1);
+const convertis = personas.filter(p => p.decision === 'Convertit').length;
+const hesitants = personas.filter(p => p.decision === 'Hesite').length;
+const quittent = personas.filter(p => p.decision === 'Quitte').length;
+const tauxConversion = Math.round((convertis / personas.length) * 100);
+
+const canalStats = [
+  { canal: 'Bouche-a-oreille', total: 3, conv: 1, hesitant: 2, quitte: 0 },
+  { canal: 'Reference directe', total: 4, conv: 1, hesitant: 3, quitte: 0 },
+  { canal: 'LinkedIn', total: 4, conv: 1, hesitant: 2, quitte: 1 },
+  { canal: 'Instagram', total: 3, conv: 0, hesitant: 1, quitte: 2 },
+  { canal: 'Google Search', total: 6, conv: 0, hesitant: 2, quitte: 4 },
+];
+
+const maturiteStats = [
+  { level: 'Decouverte', total: 6, conv: 0, pct: '0%' },
+  { level: 'Comparaison', total: 7, conv: 0, pct: '0%' },
+  { level: 'Decision', total: 7, conv: 3, pct: '43%' },
+];
+
+const deviceStats = [
+  { device: 'Mobile', total: 12, conv: 1, pct: '8%' },
+  { device: 'Desktop', total: 6, conv: 2, pct: '33%' },
+  { device: 'Tablette', total: 2, conv: 0, pct: '0%' },
+];
+
+const frictions = [
+  { label: 'Performance mobile catastrophique (LCP 9.2s)', count: 9, severity: 'critique' },
+  { label: 'Aucun prix ni fourchette tarifaire', count: 10, severity: 'critique' },
+  { label: 'Pas de telephone ni Calendly', count: 7, severity: 'haute' },
+  { label: 'Pas de temoignages verbatims clients', count: 6, severity: 'haute' },
+  { label: 'Aucune info sur la disponibilite actuelle', count: 5, severity: 'haute' },
+  { label: 'Capacite de production inconnue (solo ?)', count: 4, severity: 'haute' },
+  { label: 'Specialisation escape game percue comme exclusive', count: 3, severity: 'moyenne' },
+  { label: 'Sitemap.xml absent (404)', count: 2, severity: 'moyenne' },
+  { label: 'Schema.org totalement absent', count: 2, severity: 'moyenne' },
+  { label: 'SIRET non visible', count: 3, severity: 'moyenne' },
+];
+
+const ameliorations = {
+  haute: [
+    { title: 'Optimiser les performances mobiles', impact: '9/20 personas', detail: 'LCP 9.2s mobile = abandon avant le premier contenu. Objectif : < 4s. Actions : desactiver Elfsight si inutilise (-2 scripts lourds), lazy-load Senja.io, preload hero image, supprimer WebFont.js (utiliser font-display: swap en CSS).' },
+    { title: 'Ajouter une fourchette tarifaire indicative', impact: '10/20 personas', detail: '"Les projets Zompa Design demarrent a partir de X EUR" ou FAQ "Quel budget prevoir ?". Meme une fourchette vague qualifie les prospects, filtre naturellement les hors-budget et accelere la decision des clients serieux.' },
+    { title: 'Afficher un numero de telephone ou lien Calendly', impact: '7/20 personas', detail: 'Les grands comptes (Bruno, Isabelle) et les profils urgents (Sophie) ne passent pas par un formulaire pour un achat significatif. Un lien Calendly (prise de rdv 15 min) est une alternative professionnelle si Laurie prefer evite les appels non qualifies.' },
+    { title: 'Ajouter des temoignages verbatims clients', impact: '6/20 personas', detail: 'Les logos "ils m\'ont fait confiance" ne suffisent pas pour les decideurs B2B. Cible : 3-5 citations de Koezio, Hachette ou Platonia Games avec nom/titre du contact.' },
+  ],
+  moyenne: [
+    { title: 'Indiquer la disponibilite actuelle', impact: '5/20 personas', detail: 'Badge dans le hero ou hero FAQ : "Disponible pour nouveaux projets — demarrage dans X semaines". Coute zero et deboque les indecis en phase Decision.' },
+    { title: 'Clarifier la capacite de production', impact: '4/20 personas', detail: 'Page A-propos : "Je collabore avec un reseau de graphistes, illustrateurs et imprimeurs pour les projets de grande envergure". Leve les doutes des grands comptes (Bruno, Isabelle) qui voient "freelance seule".' },
+    { title: 'Activer le sitemap.xml dans Webflow', impact: 'SEO global', detail: 'Publishing Settings → Sitemap → activer. Ajouter Sitemap: https://www.zompa.fr/sitemap.xml dans robots.txt. Actuellement 404 = Google n\'indexe pas toutes les pages portfolio.' },
+    { title: 'Ajouter Schema.org (JSON-LD en custom code)', impact: 'SEO global', detail: 'Aucun JSON-LD sur le site. Ajouter Person + ProfessionalService + Service via l\'injection de code custom Webflow. Deboque les rich snippets Google.' },
+    { title: 'Ajouter des headers de securite (Cloudflare)', impact: '3/20 personas', detail: 'Grade C- (45/100). X-Frame-Options et X-Content-Type-Options via Cloudflare Transform Rules. CSP plus complexe mais bloquerait les scripts Elfsight non utilises.' },
+  ],
+  discussion: [
+    { title: 'Filtres portfolio par style/univers', emoji: '🎨', detail: 'Polar / Futuriste / Vintage / Fantastique / Contemporain. Permet a Julien de trouver son registre "polar 1930" et a Mathieu de filtrer sur le "victorien" sans scroller tout le portfolio.' },
+    { title: 'Section "je m\'adapte a votre univers"', emoji: '🌐', detail: '2-3 exemples de projets hors escape game pur (retail, evenementiel, livre) pour signaler la polyvalence stylistique. Deboque Karim et Nadege qui hesitent sur la niche.' },
+    { title: 'Lien Instagram prooeminent dans le header', emoji: '📷', detail: 'Tom, Pierre et Paul quittent le site pour aller sur Instagram. Un lien visible en header capte ces ambassadeurs organiques et alimente la communaute. Cout zero, valeur long terme elevee.' },
+    { title: 'SIRET ou mention statut EI en footer', emoji: '📋', detail: 'Dispense d\'immatriculation = pas de SIRET. Mais mentionner "EI — TVA non applicable" ou le numero RCS en footer rassure les services achats B2B qui ont besoin d\'un justificatif de statut.' },
+  ],
+};
+
+// PageSpeed data
+const pagespeed = {
+  desktop: { perf: 71, access: 83, bp: 73, seo: 100 },
+  mobile: { perf: 45, access: 83, bp: 77, seo: 100 },
+  cwv_desktop: { lcp: '3.9s', cls: '0.143', tbt: '0ms', fcp: '1.0s', si: '1.5s' },
+  cwv_mobile: { lcp: '9.2s', cls: '0.197', tbt: '590ms', fcp: '2.3s', si: '4.7s' },
+};
+
+const observatory = { grade: 'C-', score: 45, passed: 6, total: 10 };
+
+const schemaChecks = [
+  { label: 'JSON-LD present', ok: false },
+  { label: 'Person / ProfessionalService', ok: false },
+  { label: 'name, url, description', ok: false },
+  { label: 'address + geo', ok: false },
+  { label: 'telephone', ok: false },
+  { label: 'image / logo', ok: false },
+  { label: 'sameAs (reseaux sociaux)', ok: false },
+  { label: 'aggregateRating', ok: false },
+  { label: 'Service (par prestation)', ok: false },
+  { label: 'BreadcrumbList', ok: false },
+  { label: 'WebSite + SearchAction', ok: false },
+  { label: 'CreativeWork (portfolio)', ok: false },
+];
+
+const ogChecks = [
+  { label: 'Meta title (100% Lighthouse)', ok: true },
+  { label: 'Meta description', ok: true },
+  { label: 'viewport', ok: true },
+  { label: 'canonical', ok: true },
+  { label: 'og:title', ok: true },
+  { label: 'og:description', ok: true },
+  { label: 'og:image', ok: true },
+  { label: 'og:url', ok: true },
+  { label: 'og:type', ok: true },
+  { label: 'twitter:card', ok: false },
+  { label: 'twitter:image', ok: false },
+  { label: 'Sitemap.xml', ok: false },
+];
+
+const securityHeaders = [
+  { header: 'HTTP vers HTTPS', ok: true },
+  { header: 'HSTS (max-age=31536000)', ok: true },
+  { header: 'Cookies securises', ok: true },
+  { header: 'CORS correct', ok: true },
+  { header: 'Content-Security-Policy', ok: false },
+  { header: 'X-Frame-Options', ok: false },
+  { header: 'X-Content-Type-Options', ok: false },
+  { header: 'Subresource Integrity (SRI)', ok: false },
+  { header: 'Referrer-Policy', ok: false },
+  { header: 'Permissions-Policy', ok: false },
+];
+
+function decisionColor(d: string) {
+  if (d === 'Convertit') return 'bg-emerald-100 text-emerald-800 border-emerald-200';
+  if (d === 'Hesite') return 'bg-amber-100 text-amber-800 border-amber-200';
+  return 'bg-red-100 text-red-800 border-red-200';
+}
+
+function decisionBorder(d: string) {
+  if (d === 'Convertit') return 'border-green-200 bg-green-50/40';
+  if (d === 'Hesite') return 'border-amber-200 bg-amber-50/40';
+  return 'border-neutral-200 bg-neutral-50/40';
+}
+
+function severityColor(s: string) {
+  if (s === 'critique') return 'bg-red-100 text-red-800';
+  if (s === 'haute') return 'bg-orange-100 text-orange-800';
+  return 'bg-blue-100 text-blue-800';
+}
+
+function scoreColor(v: number) {
+  if (v >= 90) return '#22c55e';
+  if (v >= 50) return '#f59e0b';
+  return '#ef4444';
+}
+
+function cwvColor(metric: string, val: string) {
+  const n = parseFloat(val);
+  if (metric === 'lcp') return n <= 2.5 ? '#22c55e' : n <= 4 ? '#f59e0b' : '#ef4444';
+  if (metric === 'cls') return n <= 0.1 ? '#22c55e' : n <= 0.25 ? '#f59e0b' : '#ef4444';
+  if (metric === 'tbt') { const ms = parseInt(val); return ms <= 200 ? '#22c55e' : ms <= 600 ? '#f59e0b' : '#ef4444'; }
+  if (metric === 'fcp') return n <= 1.8 ? '#22c55e' : n <= 3 ? '#f59e0b' : '#ef4444';
+  return '#f59e0b';
+}
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  noindex={true}
+  lang="fr"
+  frPath="/audit/zompa"
+>
+
+  <!-- ═══════════════════ HERO ═══════════════════ -->
+  <section class="w-full relative px-6 py-16 md:px-8 md:py-24 overflow-hidden" style="background-color: #0D0D0D;">
+    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 40px 40px;"></div>
+    <div class="absolute top-20 -left-32 w-96 h-96 rounded-full opacity-10 blur-3xl" style="background: #E86C47;"></div>
+    <div class="absolute bottom-0 right-0 w-72 h-72 rounded-full opacity-5 blur-3xl" style="background: #818CF8;"></div>
+
+    <div class="mx-auto max-w-4xl relative z-10">
+      <div class="mb-4 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--color-accent)]/40">
+        <span class="w-2 h-2 rounded-full" style="background-color: #E86C47;"></span>
+        <span class="text-sm font-semibold text-white/90">Rapport confidentiel</span>
+      </div>
+
+      <h1 class="mb-4 text-3xl font-bold leading-tight text-white md:text-4xl lg:text-5xl">
+        Audit UX + Technique — <span class="bg-gradient-to-r from-[#E86C47] to-[#F5C8B3] bg-clip-text text-transparent">Zompa Design</span>
+      </h1>
+
+      <p class="text-lg text-neutral-300 md:text-xl max-w-2xl mb-8">
+        Simulation de 20 visites personas + audit technique complet de <strong class="text-white">zompa.fr</strong> — graphiste specialisee escape games et experiences immersives.
+      </p>
+
+      <div class="flex flex-wrap gap-3">
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">20 personas testes</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">5 canaux d'arrivee</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">10 pages analysees</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">29 mars 2026</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ TAB BAR ═══════════════════ -->
+  <nav class="sticky top-16 md:top-20 z-40 bg-white/95 backdrop-blur border-b border-neutral-200" id="tab-bar">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-2 h-12 text-sm overflow-x-auto">
+      <button data-tab="0" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-[var(--color-accent)] bg-[var(--color-accent)]/10">Synthese</button>
+      <button data-tab="1" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">Technique</button>
+      <button data-tab="2" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">
+        Visiteurs <span class="ml-1 text-xs text-neutral-400">20</span>
+      </button>
+      <button data-tab="3" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">
+        Ameliorations <span class="ml-1 text-xs text-neutral-400">{ameliorations.haute.length + ameliorations.moyenne.length}</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ═══════════════════ PANELS ═══════════════════ -->
+  <div id="panels" class="flex overflow-x-auto snap-x snap-mandatory" style="-webkit-overflow-scrolling: touch; scrollbar-width: none;">
+
+    <!-- ══ PANEL 0 : SYNTHESE ══ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+
+        <!-- KPI Cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="bg-white rounded-xl border border-neutral-200 p-5 text-center shadow-sm">
+            <div class="text-3xl font-bold text-[var(--color-accent)]">{tauxConversion}%</div>
+            <div class="text-sm text-neutral-500 mt-1">Taux de conversion</div>
+            <div class="text-xs text-neutral-400">{convertis} / 20 personas</div>
+          </div>
+          <div class="bg-white rounded-xl border border-neutral-200 p-5 text-center shadow-sm">
+            <div class="text-3xl font-bold text-neutral-800">{avgExp}</div>
+            <div class="text-sm text-neutral-500 mt-1">Experience / 10</div>
+          </div>
+          <div class="bg-white rounded-xl border border-neutral-200 p-5 text-center shadow-sm">
+            <div class="text-3xl font-bold text-neutral-800">{avgConf}</div>
+            <div class="text-sm text-neutral-500 mt-1">Confiance / 10</div>
+          </div>
+          <div class="bg-white rounded-xl border border-neutral-200 p-5 text-center shadow-sm">
+            <div class="text-3xl font-bold text-neutral-800">{avgClarte}</div>
+            <div class="text-sm text-neutral-500 mt-1">Clarte / 10</div>
+          </div>
+        </div>
+
+        <!-- Paradoxe principal -->
+        <div class="bg-amber-50 border border-amber-200 rounded-xl p-6">
+          <div class="flex items-start gap-3">
+            <span class="text-2xl">⚡</span>
+            <div>
+              <h3 class="font-semibold text-amber-900 mb-1">Le paradoxe principal</h3>
+              <p class="text-amber-800 text-sm leading-relaxed">
+                <strong>Zompa Design score 100/100 en SEO Lighthouse</strong> — le site est parfaitement optimise pour etre trouve. Mais <strong>Google Search genere 0 conversion sur 6 personas</strong>. Le site attire les bons visiteurs mais ne les convertit pas. Cause : LCP 9.2s sur mobile + absence totale de prix. Les visiteurs partent avant de voir le contenu ou repartent sans savoir si c'est dans leur budget.
+              </p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Conversion par canal -->
+        <div>
+          <h3 class="font-semibold text-neutral-800 mb-4">Conversion par canal</h3>
+          <div class="space-y-3">
+            {canalStats.map(c => {
+              const pctConv = Math.round((c.conv / c.total) * 100);
+              const pctHes = Math.round((c.hesitant / c.total) * 100);
+              const pctQuit = Math.round(((c.total - c.conv - c.hesitant) / c.total) * 100);
+              return (
+                <div class="bg-white rounded-lg border border-neutral-200 p-4">
+                  <div class="flex justify-between items-center mb-2">
+                    <span class="text-sm font-medium text-neutral-800">{c.canal}</span>
+                    <span class="text-xs text-neutral-400">{c.total} personas</span>
+                  </div>
+                  <div class="flex gap-1 h-3 rounded-full overflow-hidden">
+                    {pctConv > 0 && <div class="bg-emerald-400 rounded-l-full" style={`width: ${pctConv}%`}></div>}
+                    {pctHes > 0 && <div class="bg-amber-400" style={`width: ${pctHes}%`}></div>}
+                    {pctQuit > 0 && <div class="bg-neutral-300 rounded-r-full" style={`width: ${pctQuit}%`}></div>}
+                  </div>
+                  <div class="flex gap-4 mt-2 text-xs text-neutral-500">
+                    <span class="text-emerald-600">{c.conv} convertissent</span>
+                    <span class="text-amber-600">{c.hesitant} hesitent</span>
+                    <span class="text-neutral-400">{c.quitte || (c.total - c.conv - c.hesitant)} repartent</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <!-- Maturite + Device -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div>
+            <h3 class="font-semibold text-neutral-800 mb-4">Conversion par maturite</h3>
+            <div class="space-y-3">
+              {maturiteStats.map(m => (
+                <div class="bg-white rounded-lg border border-neutral-200 p-4 flex justify-between items-center">
+                  <div>
+                    <div class="text-sm font-medium text-neutral-800">{m.level}</div>
+                    <div class="text-xs text-neutral-400">{m.total} personas</div>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-lg font-bold" style={`color: ${m.conv === 0 ? '#ef4444' : '#22c55e'}`}>{m.pct}</div>
+                    <div class="text-xs text-neutral-400">{m.conv} convertissent</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div>
+            <h3 class="font-semibold text-neutral-800 mb-4">Conversion par device</h3>
+            <div class="space-y-3">
+              {deviceStats.map(d => (
+                <div class="bg-white rounded-lg border border-neutral-200 p-4 flex justify-between items-center">
+                  <div>
+                    <div class="text-sm font-medium text-neutral-800">{d.device}</div>
+                    <div class="text-xs text-neutral-400">{d.total} personas</div>
+                  </div>
+                  <div class="text-right">
+                    <div class="text-lg font-bold" style={`color: ${d.conv === 0 ? '#ef4444' : d.conv >= 2 ? '#22c55e' : '#f59e0b'}`}>{d.pct}</div>
+                    <div class="text-xs text-neutral-400">{d.conv} convertissent</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <!-- Frictions recurrentes -->
+        <div>
+          <h3 class="font-semibold text-neutral-800 mb-4">Points de friction recurrents</h3>
+          <div class="space-y-2">
+            {frictions.map(f => (
+              <div class="bg-white rounded-lg border border-neutral-200 p-3 flex items-center gap-3">
+                <span class={`px-2 py-0.5 rounded text-xs font-medium ${severityColor(f.severity)}`}>{f.severity}</span>
+                <span class="text-sm text-neutral-700 flex-1">{f.label}</span>
+                <span class="text-xs text-neutral-400 shrink-0">{f.count} personas</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══ PANEL 1 : TECHNIQUE ══ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+
+        <!-- PageSpeed scores -->
+        <div>
+          <h3 class="font-semibold text-neutral-800 mb-4">PageSpeed Insights</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {(['desktop', 'mobile'] as const).map(strat => {
+              const scores = pagespeed[strat];
+              const labels = ['Performance', 'Accessibilite', 'Bonnes Pratiques', 'SEO'];
+              const vals = [scores.perf, scores.access, scores.bp, scores.seo];
+              const r = 32;
+              const circ = 2 * Math.PI * r;
+              return (
+                <div class="bg-white rounded-xl border border-neutral-200 p-5 shadow-sm">
+                  <div class="text-sm font-semibold text-neutral-500 uppercase tracking-wide mb-4">{strat === 'desktop' ? 'Desktop' : 'Mobile'}</div>
+                  <div class="grid grid-cols-2 gap-4">
+                    {vals.map((v, i) => {
+                      const col = scoreColor(v);
+                      const dashArr = `${(v / 100) * circ} ${circ}`;
+                      return (
+                        <div class="flex flex-col items-center gap-2">
+                          <svg width="80" height="80" viewBox="0 0 80 80">
+                            <circle cx="40" cy="40" r={r} fill="none" stroke="#e5e7eb" stroke-width="6"/>
+                            <circle cx="40" cy="40" r={r} fill="none" stroke={col} stroke-width="6"
+                              stroke-dasharray={dashArr} stroke-dashoffset={circ * 0.25}
+                              stroke-linecap="round" transform="rotate(-90 40 40)"/>
+                            <text x="40" y="40" text-anchor="middle" dominant-baseline="central"
+                              font-size="18" font-weight="700" fill={col}>{v}</text>
+                          </svg>
+                          <span class="text-xs text-neutral-500 text-center leading-tight">{labels[i]}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <!-- Core Web Vitals -->
+        <div>
+          <h3 class="font-semibold text-neutral-800 mb-4">Core Web Vitals</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {(['desktop', 'mobile'] as const).map(strat => {
+              const cwv = strat === 'desktop' ? pagespeed.cwv_desktop : pagespeed.cwv_mobile;
+              const metrics = [
+                { key: 'lcp', label: 'LCP', val: cwv.lcp, seuil: '< 2.5s' },
+                { key: 'cls', label: 'CLS', val: cwv.cls, seuil: '< 0.1' },
+                { key: 'tbt', label: 'TBT', val: cwv.tbt, seuil: '< 200ms' },
+                { key: 'fcp', label: 'FCP', val: cwv.fcp, seuil: '< 1.8s' },
+                { key: 'si', label: 'Speed Index', val: cwv.si, seuil: '< 3.4s' },
+              ];
+              return (
+                <div class="bg-white rounded-xl border border-neutral-200 p-5 shadow-sm">
+                  <div class="text-sm font-semibold text-neutral-500 uppercase tracking-wide mb-3">{strat}</div>
+                  <div class="space-y-2">
+                    {metrics.map(m => {
+                      const col = cwvColor(m.key, m.val);
+                      return (
+                        <div class="flex justify-between items-center py-1 border-b border-neutral-100 last:border-0">
+                          <span class="text-sm text-neutral-600">{m.label}</span>
+                          <div class="flex items-center gap-2">
+                            <span class="text-xs text-neutral-400">{m.seuil}</span>
+                            <span class="font-semibold text-sm" style={`color: ${col}`}>{m.val}</span>
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+
+        <!-- Securite -->
+        <div>
+          <h3 class="font-semibold text-neutral-800 mb-4">Securite — Mozilla Observatory</h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div class="bg-white rounded-xl border border-neutral-200 p-5 shadow-sm">
+              <div class="flex items-center gap-4 mb-4">
+                <div class="text-4xl font-bold" style="color: #f59e0b;">{observatory.grade}</div>
+                <div>
+                  <div class="text-xl font-bold text-neutral-800">{observatory.score}/100</div>
+                  <div class="text-sm text-neutral-400">{observatory.passed}/{observatory.total} tests reussis</div>
+                </div>
+              </div>
+              <div class="space-y-1.5">
+                {securityHeaders.map(h => (
+                  <div class="flex items-center gap-2 text-sm">
+                    <span class={h.ok ? 'text-emerald-500' : 'text-red-400'}>{h.ok ? '✓' : '✗'}</span>
+                    <span class={h.ok ? 'text-neutral-700' : 'text-neutral-400'}>{h.header}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div class="bg-amber-50 rounded-xl border border-amber-200 p-5">
+              <h4 class="font-semibold text-amber-900 mb-3 text-sm">Scripts tiers sans integrite (SRI)</h4>
+              <ul class="space-y-1.5 text-xs text-amber-800">
+                <li class="flex items-start gap-1"><span>•</span><span>apps.elfsight.com/p/platform.js (charge 2 fois)</span></li>
+                <li class="flex items-start gap-1"><span>•</span><span>widget.senja.io/widget/.../platform.js</span></li>
+                <li class="flex items-start gap-1"><span>•</span><span>google.com/recaptcha/api.js</span></li>
+                <li class="flex items-start gap-1"><span>•</span><span>googletagmanager.com/gtag/js</span></li>
+                <li class="flex items-start gap-1"><span>•</span><span>ajax.googleapis.com/libs/webfont/1.6.26/webfont.js</span></li>
+              </ul>
+              <div class="mt-3 pt-3 border-t border-amber-200 text-xs text-amber-700">
+                <strong>Robots.txt</strong> : present mais vide (aucune directive)<br/>
+                <strong>Sitemap.xml</strong> : 404 Not Found — generateur Webflow desactive
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Schema.org + OG -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="bg-white rounded-xl border border-neutral-200 p-5 shadow-sm">
+            <h4 class="font-semibold text-neutral-800 mb-3 text-sm">Schema.org — Donnees structurees</h4>
+            <div class="mb-3 p-3 bg-red-50 rounded-lg border border-red-200">
+              <p class="text-xs text-red-700"><strong>Aucun JSON-LD detecte.</strong> Webflow ne genere pas de donnees structurees nativement. Google ne comprend pas que c'est une graphiste freelance — pas de rich snippets.</p>
+            </div>
+            <div class="space-y-1.5">
+              {schemaChecks.map(c => (
+                <div class="flex items-center gap-2 text-sm">
+                  <span class={c.ok ? 'text-emerald-500' : 'text-red-400'}>{c.ok ? '✓' : '✗'}</span>
+                  <span class={c.ok ? 'text-neutral-700' : 'text-neutral-400'}>{c.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div class="bg-white rounded-xl border border-neutral-200 p-5 shadow-sm">
+            <h4 class="font-semibold text-neutral-800 mb-3 text-sm">Open Graph & Meta SEO</h4>
+            <div class="space-y-1.5">
+              {ogChecks.map(c => (
+                <div class="flex items-center gap-2 text-sm">
+                  <span class={c.ok ? 'text-emerald-500' : 'text-red-400'}>{c.ok ? '✓' : '✗'}</span>
+                  <span class={c.ok ? 'text-neutral-700' : 'text-neutral-400'}>{c.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ══ PANEL 2 : VISITEURS ══ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+
+        <!-- Stats row -->
+        <div class="flex gap-4 mb-8 flex-wrap">
+          <div class="bg-emerald-50 border border-emerald-200 rounded-xl px-5 py-3 text-center flex-1 min-w-28">
+            <div class="text-2xl font-bold text-emerald-700">{convertis}</div>
+            <div class="text-xs text-emerald-600">Convertissent</div>
+          </div>
+          <div class="bg-amber-50 border border-amber-200 rounded-xl px-5 py-3 text-center flex-1 min-w-28">
+            <div class="text-2xl font-bold text-amber-700">{hesitants}</div>
+            <div class="text-xs text-amber-600">Hesitent</div>
+          </div>
+          <div class="bg-neutral-100 border border-neutral-200 rounded-xl px-5 py-3 text-center flex-1 min-w-28">
+            <div class="text-2xl font-bold text-neutral-600">{quittent}</div>
+            <div class="text-xs text-neutral-500">Repartent</div>
+          </div>
+        </div>
+
+        <!-- Personas - grouped by decision -->
+        {(['Convertit', 'Hesite', 'Quitte'] as const).map(dec => {
+          const group = personas.filter(p => p.decision === dec);
+          if (group.length === 0) return null;
+          const label = dec === 'Convertit' ? 'Ceux qui contactent' : dec === 'Hesite' ? 'Ceux qui hesitent' : 'Ceux qui repartent';
+          const headerClass = dec === 'Convertit' ? 'bg-emerald-600' : dec === 'Hesite' ? 'bg-amber-500' : 'bg-neutral-500';
+          return (
+            <div class="mb-8">
+              <div class={`${headerClass} text-white px-4 py-2 rounded-t-xl font-semibold text-sm`}>{label} — {group.length} personas</div>
+              <div class="border border-t-0 border-neutral-200 rounded-b-xl overflow-hidden">
+                {group.map((p, idx) => (
+                  <details class={`group ${idx < group.length - 1 ? 'border-b border-neutral-200' : ''} ${decisionBorder(p.decision)}`}>
+                    <summary class="flex items-center gap-3 p-4 cursor-pointer list-none hover:bg-neutral-50/80 transition-colors">
+                      <span class="text-xl">{p.emoji}</span>
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 flex-wrap">
+                          <span class="font-semibold text-neutral-900">{p.name}</span>
+                          <span class="text-xs text-neutral-400">{p.age} ans</span>
+                          <span class={`px-2 py-0.5 rounded-full text-xs font-medium border ${decisionColor(p.decision)}`}>{p.decision}</span>
+                        </div>
+                        <div class="text-xs text-neutral-500 mt-0.5">{p.situation} — {p.canal} / {p.device}</div>
+                      </div>
+                      <div class="hidden md:flex items-center gap-3 text-xs text-neutral-400 shrink-0">
+                        <span>Exp {p.exp}/10</span>
+                        <span>Conf {p.conf}/10</span>
+                        <span>Clarte {p.clarte}/10</span>
+                      </div>
+                      <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+                    </summary>
+
+                    <div class="px-4 pb-5 pt-2 space-y-4 bg-white/60">
+                      <div class="bg-neutral-50 rounded-lg p-3 text-sm text-neutral-700 italic">"{p.contexte}"</div>
+
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <div class="text-xs font-semibold text-neutral-500 uppercase mb-2">Premiere impression</div>
+                          <p class="text-neutral-700">{p.impression}</p>
+                        </div>
+                        <div>
+                          <div class="text-xs font-semibold text-neutral-500 uppercase mb-2">Question cle</div>
+                          <p class="text-neutral-700 font-medium">"{p.question}"</p>
+                          <p class="text-xs mt-1"><span class={p.reponse === 'Oui' ? 'text-emerald-600' : p.reponse === 'Partiellement' ? 'text-amber-600' : 'text-red-500'}>{p.reponse}</span> — {p.commentReponse}</p>
+                        </div>
+                      </div>
+
+                      <div>
+                        <div class="text-xs font-semibold text-neutral-500 uppercase mb-2">Parcours</div>
+                        <div class="space-y-1">
+                          {p.parcours.map((step, i) => (
+                            <div class="flex gap-2 text-sm">
+                              <span class="text-neutral-400 shrink-0">{i + 1}.</span>
+                              <span class="text-neutral-600"><strong>{step[0]}</strong> — {step[1]}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+
+                      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                        <div>
+                          <div class="text-xs font-semibold text-emerald-600 uppercase mb-2">Points positifs</div>
+                          <ul class="space-y-1">
+                            {p.positifs.map(pt => <li class="flex items-start gap-1.5 text-neutral-700"><span class="text-emerald-400 shrink-0 mt-0.5">+</span>{pt}</li>)}
+                          </ul>
+                        </div>
+                        <div>
+                          <div class="text-xs font-semibold text-red-500 uppercase mb-2">Points de friction</div>
+                          <ul class="space-y-1">
+                            {p.frictions.map(fr => <li class="flex items-start gap-1.5 text-neutral-700"><span class="text-red-400 shrink-0 mt-0.5">-</span>{fr}</li>)}
+                          </ul>
+                        </div>
+                      </div>
+
+                      <div class="bg-neutral-100 rounded-lg p-3 text-sm">
+                        <span class="font-semibold text-neutral-700">{p.decision} — </span>
+                        <span class="text-neutral-600">{p.raison}</span>
+                        {p.changement && (
+                          <p class="mt-1 text-xs text-neutral-500"><em>Ce qui aurait change les choses : {p.changement}</em></p>
+                        )}
+                      </div>
+
+                      <div class="flex gap-4 text-xs text-neutral-500">
+                        <span class="flex items-center gap-1"><span class="font-medium text-neutral-700">Exp :</span> {p.exp}/10</span>
+                        <span class="flex items-center gap-1"><span class="font-medium text-neutral-700">Confiance :</span> {p.conf}/10</span>
+                        <span class="flex items-center gap-1"><span class="font-medium text-neutral-700">Clarte :</span> {p.clarte}/10</span>
+                      </div>
+                    </div>
+                  </details>
+                ))}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </section>
+
+    <!-- ══ PANEL 3 : AMELIORATIONS ══ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
+
+        <!-- Haute priorite -->
+        <div>
+          <h3 class="font-semibold text-neutral-800 mb-4 flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-red-500"></span>
+            Le plus important
+          </h3>
+          <div class="space-y-4">
+            {ameliorations.haute.map(a => (
+              <div class="bg-white rounded-xl border-2 border-red-200 p-5 shadow-sm">
+                <div class="flex items-start justify-between gap-4 mb-3">
+                  <h4 class="font-semibold text-neutral-900">{a.title}</h4>
+                  <span class="shrink-0 px-3 py-1 bg-red-100 text-red-700 text-xs rounded-full font-medium">{a.impact}</span>
+                </div>
+                <p class="text-sm text-neutral-600 leading-relaxed">{a.detail}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Moyenne priorite -->
+        <div>
+          <h3 class="font-semibold text-neutral-800 mb-4 flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-blue-400"></span>
+            Utile aussi
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {ameliorations.moyenne.map(a => (
+              <div class="bg-white rounded-xl border border-neutral-200 p-5 shadow-sm">
+                <h4 class="font-semibold text-neutral-900 mb-2 text-sm">{a.title}</h4>
+                <p class="text-xs text-neutral-600 leading-relaxed">{a.detail}</p>
+                <div class="mt-2 text-xs text-neutral-400">{a.impact}</div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Discussion -->
+        <div>
+          <h3 class="font-semibold text-neutral-800 mb-4 flex items-center gap-2">
+            <span class="w-3 h-3 rounded-full bg-neutral-300"></span>
+            A discuter ensemble
+          </h3>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {ameliorations.discussion.map(a => (
+              <div class="bg-neutral-50 rounded-xl border border-neutral-200 p-5">
+                <div class="flex items-start gap-3">
+                  <span class="text-2xl">{a.emoji}</span>
+                  <div>
+                    <h4 class="font-semibold text-neutral-900 mb-1 text-sm">{a.title}</h4>
+                    <p class="text-xs text-neutral-600 leading-relaxed">{a.detail}</p>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div><!-- /panels -->
+
+  <!-- ═══════════════════ METHODOLOGIE ═══════════════════ -->
+  <section class="bg-neutral-50 border-t border-neutral-200 py-12 px-6">
+    <div class="max-w-3xl mx-auto">
+      <h2 class="text-xl font-semibold text-neutral-800 mb-4">Methodologie</h2>
+      <ol class="space-y-3 text-sm text-neutral-600">
+        <li class="flex gap-3"><span class="font-bold text-[var(--color-accent)] shrink-0">1.</span><span><strong>Scraping complet</strong> — 10 pages de zompa.fr analysees : accueil, portfolio, services, a-propos, contact, FAQ, blog, 3 pages projets, mentions legales.</span></li>
+        <li class="flex gap-3"><span class="font-bold text-[var(--color-accent)] shrink-0">2.</span><span><strong>Audits techniques</strong> — Lighthouse desktop et mobile (via CLI local), Mozilla Observatory API, verification Schema.org et Open Graph depuis le HTML scrape.</span></li>
+        <li class="flex gap-3"><span class="font-bold text-[var(--color-accent)] shrink-0">3.</span><span><strong>20 personas construits</strong> — 5 canaux couverts (Google Search, LinkedIn, Instagram, Bouche-a-oreille, Reference directe), 3 niveaux de maturite, 3 types de device, 3 niveaux d'intention. 4 personas negatifs inclus intentionnellement.</span></li>
+        <li class="flex gap-3"><span class="font-bold text-[var(--color-accent)] shrink-0">4.</span><span><strong>20 simulations de visite</strong> — 4 agents IA en parallele (lots de 5 personas) avec contexte du site, absences identifiees et problemes techniques injectes pour evaluer l'impact reel.</span></li>
+        <li class="flex gap-3"><span class="font-bold text-[var(--color-accent)] shrink-0">5.</span><span><strong>Aggregation et priorisation</strong> — Frictions classees par nombre de personas impactes et severite. Ameliorations rendues actionnables avec localisation precise.</span></li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ CTA FINAL ═══════════════════ -->
+  <section class="py-16 px-6 text-center">
+    <div class="max-w-2xl mx-auto">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-3">Pret a transformer ces insights en resultats ?</h2>
+      <p class="text-neutral-600 mb-8">Ce rapport est un point de depart. Marc M peut implementer ces ameliorations sur un site Astro performant, concu specifiquement pour convertir vos visiteurs en clients.</p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a href="/commander" class="px-6 py-3 bg-[var(--color-accent)] text-white font-semibold rounded-xl hover:opacity-90 transition-opacity">
+          Commander un site
+        </a>
+        <a href="/contact" class="px-6 py-3 border-2 border-neutral-300 text-neutral-700 font-semibold rounded-xl hover:border-neutral-400 transition-colors">
+          En discuter d'abord
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <style is:inline>
+    #panels { -ms-overflow-style: none; }
+    #panels::-webkit-scrollbar { display: none; }
+  </style>
+
+  <script is:inline>
+    const panels = document.getElementById('panels');
+    const tabs = document.querySelectorAll('.tab-btn');
+    const sections = panels.querySelectorAll('.tab-panel');
+
+    function activateTab(index) {
+      tabs.forEach((b, i) => {
+        if (i === index) {
+          b.classList.remove('text-neutral-500');
+          b.classList.add('text-[var(--color-accent)]', 'bg-[var(--color-accent)]/10');
+        } else {
+          b.classList.remove('text-[var(--color-accent)]', 'bg-[var(--color-accent)]/10');
+          b.classList.add('text-neutral-500');
+        }
+      });
+    }
+
+    tabs.forEach((btn, i) => {
+      btn.addEventListener('click', () => {
+        sections[i].scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+        activateTab(i);
+      });
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting && entry.intersectionRatio >= 0.5) {
+          const idx = Array.from(sections).indexOf(entry.target);
+          if (idx >= 0) activateTab(idx);
+        }
+      });
+    }, { root: panels, threshold: 0.5 });
+
+    sections.forEach(s => observer.observe(s));
+  </script>
+
+</BaseLayout>
