@@ -8,228 +8,249 @@ const vm = business.visiteMystere;
 const faqItems = [
   {
     question: 'Ce sont de vrais clients ?',
-    answer: 'Non — ce sont des profils IA construits pour être réalistes. Chaque persona a un âge, un métier, un appareil (mobile/desktop), un canal d\'arrivée (Google, Instagram, bouche-à-oreille...) et un budget. Ils parcourent votre site exactement comme le ferait un vrai prospect et réagissent à ce qu\'ils voient — ou ne voient pas.',
+    answer: 'Non — ce sont des profils IA construits pour être réalistes. Chaque persona a un âge, un métier, un appareil, un canal d\'arrivée et un budget. Ils parcourent votre site exactement comme le ferait un vrai prospect. La différence avec un vrai test utilisateur ? Le coût (divisé par 50) et la rapidité (48h au lieu de 3 semaines).',
   },
   {
-    question: 'Combien de temps pour recevoir le rapport ?',
-    answer: 'Sous 48 heures. Je lance l\'analyse, les prospects IA visitent votre site, et vous recevez le rapport par email avec un lien vers votre page de résultats.',
+    question: 'En quoi c\'est différent d\'un audit SEO ?',
+    answer: 'Un audit SEO vous dit "votre LCP est de 3.8 secondes". La Visite Mystère vous dit "Karim, peintre de 52 ans, a quitté votre site parce qu\'il a attendu 4 secondes devant un écran blanc et qu\'il n\'a pas trouvé d\'exemple dans ses réalisations." C\'est la différence entre un tableau de chiffres et une histoire qui vous fait comprendre le problème.',
   },
   {
-    question: 'C\'est différent d\'un audit SEO classique ?',
-    answer: 'Complètement. Un audit SEO vous dit "votre LCP est de 3.8 secondes". La Visite Mystère vous dit "Karim, peintre de 52 ans, a quitté votre site parce qu\'il a attendu 4 secondes devant un écran blanc et qu\'il n\'a pas trouvé d\'exemple de chantier peinture dans vos réalisations." C\'est la différence entre un tableau de chiffres et une histoire humaine.',
+    question: 'Combien de temps pour recevoir les résultats ?',
+    answer: '48 heures. Vous recevez un email avec le lien vers votre rapport — une page interactive privée avec le feedback de chaque visiteur.',
   },
   {
     question: 'Et si je veux corriger les problèmes identifiés ?',
-    answer: 'Je peux m\'en occuper. Je crée aussi des sites professionnels à partir de 490€. Chaque rapport inclut un lien pour commander directement — mais zéro obligation. Le rapport vous appartient, vous pouvez le transmettre à n\'importe quel prestataire.',
+    answer: 'Vous faites comme vous voulez. Le rapport vous appartient — transmettez-le à votre prestataire actuel, corrigez vous-même, ou demandez-moi un devis. Je crée des sites à partir de 490€, mais zéro obligation.',
   },
   {
-    question: 'Mon site est tout neuf, ça sert quand même ?',
-    answer: 'Surtout ! Mieux vaut identifier les frictions maintenant, quand elles sont faciles à corriger, plutôt que perdre des clients pendant des mois sans comprendre pourquoi.',
+    question: 'Mon site est récent, ça sert quand même ?',
+    answer: 'Surtout. Les frictions les plus coûteuses sont celles que vous ne voyez pas parce que personne ne vous les remonte. Un site récent avec un problème de confiance peut perdre des clients pendant des mois sans que vous le sachiez.',
   },
   {
-    question: 'Mes données sont confidentielles ?',
-    answer: 'Oui. Votre rapport est privé (non indexé par Google) et accessible uniquement via le lien que je vous envoie. Je ne publie jamais de rapport sans autorisation.',
+    question: 'C\'est confidentiel ?',
+    answer: 'Totalement. Votre rapport est privé, non indexé par Google, accessible uniquement via le lien personnel que je vous envoie. Je ne publie jamais un rapport sans autorisation explicite.',
   },
+  {
+    question: 'Comment les visiteurs sont-ils choisis ?',
+    answer: 'Je construis des profils adaptés à votre activité et votre zone géographique. Un plombier à Metz n\'a pas les mêmes visiteurs qu\'un coach à Strasbourg. Les canaux sont diversifiés : Google, Maps, Instagram, bouche-à-oreille, ChatGPT — parce que vos vrais clients arrivent de partout.',
+  },
+  {
+    question: '100 visiteurs, c\'est pas excessif ?',
+    answer: 'C\'est ce qui rend l\'analyse statistiquement fiable. Avec 5 visiteurs, vous avez une tendance. Avec 20, des patterns clairs. Avec 100, vous savez exactement quel canal convertit, quel profil hésite, et pourquoi — avec des chiffres que vous pouvez comparer dans le temps.',
+  },
+];
+
+// Persona examples for the demo section
+const demoPersonas = [
+  { emoji: '🔧', name: 'Thierry', age: 52, job: 'Plombier, Woippy', canal: 'Google Search', device: 'Mobile', decision: 'Hesite', color: 'amber', reason: 'Prix attractif mais pas d\'exemple BTP — envoie un WhatsApp au lieu de commander' },
+  { emoji: '✂️', name: 'Emilie', age: 34, job: 'Coiffeuse bio, Montigny', canal: 'Google Maps', device: 'Mobile', decision: 'Convertit', color: 'emerald', reason: 'Avis 5 etoiles + proximite + paiement en 3x = elle appelle dans l\'heure' },
+  { emoji: '🧹', name: 'Karim', age: 41, job: 'Nettoyage, Thionville', canal: 'ChatGPT', device: 'Desktop', decision: 'Convertit', color: 'emerald', reason: 'DMulti Services au portfolio = son jumeau metier. Demande un devis sur mesure.' },
+  { emoji: '🏡', name: 'Nathalie', age: 58, job: 'Projet gite, Bitche', canal: 'Facebook', device: 'Mobile', decision: 'Quitte', color: 'red', reason: 'Gite pas ouvert, trop loin de Metz, pas de mention "toute France"' },
 ];
 ---
 
 <BaseLayout
-  title="Visite Mystère — 20 prospects IA testent votre site | Marc M"
-  description="Des prospects IA réalistes visitent votre site web et vous disent pourquoi ils n'appellent pas. Rapport détaillé en 48h. Gratuit pour 5 visiteurs."
+  title="Visite Mystère — Des prospects testent votre site et vous disent tout | Marc M"
+  description="Des prospects IA réalistes visitent votre site web et vous disent pourquoi ils n'appellent pas. Rapport détaillé en 48h. Test gratuit."
   lang="fr"
   frPath="/visite-mystere"
 >
   <SchemaOrg type="localBusiness" />
 
   <!-- ═══════════════════ HERO ═══════════════════ -->
-  <section class="relative w-full bg-[#0D0D0D] px-6 py-20 md:px-8 md:py-32 overflow-hidden">
-    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 40px 40px;"></div>
-    <div class="absolute top-20 -left-32 w-96 h-96 rounded-full opacity-10 blur-3xl" style="background: #E86C47;"></div>
-    <div class="absolute bottom-0 right-0 w-72 h-72 rounded-full opacity-5 blur-3xl" style="background: #818CF8;"></div>
+  <section class="relative w-full px-6 py-24 md:px-8 md:py-36 overflow-hidden" style="background: #0A0A0A;">
+    <!-- Ambient -->
+    <div class="absolute inset-0 opacity-[0.04]" style="background-image: linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px); background-size: 60px 60px;"></div>
+    <div class="absolute top-[15%] left-[10%] w-[600px] h-[600px] rounded-full blur-[180px]" style="background: #E86C47; opacity: 0.07;"></div>
+    <div class="absolute bottom-[5%] right-[5%] w-[500px] h-[500px] rounded-full blur-[160px]" style="background: #4F46E5; opacity: 0.04;"></div>
 
     <div class="relative mx-auto max-w-4xl z-10">
-      <div class="mb-6 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--color-accent)]/40">
-        <span class="relative flex h-2 w-2">
-          <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-[var(--color-accent)] opacity-75"></span>
-          <span class="relative inline-flex rounded-full h-2 w-2 bg-[var(--color-accent)]"></span>
+      <!-- Badge -->
+      <div class="mb-10 inline-flex items-center gap-2.5 rounded-full px-4 py-1.5 text-xs font-medium tracking-widest uppercase" style="background: rgba(232,108,71,0.08); border: 1px solid rgba(232,108,71,0.2); color: #E86C47;">
+        <span class="relative flex h-1.5 w-1.5">
+          <span class="absolute h-full w-full animate-ping rounded-full opacity-60" style="background:#E86C47;"></span>
+          <span class="relative h-1.5 w-1.5 rounded-full" style="background:#E86C47;"></span>
         </span>
-        <span class="text-sm font-semibold text-white/90">Nouveau — Résultats en 48h</span>
+        Resultats en 48h
       </div>
 
-      <h1 class="mb-6 text-4xl font-bold leading-tight text-white md:text-5xl lg:text-6xl">
-        20 prospects visitent votre site.<br/>
-        <span class="bg-gradient-to-r from-[#E86C47] to-[#F5C8B3] bg-clip-text text-transparent">Aucun ne vous appelle.</span>
+      <h1 class="mb-6 font-bold leading-[1.06] tracking-[-0.035em] text-white" style="font-size: clamp(2.2rem, 5vw, 3.8rem);">
+        Vos visiteurs ne vous appellent pas.<br/>
+        <span class="hero-accent-text">On va vous dire pourquoi.</span>
       </h1>
 
-      <p class="text-lg text-neutral-300 md:text-xl max-w-2xl mb-10">
-        Découvrez pourquoi. Des IA simulent des clients réalistes qui parcourent votre site et vous disent exactement ce qui les empêche de vous contacter.
+      <p class="mb-10 max-w-xl text-[15px] md:text-lg leading-relaxed" style="color: rgba(255,255,255,0.55);">
+        Des prospects IA — adaptés à votre métier et votre zone — parcourent votre site comme de vrais clients. Ils vous disent ce qui les convainc, ce qui les freine, et ce qui les fait partir.
       </p>
 
       <div class="flex flex-col sm:flex-row gap-4">
-        <a href="#formulaire" class="inline-flex items-center justify-center gap-2 px-8 py-4 bg-[var(--color-accent)] text-white font-semibold rounded-xl hover:opacity-90 transition-opacity text-lg">
+        <a href="#formulaire" class="inline-flex items-center justify-center rounded-xl px-8 py-4 text-base font-semibold text-white transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5" style="background: linear-gradient(135deg, #E86C47, #D4572F); box-shadow: 0 4px 20px rgba(232, 108, 71, 0.3);">
           Tester mon site gratuitement
-          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
         </a>
-        <a href="/audit/marcm/" class="inline-flex items-center justify-center gap-2 px-8 py-4 border-2 border-white/20 text-white font-semibold rounded-xl hover:border-white/40 transition-colors text-lg">
-          Voir un exemple de rapport
+        <a href="/audit/marcm/" class="inline-flex items-center justify-center rounded-xl border px-8 py-4 text-base font-semibold transition-all duration-300 hover:bg-white/[0.07] hover:text-white" style="border-color: rgba(255,255,255,0.15); color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.03);">
+          Voir un rapport complet
         </a>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════════════ LE CONSTAT ═══════════════════ -->
-  <section class="w-full px-6 py-16 md:px-8 md:py-24">
-    <div class="mx-auto max-w-5xl">
-      <h2 class="text-3xl font-bold text-neutral-900 mb-4 md:text-4xl text-center">
-        Votre site a un problème.<br/>Vous ne le voyez pas.
-      </h2>
-      <p class="text-neutral-500 text-center max-w-2xl mx-auto mb-12">
-        Vous pensez que votre site "fait le job". Mais sans retour de vos visiteurs, vous ne savez pas combien de prospects repartent sans vous contacter — ni pourquoi.
-      </p>
+  <!-- ═══════════════════ AVANT / APRÈS ═══════════════════ -->
+  <section class="w-full">
+    <div class="grid md:grid-cols-2">
+      <!-- Sans Visite Mystère -->
+      <div class="px-8 py-16 md:px-16 md:py-24 flex flex-col justify-center" style="background: #111111;">
+        <div class="text-xs font-semibold uppercase tracking-widest mb-6" style="color: rgba(255,255,255,0.3); letter-spacing: 0.15em;">Sans Visite Mystere</div>
+        <div class="space-y-5">
+          <div class="flex items-start gap-3">
+            <span class="text-red-400 mt-0.5 shrink-0">✗</span>
+            <p class="text-[15px] text-white/60">Vous ne savez pas pourquoi vos visiteurs ne vous contactent pas</p>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-red-400 mt-0.5 shrink-0">✗</span>
+            <p class="text-[15px] text-white/60">Vos concurrents récupèrent les clients que vous perdez</p>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-red-400 mt-0.5 shrink-0">✗</span>
+            <p class="text-[15px] text-white/60">Vous investissez dans un site sans savoir s'il convertit</p>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-red-400 mt-0.5 shrink-0">✗</span>
+            <p class="text-[15px] text-white/60">Les vrais retours ? Personne ne vous les donne</p>
+          </div>
+        </div>
+      </div>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-        <div class="bg-white rounded-2xl border border-neutral-200 p-8 text-center shadow-sm">
-          <div class="text-4xl font-bold text-[var(--color-accent)] mb-2">73%</div>
-          <p class="text-sm text-neutral-600">des artisans perdent des clients à cause de leur site — sans le savoir</p>
-        </div>
-        <div class="bg-white rounded-2xl border border-neutral-200 p-8 text-center shadow-sm">
-          <div class="text-4xl font-bold text-[var(--color-accent)] mb-2">4 sur 10</div>
-          <p class="text-sm text-neutral-600">visiteurs quittent un site en moins de 5 secondes s'il est lent ou confus</p>
-        </div>
-        <div class="bg-white rounded-2xl border border-neutral-200 p-8 text-center shadow-sm">
-          <div class="text-4xl font-bold text-[var(--color-accent)] mb-2">0</div>
-          <p class="text-sm text-neutral-600">feedback — vos visiteurs ne vous diront jamais pourquoi ils sont partis</p>
+      <!-- Avec Visite Mystère -->
+      <div class="px-8 py-16 md:px-16 md:py-24 flex flex-col justify-center relative" style="background: #F7F5F2; border-left: 1px solid #E8E4E0;">
+        <div class="text-xs font-semibold uppercase tracking-widest mb-6" style="color: var(--color-accent); letter-spacing: 0.15em;">Avec Visite Mystere</div>
+        <div class="space-y-5">
+          <div class="flex items-start gap-3">
+            <span class="text-emerald-500 mt-0.5 shrink-0">✓</span>
+            <p class="text-[15px] text-neutral-700"><strong>Vous savez exactement</strong> ce qui freine vos visiteurs</p>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-emerald-500 mt-0.5 shrink-0">✓</span>
+            <p class="text-[15px] text-neutral-700"><strong>Vous corrigez en priorité</strong> ce qui fait perdre le plus de clients</p>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-emerald-500 mt-0.5 shrink-0">✓</span>
+            <p class="text-[15px] text-neutral-700"><strong>Vous mesurez l'impact</strong> — taux de conversion, confiance, clarté</p>
+          </div>
+          <div class="flex items-start gap-3">
+            <span class="text-emerald-500 mt-0.5 shrink-0">✓</span>
+            <p class="text-[15px] text-neutral-700"><strong>Vous décidez</strong> en connaissance de cause, pas à l'aveugle</p>
+          </div>
         </div>
       </div>
     </div>
   </section>
 
   <!-- ═══════════════════ COMMENT ÇA MARCHE ═══════════════════ -->
-  <section class="w-full bg-neutral-50 border-y border-neutral-200 px-6 py-16 md:px-8 md:py-24">
-    <div class="mx-auto max-w-5xl">
-      <h2 class="text-3xl font-bold text-neutral-900 mb-12 md:text-4xl text-center">
-        Comment ça marche
+  <section class="w-full px-6 py-20 md:px-8 md:py-28" style="background: var(--color-bg);">
+    <div class="mx-auto max-w-3xl">
+      <div class="text-xs font-semibold uppercase tracking-widest text-center mb-4" style="color: var(--color-accent); letter-spacing: 0.15em;">Comment ca marche</div>
+      <h2 class="text-3xl md:text-4xl font-bold leading-tight tracking-[-0.02em] text-center mb-16" style="color: var(--color-text);">
+        Trois étapes.<br/>Zéro technique.
       </h2>
 
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-        <!-- Étape 1 -->
-        <div class="text-center">
-          <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[var(--color-accent)]/10 flex items-center justify-center">
-            <svg class="w-8 h-8 text-[var(--color-accent)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M13.19 8.688a4.5 4.5 0 011.242 7.244l-4.5 4.5a4.5 4.5 0 01-6.364-6.364l1.757-1.757m9.86-3.07a4.5 4.5 0 00-6.364-6.364L4.5 6.207a4.5 4.5 0 006.364 6.364"/>
-            </svg>
+      <div class="space-y-6">
+        <!-- Step 1 -->
+        <div class="group relative flex gap-5 md:gap-6">
+          <div class="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-white text-sm font-bold shadow-md" style="background: var(--color-accent); box-shadow: 0 4px 12px rgba(232, 108, 71, 0.2);">1</div>
+          <div class="flex-1 rounded-2xl bg-white border px-6 py-5 transition-all duration-300 group-hover:shadow-md" style="border-color: var(--color-border);">
+            <h3 class="text-[17px] font-bold mb-1" style="color: var(--color-text);">Vous donnez l'URL de votre site</h3>
+            <p class="text-sm" style="color: var(--color-text-muted);">C'est tout. Pas d'accès admin, pas de mot de passe, pas d'installation. Juste votre adresse web.</p>
           </div>
-          <div class="text-sm font-bold text-[var(--color-accent)] uppercase tracking-wide mb-2">Étape 1</div>
-          <h3 class="text-lg font-semibold text-neutral-900 mb-2">Vous nous donnez votre URL</h3>
-          <p class="text-sm text-neutral-500">Votre site web, c'est tout ce dont on a besoin. Aucun accès technique requis.</p>
         </div>
 
-        <!-- Étape 2 -->
-        <div class="text-center">
-          <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[var(--color-accent)]/10 flex items-center justify-center">
-            <svg class="w-8 h-8 text-[var(--color-accent)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M15 19.128a9.38 9.38 0 002.625.372 9.337 9.337 0 004.121-.952 4.125 4.125 0 00-7.533-2.493M15 19.128v-.003c0-1.113-.285-2.16-.786-3.07M15 19.128v.106A12.318 12.318 0 018.624 21c-2.331 0-4.512-.645-6.374-1.766l-.001-.109a6.375 6.375 0 0111.964-3.07M12 6.375a3.375 3.375 0 11-6.75 0 3.375 3.375 0 016.75 0zm8.25 2.25a2.625 2.625 0 11-5.25 0 2.625 2.625 0 015.25 0z"/>
-            </svg>
+        <!-- Connector -->
+        <div class="ml-5 w-px h-4 bg-neutral-200"></div>
+
+        <!-- Step 2 -->
+        <div class="group relative flex gap-5 md:gap-6">
+          <div class="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-white text-sm font-bold shadow-md" style="background: var(--color-accent); box-shadow: 0 4px 12px rgba(232, 108, 71, 0.2);">2</div>
+          <div class="flex-1 rounded-2xl bg-white border px-6 py-5 transition-all duration-300 group-hover:shadow-md" style="border-color: var(--color-border);">
+            <h3 class="text-[17px] font-bold mb-1" style="color: var(--color-text);">Des prospects IA visitent votre site</h3>
+            <p class="text-sm" style="color: var(--color-text-muted);">Des profils construits pour votre secteur et votre zone : l'artisan qui cherche sur Google Maps, la mère de famille sur Instagram, le dirigeant qui compare 3 devis sur desktop. Chacun avec son appareil, son canal, son budget.</p>
           </div>
-          <div class="text-sm font-bold text-[var(--color-accent)] uppercase tracking-wide mb-2">Étape 2</div>
-          <h3 class="text-lg font-semibold text-neutral-900 mb-2">20 prospects IA visitent votre site</h3>
-          <p class="text-sm text-neutral-500">Des profils réalistes : le plombier sur Google Maps, la coiffeuse sur Instagram, le syndic qui compare 3 devis. Chacun avec un appareil, un canal et un budget différent.</p>
         </div>
 
-        <!-- Étape 3 -->
-        <div class="text-center">
-          <div class="w-16 h-16 mx-auto mb-4 rounded-2xl bg-[var(--color-accent)]/10 flex items-center justify-center">
-            <svg class="w-8 h-8 text-[var(--color-accent)]" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="1.5">
-              <path stroke-linecap="round" stroke-linejoin="round" d="M9 12h3.75M9 15h3.75M9 18h3.75m3 .75H18a2.25 2.25 0 002.25-2.25V6.108c0-1.135-.845-2.098-1.976-2.192a48.424 48.424 0 00-1.123-.08m-5.801 0c-.065.21-.1.433-.1.664 0 .414.336.75.75.75h4.5a.75.75 0 00.75-.75 2.25 2.25 0 00-.1-.664m-5.8 0A2.251 2.251 0 0113.5 2.25H15a2.25 2.25 0 012.15 1.586m-5.8 0c-.376.023-.75.05-1.124.08C9.095 4.01 8.25 4.973 8.25 6.108V8.25m0 0H4.875c-.621 0-1.125.504-1.125 1.125v11.25c0 .621.504 1.125 1.125 1.125h9.75c.621 0 1.125-.504 1.125-1.125V9.375c0-.621-.504-1.125-1.125-1.125H8.25z"/>
-            </svg>
+        <div class="ml-5 w-px h-4 bg-neutral-200"></div>
+
+        <!-- Step 3 -->
+        <div class="group relative flex gap-5 md:gap-6">
+          <div class="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl text-white text-sm font-bold shadow-md" style="background: var(--color-accent); box-shadow: 0 4px 12px rgba(232, 108, 71, 0.2);">3</div>
+          <div class="flex-1 rounded-2xl bg-white border px-6 py-5 transition-all duration-300 group-hover:shadow-md" style="border-color: var(--color-border);">
+            <h3 class="text-[17px] font-bold mb-1" style="color: var(--color-text);">Vous recevez leur verdict</h3>
+            <p class="text-sm" style="color: var(--color-text-muted);">Un rapport visuel interactif : qui vous a contacté, qui a hésité, qui est reparti — et surtout <strong>pourquoi</strong>. Avec des recommandations concrètes, classées par impact.</p>
           </div>
-          <div class="text-sm font-bold text-[var(--color-accent)] uppercase tracking-wide mb-2">Étape 3</div>
-          <h3 class="text-lg font-semibold text-neutral-900 mb-2">Vous recevez leur verdict</h3>
-          <p class="text-sm text-neutral-500">Qui vous a contacté, qui a hésité, qui est reparti — et surtout pourquoi. Avec des recommandations concrètes pour convertir plus.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- ═══════════════════ EXEMPLE DE RAPPORT ═══════════════════ -->
-  <section class="w-full bg-[#0D0D0D] px-6 py-16 md:px-8 md:py-24 overflow-hidden">
+  <!-- ═══════════════════ DÉMO LIVE ═══════════════════ -->
+  <section class="w-full px-6 py-20 md:px-8 md:py-28 overflow-hidden" style="background: #0A0A0A;">
     <div class="mx-auto max-w-5xl">
-      <h2 class="text-3xl font-bold text-white mb-4 md:text-4xl text-center">
-        Voici ce que vous recevez
+      <div class="text-xs font-semibold uppercase tracking-widest text-center mb-4" style="color: var(--color-accent); letter-spacing: 0.15em;">Extrait de rapport reel</div>
+      <h2 class="text-3xl md:text-4xl font-bold leading-tight tracking-[-0.02em] text-center text-white mb-4">
+        Ce n'est pas un tableau de chiffres.<br/>C'est une histoire.
       </h2>
-      <p class="text-neutral-400 text-center max-w-2xl mx-auto mb-12">
-        Un rapport visuel interactif avec le feedback détaillé de chaque visiteur simulé.
+      <p class="text-center max-w-xl mx-auto mb-14" style="color: rgba(255,255,255,0.4);">
+        Chaque visiteur est un personnage avec un contexte, des attentes, et un parcours détaillé sur votre site.
       </p>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
-        <!-- Card: KPI -->
-        <div class="bg-white/5 backdrop-blur rounded-2xl border border-white/10 p-6">
-          <div class="text-sm font-bold text-[var(--color-accent)] uppercase tracking-wide mb-4">Tableau de bord</div>
-          <div class="grid grid-cols-2 gap-4">
-            <div class="bg-white/5 rounded-xl p-4 text-center">
-              <div class="text-2xl font-bold text-emerald-400">50%</div>
-              <div class="text-xs text-neutral-400 mt-1">Taux de conversion</div>
-            </div>
-            <div class="bg-white/5 rounded-xl p-4 text-center">
-              <div class="text-2xl font-bold text-white">6.7</div>
-              <div class="text-xs text-neutral-400 mt-1">Expérience / 10</div>
-            </div>
-            <div class="bg-white/5 rounded-xl p-4 text-center">
-              <div class="text-2xl font-bold text-white">6.1</div>
-              <div class="text-xs text-neutral-400 mt-1">Confiance / 10</div>
-            </div>
-            <div class="bg-white/5 rounded-xl p-4 text-center">
-              <div class="text-2xl font-bold text-white">7.1</div>
-              <div class="text-xs text-neutral-400 mt-1">Clarté / 10</div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Card: Persona preview -->
-        <div class="bg-white/5 backdrop-blur rounded-2xl border border-white/10 p-6">
-          <div class="text-sm font-bold text-[var(--color-accent)] uppercase tracking-wide mb-4">Exemple de visiteur</div>
-          <div class="flex items-start gap-3 mb-4">
-            <span class="text-2xl">🔧</span>
-            <div>
-              <div class="flex items-center gap-2">
-                <span class="font-semibold text-white">Stéphane, 47 ans</span>
-                <span class="px-2 py-0.5 rounded-full text-[10px] bg-amber-500/20 text-amber-300 border border-amber-500/30">Hésite</span>
+      <!-- Persona cards -->
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-12">
+        {demoPersonas.map(p => {
+          const borderCol = p.color === 'emerald' ? 'rgba(52,211,153,0.3)' : p.color === 'amber' ? 'rgba(251,191,36,0.3)' : 'rgba(248,113,113,0.3)';
+          const bgCol = p.color === 'emerald' ? 'rgba(52,211,153,0.06)' : p.color === 'amber' ? 'rgba(251,191,36,0.06)' : 'rgba(248,113,113,0.06)';
+          const badgeBg = p.color === 'emerald' ? 'rgba(52,211,153,0.15)' : p.color === 'amber' ? 'rgba(251,191,36,0.15)' : 'rgba(248,113,113,0.15)';
+          const badgeText = p.color === 'emerald' ? '#6EE7B7' : p.color === 'amber' ? '#FCD34D' : '#FCA5A5';
+          const label = p.decision === 'Convertit' ? 'Contacte' : p.decision === 'Hesite' ? 'Hesite' : 'Quitte';
+          return (
+            <div class="rounded-2xl p-5 transition-all duration-300 hover:scale-[1.01]" style={`background: ${bgCol}; border: 1px solid ${borderCol};`}>
+              <div class="flex items-start gap-3 mb-3">
+                <span class="text-2xl">{p.emoji}</span>
+                <div class="flex-1">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <span class="font-semibold text-white text-sm">{p.name}, {p.age} ans</span>
+                    <span class="px-2 py-0.5 rounded-full text-[10px] font-medium" style={`background: ${badgeBg}; color: ${badgeText};`}>{label}</span>
+                  </div>
+                  <div class="text-xs mt-0.5" style="color: rgba(255,255,255,0.4);">{p.job} — {p.canal} / {p.device}</div>
+                </div>
               </div>
-              <div class="text-xs text-neutral-400">Plombier, Woippy — Google Search / Mobile</div>
+              <p class="text-sm leading-relaxed" style="color: rgba(255,255,255,0.6);">{p.reason}</p>
             </div>
-          </div>
-          <p class="text-sm text-neutral-300 italic mb-3">"Son concurrent vient de lancer un site moderne, il perd des appels depuis 6 mois"</p>
-          <div class="space-y-2 text-xs">
-            <div class="flex gap-2"><span class="text-emerald-400 shrink-0">+</span><span class="text-neutral-300">Prix affiché clairement, pas de devis à demander</span></div>
-            <div class="flex gap-2"><span class="text-red-400 shrink-0">-</span><span class="text-neutral-300">Pas d'exemple artisan BTP en homepage</span></div>
-            <div class="flex gap-2"><span class="text-red-400 shrink-0">-</span><span class="text-neutral-300">Site met 4.5 secondes à s'afficher sur mobile</span></div>
-          </div>
-        </div>
+          );
+        })}
       </div>
 
-      <!-- Features list -->
-      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
-        <div class="text-center">
-          <div class="text-2xl font-bold text-white">20</div>
-          <div class="text-xs text-neutral-400">visiteurs simulés</div>
-        </div>
-        <div class="text-center">
-          <div class="text-2xl font-bold text-white">6</div>
-          <div class="text-xs text-neutral-400">canaux d'arrivée</div>
-        </div>
-        <div class="text-center">
-          <div class="text-2xl font-bold text-white">4</div>
-          <div class="text-xs text-neutral-400">scores techniques</div>
-        </div>
-        <div class="text-center">
-          <div class="text-2xl font-bold text-white">Top 5</div>
-          <div class="text-xs text-neutral-400">recommandations</div>
+      <!-- KPI preview -->
+      <div class="rounded-2xl px-8 py-6 mb-10" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07);">
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-6 text-center">
+          <div>
+            <div class="text-3xl font-bold text-[var(--color-accent)] tabular-nums">50%</div>
+            <div class="text-xs mt-1" style="color: rgba(255,255,255,0.3);">Conversion</div>
+          </div>
+          <div>
+            <div class="text-3xl font-bold text-white tabular-nums">6.7</div>
+            <div class="text-xs mt-1" style="color: rgba(255,255,255,0.3);">Experience</div>
+          </div>
+          <div>
+            <div class="text-3xl font-bold text-white tabular-nums">6.1</div>
+            <div class="text-xs mt-1" style="color: rgba(255,255,255,0.3);">Confiance</div>
+          </div>
+          <div>
+            <div class="text-3xl font-bold text-white tabular-nums">7.1</div>
+            <div class="text-xs mt-1" style="color: rgba(255,255,255,0.3);">Clarte</div>
+          </div>
         </div>
       </div>
 
       <div class="text-center">
-        <a href="/audit/marcm/" class="inline-flex items-center gap-2 text-[var(--color-accent)] hover:text-white transition-colors font-medium">
-          Voir un rapport complet (120 visiteurs)
+        <a href="/audit/marcm/" class="inline-flex items-center gap-2 text-sm font-medium transition-colors hover:text-white" style="color: var(--color-accent);">
+          Voir le rapport complet — 120 visiteurs simulés
           <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
         </a>
       </div>
@@ -237,89 +258,82 @@ const faqItems = [
   </section>
 
   <!-- ═══════════════════ PRICING ═══════════════════ -->
-  <section class="w-full px-6 py-16 md:px-8 md:py-24">
-    <div class="mx-auto max-w-4xl">
-      <h2 class="text-3xl font-bold text-neutral-900 mb-4 md:text-4xl text-center">
-        Choisissez votre formule
+  <section class="w-full px-6 py-20 md:px-8 md:py-28" style="background: var(--color-bg);">
+    <div class="mx-auto max-w-5xl">
+      <div class="text-xs font-semibold uppercase tracking-widest text-center mb-4" style="color: var(--color-accent); letter-spacing: 0.15em;">Tarifs</div>
+      <h2 class="text-3xl md:text-4xl font-bold leading-tight tracking-[-0.02em] text-center mb-4" style="color: var(--color-text);">
+        Combien de visiteurs voulez-vous envoyer ?
       </h2>
-      <p class="text-neutral-500 text-center max-w-xl mx-auto mb-12">
-        Les deux incluent : résultats en 48h et rapport confidentiel.
+      <p class="text-center max-w-lg mx-auto mb-14" style="color: var(--color-text-muted);">
+        Plus il y a de visiteurs, plus l'analyse est fiable. Les trois formules incluent des résultats sous 48h.
       </p>
 
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-3xl mx-auto">
-        <!-- Gratuit -->
-        <div class="bg-white rounded-2xl border border-neutral-200 p-8 shadow-sm">
-          <div class="text-sm font-bold text-neutral-400 uppercase tracking-wide mb-4">Découverte</div>
-          <div class="flex items-baseline gap-1 mb-2">
-            <span class="text-4xl font-bold text-neutral-900">Gratuit</span>
-          </div>
-          <p class="text-sm text-neutral-500 mb-6">Pour voir ce que vos visiteurs pensent vraiment.</p>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
 
-          <ul class="space-y-3 mb-8">
-            <li class="flex items-start gap-2 text-sm text-neutral-700">
-              <svg class="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-              5 visiteurs simulés
-            </li>
-            <li class="flex items-start gap-2 text-sm text-neutral-700">
-              <svg class="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-              Résumé : qui convertit, qui part
-            </li>
-            <li class="flex items-start gap-2 text-sm text-neutral-700">
-              <svg class="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-              1 recommandation prioritaire
-            </li>
-            <li class="flex items-start gap-2 text-sm text-neutral-700">
-              <svg class="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-              Résultats par email sous 48h
-            </li>
+        <!-- GRATUIT -->
+        <div class="rounded-2xl border bg-white p-7 flex flex-col" style="border-color: var(--color-border);">
+          <div class="text-xs font-semibold uppercase tracking-widest mb-6" style="color: var(--color-text-muted); letter-spacing: 0.12em;">Decouverte</div>
+          <div class="flex items-baseline gap-1 mb-1">
+            <span class="text-4xl font-bold" style="color: var(--color-text);">Gratuit</span>
+          </div>
+          <p class="text-sm mb-8" style="color: var(--color-text-muted);">Pour comprendre le principe.</p>
+
+          <ul class="space-y-3 mb-8 flex-1">
+            <li class="flex items-start gap-2.5 text-sm" style="color: var(--color-text);"><span class="text-emerald-500 shrink-0 mt-0.5">✓</span><strong>5</strong> visiteurs simulés</li>
+            <li class="flex items-start gap-2.5 text-sm" style="color: var(--color-text);"><span class="text-emerald-500 shrink-0 mt-0.5">✓</span>Résumé : qui convertit, qui part</li>
+            <li class="flex items-start gap-2.5 text-sm" style="color: var(--color-text);"><span class="text-emerald-500 shrink-0 mt-0.5">✓</span>1 recommandation prioritaire</li>
+            <li class="flex items-start gap-2.5 text-sm" style="color: var(--color-text);"><span class="text-emerald-500 shrink-0 mt-0.5">✓</span>Résultats par email</li>
           </ul>
 
-          <a href="#formulaire" class="block w-full text-center px-6 py-3 border-2 border-neutral-300 text-neutral-700 font-semibold rounded-xl hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-all">
+          <a href="#formulaire" class="block w-full text-center px-6 py-3.5 rounded-xl font-semibold border-2 transition-all duration-200 hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]" style="border-color: var(--color-border); color: var(--color-text);">
             Tester gratuitement
           </a>
         </div>
 
-        <!-- Complet -->
-        <div class="bg-white rounded-2xl border-2 border-[var(--color-accent)] p-8 shadow-lg relative">
-          <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 bg-[var(--color-accent)] text-white text-xs font-bold rounded-full uppercase tracking-wide">
-            Complet
+        <!-- 90€ — POPULAIRE -->
+        <div class="rounded-2xl p-7 flex flex-col relative shadow-xl" style="border: 2px solid var(--color-accent); background: white;">
+          <div class="absolute -top-3.5 left-1/2 -translate-x-1/2 px-4 py-1 rounded-full text-xs font-bold uppercase tracking-wide text-white" style="background: linear-gradient(135deg, #E86C47, #D4572F);">Populaire</div>
+          <div class="text-xs font-semibold uppercase tracking-widest mb-6" style="color: var(--color-accent); letter-spacing: 0.12em;">Complet</div>
+          <div class="flex items-baseline gap-1 mb-1">
+            <span class="text-4xl font-bold" style="color: var(--color-text);">90€</span>
+            <span class="text-sm" style="color: var(--color-text-muted);">HT</span>
           </div>
-          <div class="text-sm font-bold text-[var(--color-accent)] uppercase tracking-wide mb-4">Rapport complet</div>
-          <div class="flex items-baseline gap-1 mb-2">
-            <span class="text-4xl font-bold text-neutral-900">90€</span>
-            <span class="text-sm text-neutral-400">HT</span>
-          </div>
-          <p class="text-sm text-neutral-500 mb-6">Le diagnostic complet de votre site web.</p>
+          <p class="text-sm mb-8" style="color: var(--color-text-muted);">Le diagnostic qui change la donne.</p>
 
-          <ul class="space-y-3 mb-8">
-            <li class="flex items-start gap-2 text-sm text-neutral-700">
-              <svg class="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-              <strong>20 visiteurs simulés</strong> avec feedback détaillé
-            </li>
-            <li class="flex items-start gap-2 text-sm text-neutral-700">
-              <svg class="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-              Rapport interactif (personas cliquables)
-            </li>
-            <li class="flex items-start gap-2 text-sm text-neutral-700">
-              <svg class="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-              Audit technique (vitesse, sécurité, SEO, Schema.org)
-            </li>
-            <li class="flex items-start gap-2 text-sm text-neutral-700">
-              <svg class="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-              Recommandations priorisées par impact
-            </li>
-            <li class="flex items-start gap-2 text-sm text-neutral-700">
-              <svg class="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-              Page dédiée privée sur marcm.fr
-            </li>
-            <li class="flex items-start gap-2 text-sm text-neutral-700">
-              <svg class="w-5 h-5 text-emerald-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-              Conversion par canal (Google, Maps, IA, réseaux)
-            </li>
+          <ul class="space-y-3 mb-8 flex-1">
+            <li class="flex items-start gap-2.5 text-sm" style="color: var(--color-text);"><span class="text-emerald-500 shrink-0 mt-0.5">✓</span><strong>20</strong> visiteurs avec feedback détaillé</li>
+            <li class="flex items-start gap-2.5 text-sm" style="color: var(--color-text);"><span class="text-emerald-500 shrink-0 mt-0.5">✓</span>Rapport interactif (personas cliquables)</li>
+            <li class="flex items-start gap-2.5 text-sm" style="color: var(--color-text);"><span class="text-emerald-500 shrink-0 mt-0.5">✓</span>Audit technique (vitesse, sécurité, SEO)</li>
+            <li class="flex items-start gap-2.5 text-sm" style="color: var(--color-text);"><span class="text-emerald-500 shrink-0 mt-0.5">✓</span>Recommandations priorisées par impact</li>
+            <li class="flex items-start gap-2.5 text-sm" style="color: var(--color-text);"><span class="text-emerald-500 shrink-0 mt-0.5">✓</span>Conversion par canal (Google, Maps, IA...)</li>
+            <li class="flex items-start gap-2.5 text-sm" style="color: var(--color-text);"><span class="text-emerald-500 shrink-0 mt-0.5">✓</span>Page dédiée privée sur marcm.fr</li>
           </ul>
 
-          <a href="#formulaire" class="block w-full text-center px-6 py-3 bg-[var(--color-accent)] text-white font-semibold rounded-xl hover:opacity-90 transition-opacity">
+          <a href="#formulaire" class="block w-full text-center px-6 py-3.5 rounded-xl font-semibold text-white transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5" style="background: linear-gradient(135deg, #E86C47, #D4572F); box-shadow: 0 4px 20px rgba(232, 108, 71, 0.3);">
             Commander — 90€ HT
+          </a>
+        </div>
+
+        <!-- 250€ — PRO -->
+        <div class="rounded-2xl border bg-white p-7 flex flex-col" style="border-color: var(--color-border);">
+          <div class="text-xs font-semibold uppercase tracking-widest mb-6" style="color: var(--color-text-muted); letter-spacing: 0.12em;">Pro</div>
+          <div class="flex items-baseline gap-1 mb-1">
+            <span class="text-4xl font-bold" style="color: var(--color-text);">250€</span>
+            <span class="text-sm" style="color: var(--color-text-muted);">HT</span>
+          </div>
+          <p class="text-sm mb-8" style="color: var(--color-text-muted);">L'analyse qui ne laisse rien au hasard.</p>
+
+          <ul class="space-y-3 mb-8 flex-1">
+            <li class="flex items-start gap-2.5 text-sm" style="color: var(--color-text);"><span class="text-emerald-500 shrink-0 mt-0.5">✓</span><strong>100</strong> visiteurs — fiabilité statistique</li>
+            <li class="flex items-start gap-2.5 text-sm" style="color: var(--color-text);"><span class="text-emerald-500 shrink-0 mt-0.5">✓</span>Tout le Complet, plus :</li>
+            <li class="flex items-start gap-2.5 text-sm" style="color: var(--color-text);"><span class="text-emerald-500 shrink-0 mt-0.5">✓</span>Analyse par canal (quel levier investir)</li>
+            <li class="flex items-start gap-2.5 text-sm" style="color: var(--color-text);"><span class="text-emerald-500 shrink-0 mt-0.5">✓</span>Analyse par maturité (découverte → décision)</li>
+            <li class="flex items-start gap-2.5 text-sm" style="color: var(--color-text);"><span class="text-emerald-500 shrink-0 mt-0.5">✓</span>Score de conversion par profil client</li>
+            <li class="flex items-start gap-2.5 text-sm" style="color: var(--color-text);"><span class="text-emerald-500 shrink-0 mt-0.5">✓</span>Appel de 30 min pour parcourir le rapport</li>
+          </ul>
+
+          <a href="#formulaire" class="block w-full text-center px-6 py-3.5 rounded-xl font-semibold border-2 transition-all duration-200 hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]" style="border-color: var(--color-border); color: var(--color-text);">
+            Commander — 250€ HT
           </a>
         </div>
       </div>
@@ -327,44 +341,42 @@ const faqItems = [
   </section>
 
   <!-- ═══════════════════ SOCIAL PROOF ═══════════════════ -->
-  <section class="w-full bg-neutral-50 border-y border-neutral-200 px-6 py-12 md:px-8">
-    <div class="mx-auto max-w-5xl">
-      <div class="flex flex-col md:flex-row items-center justify-center gap-8 md:gap-16 text-center">
-        <div>
-          <div class="text-3xl font-bold text-neutral-900">{vm.rapportsGeneres}+</div>
-          <div class="text-sm text-neutral-500">rapports déjà générés</div>
-        </div>
-        <div class="hidden md:block w-px h-10 bg-neutral-300"></div>
-        <div>
-          <div class="text-3xl font-bold text-neutral-900">520+</div>
-          <div class="text-sm text-neutral-500">visiteurs simulés au total</div>
-        </div>
-        <div class="hidden md:block w-px h-10 bg-neutral-300"></div>
-        <div>
-          <div class="text-3xl font-bold text-neutral-900">48h</div>
-          <div class="text-sm text-neutral-500">délai de livraison</div>
-        </div>
+  <section class="w-full border-y px-6 py-12 md:px-8" style="background: var(--color-bg-alt); border-color: var(--color-border);">
+    <div class="mx-auto max-w-4xl flex flex-col md:flex-row items-center justify-center gap-10 md:gap-20 text-center">
+      <div>
+        <div class="text-3xl font-bold tabular-nums" style="color: var(--color-text);">{vm.rapportsGeneres}+</div>
+        <div class="text-sm" style="color: var(--color-text-muted);">rapports générés</div>
+      </div>
+      <div class="hidden md:block w-px h-10" style="background: var(--color-border);"></div>
+      <div>
+        <div class="text-3xl font-bold tabular-nums" style="color: var(--color-text);">520+</div>
+        <div class="text-sm" style="color: var(--color-text-muted);">visiteurs simulés</div>
+      </div>
+      <div class="hidden md:block w-px h-10" style="background: var(--color-border);"></div>
+      <div>
+        <div class="text-3xl font-bold tabular-nums" style="color: var(--color-text);">48h</div>
+        <div class="text-sm" style="color: var(--color-text-muted);">délai de livraison</div>
       </div>
     </div>
   </section>
 
   <!-- ═══════════════════ FAQ ═══════════════════ -->
-  <section class="w-full px-6 py-16 md:px-8 md:py-24">
+  <section class="w-full px-6 py-20 md:px-8 md:py-28" style="background: var(--color-bg);">
     <div class="mx-auto max-w-3xl">
-      <h2 class="text-3xl font-bold text-neutral-900 mb-10 md:text-4xl text-center">
+      <h2 class="text-3xl md:text-4xl font-bold leading-tight tracking-[-0.02em] text-center mb-12" style="color: var(--color-text);">
         Questions fréquentes
       </h2>
 
-      <div class="space-y-4">
+      <div class="space-y-3">
         {faqItems.map((item, i) => (
-          <details class="group bg-white rounded-xl border border-neutral-200 shadow-sm overflow-hidden" open={i === 0}>
-            <summary class="flex items-center justify-between gap-4 p-5 cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50 transition-colors">
-              <span class="font-semibold text-neutral-900">{item.question}</span>
-              <svg class="w-5 h-5 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+          <details class="group rounded-xl border bg-white p-6 transition-all hover:shadow-md" style={`border-color: var(--color-border);`} open={i === 0}>
+            <summary class="flex cursor-pointer items-center justify-between text-lg font-semibold list-none [&::-webkit-details-marker]:hidden" style="color: var(--color-text);">
+              {item.question}
+              <svg class="ml-4 h-5 w-5 shrink-0 transition-transform duration-300 group-open:rotate-180" style="color: var(--color-text-muted);" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
             </summary>
-            <div class="px-5 pb-5 text-sm text-neutral-600 leading-relaxed">
+            <p class="mt-4 text-[15px] leading-relaxed" style="color: var(--color-text-muted);">
               {item.answer}
-            </div>
+            </p>
           </details>
         ))}
       </div>
@@ -372,13 +384,14 @@ const faqItems = [
   </section>
 
   <!-- ═══════════════════ FORMULAIRE ═══════════════════ -->
-  <section id="formulaire" class="w-full bg-[#0D0D0D] px-6 py-16 md:px-8 md:py-24 overflow-hidden">
-    <div class="relative mx-auto max-w-xl z-10">
-      <h2 class="text-3xl font-bold text-white mb-4 md:text-4xl text-center">
-        Testez votre site gratuitement
+  <section id="formulaire" class="w-full px-6 py-20 md:px-8 md:py-28 overflow-hidden" style="background: #0A0A0A;">
+    <div class="absolute inset-0 opacity-[0.04]" style="background-image: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(232,108,71,0.12) 0%, transparent 70%);"></div>
+    <div class="relative mx-auto max-w-lg z-10">
+      <h2 class="text-3xl md:text-4xl font-bold leading-tight tracking-[-0.02em] text-center text-white mb-3">
+        Lancez votre Visite Mystère
       </h2>
-      <p class="text-neutral-400 text-center mb-10">
-        5 prospects IA visitent votre site et vous disent ce qu'ils en pensent. Résultats sous 48h.
+      <p class="text-center mb-10" style="color: rgba(255,255,255,0.4);">
+        Remplissez le formulaire. Résultats sous 48h.
       </p>
 
       <form
@@ -389,123 +402,118 @@ const faqItems = [
         <input type="hidden" name="access_key" value="dccda1f5-4e63-4b9f-9c66-f5ce76f0dfdd" />
         <input type="text" name="botcheck" style="display: none;" />
         <input type="hidden" name="redirect" value="https://marcm.fr/merci" />
-        <input type="hidden" name="subject" value="Visite Mystere — Nouvelle demande gratuite" />
-        <input type="hidden" name="from_name" value="Visite Mystère — marcm.fr" />
+        <input type="hidden" name="subject" value="Visite Mystere — Nouvelle demande" />
+        <input type="hidden" name="from_name" value="Visite Mystere — marcm.fr" />
 
-        <!-- URL du site -->
+        <!-- URL -->
         <div>
-          <label for="vm-url" class="block text-sm font-medium text-neutral-300 mb-1.5">URL de votre site *</label>
-          <input
-            type="url"
-            id="vm-url"
-            name="url_site"
-            placeholder="https://www.votre-site.fr"
-            required
-            class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder:text-neutral-500 focus:outline-none focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)] transition-colors"
-          />
+          <label for="vm-url" class="block text-sm font-medium mb-1.5" style="color: rgba(255,255,255,0.7);">URL de votre site *</label>
+          <input type="url" id="vm-url" name="url_site" placeholder="https://www.votre-site.fr" required class="w-full px-4 py-3.5 rounded-xl text-white placeholder:text-neutral-600 focus:outline-none transition-colors" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);" onfocus="this.style.borderColor='#E86C47'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'" />
         </div>
 
         <!-- Email -->
         <div>
-          <label for="vm-email" class="block text-sm font-medium text-neutral-300 mb-1.5">Votre email *</label>
-          <input
-            type="email"
-            id="vm-email"
-            name="email"
-            placeholder="vous@exemple.fr"
-            required
-            class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder:text-neutral-500 focus:outline-none focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)] transition-colors"
-          />
+          <label for="vm-email" class="block text-sm font-medium mb-1.5" style="color: rgba(255,255,255,0.7);">Votre email *</label>
+          <input type="email" id="vm-email" name="email" placeholder="vous@exemple.fr" required class="w-full px-4 py-3.5 rounded-xl text-white placeholder:text-neutral-600 focus:outline-none transition-colors" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);" onfocus="this.style.borderColor='#E86C47'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'" />
         </div>
 
-        <!-- Prénom -->
-        <div>
-          <label for="vm-prenom" class="block text-sm font-medium text-neutral-300 mb-1.5">Votre prénom</label>
-          <input
-            type="text"
-            id="vm-prenom"
-            name="prenom"
-            placeholder="Marc"
-            class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white placeholder:text-neutral-500 focus:outline-none focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)] transition-colors"
-          />
+        <!-- Prénom + Activité -->
+        <div class="grid grid-cols-2 gap-4">
+          <div>
+            <label for="vm-prenom" class="block text-sm font-medium mb-1.5" style="color: rgba(255,255,255,0.7);">Prénom</label>
+            <input type="text" id="vm-prenom" name="prenom" placeholder="Marc" class="w-full px-4 py-3.5 rounded-xl text-white placeholder:text-neutral-600 focus:outline-none transition-colors" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);" onfocus="this.style.borderColor='#E86C47'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'" />
+          </div>
+          <div>
+            <label for="vm-activite" class="block text-sm font-medium mb-1.5" style="color: rgba(255,255,255,0.7);">Activité</label>
+            <select id="vm-activite" name="activite" class="w-full px-4 py-3.5 rounded-xl text-white focus:outline-none transition-colors" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.12);" onfocus="this.style.borderColor='#E86C47'" onblur="this.style.borderColor='rgba(255,255,255,0.12)'">
+              <option value="" style="background: #1a1a1a;">Sélectionner</option>
+              <option value="Artisan" style="background: #1a1a1a;">Artisan</option>
+              <option value="Commerce" style="background: #1a1a1a;">Commerce</option>
+              <option value="Therapeute" style="background: #1a1a1a;">Thérapeute</option>
+              <option value="Restaurant" style="background: #1a1a1a;">Restaurant</option>
+              <option value="Freelance" style="background: #1a1a1a;">Freelance</option>
+              <option value="Association" style="background: #1a1a1a;">Association</option>
+              <option value="Autre" style="background: #1a1a1a;">Autre</option>
+            </select>
+          </div>
         </div>
 
-        <!-- Activité -->
+        <!-- Formule -->
         <div>
-          <label for="vm-activite" class="block text-sm font-medium text-neutral-300 mb-1.5">Votre activité</label>
-          <select
-            id="vm-activite"
-            name="activite"
-            class="w-full px-4 py-3 bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:border-[var(--color-accent)] focus:ring-1 focus:ring-[var(--color-accent)] transition-colors"
-          >
-            <option value="" class="bg-neutral-800">-- Sélectionner --</option>
-            <option value="Artisan" class="bg-neutral-800">Artisan</option>
-            <option value="Commerce" class="bg-neutral-800">Commerce</option>
-            <option value="Therapeute" class="bg-neutral-800">Thérapeute / Bien-être</option>
-            <option value="Restaurant" class="bg-neutral-800">Restaurant / Food</option>
-            <option value="Freelance" class="bg-neutral-800">Freelance / Consultant</option>
-            <option value="Association" class="bg-neutral-800">Association</option>
-            <option value="Autre" class="bg-neutral-800">Autre</option>
-          </select>
-        </div>
-
-        <!-- Formule souhaitée -->
-        <div>
-          <label class="block text-sm font-medium text-neutral-300 mb-3">Formule souhaitée</label>
-          <div class="grid grid-cols-2 gap-3">
-            <label class="relative flex items-center justify-center gap-2 px-4 py-3 bg-white/10 border-2 border-white/20 rounded-xl cursor-pointer hover:border-[var(--color-accent)]/50 transition-colors has-[:checked]:border-[var(--color-accent)] has-[:checked]:bg-[var(--color-accent)]/10">
+          <label class="block text-sm font-medium mb-3" style="color: rgba(255,255,255,0.7);">Formule</label>
+          <div class="grid grid-cols-3 gap-3">
+            <label class="relative flex flex-col items-center justify-center gap-1 px-3 py-4 rounded-xl cursor-pointer transition-all duration-200 has-[:checked]:border-[var(--color-accent)] has-[:checked]:bg-[rgba(232,108,71,0.08)]" style="background: rgba(255,255,255,0.04); border: 2px solid rgba(255,255,255,0.1);">
               <input type="radio" name="formule" value="Gratuit (5 visiteurs)" checked class="sr-only" />
-              <span class="text-sm font-medium text-white">Gratuit</span>
-              <span class="text-xs text-neutral-400">5 visiteurs</span>
+              <span class="text-sm font-semibold text-white">Gratuit</span>
+              <span class="text-[10px]" style="color: rgba(255,255,255,0.35);">5 visiteurs</span>
             </label>
-            <label class="relative flex items-center justify-center gap-2 px-4 py-3 bg-white/10 border-2 border-white/20 rounded-xl cursor-pointer hover:border-[var(--color-accent)]/50 transition-colors has-[:checked]:border-[var(--color-accent)] has-[:checked]:bg-[var(--color-accent)]/10">
-              <input type="radio" name="formule" value="Complet (20 visiteurs) — 90€ HT" class="sr-only" />
-              <span class="text-sm font-medium text-white">Complet</span>
-              <span class="text-xs text-neutral-400">90€ HT</span>
+            <label class="relative flex flex-col items-center justify-center gap-1 px-3 py-4 rounded-xl cursor-pointer transition-all duration-200 has-[:checked]:border-[var(--color-accent)] has-[:checked]:bg-[rgba(232,108,71,0.08)]" style="background: rgba(255,255,255,0.04); border: 2px solid rgba(255,255,255,0.1);">
+              <input type="radio" name="formule" value="Complet — 90€ HT (20 visiteurs)" class="sr-only" />
+              <span class="text-sm font-semibold text-white">90€</span>
+              <span class="text-[10px]" style="color: rgba(255,255,255,0.35);">20 visiteurs</span>
+            </label>
+            <label class="relative flex flex-col items-center justify-center gap-1 px-3 py-4 rounded-xl cursor-pointer transition-all duration-200 has-[:checked]:border-[var(--color-accent)] has-[:checked]:bg-[rgba(232,108,71,0.08)]" style="background: rgba(255,255,255,0.04); border: 2px solid rgba(255,255,255,0.1);">
+              <input type="radio" name="formule" value="Pro — 250€ HT (100 visiteurs + appel)" class="sr-only" />
+              <span class="text-sm font-semibold text-white">250€</span>
+              <span class="text-[10px]" style="color: rgba(255,255,255,0.35);">100 visiteurs</span>
             </label>
           </div>
         </div>
 
         <!-- RGPD -->
-        <div class="flex items-start gap-3">
-          <input type="checkbox" id="vm-rgpd" name="rgpd" required class="mt-1 rounded border-white/20 bg-white/10 text-[var(--color-accent)] focus:ring-[var(--color-accent)]" />
-          <label for="vm-rgpd" class="text-xs text-neutral-400">
-            J'accepte que mes données soient utilisées pour générer mon rapport. <a href="/politique-confidentialite" class="underline hover:text-white">Politique de confidentialité</a>
-          </label>
-        </div>
+        <label class="flex items-start gap-3 cursor-pointer">
+          <input type="checkbox" name="rgpd" required class="mt-1 rounded" style="accent-color: #E86C47;" />
+          <span class="text-xs" style="color: rgba(255,255,255,0.35);">
+            J'accepte que mes données soient utilisées pour générer mon rapport. <a href="/politique-confidentialite" class="underline hover:text-white transition-colors">Politique de confidentialité</a>
+          </span>
+        </label>
 
-        <button
-          type="submit"
-          class="w-full px-8 py-4 bg-[var(--color-accent)] text-white font-semibold rounded-xl hover:opacity-90 transition-opacity text-lg"
-        >
+        <button type="submit" class="w-full px-8 py-4 rounded-xl text-base font-semibold text-white transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5" style="background: linear-gradient(135deg, #E86C47, #D4572F); box-shadow: 0 4px 20px rgba(232, 108, 71, 0.4);">
           Lancer ma Visite Mystère
         </button>
 
-        <p class="text-center text-xs text-neutral-500">
-          Gratuit, sans engagement. Rapport confidentiel sous 48h.
+        <p class="text-center text-xs" style="color: rgba(255,255,255,0.25);">
+          Sans engagement. Rapport confidentiel sous 48h.
         </p>
       </form>
     </div>
   </section>
 
-  <!-- ═══════════════════ CTA UPSELL ═══════════════════ -->
-  <section class="w-full px-6 py-16 md:px-8 text-center">
+  <!-- ═══════════════════ UPSELL ═══════════════════ -->
+  <section class="w-full px-6 py-16 md:px-8 md:py-20 text-center" style="background: var(--color-bg);">
     <div class="mx-auto max-w-2xl">
-      <h2 class="text-2xl font-bold text-neutral-900 mb-3">
-        Envie d'aller plus loin ?
+      <p class="text-sm font-medium mb-3" style="color: var(--color-text-muted);">Envie de corriger les problèmes identifiés ?</p>
+      <h2 class="text-2xl md:text-3xl font-bold leading-tight mb-4" style="color: var(--color-text);">
+        Je crée aussi le site qui va avec.
       </h2>
-      <p class="text-neutral-600 mb-8">
-        Je crée aussi des sites qui convertissent — design sur mesure, visible sur Google et les IA, livré en 7 jours. À partir de 490€.
+      <p class="text-sm mb-8" style="color: var(--color-text-muted);">
+        Design sur mesure, visible sur Google et les IA, livré en 7 jours. À partir de 490€.
       </p>
       <div class="flex flex-col sm:flex-row gap-4 justify-center">
-        <a href="/commander" class="inline-flex items-center gap-2 px-6 py-3 bg-[var(--color-accent)] text-white font-semibold rounded-xl hover:opacity-90 transition-opacity">
+        <a href="/commander" class="inline-flex items-center justify-center rounded-xl px-6 py-3.5 text-sm font-semibold text-white transition-all duration-200 hover:-translate-y-0.5" style="background: linear-gradient(135deg, #E86C47, #D4572F); box-shadow: 0 4px 16px rgba(232, 108, 71, 0.25);">
           Commander un site — 490€
         </a>
-        <a href="/offre" class="inline-flex items-center gap-2 px-6 py-3 border-2 border-neutral-300 text-neutral-700 font-semibold rounded-xl hover:border-neutral-400 transition-colors">
+        <a href="/offre" class="inline-flex items-center justify-center rounded-xl px-6 py-3.5 text-sm font-semibold border transition-all duration-200 hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]" style="border-color: var(--color-border); color: var(--color-text);">
           Voir l'offre complète
         </a>
       </div>
     </div>
   </section>
+
+  <!-- Shimmer animation for hero accent text -->
+  <style is:inline>
+    .hero-accent-text {
+      background: linear-gradient(135deg, #E86C47 0%, #FF8A65 50%, #E86C47 100%);
+      background-size: 200% auto;
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: shimmer 5s ease-in-out 2s infinite;
+    }
+    @keyframes shimmer {
+      0%, 100% { background-position: 0% center; }
+      50% { background-position: 200% center; }
+    }
+  </style>
 
 </BaseLayout>
