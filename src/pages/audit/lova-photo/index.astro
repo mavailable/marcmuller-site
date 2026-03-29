@@ -1,0 +1,756 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX — Lova Photo | Marc M';
+const description = 'Simulation de 10 visites personas sur lovaphoto-metz.fr — rapport UX et technique avec recommandations priorisees.';
+
+// ============================================================
+// DONNEES PROSPECT
+// ============================================================
+const prospect = {
+  name: 'Lova Photo',
+  url: 'https://www.lovaphoto-metz.fr',
+  date: '29 mars 2026',
+  activity: 'Photographe professionnelle — portraits, grossesse, mariage, boudoir, entreprise',
+  location: 'Moulins-les-Metz (57160) — Moselle, Grand Est',
+};
+
+// ============================================================
+// KPIs GLOBAUX
+// ============================================================
+const kpis = {
+  conversion: 50,
+  experience: 5.6,
+  confiance: 6.2,
+  clarte: 5.0,
+  convertissent: 5,
+  hesitent: 3,
+  quittent: 2,
+};
+
+const constat = "Une photographe au talent reconnu — 131 avis Google 5/5, style décalé affirmé, gamme de services large — mais un site Joomla PHP 7.3 de 2018 qui n'exploite aucun de ses actifs : la galerie est bloquée pour Google, les 131 avis ne génèrent aucun rich snippet (zéro Schema.org), aucun analytics, et les cookies se déposent sans consentement. La réputation exceptionnelle de Vanessa convertit malgré le site — pas grâce à lui.";
+
+// ============================================================
+// CONVERSION PAR CANAL
+// ============================================================
+const conversionByCanal = [
+  { canal: 'Bouche-a-oreille / recommandation', taux: 100, color: 'text-green-700', bg: 'bg-green-500' },
+  { canal: 'Google Maps / GBP (131 avis 5/5)', taux: 67, color: 'text-green-600', bg: 'bg-green-400' },
+  { canal: 'Instagram / reseaux sociaux', taux: 50, color: 'text-amber-600', bg: 'bg-amber-400' },
+  { canal: 'Google Search', taux: 40, color: 'text-amber-600', bg: 'bg-amber-400' },
+  { canal: 'IA generatives (ChatGPT/Claude)', taux: 0, color: 'text-red-600', bg: 'bg-red-500' },
+];
+
+// ============================================================
+// TOP FRICTIONS
+// ============================================================
+const topFrictions = [
+  { titre: 'Galerie photo bloquee pour Google (robots.txt Disallow /galerie-photo/)', count: 9, detail: 'Le portfolio — actif n°1 d\'une photographe — est entierement exclu de Google Images par un robots.txt Joomla generique. Des centaines de photos artistiques ne generent aucun trafic SEO. C\'est la friction technique la plus dommageable.' },
+  { titre: '131 avis Google 5/5 invisibles sur le site et sans Schema.org', count: 8, detail: 'La note exceptionnelle de Vanessa n\'apparait nulle part sur lovaphoto-metz.fr. Pas de widget avis, pas d\'AggregateRating en Schema.org. Les visiteurs qui n\'ont pas cherche sur Google Maps ne savent pas qu\'elle est la mieux notee de la zone.' },
+  { titre: 'Aucun analytics — Vanessa navigue a l\'aveugle', count: 7, detail: 'Zero Google Analytics, zero Umami, zero Meta Pixel. Impossible de savoir combien de visiteurs arrivent, d\'ou ils viennent, quelles pages ils consultent. Impossible de mesurer si une action marketing fonctionne.' },
+  { titre: 'Design 2018 — decalage fort avec style photo artistique', count: 6, detail: 'Le site Joomla de 2018 ne rend pas justice au style "decale et original" que Vanessa revendique. Les visiteurs venant d\'Instagram s\'attendent a une experience visuelle forte — ils trouvent un template generique.' },
+  { titre: 'Cookies RGPD deposes sans consentement + og:type incorrect', count: 5, detail: '4 cookies de session sont deposes immediatement sans bandeau RGPD. L\'og:type est "article" sur la page d\'accueil au lieu de "website" — mauvaise vignette lors des partages sur Facebook, Instagram.' },
+];
+
+// ============================================================
+// PAGESPEED (ESTIMES — profil Joomla PHP 7.3 OVH mutualisé)
+// ============================================================
+const pagespeed = {
+  mobile: { performance: 48, accessibility: 72, bestPractices: 68, seo: 78 },
+  desktop: { performance: 70, accessibility: 72, bestPractices: 70, seo: 80 },
+};
+
+const coreWebVitals = [
+  { name: 'LCP', value: '~4.2s', status: 'bad' },
+  { name: 'INP', value: '~280ms', status: 'bad' },
+  { name: 'CLS', value: '~0.12', status: 'bad' },
+];
+
+const opportunities = [
+  { label: 'Migration site statique Astro (supprimer Joomla/PHP)', saving: '~3-4s' },
+  { label: 'Compression images WebP + lazy loading galerie', saving: '~1.5s' },
+  { label: 'Supprimer le TTFB PHP dynamique (actuellement 428ms)', saving: '~0.3s' },
+];
+
+// ============================================================
+// OBSERVATORY
+// ============================================================
+const observatory = {
+  grade: 'D',
+  score: 30,
+  testsPassed: 5,
+  testsTotal: 10,
+};
+
+// ============================================================
+// CHECKLIST TECHNIQUE
+// ============================================================
+const techChecks = [
+  { label: 'HTTPS actif + HTTP/2', present: true },
+  { label: 'robots.txt present', present: true, critical: false, note: '' },
+  { label: 'Sitemap.xml accessible', present: true },
+  { label: 'Meta description (accueil)', present: true },
+  { label: 'Canonical tag', present: true },
+  { label: 'Viewport meta (mobile)', present: true },
+  { label: 'H1 unique et pertinent', present: true },
+  { label: 'Polices locales (RGPD — pas CDN Google)', present: true },
+  { label: 'X-Content-Type-Options, X-Frame-Options', present: true },
+  { label: 'HSTS (Strict-Transport-Security)', present: true, critical: false, note: '2 valeurs contradictoires, sans includeSubDomains' },
+  { label: 'Galerie photo indexee par Google Images', present: false, critical: true, note: 'Bloquee : Disallow+Noindex /galerie-photo/ dans robots.txt' },
+  { label: 'Schema.org Person/Photographer', present: false, critical: true, note: 'Zero donnees structurees — toutes les pages' },
+  { label: 'AggregateRating (131 avis 5/5)', present: false, critical: true, note: 'Rich snippets Google inaccessibles — perte SEO majeure' },
+  { label: 'Open Graph description', present: false, critical: true, note: 'Absente — og:type="article" sur accueil (incorrect)' },
+  { label: 'Bandeau cookies RGPD', present: false, critical: true, note: '4 cookies deposes sans consentement (non conforme CNIL)' },
+  { label: 'Analytics / tracking', present: false, critical: true, note: 'Zero mesure — impossible de piloter l\'activite' },
+  { label: 'Content-Security-Policy complet', present: false, critical: true, note: 'Valeur vide (juste frame-ancestors self)' },
+  { label: 'Referrer-Policy stricte', present: false },
+  { label: 'Permissions-Policy', present: false },
+  { label: 'PHP a jour (>= 8.2)', present: false, critical: true, note: 'PHP 7.3 — fin de support dec. 2021, risque securite actif' },
+  { label: 'X-Powered-By masque', present: false, critical: false, note: 'Expose "PHP/7.3" dans les headers' },
+  { label: 'llms.txt pour IA generatives', present: false },
+  { label: 'Sitemap images', present: false },
+];
+
+// ============================================================
+// PERSONAS (10) — Sous-agent 1 : personas 1-5 (particuliers & familles)
+//                 Sous-agent 2 : personas 6-10 (pro, boudoir, mariée, IA)
+// ============================================================
+const personas = [
+  // --- SOUS-AGENT 1 : Particuliers et familles ---
+  {
+    id: 1, name: 'Amelie', age: 32, emoji: '\u{1F930}',
+    canal: 'Instagram', device: 'Mobile', maturite: 'Decouverte',
+    situation: 'Enceinte de 6 mois a Metz-Sablon, cherche une photographe pour immortaliser sa grossesse avant l\'accouchement',
+    contexte: 'Voit une photo de grossesse artistique taggee #lovaphoto sur Instagram, clique sur le profil, puis sur le lien bio',
+    parcours: ['Accueil', 'Galerie > Grossesse', 'Tarifs', 'Contact'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 7, clarte: 6 },
+    premierImpression: 'Le site n\'est pas aussi beau que ses photos Instagram. La galerie grossesse est belle par contre — 17 photos originales. Les tarifs sont clairs : 120€ studio ou 130€ extérieur. Je me decide !',
+    questionCle: 'A quel stade de grossesse vous preferez faire les photos ? Studio ou jardin ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Les tarifs sont la — avantage concurrentiel fort. La galerie grossesse est convincante. Mais le site ne repond pas a "a quel mois faire le shooting" ni "qu\'est-ce qu\'on me livre exactement (fichiers, tirages ?)". Elle contacte quand meme car les photos sont belles.',
+    impactTechnique: 'La galerie Grossesse (17 photos) est sur le site mais bloquee pour Google Images — Amelie n\'est arrivee que via Instagram. Sur mobile le site est lent (~4s) mais elle patiente car elle est motivee.',
+    pointsPositifs: ['Galerie grossesse specifique (17 photos convaincantes)', 'Tarifs clairement affiches', 'Style original bien affiche', 'Formulaire de contact complet'],
+    frictions: ['Design 2018 decale vs photos artistiques Instagram', 'Pas de FAQ grossesse (stade ideal, duree, livraison)', 'Galerie non filtrable — difficile de naviguer', 'Site lent sur mobile'],
+  },
+  {
+    id: 2, name: 'Laurent', age: 44, emoji: '\u{1F46A}',
+    canal: 'Google Maps', device: 'Mobile', maturite: 'Decision',
+    situation: 'Papa de 3 enfants a Woippy, cherche une photographe pour un portrait de famille — cadeau pour sa femme',
+    contexte: 'Tape "photographe famille Metz" sur Google Maps, voit Lova Photo avec 131 avis 5/5 en tete de liste — il clique',
+    parcours: ['Fiche GBP', 'Accueil', 'Tarifs', 'Offres speciales', 'Contact'],
+    decision: 'convertit',
+    scores: { exp: 7, conf: 8, clarte: 7 },
+    premierImpression: '131 avis 5/5 c\'est hallucinant. Je n\'ai meme pas besoin de verifier plus — c\'est la meilleure de la zone. Le prix est raisonnable pour un shooting famille : 145€ studio ou 155€ extérieur.',
+    questionCle: 'Pour 3 enfants (5, 8, 12 ans) et nous 2 — c\'est quel tarif ? Vous avez des creneaux le samedi matin ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Laurent convertit grace aux 131 avis qu\'il a vus sur Google Maps. Sur le site, les tarifs "jusqu\'a 4 personnes" couvrent sa famille (5 = supplementaire possible). Mais les horaires ne sont pas affiches. Il envoie un message quand meme.',
+    impactTechnique: 'Laurent est arrive via GBP — les 131 avis ont converti avant meme le site. Le site valide juste la decision. Si les avis avaient ete en Schema.org AggregateRating sur le site, les visiteurs arrivant via Google Search auraient aussi vu la note.',
+    pointsPositifs: ['131 avis 5/5 sur GBP — actif de conversion n°1', 'Tarifs famille clairement indiques', 'Style decale rassurant pour 3 enfants', 'Formulaire avec choix de prestation'],
+    frictions: ['Avis Google non affiches sur le site', 'Pas d\'horaires de disponibilite', 'Supplement groupe de 5+ pas quantifie sur les tarifs', 'Pas de galerie famille filtrable'],
+  },
+  {
+    id: 3, name: 'Chloe', age: 26, emoji: '\u{1F436}',
+    canal: 'Instagram', device: 'Mobile', maturite: 'Comparaison',
+    situation: 'Passionnee de chiens (golden retriever) a Montigny-les-Metz, veut un shooting avec son chien pour son anniversaire',
+    contexte: 'Voit des photos d\'animaux de Lova Photo sur Instagram, tague ses amies, cherche les tarifs',
+    parcours: ['Accueil', 'Galerie > Animaux', 'Offres speciales', 'Tarifs', 'Contact'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 5, clarte: 5 },
+    premierImpression: 'Les photos d\'animaux sont super mignonnes ! L\'offre speciale 65€ pour un shooting animaux c\'est accessible. Mais 30 minutes c\'est court, et seulement 5 photos...',
+    questionCle: 'Pour un golden retriever de 3 ans (tres actif), vous faites comment en studio ? On peut faire aussi en exterieur avec lui ?',
+    reponse: 'Partiellement',
+    commentReponse: 'L\'offre animaux 65€ est bien positionnee mais le format "30 min / 5 photos" genere des doutes sur la suffisance pour un chien energique. Elle compare avec d\'autres photographes animaux de la region avant de decider.',
+    impactTechnique: 'La galerie animaux (10 photos) est sur le site mais invisible Google Images. Les offres speciales ne sont pas en Schema.org Offer. Elle doit naviguer entre plusieurs pages pour reconstituer l\'information.',
+    pointsPositifs: ['Offre speciale animaux dedie a 65€', 'Galerie animaux specifique', 'Photographe qui "aime les animaux" — credibilite'],
+    frictions: ['30 min / 5 photos — format questionnable pour animaux actifs', 'Pas de FAQ animaux en studio', 'Pas d\'option shooting animaux en exterieur visible', 'Galerie non indexee Google'],
+  },
+  {
+    id: 4, name: 'Martine', age: 58, emoji: '\u{1F469}\u{200D}\u{1F9B3}',
+    canal: 'Bouche-a-oreille', device: 'Desktop', maturite: 'Decision',
+    situation: 'Retraitee a Moulins-les-Metz (meme ville !), sa collegue lui a montre ses photos de shooting et elle veut pareil',
+    contexte: 'Sa collegue lui a donne le nom "Lova Photo" et l\'adresse. Elle cherche le site pour voir les tarifs et trouver le numero.',
+    parcours: ['Accueil', 'Tarifs', 'Contact'],
+    decision: 'convertit',
+    scores: { exp: 7, conf: 9, clarte: 7 },
+    premierImpression: 'Le site fait un peu vieillot mais j\'ai vu les photos de ma collegue — c\'est magnifique. Les tarifs sont raisonnables. Je prends rendez-vous.',
+    questionCle: 'Ma collegue Veronique a fait un shooting boudoir — vous pouvez faire pareil pour moi ? J\'ai 58 ans...',
+    reponse: 'Oui',
+    commentReponse: 'Martine convertit grace a la recommandation — le site ne sert qu\'a confirmer le numero et valider que les tarifs sont accessibles. La recommandation prime sur tout defaut technique.',
+    impactTechnique: 'Desktop — site correct en performance relative. Martine est motivee par la preuve sociale hors-ligne. L\'absence d\'avis sur le site ne la gene pas car elle a une preuve sociale directe.',
+    pointsPositifs: ['Tarifs clairs et accessibles', 'Galerie boudoir presente (15 photos)', 'Localisation meme commune — proximite rassurante', 'Formulaire de contact complet'],
+    frictions: ['Design date ne rend pas justice au style photographique', 'Pas de section specifique "boudoir pour toutes les morphologies/ages"', 'Pas d\'avis sur le site pour renforcer la confiance'],
+  },
+  {
+    id: 5, name: 'Luc', age: 35, emoji: '\u{1F4AA}',
+    canal: 'Google Search', device: 'Mobile', maturite: 'Decouverte',
+    situation: 'Sportif et coach personnel a Metz, cherche des photos professionnelles pour son site et ses reseaux',
+    contexte: 'Tape "photographe corporate moderne Metz" sur Google, trouve un article de blog de Lova Photo sur les photos pro',
+    parcours: ['Article blog "photos pro et corporate"', 'Accueil', 'Galerie > Entreprise', 'Tarifs', 'Contact'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 5, clarte: 4 },
+    premierImpression: 'L\'article sur les photos pro est convaincant — elle critique les poses rigides avec bras croises, moi pareil. Mais sur le site, la galerie entreprise montre surtout des locaux et du materiel, pas des headshots de professionnels independants.',
+    questionCle: 'Vous faites des photos pour coachs/freelances ? Branding personnel, headshots dynamiques, photos d\'action en salle de sport ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Le blog SEO fonctionne comme porte d\'entree. Mais la galerie entreprise ne correspond pas a ce que Luc cherche (coaching = personal branding). Les tarifs 120-130€ sont attractifs mais il veut voir des exemples avant de decider.',
+    impactTechnique: 'L\'article blog est indexe mais la galerie entreprise (13 photos) est bloquee pour Google Images. Si les photos etaient indexees, Luc pourrait voir exactement ce que Lova fait pour les pros.',
+    pointsPositifs: ['Blog SEO convaincant sur les photos pro corporate', 'Tarifs clairs et competitifs pour du corporate', 'Style "anti-pose rigide" correspond a ses attentes'],
+    frictions: ['Galerie entreprise = locaux/materiel, pas de headshots freelance', 'Pas de galerie "branding personnel" separee', 'Pas de FAQ pour independants / coachs', 'Galerie bloquee Google Images'],
+  },
+
+  // --- SOUS-AGENT 2 : Boudoir, mariage, pro photo, digital, IA ---
+  {
+    id: 6, name: 'Sophie', age: 41, emoji: '\u{1F338}',
+    canal: 'Facebook', device: 'Mobile', maturite: 'Comparaison',
+    situation: 'Reconversion professionnelle reussie, se sent belle et veut des photos boudoir pour elle — cadeau a elle-meme pour ses 40 ans',
+    contexte: 'Un post Facebook d\'une amie partage des photos de son shooting boudoir Lova Photo — elle clique',
+    parcours: ['Post Facebook (vignette)', 'Accueil', 'Galerie > Boudoir', 'Galerie > Charme', 'Tarifs', 'Contact'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 6, clarte: 5 },
+    premierImpression: 'La vignette Facebook est bien (il y a une image), mais sans description — je ne sais pas ce que c\'est avant de cliquer. Les galeries boudoir (15 photos) et charme (13 photos) sont jolies et rassurantes — on voit que Vanessa sait mettre en valeur.',
+    questionCle: 'C\'est pour moi seule, j\'ai jamais fait ca. Vous guidez vraiment ? On peut choisir les tenues en avance ? C\'est prive ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Sophie convertit car les galeries boudoir/charme sont rassurantes. Mais les temoignages "djness" et "nathalie" du livre d\'or (qui parlent exactement de ca : Vanessa qui met a l\'aise et fait retrouver confiance en soi) ne sont pas visibles depuis l\'accueil.',
+    impactTechnique: 'La vignette Facebook n\'avait pas d\'og:description (critique). Elle a quand meme clique. Si la vignette avait eu "Seances boudoir : Vanessa vous guide du debut a la fin pour des photos qui vous ressemblent", le taux de clic aurait ete bien meilleur.',
+    pointsPositifs: ['Galeries boudoir (15) et charme (13) convaincantes', 'Style photographique rassurant', 'Formulaire de contact avec choix de prestation'],
+    frictions: ['Partage Facebook sans og:description — vignette incomplete', 'Temoignages du livre d\'or non accessibles depuis accueil', 'Pas de FAQ boudoir (guidage, confidentialite, tenues)', 'Pas d\'avis visibles sur le site'],
+  },
+  {
+    id: 7, name: 'Emilie & Tom', age: 29, emoji: '\u{1F48D}',
+    canal: 'Google Maps', device: 'Mobile', maturite: 'Decision',
+    situation: 'Fiances de Metz-Centre, mariage prevu en juin 2027, cherchent leur photographe 15 mois a l\'avance',
+    contexte: 'Cherchent "photographe mariage Metz" sur Google Maps, voient Lova Photo 5/5 avec 131 avis',
+    parcours: ['Fiche GBP', 'Accueil', 'Galerie > Mariage / Trash the dress', 'Tarifs', 'Contact'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 6, clarte: 4 },
+    premierImpression: 'Les avis sont incroyables. La galerie mariage + trash the dress (29 photos) est vraiment originale — c\'est bien notre style decale. Mais... ou sont les tarifs mariage ? Je vois seulement "shooting 1h = 120€" — c\'est pas pour une journee de mariage.',
+    questionCle: 'Vous proposez quoi exactement pour un mariage complet ? Photos ceremonie + vin d\'honneur + repas ? Quel tarif pour la journee ? Vous etes disponible le 14 juin 2027 ?',
+    reponse: 'Non',
+    commentReponse: 'Echec critique. Les photos mariage sont belles et originales. Les 131 avis rassurent. Mais l\'absence totale de forfait mariage (tarif journee, nombre de photos, prestation complete) est redhibitoire pour un couple qui planifie. Ils contactent quand meme mais avec une forte interrogation.',
+    impactTechnique: 'La page Tarifs n\'a aucun forfait mariage specifique. Pour un achat a 1000-3000€, l\'absence de prix indicatif est un bloquant majeur. La galerie mariage (29 photos) est bloquee pour Google Images.',
+    pointsPositifs: ['Galerie mariage + trash the dress tres originale (29 photos)', '131 avis 5/5 — preuve sociale massive', 'Style decale different des photographes mariage classiques'],
+    frictions: ['Aucun tarif mariage sur le site — CRITIQUE', 'Pas de formulaire de disponibilite calendrier', 'Galerie mariage bloquee Google Images', 'Pas de temoignages mariage specifiques sur le site'],
+  },
+  {
+    id: 8, name: 'Clara', age: 23, emoji: '\u{1F4F8}',
+    canal: 'TikTok / Instagram Reels', device: 'Mobile', maturite: 'Decouverte',
+    situation: 'Etudiante en arts a Nancy, fan de photographie, veut des shots mode/editorial pour son portfolio Instagram',
+    contexte: 'Voit un Reel Instagram de Lova Photo sur des photos mode avec des mises en scene theatrales, interesse',
+    parcours: ['Profil Instagram', 'Lien bio', 'Accueil', 'Galerie > Mode'],
+    decision: 'quitte',
+    scores: { exp: 3, conf: 4, clarte: 3 },
+    premierImpression: 'Le site est tellement different de ce que je vois sur Instagram... Les photos sont superbes mais le site ressemble a un site de 2015. La galerie Mode (12 photos) est bien mais je voudrais voir plus — des projets editoriaux, des series.',
+    questionCle: 'Vous faites des projets editoriaux ? Des series avec concept ? Vous avez un Instagram avec TOUT votre travail mode ?',
+    reponse: 'Non',
+    commentReponse: 'Clara recherche une experience visuelle forte correspondant au contenu Instagram. Le site 2018 cree une dissonance cognitive entre la qualite des photos et le contenu du site. Elle retourne sur Instagram car c\'est la que le travail est le mieux presente.',
+    impactTechnique: 'L\'absence de lien Instagram bien visible dans le header ou hero est une friction majeure pour ce persona. La galerie Mode (12 photos) ne suffit pas — elle veut voir l\'integralite du travail mode. Aucun feed Instagram embede.',
+    pointsPositifs: ['Galerie Mode presente (12 photos)', 'Travail artistique de qualite evident meme en site basique'],
+    frictions: ['Design 2018 en decalage total avec esthetique Instagram', 'Pas de lien Instagram visible en header/hero', 'Galerie Mode trop courte pour un portfolio editorial', 'Pas de serie / projet coherent presente'],
+  },
+  {
+    id: 9, name: 'Yasmine', age: 38, emoji: '\u{1F4BC}',
+    canal: 'ChatGPT / Claude', device: 'Desktop', maturite: 'Comparaison',
+    situation: 'Directrice d\'une PME a Metz-centre, cherche une photographe pour des photos corporate de son equipe de 12 personnes',
+    contexte: 'Demande a Claude : "Quelle photographe professionnelle a Metz peut faire des portraits corporate modernes pour une equipe de 12 ?"',
+    parcours: [],
+    decision: 'quitte',
+    scores: { exp: 0, conf: 0, clarte: 0 },
+    premierImpression: 'Claude / ChatGPT ne mentionne pas Lova Photo. Le nom n\'apparait pas dans les suggestions.',
+    questionCle: 'Photographe corporate equipe entreprise Metz — recommandation IA ?',
+    reponse: 'Invisible',
+    commentReponse: 'Yasmine passe par les IA generatives pour ses recherches professionnelles. Lova Photo est totalement absente de ces canaux : zero Schema.org, zero llms.txt, zero donnees structurees exploitables. Les IA citent les photographes qui ont du contenu structuré et citable.',
+    impactTechnique: 'Sans Schema.org LocalBusiness/Person, sans llms.txt, sans meta descriptions completes sur toutes les pages — les LLM n\'ont aucune donnee verifiable sur Lova Photo a citer avec confiance. Un llms.txt + Schema.org complet changerait ca.',
+    pointsPositifs: [],
+    frictions: ['Invisible pour les IA generatives (ChatGPT, Claude, Perplexity)', 'Zero Schema.org exploitable par les crawlers IA', 'Pas de llms.txt', 'Galerie et services non structures semantiquement'],
+  },
+  {
+    id: 10, name: 'Romain', age: 31, emoji: '\u{1F91D}',
+    canal: 'Google Search', device: 'Desktop', maturite: 'Decision',
+    situation: 'Organisateur d\'EVJF professionnel a Metz, cherche une photographe partenaire pour inclure dans ses packages',
+    contexte: 'Tape "photographe EVJF Metz partenariat" sur Google, trouve Lova Photo qui a une page EVJF avec 10 photos',
+    parcours: ['Accueil', 'Galerie > EVJF', 'Tarifs', 'Contact'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 6, clarte: 5 },
+    premierImpression: 'Elle a une galerie EVJF dediee (10 photos) et les tarifs 120-130€ sont compatibles avec mes packages. Le style decale est parfait pour les EVJF. Il faut que je lui propose un partenariat.',
+    questionCle: 'Vous travaillez avec des organisateurs d\'evenements EVJF ? Vous faites des tarifs partenaire / volume ? Disponibilite le week-end ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Romain convertit car le contenu EVJF existe et les tarifs sont adequats. Mais il manque une mention "partenariats / B2B" qui aurait accelere sa decision. Les disponibilites ne sont pas affichees — friction pour planifier des packages.',
+    impactTechnique: 'La galerie EVJF (10 photos) est bloquee pour Google Images — Romain est arrive via texte SEO, pas via image. Si les photos EVJF etaient indexees, elles genereraient des recherches directes "EVJF Metz photos".',
+    pointsPositifs: ['Galerie EVJF dediee (10 photos)', 'Tarifs compatibles pour packaging', 'Style fun et humour bien mis en avant'],
+    frictions: ['Pas de mention partenariats / tarifs volume B2B', 'Pas de disponibilites affichees (week-ends ?)', 'Galerie EVJF bloquee Google Images', 'Pas de formulaire dedie organisateurs'],
+  },
+];
+
+// ============================================================
+// RECOMMANDATIONS
+// ============================================================
+const ameliorationsCritiques = [
+  {
+    titre: 'Debloquer la galerie photo pour Google Images (robots.txt)',
+    detail: 'La galerie — actif n°1 d\'une photographe — est entierement exclue de Google Images par le robots.txt Joomla. Corriger Disallow /galerie-photo/ → Allow, supprimer les Noindex galeries. Ajouter un sitemap images. Impact SEO immédiat et gratuit.',
+    action: 'Modifier le robots.txt : retirer Disallow et Noindex sur /galerie-photo/, /galeries-clients, /livre-d-or/. Ajouter sitemap images. Sur le nouveau site Web Factory : galerie incluse dans sitemap, images avec alt text et Schema.org ImageObject.',
+  },
+  {
+    titre: 'Afficher les 131 avis 5/5 et implementer Schema.org AggregateRating',
+    detail: '9 personas sur 10 cherchent une preuve sociale. Lova Photo a le meilleur score de la zone — mais cette information n\'est pas sur le site. Schema.org AggregateRating permettrait d\'afficher la note dans les resultats Google Search (rich snippets) sans que les visiteurs aient a aller sur Google Maps.',
+    action: 'Ajouter Schema.org Person + AggregateRating (rating: 5, count: 131). Section temoignages en page d\'accueil avec 5-6 verbatims recents du Livre d\'or. Widget "131 avis Google 5/5" visible en hero ou header.',
+  },
+  {
+    titre: 'Migrer vers site statique Astro — supprimer Joomla PHP 7.3',
+    detail: 'PHP 7.3 est en fin de support depuis decembre 2021 (vulnerabilites actives). Joomla + JCH Optimize genere un TTFB de 428ms et un LCP estime > 4s. Le score Observatory est D (30/100). La migration vers Astro + Tailwind v4 + Cloudflare Pages amenerait Performance > 90/100, Security > 90/100, et supprimerait les 4 cookies sans consentement.',
+    action: 'Pipeline Web Factory complet : brief.md → design-system.md → contenu.md → seo.md → Astro project. Deploiement Cloudflare Pages. Temps : 7 jours. Score cible : PageSpeed > 90 mobile, Observatory > A (90/100).',
+  },
+];
+
+const ameliorationsUtiles = [
+  {
+    titre: 'Ajouter Umami Analytics + llms.txt pour la visibilite IA',
+    detail: 'Zero analytics = navigation a l\'aveugle. Umami Cloud (RGPD-native, cookie-free) permettrait de mesurer trafic, pages populaires, conversions. llms.txt permettrait aux IA generatives de citer Lova Photo dans leurs recommandations de photographes a Metz.',
+  },
+  {
+    titre: 'Creer un forfait mariage dedie et afficher les tarifs EVJF journee',
+    detail: 'Emilie & Tom ont hesite uniquement a cause de l\'absence de tarif mariage. Un forfait "mariage complet" (demi-journee / journee / reportage complet) avec prix indicatifs convertirait les futurs maries qui se planifient a 12-18 mois.',
+  },
+  {
+    titre: 'Integrer un feed Instagram dans la galerie et ajouter une FAQ par prestation',
+    detail: 'Clara et Amelie cherchent plus d\'inspiration visuelle. Un feed Instagram embede + galerie filtrable par type (grossesse, mariage, boudoir...) augmenterait le temps passe et la confiance. Une FAQ par prestation (duree, livraison, guidage, confidentialite) reduirait les questions de contact repetitives.',
+  },
+];
+
+// ============================================================
+// HELPERS
+// ============================================================
+function scoreColor(score: number) {
+  if (score >= 90) return '#22c55e';
+  if (score >= 50) return '#f59e0b';
+  return '#ef4444';
+}
+
+function scoreTextClass(score: number) {
+  if (score >= 90) return 'text-green-600';
+  if (score >= 50) return 'text-amber-500';
+  return 'text-red-500';
+}
+
+function decisionColor(decision: string) {
+  if (decision === 'convertit') return 'border-green-200 bg-green-50/40';
+  if (decision === 'hesite') return 'border-amber-200 bg-amber-50/40';
+  return 'border-neutral-200 bg-neutral-50/40';
+}
+
+function decisionBadge(decision: string) {
+  if (decision === 'convertit') return 'bg-green-100 text-green-700';
+  if (decision === 'hesite') return 'bg-amber-100 text-amber-700';
+  return 'bg-neutral-100 text-neutral-600';
+}
+
+function decisionLabel(decision: string) {
+  if (decision === 'convertit') return 'Contacte';
+  if (decision === 'hesite') return 'Hesite';
+  return 'Repart';
+}
+
+function maturiteColor(m: string) {
+  if (m === 'Decision') return 'text-purple-600 bg-purple-50';
+  if (m === 'Comparaison') return 'text-blue-600 bg-blue-50';
+  return 'text-neutral-500 bg-neutral-100';
+}
+---
+
+<BaseLayout title={title} description={description} noindex={true} lang="fr" frPath="/audit/lova-photo">
+
+  <!-- ========================================================
+       HERO + KPIs
+  ======================================================== -->
+  <section class="bg-neutral-900 text-white py-14 px-4">
+    <div class="max-w-4xl mx-auto">
+      <span class="inline-block text-xs font-semibold tracking-widest uppercase text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full mb-4">Rapport personnalise</span>
+      <h1 class="font-heading text-3xl md:text-4xl font-bold mb-2 leading-tight">
+        {prospect.name}<br/>
+        <span class="text-neutral-300 font-normal text-2xl">ce que vos visiteurs pensent vraiment</span>
+      </h1>
+      <p class="text-neutral-400 mb-2">{prospect.activity} &mdash; {prospect.location}</p>
+      <p class="text-neutral-500 text-sm mb-8">
+        <a href={prospect.url} class="text-amber-400 hover:underline" target="_blank" rel="noopener noreferrer">{prospect.url}</a>
+        &mdash; Rapport du {prospect.date}
+      </p>
+
+      <!-- KPI Cards -->
+      <div class="grid grid-cols-3 gap-4 max-w-lg">
+        <div class="bg-neutral-800 rounded-xl p-4 text-center">
+          <span class="block text-3xl font-black text-amber-400">{kpis.conversion}%</span>
+          <span class="text-xs text-neutral-400 mt-1 block">convertissent</span>
+        </div>
+        <div class="bg-neutral-800 rounded-xl p-4 text-center">
+          <span class="block text-3xl font-black text-amber-400">{kpis.experience}/10</span>
+          <span class="text-xs text-neutral-400 mt-1 block">experience</span>
+        </div>
+        <div class="bg-neutral-800 rounded-xl p-4 text-center">
+          <span class="block text-3xl font-black text-amber-400">{kpis.confiance}/10</span>
+          <span class="text-xs text-neutral-400 mt-1 block">confiance</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       LE CONSTAT
+  ======================================================== -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Le constat</h2>
+
+      <!-- Constat principal -->
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-8">
+        <p class="text-amber-900 font-medium text-base leading-relaxed">{constat}</p>
+      </div>
+
+      <!-- Resume visiteurs -->
+      <div class="flex flex-wrap gap-3 mb-8">
+        <div class="flex items-center gap-2 bg-green-50 border border-green-200 rounded-lg px-4 py-2">
+          <span class="w-2 h-2 rounded-full bg-green-500 shrink-0"></span>
+          <span class="text-sm font-semibold text-green-800">{kpis.convertissent} contactent</span>
+        </div>
+        <div class="flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-lg px-4 py-2">
+          <span class="w-2 h-2 rounded-full bg-amber-500 shrink-0"></span>
+          <span class="text-sm font-semibold text-amber-800">{kpis.hesitent} hesitent</span>
+        </div>
+        <div class="flex items-center gap-2 bg-neutral-100 border border-neutral-200 rounded-lg px-4 py-2">
+          <span class="w-2 h-2 rounded-full bg-neutral-400 shrink-0"></span>
+          <span class="text-sm font-semibold text-neutral-700">{kpis.quittent} repartent</span>
+        </div>
+      </div>
+
+      <!-- Conversion par canal -->
+      <div class="mb-10">
+        <h3 class="font-semibold text-neutral-800 mb-4 text-sm uppercase tracking-wide">Taux de contact par canal d'arrivee</h3>
+        <div class="space-y-3">
+          {conversionByCanal.map(item => (
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-sm text-neutral-700">{item.canal}</span>
+                <span class={`text-sm font-bold ${item.color}`}>{item.taux}%</span>
+              </div>
+              <div class="h-2 bg-neutral-100 rounded-full overflow-hidden">
+                <div class={`h-full rounded-full ${item.bg}`} style={`width: ${item.taux}%`}></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Top frictions -->
+      <h3 class="font-semibold text-neutral-800 mb-4 text-sm uppercase tracking-wide">Top 5 frictions identifiees</h3>
+      <ol class="space-y-3">
+        {topFrictions.map((f, i) => (
+          <li class="flex gap-4 p-4 bg-neutral-50 border border-neutral-200 rounded-xl">
+            <span class="shrink-0 w-7 h-7 rounded-full bg-red-100 text-red-700 flex items-center justify-center text-sm font-bold">{i + 1}</span>
+            <div>
+              <p class="font-semibold text-neutral-900 text-sm">{f.titre} <span class="ml-2 text-xs text-neutral-500 font-normal">{f.count}/10 personas</span></p>
+              <p class="text-neutral-600 text-xs mt-0.5">{f.detail}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       AUDIT TECHNIQUE
+  ======================================================== -->
+  <section class="py-12 px-4 bg-neutral-50">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">L'audit technique</h2>
+
+      <!-- PageSpeed mobile -->
+      <div class="bg-white border border-neutral-200 rounded-xl p-6 mb-6">
+        <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+          <h3 class="font-semibold text-neutral-800">PageSpeed — Mobile</h3>
+          <span class="text-xs text-neutral-400 bg-neutral-100 px-2 py-1 rounded">scores estimes — profil Joomla PHP 7.3 OVH</span>
+        </div>
+        <div class="grid grid-cols-4 gap-4">
+          {[
+            { label: 'Performance', score: pagespeed.mobile.performance },
+            { label: 'Accessibilite', score: pagespeed.mobile.accessibility },
+            { label: 'Bonnes pratiques', score: pagespeed.mobile.bestPractices },
+            { label: 'SEO', score: pagespeed.mobile.seo },
+          ].map(item => (
+            <div class="text-center">
+              <div class="relative w-14 h-14 mx-auto mb-2">
+                <svg class="w-14 h-14 -rotate-90" viewBox="0 0 36 36">
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    fill="none" stroke="#e5e7eb" stroke-width="3.5" />
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    fill="none" stroke={scoreColor(item.score)} stroke-width="3.5"
+                    stroke-dasharray={`${item.score}, 100`} stroke-linecap="round" />
+                </svg>
+                <span class={`absolute inset-0 flex items-center justify-center text-base font-bold ${scoreTextClass(item.score)}`}>{item.score}</span>
+              </div>
+              <p class="text-xs text-neutral-600">{item.label}</p>
+            </div>
+          ))}
+        </div>
+
+        <!-- Core Web Vitals -->
+        <div class="mt-4 pt-4 border-t border-neutral-100">
+          <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-2">Core Web Vitals (mobile estimes)</p>
+          <div class="flex flex-wrap gap-3">
+            {coreWebVitals.map(cwv => (
+              <div class={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium ${cwv.status === 'good' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+                <span class={`w-1.5 h-1.5 rounded-full ${cwv.status === 'good' ? 'bg-green-500' : 'bg-red-500'}`}></span>
+                {cwv.name} : {cwv.value}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Opportunites -->
+        <div class="mt-4 pt-4 border-t border-neutral-100">
+          <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-2">Opportunites d'amelioration</p>
+          <div class="space-y-2">
+            {opportunities.map(op => (
+              <div class="flex items-center justify-between text-xs">
+                <span class="text-neutral-600">{op.label}</span>
+                <span class="font-semibold text-green-600 shrink-0 ml-2">{op.saving}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- PageSpeed Desktop + Observatory -->
+      <div class="grid md:grid-cols-2 gap-6 mb-6">
+        <!-- Desktop -->
+        <div class="bg-white border border-neutral-200 rounded-xl p-6">
+          <h3 class="font-semibold text-neutral-800 mb-4">PageSpeed — Desktop</h3>
+          <div class="grid grid-cols-4 gap-2">
+            {[
+              { label: 'Perf.', score: pagespeed.desktop.performance },
+              { label: 'Access.', score: pagespeed.desktop.accessibility },
+              { label: 'Pratiques', score: pagespeed.desktop.bestPractices },
+              { label: 'SEO', score: pagespeed.desktop.seo },
+            ].map(item => (
+              <div class="text-center">
+                <div class="relative w-12 h-12 mx-auto mb-1">
+                  <svg class="w-12 h-12 -rotate-90" viewBox="0 0 36 36">
+                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      fill="none" stroke="#e5e7eb" stroke-width="3.5" />
+                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      fill="none" stroke={scoreColor(item.score)} stroke-width="3.5"
+                      stroke-dasharray={`${item.score}, 100`} stroke-linecap="round" />
+                  </svg>
+                  <span class={`absolute inset-0 flex items-center justify-center text-sm font-bold ${scoreTextClass(item.score)}`}>{item.score}</span>
+                </div>
+                <p class="text-xs text-neutral-500">{item.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Observatory -->
+        <div class="bg-white border border-neutral-200 rounded-xl p-6">
+          <h3 class="font-semibold text-neutral-800 mb-4">Mozilla Observatory</h3>
+          <div class="flex items-center gap-4 mb-3">
+            <div class="w-16 h-16 rounded-full bg-red-50 border-4 border-red-400 flex items-center justify-center shrink-0">
+              <span class="text-2xl font-black text-red-600">{observatory.grade}</span>
+            </div>
+            <div>
+              <p class="text-3xl font-black text-red-600">{observatory.score}<span class="text-base font-normal text-neutral-400">/100</span></p>
+              <p class="text-xs text-neutral-500">{observatory.testsPassed}/{observatory.testsTotal} tests reussis</p>
+            </div>
+          </div>
+          <div class="space-y-1">
+            <div class="flex items-center gap-2 text-xs text-green-700"><span class="w-4 h-4 rounded-full bg-green-100 flex items-center justify-center text-green-600 font-bold text-xs">+</span>X-Content-Type-Options, X-Frame-Options, HTTPS, HSTS partiel</div>
+            <div class="flex items-center gap-2 text-xs text-red-600"><span class="w-4 h-4 rounded-full bg-red-100 flex items-center justify-center text-red-600 font-bold text-xs">-</span>CSP vide, Referrer-Policy faible, Permissions-Policy absent</div>
+            <div class="flex items-center gap-2 text-xs text-red-600"><span class="w-4 h-4 rounded-full bg-red-100 flex items-center justify-center text-red-600 font-bold text-xs">-</span>PHP/7.3 expose, cookies sans SameSite, HSTS conflit</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Tech Checklist -->
+      <div class="bg-white border border-neutral-200 rounded-xl p-6">
+        <h3 class="font-semibold text-neutral-800 mb-4">Checklist technique</h3>
+        <div class="space-y-2">
+          {techChecks.map(check => (
+            <div class={`flex items-start gap-3 py-1.5 px-2 rounded-lg ${check.present ? 'bg-green-50/50' : check.critical ? 'bg-red-50/50' : 'bg-neutral-50/50'}`}>
+              <span class={`shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold mt-0.5 ${check.present ? 'bg-green-100 text-green-700' : check.critical ? 'bg-red-100 text-red-700' : 'bg-neutral-100 text-neutral-500'}`}>
+                {check.present ? '✓' : '✗'}
+              </span>
+              <div>
+                <span class={`text-sm ${check.present ? 'text-green-800' : check.critical ? 'text-red-800 font-medium' : 'text-neutral-600'}`}>{check.label}</span>
+                {check.note && <span class="ml-2 text-xs text-neutral-400 italic">{check.note}</span>}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       10 PERSONAS
+  ======================================================== -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-2">Les 10 visites simulees</h2>
+      <p class="text-neutral-500 text-sm mb-8">Chaque persona represente un profil reel de client potentiel pour une photographe a Metz.</p>
+
+      <div class="space-y-6">
+        {personas.map(p => (
+          <div class={`border rounded-xl overflow-hidden ${decisionColor(p.decision)}`}>
+            <!-- Header persona -->
+            <div class="flex items-start gap-4 p-5 pb-3">
+              <span class="text-3xl shrink-0">{p.emoji}</span>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 flex-wrap mb-1">
+                  <span class="font-bold text-neutral-900">{p.name}</span>
+                  <span class="text-neutral-400 text-sm">{p.age} ans</span>
+                  <span class={`text-xs px-2 py-0.5 rounded-full font-medium ${maturiteColor(p.maturite)}`}>{p.maturite}</span>
+                  <span class={`text-xs px-2 py-0.5 rounded-full font-semibold ${decisionBadge(p.decision)}`}>{decisionLabel(p.decision)}</span>
+                </div>
+                <div class="flex flex-wrap gap-3 text-xs text-neutral-500">
+                  <span>via {p.canal}</span>
+                  <span>·</span>
+                  <span>{p.device}</span>
+                  <span>·</span>
+                  <span class="text-neutral-700">{p.situation}</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Scores -->
+            <div class="px-5 pb-3">
+              <div class="flex gap-4 text-xs">
+                {[
+                  { label: 'Experience', val: p.scores.exp },
+                  { label: 'Confiance', val: p.scores.conf },
+                  { label: 'Clarte', val: p.scores.clarte },
+                ].map(s => (
+                  <div class="flex items-center gap-1.5">
+                    <span class="text-neutral-500">{s.label} :</span>
+                    <span class={`font-bold ${s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-500' : 'text-red-500'}`}>{s.val}/10</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <!-- Parcours -->
+            {p.parcours.length > 0 && (
+              <div class="px-5 pb-3">
+                <div class="flex items-center gap-1 flex-wrap text-xs text-neutral-500">
+                  {p.parcours.map((step, i) => (
+                    <>
+                      <span class="bg-neutral-100 text-neutral-700 px-2 py-0.5 rounded">{step}</span>
+                      {i < p.parcours.length - 1 && <span class="text-neutral-300">›</span>}
+                    </>
+                  ))}
+                </div>
+              </div>
+            )}
+
+            <!-- Contenu principal -->
+            <div class="px-5 pb-4 space-y-3">
+              <!-- Premiere impression -->
+              <div class="bg-white/70 rounded-lg p-3">
+                <p class="text-xs font-semibold text-neutral-500 mb-1 uppercase tracking-wide">Premiere impression</p>
+                <p class="text-sm text-neutral-700 italic">"{p.premierImpression}"</p>
+              </div>
+
+              <!-- Question cle -->
+              <div>
+                <p class="text-xs font-semibold text-neutral-500 mb-1 uppercase tracking-wide">Question cle</p>
+                <p class="text-sm text-neutral-700">"{p.questionCle}"</p>
+                <p class="text-xs font-medium mt-1">
+                  Reponse du site : <span class={p.reponse === 'Oui' ? 'text-green-600' : p.reponse === 'Partiellement' ? 'text-amber-500' : p.reponse === 'Invisible' ? 'text-red-500 italic' : 'text-red-500'}>{p.reponse}</span>
+                  {p.commentReponse && <span class="text-neutral-500 font-normal"> — {p.commentReponse}</span>}
+                </p>
+              </div>
+
+              <!-- Impact technique -->
+              <div class="text-xs text-neutral-500 border-t border-neutral-200 pt-2">
+                <span class="font-semibold text-neutral-700">Impact technique : </span>{p.impactTechnique}
+              </div>
+
+              <!-- Points positifs / frictions -->
+              <div class="grid sm:grid-cols-2 gap-3">
+                {p.pointsPositifs.length > 0 && (
+                  <div>
+                    <p class="text-xs font-semibold text-green-700 mb-1">Points positifs</p>
+                    <ul class="space-y-0.5">
+                      {p.pointsPositifs.map(pp => (
+                        <li class="text-xs text-neutral-600 flex gap-1.5"><span class="text-green-500 shrink-0">+</span>{pp}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+                {p.frictions.length > 0 && (
+                  <div>
+                    <p class="text-xs font-semibold text-red-600 mb-1">Frictions</p>
+                    <ul class="space-y-0.5">
+                      {p.frictions.map(f => (
+                        <li class="text-xs text-neutral-600 flex gap-1.5"><span class="text-red-400 shrink-0">-</span>{f}</li>
+                      ))}
+                    </ul>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       RECOMMANDATIONS
+  ======================================================== -->
+  <section class="py-12 px-4 bg-neutral-50">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Les recommandations</h2>
+
+      <h3 class="font-semibold text-neutral-800 mb-4 text-sm uppercase tracking-wide">Corrections critiques (bloquantes)</h3>
+      <div class="space-y-4 mb-8">
+        {ameliorationsCritiques.map((a, i) => (
+          <div class="bg-white border border-red-100 rounded-xl p-5">
+            <div class="flex gap-3 mb-2">
+              <span class="shrink-0 w-7 h-7 rounded-full bg-red-100 text-red-700 flex items-center justify-center text-sm font-bold">{i + 1}</span>
+              <h4 class="font-semibold text-neutral-900 text-sm">{a.titre}</h4>
+            </div>
+            <p class="text-sm text-neutral-600 mb-2 pl-10">{a.detail}</p>
+            <p class="text-xs text-neutral-500 pl-10 border-l-2 border-red-200 ml-10"><span class="font-semibold text-neutral-700">Action : </span>{a.action}</p>
+          </div>
+        ))}
+      </div>
+
+      <h3 class="font-semibold text-neutral-800 mb-4 text-sm uppercase tracking-wide">Ameliorations utiles</h3>
+      <div class="space-y-3">
+        {ameliorationsUtiles.map((a, i) => (
+          <div class="bg-white border border-neutral-200 rounded-xl p-4">
+            <div class="flex gap-3">
+              <span class="shrink-0 w-7 h-7 rounded-full bg-amber-100 text-amber-700 flex items-center justify-center text-sm font-bold">{i + 4}</span>
+              <div>
+                <h4 class="font-semibold text-neutral-900 text-sm mb-1">{a.titre}</h4>
+                <p class="text-sm text-neutral-600">{a.detail}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       CTA CONTACT
+  ======================================================== -->
+  <section class="py-14 px-4 bg-neutral-900 text-white">
+    <div class="max-w-2xl mx-auto text-center">
+      <h2 class="font-heading text-2xl font-bold mb-3">Votre site merite d'etre a la hauteur de votre talent</h2>
+      <p class="text-neutral-400 mb-6 text-base">131 avis 5/5, un style unique, une gamme complete de prestations — Web Factory peut transformer tout ca en un site qui convertit autant que vous meritez. Site livré en 7 jours, a partir de 990 €.</p>
+      <a href="/contact" class="inline-block bg-amber-400 text-neutral-900 font-bold px-8 py-3 rounded-xl hover:bg-amber-300 transition-colors">
+        Discutons de votre projet
+      </a>
+      <p class="text-neutral-500 text-xs mt-4">Rapport confidentiel — marc@muller.im</p>
+    </div>
+  </section>
+
+</BaseLayout>

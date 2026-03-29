@@ -1,0 +1,742 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX — Garage Aux Arenes Eurorepar | Marc M';
+const description = 'Simulation de 10 visites personas sur garageauxarenes.com — rapport complet avec recommandations priorisees.';
+
+// ── PROSPECT ──────────────────────────────────────────────────────────────────
+const prospect = {
+  name: 'Garage Aux Arenes — Eurorepar Car Service',
+  url: 'http://www.garageauxarenes.com/',
+  date: '29 mars 2026',
+  activity: 'Garage automobile multi-marques — entretien, reparation, carrosserie, vente VO',
+  location: '18 Rue aux Arenes, 57000 Metz (Moselle)',
+  phone: '03 87 65 46 96',
+  note: '4.6/5 — 128 avis Google',
+};
+
+// ── KPIs ──────────────────────────────────────────────────────────────────────
+const kpis = {
+  conversion: 20,
+  experience: 4.2,
+  confiance: 4.8,
+  clarte: 3.6,
+};
+
+// ── CONSTAT ───────────────────────────────────────────────────────────────────
+const constat = "Un garage avec 128 avis positifs et une note de 4.6/5 mais un site web hors ligne depuis 2023 : la meilleure reputation de Metz est completement invisible sur internet.";
+
+// ── PAGESPEED ─────────────────────────────────────────────────────────────────
+const pagespeed = {
+  mobile: { performance: 25, accessibility: 52, bestPractices: 38, seo: 33 },
+  desktop: { performance: 45, accessibility: 52, bestPractices: 38, seo: 40 },
+  note: 'Estimation — site hors ligne (NXDOMAIN), scores bases sur architecture PHP circa 2005-2015'
+};
+
+const coreWebVitals = [
+  { name: 'LCP', value: '>4.0s', status: 'mauvais' },
+  { name: 'CLS', value: '>0.25', status: 'mauvais' },
+  { name: 'INP', value: '>500ms', status: 'mauvais' },
+];
+
+const observatory = { grade: 'F', score: 10, testsPassed: 1, testsTotal: 9 };
+
+const techOpportunities = [
+  { label: 'Nouveau site HTTPS avec structure moderne', gain: 'Site visible + +15 pts SEO' },
+  { label: 'Schema.org LocalBusiness + aggregateRating', gain: 'Rich snippets Google actives' },
+  { label: 'Prise de RDV en ligne', gain: '+40% conversions estimees' },
+];
+
+// ── CHECKLIST TECHNIQUE ───────────────────────────────────────────────────────
+const techChecks = [
+  { label: 'Site web accessible (pas NXDOMAIN)', present: false, critical: true },
+  { label: 'HTTPS actif', present: false, critical: true },
+  { label: 'Meta title optimise', present: true, critical: false },
+  { label: 'Meta description', present: false, critical: true },
+  { label: 'Schema.org LocalBusiness JSON-LD', present: false, critical: true },
+  { label: 'Open Graph (og:image, og:title)', present: false, critical: false },
+  { label: 'Mobile-friendly / responsive', present: false, critical: true },
+  { label: 'Sitemap XML', present: false, critical: false },
+  { label: 'Security headers (CSP, HSTS...)', present: false, critical: false },
+  { label: 'Prise de RDV / formulaire contact', present: false, critical: true },
+];
+
+// ── CONVERSION PAR CANAL ──────────────────────────────────────────────────────
+const conversionByCanal = [
+  { canal: 'Google Maps / GBP', taux: 40, color: 'text-amber-600', bgColor: 'bg-amber-500' },
+  { canal: 'Bouche-a-oreille', taux: 60, color: 'text-green-600', bgColor: 'bg-green-500' },
+  { canal: 'Google Search', taux: 10, color: 'text-red-600', bgColor: 'bg-red-500' },
+  { canal: 'IA (ChatGPT / Claude)', taux: 25, color: 'text-amber-600', bgColor: 'bg-amber-500' },
+  { canal: 'Reseaux sociaux', taux: 0, color: 'text-red-600', bgColor: 'bg-red-500' },
+];
+
+// ── TOP FRICTIONS ─────────────────────────────────────────────────────────────
+const topFrictions = [
+  { titre: 'Site web hors ligne — introuvable sur Google', count: 10, detail: 'Le domaine ne repond plus. 100% des personas ne trouvent pas de site.' },
+  { titre: 'Aucun tarif ni fourchette de prix', count: 9, detail: 'Impossible de savoir si le garage est dans le budget. Frein a la prise de contact.' },
+  { titre: 'Aucune prise de RDV en ligne', count: 8, detail: 'Obligation d\'appeler aux horaires de bureau — bloquant pour les actifs.' },
+  { titre: 'Les 128 avis Google non valorises', count: 7, detail: 'Preuve sociale inexploitee. Personne ne sait que le garage a une excellente reputation.' },
+  { titre: 'Absence de presence mobile optimisee', count: 7, detail: '6 personas sur 10 sont sur mobile. Aucune experience mobile disponible.' },
+];
+
+// ── PERSONAS ─────────────────────────────────────────────────────────────────
+const personas = [
+  {
+    id: 1,
+    name: 'Thierry',
+    age: 52,
+    emoji: '🔧',
+    canal: 'Google Maps',
+    device: 'Mobile',
+    maturite: 'Decision',
+    situation: 'Artisan plombier, cherche un garage fiable pour sa Renault Trafic professionnelle.',
+    contexte: 'Gyrophare de climatisation defaillant en plein ete, veut une reparation rapide.',
+    decision: 'hesite',
+    scores: { exp: 4, conf: 5, clarte: 3 },
+    premierImpression: 'Trouve la fiche Google avec 128 avis — bien note. Clique sur le site web... page d\'erreur. Desoriente.',
+    questionCle: 'Est-ce qu\'ils font la clim et c\'est disponible cette semaine ?',
+    reponse: 'Non',
+    commentReponse: 'Site hors ligne, impossible de verifier les services ou la disponibilite.',
+    parcours: ['Fiche Google', 'Clic site web', 'Erreur DNS', 'Rappel telephone'],
+    impactTechnique: 'Site hors ligne oblige a appeler — Thierry laisse un message et attend, alors qu\'un concurrent repond via formulaire en ligne.',
+    pointsPositifs: ['Note Google rassurante (4.6/5)', 'Telephone visible sur la fiche Maps', 'Avis recents positifs'],
+    frictions: ['Site web inaccessible — impression de garage ferme', 'Aucune info sur les delais de prise en charge', 'Pas de RDV en ligne', 'Pas de confirmation que la clim est un service propose'],
+  },
+  {
+    id: 2,
+    name: 'Laurie',
+    age: 28,
+    emoji: '📱',
+    canal: 'Google Search',
+    device: 'Mobile',
+    maturite: 'Decouverte',
+    situation: 'Etudiante en alternance, premiere voiture, cherche un garage de confiance a Metz.',
+    contexte: 'Voyant "entretien moteur" allume sur son tableau de bord, cherche "garage metz pas cher fiable".',
+    decision: 'quitte',
+    scores: { exp: 2, conf: 3, clarte: 2 },
+    premierImpression: 'Le premier lien Google renvoie vers une page d\'erreur. Elle pense que le garage a ferme.',
+    questionCle: 'Ce garage est-il toujours ouvert et c\'est combien pour un entretien ?',
+    reponse: 'Non',
+    commentReponse: 'Site hors ligne = impression de fermeture. Elle repart chez un concurrent avec site actif.',
+    parcours: ['Google Search', 'Clic lien site', 'Page d\'erreur', 'Retour Google', 'Concurrent'],
+    impactTechnique: 'Un site hors ligne est percu comme un garage ferme par les jeunes natifs digitaux.',
+    pointsPositifs: ['Bonne position dans les annuaires', 'Avis Google accessibles depuis la fiche'],
+    frictions: ['Site web hors ligne = signal de fermeture', 'Aucune info prix', 'Pas de chat/formulaire', 'Pas rassurante pour une premiere fois'],
+  },
+  {
+    id: 3,
+    name: 'Michel',
+    age: 67,
+    emoji: '🚗',
+    canal: 'Bouche-a-oreille',
+    device: 'Desktop',
+    maturite: 'Decision',
+    situation: 'Retraite, fidele client depuis 7 ans, veut faire sa revision annuelle.',
+    contexte: 'Son voisin lui a parle du garage Mangenot, il cherche a confirmer les horaires avant de venir.',
+    decision: 'convertit',
+    scores: { exp: 6, conf: 8, clarte: 5 },
+    premierImpression: 'Cherche le numero de telephone sur Google. Trouve la fiche avec les horaires. Appelle directement.',
+    questionCle: 'Ils sont ouverts vendredi apres-midi ? Je passe quand ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Les horaires sont visibles sur Google Maps, mais pas de confirmation instantanee.',
+    parcours: ['Recherche Google "Garage Mangenot Metz"', 'Fiche GBP', 'Telephone'],
+    impactTechnique: 'Michel n\'est pas dependant du site web — il passe par la fiche Google directement.',
+    pointsPositifs: ['Horaires disponibles sur GBP', 'Numero de telephone accessible', 'Recommandation personnelle elimine le besoin de site'],
+    frictions: ['Pas de page "equipe" pour confirmer que c\'est bien les Mangenot', 'Pas de formulaire pour eviter l\'attente telephonique'],
+  },
+  {
+    id: 4,
+    name: 'Amira',
+    age: 34,
+    emoji: '💬',
+    canal: 'IA (Claude / ChatGPT)',
+    device: 'Desktop',
+    maturite: 'Comparaison',
+    situation: 'Responsable marketing en PME, voiture de societe a entretenir, cherche un comparatif garages Metz.',
+    contexte: 'Demande a Claude : "meilleur garage independant metz avec bonnes notes et site web".',
+    decision: 'quitte',
+    scores: { exp: 2, conf: 4, clarte: 2 },
+    premierImpression: 'L\'IA cite le Garage Aux Arenes pour ses avis Google, mais le site est hors ligne — l\'IA note ce paradoxe.',
+    questionCle: 'Est-ce serieux ? Leur site est en erreur, ils existent encore ?',
+    reponse: 'Non',
+    commentReponse: 'Absence de site web actif = elimination automatique pour une responsable habituee aux outils digitaux.',
+    parcours: ['Claude AI', 'Fiche Eurorepar', 'Tentative site', 'Erreur DNS', 'Concurrent'],
+    impactTechnique: 'Les IA citent ce garage mais le site mort tue la confiance instantanement. Concurrent avec site gagne.',
+    pointsPositifs: ['Cite positivement par les IA grace aux avis Google', 'Fiche Eurorepar credible'],
+    frictions: ['Site hors ligne = signal d\'abandon ou fermeture', 'Aucune presence LinkedIn/reseaux', 'Pas de formulaire pro pour flottes entreprises', 'Impossible de comparer les tarifs'],
+  },
+  {
+    id: 5,
+    name: 'Kevin',
+    age: 24,
+    emoji: '🏎️',
+    canal: 'Google Maps',
+    device: 'Mobile',
+    maturite: 'Decision',
+    situation: 'Magasinier, sa Peugeot 208 a un probleme de frein, il cherche "garage pres de moi" urgent.',
+    contexte: 'En voiture, frein qui grince fort, s\'arrete et cherche le garage le plus proche avec de bons avis.',
+    decision: 'convertit',
+    scores: { exp: 5, conf: 7, clarte: 4 },
+    premierImpression: 'Voit le garage Aux Arenes a 600m sur Maps avec 4.6/5. Appelle immediatement.',
+    questionCle: 'Vous pouvez me prendre tout de suite ou cet apres-midi ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Le telephone fonctionne et il obtient un RDV le jour meme — mais il a failli appeler un concurrent.',
+    parcours: ['Google Maps "garage pres de moi"', 'Fiche GBP', 'Appel direct'],
+    impactTechnique: 'Urgence = Maps + telephone. Kevin ne cherche pas de site — mais un concurrent avec bouton "Appeler maintenant" prominant aurait pu gagner.',
+    pointsPositifs: ['Proximite geographique decisive', 'Note Google rassurante', 'Reponse telephone rapide'],
+    frictions: ['Pas de bouton RDV urgence sur la fiche', 'Horaires pas toujours visibles rapidement', 'Pas d\'indication de capacite de prise en charge immediatte'],
+  },
+  {
+    id: 6,
+    name: 'Fatima',
+    age: 45,
+    emoji: '👩‍👧',
+    canal: 'Google Search',
+    device: 'Mobile',
+    maturite: 'Comparaison',
+    situation: 'Aide-soignante, deux enfants, cherche un garage pas cher mais serieux pour sa Clio.',
+    contexte: 'Contr. technique dans 2 mois, cherche "garage revisison voiture metz pas cher avis" le soir depuis son canape.',
+    decision: 'hesite',
+    scores: { exp: 4, conf: 5, clarte: 3 },
+    premierImpression: 'Trouve plusieurs annuaires qui mentionnent le garage. Site hors ligne. Note les avis positifs mais pas de prix.',
+    questionCle: 'C\'est combien pour une revision complete ? Et ils font les contr. techniques ?',
+    reponse: 'Non',
+    commentReponse: 'Aucun tarif disponible nulle part. Hesite entre appeler et chercher un concurrent avec prix affiches.',
+    parcours: ['Google Search', 'PagesJaunes', 'Eurorepar.fr', 'Tentative site mort', 'Hesite'],
+    impactTechnique: 'L\'absence de prix en ligne force a appeler — barriere trop haute en soiree pour une mere de famille apres une longue journee.',
+    pointsPositifs: ['Avis Google positifs recents (2025)', 'Garage de proximite', 'Couple proprietaire rassure sur l\'aspect familial'],
+    frictions: ['Aucun tarif affiches', 'Site hors ligne inquietant', 'Pas de formulaire nocturne', 'Pas de mention CT (fait-ils ou non ?)'],
+  },
+  {
+    id: 7,
+    name: 'Baptiste',
+    age: 31,
+    emoji: '🧑‍💻',
+    canal: 'Google Search',
+    device: 'Desktop',
+    maturite: 'Decouverte',
+    situation: 'Developpeur web freelance, Toyota Yaris, cherche un nouveau garage apres demenagement a Metz.',
+    contexte: 'Compare 3 garages metz sur desktop, analyse les sites web, les avis et les tarifs.',
+    decision: 'quitte',
+    scores: { exp: 1, conf: 3, clarte: 1 },
+    premierImpression: 'Clique sur le lien du site web : "ERR_NAME_NOT_RESOLVED". Pour un developpeur, c\'est eliminatoire en 2 secondes.',
+    questionCle: 'Pourquoi leur site est-il en erreur DNS ? Sont-ils serieux ?',
+    reponse: 'Non',
+    commentReponse: 'Un site hors ligne est une erreur professionelle grave pour un profil tech. Confiance = 0.',
+    parcours: ['Google Search', 'Clic site', 'Erreur DNS', 'Retour Google', 'Concurrent avec site moderne'],
+    impactTechnique: 'Erreur DNS = echec immediat. Baptiste va directement chez un concurrent avec un site Astro ou WordPress propre.',
+    pointsPositifs: ['Avis Google coherents et nombreux'],
+    frictions: ['Domaine expire / site mort = zero credibilite pro', 'Aucune presence reseaux sociaux', 'Impossible de comparer les services', 'Pas de page "notre expertise vehicules electriques"'],
+  },
+  {
+    id: 8,
+    name: 'Sylvie',
+    age: 58,
+    emoji: '👩‍🦳',
+    canal: 'Bouche-a-oreille',
+    device: 'Tablette',
+    maturite: 'Decision',
+    situation: 'Secretaire medicale en retraite, Peugeot 308, fidele a sa marque depuis 20 ans.',
+    contexte: 'Sa belle-fille lui recommande les Mangenot. Elle cherche l\'adresse et les horaires sur sa tablette.',
+    decision: 'convertit',
+    scores: { exp: 6, conf: 7, clarte: 6 },
+    premierImpression: 'Cherche "Garage Mangenot Metz" sur Google. Trouve la fiche GBP avec les infos. Content.',
+    questionCle: 'C\'est bien au 18 rue aux Arenes ? Et c\'est ouvert le vendredi soir ?',
+    reponse: 'Partiellement',
+    commentReponse: 'L\'adresse est sur GBP mais les horaires precisent fermeture a 18h — Sylvie devra prendre un apres-midi.',
+    parcours: ['Recommandation famille', 'Google "Garage Mangenot Metz"', 'Fiche GBP', 'Telephone'],
+    impactTechnique: 'Recommandation forte + fiche GBP suffisent pour ce profil. Le site web est irrelevant — mais une page "equipe + histoire" aurait rassure davantage.',
+    pointsPositifs: ['Recommandation personnelle decisive', 'Fiche GBP complete', 'Avis rassurants'],
+    frictions: ['Pas de page histoire/equipe pour confirmer l\'identite', 'Horaires incompatibles avec vie active', 'Pas de formulaire de prise de RDV en ligne'],
+  },
+  {
+    id: 9,
+    name: 'Omar',
+    age: 38,
+    emoji: '🚐',
+    canal: 'Reseaux sociaux (Facebook)',
+    device: 'Mobile',
+    maturite: 'Decouverte',
+    situation: 'Transporteur independant, cherche un garage capable de gerer des utilitaires toutes marques.',
+    contexte: 'Voit une mention du garage dans un groupe Facebook "Artisans Metz" — veut en savoir plus.',
+    decision: 'quitte',
+    scores: { exp: 2, conf: 4, clarte: 2 },
+    premierImpression: 'Cherche le site web dans le commentaire. Trouve un lien mort. Recherche Google : site hors ligne.',
+    questionCle: 'Ils font les utilitaires ? Volkswagen Crafter, Ford Transit ?',
+    reponse: 'Non',
+    commentReponse: 'Aucune information disponible sur les vehicules pris en charge ou les specialites du garage.',
+    parcours: ['Facebook groupe artisans', 'Lien site mort', 'Google', 'Fiche Eurorepar', 'Hesite → quitte'],
+    impactTechnique: 'Pas de page "services utilitaires", pas de site pour le rassurer. Va chez un garage qui affiche clairement "utilitaires toutes marques".',
+    pointsPositifs: ['Reputation positive dans les groupes locaux'],
+    frictions: ['Pas de presence Facebook/Instagram du garage', 'Site hors ligne bloque toute prospection via RS', 'Pas d\'info sur les types de vehicules pris en charge', 'Pas de page pro / flottes'],
+  },
+  {
+    id: 10,
+    name: 'Nathalie',
+    age: 48,
+    emoji: '🚗',
+    canal: 'Google Maps',
+    device: 'Mobile',
+    maturite: 'Comparaison',
+    situation: 'Directrice d\'ecole, cherche un garage fiable pour ses deux voitures familiales (thermique + hybride).',
+    contexte: 'Son garage habituel a ferme. Cherche une alternative "garage hybride metz avis" sur Maps.',
+    decision: 'hesite',
+    scores: { exp: 5, conf: 6, clarte: 4 },
+    premierImpression: 'Voit 128 avis a 4.6/5 sur Maps. "Impressionnant". Clique sur "Site web"... erreur. Moins rassurante.',
+    questionCle: 'Ils sont vraiment competents sur les hybrides ? Et ils ont un vehicule de courtoisie ?',
+    reponse: 'Non',
+    commentReponse: 'Competence hybride mentionnee sur Eurorepar.fr mais pas mise en avant. Vehicule courtoisie confirme mais sans details.',
+    parcours: ['Google Maps "garage hybride metz"', 'Fiche GBP', 'Clic site → erreur', 'Eurorepar.fr', 'Hesite'],
+    impactTechnique: 'La competence hybride/electrique est mentionnee sur Eurorepar mais pas valorisee. Nathalie hesite faute de preuve concrete.',
+    pointsPositifs: ['128 avis et 4.6/5 tres rassurants', 'Mention hybride/electrique sur Eurorepar', 'Vehicule de courtoisie mentionne'],
+    frictions: ['Site hors ligne brise la confiance', 'Competence hybride non prouvee (pas de certifications visibles)', 'Details vehicule de courtoisie absents', 'Pas de comparatif avec concessions'],
+  },
+];
+
+// ── CALCULS KPI ───────────────────────────────────────────────────────────────
+const convertis = personas.filter(p => p.decision === 'convertit').length;
+const hesitants = personas.filter(p => p.decision === 'hesite').length;
+const quittent = personas.filter(p => p.decision === 'quitte').length;
+
+// ── AMELIORATIONS ─────────────────────────────────────────────────────────────
+const ameliorationsCritiques = [
+  {
+    titre: 'Nouveau site web actif et indexable',
+    detail: 'Le domaine est mort depuis 2023. Sans site, le garage est invisible sur Google organic et perd toute credibilite numerique. C\'est le premier investissement avant tout le reste.',
+    action: 'Nouveau site Astro/WordPress avec HTTPS, meta tags, Schema.org — disponible en 7 jours.',
+  },
+  {
+    titre: 'Valoriser les 128 avis Google sur le site',
+    detail: '128 avis a 4.6/5 c\'est une mine d\'or inexploitee. Chaque visiteur qui ne voit pas ces avis perd confiance. Les integrer avec Schema.org aggregateRating active les etoiles dans Google.',
+    action: 'Section temoignages avec verbatims selectionnes + badge "4.6/5 sur Google" en hero.',
+  },
+  {
+    titre: 'Prise de RDV en ligne 24h/24',
+    detail: '70% des recherches auto se font en dehors des horaires d\'ouverture (soir, week-end). Actuellement, impossible de prendre RDV sans appeler. Conversion perdue systematiquement.',
+    action: 'Formulaire Web3Forms ou lien Calendly/Google RDV directement sur le site et la fiche GBP.',
+  },
+];
+
+const ameliorationsUtiles = [
+  {
+    titre: 'Page "Nos services" avec tarifs indicatifs',
+    detail: 'Afficher des fourchettes de prix (revision a partir de X€, vidange a partir de Y€) qualifie les prospects et reduit les appels de demarchage non qualifies.',
+  },
+  {
+    titre: 'Mettre en avant la competence hybride/electrique',
+    detail: 'Le marche hybride/electrique est en forte croissance. Le garage mentionne cette competence mais ne la valorise pas. Une page dediee capte ce segment premium.',
+  },
+  {
+    titre: 'Page histoire + equipe (Sylvain, Sabrina, les Mangenot)',
+    detail: 'Le garage existe depuis 1977. Les avis mentionnent le couple Mangenot par leur nom. Cette humanisation est un differenciateur fort face aux grandes enseignes. La raconter sur le site ancre la confiance.',
+  },
+];
+
+// ── SCORE ─────────────────────────────────────────────────────────────────────
+function scoreColor(score: number): string {
+  if (score >= 90) return '#22c55e';
+  if (score >= 50) return '#f59e0b';
+  return '#ef4444';
+}
+function scoreDash(score: number): string {
+  return `${score}, 100`;
+}
+---
+
+<BaseLayout title={title} description={description} noindex={true} lang="fr" frPath="/audit/garage-aux-arenes">
+  <!-- ── HERO ──────────────────────────────────────────────────────────────── -->
+  <section class="bg-neutral-900 text-white py-14 px-4">
+    <div class="max-w-4xl mx-auto">
+      <span class="inline-block text-xs font-semibold tracking-widest uppercase text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full mb-4">Rapport personnalise</span>
+      <h1 class="font-heading text-3xl md:text-4xl font-bold mb-2 leading-tight">
+        {prospect.name}<br/>
+        <span class="text-amber-400">ce que vos visiteurs pensent vraiment</span>
+      </h1>
+      <p class="text-neutral-400 mb-2">{prospect.activity}</p>
+      <p class="text-neutral-500 text-sm mb-2">{prospect.location} — {prospect.phone}</p>
+      <p class="text-neutral-500 text-sm mb-6">
+        Site audite : <a href={prospect.url} class="text-amber-400 hover:underline" target="_blank" rel="noopener">{prospect.url}</a>
+        <span class="ml-2 text-xs bg-red-900/60 text-red-300 px-2 py-0.5 rounded-full">hors ligne</span>
+      </p>
+      <p class="text-neutral-500 text-xs mb-8">Rapport genere le {prospect.date} — {prospect.note}</p>
+      <!-- KPI Cards -->
+      <div class="grid grid-cols-3 gap-4 max-w-lg">
+        <div class="text-center bg-neutral-800 rounded-xl py-4">
+          <span class="block text-3xl font-black text-amber-400">{kpis.conversion}%</span>
+          <span class="text-xs text-neutral-400 mt-1 block">convertissent</span>
+        </div>
+        <div class="text-center bg-neutral-800 rounded-xl py-4">
+          <span class="block text-3xl font-black text-amber-400">{kpis.experience}/10</span>
+          <span class="text-xs text-neutral-400 mt-1 block">experience</span>
+        </div>
+        <div class="text-center bg-neutral-800 rounded-xl py-4">
+          <span class="block text-3xl font-black text-amber-400">{kpis.confiance}/10</span>
+          <span class="text-xs text-neutral-400 mt-1 block">confiance</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CONSTAT ───────────────────────────────────────────────────────────── -->
+  <section class="bg-white py-12 px-4 border-b border-neutral-100">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Le constat</h2>
+
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-8">
+        <p class="text-amber-900 font-medium text-base leading-relaxed">{constat}</p>
+      </div>
+
+      <!-- Conversion par canal -->
+      <h3 class="font-semibold text-neutral-800 mb-4">Taux de conversion par canal d'arrivee</h3>
+      <div class="space-y-3 mb-10">
+        {conversionByCanal.map(item => (
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-sm text-neutral-700">{item.canal}</span>
+              <span class={`text-sm font-bold ${item.color}`}>{item.taux}%</span>
+            </div>
+            <div class="h-2 bg-neutral-100 rounded-full overflow-hidden">
+              <div class={`h-full rounded-full ${item.bgColor}`} style={`width: ${item.taux}%`}></div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Top frictions -->
+      <h3 class="font-semibold text-neutral-800 mb-4">Top 5 problemes les plus cites</h3>
+      <ol class="space-y-3">
+        {topFrictions.map((f, i) => (
+          <li class="flex gap-4 items-start bg-neutral-50 rounded-xl p-4">
+            <span class="shrink-0 w-7 h-7 rounded-full bg-red-100 text-red-700 font-black text-sm flex items-center justify-center">{i + 1}</span>
+            <div>
+              <p class="font-semibold text-neutral-900 text-sm">{f.titre}</p>
+              <p class="text-neutral-500 text-xs mt-0.5">{f.detail}</p>
+              <span class="text-xs text-red-600 font-medium mt-1 inline-block">{f.count}/10 personas impactes</span>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ── AUDIT TECHNIQUE ──────────────────────────────────────────────────── -->
+  <section class="bg-neutral-50 py-12 px-4 border-b border-neutral-100">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-2">L'audit technique</h2>
+      <p class="text-neutral-500 text-sm mb-8">Scores estimes — site hors ligne (domaine expire depuis 2023). Base sur l'architecture connue du site PHP.</p>
+
+      <!-- PageSpeed Mobile -->
+      <h3 class="font-semibold text-neutral-800 mb-4">Performance mobile <span class="text-xs font-normal text-neutral-400">(estimation)</span></h3>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-4 mb-8">
+        {[
+          { label: 'Performance', score: pagespeed.mobile.performance },
+          { label: 'Accessibilite', score: pagespeed.mobile.accessibility },
+          { label: 'Bonnes pratiques', score: pagespeed.mobile.bestPractices },
+          { label: 'SEO', score: pagespeed.mobile.seo },
+        ].map(item => (
+          <div class="bg-white rounded-xl p-4 text-center shadow-sm">
+            <div class="relative w-16 h-16 mx-auto mb-2">
+              <svg class="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  fill="none" stroke="#e5e7eb" stroke-width="3" />
+                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  fill="none" stroke={scoreColor(item.score)} stroke-width="3"
+                  stroke-dasharray={scoreDash(item.score)} stroke-linecap="round" />
+              </svg>
+              <span class="absolute inset-0 flex items-center justify-center text-lg font-bold text-neutral-800">{item.score}</span>
+            </div>
+            <p class="text-xs text-neutral-600">{item.label}</p>
+          </div>
+        ))}
+      </div>
+
+      <!-- Observatory + CWV -->
+      <div class="grid sm:grid-cols-2 gap-6 mb-8">
+        <div class="bg-white rounded-xl p-5 shadow-sm">
+          <h3 class="font-semibold text-neutral-800 mb-3">Securite (Observatory)</h3>
+          <div class="flex items-center gap-4 mb-3">
+            <span class="text-5xl font-black text-red-500">{observatory.grade}</span>
+            <div>
+              <p class="text-sm text-neutral-700">Score : <strong>{observatory.score}/100</strong></p>
+              <p class="text-xs text-neutral-500">{observatory.testsPassed}/{observatory.testsTotal} tests reussis</p>
+            </div>
+          </div>
+          <p class="text-xs text-neutral-500">Aucun header de securite (CSP, HSTS, X-Frame-Options...) — site HTTP non-securise.</p>
+        </div>
+        <div class="bg-white rounded-xl p-5 shadow-sm">
+          <h3 class="font-semibold text-neutral-800 mb-3">Core Web Vitals</h3>
+          <div class="space-y-2">
+            {coreWebVitals.map(cwv => (
+              <div class="flex items-center justify-between">
+                <span class="text-sm font-medium text-neutral-700">{cwv.name}</span>
+                <span class="text-sm font-bold text-red-600 bg-red-50 px-2 py-0.5 rounded">{cwv.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- Checklist Schema/OG/SEO -->
+      <h3 class="font-semibold text-neutral-800 mb-4">Checklist Schema.org + SEO + Open Graph</h3>
+      <div class="grid sm:grid-cols-2 gap-2 mb-8">
+        {techChecks.map(check => (
+          <div class={`flex items-center gap-3 p-3 rounded-lg ${check.present ? 'bg-green-50' : check.critical ? 'bg-red-50' : 'bg-neutral-100'}`}>
+            <span class={`text-base shrink-0 ${check.present ? 'text-green-600' : 'text-red-500'}`}>
+              {check.present ? '✓' : '✗'}
+            </span>
+            <span class={`text-xs ${check.present ? 'text-green-800' : check.critical ? 'text-red-800 font-medium' : 'text-neutral-600'}`}>
+              {check.label}
+              {check.critical && !check.present && <span class="ml-1 text-[10px] bg-red-200 text-red-700 px-1 rounded">critique</span>}
+            </span>
+          </div>
+        ))}
+      </div>
+
+      <!-- Opportunites -->
+      <h3 class="font-semibold text-neutral-800 mb-4">3 opportunites prioritaires</h3>
+      <div class="space-y-3">
+        {techOpportunities.map((opp, i) => (
+          <div class="flex gap-4 items-start bg-white rounded-xl p-4 shadow-sm">
+            <span class="shrink-0 w-7 h-7 rounded-full bg-blue-100 text-blue-700 font-black text-sm flex items-center justify-center">{i + 1}</span>
+            <div class="flex-1">
+              <p class="font-medium text-neutral-900 text-sm">{opp.label}</p>
+              <p class="text-xs text-green-700 font-medium mt-0.5">{opp.gain}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── VISITEURS ─────────────────────────────────────────────────────────── -->
+  <section class="bg-white py-12 px-4 border-b border-neutral-100">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs</h2>
+      <p class="text-neutral-500 text-sm mb-6">
+        Sur 10 visiteurs simules :
+        <span class="font-bold text-green-600 ml-1">{convertis} contactent</span>,
+        <span class="font-bold text-amber-600 ml-1">{hesitants} hesitent</span>,
+        <span class="font-bold text-neutral-500 ml-1">{quittent} repartent</span>.
+      </p>
+
+      <!-- Personas convertissent -->
+      {convertis > 0 && (
+        <h3 class="text-sm font-semibold text-green-700 uppercase tracking-wide mb-3">Convertissent ({convertis})</h3>
+      )}
+      <div class="space-y-2 mb-6">
+        {personas.filter(p => p.decision === 'convertit').map(p => (
+          <details class="group border border-green-200 bg-green-50/40 rounded-xl overflow-hidden">
+            <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+              <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                  <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                  <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                  <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                  <span class="text-[11px] text-green-700 bg-green-100 px-1.5 py-0.5 rounded font-medium">Convertit</span>
+                </div>
+                <p class="text-xs text-neutral-500">{p.situation}</p>
+              </div>
+              <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <div class="px-4 pb-4 pt-0 border-t border-green-200 bg-white/50">
+              <div class="grid gap-3 text-xs mt-3">
+                <div>
+                  <p class="font-semibold text-neutral-700 mb-1">Premiere impression</p>
+                  <p class="text-neutral-600">{p.premierImpression}</p>
+                </div>
+                <div>
+                  <p class="font-semibold text-neutral-700 mb-1">Question cle</p>
+                  <p class="text-neutral-600 italic">"{p.questionCle}"</p>
+                  <p class="text-neutral-600 mt-1">Reponse : <strong>{p.reponse}</strong> — {p.commentReponse}</p>
+                </div>
+                <p class="text-neutral-500 text-[11px]"><span class="font-medium">Impact technique :</span> {p.impactTechnique}</p>
+                <div class="flex gap-4">
+                  <div class="flex-1">
+                    <p class="font-semibold text-green-700 mb-1">Points positifs</p>
+                    <ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.pointsPositifs.map(pt => <li>{pt}</li>)}</ul>
+                  </div>
+                  <div class="flex-1">
+                    <p class="font-semibold text-amber-700 mb-1">Frictions</p>
+                    <ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map(f => <li>{f}</li>)}</ul>
+                  </div>
+                </div>
+                <div class="flex gap-4 text-[11px] text-neutral-500 border-t border-green-100 pt-2 mt-1">
+                  <span>Experience : <strong>{p.scores.exp}/10</strong></span>
+                  <span>Confiance : <strong>{p.scores.conf}/10</strong></span>
+                  <span>Clarte : <strong>{p.scores.clarte}/10</strong></span>
+                </div>
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+
+      <!-- Personas hesitent -->
+      {hesitants > 0 && (
+        <h3 class="text-sm font-semibold text-amber-700 uppercase tracking-wide mb-3">Hesitent ({hesitants})</h3>
+      )}
+      <div class="space-y-2 mb-6">
+        {personas.filter(p => p.decision === 'hesite').map(p => (
+          <details class="group border border-amber-200 bg-amber-50/40 rounded-xl overflow-hidden">
+            <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+              <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                  <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                  <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                  <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                  <span class="text-[11px] text-amber-700 bg-amber-100 px-1.5 py-0.5 rounded font-medium">Hesite</span>
+                </div>
+                <p class="text-xs text-neutral-500">{p.situation}</p>
+              </div>
+              <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <div class="px-4 pb-4 pt-0 border-t border-amber-200 bg-white/50">
+              <div class="grid gap-3 text-xs mt-3">
+                <div>
+                  <p class="font-semibold text-neutral-700 mb-1">Premiere impression</p>
+                  <p class="text-neutral-600">{p.premierImpression}</p>
+                </div>
+                <div>
+                  <p class="font-semibold text-neutral-700 mb-1">Question cle</p>
+                  <p class="text-neutral-600 italic">"{p.questionCle}"</p>
+                  <p class="text-neutral-600 mt-1">Reponse : <strong>{p.reponse}</strong> — {p.commentReponse}</p>
+                </div>
+                <p class="text-neutral-500 text-[11px]"><span class="font-medium">Impact technique :</span> {p.impactTechnique}</p>
+                <div class="flex gap-4">
+                  <div class="flex-1">
+                    <p class="font-semibold text-green-700 mb-1">Points positifs</p>
+                    <ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.pointsPositifs.map(pt => <li>{pt}</li>)}</ul>
+                  </div>
+                  <div class="flex-1">
+                    <p class="font-semibold text-amber-700 mb-1">Frictions</p>
+                    <ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map(f => <li>{f}</li>)}</ul>
+                  </div>
+                </div>
+                <div class="flex gap-4 text-[11px] text-neutral-500 border-t border-amber-100 pt-2 mt-1">
+                  <span>Experience : <strong>{p.scores.exp}/10</strong></span>
+                  <span>Confiance : <strong>{p.scores.conf}/10</strong></span>
+                  <span>Clarte : <strong>{p.scores.clarte}/10</strong></span>
+                </div>
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+
+      <!-- Personas quittent -->
+      {quittent > 0 && (
+        <h3 class="text-sm font-semibold text-neutral-500 uppercase tracking-wide mb-3">Repartent ({quittent})</h3>
+      )}
+      <div class="space-y-2">
+        {personas.filter(p => p.decision === 'quitte').map(p => (
+          <details class="group border border-neutral-200 bg-neutral-50/40 rounded-xl overflow-hidden">
+            <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+              <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                  <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                  <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                  <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                  <span class="text-[11px] text-neutral-600 bg-neutral-200 px-1.5 py-0.5 rounded font-medium">Repart</span>
+                </div>
+                <p class="text-xs text-neutral-500">{p.situation}</p>
+              </div>
+              <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <div class="px-4 pb-4 pt-0 border-t border-neutral-200 bg-white/50">
+              <div class="grid gap-3 text-xs mt-3">
+                <div>
+                  <p class="font-semibold text-neutral-700 mb-1">Premiere impression</p>
+                  <p class="text-neutral-600">{p.premierImpression}</p>
+                </div>
+                <div>
+                  <p class="font-semibold text-neutral-700 mb-1">Question cle</p>
+                  <p class="text-neutral-600 italic">"{p.questionCle}"</p>
+                  <p class="text-neutral-600 mt-1">Reponse : <strong>{p.reponse}</strong> — {p.commentReponse}</p>
+                </div>
+                <p class="text-neutral-500 text-[11px]"><span class="font-medium">Impact technique :</span> {p.impactTechnique}</p>
+                <div class="flex gap-4">
+                  <div class="flex-1">
+                    <p class="font-semibold text-green-700 mb-1">Points positifs</p>
+                    <ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.pointsPositifs.map(pt => <li>{pt}</li>)}</ul>
+                  </div>
+                  <div class="flex-1">
+                    <p class="font-semibold text-amber-700 mb-1">Frictions</p>
+                    <ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map(f => <li>{f}</li>)}</ul>
+                  </div>
+                </div>
+                <div class="flex gap-4 text-[11px] text-neutral-500 border-t border-neutral-100 pt-2 mt-1">
+                  <span>Experience : <strong>{p.scores.exp}/10</strong></span>
+                  <span>Confiance : <strong>{p.scores.conf}/10</strong></span>
+                  <span>Clarte : <strong>{p.scores.clarte}/10</strong></span>
+                </div>
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── RECOMMANDATIONS ───────────────────────────────────────────────────── -->
+  <section class="bg-neutral-50 py-12 px-4 border-b border-neutral-100">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Nos recommandations</h2>
+
+      <!-- Critiques -->
+      <h3 class="font-semibold text-red-700 text-sm uppercase tracking-wide mb-3">Le plus important</h3>
+      <div class="space-y-4 mb-8">
+        {ameliorationsCritiques.map((a, i) => (
+          <div class="border-2 border-red-200 bg-white rounded-xl p-5">
+            <div class="flex items-start gap-3">
+              <span class="shrink-0 w-7 h-7 rounded-full bg-red-100 text-red-700 font-black text-sm flex items-center justify-center mt-0.5">{i + 1}</span>
+              <div>
+                <h4 class="font-bold text-neutral-900 mb-1">{a.titre}</h4>
+                <p class="text-neutral-600 text-sm mb-2">{a.detail}</p>
+                <p class="text-xs text-blue-700 bg-blue-50 inline-block px-2 py-1 rounded font-medium">Action : {a.action}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Utiles -->
+      <h3 class="font-semibold text-neutral-600 text-sm uppercase tracking-wide mb-3">Utile aussi</h3>
+      <div class="grid sm:grid-cols-3 gap-4">
+        {ameliorationsUtiles.map(a => (
+          <div class="bg-white border border-neutral-200 rounded-xl p-4">
+            <h4 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h4>
+            <p class="text-neutral-500 text-xs leading-relaxed">{a.detail}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ── CTA FINAL ─────────────────────────────────────────────────────────── -->
+  <section class="bg-neutral-900 text-white py-16 px-4">
+    <div class="max-w-3xl mx-auto text-center">
+      <h2 class="font-heading text-2xl md:text-3xl font-bold mb-4">
+        {kpis.conversion}% de vos visiteurs vous contactent.<br/>
+        <span class="text-amber-400">Avec un site actif, on peut depasser 60%.</span>
+      </h2>
+      <p class="text-neutral-300 mb-3 max-w-xl mx-auto">
+        Votre garage a une excellente reputation — 128 avis a 4.6/5. Mais sans site web actif, cette reputation est invisible sur Google. Vous perdez des clients a chaque recherche.
+      </p>
+      <p class="text-neutral-400 text-sm mb-8 max-w-xl mx-auto">
+        Je construis des sites qui convertissent vraiment — structure moderne, HTTPS, Schema.org, prise de RDV en ligne, valorisation de vos avis Google. A partir de 990€, livre en 7 jours.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="/commander" class="inline-flex items-center gap-2 px-8 py-3.5 bg-[var(--color-accent)] text-white font-semibold rounded-xl hover:bg-[var(--color-accent-hover)] transition-all shadow-md">
+          Je veux un site qui convertit
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a href="/contact" class="inline-flex items-center gap-2 px-8 py-3.5 border border-neutral-600 text-neutral-300 font-semibold rounded-xl hover:border-amber-400 hover:text-amber-400 transition-all">
+          En discuter d'abord
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

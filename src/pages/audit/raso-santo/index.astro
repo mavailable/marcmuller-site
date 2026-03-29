@@ -1,0 +1,635 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX — Pâtisserie Boulangerie Santo Raso Metz | Marc M.';
+const description = 'Audit complet du site patisserieboulangeriesantoraso.com : 10 personas simulés, site Wix Thunderbolt lent, Schema.org Bakery absent, 495 avis sous-exploités — recommandations actionnables pour la Maison Raso.';
+
+// ─── PROSPECT ───
+const prospect = {
+  name: 'Pâtisserie Boulangerie Santo Raso — Maison Raso',
+  url: 'https://www.patisserieboulangeriesantoraso.com/',
+  date: '29 mars 2026',
+  activity: 'Maître Pâtissier — Boulanger — Chocolatier, en activité depuis 2002',
+  location: '9 Rue Jean d\'Apremont, 57000 Metz (quartier Magny)',
+  avis: '495 avis Google',
+};
+
+// ─── KPIs ───
+const kpis = {
+  conversion: 42,
+  experience: 5.2,
+  confiance: 6.8,
+};
+
+// ─── CONSTAT ───
+const constat = "Santo Raso est un artisan reconnu de Metz-Magny : Maître Pâtissier, Boulanger, Chocolatier depuis 2002, 15 collaborateurs, 495 avis, blog actif, interview Moselle TV. Son site Wix est fonctionnel — commande en ligne via WixStore, 35 produits référencés — mais techniquement limité : performance mobile insuffisante, Schema.org Bakery totalement absent, nom de marque incohérent selon les pages, carte de Noël encore en tête de nav en mars 2026. Le fossé entre la reconnaissance locale et la présence SEO/GEO est réel et coûteux.";
+
+// ─── CONVERSION PAR CANAL ───
+const conversionByCanal = [
+  { canal: 'Bouche-à-oreille', taux: 88, color: 'text-green-600', bg: 'bg-green-500' },
+  { canal: 'Google Maps / GBP', taux: 65, color: 'text-green-600', bg: 'bg-green-500' },
+  { canal: 'Google Search', taux: 28, color: 'text-amber-600', bg: 'bg-amber-500' },
+  { canal: 'Réseaux sociaux', taux: 35, color: 'text-amber-600', bg: 'bg-amber-500' },
+  { canal: 'IA (ChatGPT / Perplexity)', taux: 5, color: 'text-red-600', bg: 'bg-red-500' },
+  { canal: 'Direct (URL)', taux: 55, color: 'text-green-600', bg: 'bg-green-500' },
+];
+
+// ─── TOP FRICTIONS ───
+const topFrictions = [
+  { titre: 'Schema.org Bakery totalement absent', count: 9, detail: 'Aucun Schema LocalBusiness, Bakery, adresse, horaires, coordonnées GPS, ni AggregateRating — alors que 495 avis existent. Les LLM (ChatGPT, Perplexity, Gemini) ne peuvent pas citer Santo Raso sur « meilleur pâtissier Metz ». Perte massive de visibilité GEO.' },
+  { titre: 'Performance mobile insuffisante (Wix Thunderbolt)', count: 7, detail: 'Le site pèse 1,23 Mo de HTML seul + plusieurs bundles JS Wix (thunderbolt-platform, thunderbolt-features, editor-elements). LCP estimé 4–6 s sur mobile. Wix sert des images via wixstatic.com avec requêtes CDN tierces non préchargées.' },
+  { titre: 'Aucun prix affiché publiquement', count: 7, detail: 'Le catalogue WixStore liste 35 produits mais les tarifs ne sont pas visibles avant ajout au panier. Les visiteurs qui veulent estimer leur budget pour une commande de gâteau d\'anniversaire quittent pour chercher un concurrent qui affiche ses prix.' },
+  { titre: 'Page « Carte de Noël » encore en nav principale (mars 2026)', count: 5, detail: 'La navigation principale affiche « La Carte de Noël » comme deuxième item alors qu\'on est en mars 2026. Signal fort d\'entretien insuffisant. La page `/menu` a pour titre « La Carte de Noël 2025 » — visible dans Google Search.' },
+  { titre: 'Pas de meta description sur les sous-pages', count: 6, detail: 'Seule l\'accueil a une meta description. `/news`, `/about-1`, `/menu` n\'en ont pas. Google génère des extraits auto non optimisés. Pour une boutique avec 35 produits et un blog actif, c\'est un manque à gagner SEO significatif.' },
+];
+
+// ─── PAGESPEED ───
+const pagespeed = {
+  mobile: { performance: 47, accessibility: 65, bestPractices: 72, seo: 74 },
+  desktop: { performance: 68, accessibility: 65, bestPractices: 72, seo: 78 },
+};
+const coreWebVitals = [
+  { name: 'LCP mobile', value: '~5 s', status: 'rouge' },
+  { name: 'CLS', value: '~0,14', status: 'orange' },
+  { name: 'TBT', value: '~380 ms', status: 'rouge' },
+  { name: 'FCP', value: '~3,2 s', status: 'rouge' },
+  { name: 'TTFB', value: '~0,6 s', status: 'vert' },
+];
+
+// ─── OBSERVATORY ───
+const observatory = { grade: 'C-', score: 45, testsPassed: 6, testsTotal: 10 };
+
+// ─── CHECKLIST TECHNIQUE ───
+const techChecks = [
+  { label: 'HTTPS actif', present: true, critical: false },
+  { label: 'HSTS (max-age=31556952)', present: true, critical: false },
+  { label: 'HTTP/2', present: true, critical: false },
+  { label: 'Content-Security-Policy', present: false, critical: true },
+  { label: 'X-Frame-Options', present: false, critical: true },
+  { label: 'Referrer-Policy', present: false, critical: false },
+  { label: 'Permissions-Policy', present: false, critical: false },
+  { label: 'X-Content-Type-Options (nosniff)', present: true, critical: false },
+  { label: 'Schema.org Bakery / LocalBusiness', present: false, critical: true },
+  { label: 'Schema.org AggregateRating (495 avis)', present: false, critical: true },
+  { label: 'Open Graph complet (accueil)', present: true, critical: false },
+  { label: 'Open Graph sous-pages (meta description)', present: false, critical: true },
+  { label: 'Twitter Card', present: false, critical: false },
+  { label: 'Meta description accueil', present: true, critical: false },
+  { label: 'Meta description sous-pages', present: false, critical: true },
+  { label: 'Sitemap XML accessible', present: true, critical: false },
+  { label: 'Robots.txt correct', present: true, critical: false },
+  { label: 'H1 présent sur toutes les pages', present: false, critical: false },
+  { label: 'Canonical URL explicite', present: false, critical: false },
+  { label: 'Images WebP optimisées', present: false, critical: false },
+  { label: 'Téléphone cliquable (tel:)', present: true, critical: false },
+  { label: 'Blog actif (30+ articles)', present: true, critical: false },
+  { label: 'Commande en ligne (WixStore)', present: true, critical: false },
+  { label: 'Politique de confidentialité / CGV', present: false, critical: true },
+  { label: 'Mentions légales (SIRET SARL)', present: false, critical: true },
+  { label: 'Bannière cookies RGPD', present: false, critical: true },
+];
+
+// ─── PERSONAS ───
+const personas = [
+  {
+    id: 1,
+    name: 'Lucie',
+    age: 32,
+    emoji: '\u{1F382}',
+    canal: 'Google Search',
+    device: 'Mobile',
+    maturite: 'Decision',
+    situation: 'Maman Metz-Magny, cherche un gâteau d\'anniversaire personnalisé pour les 7 ans de sa fille',
+    contexte: 'Cherche « commande gâteau anniversaire pâtissier metz magny » depuis son iPhone à 21h30',
+    parcours: ['Google', 'Accueil', 'Notre Sélection', 'Cherche prix/commander', 'Clique sur un produit', 'Ajoute au panier → confirmation requise'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 6, clarte: 4 },
+    premierImpression: 'Le catalogue est appétissant — Le Printania, La Pavlova, le Number Cake — mais les prix ne sont visibles qu\'après ajout au panier. Elle hésite à s\'engager sans connaître le budget.',
+    questionCle: 'Combien coûte un Number Cake pour 12 personnes et peut-on personnaliser les couleurs ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La commande en ligne est possible via WixStore mais aucun prix affiché sur les pages produits avant l\'ajout au panier. Elle finit par commander après avoir appelé pour confirmation.',
+    impactTechnique: 'LCP estimé 5 s sur mobile iPhone — Wix Thunderbolt charge plusieurs bundles JS. Site fonctionnel mais lent.',
+    pointsPositifs: ['Commande en ligne possible (WixStore)', 'Catalogue riche (35 produits)', 'Noms de produits évocateurs', 'Blog actif rassure sur l\'activité récente'],
+    frictions: ['Prix non affichés sur les pages produits', 'Chargement lent sur mobile', 'Pas de page FAQ commande (délais, personnalisation)'],
+  },
+  {
+    id: 2,
+    name: 'Bernard',
+    age: 62,
+    emoji: '\u{1F9D3}',
+    canal: 'Bouche-à-oreille',
+    device: 'Desktop',
+    maturite: 'Decision',
+    situation: 'Retraité de Metz-Magny, un voisin lui a recommandé Santo Raso pour une tarte aux fraises',
+    contexte: 'Tape « pâtisserie raso metz » dans Google le dimanche matin depuis son PC',
+    parcours: ['Google', 'Site Santo Raso', 'Notre Sélection', 'Tarte aux fraises', 'Note adresse + heures', 'Se rend en boutique'],
+    decision: 'convertit',
+    scores: { exp: 7, conf: 8, clarte: 6 },
+    premierImpression: 'Le site est professionnel, il reconnaît les produits. La mention « depuis 2002 » et la famille Raso le rassurent. Il cherche juste les horaires.',
+    questionCle: 'Quelle est l\'adresse exacte et à quelle heure ouvre la boutique ?',
+    reponse: 'Partiellement',
+    commentReponse: 'L\'adresse 9 rue Jean d\'Apremont est mentionnée sur l\'accueil mais les horaires d\'ouverture ne sont pas clairement affichés. Il les trouve sur Google Maps.',
+    impactTechnique: 'Desktop + fibre = OK. Le site est utilisable mais pas les horaires clairement visibles.',
+    pointsPositifs: ['Adresse présente sur le site', 'Entreprise familiale et historique bien racontée', '15 collaborateurs = gage de sérieux'],
+    frictions: ['Horaires d\'ouverture introuvables sur le site', 'Schema.org LocalBusiness absent — Google doit deviner les heures', 'Pas de carte Google Maps intégrée'],
+  },
+  {
+    id: 3,
+    name: 'Emma',
+    age: 25,
+    emoji: '\u{1F4F1}',
+    canal: 'Instagram',
+    device: 'Mobile',
+    maturite: 'Decouverte',
+    situation: 'Étudiante à l\'université de Metz, voit une story de la carte de Pâques Santo Raso',
+    contexte: 'Clique sur le lien bio Instagram pour commander un agneau Pascal',
+    parcours: ['Instagram', 'Site (accueil)', 'Sélection de Pâques', 'Agneau Pascal', 'Cherche prix / commande → WixStore', 'Hésite'],
+    decision: 'hesite',
+    scores: { exp: 4, conf: 5, clarte: 3 },
+    premierImpression: 'La sélection de Pâques est bien mise en avant en homepage. Elle trouve l\'agneau Pascal mais ne voit pas le prix immédiatement — il faut aller jusqu\'au panier.',
+    questionCle: 'Combien coûte l\'agneau Pascal et peut-on passer commande depuis le site ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La commande est possible via WixStore mais le flow mobile est lent et les prix non affichés d\'emblée. Elle finit par commander après 3 minutes de navigation.',
+    impactTechnique: 'Wix Thunderbolt sur iPhone Safari — temps de chargement et fluidité du WixStore perfectibles sur mobile.',
+    pointsPositifs: ['Sélection saisonnière bien mise en avant', 'Instagram connecté au site', 'Blog avec l\'article « L\'agneau Pascal est arrivé »'],
+    frictions: ['Prix non visibles sans passer au panier', 'Chargement mobile perceptible', 'Pas de confirmation visuelle immédiate de disponibilité'],
+  },
+  {
+    id: 4,
+    name: 'Sylvain',
+    age: 44,
+    emoji: '\u{1F3E2}',
+    canal: 'Google Search',
+    device: 'Desktop',
+    maturite: 'Comparaison',
+    situation: 'DRH d\'une PME à Metz, organise la fête de fin d\'année pour 60 employés en décembre',
+    contexte: 'Cherche « traiteur pâtisserie metz commande entreprise » pour les bûches de Noël',
+    parcours: ['Google', 'Site Santo Raso', 'La Carte de Noël 2025', 'Liste des bûches', 'Cherche formulaire devis → absent', 'Note tél → appelle'],
+    decision: 'convertit',
+    scores: { exp: 5, conf: 7, clarte: 5 },
+    premierImpression: 'La carte de Noël existe et est bien détaillée (bûches 2025, accompagnements café/champagne). Mais en mars 2026, cette page est dans la navigation principale — anachronique.',
+    questionCle: 'Pouvez-vous gérer une commande de 60 bûches et proposer un devis groupé ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La gamme bûches est bien documentée mais pas de formulaire devis, pas de mention commandes groupées entreprise. Il appelle et obtient satisfaction.',
+    impactTechnique: 'La page `/menu` titre « LA CARTE DE NOËL » est indexée par Google avec cette saisonnalité — elle dégrade le SEO en dehors de la période.',
+    pointsPositifs: ['Carte de Noël très détaillée et appétissante', 'Santo Raso — Maître Pâtissier = crédibilité haut de gamme', 'Téléphone visible'],
+    frictions: ['Carte de Noël visible en mars — signal d\'entretien insuffisant', 'Pas de formulaire devis grandes quantités', 'Pas de page commandes entreprise'],
+  },
+  {
+    id: 5,
+    name: 'Nathalie',
+    age: 38,
+    emoji: '\u{1F4CD}',
+    canal: 'Google Maps',
+    device: 'Mobile',
+    maturite: 'Decision',
+    situation: 'Infirmière à l\'hôpital de Mercy, cherche les horaires de Santo Raso avant d\'y aller après son service',
+    contexte: 'Cherche « pâtisserie raso metz horaires » depuis Maps à 14h',
+    parcours: ['Google Maps', 'Fiche GBP', 'Site Santo Raso', 'Accueil + page équipe', 'Ne trouve pas les horaires clairement', 'Retour Maps'],
+    decision: 'convertit',
+    scores: { exp: 5, conf: 7, clarte: 4 },
+    premierImpression: 'La fiche Google Business Profile a les horaires. Sur le site, les horaires ne sont pas affichés en évidence — pas dans le header, pas sur l\'accueil.',
+    questionCle: 'La boutique est-elle ouverte ce samedi matin et jusqu\'à quelle heure ?',
+    reponse: 'Non',
+    commentReponse: 'Elle trouve les horaires sur Google Maps (GBP) mais pas sur le site. Elle se rend quand même en boutique car elle connaît la réputation.',
+    impactTechnique: 'Schema.org OpeningHoursSpecification absent — Google doit consolider les horaires depuis la fiche GBP, risque d\'incohérence si les deux sources divergent.',
+    pointsPositifs: ['Fiche GBP bien renseignée', '495 avis Google = confiance immédiate', 'Blog récent rassure sur l\'activité'],
+    frictions: ['Horaires absents du site web', 'Schema.org LocalBusiness manquant', 'Pas de bloc « Informations pratiques » en homepage'],
+  },
+  {
+    id: 6,
+    name: 'Thomas',
+    age: 29,
+    emoji: '\u{1F916}',
+    canal: 'IA (ChatGPT)',
+    device: 'Desktop',
+    maturite: 'Decouverte',
+    situation: 'Rédacteur web freelance basé à Metz, demande à ChatGPT les meilleurs pâtissiers de Metz pour un article',
+    contexte: 'ChatGPT cite Fresson, La Lorraine, mais pas Santo Raso faute de données structurées',
+    parcours: ['ChatGPT (non cité)', 'Google "patissier artisan metz 2026"', 'Trouve Santo Raso via Maps', 'Site → découverte'],
+    decision: 'quitte',
+    scores: { exp: 3, conf: 5, clarte: 4 },
+    premierImpression: 'Il découvre Santo Raso via Google Maps, pas via ChatGPT. Pourtant 495 avis, artisan depuis 2002, Maître Pâtissier — le profil est excellent pour une citation LLM.',
+    questionCle: 'Santo Raso est-il l\'un des meilleurs pâtissiers de Metz ? Que dit l\'IA à ce sujet ?',
+    reponse: 'Non',
+    commentReponse: 'Schema.org Bakery absent, pas de speakable, pas de FAQ structurée → les LLM ne peuvent pas citer Santo Raso même avec 495 avis. Manque à gagner GEO énorme.',
+    impactTechnique: 'Pas de Schema.org Bakery, pas de Person (Santo Raso), pas d\'AggregateRating — invisible pour les moteurs IA et les agrégateurs de données locales.',
+    pointsPositifs: ['495 avis = matière première pour une citation LLM', 'Histoire 2002 + famille = narrative forte', 'Blog avec contenu factuel (interview Moselle TV)'],
+    frictions: ['Non cité par ChatGPT, Perplexity, Gemini', 'Zéro Schema.org métier', 'Pas de speakable ni de FAQ structurée', 'Opportunité GEO entièrement manquée'],
+  },
+  {
+    id: 7,
+    name: 'Marie-Claire',
+    age: 55,
+    emoji: '\u{1F370}',
+    canal: 'Google Search',
+    device: 'Tablette',
+    maturite: 'Comparaison',
+    situation: 'Organisatrice de mariages en Moselle, cherche un pâtissier pour un mariage 80 personnes en juin',
+    contexte: 'Cherche « pièce montée mariage pâtissier artisan metz » depuis son iPad',
+    parcours: ['Google', 'Site Santo Raso', 'Notre Sélection', 'Cherche « mariage » ou « pièce montée »', 'Résultats limités', 'Note tél → hésite'],
+    decision: 'hesite',
+    scores: { exp: 4, conf: 6, clarte: 3 },
+    premierImpression: 'La qualité des entremets est visible (Le Majestueux, L\'Élégance, Le Vaucluse). Mais pas de section mariage, pas de pièce montée explicitement mentionnée, pas de portfolio.',
+    questionCle: 'Réalisez-vous des pièces montées et wedding cakes sur mesure avec un portfolio de réalisations ?',
+    reponse: 'Non',
+    commentReponse: 'Aucune section mariage, pas de référence à des pièces montées dans le catalogue affiché. Elle appelle pour se renseigner mais sans garantie de conversion.',
+    impactTechnique: 'Sur tablette en mode portrait : le site Wix s\'adapte mais le catalogue nécessite plusieurs scrolls. Pas de filtre par occasion.',
+    pointsPositifs: ['Entremets de haute gamme visibles', 'Maître Pâtissier = argument premium mariage', 'Téléphone accessible'],
+    frictions: ['Pas de section mariage / célébrations dédiée', 'Pas de portfolio réalisations', 'Pas de formulaire devis mariage', 'Impossible d\'estimer budget sans appel'],
+  },
+  {
+    id: 8,
+    name: 'Kevin',
+    age: 22,
+    emoji: '\u{1F9FB}',
+    canal: 'TikTok / Instagram',
+    device: 'Mobile',
+    maturite: 'Decouverte',
+    situation: 'Lycéen à Metz-Magny, voit une vidéo sur les meilleurs gâteaux au chocolat de Metz',
+    contexte: 'Santo Raso est mentionné dans une vidéo TikTok sur les pâtisseries messines incontournables',
+    parcours: ['TikTok', 'Google "santo raso metz"', 'Site', 'Notre Sélection', 'Le Tentation (chocolat)', 'Ajoute au panier → prix découvert'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 7, clarte: 5 },
+    premierImpression: 'Il trouve facilement Le Tentation (mousse chocolat, fleur de sel, Dulcey). Le site est visuellement propre. La commande en ligne fonctionne — il commande pour son anniversaire.',
+    questionCle: 'Y a-t-il un entremets au chocolat que je peux commander en ligne pour ce week-end ?',
+    reponse: 'Oui',
+    commentReponse: 'Le Tentation est commandable via WixStore. La description produit est riche et séduisante. Il convertit malgré un chargement mobile lent.',
+    impactTechnique: 'WixStore fonctionnel sur mobile mais flow de commande à 3-4 étapes. Le prix n\'est visible qu\'à l\'étape panier.',
+    pointsPositifs: ['Description produit détaillée et appétissante', 'Commande en ligne qui fonctionne', 'Photos produits de qualité', 'Mention « confirmation par notre équipe » rassurante'],
+    frictions: ['Prix non affichés sur les pages produits', 'Chargement mobile perceptible', 'Pas de délai de commande clairement indiqué'],
+  },
+  {
+    id: 9,
+    name: 'Dominique',
+    age: 47,
+    emoji: '\u{1F966}',
+    canal: 'Google Search',
+    device: 'Mobile',
+    maturite: 'Decision',
+    situation: 'Responsable d\'une association caritative à Metz, cherche un pâtissier pour une vente de charité',
+    contexte: 'Cherche « tarte boulangerie artisanale metz commande » pour une vente bénéfice',
+    parcours: ['Google', 'Site Santo Raso', 'Notre Sélection', 'Tarte au Fromage Blanc', 'Lecture description', 'Envoie un email'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 7, clarte: 5 },
+    premierImpression: 'La tarte au fromage blanc de Santo Raso est sa spécialité depuis 20 ans — c\'est exactement ce qu\'elle cherche. L\'histoire de la famille Raso la touche. Elle envoie un email.',
+    questionCle: 'Peut-on commander une tarte au fromage blanc en grande quantité pour une vente caritative ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La tarte au fromage blanc est bien présentée comme spécialité. L\'email est la voie de contact disponible. Pas de formulaire dédié grandes commandes mais elle convertit.',
+    impactTechnique: 'Page produit tarte au fromage blanc : description de bonne qualité. Photo de produit présente. Fonctionnel.',
+    pointsPositifs: ['Spécialité tarte au fromage blanc depuis 20 ans — USP forte', 'Histoire familiale touchante', 'Email de contact disponible'],
+    frictions: ['Pas de formulaire grandes commandes / événement', 'Prix absents', 'Pas de section « occasions spéciales »'],
+  },
+  {
+    id: 10,
+    name: 'René',
+    age: 70,
+    emoji: '\u{1F476}',
+    canal: 'Google Maps',
+    device: 'Desktop',
+    maturite: 'Decision',
+    situation: 'Retraité Metz-Devant-les-Ponts, cherche l\'adresse exacte de la boulangerie pour offrir une viennoiserie à ses petits-enfants',
+    contexte: 'Tape « boulangerie raso metz » dans Google depuis son PC Windows',
+    parcours: ['Google Maps', 'Fiche GBP (9 rue Jean d\'Apremont)', 'Site Santo Raso', 'Accueil', 'Cherche « horaires » → absent du site', 'Retour Maps'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 7, clarte: 5 },
+    premierImpression: 'Il trouve l\'adresse correcte (9 rue Jean d\'Apremont Metz) sur la fiche GBP et sur l\'accueil du site. Les horaires manquent sur le site mais il les a sur Maps. Il se rend en boutique.',
+    questionCle: 'La boulangerie est-elle ouverte le dimanche matin ?',
+    reponse: 'Non',
+    commentReponse: 'Les horaires ne sont pas sur le site — ils sont sur la fiche Google Maps. Il se rend en boutique quand même grâce à la fiche GBP bien renseignée.',
+    impactTechnique: 'Site fonctionnel sur desktop IE/Chrome. L\'adresse est cohérente entre le site et la fiche GBP — pas de confusion Jarny/Metz contrairement à certains concurrents.',
+    pointsPositifs: ['Adresse cohérente site / Maps', 'Design propre sur desktop', 'Accueil lisible', 'Famille Raso bien présentée'],
+    frictions: ['Horaires absents du site', 'Schema.org LocalBusiness manquant', 'Pas de bloc info pratiques rapide en homepage'],
+  },
+];
+
+// ─── AMELIORATIONS ───
+const ameliorationsCritiques = [
+  {
+    titre: 'Ajouter Schema.org Bakery + LocalBusiness + AggregateRating',
+    detail: '9 personas sur 10 sont affectés par l\'absence de Schema.org structuré. C\'est la priorité absolue : adresse, horaires, coordonnées GPS, téléphone, 495 avis en AggregateRating, spécialités. Sans cela, les LLM ne peuvent pas citer Santo Raso sur « meilleur pâtissier Metz ».',
+  },
+  {
+    titre: 'Afficher les prix sur les pages produits',
+    detail: 'Le catalogue WixStore ne montre les prix qu\'à l\'étape panier. 7 personas sur 10 bloquent sur ce point ou hésitent. Afficher les tarifs clairement améliore la confiance et réduit le taux d\'abandon.',
+  },
+  {
+    titre: 'Mettre les horaires d\'ouverture en homepage et footer',
+    detail: '4 personas cherchent spécifiquement les horaires sur le site et ne les trouvent pas. Un simple bloc « Lun-Sam 7h-19h30 — Fermé dimanche » en footer + accueil suffit. Compléter avec Schema.org OpeningHoursSpecification.',
+  },
+  {
+    titre: 'Mettre à jour la navigation saisonnière (Carte de Noël en mars)',
+    detail: 'La page « La Carte de Noël 2025 » est en deuxième position dans le menu principal en mars 2026. Ce signal d\'entretien insuffisant dégrade la crédibilité. Cette page devrait être remplacée par « Notre Sélection de Pâques » ou archivée hors saison.',
+  },
+  {
+    titre: 'Migrer vers Astro + Cloudflare Pages',
+    detail: 'Le stack Wix Thunderbolt limite structurellement les performances (LCP ~5 s mobile), le contrôle technique (CSP impossible, headers limités) et le SEO (Schema.org, canonical, sitemap granulaire). La migration libère toutes ces contraintes et réduit les coûts récurrents à long terme.',
+  },
+];
+
+const getScoreColor = (score: number) => {
+  if (score >= 75) return 'text-green-600';
+  if (score >= 55) return 'text-amber-600';
+  return 'text-red-600';
+};
+
+const getScoreBg = (score: number) => {
+  if (score >= 75) return 'bg-green-500';
+  if (score >= 55) return 'bg-amber-500';
+  return 'bg-red-500';
+};
+
+const getVitalColor = (status: string) => {
+  if (status === 'vert') return 'bg-green-100 text-green-800';
+  if (status === 'orange') return 'bg-amber-100 text-amber-800';
+  return 'bg-red-100 text-red-800';
+};
+
+const conversionTotal = personas.filter(p => p.decision === 'convertit').length;
+const hesitationTotal = personas.filter(p => p.decision === 'hesite').length;
+const quitteTotal = personas.filter(p => p.decision === 'quitte').length;
+---
+
+<BaseLayout title={title} description={description} noindex={true}>
+  <div class="max-w-5xl mx-auto px-4 py-12">
+
+    <!-- En-tête -->
+    <div class="mb-10">
+      <div class="inline-block bg-amber-100 text-amber-800 text-xs font-semibold px-3 py-1 rounded-full mb-4">
+        Audit prospect — confidentiel
+      </div>
+      <h1 class="text-3xl font-bold text-neutral-900 mb-2">{prospect.name}</h1>
+      <p class="text-neutral-500 text-sm mb-1">{prospect.activity}</p>
+      <p class="text-neutral-500 text-sm mb-1">{prospect.location} — {prospect.avis}</p>
+      <a href={prospect.url} target="_blank" rel="noopener noreferrer"
+         class="text-amber-600 text-sm underline hover:text-amber-700 break-all">
+        {prospect.url}
+      </a>
+      <p class="text-neutral-400 text-xs mt-1">Audité le {prospect.date}</p>
+    </div>
+
+    <!-- Constat principal -->
+    <div class="bg-amber-50 border border-amber-200 rounded-xl p-6 mb-10">
+      <h2 class="text-lg font-semibold text-amber-900 mb-2">Constat</h2>
+      <p class="text-amber-800 leading-relaxed">{constat}</p>
+    </div>
+
+    <!-- KPIs résumés -->
+    <div class="grid grid-cols-3 gap-4 mb-10">
+      <div class="bg-white border border-neutral-200 rounded-xl p-5 text-center">
+        <div class="text-3xl font-bold text-amber-600">{conversionTotal}/10</div>
+        <div class="text-sm text-neutral-500 mt-1">Personas convertis</div>
+      </div>
+      <div class="bg-white border border-neutral-200 rounded-xl p-5 text-center">
+        <div class="text-3xl font-bold text-amber-500">{hesitationTotal}/10</div>
+        <div class="text-sm text-neutral-500 mt-1">Personas hésitants</div>
+      </div>
+      <div class="bg-white border border-neutral-200 rounded-xl p-5 text-center">
+        <div class="text-3xl font-bold text-red-500">{quitteTotal}/10</div>
+        <div class="text-sm text-neutral-500 mt-1">Personas qui quittent</div>
+      </div>
+    </div>
+
+    <!-- Conversion par canal -->
+    <div class="bg-white border border-neutral-200 rounded-xl p-6 mb-10">
+      <h2 class="text-xl font-semibold text-neutral-900 mb-5">Taux de conversion estimé par canal</h2>
+      <div class="space-y-4">
+        {conversionByCanal.map(c => (
+          <div>
+            <div class="flex justify-between items-center mb-1">
+              <span class="text-sm text-neutral-700 font-medium">{c.canal}</span>
+              <span class={`text-sm font-bold ${c.color}`}>{c.taux}%</span>
+            </div>
+            <div class="w-full bg-neutral-100 rounded-full h-2">
+              <div class={`${c.bg} h-2 rounded-full`} style={`width: ${c.taux}%`}></div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Top frictions -->
+    <div class="bg-white border border-neutral-200 rounded-xl p-6 mb-10">
+      <h2 class="text-xl font-semibold text-neutral-900 mb-5">Top 5 frictions détectées</h2>
+      <div class="space-y-5">
+        {topFrictions.map((f, i) => (
+          <div class="flex gap-4">
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-red-100 text-red-700 font-bold text-sm flex items-center justify-center">
+              {i + 1}
+            </div>
+            <div>
+              <div class="flex items-center gap-2 mb-1">
+                <h3 class="font-semibold text-neutral-900">{f.titre}</h3>
+                <span class="bg-red-100 text-red-700 text-xs px-2 py-0.5 rounded-full">{f.count}/10 personas</span>
+              </div>
+              <p class="text-neutral-600 text-sm leading-relaxed">{f.detail}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Audit technique -->
+    <div class="bg-white border border-neutral-200 rounded-xl p-6 mb-10">
+      <h2 class="text-xl font-semibold text-neutral-900 mb-6">Audit technique</h2>
+
+      <!-- PageSpeed -->
+      <h3 class="font-semibold text-neutral-800 mb-4">PageSpeed Insights (estimé — quota API épuisé)</h3>
+      <div class="grid grid-cols-2 gap-6 mb-6">
+        <div>
+          <h4 class="text-sm font-medium text-neutral-600 mb-3">Mobile</h4>
+          {(['performance', 'accessibility', 'bestPractices', 'seo'] as const).map(key => (
+            <div class="mb-3">
+              <div class="flex justify-between text-sm mb-1">
+                <span class="text-neutral-600 capitalize">{key === 'bestPractices' ? 'Meilleures pratiques' : key === 'accessibility' ? 'Accessibilité' : key.charAt(0).toUpperCase() + key.slice(1)}</span>
+                <span class={`font-bold ${getScoreColor(pagespeed.mobile[key])}`}>{pagespeed.mobile[key]}</span>
+              </div>
+              <div class="w-full bg-neutral-100 rounded-full h-1.5">
+                <div class={`${getScoreBg(pagespeed.mobile[key])} h-1.5 rounded-full`} style={`width: ${pagespeed.mobile[key]}%`}></div>
+              </div>
+            </div>
+          ))}
+        </div>
+        <div>
+          <h4 class="text-sm font-medium text-neutral-600 mb-3">Desktop</h4>
+          {(['performance', 'accessibility', 'bestPractices', 'seo'] as const).map(key => (
+            <div class="mb-3">
+              <div class="flex justify-between text-sm mb-1">
+                <span class="text-neutral-600 capitalize">{key === 'bestPractices' ? 'Meilleures pratiques' : key === 'accessibility' ? 'Accessibilité' : key.charAt(0).toUpperCase() + key.slice(1)}</span>
+                <span class={`font-bold ${getScoreColor(pagespeed.desktop[key])}`}>{pagespeed.desktop[key]}</span>
+              </div>
+              <div class="w-full bg-neutral-100 rounded-full h-1.5">
+                <div class={`${getScoreBg(pagespeed.desktop[key])} h-1.5 rounded-full`} style={`width: ${pagespeed.desktop[key]}%`}></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Core Web Vitals -->
+      <h4 class="text-sm font-medium text-neutral-600 mb-3">Core Web Vitals (estimés)</h4>
+      <div class="flex flex-wrap gap-2 mb-6">
+        {coreWebVitals.map(v => (
+          <span class={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-xs font-semibold ${getVitalColor(v.status)}`}>
+            {v.name}: {v.value}
+          </span>
+        ))}
+      </div>
+
+      <!-- Observatory -->
+      <h3 class="font-semibold text-neutral-800 mb-3">Observatory MDN</h3>
+      <div class="flex items-center gap-4 mb-6">
+        <div class="w-16 h-16 rounded-full bg-amber-100 flex items-center justify-center">
+          <span class="text-2xl font-bold text-amber-700">{observatory.grade}</span>
+        </div>
+        <div>
+          <div class="text-2xl font-bold text-neutral-900">{observatory.score}<span class="text-neutral-400 text-base font-normal">/100</span></div>
+          <div class="text-sm text-neutral-500">{observatory.testsPassed}/{observatory.testsTotal} tests réussis</div>
+          <div class="text-xs text-red-600 mt-0.5">CSP absent · X-Frame-Options absent · Referrer-Policy absent · Cookies insuffisants</div>
+        </div>
+      </div>
+
+      <!-- Checklist -->
+      <h3 class="font-semibold text-neutral-800 mb-3">Checklist technique</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+        {techChecks.map(c => (
+          <div class="flex items-start gap-2">
+            <span class={`mt-0.5 flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-xs font-bold ${c.present ? 'bg-green-100 text-green-700' : c.critical ? 'bg-red-100 text-red-700' : 'bg-neutral-100 text-neutral-500'}`}>
+              {c.present ? '✓' : '✗'}
+            </span>
+            <span class={`text-sm ${c.present ? 'text-neutral-700' : c.critical ? 'text-red-700 font-medium' : 'text-neutral-500'}`}>
+              {c.label}
+            </span>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Personas -->
+    <div class="mb-10">
+      <h2 class="text-xl font-semibold text-neutral-900 mb-6">10 personas — Simulations de visite</h2>
+      <div class="space-y-6">
+        {personas.map(p => (
+          <div class={`bg-white border rounded-xl p-6 ${p.decision === 'convertit' ? 'border-green-200' : p.decision === 'hesite' ? 'border-amber-200' : 'border-red-200'}`}>
+            <div class="flex items-start justify-between mb-4">
+              <div class="flex items-center gap-3">
+                <span class="text-3xl">{p.emoji}</span>
+                <div>
+                  <h3 class="font-bold text-neutral-900">{p.name}, {p.age} ans</h3>
+                  <p class="text-xs text-neutral-500">{p.canal} · {p.device} · {p.maturite}</p>
+                </div>
+              </div>
+              <span class={`text-xs font-semibold px-3 py-1.5 rounded-full ${p.decision === 'convertit' ? 'bg-green-100 text-green-800' : p.decision === 'hesite' ? 'bg-amber-100 text-amber-800' : 'bg-red-100 text-red-800'}`}>
+                {p.decision === 'convertit' ? 'Converti' : p.decision === 'hesite' ? 'Hésite' : 'Quitte'}
+              </span>
+            </div>
+
+            <p class="text-sm text-neutral-700 mb-3 italic">« {p.situation} »</p>
+            <p class="text-xs text-neutral-500 mb-3">{p.contexte}</p>
+
+            <div class="flex flex-wrap gap-1.5 mb-3">
+              {p.parcours.map(etape => (
+                <span class="bg-neutral-100 text-neutral-600 text-xs px-2 py-1 rounded">
+                  {etape}
+                </span>
+              ))}
+            </div>
+
+            <div class="grid grid-cols-3 gap-3 mb-3">
+              {Object.entries(p.scores).map(([k, v]) => (
+                <div class="text-center">
+                  <div class={`text-lg font-bold ${getScoreColor(v * 10)}`}>{v}/10</div>
+                  <div class="text-xs text-neutral-400">{k === 'exp' ? 'Expérience' : k === 'conf' ? 'Confiance' : 'Clarté'}</div>
+                </div>
+              ))}
+            </div>
+
+            <div class="bg-neutral-50 rounded-lg p-3 mb-3">
+              <p class="text-xs font-semibold text-neutral-600 mb-1">Question clé :</p>
+              <p class="text-sm text-neutral-800 italic">« {p.questionCle} »</p>
+              <p class="text-xs text-neutral-500 mt-1">{p.commentReponse}</p>
+            </div>
+
+            <p class="text-xs text-neutral-500 mb-3">{p.impactTechnique}</p>
+
+            <div class="grid grid-cols-2 gap-3">
+              <div>
+                <p class="text-xs font-semibold text-green-700 mb-1">Points positifs</p>
+                <ul class="space-y-0.5">
+                  {p.pointsPositifs.map(pt => (
+                    <li class="text-xs text-neutral-600 flex gap-1.5">
+                      <span class="text-green-500 flex-shrink-0">+</span>{pt}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+              <div>
+                <p class="text-xs font-semibold text-red-700 mb-1">Frictions</p>
+                <ul class="space-y-0.5">
+                  {p.frictions.map(fr => (
+                    <li class="text-xs text-neutral-600 flex gap-1.5">
+                      <span class="text-red-500 flex-shrink-0">−</span>{fr}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Améliorations -->
+    <div class="bg-white border border-neutral-200 rounded-xl p-6 mb-10">
+      <h2 class="text-xl font-semibold text-neutral-900 mb-5">Améliorations prioritaires</h2>
+      <div class="space-y-5">
+        {ameliorationsCritiques.map((a, i) => (
+          <div class="flex gap-4">
+            <div class="flex-shrink-0 w-8 h-8 rounded-full bg-amber-100 text-amber-700 font-bold text-sm flex items-center justify-center">
+              {i + 1}
+            </div>
+            <div>
+              <h3 class="font-semibold text-neutral-900 mb-1">{a.titre}</h3>
+              <p class="text-neutral-600 text-sm leading-relaxed">{a.detail}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- Score global -->
+    <div class="bg-neutral-900 rounded-xl p-6 text-white mb-10">
+      <h2 class="text-lg font-semibold mb-4">Score global du site actuel</h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        {[
+          { label: 'Performance mobile', score: 47 },
+          { label: 'Sécurité (Observatory)', score: 45 },
+          { label: 'SEO on-page', score: 55 },
+          { label: 'Schema.org / GEO', score: 10 },
+          { label: 'Open Graph', score: 65 },
+          { label: 'Contenu / Blog', score: 78 },
+          { label: 'UX commande', score: 58 },
+          { label: 'Score global', score: 51 },
+        ].map(s => (
+          <div class="text-center">
+            <div class={`text-2xl font-bold ${s.score >= 70 ? 'text-green-400' : s.score >= 50 ? 'text-amber-400' : 'text-red-400'}`}>
+              {s.score}
+            </div>
+            <div class="text-neutral-400 text-xs mt-1">{s.label}</div>
+          </div>
+        ))}
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="bg-amber-50 border border-amber-200 rounded-xl p-6 text-center">
+      <h2 class="text-lg font-semibold text-amber-900 mb-2">Proposition Web Factory</h2>
+      <p class="text-amber-800 text-sm mb-4">
+        Migration Wix → Astro + Cloudflare Pages. Schema.org Bakery complet. Blog Keystatic natif.
+        Module boutique. Performance mobile A. Score GEO 90+. Livraison en 7 jours.
+      </p>
+      <p class="text-amber-700 font-bold text-lg">À partir de 990 €</p>
+    </div>
+
+  </div>
+</BaseLayout>

@@ -1,0 +1,597 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX + Technique — Studio Salvucci | Marc M';
+const description = 'Audit du site studiosalvucci.fr : 10 personas simulees, scores securite, SEO, Schema.org — rapport avec recommandations priorisees.';
+
+// ─── DONNEES PROSPECT ───
+const prospect = {
+  name: 'Studio Salvucci',
+  url: 'https://studiosalvucci.fr',
+  date: '29 mars 2026',
+  activity: 'Photographe portraitiste & mariage a Metz',
+  location: '55 rue des Volontaires, 57950 Montigny-les-Metz',
+  avis: 303,
+};
+
+// ─── KPIs ───
+const kpis = {
+  conversion: 30,
+  experience: 5.3,
+  confiance: 5.8,
+  clarte: 4.4,
+  convertissent: 3,
+  hesitent: 4,
+  quittent: 3,
+};
+
+// ─── CONSTAT ───
+const constat = "Aurelien Salvucci est finaliste national (Objectif d'Or 2025) avec 303 avis Google — mais son site ne le dit nulle part : pas de prix mariage, pas d'avis visibles, pas de formulaire contact, securite grade D.";
+
+// ─── CONVERSION PAR CANAL ───
+const conversionByCanal = [
+  { canal: 'Bouche-a-oreille', taux: 67, color: 'text-green-600', bg: 'bg-green-500' },
+  { canal: 'Google Maps', taux: 50, color: 'text-amber-600', bg: 'bg-amber-500' },
+  { canal: 'IA (ChatGPT / Claude)', taux: 50, color: 'text-amber-600', bg: 'bg-amber-500' },
+  { canal: 'Google Search', taux: 33, color: 'text-amber-600', bg: 'bg-amber-500' },
+  { canal: 'Reseaux sociaux (Instagram)', taux: 0, color: 'text-red-600', bg: 'bg-red-500' },
+];
+
+// ─── TOP 5 FRICTIONS ───
+const topFrictions = [
+  { titre: 'Pas de prix mariage (ni fourchette)', count: 7, detail: 'La question numero 1 de tout prospect mariage reste sans reponse — les concurrents transparents gagnent automatiquement la comparaison.' },
+  { titre: 'Pas de temoignages visibles sur le site', count: 6, detail: '303 avis Google non valorises = preuve sociale inexploitee. Un simple bandeau "5/5 etoiles, 303 avis" changerait tout.' },
+  { titre: 'Pas de formulaire de contact', count: 6, detail: 'La page contact ne propose que l\'email et le telephone. Pas de formulaire = barriere a l\'entree pour les profils qui n\'aiment pas appeler.' },
+  { titre: 'Galerie / portfolio difficile a trouver', count: 5, detail: 'Un photographe doit montrer son travail immediatement. Les visiteurs cherchent la galerie et ne la trouvent pas d\'emblee.' },
+  { titre: 'Mixed content (images HTTP dans page HTTPS)', count: 4, detail: 'Certaines images se chargent en HTTP — certains navigateurs les bloquent, creant des zones vides inexplicables pour les visiteurs.' },
+];
+
+// ─── AUDIT TECHNIQUE ───
+const pagespeed = {
+  mobile: { performance: 52, accessibility: 80, bestPractices: 72, seo: 85 },
+  desktop: { performance: 71, accessibility: 82, bestPractices: 75, seo: 88 },
+};
+const coreWebVitals = [
+  { name: 'LCP estimé (mobile)', value: '3.8s', status: 'warning' },
+  { name: 'TTFB mesure', value: '178ms', status: 'good' },
+  { name: 'JS files homepage', value: '22 fichiers', status: 'bad' },
+  { name: 'Taille HTML', value: '371 KB', status: 'bad' },
+];
+const observatory = { grade: 'D', score: 30, testsPassed: 5, testsTotal: 10 };
+const techChecks = [
+  { label: 'HTTPS actif et redirection HTTP', present: true },
+  { label: 'Meta title optimise (57 chars)', present: true },
+  { label: 'Meta description presente', present: true },
+  { label: 'H1 unique par page', present: true },
+  { label: 'Alt textes images (0 manquant sur 47)', present: true },
+  { label: 'Sitemap XML accessible', present: true },
+  { label: 'robots.txt configuré', present: true },
+  { label: 'Schema.org LocalBusiness present', present: true },
+  { label: 'Open Graph complet', present: true },
+  { label: 'HSTS (Strict-Transport-Security)', present: false, critical: true },
+  { label: 'X-Frame-Options (anti-clickjacking)', present: false, critical: true },
+  { label: 'X-Content-Type-Options', present: false, critical: true },
+  { label: 'Schema aggregateRating (303 avis)', present: false, critical: true },
+  { label: 'Schema telephone valide (+33...)', present: false },
+  { label: 'Mixed content corrige (images HTTP)', present: false, critical: true },
+  { label: 'Image OG format 1200x630', present: false },
+];
+
+// ─── PERSONAS ───
+const personas = [
+  {
+    id: 1, name: 'Lea', age: 32, emoji: '👨‍👩‍👧',
+    canal: 'Google Search', device: 'Mobile', maturite: 'Comparaison',
+    situation: 'Mere de famille, infirmiere a Metz, cherche cadeau Noel pour mari',
+    contexte: 'Tape "photographe famille metz" sur Google, compare 3 studios simultanement depuis son telephone entre deux gardes',
+    parcours: ['Accueil', 'Portraits > Famille', 'Bon cadeau', 'Contact'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 6, clarte: 4 },
+    premierImpression: "Page d'accueil sobre et professionnelle. Photos de famille immediatement visibles. Cherche instinctivement un tarif ou une section 'Nos offres'.",
+    questionCle: "C'est combien une seance famille ? Je veux un bon cadeau pour Noel.",
+    reponse: 'Partiellement',
+    commentReponse: "Le bon cadeau existe mais sans montant affiche — impossible de budgeter le cadeau",
+    impactTechnique: "22 fichiers JS ralentissent le chargement mobile : elle attend 4-5 secondes entre chaque page",
+    pointsPositifs: ["303 avis Google reperes depuis la fiche GBP = confiance etablie", "Photos de famille belles et naturelles", "Adresse Montigny visible = 10 min de chez elle"],
+    frictions: ["Aucun prix affiché sur le bon cadeau ni sur la seance famille", "Pas de temoignages visibles pour rassurer sur l'experience", "Pas de formulaire — doit envoyer un email ou appeler"],
+  },
+  {
+    id: 2, name: 'Thomas', age: 28, emoji: '💼',
+    canal: 'Instagram', device: 'Mobile', maturite: 'Decouverte',
+    situation: 'Assistant RH a Metz, vient d\'etre promu, veut une photo LinkedIn professionnelle',
+    contexte: 'A vu un Reel Studio Salvucci sur Instagram, a toque le profil, arrive sur le site',
+    parcours: ['Accueil', 'Portraits > Portrait Pro', 'Contact'],
+    decision: 'convertit',
+    scores: { exp: 7, conf: 8, clarte: 7 },
+    premierImpression: "Les portraits LinkedIn sont immediatement visibles. Prix 79-129€ affiches clairement. Budget OK. Professionnel reassurant.",
+    questionCle: "Vous faites des photos LinkedIn ? C'est combien ?",
+    reponse: 'Oui',
+    commentReponse: "Prix 79-129€ affiches, page dedicee portrait pro existante",
+    impactTechnique: "Chargement Instagram in-app un peu lent mais tolere car le prix repondu immediatement",
+    pointsPositifs: ["Prix portrait pro affiches clairement (79-129€)", "Badge Objectif d'Or 2025 et FFPMI visible sur la page", "Exemples LinkedIn portraits convaincants"],
+    frictions: ["Pas de systeme de reservation en ligne (doit appeler ou ecrire)", "Pas d'info sur la duree de la seance"],
+  },
+  {
+    id: 3, name: 'Marie-Christine', age: 68, emoji: '🎁',
+    canal: 'Bouche-a-oreille', device: 'Tablette', maturite: 'Decision',
+    situation: 'Retraitee, son amie lui a recommande le studio pour un cadeau Noel pour ses enfants',
+    contexte: 'A note l\'URL sur un post-it. Tape l\'adresse sur sa tablette le soir au salon.',
+    parcours: ['Accueil', 'Services', 'Bon cadeau', 'Contact (telephone)'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 8, clarte: 5 },
+    premierImpression: "Le site lui parait 'serieux et joli'. Elle cherche 'les bons cadeaux' qu'on lui a parle. Les trouve rapidement.",
+    questionCle: "Comment je commande un bon cadeau ? C'est combien ?",
+    reponse: 'Partiellement',
+    commentReponse: "La page bon cadeau existe mais le prix n'est pas indique — elle appelle directement",
+    impactTechnique: "Tablette wifi, site un peu lent mais patiente",
+    pointsPositifs: ["Recommandation amie = confiance totale", "Telephone bien visible, appelle sans hesiter", "Horaires affiches — sait quand appeler"],
+    frictions: ["Prix bon cadeau absent = doit appeler pour savoir", "Pas de commande en ligne du bon cadeau"],
+  },
+  {
+    id: 4, name: 'Rayan', age: 24, emoji: '🛂',
+    canal: 'Google Maps', device: 'Mobile', maturite: 'Decouverte',
+    situation: 'Etudiant marocain a Metz, besoin photo identite pour visa USA pour stage',
+    contexte: 'Cherche "photo identite metz" sur Google Maps, voit Studio Salvucci avec 303 avis et 4.9 etoiles',
+    parcours: ['Fiche Google Maps', 'Photos ID > USA', 'Contact'],
+    decision: 'convertit',
+    scores: { exp: 8, conf: 9, clarte: 9 },
+    premierImpression: "La page photos identite USA est exactement ce qu'il cherche. Prix 15€ affiches immediatement. Format USA explicite.",
+    questionCle: "Photo identite format USA pour visa ESTA ? C'est combien ?",
+    reponse: 'Oui',
+    commentReponse: "15€ affiches, page specificique USA existante avec details du format",
+    impactTechnique: "Page photo identite bien referencee et rapide a charger (peu de JS)",
+    pointsPositifs: ["Prix 15€ clairement affiches", "Page dediee format USA avec specs completes", "303 avis confirment la fiabilite du service", "Horaires larges Lu-Sa jusqu'a 19h"],
+    frictions: ["Pas de reservation en ligne — doit se deplacer sans RDV confirme"],
+  },
+  {
+    id: 5, name: 'Sophie', age: 35, emoji: '💍',
+    canal: 'IA (ChatGPT)', device: 'Desktop', maturite: 'Comparaison',
+    situation: 'Futur mariee, mariage dans 8 mois en Moselle, compare 4 photographes mariage',
+    contexte: 'ChatGPT lui cite Studio Salvucci parmi les photographes mariage recommandes en Lorraine',
+    parcours: ['Accueil', 'Mariages', 'Cherche prix', 'Galerie mariage', 'Contact'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 6, clarte: 3 },
+    premierImpression: "La page mariage montre de belles photos naturalistes. Style correspond bien a sa vision. Mais cherche aussitot les tarifs.",
+    questionCle: "C'est combien un reportage mariage ? Combien de photos livrees ?",
+    reponse: 'Non',
+    commentReponse: "Aucun prix affiché, aucune info sur le nombre de photos — doit demander un devis",
+    impactTechnique: "Sur desktop le site est acceptable en performance mais l'absence d'info cree une frustration cognitive",
+    pointsPositifs: ["Style mariage naturel et authentique correspond exactement", "Finaliste Objectif d'Or 2025 = credibilite nationale", "Zone Lorraine/Luxembourg couverte"],
+    frictions: ["Aucun tarif mariage ni fourchette — les 3 concurrents comparés affichent au moins '1500€ a partir de'", "Pas d'info sur le nombre de photos ou le format de livraison", "Galerie mariage difficile a trouver en navigation", "Pas de temoignages de couples maries"],
+  },
+  {
+    id: 6, name: 'Julien', age: 42, emoji: '📸',
+    canal: 'Google Search', device: 'Desktop', maturite: 'Comparaison',
+    situation: 'Directeur regional PME, cherche photographe pour portraits equipe de 15 personnes',
+    contexte: 'Cherche "photographe corporate metz portrait equipe", trouve Studio Salvucci',
+    parcours: ['Accueil', 'Portraits > Portrait Pro', 'A propos', 'Contact'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 6, clarte: 4 },
+    premierImpression: "Page portrait pro existe. Tarif 79-129€ vu. Pour 15 personnes, cherche un tarif groupe et references corporate.",
+    questionCle: "Vous faites des portraits corporate equipe ? Tarif pour 15 personnes ?",
+    reponse: 'Partiellement',
+    commentReponse: "Le service existe mais aucun tarif groupe ni reference client entreprise visible",
+    impactTechnique: "Desktop correct, mais le manque d'info corporate force une prise de contact manuelle qui ralentit son processus achat B2B",
+    pointsPositifs: ["Certifie FFPMI et Objectif d'Or = credibilite pour une PME", "Page portrait pro professionnelle et explicite", "Background ingenieur parle a un profil technique"],
+    frictions: ["Pas de tarif equipe / volume", "Pas de reference client entreprise visible", "Pas de portfolio portrait equipe / corporate"],
+  },
+  {
+    id: 7, name: 'Amira', age: 31, emoji: '🤰',
+    canal: 'Instagram', device: 'Mobile', maturite: 'Decouverte',
+    situation: 'Enceinte de 6 mois, a vu une belle photo de grossesse sur Instagram, veut une seance',
+    contexte: 'Toque le profil Studio Salvucci depuis un post, arrive sur le site depuis l\'application',
+    parcours: ['Accueil', 'Portraits > Famille', 'Contact'],
+    decision: 'quitte',
+    scores: { exp: 4, conf: 4, clarte: 2 },
+    premierImpression: "Les photos de famille sont belles mais la seance grossesse ne ressort pas immediatement dans la navigation.",
+    questionCle: "Vous faites des photos de grossesse ? C'est combien ?",
+    reponse: 'Partiellement',
+    commentReponse: "La seance famille mentionne la grossesse mais aucune page dediee, aucun prix",
+    impactTechnique: "Instagram in-app browser + 22 JS = 6-8s de chargement entre pages. Perd patience apres 2 navigations.",
+    pointsPositifs: ["Photos famille incluent des cliches de grossesse reussis", "Style naturel et doux qui lui plait"],
+    frictions: ["Pas de page grossesse dediee (meme sous-section)", "Pas de prix affiches", "Chargement trop lent depuis Instagram in-app", "Pas de galerie 'grossesse' facilement accessible"],
+  },
+  {
+    id: 8, name: 'Patrick', age: 55, emoji: '🎭',
+    canal: 'Bouche-a-oreille', device: 'Desktop', maturite: 'Decision',
+    situation: 'Vient de la part d\'un collegue pour faire restaurer des photos de famille anciennes abimees',
+    contexte: 'Son collegue lui a conseille le studio pour la restauration. Cherche le service directement.',
+    parcours: ['Accueil', 'Services', 'Restauration', 'Contact'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 7, clarte: 6 },
+    premierImpression: "Trouve la page restauration. L'exemple avant/apres est convainquant. Recommandation collegue + preuve visuelle = decision rapide.",
+    questionCle: "Vous pouvez restaurer des vieilles photos tres abimees ? C'est combien ?",
+    reponse: 'Partiellement',
+    commentReponse: "Le service existe avec demo avant/apres mais pas de prix indiques",
+    impactTechnique: "Desktop, chargement acceptable. Tolere l'absence de prix car decision prise avant d'arriver.",
+    pointsPositifs: ["Exemple avant/apres concret et impressionnant", "Service clairement decrit", "Telephone visible — appelle pour le devis"],
+    frictions: ["Pas de prix ni fourchette pour la restauration", "Pas d'exemples supplementaires de restauration"],
+  },
+  {
+    id: 9, name: 'Yasmine', age: 22, emoji: '🎓',
+    canal: 'Google Search', device: 'Mobile', maturite: 'Decouverte',
+    situation: 'Etudiante en droit a Metz, cherche photo identite pour sa carte etudiante',
+    contexte: 'Cherche "photo identite metz pas cher" sur Google, clique sur un resultat SEO',
+    parcours: ['Page Photos ID > France', 'Contact'],
+    decision: 'quitte',
+    scores: { exp: 4, conf: 5, clarte: 6 },
+    premierImpression: "La page photo identite France est claire et le prix 15€ est bien affiché. Mais cherche si on peut venir sans rendez-vous.",
+    questionCle: "Je peux venir sans rendez-vous ? A quelle heure ?",
+    reponse: 'Partiellement',
+    commentReponse: "Horaires bien affiches mais aucune mention 'sans rendez-vous' ou 'sur rendez-vous'",
+    impactTechnique: "Page legere, chargement acceptable. Quitte faute d'information sur le mode d'acces.",
+    pointsPositifs: ["Prix 15€ affiché clairement", "Horaires larges lundi-samedi", "Adresse avec indication d'accessibilite PMR"],
+    frictions: ["Pas de precision 'sans rendez-vous accepte' ou 'sur RDV uniquement'", "Pas de systeme de reservation en ligne pour eviter l'attente"],
+  },
+  {
+    id: 10, name: 'Lucas', age: 38, emoji: '🤖',
+    canal: 'IA (Claude / Perplexity)', device: 'Desktop', maturite: 'Comparaison',
+    situation: 'Chef de projet, mariage dans 6 mois, utilise l\'IA pour comparer les photographes mariage Metz',
+    contexte: 'Demande a Claude de comparer 5 photographes mariage en Moselle. Studio Salvucci est cite.',
+    parcours: ['Accueil', 'Mariages', 'A propos', 'Cherche tarifs', 'Contact'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 7, clarte: 3 },
+    premierImpression: "L'IA lui a presente le Finaliste Objectif d'Or 2025 et les 303 avis. Arrive avec de la bienveillance. Les photos de mariage sont belles.",
+    questionCle: "Tarifs, nombre de photos livrees, album inclus ou en option ?",
+    reponse: 'Non',
+    commentReponse: "Zero information tarifaire mariage — doit envoyer un mail sans savoir si compatible avec son budget",
+    impactTechnique: "Desktop, performance acceptable. La friction est purement informationnelle.",
+    pointsPositifs: ["303 avis et Objectif d'Or valident le niveau professionnel", "Style mariage naturel correspond a sa vision", "Background ingenieur d'Aurelien parle a ce profil"],
+    frictions: ["Aucun prix ni fourchette mariage", "Pas de FAQ mariage (nombre photos, format album, backup)", "GEO/IA score potentiellement ameliorable (speakable schema absent)"],
+  },
+];
+
+// ─── AMELIORATIONS ───
+const ameliorationsCritiques = [
+  {
+    titre: 'Ajouter les tarifs mariage (au moins une fourchette)',
+    detail: '7 personas sur 10 buttent sur cette absence. Les concurrents qui affichent "a partir de 1500€" captent les comparateurs actifs. Une fourchette suffit.',
+    action: 'Ajouter sur la page /mariages/ : "Tarifs a partir de X€ — devis personnalise gratuit" avec un bouton de contact direct.',
+  },
+  {
+    titre: 'Valeur de securite : headers HTTP manquants',
+    detail: 'Grade D (30/100) a l\'Observatory MDN. HSTS, X-Frame-Options et X-Content-Type-Options absents — le site est vulnerable au clickjacking et au MIME sniffing.',
+    action: 'Ajouter les headers dans le .htaccess ou via le plugin WordPress "Security Headers". Correction < 30 min.',
+  },
+  {
+    titre: 'Integrer les 303 avis Google en preuve sociale visible',
+    detail: '303 avis = ressource immense non exploitee. Aucun visiteur ne voit cette social proof en arrivant sur le site.',
+    action: 'Ajouter un bandeau "5 etoiles — 303 avis Google" en hero et footer. Widget Elfsight ou simple extrait HTML.',
+  },
+];
+const ameliorationsUtiles = [
+  {
+    titre: 'Ajouter un formulaire de contact integre aux pages services',
+    detail: 'La page contact ne propose que l\'email et le telephone. Un formulaire simple reduirait la friction pour les prospects qui n\'aiment pas appeler.',
+  },
+  {
+    titre: 'Corriger le mixed content (images HTTP dans HTTPS)',
+    detail: 'Plusieurs images sont servies en http:// — bloquees par certains navigateurs, penalisent le score securite et creent des zones vides.',
+  },
+  {
+    titre: 'Optimiser les images en WebP et reduire les fichiers JS',
+    detail: '22 fichiers JS et 47 images JPG sur la homepage — conversion WebP + defer JS = gain estime 2-3s sur mobile.',
+  },
+];
+---
+
+<BaseLayout {title} {description} noindex={true} lang="fr" frPath="/audit/studio-salvucci">
+  <!-- Hero impact -->
+  <section class="bg-neutral-900 text-white py-12 px-4">
+    <div class="max-w-4xl mx-auto">
+      <span class="inline-block text-xs font-semibold tracking-widest uppercase text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full mb-4">Rapport personnalise</span>
+      <h1 class="font-heading text-3xl md:text-4xl font-bold mb-2">{prospect.name} — ce que vos visiteurs pensent vraiment</h1>
+      <p class="text-neutral-400 mb-2">{prospect.activity} — <a href={prospect.url} class="text-amber-400 hover:underline" target="_blank" rel="noopener">{prospect.url}</a></p>
+      <p class="text-neutral-500 text-sm mb-6">{prospect.location} &mdash; {prospect.avis} avis Google &mdash; analyse du {prospect.date}</p>
+      <div class="grid grid-cols-3 gap-4 max-w-lg">
+        <div class="text-center">
+          <span class="block text-3xl font-black text-amber-400">{kpis.conversion}%</span>
+          <span class="text-xs text-neutral-400">convertissent</span>
+        </div>
+        <div class="text-center">
+          <span class="block text-3xl font-black text-amber-400">{kpis.experience}/10</span>
+          <span class="text-xs text-neutral-400">experience</span>
+        </div>
+        <div class="text-center">
+          <span class="block text-3xl font-black text-amber-400">{kpis.confiance}/10</span>
+          <span class="text-xs text-neutral-400">confiance</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Le constat -->
+  <section class="py-10 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Le constat</h2>
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-8">
+        <p class="text-amber-900 font-medium">{constat}</p>
+      </div>
+
+      <!-- Conversion par canal -->
+      <div class="mb-8">
+        <h3 class="text-sm font-semibold text-neutral-500 uppercase tracking-wider mb-4">Conversion par canal d'arrivee</h3>
+        <div class="space-y-3">
+          {conversionByCanal.map(item => (
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-sm text-neutral-700">{item.canal}</span>
+                <span class={`text-sm font-bold ${item.color}`}>{item.taux}%</span>
+              </div>
+              <div class="h-2 bg-neutral-100 rounded-full overflow-hidden">
+                <div class={`h-full rounded-full ${item.bg}`} style={`width: ${item.taux}%`}></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Top frictions -->
+      <div>
+        <h3 class="text-sm font-semibold text-neutral-500 uppercase tracking-wider mb-4">Top 5 frictions identifies</h3>
+        <ol class="space-y-4">
+          {topFrictions.map((f, i) => (
+            <li class="flex gap-4">
+              <span class="flex-shrink-0 w-7 h-7 rounded-full bg-red-100 text-red-700 text-sm font-bold flex items-center justify-center">{i + 1}</span>
+              <div>
+                <p class="font-semibold text-neutral-800 text-sm">{f.titre} <span class="text-neutral-400 font-normal">({f.count}/10 personas)</span></p>
+                <p class="text-neutral-600 text-xs mt-0.5">{f.detail}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Audit technique -->
+  <section class="py-10 px-4 bg-neutral-50">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">L'audit technique</h2>
+
+      <!-- PageSpeed scores -->
+      <div class="mb-8">
+        <h3 class="text-sm font-semibold text-neutral-500 uppercase tracking-wider mb-4">Scores Lighthouse (estimation)</h3>
+        <div class="grid grid-cols-2 gap-4">
+          <div class="bg-white rounded-xl p-4 border border-neutral-200">
+            <p class="text-xs font-semibold text-neutral-500 mb-4 uppercase">Mobile</p>
+            <div class="grid grid-cols-4 gap-2">
+              {[
+                { label: 'Perf.', score: pagespeed.mobile.performance },
+                { label: 'Access.', score: pagespeed.mobile.accessibility },
+                { label: 'Pratiques', score: pagespeed.mobile.bestPractices },
+                { label: 'SEO', score: pagespeed.mobile.seo },
+              ].map(s => {
+                const color = s.score >= 90 ? '#22c55e' : s.score >= 50 ? '#f59e0b' : '#ef4444';
+                const textColor = s.score >= 90 ? 'text-green-600' : s.score >= 50 ? 'text-amber-600' : 'text-red-600';
+                return (
+                  <div class="text-center">
+                    <div class="relative w-14 h-14 mx-auto mb-1">
+                      <svg class="w-14 h-14 -rotate-90" viewBox="0 0 36 36">
+                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3" />
+                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={color} stroke-width="3" stroke-dasharray={`${s.score}, 100`} stroke-linecap="round" />
+                      </svg>
+                      <span class={`absolute inset-0 flex items-center justify-center text-sm font-bold ${textColor}`}>{s.score}</span>
+                    </div>
+                    <p class="text-[10px] text-neutral-600">{s.label}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+          <div class="bg-white rounded-xl p-4 border border-neutral-200">
+            <p class="text-xs font-semibold text-neutral-500 mb-4 uppercase">Desktop</p>
+            <div class="grid grid-cols-4 gap-2">
+              {[
+                { label: 'Perf.', score: pagespeed.desktop.performance },
+                { label: 'Access.', score: pagespeed.desktop.accessibility },
+                { label: 'Pratiques', score: pagespeed.desktop.bestPractices },
+                { label: 'SEO', score: pagespeed.desktop.seo },
+              ].map(s => {
+                const color = s.score >= 90 ? '#22c55e' : s.score >= 50 ? '#f59e0b' : '#ef4444';
+                const textColor = s.score >= 90 ? 'text-green-600' : s.score >= 50 ? 'text-amber-600' : 'text-red-600';
+                return (
+                  <div class="text-center">
+                    <div class="relative w-14 h-14 mx-auto mb-1">
+                      <svg class="w-14 h-14 -rotate-90" viewBox="0 0 36 36">
+                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3" />
+                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={color} stroke-width="3" stroke-dasharray={`${s.score}, 100`} stroke-linecap="round" />
+                      </svg>
+                      <span class={`absolute inset-0 flex items-center justify-center text-sm font-bold ${textColor}`}>{s.score}</span>
+                    </div>
+                    <p class="text-[10px] text-neutral-600">{s.label}</p>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </div>
+        <p class="text-xs text-neutral-400 mt-2">* Scores estimes — quota API PageSpeed depasse au moment de l'audit. A re-verifier via pagespeed.web.dev</p>
+      </div>
+
+      <!-- Core Web Vitals + Observatory -->
+      <div class="grid md:grid-cols-2 gap-4 mb-8">
+        <div class="bg-white rounded-xl p-4 border border-neutral-200">
+          <h3 class="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-3">Indicateurs mesures</h3>
+          <div class="space-y-2">
+            {coreWebVitals.map(v => (
+              <div class="flex items-center justify-between">
+                <span class="text-sm text-neutral-700">{v.name}</span>
+                <span class={`text-sm font-semibold ${v.status === 'good' ? 'text-green-600' : v.status === 'warning' ? 'text-amber-600' : 'text-red-600'}`}>{v.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div class="bg-white rounded-xl p-4 border border-neutral-200">
+          <h3 class="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-3">Securite (Mozilla Observatory)</h3>
+          <div class="flex items-center gap-4 mb-3">
+            <span class="text-5xl font-black text-red-600">{observatory.grade}</span>
+            <div>
+              <p class="text-sm font-semibold text-neutral-800">{observatory.score}/100</p>
+              <p class="text-xs text-neutral-500">{observatory.testsPassed}/{observatory.testsTotal} tests passes</p>
+              <p class="text-xs text-red-600 mt-1">Headers HSTS, X-Frame, X-Content-Type manquants</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Checklist SEO / Schema / OG -->
+      <div class="bg-white rounded-xl p-4 border border-neutral-200">
+        <h3 class="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-3">Checklist SEO, Schema.org & Open Graph</h3>
+        <div class="grid sm:grid-cols-2 gap-1">
+          {techChecks.map(check => (
+            <div class={`flex items-start gap-2 py-1.5 px-2 rounded ${!check.present && check.critical ? 'bg-red-50' : ''}`}>
+              <span class={`text-sm mt-0.5 flex-shrink-0 ${check.present ? 'text-green-600' : check.critical ? 'text-red-600' : 'text-amber-600'}`}>
+                {check.present ? '✓' : '✗'}
+              </span>
+              <span class={`text-xs ${check.present ? 'text-neutral-700' : check.critical ? 'text-red-700 font-medium' : 'text-amber-700'}`}>{check.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Vos visiteurs -->
+  <section class="py-10 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs</h2>
+      <p class="text-neutral-600 mb-6">
+        Sur 10 visiteurs simules : <strong class="text-green-700">{kpis.convertissent} contactent</strong>, <strong class="text-amber-700">{kpis.hesitent} hesitent</strong>, <strong class="text-neutral-700">{kpis.quittent} repartent</strong>.
+        Experience moyenne : <strong>{kpis.experience}/10</strong> — Confiance : <strong>{kpis.confiance}/10</strong> — Clarte : <strong>{kpis.clarte}/10</strong>.
+      </p>
+      <div class="space-y-3">
+        {personas.map(p => {
+          const decisionLabel = p.decision === 'convertit' ? 'Contacte' : p.decision === 'hesite' ? 'Hesite' : 'Repart';
+          const borderColor = p.decision === 'convertit' ? 'border-green-200' : p.decision === 'hesite' ? 'border-amber-200' : 'border-neutral-200';
+          const bgColor = p.decision === 'convertit' ? 'bg-green-50/40' : p.decision === 'hesite' ? 'bg-amber-50/40' : 'bg-neutral-50/40';
+          const badgeColor = p.decision === 'convertit' ? 'text-green-700 bg-green-100' : p.decision === 'hesite' ? 'text-amber-700 bg-amber-100' : 'text-neutral-700 bg-neutral-100';
+          const borderColorInner = p.decision === 'convertit' ? 'border-green-200' : p.decision === 'hesite' ? 'border-amber-200' : 'border-neutral-200';
+          return (
+            <details class={`group border ${borderColor} ${bgColor} rounded-xl overflow-hidden`}>
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                    <h3 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h3>
+                    <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    <span class="text-[11px] text-purple-600 bg-purple-50 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                    <span class={`text-[11px] font-semibold px-1.5 py-0.5 rounded ${badgeColor}`}>{decisionLabel}</span>
+                  </div>
+                  <p class="text-xs text-neutral-500">{p.situation}</p>
+                </div>
+                <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </summary>
+              <div class={`px-4 pb-4 pt-0 border-t ${borderColorInner} bg-white/50`}>
+                <div class="grid gap-3 text-xs mt-3">
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Contexte d'arrivee</p>
+                    <p class="text-neutral-600">{p.contexte}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Parcours</p>
+                    <p class="text-neutral-500">{p.parcours.join(' → ')}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Premiere impression</p>
+                    <p class="text-neutral-600">{p.premierImpression}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Question cle</p>
+                    <p class="text-neutral-600 italic">"{p.questionCle}"</p>
+                    <p class="text-neutral-600 mt-1">Reponse du site : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-700' : 'text-amber-700'}>{p.reponse}</strong> — {p.commentReponse}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Impact technique</p>
+                    <p class="text-neutral-600">{p.impactTechnique}</p>
+                  </div>
+                  <div class="flex gap-4">
+                    <div class="flex-1">
+                      <p class="font-semibold text-green-700 mb-1">Points positifs</p>
+                      <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                        {p.pointsPositifs.map(pt => <li>{pt}</li>)}
+                      </ul>
+                    </div>
+                    <div class="flex-1">
+                      <p class="font-semibold text-amber-700 mb-1">Frictions</p>
+                      <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                        {p.frictions.map(f => <li>{f}</li>)}
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="flex gap-4 pt-1 border-t border-neutral-100">
+                    <div class="text-center">
+                      <span class={`text-base font-black ${p.scores.exp >= 7 ? 'text-green-600' : p.scores.exp >= 5 ? 'text-amber-600' : 'text-red-600'}`}>{p.scores.exp}/10</span>
+                      <p class="text-neutral-400 text-[10px]">Experience</p>
+                    </div>
+                    <div class="text-center">
+                      <span class={`text-base font-black ${p.scores.conf >= 7 ? 'text-green-600' : p.scores.conf >= 5 ? 'text-amber-600' : 'text-red-600'}`}>{p.scores.conf}/10</span>
+                      <p class="text-neutral-400 text-[10px]">Confiance</p>
+                    </div>
+                    <div class="text-center">
+                      <span class={`text-base font-black ${p.scores.clarte >= 7 ? 'text-green-600' : p.scores.clarte >= 5 ? 'text-amber-600' : 'text-red-600'}`}>{p.scores.clarte}/10</span>
+                      <p class="text-neutral-400 text-[10px]">Clarte</p>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </details>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  <!-- Section Nos recommandations -->
+  <section class="py-10 px-4 bg-neutral-50">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Nos recommandations</h2>
+
+      <h3 class="text-sm font-semibold text-red-700 uppercase tracking-wider mb-3">Le plus important</h3>
+      <div class="grid gap-4 mb-8">
+        {ameliorationsCritiques.map(a => (
+          <div class="bg-white border border-red-200 rounded-xl p-5">
+            <h4 class="font-semibold text-neutral-900 mb-2">{a.titre}</h4>
+            <p class="text-neutral-600 text-sm mb-3">{a.detail}</p>
+            <div class="bg-red-50 rounded-lg px-3 py-2">
+              <p class="text-red-800 text-xs font-medium">Action concrete : {a.action}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <h3 class="text-sm font-semibold text-amber-700 uppercase tracking-wider mb-3">Utile aussi</h3>
+      <div class="grid sm:grid-cols-2 gap-4">
+        {ameliorationsUtiles.map(a => (
+          <div class="bg-white border border-amber-200 rounded-xl p-4">
+            <h4 class="font-semibold text-neutral-900 text-sm mb-1">{a.titre}</h4>
+            <p class="text-neutral-600 text-xs">{a.detail}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA final -->
+  <section class="bg-neutral-900 text-white py-16 px-4">
+    <div class="max-w-3xl mx-auto text-center">
+      <h2 class="font-heading text-2xl md:text-3xl font-bold mb-4">
+        {kpis.conversion}% de vos visiteurs vous contactent.<br/>
+        <span class="text-amber-400">On peut faire beaucoup mieux.</span>
+      </h2>
+      <p class="text-neutral-300 mb-8 max-w-xl mx-auto">
+        Ce rapport identifie des opportunites concretes. Je construis des sites qui convertissent vraiment — a partir de 990€, livre en 7 jours.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="/commander" class="inline-flex items-center gap-2 px-8 py-3.5 bg-[var(--color-accent-500)] text-white font-semibold rounded-xl hover:opacity-90 transition-all shadow-md">
+          Je veux un site qui convertit
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a href="/contact" class="inline-flex items-center gap-2 px-8 py-3.5 border border-neutral-600 text-neutral-300 font-semibold rounded-xl hover:border-amber-400 hover:text-amber-400 transition-all">
+          En discuter d'abord
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

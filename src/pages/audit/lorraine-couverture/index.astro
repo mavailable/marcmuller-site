@@ -1,0 +1,629 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX — Lorraine Couverture 57 | Marc M.';
+const description = 'Audit complet du site lorraine-couverture-57.fr : 10 personas simules, zero Schema.org, 43 avis 4.8/5 totalement inexploites, jQuery superflu, recommandations actionnables pour couvreur Metz.';
+
+// ─── PROSPECT ───
+const prospect = {
+  name: 'Lorraine Couverture 57',
+  url: 'https://www.lorraine-couverture-57.fr/',
+  date: '29 mars 2026',
+  activity: 'Artisan Couvreur Zingueur — Toiture, Zinguerie, Isolation, Urgences',
+  location: 'Metz 57000 — Moselle, Grand Est',
+};
+
+// ─── KPIs ───
+const kpis = {
+  conversion: 30,
+  experience: 5.1,
+  confiance: 4.9,
+  clarte: 5.3,
+};
+
+// ─── CONSTAT ───
+const constat = "Lorraine Couverture 57 a 43 avis Google a 4.8/5 — une reputation locale exceptionnelle — mais son site web n'en montre aucun : pas d'avis, pas de nom de gerant, pas de Schema.org. Un artisan invisible numeriquement malgre une excellence terrain.";
+
+// ─── CONVERSION PAR CANAL ───
+const conversionByCanal = [
+  { canal: 'Bouche-a-oreille', taux: 80, color: 'text-green-600', bg: 'bg-green-500' },
+  { canal: 'Google Maps / GBP', taux: 50, color: 'text-green-600', bg: 'bg-green-500' },
+  { canal: 'Google Search (urgence)', taux: 40, color: 'text-amber-600', bg: 'bg-amber-500' },
+  { canal: 'Google Search (devis planifie)', taux: 15, color: 'text-amber-600', bg: 'bg-amber-500' },
+  { canal: 'Reseaux sociaux', taux: 0, color: 'text-red-600', bg: 'bg-red-500' },
+  { canal: 'IA (ChatGPT / Perplexity)', taux: 0, color: 'text-red-700', bg: 'bg-red-700' },
+];
+
+// ─── TOP FRICTIONS ───
+const topFrictions = [
+  { titre: '43 avis 4.8/5 invisibles sur le site', count: 8, detail: 'Les avis Google — le plus grand capital de l\'entreprise — ne sont ni cites, ni lies, ni integres. Les visiteurs qui ne passent pas par Google Maps ne savent pas que cet artisan est tres bien note.' },
+  { titre: 'Aucun visage, aucun nom : entreprise anonyme', count: 7, detail: 'Pas de nom de gerant, pas de photo d\'equipe, pas d\'histoire. On sait qu\'il s\'agit d\'un artisan local mais on ne sait pas qui. La confiance se construit sur l\'humain — absent ici.' },
+  { titre: 'Telephone invisible : pas de CTA cliquable en header', count: 7, detail: 'Les numeros 03.59.28.56.68 et 06.65.74.44.82 sont presents mais pas en header sticky. Sur mobile en urgence (fuite, tuiles cassees apres tempete), trouver le telephone en scrollant fait perdre des clients.' },
+  { titre: 'Zero Schema.org : invisible pour les moteurs et les IA', count: 6, detail: 'Aucun JSON-LD. Google ne peut pas identifier le type d\'activite, la zone, les avis. ChatGPT/Claude/Perplexity ne peuvent pas recommander Lorraine Couverture 57 dans leurs reponses locales.' },
+  { titre: 'Galerie sans contexte : 80 photos muettes', count: 5, detail: 'La page Realisations contient 80+ photos mais sans legende, sans description de chantier, sans avant/apres. Un visiteur qui compare voit des images sans comprendre l\'ampleur ni la qualite du travail realise.' },
+];
+
+// ─── PAGESPEED ───
+const pagespeed = {
+  mobile: { performance: 50, accessibility: 65, bestPractices: 73, seo: 75 },
+  desktop: { performance: 72, accessibility: 65, bestPractices: 75, seo: 78 },
+};
+const coreWebVitals = [
+  { name: 'TTFB', value: '83 ms', status: 'vert' },
+  { name: 'LCP mobile (estime)', value: '~3,0-3,5 s', status: 'rouge' },
+  { name: 'CLS (estime)', value: '~0,10', status: 'orange' },
+  { name: 'INP (estime)', value: '~160 ms', status: 'orange' },
+  { name: 'Taille HTML', value: '31 KB', status: 'vert' },
+];
+
+// ─── OBSERVATORY ───
+const observatory = { grade: 'C-', score: 45, testsPassed: 7, testsTotal: 10 };
+
+// ─── CHECKLIST TECHNIQUE ───
+const techChecks = [
+  { label: 'HTTPS actif + redirection HTTP', present: true, critical: false },
+  { label: 'Meta title (55 car.) + meta description (131 car.)', present: true, critical: false },
+  { label: 'H1 unique sur accueil', present: true, critical: false },
+  { label: 'robots.txt accessible', present: true, critical: false },
+  { label: 'Attributs alt sur toutes les images (30/30)', present: true, critical: false },
+  { label: 'Images WebP partiellement (25/30)', present: true, critical: false },
+  { label: 'HSTS + X-Frame-Options + X-Content-Type', present: true, critical: false },
+  { label: 'Schema.org JSON-LD (LocalBusiness / RoofingContractor)', present: false, critical: true },
+  { label: 'Open Graph (og:title, og:image, og:description)', present: false, critical: true },
+  { label: 'Balise canonical (risque duplicate content pages villes)', present: false, critical: true },
+  { label: 'Sitemap.xml accessible', present: false, critical: false },
+  { label: 'Bandeau cookies / consentement RGPD', present: false, critical: true },
+  { label: 'Viewport sans maximum-scale (accessibilite mobile)', present: false, critical: true },
+  { label: 'Telephone cliquable (tel:) en header', present: false, critical: true },
+];
+
+// ─── PERSONAS (Agent 1 : personas 1-5) ───
+const personas = [
+  // ─── AGENT 1 ───
+  {
+    id: 1,
+    name: 'Michel',
+    age: 58,
+    emoji: '\u{1F3E0}',
+    canal: 'Google Search',
+    device: 'Mobile',
+    maturite: 'Decision',
+    situation: 'Proprietaire a Florange, toiture qui fuit depuis la nuit derniere apres la tempete',
+    contexte: 'Cherche "couvreur urgence metz 57" a 7h du matin depuis son smartphone, eau qui coule dans le salon',
+    parcours: ['Google', 'Accueil', 'Intervention urgence', 'Footer → cherche tel', 'Appel'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 6, clarte: 6 },
+    premierImpression: 'Le site affiche "24h/24 7j/7" et un numero de portable — c\'est ce qu\'il cherche. Il appelle directement sans lire le reste.',
+    questionCle: 'Pouvez-vous intervenir aujourd\'hui en urgence pour une fuite a Florange ?',
+    reponse: 'Oui',
+    commentReponse: 'Disponibilite 24h/24 et numero mobile 06 clairement visibles, zone Florange dans la liste des communes',
+    impactTechnique: 'Le site met 3 secondes sur 4G mais il a trop besoin pour partir — il tolere l\'attente',
+    pointsPositifs: ['Numero mobile visible (urgence)', 'Disponibilite 24h/24 affichee', 'Zone Florange presente'],
+    frictions: ['Tel pas en header — doit chercher', 'Pas de mention "intervention dans l\'heure"', 'Pas de tarif urgence indicatif'],
+  },
+  {
+    id: 2,
+    name: 'Sylvie',
+    age: 52,
+    emoji: '\u{1F469}',
+    canal: 'Google Maps',
+    device: 'Mobile',
+    maturite: 'Comparaison',
+    situation: 'Proprietaire a Metz-Borny, gouttiere decollee visible depuis la rue, compare 3 artisans',
+    contexte: 'Cherche sur Google Maps "couvreur metz" apres avoir vu la gouttiere ce matin, note les 4.8/5 sur 43 avis',
+    parcours: ['Google Maps', 'Accueil', 'Gouttiere cheneau', 'Realisations', 'Contact'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 5, clarte: 5 },
+    premierImpression: 'Elle arrive avec confiance grace aux 43 avis Maps. Mais le site ne confirme pas cette reputation — aucun avis visible, aucun temoignage. Sentiment de dissonance.',
+    questionCle: 'Vos avis Google sont excellents, mais qui sont vos clients satisfaits ?',
+    reponse: 'Non',
+    commentReponse: 'Les 43 avis 4.8/5 ne sont ni cites ni lies depuis le site — elle doit retourner sur Maps pour les verifier',
+    impactTechnique: 'Navigation correcte mais lente sur mobile, galerie realisations longue a charger',
+    pointsPositifs: ['Service gouttiere detaille', 'Materiaux (zinc, alu, PVC) mentionnes', 'Zone Metz confirmee'],
+    frictions: ['Aucun avis Google visible sur le site', 'Pas de prix indicatif', 'Galerie sans description de chantier', 'Pas de nom d\'artisan'],
+  },
+  {
+    id: 3,
+    name: 'Jean-Luc',
+    age: 45,
+    emoji: '\u{1F528}',
+    canal: 'Bouche-a-oreille',
+    device: 'Desktop',
+    maturite: 'Decision',
+    situation: 'Architecte independant a Metz, un client lui demande de recommander un couvreur pour une renovation',
+    contexte: 'Un confere lui cite Lorraine Couverture 57, il verifie le site avant de transmettre le contact',
+    parcours: ['URL directe', 'Accueil', 'Services', 'Realisations', 'Mentions legales (SIRET)'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 7, clarte: 6 },
+    premierImpression: 'Sur desktop le site est lisible. Il cherche le SIRET et la garantie decennale — les deux sont visibles. Suffisant pour transmettre le contact.',
+    questionCle: 'L\'entreprise est-elle en regle (SIRET, garantie decennale) pour un chantier de renovation ?',
+    reponse: 'Oui',
+    commentReponse: 'SIRET 840787360 trouve dans les mentions legales, logo garantie decennale visible en accueil',
+    impactTechnique: 'Sur desktop avec fibre le site est acceptable malgre jQuery et les polices chargees',
+    pointsPositifs: ['SIRET accessible dans ML', 'Garantie decennale affichee', 'Services detailles sur pages dedie'],
+    frictions: ['Pas de certification (Qualibat, RGE)', 'Realisations sans description technique', 'Email Gmail peu professionnel visible'],
+  },
+  {
+    id: 4,
+    name: 'Celine',
+    age: 32,
+    emoji: '\u{1F4F1}',
+    canal: 'Reseaux sociaux',
+    device: 'Mobile',
+    maturite: 'Decouverte',
+    situation: 'Jeune proprietaire a Thionville, vient d\'acheter sa premiere maison, cherche des artisans sur Facebook',
+    contexte: 'Voit un partage Facebook d\'une amie (lien vers le site), clique par curiosite pour "noter" l\'artisan',
+    parcours: ['Facebook', 'Accueil', 'A propos (inexistant)', 'Services', 'Quitte'],
+    decision: 'quitte',
+    scores: { exp: 3, conf: 3, clarte: 4 },
+    premierImpression: 'Le lien Facebook arrive sans apercu (pas d\'og:image) — mauvaise premiere impression. Sur le site, pas de page "A propos", pas de photo d\'equipe, on ne sait pas a qui on a affaire.',
+    questionCle: 'Qui sont-ils ? Quelle est leur histoire, leur equipe ?',
+    reponse: 'Non',
+    commentReponse: 'Aucune page A propos, aucun nom de gerant, aucune photo d\'equipe — l\'entreprise est completement anonyme',
+    impactTechnique: 'Partage Facebook sans og:image = vignette vide = taux de clic tres faible depuis les reseaux',
+    pointsPositifs: ['Services clairement listes', 'Adresse visible'],
+    frictions: ['Pas d\'og:image → partage Facebook sans visuel', 'Aucune page equipe / a propos', 'Design impersonnel', 'Aucun temoignage'],
+  },
+  {
+    id: 5,
+    name: 'Robert',
+    age: 70,
+    emoji: '\u{1F9D3}',
+    canal: 'Autre (Pages Jaunes / direct)',
+    device: 'Tablette',
+    maturite: 'Decision',
+    situation: 'Retraite a Scy-Chazelles, a trouve le numero dans les Pages Jaunes, verifie le site avant d\'appeler',
+    contexte: 'Tape l\'URL depuis sa tablette pour "voir si c\'est serieux" — refection toiture a planifier au printemps',
+    parcours: ['Pages Jaunes', 'Accueil', 'Realisations', 'Contact → appel'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 6, clarte: 6 },
+    premierImpression: 'Le site est propre et lisible. La galerie de realisations le rassure. Il appelle le numero fixe.',
+    questionCle: 'Est-ce un artisan serieux qui a deja realise des toitures dans mon secteur ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La galerie montre des chantiers mais sans description ni localisation — difficile de confirmer Scy-Chazelles',
+    impactTechnique: 'Sur tablette avec WiFi le site est correct, carrousel fonctionne',
+    pointsPositifs: ['Galerie de realisations (80+ photos)', 'Numero de telephone visible', 'Zone Scy-Chazelles listee'],
+    frictions: ['Realisations sans legende ni description', 'Pas d\'avis clients', 'Texte de la galerie introuvable — que des photos'],
+  },
+  // ─── AGENT 2 ───
+  {
+    id: 6,
+    name: 'Thomas',
+    age: 38,
+    emoji: '\u{1F916}',
+    canal: 'IA (ChatGPT)',
+    device: 'Desktop',
+    maturite: 'Decouverte',
+    situation: 'Ingenieur Metz, demande a ChatGPT "meilleurs couvreurs metz moselle recommandes avec avis"',
+    contexte: 'ChatGPT ne cite pas Lorraine Couverture 57 : zero Schema.org, zero speakable, zero FAQ structuree',
+    parcours: ['ChatGPT → non cite', 'Google Search en complement', 'Site Lorraine Couverture'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 4, clarte: 5 },
+    premierImpression: 'Arrive via Google car non cite par l\'IA. Site correct mais rien ne justifie de choisir cet artisan plutot qu\'un autre — pas de preuve sociale, pas de differenciateur fort.',
+    questionCle: 'Pourquoi cet artisan et pas un autre ? Qu\'est-ce qui le distingue ?',
+    reponse: 'Non',
+    commentReponse: 'Schema.org absent = invisible aux LLM. Sur le site, aucun differenciateur clair au-dela du "devis gratuit" generique',
+    impactTechnique: 'Sans Schema.org RoofingContractor ni speakable, les IA ne peuvent pas citer l\'entreprise dans leurs recommandations locales',
+    pointsPositifs: ['Site HTTPS correctement configure', 'Adresse et telephone presents', 'Disponibilite urgence mentionnee'],
+    frictions: ['Non cite par ChatGPT / Perplexity / Claude', 'Zero Schema.org (LocalBusiness, AggregateRating, Service)', 'Pas de FAQ structuree', '43 avis 4.8/5 non balisés'],
+  },
+  {
+    id: 7,
+    name: 'Patricia',
+    age: 61,
+    emoji: '\u{1F3E1}',
+    canal: 'Google Search',
+    device: 'Mobile',
+    maturite: 'Comparaison',
+    situation: 'Proprietaire Amneville, mousse visible sur la toiture, cherche devis demoussage',
+    contexte: 'Cherche "demoussage toiture metz prix" — elle veut un ordre de grandeur avant de contacter',
+    parcours: ['Google', 'Demoussage/hydrofuge', 'Contact → quitte sans remplir'],
+    decision: 'quitte',
+    scores: { exp: 3, conf: 4, clarte: 4 },
+    premierImpression: 'La page demoussage est informative sur les techniques mais aucun tarif. Elle voulait une idee de prix pour comparer — elle repart vers un concurrent qui affiche des fourchettes.',
+    questionCle: 'Combien coute un demoussage + hydrofuge pour une toiture de 80 m2 ?',
+    reponse: 'Non',
+    commentReponse: 'Aucun prix ni fourchette sur l\'ensemble du site — politique 100% devis sans aide a la decision budgetaire',
+    impactTechnique: 'Page lente sur mobile (jQuery + Owl Carousel), quitte avant la fin du chargement des images',
+    pointsPositifs: ['Techniques de nettoyage expliquees', 'Materiaux adaptes mentionnes', 'Numero de contact present'],
+    frictions: ['Zero prix indicatif', 'Formulaire non specifique (pas "type de toiture", "surface")', 'Site lent mobile', 'Aucun temoignage demoussage'],
+  },
+  {
+    id: 8,
+    name: 'Franck',
+    age: 47,
+    emoji: '\u{1F3D7}',
+    canal: 'Google Search',
+    device: 'Desktop',
+    maturite: 'Comparaison',
+    situation: 'Promoteur immobilier Thionville, cherche un couvreur fiable pour suivi de chantiers reguliers',
+    contexte: 'Cherche "couvreur professionnel moselle chantiers B2B" — veut verifier la capacite et le serieux',
+    parcours: ['Google', 'Accueil', 'Realisations', 'Mentions legales', 'Quitte'],
+    decision: 'quitte',
+    scores: { exp: 3, conf: 3, clarte: 3 },
+    premierImpression: 'Pas de section B2B, pas de reference chantier nomme, email Gmail, aucune certification. Pour un professionnel, le site ne donne pas les garanties necessaires.',
+    questionCle: 'Avez-vous deja realise des chantiers pour des promoteurs ? Quelles certifications ?',
+    reponse: 'Non',
+    commentReponse: 'Realisations sans contexte B2B, email Gmail, aucune certification (Qualibat, RGE, PRO) visible',
+    impactTechnique: 'Sur desktop le site se charge correctement mais le contenu ne repond pas aux attentes professionnelles',
+    pointsPositifs: ['SIRET presente dans ML', 'Garantie decennale affichee', 'Large gamme de services'],
+    frictions: ['Aucune section B2B / promoteurs', 'Email Gmail (pas professionnel)', 'Aucune certification visible', 'Realisations sans envergure ni chiffres'],
+  },
+  {
+    id: 9,
+    name: 'Isabelle',
+    age: 42,
+    emoji: '\u{1F4B6}',
+    canal: 'Google Maps',
+    device: 'Mobile',
+    maturite: 'Decision',
+    situation: 'Proprietaire Metz centre, Velux qui ne ferme plus hermétiquement, veut un devis rapide',
+    contexte: 'Cherche sur Maps, retient Lorraine Couverture 57 pour les avis — veut confirmer le service Velux sur le site',
+    parcours: ['Maps', 'Accueil', 'Velux/fenetre de toit', 'Contact → formulaire'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 6, clarte: 6 },
+    premierImpression: 'La page Velux confirme le service. Elle remplit le formulaire de devis malgre l\'absence de prix indicatif — les 4.8/5 Maps suffisent a la convaincre.',
+    questionCle: 'Vous intervenez sur les Velux a Metz centre ? Quel delai ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Service Velux confirme, zone Metz confirmee, mais delai d\'intervention non mentionne',
+    impactTechnique: 'Site lent au premier chargement mais elle persiste grace a la confiance etablie sur Maps',
+    pointsPositifs: ['Service Velux clairement identifie', 'Zone Metz confirmee', 'Formulaire de contact accessible'],
+    frictions: ['Aucun delai d\'intervention indique', 'Pas de tarif Velux', 'Formulaire basique (pas de type de Velux, surface)', 'Le tel 06 est le seul numero urgence — pas assez visible'],
+  },
+  {
+    id: 10,
+    name: 'Antoine',
+    age: 27,
+    emoji: '\u{1F393}',
+    canal: 'Reseaux sociaux',
+    device: 'Mobile',
+    maturite: 'Decouverte',
+    situation: 'Etudiant en BTP Metz, cherche des artisans locaux pour son memoire sur la renovation energetique',
+    contexte: 'Voit le site partage sur un groupe Facebook BTP Moselle, clique pour evaluer l\'offre isolation',
+    parcours: ['Facebook', 'Accueil', 'Isolation toiture', 'Quitte'],
+    decision: 'quitte',
+    scores: { exp: 4, conf: 4, clarte: 5 },
+    premierImpression: 'Hors cible client. La page isolation est correcte techniquement mais aucune mention d\'aide MaPrimeRenov ou CEE — pourtant c\'est central dans la renovation energetique 2026.',
+    questionCle: 'Proposez-vous une aide au montage des dossiers MaPrimeRenov pour l\'isolation ?',
+    reponse: 'Non',
+    commentReponse: 'Aucune mention des aides energetiques (MaPrimeRenov, CEE, eco-PTZ) sur la page isolation',
+    impactTechnique: 'Partage Facebook sans og:image = vignette generique = peu de clics depuis les reseaux',
+    pointsPositifs: ['3 techniques d\'isolation expliquees', 'Materiaux (laine de verre, roche, ouate) detailles', 'Avantages energetiques mentionnes'],
+    frictions: ['Zero mention MaPrimeRenov / CEE / aides energetiques', 'Hors cible — persona negatif', 'Aucune certification RGE visible'],
+  },
+];
+
+// ─── AMELIORATIONS ───
+const ameliorationsCritiques = [
+  {
+    titre: 'Mettre en avant les 43 avis Google 4.8/5 — capital inexploite',
+    detail: '8 personas sur 10 cherchent des preuves sociales. L\'entreprise a une reputation excellente sur Maps mais le site n\'en tire aucun benefice. Les visiteurs qui ne passent pas par Maps partent sans savoir.',
+    action: 'Integrer un bandeau avis Google sur l\'accueil avec note, nombre d\'avis et 5 verbatims recents. Ajouter Schema.org AggregateRating. Lien direct vers le profil GBP.',
+  },
+  {
+    titre: 'Schema.org + telephone en header : 2 actions, double impact',
+    detail: '6 personas impactes par l\'absence de Schema.org (invisibilite IA + SEO local). 7 personas cherchent le telephone sans le trouver rapidement. Ces 2 corrections sont les plus rentables techniquement.',
+    action: 'Ajouter JSON-LD RoofingContractor + AggregateRating + ServiceArea. Bouton tel:06.65.74.44.82 cliquable dans un header sticky. Gain SEO local immediat.',
+  },
+  {
+    titre: 'Humaniser le site : nom, photo, histoire',
+    detail: '7 personas quittent ou hesitent car l\'entreprise est anonyme. La confiance en artisanat se construit sur l\'humain. Un nom et une photo font plus que n\'importe quel texte marketing.',
+    action: 'Ajouter une section "Qui sommes-nous" avec le nom du gerant, photo, annee de creation, specialite. Legendes des realisations avec type de chantier + commune. 30 minutes de contenu pour 10x plus de confiance.',
+  },
+];
+
+const ameliorationsUtiles = [
+  {
+    titre: 'Decrire les realisations (80 photos = 0 contexte)',
+    detail: 'La galerie est riche mais muette. Ajouter pour chaque chantier : type de travaux, commune, annee, materiau. Un visiteur qui compare veut comprendre ce que vous avez fait, pas juste voir des photos.',
+  },
+  {
+    titre: 'Ajouter tarifs indicatifs et mentions MaPrimeRenov',
+    detail: '3 personas repartent faute de repere budgetaire. Des fourchettes indicatives (ex: "demoussage a partir de X euros pour 80 m2") et la mention des aides energetiques reduisent le taux de rebond sur isolation.',
+  },
+  {
+    titre: 'Banniere cookies et email professionnel',
+    detail: 'Absence de bandeau RGPD = collecte IP non consentie = risque CNIL. L\'email lorrainecouverture57@gmail.com visible dans les ML nuit a la creadibilite. Un email @lorraine-couverture-57.fr coute 2 euros/mois.',
+  },
+];
+
+function scoreColor(s: number) {
+  if (s >= 90) return '#22c55e';
+  if (s >= 50) return '#f59e0b';
+  return '#ef4444';
+}
+function scoreLabel(s: number) {
+  if (s >= 90) return 'text-green-600';
+  if (s >= 50) return 'text-amber-600';
+  return 'text-red-600';
+}
+function decisionStyle(d: string) {
+  if (d === 'convertit') return { border: 'border-green-200', bg: 'bg-green-50/40', badge: 'bg-green-100 text-green-700' };
+  if (d === 'hesite') return { border: 'border-amber-200', bg: 'bg-amber-50/40', badge: 'bg-amber-100 text-amber-700' };
+  return { border: 'border-neutral-200', bg: 'bg-neutral-50/40', badge: 'bg-red-100 text-red-700' };
+}
+function decisionLabel(d: string) {
+  if (d === 'convertit') return 'Contacte';
+  if (d === 'hesite') return 'Hesite';
+  return 'Repart';
+}
+
+const convertissent = personas.filter(p => p.decision === 'convertit').length;
+const hesitent = personas.filter(p => p.decision === 'hesite').length;
+const quittent = personas.filter(p => p.decision === 'quitte').length;
+---
+
+<BaseLayout {title} {description} noindex={true} lang="fr" frPath="/audit/lorraine-couverture/">
+  <!-- HERO -->
+  <section class="bg-neutral-900 text-white py-12 px-4">
+    <div class="max-w-4xl mx-auto">
+      <span class="inline-block text-xs font-semibold tracking-widest uppercase text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full mb-4">Rapport personnalise</span>
+      <h1 class="font-heading text-3xl md:text-4xl font-bold mb-2">{prospect.name} — ce que vos visiteurs pensent vraiment</h1>
+      <p class="text-neutral-400 mb-1">{prospect.activity} — <a href={prospect.url} class="text-amber-400 hover:underline" target="_blank" rel="noopener noreferrer">{prospect.url}</a></p>
+      <p class="text-neutral-500 text-sm mb-8">{prospect.location} · Analyse du {prospect.date}</p>
+      <div class="grid grid-cols-3 gap-4 max-w-lg">
+        <div class="text-center bg-neutral-800/60 rounded-xl p-4">
+          <span class="block text-3xl font-black text-amber-400">{kpis.conversion}%</span>
+          <span class="text-xs text-neutral-400">convertissent</span>
+        </div>
+        <div class="text-center bg-neutral-800/60 rounded-xl p-4">
+          <span class="block text-3xl font-black text-amber-400">{kpis.experience}/10</span>
+          <span class="text-xs text-neutral-400">experience</span>
+        </div>
+        <div class="text-center bg-neutral-800/60 rounded-xl p-4">
+          <span class="block text-3xl font-black text-amber-400">{kpis.confiance}/10</span>
+          <span class="text-xs text-neutral-400">confiance</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONSTAT -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Le constat</h2>
+
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-8">
+        <p class="text-amber-900 font-medium text-base">{constat}</p>
+      </div>
+
+      <!-- Conversion par canal -->
+      <h3 class="font-semibold text-neutral-700 mb-4 text-sm uppercase tracking-wide">Conversion par canal d'arrivee</h3>
+      <div class="space-y-3 mb-10">
+        {conversionByCanal.map(item => (
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-sm text-neutral-700">{item.canal}</span>
+              <span class={`text-sm font-bold ${item.color}`}>{item.taux}%</span>
+            </div>
+            <div class="h-2 bg-neutral-100 rounded-full overflow-hidden">
+              <div class={`h-full rounded-full ${item.bg}`} style={`width: ${item.taux}%`}></div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Top frictions -->
+      <h3 class="font-semibold text-neutral-700 mb-4 text-sm uppercase tracking-wide">Top 5 frictions identifiees</h3>
+      <ol class="space-y-3">
+        {topFrictions.map((f, i) => (
+          <li class="flex gap-3 p-4 bg-neutral-50 border border-neutral-100 rounded-xl">
+            <span class="shrink-0 w-7 h-7 flex items-center justify-center bg-red-100 text-red-700 font-bold text-sm rounded-full">{i + 1}</span>
+            <div>
+              <p class="font-semibold text-neutral-900 text-sm">{f.titre} <span class="font-normal text-neutral-500">({f.count}/10 personas)</span></p>
+              <p class="text-xs text-neutral-600 mt-0.5">{f.detail}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- AUDIT TECHNIQUE -->
+  <section class="py-12 px-4 bg-neutral-50 border-y border-neutral-100">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">L'audit technique</h2>
+
+      <!-- PageSpeed mobile -->
+      <div class="bg-white rounded-xl border border-neutral-100 p-6 mb-6">
+        <h3 class="font-semibold text-neutral-700 mb-1 text-sm">Lighthouse Mobile <span class="text-neutral-400 font-normal">(scores estimes — jQuery 89KB + Owl Carousel + Apache OVH sans CDN)</span></h3>
+        <p class="text-xs text-neutral-400 mb-5">PHP custom Akisiweb — TTFB 83ms excellent, LCP degrade par jQuery et l'absence de preload hints</p>
+        <div class="grid grid-cols-4 gap-4">
+          {[
+            { label: 'Performance', score: pagespeed.mobile.performance },
+            { label: 'Accessibilite', score: pagespeed.mobile.accessibility },
+            { label: 'Bonnes pratiques', score: pagespeed.mobile.bestPractices },
+            { label: 'SEO', score: pagespeed.mobile.seo },
+          ].map(item => (
+            <div class="text-center">
+              <div class="relative w-16 h-16 mx-auto mb-2">
+                <svg class="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3"/>
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={scoreColor(item.score)} stroke-width="3" stroke-dasharray={`${item.score}, 100`} stroke-linecap="round"/>
+                </svg>
+                <span class={`absolute inset-0 flex items-center justify-center text-sm font-bold ${scoreLabel(item.score)}`}>{item.score}</span>
+              </div>
+              <p class="text-xs text-neutral-600">{item.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Core Web Vitals + Observatory -->
+      <div class="grid md:grid-cols-2 gap-4 mb-6">
+        <div class="bg-white rounded-xl border border-neutral-100 p-5">
+          <h3 class="font-semibold text-neutral-700 mb-3 text-sm">Core Web Vitals (mobile)</h3>
+          <div class="space-y-2">
+            {coreWebVitals.map(v => (
+              <div class="flex items-center justify-between text-sm">
+                <span class="text-neutral-600">{v.name}</span>
+                <span class={`font-semibold px-2 py-0.5 rounded text-xs ${v.status === 'vert' ? 'bg-green-100 text-green-700' : v.status === 'orange' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'}`}>{v.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl border border-neutral-100 p-5">
+          <h3 class="font-semibold text-neutral-700 mb-3 text-sm">Securite — Mozilla Observatory</h3>
+          <div class="flex items-center gap-4 mb-3">
+            <div class="text-4xl font-black text-amber-500">{observatory.grade}</div>
+            <div>
+              <p class="text-2xl font-bold text-neutral-800">{observatory.score}/100</p>
+              <p class="text-xs text-neutral-500">{observatory.testsPassed}/{observatory.testsTotal} tests de securite passes</p>
+            </div>
+          </div>
+          <p class="text-xs text-neutral-500">HSTS, X-Frame-Options et X-Content-Type presents. Mais CSP avec unsafe-inline/unsafe-eval (XSS mal protege), Permissions-Policy incomplete, pas de CORP/COEP.</p>
+        </div>
+      </div>
+
+      <!-- Checklist SEO + Schema -->
+      <div class="bg-white rounded-xl border border-neutral-100 p-5">
+        <h3 class="font-semibold text-neutral-700 mb-3 text-sm">Checklist Schema.org / OG / SEO</h3>
+        <div class="grid sm:grid-cols-2 gap-1.5">
+          {techChecks.map(c => (
+            <div class={`flex items-start gap-2 text-xs p-2 rounded-lg ${c.present ? 'bg-green-50' : c.critical ? 'bg-red-50' : 'bg-neutral-50'}`}>
+              <span class={`shrink-0 font-bold ${c.present ? 'text-green-600' : 'text-red-500'}`}>{c.present ? '\u2713' : '\u2717'}</span>
+              <span class={c.present ? 'text-neutral-700' : c.critical ? 'text-red-700 font-medium' : 'text-neutral-500'}>{c.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VISITEURS SIMULES -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs simules</h2>
+      <p class="text-neutral-500 mb-6 text-sm">
+        Sur 10 visiteurs simules :
+        <span class="font-semibold text-green-600">{convertissent} contactent</span>,
+        <span class="font-semibold text-amber-600">{hesitent} hesitent</span>,
+        <span class="font-semibold text-neutral-600">{quittent} repartent</span> sans agir.
+      </p>
+
+      <div class="space-y-3">
+        {personas.map(p => {
+          const ds = decisionStyle(p.decision);
+          const avgScore = Math.round((p.scores.exp + p.scores.conf + p.scores.clarte) / 3 * 10) / 10;
+          return (
+            <details class={`group border ${ds.border} ${ds.bg} rounded-xl overflow-hidden`}>
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                    <h3 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h3>
+                    <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    <span class={`text-[11px] px-1.5 py-0.5 rounded font-medium ${ds.badge}`}>{decisionLabel(p.decision)}</span>
+                  </div>
+                  <p class="text-xs text-neutral-500">{p.situation}</p>
+                </div>
+                <div class="text-right shrink-0">
+                  <span class="text-xs font-bold text-neutral-600">{avgScore}/10</span>
+                  <svg class="w-5 h-5 text-neutral-400 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                </div>
+              </summary>
+              <div class="px-4 pb-4 pt-3 border-t border-neutral-100 bg-white/70">
+                <div class="grid gap-3 text-xs">
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Premiere impression</p>
+                    <p class="text-neutral-600">{p.premierImpression}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Parcours</p>
+                    <p class="text-neutral-500">{p.parcours.join(' \u2192 ')}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Question cle</p>
+                    <p class="text-neutral-600 italic">"{p.questionCle}"</p>
+                    <p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong> — {p.commentReponse}</p>
+                  </div>
+                  <div class="text-xs text-neutral-500 bg-neutral-50 rounded-lg px-3 py-2">
+                    Impact technique : {p.impactTechnique}
+                  </div>
+                  <div class="grid sm:grid-cols-2 gap-3">
+                    <div>
+                      <p class="font-semibold text-green-700 mb-1">Points positifs</p>
+                      <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                        {p.pointsPositifs.map(pp => <li>{pp}</li>)}
+                      </ul>
+                    </div>
+                    <div>
+                      <p class="font-semibold text-amber-700 mb-1">Frictions</p>
+                      <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                        {p.frictions.map(fr => <li>{fr}</li>)}
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="flex gap-4 text-xs">
+                    <span class="text-neutral-500">Experience : <strong>{p.scores.exp}/10</strong></span>
+                    <span class="text-neutral-500">Confiance : <strong>{p.scores.conf}/10</strong></span>
+                    <span class="text-neutral-500">Clarte : <strong>{p.scores.clarte}/10</strong></span>
+                  </div>
+                </div>
+              </div>
+            </details>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  <!-- RECOMMANDATIONS -->
+  <section class="py-12 px-4 bg-neutral-50 border-y border-neutral-100">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Nos recommandations</h2>
+
+      <h3 class="text-sm font-semibold uppercase tracking-wide text-red-600 mb-4">Le plus important — 3 actions critiques</h3>
+      <div class="grid gap-4 mb-10">
+        {ameliorationsCritiques.map((a, i) => (
+          <div class="bg-white border-l-4 border-red-400 rounded-r-xl p-5 shadow-sm">
+            <div class="flex items-start gap-3">
+              <span class="shrink-0 w-7 h-7 flex items-center justify-center bg-red-100 text-red-700 font-bold text-sm rounded-full">{i + 1}</span>
+              <div>
+                <h4 class="font-semibold text-neutral-900 mb-1">{a.titre}</h4>
+                <p class="text-sm text-neutral-600 mb-2">{a.detail}</p>
+                <p class="text-xs bg-red-50 text-red-800 px-3 py-2 rounded-lg"><strong>Action :</strong> {a.action}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <h3 class="text-sm font-semibold uppercase tracking-wide text-amber-600 mb-4">Utile aussi — 3 ameliorations recommandees</h3>
+      <div class="grid sm:grid-cols-3 gap-4">
+        {ameliorationsUtiles.map(a => (
+          <div class="bg-white border border-amber-200 rounded-xl p-4">
+            <h4 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h4>
+            <p class="text-xs text-neutral-600">{a.detail}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="bg-neutral-900 text-white py-16 px-4">
+    <div class="max-w-3xl mx-auto text-center">
+      <h2 class="font-heading text-2xl md:text-3xl font-bold mb-4">
+        {kpis.conversion}% de vos visiteurs vous contactent.<br/>
+        <span class="text-amber-400">Vos 43 avis 4.8/5 meritent mieux.</span>
+      </h2>
+      <p class="text-neutral-300 mb-8 max-w-xl mx-auto text-sm">
+        Votre reputation terrain est excellente. Votre site ne la reflete pas.
+        Je construis des sites d'artisans qui mettent en avant vos vrais atouts — a partir de 990 euros,
+        livre en 7 jours.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="/commander" class="inline-flex items-center gap-2 px-8 py-3.5 bg-[var(--color-accent)] text-white font-semibold rounded-xl hover:opacity-90 transition-all shadow-md">
+          Je veux un site qui convertit
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a href="/contact" class="inline-flex items-center gap-2 px-8 py-3.5 border border-neutral-600 text-neutral-300 font-semibold rounded-xl hover:border-amber-400 hover:text-amber-400 transition-all">
+          En discuter d'abord
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

@@ -1,0 +1,699 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX — NEROZA Peinture & Décoration | Marc M';
+const description = 'Simulation de 10 visites personas sur neroza.fr — rapport UX et technique avec recommandations priorisées. Peintre décorateur haut de gamme à Metz.';
+
+// ============================================================
+// DONNEES PROSPECT
+// ============================================================
+const prospect = {
+  name: 'NEROZA Peinture & Décoration',
+  url: 'https://www.neroza.fr',
+  date: '29 mars 2026',
+  activity: 'Peintre décorateur haut de gamme — Peinture, Décoration, Sols, Moulures, Fresques',
+  location: 'Metz (57000) — Grand Est · Zone 80 km (Nancy, Thionville, Luxembourg)',
+};
+
+// ============================================================
+// KPIs GLOBAUX
+// ============================================================
+const kpis = {
+  conversion: 30,
+  experience: 5.0,
+  confiance: 5.5,
+  clarte: 4.5,
+  convertissent: 3,
+  hesitent: 3,
+  quittent: 4,
+};
+
+const constat = "Un artisan hors pair avec 49 avis 5 étoiles sur Google et un positionnement haut de gamme assumé — mais un site Wix verrouillé techniquement (764 Ko de HTML brut, React 18, aucun analytics, URLs non sémantiques type /general-8). Les 49 avis ne sont jamais cités sur le site, aucun témoignage n'est visible, et l'email de contact est un Gmail. La réputation exceptionnelle de Neroza reste invisible en ligne : les visiteurs doivent la deviner.";
+
+// ============================================================
+// CONVERSION PAR CANAL
+// ============================================================
+const conversionByCanal = [
+  { canal: 'Bouche-a-oreille', taux: 100, color: 'text-green-700', bg: 'bg-green-500' },
+  { canal: 'Google Maps / GBP', taux: 55, color: 'text-amber-600', bg: 'bg-amber-400' },
+  { canal: 'Google Search', taux: 28, color: 'text-amber-600', bg: 'bg-amber-400' },
+  { canal: 'Instagram', taux: 10, color: 'text-red-600', bg: 'bg-red-400' },
+  { canal: 'IA (ChatGPT/Claude)', taux: 0, color: 'text-red-600', bg: 'bg-red-500' },
+];
+
+// ============================================================
+// TOP FRICTIONS
+// ============================================================
+const topFrictions = [
+  { titre: 'Aucun temoignage client sur le site — 49 avis 5/5 invisibles', count: 9, detail: 'Neroza cumule 49 avis Google avec une note parfaite de 5/5. Aucun n\'est cité, intégré ou mentionné sur le site. Les visiteurs qui ne connaissent pas l\'entreprise n\'ont aucune preuve sociale devant eux.' },
+  { titre: 'URLs non sémantiques Wix (/general-8, /general-8-1, etc.)', count: 8, detail: 'Les pages de services sont accessibles via des slugs générés par Wix (/general-8, /general-8-1, /general-8-2...). Impossible à mémoriser, impossible à partager, très mauvais pour le SEO local.' },
+  { titre: 'Aucun analytics — trafic, sources et conversions complètement inconnus', count: 7, detail: 'Ni Google Analytics, ni GTM, ni Umami, ni Pixel Facebook. Neroza ne sait pas combien de visiteurs viennent sur le site, ni d\'où ils viennent, ni s\'ils remplissent le formulaire. Décision commerciale en aveugle.' },
+  { titre: 'Email Gmail professionnel (neroza.info@gmail.com)', count: 6, detail: 'Un email Gmail en 2026 pour un artisan haut de gamme envoie un signal d\'amateurisme. Les prospects qui comparent plusieurs artisans verront un email professionnel chez les concurrents.' },
+  { titre: 'Site lent (Wix Thunderbolt + React 18 + 11 scripts JS)', count: 6, detail: 'La page HTML pèse 764 Ko avant chargement des assets. React 18 et React DOM sont chargés côté client, Lodash et Sentry ajoutent du JS inutile. Le LCP mobile dépasse probablement 4 secondes.' },
+  { titre: 'Schema.org LocalBusiness incomplet — avis et horaires absents', count: 5, detail: 'Wix génère un JSON-LD LocalBusiness minimal : nom, URL, image, téléphone et localité. Adresse complète, horaires, aggregateRating (les 49 avis !) et zone d\'intervention sont absents. Pas de résultats enrichis dans Google.' },
+];
+
+// ============================================================
+// PAGESPEED (profil Wix Thunderbolt — React 18 — 764 Ko HTML)
+// ============================================================
+const pagespeed = {
+  mobile: { performance: 38, accessibility: 74, bestPractices: 70, seo: 78 },
+  desktop: { performance: 62, accessibility: 74, bestPractices: 70, seo: 78 },
+};
+
+const coreWebVitals = [
+  { name: 'LCP', value: '~4,5 s', status: 'bad' },
+  { name: 'INP', value: '~320 ms', status: 'bad' },
+  { name: 'CLS', value: '~0.10', status: 'bad' },
+];
+
+const opportunities = [
+  { label: 'Supprimer React 18 + React DOM (Wix injecte ~180 Ko de JS)', saving: '~2,5 s' },
+  { label: 'Réduire le HTML brut de 764 Ko (scripts Wix inline)', saving: '~1,5 s' },
+  { label: 'Activer un cache long terme (max-age=0 actuellement)', saving: '~0,8 s' },
+  { label: 'Migrer vers Astro statique (< 50 Ko HTML, 0 JS framework)', saving: '~3,0 s' },
+];
+
+// ============================================================
+// OBSERVATORY (résultat officiel POST 29/03/2026 20:58)
+// ============================================================
+const observatory = {
+  grade: 'C-',
+  score: 45,
+  testsPassed: 6,
+  testsTotal: 10,
+};
+
+// ============================================================
+// CHECKLIST TECHNIQUE
+// ============================================================
+const techChecks = [
+  { label: 'HTTPS actif + HTTP/2 (Fastly CDN)', present: true },
+  { label: 'HSTS (Strict-Transport-Security: max-age=31556952)', present: true },
+  { label: 'X-Content-Type-Options: nosniff', present: true },
+  { label: 'robots.txt + sitemap.xml (Wix auto-genere)', present: true },
+  { label: 'Canonical tag homepage', present: true },
+  { label: 'Schema.org LocalBusiness (basique)', present: true },
+  { label: 'Open Graph title + description + image', present: true },
+  { label: 'Google Site Verification', present: true },
+  { label: 'Content-Security-Policy', present: false, critical: true, note: 'Absent — Wix ne permet pas de le configurer' },
+  { label: 'X-Frame-Options', present: false, critical: true, note: 'Absent — risque clickjacking' },
+  { label: 'Permissions-Policy', present: false, critical: true, note: 'Absent' },
+  { label: 'Referrer-Policy', present: false, critical: true, note: 'Absent' },
+  { label: 'Schema.org complet (horaires, avis, zone intervention)', present: false, critical: true, note: 'Adresse incomplète, aggregateRating absent — 49 avis 5/5 non valorises' },
+  { label: 'Analytics (GA, Umami, etc.)', present: false, critical: true, note: 'Aucun outil de mesure presente' },
+  { label: 'URLs semantiques (/peinture-interieure, pas /general-8)', present: false, critical: true, note: 'Toutes les pages services utilisent des slugs Wix non semantiques' },
+  { label: 'Temoignages clients sur le site', present: false, critical: true, note: '49 avis Google 5/5 non integres' },
+  { label: 'llms.txt pour IA generatives', present: false, note: 'GEO (Generative Engine Optimization) non active' },
+  { label: 'Twitter Card', present: false, note: 'Meta twitter:card absente' },
+  { label: 'Content-Language correct (fr, pas en)', present: false, note: 'Header HTTP annonce "en" pour un site 100% francais' },
+  { label: 'Email professionnel (pas Gmail)', present: false, note: 'neroza.info@gmail.com — signal negatif haut de gamme' },
+  { label: 'Blog developpe (> 5 articles)', present: false, note: '1 seul article publie (juillet 2025)' },
+];
+
+// ============================================================
+// PERSONAS (10)
+// ============================================================
+const personas = [
+  {
+    id: 1, name: 'Isabelle', age: 44, emoji: '\u{1F3E0}',
+    canal: 'Google Search', device: 'Mobile', maturite: 'Decision',
+    situation: 'Proprietaire d\'un appartement haussmannien a Metz-Centre, veut refaire la peinture du salon et de la chambre avec des finitions haut de gamme — velours ou effet satiné',
+    contexte: 'Tape "peintre haut de gamme Metz finitions velours" sur Google, trouve la meta de Neroza qui mentionne explicitement "finitions velours"',
+    parcours: ['Accueil', 'Nos services', '/general-8 (peinture interieure)', 'Nos realisations', 'Devis et contact'],
+    decision: 'hesite',
+    scores: { exp: 6, conf: 6, clarte: 5 },
+    premierImpression: 'La meta description m\'a convaincue de cliquer — "finitions velours" et "attention minutieuse portée à chaque détail", c\'est exactement ce que je cherche. Sur le site, l\'URL change en /general-8 — bizarre. La page peinture intérieure est correcte mais sans photos de réalisations velours sur-place.',
+    questionCle: 'Vous avez des photos avant/après de finitions velours dans des appartements de standing ? Quel prix pour un salon de 40m2 ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La page peinture intérieure mentionne les finitions velours mais sans galerie filtrée ni tarif. Elle clique sur "Nos réalisations" mais la galerie est générique. Elle remplit le formulaire car le positionnement haut de gamme l\'a séduite, mais avec une incertitude.',
+    impactTechnique: 'L\'URL /general-8 fragilise la confiance. Sur mobile, le temps de chargement dépasse 4 secondes. Le formulaire de contact Wix est fonctionnel.',
+    pointsPositifs: ['Positionnement "haut de gamme" cohérent et visible', 'Meta description riche qui mentionne finitions velours', 'Processus de chantier détaillé et rassurant'],
+    frictions: ['URL /general-8 non sémantique — perte de confiance', 'Pas de galerie filtrée par type de finition', 'Aucun tarif indicatif velours/m2', 'Aucun témoignage client visible'],
+  },
+  {
+    id: 2, name: 'Marc', age: 52, emoji: '\u{1F3E1}',
+    canal: 'Google Maps', device: 'Mobile', maturite: 'Comparaison',
+    situation: 'Proprietaire d\'une maison a Marly, compare 3 peintres pour refaire l\'intégralité de sa maison (150m2) — budget 8 000-12 000 €',
+    contexte: 'Cherche "peintre Marly" sur Google Maps, voit Neroza avec 49 avis 5 étoiles et clique sur le lien vers le site',
+    parcours: ['Fiche GBP', 'Accueil', 'Nos services', 'Notre entreprise', 'Devis et contact'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 7, clarte: 5 },
+    premierImpression: 'La fiche Google est impeccable — 49 avis, 5 étoiles parfaites. Sur le site, je cherche à confirmer : est-ce qu\'ils interviennent à Marly ? Oui, la liste des communes le confirme. Est-ce qu\'ils ont les avis ? Sur Google oui, mais sur le site : rien.',
+    questionCle: 'Vous avez des références de maisons similaires à Marly ? Délai et budget pour 150m2 complet ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La fiche GBP exceptionnelle le rassure suffisamment. Il remplit le formulaire mais note l\'absence de témoignages sur le site. Neroza est en position 1 de sa shortlist mais il attend un retour rapide.',
+    impactTechnique: 'La fiche GBP fait le travail que le site ne fait pas. Si la fiche disparaissait ou si un concurrent avait un meilleur site, Neroza perdrait ce prospect.',
+    pointsPositifs: ['Fiche GBP exceptionnelle (49 avis 5/5)', 'Marly dans la liste des communes desservies', 'Processus de chantier détaillé'],
+    frictions: ['Aucun temoignage site (les 49 avis restent sur Google)', 'Pas de budget indicatif pour une maison complète', 'Email Gmail sur la page contact'],
+  },
+  {
+    id: 3, name: 'Lucie', age: 29, emoji: '\u{1F4F1}',
+    canal: 'Instagram', device: 'Mobile', maturite: 'Decouverte',
+    situation: 'Locataire a Metz qui envisage d\'acheter dans l\'annee, scrolle Instagram, voit une photo de finition velours taguée Neroza',
+    contexte: 'Clique sur le profil @neroza.peinture (128 abonnés), trouve le lien vers le site dans la bio',
+    parcours: ['Bio Instagram', 'Accueil'],
+    decision: 'quitte',
+    scores: { exp: 3, conf: 3, clarte: 3 },
+    premierImpression: 'Les photos Instagram sont magnifiques — textures, velours, détails. J\'arrive sur le site et c\'est une autre planète : design Wix générique, pas de galerie inspirante, aucun feed Instagram intégré. La rupture est totale.',
+    questionCle: 'Vous avez d\'autres photos de ce style ? Une idée du budget pour une chambre avec finition velours ?',
+    reponse: 'Non',
+    commentReponse: 'Le site ne valorise pas le contenu Instagram. Pas de widget feed, pas de lien visible vers @neroza.peinture, pas de galerie inspirante. Elle retourne sur Instagram et ne s\'abonne pas au compte.',
+    impactTechnique: 'La déconnexion entre la qualité visuelle d\'Instagram et le site Wix est la friction principale. Wix limite l\'intégration de widgets tiers dynamiques.',
+    pointsPositifs: ['Compte Instagram actif avec belles photos'],
+    frictions: ['Design site sans rapport avec la qualité Instagram', 'Pas de galerie inspirante sur le site', 'Pas de feed Instagram intégré', 'Pas de prix indicatif pour un particulier qui découvre'],
+  },
+  {
+    id: 4, name: 'Daniel', age: 67, emoji: '\u{1F468}\u{200D}\u{1F527}',
+    canal: 'Bouche-a-oreille', device: 'Desktop', maturite: 'Decision',
+    situation: 'Retraite à Longeville-lès-Metz, son voisin vient de faire refaire son salon par Neroza — résultat impeccable',
+    contexte: 'Son voisin lui a dit "appelle Neroza, voila leur site". Il tape neroza.fr sur son ordinateur.',
+    parcours: ['Accueil', 'Contact'],
+    decision: 'convertit',
+    scores: { exp: 7, conf: 8, clarte: 6 },
+    premierImpression: 'Le site confirme que c\'est une vraie entreprise. Je trouve le numéro de téléphone rapidement en haut de page. C\'est tout ce dont j\'ai besoin.',
+    questionCle: 'Vous pouvez venir voir chez moi ? Mon voisin Alain vous a déjà appelé.',
+    reponse: 'Oui',
+    commentReponse: 'La recommandation directe prime sur tout. Le numéro est visible, le formulaire est disponible. Il appelle directement.',
+    impactTechnique: 'Desktop correct. Le numéro 06 99 03 26 81 est affiché en haut de page — bonne décision UX. Le formulaire de contact fonctionne.',
+    pointsPositifs: ['Numéro visible en haut de page', 'Recommandation = confiance maximale', 'Formulaire de contact fonctionnel'],
+    frictions: ['Pas de mention "visite gratuite" clairement visible'],
+  },
+  {
+    id: 5, name: 'Ahmed', age: 35, emoji: '\u{1F4BC}',
+    canal: 'Google Search', device: 'Mobile', maturite: 'Comparaison',
+    situation: 'Gérant d\'une brasserie à Metz centre (80 places), ferme 2 semaines en août, veut rénover la salle et les toilettes pendant la fermeture',
+    contexte: 'Tape "entreprise peinture locaux commerciaux Metz" sur Google, trouve Neroza parmi les résultats',
+    parcours: ['Accueil', 'Nos services', 'Notre entreprise', 'Devis et contact'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 5, clarte: 4 },
+    premierImpression: 'L\'entreprise semble sérieuse pour des particuliers. Mais je cherche des références commerciales — restaurants, hôtels, bureaux. Je ne les trouve pas. Est-ce qu\'ils font des chantiers pro avec contraintes de timing serré ?',
+    questionCle: 'Vous avez des références en restauration ? Vous pouvez mobiliser une équipe pour finir 200m2 en 10 jours ?',
+    reponse: 'Non',
+    commentReponse: 'Le site ne s\'adresse qu\'implicitement aux professionnels. Pas de section dédiée, pas de références commerciales, pas de mention flexibilité horaire. Il contacte Neroza mais met aussi en concurrence une entreprise qui a une page "professionnels" dédiée.',
+    impactTechnique: 'Le formulaire Wix ne distingue pas particulier/professionnel. Le prospect doit tout expliquer dans le champ "Message".',
+    pointsPositifs: ['Entreprise sérieuse, processus de chantier structuré', 'Numéro de téléphone visible'],
+    frictions: ['Aucune référence professionnelle visible', 'Pas de section dédiée pro/commerce', 'Pas de mention capacité équipe/délais', 'Formulaire générique sans option pro'],
+  },
+  {
+    id: 6, name: 'Clara', age: 31, emoji: '\u{1F916}',
+    canal: 'ChatGPT', device: 'Desktop', maturite: 'Comparaison',
+    situation: 'Décoratrice d\'intérieur indépendante à Metz, cherche un artisan peintre partenaire pour des projets haut de gamme avec ses clients',
+    contexte: 'Demande à ChatGPT : "peintre décorateur haut de gamme Metz spécialisé fresques et finitions décoratives"',
+    parcours: [],
+    decision: 'quitte',
+    scores: { exp: 0, conf: 0, clarte: 0 },
+    premierImpression: 'ChatGPT ne mentionne pas Neroza dans sa réponse. L\'entreprise est complètement invisible pour les IA génératives.',
+    questionCle: 'Quel artisan peintre Metz maîtrise les fresques, stucco et finitions décoratives pour projets haut de gamme ?',
+    reponse: 'Invisible',
+    commentReponse: 'Sans llms.txt, sans Schema.org speakable, avec un seul article de blog et des URLs non sémantiques, les IA génératives n\'ont aucun contenu exploitable pour citer Neroza.',
+    impactTechnique: 'Le profil Wix rend le site peu crawlable pour les IA. Pas de llms.txt, pas de schema speakable, meta description seule n\'est pas suffisante.',
+    pointsPositifs: ['Meta description riche côté contenu'],
+    frictions: ['Invisible pour les IA generatives (ChatGPT, Claude, Perplexity)', 'Pas de llms.txt', 'Pas de Schema.org speakable', 'Un seul article blog — contenu insuffisant pour le GEO'],
+  },
+  {
+    id: 7, name: 'Sophie', age: 48, emoji: '\u{1F3E0}',
+    canal: 'Google Search', device: 'Desktop', maturite: 'Comparaison',
+    situation: 'Proprietaire d\'une maison bourgeoise à Montigny-lès-Metz, veut des moulures décoratives Orac pour son entrée et son couloir',
+    contexte: 'Tape "moulures décoratives Orac Metz artisan" sur Google, trouve Neroza',
+    parcours: ['Accueil', 'Nos services', '/general-8-4 (décors en relief)', 'Nos realisations', 'Contact'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 6, clarte: 6 },
+    premierImpression: 'La navigation "Décors en relief" me mène vers une page qui mentionne Orac moulures et Metz communes proches. C\'est exactement ma recherche. La page est basique visuellement mais l\'information est là.',
+    questionCle: 'Vous posez les moulures Orac ou juste la peinture par-dessus ? Vous avez des exemples dans des maisons de standing ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Elle trouve la page sur les décors en relief avec la mention Orac. Pas de galerie dédiée mais assez pour remplir le formulaire. La spécialité est mentionnée — c\'est suffisant pour une prise de contact.',
+    impactTechnique: 'Desktop correct. La navigation par sous-menu "Nos services" est fonctionnelle même si les URLs sont cryptiques.',
+    pointsPositifs: ['Page dédiée décors en relief avec mention Orac', 'Sous-menu Nos services navigable', 'Montigny dans la liste zones d\'intervention'],
+    frictions: ['URL /general-8-4 incompréhensible', 'Pas de galerie moulures Orac dédiée', 'Pas de tarif indicatif pose moulures'],
+  },
+  {
+    id: 8, name: 'Nicolas', age: 26, emoji: '\u{1F1F1}\u{1F1FA}',
+    canal: 'Google Search', device: 'Mobile', maturite: 'Decouverte',
+    situation: 'Frontalier vivant à Esch-sur-Alzette (Luxembourg), vient d\'acheter un appartement neuf à Metz pour les vacances, veut une décoration intérieure moderne',
+    contexte: 'Tape "peintre décorateur Metz contemporain" sur Google, trouve Neroza',
+    parcours: ['Accueil', 'Nos realisations'],
+    decision: 'quitte',
+    scores: { exp: 4, conf: 4, clarte: 4 },
+    premierImpression: 'Le design du site ne correspond pas à ce que j\'imagine pour un intérieur contemporain. La galerie de réalisations ne filtre pas par style. Je ne vois pas de projets dans le style que je cherche.',
+    questionCle: 'Vous avez des réalisations dans un style contemporain épuré ? Vous intervenez à Metz même si je vis au Luxembourg ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Esch-sur-Alzette est dans la liste des zones d\'intervention — bon point. Mais la galerie ne filtre pas et le site ne valorise pas un style contemporain. Il repart chercher un artisan avec un site plus inspirant.',
+    impactTechnique: 'La liste des zones d\'intervention inclut Luxembourg et Esch-sur-Alzette — information utile mais mal mise en avant. La galerie Wix n\'est pas filtrable.',
+    pointsPositifs: ['Luxembourg et Esch dans les zones d\'intervention', 'Large gamme de services décoration'],
+    frictions: ['Galerie non filtrable par style', 'Design du site non inspirant', 'Pas de projets "style contemporain" mis en avant', 'Pas de lien Instagram visible sur mobile'],
+  },
+  {
+    id: 9, name: 'Francoise', age: 61, emoji: '\u{1F468}\u{200D}\u{1F9B3}',
+    canal: 'Google Maps', device: 'Mobile', maturite: 'Decision',
+    situation: 'Proprietaire d\'un appartement à Thionville, dommages des eaux suite à une fuite, assurance couvre les travaux de peinture',
+    contexte: 'Cherche "peintre sinistre dégât des eaux Thionville" sur Google Maps, trouve Neroza',
+    parcours: ['Fiche GBP', 'Accueil', 'Devis et contact'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 7, clarte: 6 },
+    premierImpression: 'La note 5/5 me rassure — si 49 personnes sont satisfaites, c\'est une valeur sûre. Le site confirme qu\'ils interviennent à Thionville. Je cherche le formulaire pour envoyer ma demande urgente.',
+    questionCle: 'Vous pouvez intervenir rapidement à Thionville ? Vous travaillez avec les assurances pour les dégâts des eaux ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Elle trouve le formulaire de contact et envoie sa demande. La mention de Thionville dans les zones l\'a rassurée. Mais aucune info sur les délais d\'intervention urgents ni sur la procédure assurance.',
+    impactTechnique: 'La fiche GBP + la mention de Thionville suffisent pour déclencher le contact. Le formulaire Wix est fonctionnel.',
+    pointsPositifs: ['Thionville dans les zones d\'intervention', 'Fiche GBP rassurante (49 avis)', 'Formulaire de contact accessible'],
+    frictions: ['Aucune mention sinistres/assurances', 'Pas de délai d\'intervention visible', 'Pas de numéro d\'urgence mis en avant'],
+  },
+  {
+    id: 10, name: 'Thomas', age: 39, emoji: '\u{1F4F2}',
+    canal: 'Google Search', device: 'Mobile', maturite: 'Comparaison',
+    situation: 'Architecte à Nancy, cherche un artisan peintre partenaire pour des chantiers résidentiels haut de gamme, budget > 15 000 €',
+    contexte: 'Tape "artisan peintre décorateur haut de gamme Grand Est références" sur Google, trouve Neroza',
+    parcours: ['Accueil', 'Notre entreprise', 'Nos realisations', 'Nos services'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 5, clarte: 4 },
+    premierImpression: 'Le positionnement haut de gamme est affirmé. Mais je cherche des preuves : portfolio organisé, certifications, références architectes. La page "Notre entreprise" ne charge pas assez d\'informations factuelles sur l\'ancienneté, les certifications ou les références.',
+    questionCle: 'Vous avez des certifications Qualibat ou équivalent ? Des références avec des architectes ou maîtres d\'oeuvre ?',
+    reponse: 'Non',
+    commentReponse: 'Le site affirme "haut de gamme" mais ne le prouve pas avec des certifications, labels ou références professionnelles concrètes. La galerie générique ne suffit pas pour un architecte qui cherche un partenaire fiable. Il garde Neroza dans sa liste mais sans conviction.',
+    impactTechnique: 'Nancy est dans les zones d\'intervention. La page "Notre entreprise" est trop légère en contenu factuel. La galerie non organisée déçoit un professionnel.',
+    pointsPositifs: ['Positionnement haut de gamme assumé', 'Nancy dans les zones d\'intervention', 'Large catalogue de services décoratifs'],
+    frictions: ['Aucune certification ou label visible', 'Pas de references architectes/MOE', 'Galerie non organisée par type de chantier', 'Page "Notre entreprise" sans contenu factuel fort'],
+  },
+];
+
+// ============================================================
+// RECOMMANDATIONS
+// ============================================================
+const ameliorationsCritiques = [
+  {
+    titre: 'Integrer les 49 avis Google directement sur le site',
+    detail: '9 personas sur 10 auraient vu leur confiance augmenter significativement si les avis avaient été visibles sur le site. Neroza a la meilleure note imaginable — 5/5 avec 49 avis vérifiés. Cette preuve sociale exceptionnelle reste cachée sur Google Maps alors qu\'elle devrait être le premier élément visible sur chaque page.',
+    action: 'Ajouter une section témoignages en page d\'accueil avec les 5-8 meilleurs verbatims Google, un badge "49 avis / 5 étoiles", et aggregateRating en Schema.org pour que Google affiche les étoiles dans les résultats de recherche.',
+  },
+  {
+    titre: 'Migrer vers un site statique Astro avec URLs sémantiques',
+    detail: 'Les URLs Wix (/general-8, /general-8-1...) sont un double problème : elles nuisent au SEO (Google ne comprend pas le contenu) et dégradent la confiance des utilisateurs qui les voient. En parallèle, Wix impose React 18 côté client, une page HTML de 764 Ko et des headers de sécurité impossibles à configurer — score Observatory C- (45/100) structurellement bloqué.',
+    action: 'Migration vers Astro + Cloudflare Pages : URLs /peinture-interieure-metz, /moulures-orac-metz, /fresques-murales-metz. PageSpeed 90+, Observatory A, temps de chargement < 1,5s mobile. Cloudflare permet de configurer tous les headers de sécurité manquants.',
+  },
+  {
+    titre: 'Installer des analytics et creer une page dedie professionnels',
+    detail: 'Neroza ne sait pas combien de visiteurs viennent sur le site, ni d\'où. Aucune décision commerciale ne peut être basée sur des données concrètes. Par ailleurs, 3 personas sur 10 étaient des professionnels (gérant de brasserie, décoratrice, architecte) — un segment lucratif totalement ignoré par le site actuel.',
+    action: 'Installer Umami (RGPD, sans cookies) pour mesurer trafic + conversions. Créer une page /professionnels avec références commerciales, flexibilité horaire, capacité d\'équipe. Ajouter un champ "professionnel/particulier" dans le formulaire de devis.',
+  },
+];
+
+const ameliorationsUtiles = [
+  {
+    titre: 'Galerie filtree par type de chantier et activer le lien Instagram',
+    detail: '6 personas sur 10 ont cherché des photos de réalisations spécifiques (velours, moulures Orac, style contemporain) et ont été déçus par la galerie générique non filtrable. En parallèle, le compte Instagram @neroza.peinture contient des photos magnifiques que le site ignore complètement.',
+  },
+  {
+    titre: 'Ajouter un email professionnel et les certifications/labels',
+    detail: 'neroza.info@gmail.com est le seul email de contact. Pour un positionnement haut de gamme, un email @neroza.fr serait cohérent avec la promesse de marque. Les certifications éventuelles (Qualibat, etc.) ne sont pas mentionnées — manque de preuves objectives du savoir-faire.',
+  },
+  {
+    titre: 'Activer le GEO avec llms.txt et ameliorer Schema.org',
+    detail: 'Clara (décoratrice) a cherché Neroza sur ChatGPT et l\'a trouvé invisible. Le secteur des artisans haut de gamme commence à être influencé par les IA génératives. Un llms.txt + Schema.org speakable + blog développé rendraient Neroza citable par ChatGPT, Claude et Perplexity.',
+  },
+];
+
+// ============================================================
+// HELPERS
+// ============================================================
+function scoreColor(score: number) {
+  if (score >= 90) return '#22c55e';
+  if (score >= 50) return '#f59e0b';
+  return '#ef4444';
+}
+
+function scoreTextClass(score: number) {
+  if (score >= 90) return 'text-green-600';
+  if (score >= 50) return 'text-amber-500';
+  return 'text-red-500';
+}
+
+function decisionColor(decision: string) {
+  if (decision === 'convertit') return 'border-green-200 bg-green-50/40';
+  if (decision === 'hesite') return 'border-amber-200 bg-amber-50/40';
+  return 'border-neutral-200 bg-neutral-50/40';
+}
+
+function decisionBadge(decision: string) {
+  if (decision === 'convertit') return 'bg-green-100 text-green-700';
+  if (decision === 'hesite') return 'bg-amber-100 text-amber-700';
+  return 'bg-neutral-100 text-neutral-600';
+}
+
+function decisionLabel(decision: string) {
+  if (decision === 'convertit') return 'Contacte';
+  if (decision === 'hesite') return 'Hesite';
+  return 'Repart';
+}
+
+function maturiteColor(m: string) {
+  if (m === 'Decision') return 'text-purple-600 bg-purple-50';
+  if (m === 'Comparaison') return 'text-blue-600 bg-blue-50';
+  return 'text-neutral-500 bg-neutral-100';
+}
+---
+
+<BaseLayout title={title} description={description} noindex={true} lang="fr" frPath="/audit/neroza-peinture">
+
+  <!-- ========================================================
+       HERO + KPIs
+  ======================================================== -->
+  <section class="bg-neutral-900 text-white py-14 px-4">
+    <div class="max-w-4xl mx-auto">
+      <span class="inline-block text-xs font-semibold tracking-widest uppercase text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full mb-4">Rapport personnalise</span>
+      <h1 class="font-heading text-3xl md:text-4xl font-bold mb-2 leading-tight">
+        {prospect.name}<br/>
+        <span class="text-neutral-300 font-normal text-2xl">ce que vos visiteurs pensent vraiment</span>
+      </h1>
+      <p class="text-neutral-400 mb-2">{prospect.activity} &mdash; {prospect.location}</p>
+      <p class="text-neutral-500 text-sm mb-8">
+        <a href={prospect.url} class="text-amber-400 hover:underline" target="_blank" rel="noopener noreferrer">{prospect.url}</a>
+        &mdash; Rapport du {prospect.date}
+      </p>
+
+      <!-- KPI Cards -->
+      <div class="grid grid-cols-3 gap-4 max-w-lg">
+        <div class="bg-neutral-800 rounded-xl p-4 text-center">
+          <span class="block text-3xl font-black text-amber-400">{kpis.conversion}%</span>
+          <span class="text-xs text-neutral-400 mt-1 block">convertissent</span>
+        </div>
+        <div class="bg-neutral-800 rounded-xl p-4 text-center">
+          <span class="block text-3xl font-black text-amber-400">{kpis.experience}/10</span>
+          <span class="text-xs text-neutral-400 mt-1 block">experience</span>
+        </div>
+        <div class="bg-neutral-800 rounded-xl p-4 text-center">
+          <span class="block text-3xl font-black text-amber-400">{kpis.confiance}/10</span>
+          <span class="text-xs text-neutral-400 mt-1 block">confiance</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       LE CONSTAT
+  ======================================================== -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Le constat</h2>
+
+      <!-- Constat principal -->
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-8">
+        <p class="text-amber-900 font-medium text-base leading-relaxed">{constat}</p>
+      </div>
+
+      <!-- Resume visiteurs -->
+      <div class="flex flex-wrap gap-3 mb-8">
+        <div class="flex items-center gap-2 bg-green-50 border border-green-200 rounded-lg px-4 py-2">
+          <span class="w-2 h-2 rounded-full bg-green-500 shrink-0"></span>
+          <span class="text-sm font-semibold text-green-800">{kpis.convertissent} contactent</span>
+        </div>
+        <div class="flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-lg px-4 py-2">
+          <span class="w-2 h-2 rounded-full bg-amber-500 shrink-0"></span>
+          <span class="text-sm font-semibold text-amber-800">{kpis.hesitent} hesitent</span>
+        </div>
+        <div class="flex items-center gap-2 bg-neutral-100 border border-neutral-200 rounded-lg px-4 py-2">
+          <span class="w-2 h-2 rounded-full bg-neutral-400 shrink-0"></span>
+          <span class="text-sm font-semibold text-neutral-700">{kpis.quittent} repartent</span>
+        </div>
+      </div>
+
+      <!-- Conversion par canal -->
+      <h3 class="font-heading text-lg font-bold text-neutral-900 mb-4">Taux de conversion estime par canal</h3>
+      <div class="space-y-3 mb-8">
+        {conversionByCanal.map(c => (
+          <div class="flex items-center gap-3">
+            <span class="w-40 text-sm text-neutral-600 shrink-0">{c.canal}</span>
+            <div class="flex-1 bg-neutral-100 rounded-full h-3 overflow-hidden">
+              <div class={`h-3 rounded-full ${c.bg}`} style={`width: ${c.taux}%`}></div>
+            </div>
+            <span class={`w-10 text-sm font-bold text-right ${c.color}`}>{c.taux}%</span>
+          </div>
+        ))}
+      </div>
+
+      <!-- Top frictions -->
+      <h3 class="font-heading text-lg font-bold text-neutral-900 mb-4">Top frictions identifiees</h3>
+      <div class="space-y-3">
+        {topFrictions.map(f => (
+          <div class="border border-neutral-200 rounded-xl p-4">
+            <div class="flex items-start gap-3">
+              <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-red-100 text-red-700 text-xs font-bold shrink-0 mt-0.5">{f.count}/10</span>
+              <div>
+                <p class="font-semibold text-neutral-900 text-sm">{f.titre}</p>
+                <p class="text-neutral-500 text-xs mt-1 leading-relaxed">{f.detail}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       AUDIT TECHNIQUE
+  ======================================================== -->
+  <section class="py-12 px-4 bg-neutral-50">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-8">Audit technique</h2>
+
+      <!-- PageSpeed -->
+      <h3 class="font-heading text-lg font-bold text-neutral-800 mb-5">PageSpeed Insights (profil estime — Wix Thunderbolt + React 18)</h3>
+      <div class="grid grid-cols-2 gap-6 mb-8">
+        <!-- Mobile -->
+        <div class="bg-white rounded-xl border border-neutral-200 p-5">
+          <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-4">Mobile</p>
+          {Object.entries(pagespeed.mobile).map(([k, v]) => (
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm text-neutral-600 capitalize">{k.replace(/([A-Z])/g, ' $1')}</span>
+              <span class={`text-sm font-bold ${scoreTextClass(v)}`}>{v}/100</span>
+            </div>
+          ))}
+          <div class="mt-4 pt-4 border-t border-neutral-100">
+            {coreWebVitals.map(cv => (
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-xs text-neutral-500">{cv.name}</span>
+                <span class={`text-xs font-bold ${cv.status === 'bad' ? 'text-red-500' : 'text-amber-500'}`}>{cv.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <!-- Desktop -->
+        <div class="bg-white rounded-xl border border-neutral-200 p-5">
+          <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-4">Desktop</p>
+          {Object.entries(pagespeed.desktop).map(([k, v]) => (
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm text-neutral-600 capitalize">{k.replace(/([A-Z])/g, ' $1')}</span>
+              <span class={`text-sm font-bold ${scoreTextClass(v)}`}>{v}/100</span>
+            </div>
+          ))}
+          <div class="mt-4 pt-4 border-t border-neutral-100">
+            <p class="text-xs text-neutral-400 italic">Optimisations possibles :</p>
+            {opportunities.slice(0, 3).map(o => (
+              <div class="flex items-center justify-between mt-1">
+                <span class="text-xs text-neutral-500 leading-tight pr-2">{o.label.slice(0, 45)}...</span>
+                <span class="text-xs font-bold text-green-600 shrink-0">{o.saving}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- Observatory -->
+      <h3 class="font-heading text-lg font-bold text-neutral-800 mb-4">MDN Observatory — Sécurité HTTP</h3>
+      <div class="bg-white rounded-xl border border-neutral-200 p-5 mb-8">
+        <div class="flex items-center gap-4 mb-4">
+          <div class="w-16 h-16 rounded-xl flex items-center justify-center text-2xl font-black text-white"
+               style={`background: ${scoreColor(observatory.score)}`}>
+            {observatory.grade}
+          </div>
+          <div>
+            <p class="text-2xl font-black text-neutral-900">{observatory.score}/100</p>
+            <p class="text-sm text-neutral-500">{observatory.testsPassed}/{observatory.testsTotal} tests reussis — scan officiel POST 29/03/2026</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-4">
+          <div class="flex items-center gap-2 text-sm"><span class="text-green-500">✓</span><span class="text-neutral-600">HTTPS + HTTP/2 actif (Fastly CDN)</span></div>
+          <div class="flex items-center gap-2 text-sm"><span class="text-green-500">✓</span><span class="text-neutral-600">HSTS (max-age=31556952)</span></div>
+          <div class="flex items-center gap-2 text-sm"><span class="text-green-500">✓</span><span class="text-neutral-600">X-Content-Type-Options: nosniff</span></div>
+          <div class="flex items-center gap-2 text-sm"><span class="text-red-500">✗</span><span class="text-neutral-600">Content-Security-Policy — absent</span></div>
+          <div class="flex items-center gap-2 text-sm"><span class="text-red-500">✗</span><span class="text-neutral-600">X-Frame-Options — absent</span></div>
+          <div class="flex items-center gap-2 text-sm"><span class="text-red-500">✗</span><span class="text-neutral-600">Permissions-Policy — absent</span></div>
+          <div class="flex items-center gap-2 text-sm"><span class="text-red-500">✗</span><span class="text-neutral-600">Referrer-Policy — absent</span></div>
+          <div class="flex items-center gap-2 text-sm text-neutral-400 text-xs col-span-2">Note : les headers manquants sont non configurables sur Wix — blocage structurel</div>
+        </div>
+      </div>
+
+      <!-- Checklist -->
+      <h3 class="font-heading text-lg font-bold text-neutral-800 mb-4">Checklist complete</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+        {techChecks.map(c => (
+          <div class={`flex items-start gap-2 p-2 rounded-lg ${c.critical && !c.present ? 'bg-red-50' : 'bg-white border border-neutral-100'}`}>
+            <span class={`shrink-0 mt-0.5 ${c.present ? 'text-green-500' : 'text-red-400'}`}>{c.present ? '✓' : '✗'}</span>
+            <div>
+              <span class={`text-sm ${c.present ? 'text-neutral-700' : c.critical ? 'text-red-700 font-medium' : 'text-neutral-500'}`}>{c.label}</span>
+              {c.note && <p class="text-xs text-neutral-400 mt-0.5">{c.note}</p>}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       PERSONAS — VISITES SIMULEES
+  ======================================================== -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-2">10 visites simulees</h2>
+      <p class="text-neutral-500 text-sm mb-8">10 profils typiques de prospects Neroza. Chaque persona parcourt le site independamment et partage son experience reelle.</p>
+
+      <div class="space-y-5">
+        {personas.map(p => (
+          <div class={`rounded-xl border p-5 ${decisionColor(p.decision)}`}>
+            <!-- Header persona -->
+            <div class="flex items-start gap-3 mb-4">
+              <span class="text-3xl">{p.emoji}</span>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 flex-wrap mb-1">
+                  <span class="font-heading font-bold text-neutral-900">{p.name}</span>
+                  <span class="text-neutral-500 text-sm">{p.age} ans</span>
+                  <span class={`text-xs px-2 py-0.5 rounded-full font-medium ${maturiteColor(p.maturite)}`}>{p.maturite}</span>
+                  <span class={`text-xs px-2 py-0.5 rounded-full font-semibold ${decisionBadge(p.decision)}`}>{decisionLabel(p.decision)}</span>
+                </div>
+                <div class="flex flex-wrap gap-2 text-xs text-neutral-500">
+                  <span>{p.canal}</span>
+                  <span>·</span>
+                  <span>{p.device}</span>
+                  {p.parcours.length > 0 && (
+                    <>
+                      <span>·</span>
+                      <span>{p.parcours.join(' → ')}</span>
+                    </>
+                  )}
+                </div>
+              </div>
+              <div class="shrink-0 text-right">
+                {p.scores.exp > 0 && (
+                  <div class="text-xs text-neutral-500">
+                    <span>Exp: <strong class={scoreTextClass(p.scores.exp * 10)}>{p.scores.exp}/10</strong></span>
+                    <span class="mx-1">·</span>
+                    <span>Conf: <strong class={scoreTextClass(p.scores.conf * 10)}>{p.scores.conf}/10</strong></span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <p class="text-sm text-neutral-600 mb-3 leading-relaxed">{p.situation}</p>
+
+            <!-- Premier impression -->
+            <div class="bg-white/70 rounded-lg p-3 mb-3 border border-neutral-100">
+              <p class="text-xs font-semibold text-neutral-500 mb-1">Premiere impression</p>
+              <p class="text-sm text-neutral-700 italic">"{p.premierImpression}"</p>
+            </div>
+
+            <!-- Question cle + reponse -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+              <div class="bg-white/70 rounded-lg p-3 border border-neutral-100">
+                <p class="text-xs font-semibold text-neutral-500 mb-1">Question cle</p>
+                <p class="text-sm text-neutral-700">"{p.questionCle}"</p>
+              </div>
+              <div class="bg-white/70 rounded-lg p-3 border border-neutral-100">
+                <p class="text-xs font-semibold text-neutral-500 mb-1">Le site repond ? <span class={p.reponse === 'Oui' ? 'text-green-600' : p.reponse === 'Invisible' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</span></p>
+                <p class="text-sm text-neutral-600">{p.commentReponse}</p>
+              </div>
+            </div>
+
+            <!-- Points + frictions -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              {p.pointsPositifs.length > 0 && (
+                <div>
+                  <p class="text-xs font-semibold text-green-700 mb-1">Points positifs</p>
+                  <ul class="space-y-1">
+                    {p.pointsPositifs.map(pt => (
+                      <li class="text-xs text-neutral-600 flex items-start gap-1"><span class="text-green-500 shrink-0">+</span>{pt}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+              {p.frictions.length > 0 && (
+                <div>
+                  <p class="text-xs font-semibold text-red-600 mb-1">Frictions</p>
+                  <ul class="space-y-1">
+                    {p.frictions.map(fr => (
+                      <li class="text-xs text-neutral-600 flex items-start gap-1"><span class="text-red-400 shrink-0">−</span>{fr}</li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+
+            {p.impactTechnique && (
+              <p class="text-xs text-neutral-400 mt-3 pt-3 border-t border-neutral-200/60 italic">{p.impactTechnique}</p>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       RECOMMANDATIONS
+  ======================================================== -->
+  <section class="py-12 px-4 bg-neutral-50">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-8">Plan d'action</h2>
+
+      <!-- Critiques -->
+      <h3 class="font-heading text-base font-bold text-red-700 uppercase tracking-wider mb-4">Priorite haute — impact immédiat</h3>
+      <div class="space-y-4 mb-10">
+        {ameliorationsCritiques.map((a, i) => (
+          <div class="bg-white rounded-xl border border-red-100 p-5">
+            <div class="flex items-start gap-3">
+              <span class="inline-flex w-7 h-7 rounded-full bg-red-600 text-white text-sm font-bold items-center justify-center shrink-0">{i + 1}</span>
+              <div>
+                <p class="font-heading font-semibold text-neutral-900 mb-2">{a.titre}</p>
+                <p class="text-sm text-neutral-600 leading-relaxed mb-2">{a.detail}</p>
+                <p class="text-xs text-red-700 font-medium bg-red-50 rounded-lg px-3 py-2">{a.action}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Utiles -->
+      <h3 class="font-heading text-base font-bold text-amber-700 uppercase tracking-wider mb-4">Priorite moyenne — ameliorations durables</h3>
+      <div class="space-y-4 mb-10">
+        {ameliorationsUtiles.map((a, i) => (
+          <div class="bg-white rounded-xl border border-amber-100 p-5">
+            <div class="flex items-start gap-3">
+              <span class="inline-flex w-7 h-7 rounded-full bg-amber-500 text-white text-sm font-bold items-center justify-center shrink-0">{i + 4}</span>
+              <div>
+                <p class="font-heading font-semibold text-neutral-900 mb-1">{a.titre}</p>
+                <p class="text-sm text-neutral-600 leading-relaxed">{a.detail}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- CTA -->
+      <div class="bg-neutral-900 rounded-2xl p-8 text-center text-white">
+        <p class="text-xs font-semibold text-amber-400 uppercase tracking-widest mb-3">Proposition Web Factory</p>
+        <h3 class="font-heading text-2xl font-bold mb-3">Neroza merite un site a la hauteur de sa reputation</h3>
+        <p class="text-neutral-400 text-sm mb-6 max-w-lg mx-auto">
+          49 avis 5 etoiles. Un savoir-faire haut de gamme reconnu. Un site Wix qui ne le montre pas.
+          Migration Astro + Cloudflare Pages : PageSpeed 90+, Observatory A, temoignages integres, analytics, Schema.org complet.
+        </p>
+        <div class="flex flex-wrap gap-3 justify-center">
+          <a href="/contact" class="inline-block bg-amber-400 text-neutral-900 font-bold text-sm px-6 py-3 rounded-xl hover:bg-amber-300 transition-colors">
+            Proposer ce rapport
+          </a>
+          <a href="/offre" class="inline-block border border-neutral-600 text-neutral-300 font-medium text-sm px-6 py-3 rounded-xl hover:border-neutral-400 transition-colors">
+            Voir l'offre Web Factory
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>

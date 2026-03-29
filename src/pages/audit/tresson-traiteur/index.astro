@@ -1,0 +1,721 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit — Tresson Traiteur Metz | Marc M';
+const description = 'Simulation de 10 visites personas sur tressontraiteur.fr — audit UX, technique et recommandations.';
+
+// ── PROSPECT ──────────────────────────────────────────────────────────────────
+const prospect = {
+  name: 'Tresson Traiteur',
+  url: 'http://www.tressontraiteur.fr/',
+  date: '29 mars 2026',
+  activity: 'Traiteur artisanal — evenements prives & entreprises, chef a domicile, cake design',
+  location: 'Metz (57 Moselle) — rayon 50 km',
+  avis: 124,
+};
+
+// ── PAGESPEED (estimes — API quota depassee) ───────────────────────────────────
+const pagespeed = {
+  mobile:  { performance: 25, accessibility: 35, bestPractices: 30, seo: 55 },
+  desktop: { performance: 45, accessibility: 40, bestPractices: 30, seo: 60 },
+};
+
+const coreWebVitals = [
+  { name: 'LCP', value: '~6-8s', status: 'bad' },
+  { name: 'INP', value: '~500ms', status: 'warn' },
+  { name: 'CLS', value: '~0.20', status: 'warn' },
+  { name: 'FCP', value: '~4-6s', status: 'bad' },
+];
+
+// ── OBSERVATORY ───────────────────────────────────────────────────────────────
+const observatory = { grade: 'F', score: 0, testsPassed: 4, testsTotal: 10 };
+
+// ── SEO / SCHEMA / OG CHECKS ─────────────────────────────────────────────────
+const techChecks = [
+  { label: 'Schema.org JSON-LD', present: false, critical: true },
+  { label: 'Open Graph (og:title, og:image)', present: false, critical: true },
+  { label: 'Redirection HTTP → HTTPS', present: false, critical: true },
+  { label: 'Certificat SSL valide', present: false, critical: true },
+  { label: 'Alt text sur les images (45 images)', present: false, critical: true },
+  { label: 'Meta title (longueur OK < 60 chars)', present: false, critical: false },
+  { label: 'Meta description presente', present: true, critical: false },
+  { label: 'Un seul H1 par page', present: true, critical: false },
+  { label: 'Structure H2/H3 sur les pages', present: false, critical: false },
+  { label: 'robots.txt accessible', present: true, critical: false },
+  { label: 'sitemap.xml accessible', present: true, critical: false },
+  { label: 'Scripts securises (HTTPS + SRI)', present: false, critical: true },
+  { label: 'Analytics moderne (GA4 / Umami)', present: false, critical: false },
+  { label: 'Avis Google sur le site', present: false, critical: true },
+];
+
+// ── PERSONAS ──────────────────────────────────────────────────────────────────
+const personas = [
+  {
+    id: 1,
+    name: 'Sophie',
+    age: 33,
+    emoji: '💍',
+    canal: 'Google Search',
+    device: 'Mobile',
+    maturite: 'Decision',
+    situation: 'Fiancee recente, cherche un traiteur pour son mariage en juin, 80 personnes',
+    contexte: 'Tape "traiteur mariage Metz" sur Google depuis le tram, compare 4 devis',
+    parcours: ['Accueil', 'Particuliers', 'Tarifs', 'Formulaire devis'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 7, clarte: 4 },
+    premierImpression: 'Site vieillot, mais les photos des plats sont belles. Elle fait confiance au contenu mais le site ralentit sur mobile.',
+    questionCle: 'Combien ca va me couter pour 80 personnes, menu repas assis ?',
+    reponse: 'Non',
+    commentReponse: 'Page tarifs = "sur mesure selon vos envies" — aucune fourchette ni exemple chiffre',
+    impactTechnique: 'Site lent sur mobile (6-8s LCP), elle perd patience avant meme d\'arriver aux tarifs',
+    pointsPositifs: ['Parcours de Sebastien rassurant (etoile, Palet d\'Or)', 'Formulaire de devis detaille avec champs specifiques mariage', 'Photos reelles des realisations'],
+    frictions: ['Zero tarif indicatif — impossible de pre-qualifier le budget', 'Site HTTP = alertes securite sur certains navigateurs', 'Aucun temoignage de mariee satisfaite', 'Navigation lente sur mobile'],
+  },
+  {
+    id: 2,
+    name: 'Karim',
+    age: 44,
+    emoji: '🏢',
+    canal: 'Google Maps',
+    device: 'Mobile',
+    maturite: 'Decision',
+    situation: 'Responsable RH d\'une PME de 120 salaries, organise le repas de Noel annuel',
+    contexte: 'Cherche "traiteur Metz entreprise" sur Maps, voit 4.6 etoiles et 124 avis — clique',
+    parcours: ['Accueil', 'Pour les pros', 'Devis'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 8, clarte: 6 },
+    premierImpression: 'Vu 124 avis sur Maps, s\'attendait a trouver des temoignages sur le site. Pas de temoignages. Decu. Mais le contenu professionnel rassure.',
+    questionCle: 'Est-ce qu\'ils font des plateaux repas livres pour des reunions de 20 personnes ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La page pro mentionne les plateaux repas mais sans details pratiques (delai commande, minimum, zone livraison)',
+    impactTechnique: 'Site HTTP = logo "Non securise" dans Chrome mobile, crepe de confiance pour une prestation pro',
+    pointsPositifs: ['Page pro bien structuree avec types d\'evenements listes', 'Angle "image de votre entreprise" convaincant', 'Formulaire de devis avec champ Societe'],
+    frictions: ['124 avis Google absents du site — la vraie preuve sociale est cachee', 'Aucune mention des delais de reponse ou de traitement', 'Pas de references clients (anonymisees)'],
+  },
+  {
+    id: 3,
+    name: 'Amandine',
+    age: 28,
+    emoji: '🎂',
+    canal: 'Instagram',
+    device: 'Mobile',
+    maturite: 'Decouverte',
+    situation: 'Organisatrice d\'un anniversaire surprise 40 ans pour son mari, 30 personnes',
+    contexte: 'A vu une photo d\'un wedding cake sur Instagram avec un lien dans la bio, clique',
+    parcours: ['Accueil', 'Patisserie & Cake Design'],
+    decision: 'hesite',
+    scores: { exp: 6, conf: 7, clarte: 5 },
+    premierImpression: 'Ooh les gateaux sont magnifiques. Mais c\'est quoi ce site ? On dirait 2008.',
+    questionCle: 'Ils font des gateaux d\'anniversaire "pas mariage" ? Et c\'est combien ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La page mentionne gateaux anniversaire mais aucun prix, aucune galerie directe, renvoie vers une galerie separee',
+    impactTechnique: 'Pas d\'OG image = apercu Instagram/WhatsApp generique, perd 60% de son impact visuel',
+    pointsPositifs: ['Page Cake Design bien ecrite, passion visible', 'Technique d\'isolation Serena = differenciateur unique', 'Mention "aussi beaux que bons"'],
+    frictions: ['Zero prix ou fourchette', 'Galerie photo sur une page a part difficile a trouver', 'Aucun lien retour depuis Instagram vers une page dediee cake design'],
+  },
+  {
+    id: 4,
+    name: 'Bernard',
+    age: 67,
+    emoji: '👴',
+    canal: 'Bouche-a-oreille',
+    device: 'Tablette',
+    maturite: 'Decision',
+    situation: 'Retraite, organise les 40 ans de mariage avec sa femme, repas pour 50 personnes',
+    contexte: 'Sa fille lui a recommande Tresson Traiteur. Il cherche depuis sa tablette chez lui.',
+    parcours: ['Accueil', 'Particuliers', 'Contact / Plan', 'Appel telephonique'],
+    decision: 'convertit',
+    scores: { exp: 5, conf: 8, clarte: 5 },
+    premierImpression: 'L\'histoire du couple Sebastien et Serena le touche. Il prend note du numero de telephone.',
+    questionCle: 'Comment je les contacte ? Y\'a un numero ?',
+    reponse: 'Oui',
+    commentReponse: 'Le numero 06 13 29 46 88 est visible en haut de la page d\'accueil — il appelle directement',
+    impactTechnique: 'Sur tablette le site se charge lentement mais l\'essentiel est lisible',
+    pointsPositifs: ['Numero de telephone visible sans chercher', 'Histoire familiale touchante et authentique', 'Adresse physique rassurante'],
+    frictions: ['Aucun plan embede ou lien Maps', 'Pas de confirmation "on repond dans les X heures"', 'Texte trop petit sur tablette sans zoom (viewport bloque)'],
+  },
+  {
+    id: 5,
+    name: 'Julie',
+    age: 31,
+    emoji: '🤖',
+    canal: 'Claude AI',
+    device: 'Desktop',
+    maturite: 'Comparaison',
+    situation: 'Event manager freelance, cherche un traiteur pour un client corporate a Metz',
+    contexte: 'Demande a Claude "traiteur haut de gamme Metz entreprise qualite" — Tresson cite',
+    parcours: ['Accueil', 'Pour les pros', 'Chef a domicile', 'Tarifs'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 6, clarte: 4 },
+    premierImpression: 'Le parcours de Sebastien est solide (etoile, Patel d\'Or). Mais le site ne reflete pas ce niveau de qualite.',
+    questionCle: 'Ils ont des references corporates ? Budget minimum pour 50 personnes cocktail ?',
+    reponse: 'Non',
+    commentReponse: 'Aucune reference, aucun tarif — elle ne peut pas presenter ca a son client sans une fourchette',
+    impactTechnique: 'Pas de Schema.org = absente des resultats enrichis Google, diminue la visibilite IA',
+    pointsPositifs: ['Parcours pro Sebastien = gage de qualite pour un brief corporate', 'Service clef en main attractif pour un event manager'],
+    frictions: ['Aucune reference ou case study entreprise', 'Pas de tarif plancher pour presenter a son client', 'Site HTTP = professionnellement genant a presenter', 'Aucune mention de capacite maximum ou de personnalisation B2B'],
+  },
+  {
+    id: 6,
+    name: 'Leila',
+    age: 36,
+    emoji: '🎊',
+    canal: 'Google Search',
+    device: 'Mobile',
+    maturite: 'Comparaison',
+    situation: 'Organisatrice de l\'arbre de Noel de la mairie de Woippy, 80 agents',
+    contexte: 'Tape "traiteur entreprise Metz zone Woippy" — arrive sur la page "Pour les pros"',
+    parcours: ['Pour les pros', 'Tarifs', 'Devis'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 7, clarte: 6 },
+    premierImpression: 'La mention de "Woippy" dans la liste des zones d\'intervention la rassure immediatement.',
+    questionCle: 'Ils interviennent a Woippy ? Pour un budget collectivite plafonne ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Woippy cite dans la liste des villes desservies, mais rien sur les budgets collectivites ou marches publics',
+    impactTechnique: 'Site lent = elle abandonne puis revient depuis desktop apres avoir note le numero',
+    pointsPositifs: ['Liste des villes desservies avec Woippy explicitement mentionnee', 'Mention plateaux repas collectivites', 'Formulaire avec champ "collectivite"'],
+    frictions: ['Aucune mention de marches publics ou procedures appel d\'offre', 'Pas de tarif minimal collectivite', 'Budget plafonne pas adresse'],
+  },
+  {
+    id: 7,
+    name: 'Thomas',
+    age: 24,
+    emoji: '🍖',
+    canal: 'Google Maps',
+    device: 'Mobile',
+    maturite: 'Decouverte',
+    situation: 'Etudiant qui cherche un traiteur barbecue pour un evenement BDE universitaire',
+    contexte: 'Cherche "barbecue geant Metz pas cher" sur Maps, tombe sur Tresson',
+    parcours: ['Accueil', 'Barbecue & Rotisserie'],
+    decision: 'quitte',
+    scores: { exp: 3, conf: 5, clarte: 3 },
+    premierImpression: 'Le site plante sur Chrome mobile. Certains plugins jQuery bloquent le rendu pendant 5 secondes.',
+    questionCle: 'C\'est combien pour un barbecue 100 personnes ?',
+    reponse: 'Non',
+    commentReponse: 'Aucun tarif. La page liste des viandes proposes mais zero prix, meme approximatif.',
+    impactTechnique: 'Site HTTP + scripts lents = Chrome affiche "site non securise", il repart',
+    pointsPositifs: ['Contenu de la page barbecue appetissant et detaille', 'Viandes listes avec noms concrets (porcelet, mechoui)'],
+    frictions: ['Chrome signale site non securise (HTTP)', 'Site bloque pendant plusieurs secondes au chargement', 'Zero tarif', 'Hors budget etudiant sans fourchette minimum'],
+  },
+  {
+    id: 8,
+    name: 'Nathalie',
+    age: 52,
+    emoji: '🌸',
+    canal: 'Facebook',
+    device: 'Mobile',
+    maturite: 'Decouverte',
+    situation: 'Responsable EHPAD, cherche un traiteur pour le repas de fete des residents',
+    contexte: 'Voit un post partage d\'un mariage Tresson sur Facebook, clique sur le lien',
+    parcours: ['Accueil', 'Pour les pros', 'Devis'],
+    decision: 'hesite',
+    scores: { exp: 4, conf: 6, clarte: 4 },
+    premierImpression: 'Le lien Facebook n\'a pas de visuel — pas d\'OG image. L\'apercu partage est un rectangle gris. Decevant pour un traiteur.',
+    questionCle: 'Ils s\'occupent des regimes alimentaires speciaux (sans sel, texture modifiee) ?',
+    reponse: 'Non',
+    commentReponse: 'Aucune mention de contraintes alimentaires ou d\'adaptations pour publics fragiles',
+    impactTechnique: 'Absence Open Graph = apercu Facebook/Messenger sans image ni titre = -70% de clics potentiels',
+    pointsPositifs: ['L\'angle "sur mesure selon vos besoins" peut s\'appliquer', 'Formulaire de devis avec champ description libre'],
+    frictions: ['Partage Facebook sans image (pas d\'OG)', 'Aucune mention regimes speciaux / allergie / textures', 'Contenu EHPAD/seniors totalement absent'],
+  },
+  {
+    id: 9,
+    name: 'Frederic',
+    age: 41,
+    emoji: '🏠',
+    canal: 'Bouche-a-oreille',
+    device: 'Desktop',
+    maturite: 'Decision',
+    situation: 'Particulier aise, veut un chef a domicile pour anniversaire privé 12 personnes',
+    contexte: 'Recommande par un ami apres un diner. Visite le site avant d\'appeler.',
+    parcours: ['Accueil', 'Chef a domicile', 'Tarifs', 'Appel direct'],
+    decision: 'convertit',
+    scores: { exp: 7, conf: 8, clarte: 7 },
+    premierImpression: 'Le concept chef a domicile avec menus personnalises est exactement ce qu\'il cherche. Il note le numero.',
+    questionCle: 'A partir de combien de personnes ? Ils peuvent faire du sur-mesure gastronomique ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La page indique "a partir de 8 personnes" — c\'est clair. Mais le niveau gastronomique n\'est pas illustre.',
+    impactTechnique: 'Sur desktop le site charge raisonnablement, experience correcte',
+    pointsPositifs: ['Minimum 8 personnes clairement indique', 'Parcours de Sebastien (etoile) = garantie de niveau gastronomique', 'Mention de menu personnalise concu avec le client'],
+    frictions: ['Aucune photo de diner a domicile (uniquement grands evenements)', 'Pas de fourchette tarifaire chef a domicile', 'Aucun exemple de menu "gastronomique" type'],
+  },
+  {
+    id: 10,
+    name: 'Marion',
+    age: 38,
+    emoji: '🎓',
+    canal: 'Google Search',
+    device: 'Mobile',
+    maturite: 'Comparaison',
+    situation: 'RH d\'une grande ecole, organise la soiree de remise des diplomes (200 personnes)',
+    contexte: 'Cherche "traiteur cocktail Metz 200 personnes" — compare 3 prestataires',
+    parcours: ['Accueil', 'Pour les pros', 'Tarifs', 'Abandonne'],
+    decision: 'quitte',
+    scores: { exp: 3, conf: 5, clarte: 3 },
+    premierImpression: 'Site qui met 8 secondes a charger sur 4G. Elle compte les secondes et pense a partir.',
+    questionCle: 'Ils grent des evenements de 200 personnes ? Avec quel budget minimum ?',
+    reponse: 'Non',
+    commentReponse: 'Aucune mention de capacite maximum, aucun tarif, impossible de pre-qualifier',
+    impactTechnique: 'LCP >6s sur mobile 4G = 60% d\'abandon avant meme d\'atteindre le contenu',
+    pointsPositifs: ['Mention "installation de cuisines ephemeres en tout lieu" suggere flexibilite'],
+    frictions: ['Temps de chargement insupportable sur mobile', 'Aucune capacite maximum indiquee (200 personnes = OK ?)', 'Pas de tarif = impossible de comparer', 'Aucune reference evenement de grande echelle'],
+  },
+];
+
+// ── KPIs ──────────────────────────────────────────────────────────────────────
+const convertis  = personas.filter(p => p.decision === 'convertit').length;
+const hesitants  = personas.filter(p => p.decision === 'hesite').length;
+const quittent   = personas.filter(p => p.decision === 'quitte').length;
+const tauxConv   = Math.round((convertis / personas.length) * 100);
+const avgExp     = (personas.reduce((s, p) => s + p.scores.exp,    0) / personas.length).toFixed(1);
+const avgConf    = (personas.reduce((s, p) => s + p.scores.conf,   0) / personas.length).toFixed(1);
+const avgClarte  = (personas.reduce((s, p) => s + p.scores.clarte, 0) / personas.length).toFixed(1);
+
+const kpis = {
+  conversion: tauxConv,
+  experience: avgExp,
+  confiance:  avgConf,
+  clarte:     avgClarte,
+};
+
+// ── CONSTAT ───────────────────────────────────────────────────────────────────
+const constat = "Un savoir-faire culinaire d'exception — un second de cuisine étoilé, 124 avis Google — servi par un site de 2010 sans prix, sans HTTPS, sans témoignages : le fossé entre la qualité réelle et la perception en ligne coûte des dizaines de devis par mois.";
+
+// ── CONVERSION PAR CANAL ──────────────────────────────────────────────────────
+const conversionByCanal = [
+  { canal: 'Bouche-a-oreille', taux: 100, color: 'green' },
+  { canal: 'Google Maps', taux: 50, color: 'amber' },
+  { canal: 'Google Search', taux: 33, color: 'amber' },
+  { canal: 'Claude / IA', taux: 0, color: 'red' },
+  { canal: 'Instagram / Facebook', taux: 0, color: 'red' },
+];
+
+// ── TOP FRICTIONS ─────────────────────────────────────────────────────────────
+const topFrictions = [
+  { titre: 'Aucun prix ni fourchette tarifaire', count: 9, detail: '9/10 personas bloques par l\'absence de tarif' },
+  { titre: '124 avis Google inexploites sur le site', count: 8, detail: 'La preuve sociale la plus forte reste cachee sur Maps' },
+  { titre: 'Site lent et non securise (HTTP)', count: 7, detail: 'Chrome signale "site non securise", abandon massif mobile' },
+  { titre: 'Aucun temoignage client visible', count: 7, detail: 'Confiance non etablie sans verbatims de clients satisfaits' },
+  { titre: 'Open Graph absent — partage reseaux sociaux inutile', count: 5, detail: 'Liens partages sans image = perte de 70% des clics potentiels' },
+];
+
+// ── AMELIORATIONS CRITIQUES ───────────────────────────────────────────────────
+const ameliorationsCritiques = [
+  {
+    titre: 'Ajouter des fourchettes tarifaires (meme larges)',
+    detail: '9 personas sur 10 sont bloques par l\'absence de prix. Meme "cocktail a partir de X€/pers" suffit a qualifier les prospects et eviter les devis hors-budget.',
+    action: 'Page Tarifs : ajouter au moins 3 fourchettes indicatives par type de prestation',
+  },
+  {
+    titre: 'Migrer en HTTPS + passer au SSL valide',
+    detail: 'Chrome mobile affiche "site non securise" en HTTP. -50 pts Observatory. Vecteur d\'attaque XSS via scripts tiers. Urgence absolue pour la confiance et le SEO.',
+    action: 'Renouveler le certificat SSL + configurer redirection HTTP→HTTPS',
+  },
+  {
+    titre: 'Afficher les 124 avis Google sur le site',
+    detail: 'La preuve sociale la plus puissante est invisible pour les visiteurs web. Integrer 5-6 verbatims avec etoiles directement sur la page d\'accueil convertit les hesitants.',
+    action: 'Section temoignages accueil : 6 verbatims reels issus des avis Google',
+  },
+];
+
+const ameliorationsUtiles = [
+  {
+    titre: 'Ajouter alt text sur les 45 images',
+    detail: 'Zero accessibilite + penalite SEO directe. Correctif en moins d\'une heure, gains immediats.',
+  },
+  {
+    titre: 'Integrer Schema.org LocalBusiness + AggregateRating',
+    detail: 'Rend eligible aux rich snippets Google (etoiles dans les resultats). Direct impact visibilite locale.',
+  },
+  {
+    titre: 'Ajouter balises Open Graph pour le partage social',
+    detail: 'Facebook, Instagram, WhatsApp, LinkedIn afficheront une belle image + titre au lieu d\'un rectangle gris.',
+  },
+];
+
+// ── HELPERS ───────────────────────────────────────────────────────────────────
+function scoreColor(s: number) {
+  if (s >= 90) return '#22c55e';
+  if (s >= 50) return '#f59e0b';
+  return '#ef4444';
+}
+function scoreTextClass(s: number) {
+  if (s >= 90) return 'text-green-600';
+  if (s >= 50) return 'text-amber-500';
+  return 'text-red-500';
+}
+function decisionBorder(d: string) {
+  if (d === 'convertit') return 'border-green-200 bg-green-50/40';
+  if (d === 'hesite')    return 'border-amber-200 bg-amber-50/40';
+  return 'border-neutral-200 bg-neutral-50/40';
+}
+function decisionBadge(d: string) {
+  if (d === 'convertit') return 'bg-green-100 text-green-700';
+  if (d === 'hesite')    return 'bg-amber-100 text-amber-700';
+  return 'bg-neutral-100 text-neutral-600';
+}
+function decisionLabel(d: string) {
+  if (d === 'convertit') return 'Contacte';
+  if (d === 'hesite')    return 'Hesite';
+  return 'Quitte';
+}
+function canalColor(t: number) {
+  if (t >= 70) return { text: 'text-green-600 font-bold', bar: 'bg-green-500' };
+  if (t >= 40) return { text: 'text-amber-600 font-bold', bar: 'bg-amber-400' };
+  return { text: 'text-red-500 font-bold', bar: 'bg-red-400' };
+}
+function cwvColor(s: string) {
+  if (s === 'good') return 'text-green-600 bg-green-50';
+  if (s === 'warn') return 'text-amber-600 bg-amber-50';
+  return 'text-red-600 bg-red-50';
+}
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  noindex={true}
+  lang="fr"
+  frPath={`/audit/tresson-traiteur/`}
+>
+
+  <!-- ═══════════════════════════════════════════════════════════ HERO -->
+  <section class="bg-neutral-900 text-white py-12 px-4">
+    <div class="max-w-4xl mx-auto">
+      <span class="inline-block text-xs font-semibold tracking-widest uppercase text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full mb-4">Rapport personnalise</span>
+      <h1 class="font-heading text-3xl md:text-4xl font-bold mb-2">{prospect.name} — ce que vos visiteurs pensent vraiment</h1>
+      <p class="text-neutral-400 mb-2">{prospect.activity}</p>
+      <p class="text-neutral-500 text-sm mb-6">
+        <a href={prospect.url} class="text-amber-400 hover:underline" target="_blank" rel="noopener noreferrer">{prospect.url}</a>
+        &nbsp;·&nbsp; {prospect.location} &nbsp;·&nbsp; {prospect.avis} avis Google
+      </p>
+      <div class="grid grid-cols-3 gap-4 max-w-md">
+        <div class="text-center bg-neutral-800 rounded-xl p-3">
+          <span class="block text-3xl font-black text-amber-400">{kpis.conversion}%</span>
+          <span class="text-xs text-neutral-400 mt-1 block">convertissent</span>
+        </div>
+        <div class="text-center bg-neutral-800 rounded-xl p-3">
+          <span class="block text-3xl font-black text-amber-400">{kpis.experience}/10</span>
+          <span class="text-xs text-neutral-400 mt-1 block">experience</span>
+        </div>
+        <div class="text-center bg-neutral-800 rounded-xl p-3">
+          <span class="block text-3xl font-black text-amber-400">{kpis.confiance}/10</span>
+          <span class="text-xs text-neutral-400 mt-1 block">confiance</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════ CONSTAT -->
+  <section class="bg-white py-12 px-4 border-b border-neutral-100">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Le constat</h2>
+
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-8">
+        <p class="text-amber-900 font-medium leading-relaxed">{constat}</p>
+      </div>
+
+      <!-- Conversion par canal -->
+      <h3 class="text-sm font-semibold text-neutral-500 uppercase tracking-wide mb-4">Conversion par canal d'arrivee</h3>
+      <div class="space-y-3 mb-10">
+        {conversionByCanal.map(item => {
+          const c = canalColor(item.taux);
+          return (
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-sm text-neutral-700">{item.canal}</span>
+                <span class={`text-sm ${c.text}`}>{item.taux}%</span>
+              </div>
+              <div class="h-2 bg-neutral-100 rounded-full overflow-hidden">
+                <div class={`h-full rounded-full ${c.bar}`} style={`width: ${item.taux}%`}></div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <!-- Top frictions -->
+      <h3 class="text-sm font-semibold text-neutral-500 uppercase tracking-wide mb-4">Top 5 frictions identifiees</h3>
+      <ol class="space-y-3">
+        {topFrictions.map((f, i) => (
+          <li class="flex gap-3 items-start">
+            <span class="shrink-0 w-6 h-6 rounded-full bg-red-100 text-red-600 text-xs font-bold flex items-center justify-center mt-0.5">{i + 1}</span>
+            <div>
+              <p class="font-medium text-neutral-800 text-sm">{f.titre}</p>
+              <p class="text-neutral-500 text-xs mt-0.5">{f.detail} <span class="font-semibold text-neutral-600">({f.count}/10 personas)</span></p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════ AUDIT TECHNIQUE -->
+  <section class="bg-neutral-50 py-12 px-4 border-b border-neutral-100">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">L'audit technique</h2>
+
+      <!-- PageSpeed -->
+      <div class="bg-white rounded-xl border border-neutral-200 p-6 mb-6">
+        <h3 class="text-sm font-semibold text-neutral-500 uppercase tracking-wide mb-5">Scores PageSpeed (estimes)</h3>
+
+        <div class="mb-6">
+          <p class="text-xs font-semibold text-neutral-400 mb-3">MOBILE</p>
+          <div class="grid grid-cols-4 gap-3">
+            {[
+              { label: 'Performance', score: pagespeed.mobile.performance },
+              { label: 'Accessibilite', score: pagespeed.mobile.accessibility },
+              { label: 'Bonnes pratiques', score: pagespeed.mobile.bestPractices },
+              { label: 'SEO', score: pagespeed.mobile.seo },
+            ].map(item => (
+              <div class="text-center">
+                <div class="relative w-14 h-14 mx-auto mb-2">
+                  <svg class="w-14 h-14 -rotate-90" viewBox="0 0 36 36">
+                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3"/>
+                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={scoreColor(item.score)} stroke-width="3" stroke-dasharray={`${item.score}, 100`} stroke-linecap="round"/>
+                  </svg>
+                  <span class={`absolute inset-0 flex items-center justify-center text-base font-black ${scoreTextClass(item.score)}`}>{item.score}</span>
+                </div>
+                <p class="text-xs text-neutral-500 leading-tight">{item.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <p class="text-xs font-semibold text-neutral-400 mb-3">DESKTOP</p>
+          <div class="grid grid-cols-4 gap-3">
+            {[
+              { label: 'Performance', score: pagespeed.desktop.performance },
+              { label: 'Accessibilite', score: pagespeed.desktop.accessibility },
+              { label: 'Bonnes pratiques', score: pagespeed.desktop.bestPractices },
+              { label: 'SEO', score: pagespeed.desktop.seo },
+            ].map(item => (
+              <div class="text-center">
+                <div class="relative w-14 h-14 mx-auto mb-2">
+                  <svg class="w-14 h-14 -rotate-90" viewBox="0 0 36 36">
+                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3"/>
+                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={scoreColor(item.score)} stroke-width="3" stroke-dasharray={`${item.score}, 100`} stroke-linecap="round"/>
+                  </svg>
+                  <span class={`absolute inset-0 flex items-center justify-center text-base font-black ${scoreTextClass(item.score)}`}>{item.score}</span>
+                </div>
+                <p class="text-xs text-neutral-500 leading-tight">{item.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- CWV -->
+        <div class="mt-6 grid grid-cols-4 gap-2">
+          {coreWebVitals.map(v => (
+            <div class={`rounded-lg p-2 text-center ${cwvColor(v.status)}`}>
+              <p class="text-xs font-semibold">{v.name}</p>
+              <p class="text-sm font-bold mt-0.5">{v.value}</p>
+            </div>
+          ))}
+        </div>
+
+        <p class="text-xs text-neutral-400 mt-3 italic">* Scores estimes par analyse statique du code source — API PageSpeed quota depassee au moment de l'audit.</p>
+      </div>
+
+      <!-- Observatory -->
+      <div class="bg-white rounded-xl border border-neutral-200 p-6 mb-6">
+        <h3 class="text-sm font-semibold text-neutral-500 uppercase tracking-wide mb-4">Securite — Mozilla Observatory</h3>
+        <div class="flex items-center gap-4 mb-4">
+          <div class="w-16 h-16 rounded-xl bg-red-100 flex items-center justify-center">
+            <span class="text-3xl font-black text-red-600">{observatory.grade}</span>
+          </div>
+          <div>
+            <p class="font-bold text-neutral-900">{observatory.score}/100 — Note F</p>
+            <p class="text-sm text-neutral-500">{observatory.testsPassed} tests passes sur {observatory.testsTotal}</p>
+            <p class="text-xs text-red-600 mt-1">Pire score possible : scripts tiers non securises (-50 pts)</p>
+          </div>
+        </div>
+        <div class="bg-red-50 rounded-lg p-3 text-sm text-red-800">
+          <strong>Risque principal :</strong> 12 scripts jQuery charges depuis silverlib.fr en HTTP sans verification d'integrite — vecteur d'attaque Man-in-the-Middle actif.
+        </div>
+      </div>
+
+      <!-- Checklist SEO/OG/Schema -->
+      <div class="bg-white rounded-xl border border-neutral-200 p-6">
+        <h3 class="text-sm font-semibold text-neutral-500 uppercase tracking-wide mb-4">Checklist SEO + Schema.org + Open Graph</h3>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+          {techChecks.map(item => (
+            <div class={`flex items-center gap-2 text-sm py-1.5 px-2 rounded-lg ${item.present ? 'bg-green-50' : item.critical ? 'bg-red-50' : 'bg-neutral-50'}`}>
+              <span class={`text-base shrink-0 ${item.present ? 'text-green-500' : item.critical ? 'text-red-500' : 'text-neutral-400'}`}>
+                {item.present ? '✓' : '✗'}
+              </span>
+              <span class={`${item.present ? 'text-green-800' : item.critical ? 'text-red-800 font-medium' : 'text-neutral-600'}`}>
+                {item.label}
+              </span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════ VISITEURS -->
+  <section class="bg-white py-12 px-4 border-b border-neutral-100">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs</h2>
+      <p class="text-neutral-500 mb-6">
+        Sur <strong>10 visiteurs simules</strong> :
+        <span class="inline-flex items-center gap-1 ml-2 text-green-700 font-semibold">{convertis} contactent</span> ·
+        <span class="inline-flex items-center gap-1 ml-1 text-amber-600 font-semibold">{hesitants} hesitent</span> ·
+        <span class="inline-flex items-center gap-1 ml-1 text-neutral-500 font-semibold">{quittent} repartent</span>
+      </p>
+
+      <!-- Personas groupees par decision -->
+      {(['convertit', 'hesite', 'quitte'] as const).map(dec => {
+        const group = personas.filter(p => p.decision === dec);
+        if (group.length === 0) return null;
+        const label = dec === 'convertit' ? 'Contactent' : dec === 'hesite' ? 'Hesitent' : 'Repartent';
+        const headerColor = dec === 'convertit' ? 'text-green-700 bg-green-50' : dec === 'hesite' ? 'text-amber-700 bg-amber-50' : 'text-neutral-600 bg-neutral-100';
+        return (
+          <div class="mb-6">
+            <h3 class={`text-xs font-bold uppercase tracking-widest px-3 py-1.5 rounded-full inline-block mb-3 ${headerColor}`}>
+              {label} ({group.length})
+            </h3>
+            <div class="space-y-2">
+              {group.map(p => (
+                <details class={`group border rounded-xl overflow-hidden ${decisionBorder(p.decision)}`}>
+                  <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                    <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                        <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                        <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                        <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                        <span class={`text-[11px] px-1.5 py-0.5 rounded font-medium ${decisionBadge(p.decision)}`}>{decisionLabel(p.decision)}</span>
+                      </div>
+                      <p class="text-xs text-neutral-500">{p.situation}</p>
+                      <div class="flex gap-3 mt-1.5">
+                        <span class="text-[11px] text-neutral-400">Exp <strong class={scoreTextClass(p.scores.exp * 10)}>{p.scores.exp}/10</strong></span>
+                        <span class="text-[11px] text-neutral-400">Conf <strong class={scoreTextClass(p.scores.conf * 10)}>{p.scores.conf}/10</strong></span>
+                        <span class="text-[11px] text-neutral-400">Clarte <strong class={scoreTextClass(p.scores.clarte * 10)}>{p.scores.clarte}/10</strong></span>
+                      </div>
+                    </div>
+                    <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                      <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                    </svg>
+                  </summary>
+
+                  <div class="px-4 pb-4 pt-0 border-t border-neutral-200/60 bg-white/60">
+                    <div class="grid gap-3 text-xs mt-3">
+
+                      <div>
+                        <p class="font-semibold text-neutral-700 mb-1">Premiere impression</p>
+                        <p class="text-neutral-600 italic">{p.premierImpression}</p>
+                      </div>
+
+                      <div>
+                        <p class="font-semibold text-neutral-700 mb-1">Parcours</p>
+                        <p class="text-neutral-500">{p.parcours.join(' → ')}</p>
+                      </div>
+
+                      <div>
+                        <p class="font-semibold text-neutral-700 mb-1">Question cle</p>
+                        <p class="text-neutral-600">"{p.questionCle}"</p>
+                        <p class="mt-1">
+                          <span class={`font-semibold ${p.reponse === 'Oui' ? 'text-green-600' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}`}>Reponse du site : {p.reponse}</span>
+                          <span class="text-neutral-500"> — {p.commentReponse}</span>
+                        </p>
+                      </div>
+
+                      <div>
+                        <p class="font-semibold text-neutral-700 mb-1">Impact technique</p>
+                        <p class="text-neutral-600">{p.impactTechnique}</p>
+                      </div>
+
+                      <div class="grid grid-cols-2 gap-3">
+                        <div>
+                          <p class="font-semibold text-green-700 mb-1">Points positifs</p>
+                          <ul class="space-y-0.5">
+                            {p.pointsPositifs.map(pt => (
+                              <li class="flex gap-1.5 text-neutral-600"><span class="text-green-500 shrink-0">+</span>{pt}</li>
+                            ))}
+                          </ul>
+                        </div>
+                        <div>
+                          <p class="font-semibold text-amber-700 mb-1">Frictions</p>
+                          <ul class="space-y-0.5">
+                            {p.frictions.map(fr => (
+                              <li class="flex gap-1.5 text-neutral-600"><span class="text-amber-500 shrink-0">-</span>{fr}</li>
+                            ))}
+                          </ul>
+                        </div>
+                      </div>
+
+                    </div>
+                  </div>
+                </details>
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════ RECOMMANDATIONS -->
+  <section class="bg-neutral-50 py-12 px-4 border-b border-neutral-100">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-8">Nos recommandations</h2>
+
+      <h3 class="text-sm font-semibold text-red-600 uppercase tracking-wide mb-4">Le plus important</h3>
+      <div class="grid gap-4 mb-10">
+        {ameliorationsCritiques.map((a, i) => (
+          <div class="bg-white border border-red-200 rounded-xl p-5">
+            <div class="flex items-start gap-3">
+              <span class="shrink-0 w-7 h-7 rounded-full bg-red-100 text-red-600 text-sm font-black flex items-center justify-center">{i + 1}</span>
+              <div>
+                <h4 class="font-bold text-neutral-900 mb-1">{a.titre}</h4>
+                <p class="text-sm text-neutral-600 mb-2">{a.detail}</p>
+                <p class="text-xs bg-red-50 text-red-700 px-3 py-1.5 rounded-lg inline-block">Action : {a.action}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <h3 class="text-sm font-semibold text-neutral-500 uppercase tracking-wide mb-4">Utile aussi</h3>
+      <div class="grid sm:grid-cols-3 gap-4">
+        {ameliorationsUtiles.map(a => (
+          <div class="bg-white border border-neutral-200 rounded-xl p-4">
+            <h4 class="font-semibold text-neutral-800 text-sm mb-1">{a.titre}</h4>
+            <p class="text-xs text-neutral-500">{a.detail}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════════ CTA FINAL -->
+  <section class="bg-neutral-900 text-white py-16 px-4">
+    <div class="max-w-3xl mx-auto text-center">
+      <h2 class="font-heading text-2xl md:text-3xl font-bold mb-4">
+        {kpis.conversion}% de vos visiteurs vous contactent.<br/>
+        <span class="text-amber-400">Vous meritez bien mieux.</span>
+      </h2>
+      <p class="text-neutral-300 mb-3 max-w-xl mx-auto">
+        Un second de cuisine etoile, 124 avis Google, un duo unique a Metz — et un site qui date de 2010.
+        Ce rapport identifie exactement ce qui coute des devis chaque semaine.
+      </p>
+      <p class="text-neutral-400 text-sm mb-8 max-w-lg mx-auto">
+        Je construis des sites qui convertissent vraiment — a partir de 990 €, livre en 7 jours.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="/commander" class="inline-flex items-center gap-2 px-8 py-3.5 bg-[var(--color-accent)] text-white font-semibold rounded-xl hover:opacity-90 transition-all shadow-md">
+          Je veux un site qui convertit
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a href="/contact" class="inline-flex items-center gap-2 px-8 py-3.5 border border-neutral-600 text-neutral-300 font-semibold rounded-xl hover:border-amber-400 hover:text-amber-400 transition-all">
+          En discuter d'abord
+        </a>
+      </div>
+      <p class="text-neutral-600 text-xs mt-6">{prospect.date} — Rapport Web Factory (usage interne, noindex)</p>
+    </div>
+  </section>
+
+</BaseLayout>

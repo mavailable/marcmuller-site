@@ -1,0 +1,779 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX — Eternal Rejuveness | Marc M';
+const description = 'Simulation de 10 visites personas sur eternal-rejuveness.com — rapport UX et technique avec recommandations priorisees. Institut de beaute Woippy / Metz.';
+
+// ============================================================
+// DONNEES PROSPECT
+// ============================================================
+const prospect = {
+  name: 'Eternal Rejuveness',
+  url: 'https://www.eternal-rejuveness.com',
+  date: '29 mars 2026',
+  activity: 'Centre de beaute haut de gamme — Soins visage, corps, epilation definitive, bien-etre',
+  location: 'Woippy (57140) — Metz / Moselle / Grand Est',
+};
+
+// ============================================================
+// KPIs GLOBAUX
+// ============================================================
+const kpis = {
+  conversion: 40,
+  experience: 5.6,
+  confiance: 6.2,
+  clarte: 5.4,
+  convertissent: 4,
+  hesitent: 3,
+  quittent: 3,
+};
+
+const constat = "Un centre de beaute d'exception avec 401 avis Google a 4.9 etoiles, des technologies exclusives en region (massage robotise iYU) et deux fondateurs au profil complementaire — mais un site WordPress/Divi qui se charge en 4 secondes sur mobile, avec Google Fonts CDN (violation RGPD), zero header de securite (Observatory D-), un code postal errone dans le Schema.org, et aucune aggregateRating structuree pour valoriser ses 401 avis. La reputation est exceptionnelle. Le site ne la transmet pas a sa juste valeur.";
+
+// ============================================================
+// CONVERSION PAR CANAL
+// ============================================================
+const conversionByCanal = [
+  { canal: 'Bouche-a-oreille / recommandation', taux: 100, color: 'text-green-700', bg: 'bg-green-500' },
+  { canal: 'Google Maps / GBP (401 avis)', taux: 67, color: 'text-green-700', bg: 'bg-green-500' },
+  { canal: 'Google Search', taux: 33, color: 'text-amber-600', bg: 'bg-amber-400' },
+  { canal: 'Reseaux sociaux (Instagram/TikTok)', taux: 0, color: 'text-red-600', bg: 'bg-red-500' },
+  { canal: 'IA generatives (ChatGPT/Claude)', taux: 0, color: 'text-red-600', bg: 'bg-red-500' },
+];
+
+// ============================================================
+// TOP FRICTIONS
+// ============================================================
+const topFrictions = [
+  { titre: 'Site lent sur mobile (TTFB 4.09s, HTML 307Ko)', count: 8, detail: 'Le site WordPress/Divi met 4 secondes avant de commencer a repondre. Sur mobile, les visiteurs voient un ecran blanc pendant 4-5s avant le premier affichage. 53% des visiteurs mobiles abandonnent si le chargement depasse 3s (Google). Cela penalise particulierement les 8 personas sur 10 qui arrivent par mobile.' },
+  { titre: 'Prix incomplets ou absents sur de nombreux soins', count: 7, detail: 'La page /tarifs existe mais de nombreux traitements (epilation laser, certains corps) sont "sur devis". Les personas en phase de comparaison veulent evaluer leur budget avant d\'appeler. L\'absence de fourchettes fait fuir vers des concurrents plus transparents.' },
+  { titre: 'aggregateRating absent dans Schema.org — 401 avis Google non valorises', count: 6, detail: 'Eternal Rejuveness possede 401 avis a 4.9 etoiles — un actif SEO majeur. Mais le Schema.org ne contient aucune balise aggregateRating. Google ne peut pas afficher les etoiles dans les resultats organiques. Perte de clickthrough estimee a 15-30%.' },
+  { titre: 'Google Fonts CDN — violation RGPD et penalite de performance', count: 5, detail: 'La police Poppins est chargee depuis fonts.googleapis.com. Cela transfert l\'adresse IP des visiteurs vers les serveurs Google USA sans consentement explicite — violation du RGPD (CNIL, decisions 2022). C\'est aussi un round-trip supplementaire qui ralentit le chargement.' },
+  { titre: 'Zero securite HTTP — Observatory D- (25/100)', count: 5, detail: 'Aucun header de securite configure : pas de CSP, pas de HSTS, pas de X-Frame-Options. Le fichier xmlrpc.php est expose dans les headers. Un centre de beaute haut de gamme qui collecte des donnees clients via formulaire ne peut pas afficher un tel niveau de securite.' },
+];
+
+// ============================================================
+// PAGESPEED (estimes — profil WordPress/Divi lourd)
+// ============================================================
+const pagespeed = {
+  mobile: { performance: 22, accessibility: 72, bestPractices: 65, seo: 80 },
+  desktop: { performance: 55, accessibility: 72, bestPractices: 65, seo: 82 },
+};
+
+const coreWebVitals = [
+  { name: 'LCP', value: '~6.5s', status: 'bad' },
+  { name: 'INP', value: '~350ms', status: 'bad' },
+  { name: 'CLS', value: '~0.15', status: 'bad' },
+];
+
+const opportunities = [
+  { label: 'Migrer vers Astro statique — eliminer Divi, jQuery, 20+ scripts JS/CSS', saving: '~3.5s' },
+  { label: 'Heberger Poppins localement (woff2) — supprimer Google Fonts CDN (RGPD + perf)', saving: '~0.9s' },
+  { label: 'Cloudflare Pages CDN mondial — TTFB <100ms vs 4090ms actuel sur o2switch', saving: '~3.8s' },
+];
+
+// ============================================================
+// OBSERVATORY
+// ============================================================
+const observatory = {
+  grade: 'D-',
+  score: 25,
+  testsPassed: 5,
+  testsTotal: 10,
+};
+
+// ============================================================
+// CHECKLIST TECHNIQUE
+// ============================================================
+const techChecks = [
+  { label: 'HTTPS actif', present: true },
+  { label: 'robots.txt present', present: true },
+  { label: 'Sitemap XML (Rank Math)', present: true },
+  { label: 'Schema.org BeautySalon + Organization', present: true },
+  { label: 'Open Graph complet (titre, desc, image)', present: true },
+  { label: 'Twitter/X Card (summary_large_image)', present: true },
+  { label: 'Canonical correcte', present: true },
+  { label: 'Meta robots (index, follow)', present: true },
+  { label: 'CGV et politique de confidentialite', present: true },
+  { label: 'Bandeau cookies RGPD (Complianz)', present: true },
+  { label: 'Google Fonts hebergees localement (RGPD)', present: false, critical: true, note: 'Poppins chargee depuis fonts.googleapis.com — violation RGPD + penalite perf' },
+  { label: 'Schema.org aggregateRating (401 avis 4.9/5)', present: false, critical: true, note: 'Les etoiles Google ne s\'affichent pas dans les resultats organiques' },
+  { label: 'Code postal correct dans Schema.org', present: false, critical: true, note: '57410 au lieu de 57140 (Woippy) — erreur factuelle dans les donnees structurees' },
+  { label: 'HSTS (Strict-Transport-Security)', present: false, critical: true },
+  { label: 'Content-Security-Policy', present: false, critical: true },
+  { label: 'X-Frame-Options', present: false },
+  { label: 'Referrer-Policy / Permissions-Policy', present: false },
+  { label: 'Email professionnel (@domaine)', present: false, critical: false, note: 'eternal.rejuveness@gmail.com — peu professionnel pour un centre haut de gamme' },
+  { label: 'llms.txt pour IA generatives', present: false },
+  { label: 'LocalBusiness Schema.org (en plus de BeautySalon)', present: false },
+];
+
+// ============================================================
+// PERSONAS (10) — Institut de beaute Eternal Rejuveness
+// ============================================================
+const personas = [
+  // GROUPE A — Personas 1-5 (visites simulees par sous-agent A)
+  {
+    id: 1, name: 'Sophie', age: 38, emoji: '\u{1F48E}',
+    canal: 'Google Search', device: 'Mobile', maturite: 'Comparaison',
+    situation: 'Cadre superieure a Metz, peau fatiguee apres une periode de stress intense, cherche un soin hydratant efficace et professionnel',
+    contexte: 'Tape "hydrafacial metz prix" sur Google, clique sur Eternal Rejuveness en premiere page',
+    parcours: ['Accueil', 'Soins visage', 'HydraFacial', 'Tarifs'],
+    decision: 'hesite',
+    scores: { exp: 6, conf: 7, clarte: 5 },
+    premierImpression: 'Le site est beau, les photos sont soignees. 4 secondes pour charger — un peu long sur mon telephone. Les best sellers sont bien mis en avant mais je dois naviguer beaucoup pour trouver les prix.',
+    questionCle: 'C\'est quoi exactement la difference entre Signature et Deluxe ? Pourquoi 180 vs 240 euros ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La page HydraFacial explique les protocoles mais la difference de contenu entre les deux formules n\'est pas clairement detaillee. Elle trouve les prix dans /tarifs mais la duree est confuse (45 min vs 30 min). Elle hesite et compare avec un autre centre avant de rappeler.',
+    impactTechnique: 'Mobile : 4s de chargement avant le premier pixel. Le carrousel des soins est lent. La page /tarifs est un PDF-like difficile a scanner sur petit ecran.',
+    pointsPositifs: ['Best Sellers mis en avant (HydraFacial, Jet Peel, Apilus)', 'Photos de qualite professionnelle', '401 avis Google 4.9 — tres rassurant', 'Programme ELITE bien explique'],
+    frictions: ['4s TTFB sur mobile — experience degradee', 'Difference Signature/Deluxe pas clairement expliquee', 'Tarifs difficiles a scanner sur mobile (tableau dense)', 'Pas de photos avant/apres HydraFacial sur le site'],
+  },
+  {
+    id: 2, name: 'Nathalie', age: 54, emoji: '\u{1F469}\u{200D}\u{1F4BC}',
+    canal: 'Google Maps', device: 'Desktop', maturite: 'Decision',
+    situation: 'Cheffe d\'entreprise a Nancy, 1h de route, cherche un centre d\'excellence pour traiter un relachement cutane visible — prete a investir',
+    contexte: 'Cherche "radiofrequence visage Metz centre specialise" sur Google, trouve Eternal Rejuveness avec 4.9 etoiles',
+    parcours: ['Fiche GBP', 'Accueil', 'Le centre', 'Radiofréquence Prime X', 'Tarifs', 'Contact'],
+    decision: 'convertit',
+    scores: { exp: 7, conf: 8, clarte: 7 },
+    premierImpression: 'La note 4.9 sur 401 avis m\'a convaincue de cliquer. Le site est professionnel, les fondateurs sont presentes avec leurs expertises. La technologie Alma Prime X est bien presentee. Je suis rassouree.',
+    questionCle: 'Julien et Julie sont-ils toujours presents au centre ? Est-ce que je peux avoir un rendez-vous diagnostic avec Julien ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La page Le Centre presente bien les fondateurs mais ne precise pas leur presence au quotidien ni leur role dans les consultations. Elle trouve le formulaire de contact et appelle directement. Le 4.9/401 avis a ete decisif.',
+    impactTechnique: 'Desktop charge en ~2.5s — acceptable. La page Le Centre manque d\'une section "Equipe presente au quotidien" et d\'agenda en ligne pour consultations diagnostics.',
+    pointsPositifs: ['Profil fondateurs detaille et credibilisant', 'Technologie Alma Prime X clairement presentee', 'Note 4.9/401 avis visible depuis GBP', 'Diagnostic VISIA 7 mentionne — approche scientifique rassurante'],
+    frictions: ['Pas de disponibilites des fondateurs mentionnees', 'Pas de reservation en ligne pour consultation diagnostic', 'Page /le-centre sans photos de l\'equipe en action'],
+  },
+  {
+    id: 3, name: 'Amina', age: 27, emoji: '\u{1F48B}',
+    canal: 'Instagram', device: 'Mobile', maturite: 'Decouverte',
+    situation: 'Jeune professionnelle a Metz, poils incarnes recurrents sur les jambes, fatiguee du rasoir, cherche une solution definitive',
+    contexte: 'Voit un post Instagram @eternal_rejuveness_metz sur l\'epilation laser Soprano, clique sur le lien en bio',
+    parcours: ['Accueil'],
+    decision: 'quitte',
+    scores: { exp: 3, conf: 4, clarte: 3 },
+    premierImpression: 'Le site met 4 secondes a charger apres Instagram. Je vois la page d\'accueil generale avec soins visage et corps — mais je cherche epilation definitive specifiquement. Je dois naviguer pour trouver.',
+    questionCle: 'Combien ca coute pour des jambes completes au laser ? C\'est douloureux avec le Soprano ? Combien de seances ?',
+    reponse: 'Non',
+    commentReponse: 'Pas de CTA direct vers epilation definitive depuis l\'accueil. La navigation n\'est pas intuitive pour quelqu\'un qui arrive depuis un post epilation. Les tarifs epilation sont "sur devis" — elle ne trouve pas de fourchette. Elle repart sur Instagram pour DM directement.',
+    impactTechnique: 'Deconnexion totale entre contenu Instagram (epilation laser) et page d\'atterrissage (accueil generique). Pas de landing page dediee epilation avec prix de reference.',
+    pointsPositifs: ['Presence Instagram active avec du contenu epilation', 'Apilus mentionne pour tous types de poils (blanc, depigmente) — differentiant cle'],
+    frictions: ['Pas de landing page epilation depuis Instagram', 'TTFB 4s apres avoir scrolle Instagram', 'Tarifs epilation laser "sur devis" — pas de fourchette', 'Navigation accueil non orientee vers la preoccupation specifique'],
+  },
+  {
+    id: 4, name: 'Chloé', age: 34, emoji: '\u{1F381}',
+    canal: 'Bouche-a-oreille', device: 'Mobile', maturite: 'Decision',
+    situation: 'Infirmiere a Woippy, veut offrir une carte cadeau Eternal Rejuveness a sa mere pour son anniversaire (budget ~100€)',
+    contexte: 'Sa collegue a recu un soin HydraFacial chez ER et en parle en or. Elle cherche sur Google "eternal rejuveness carte cadeau"',
+    parcours: ['Accueil', 'Carte cadeau'],
+    decision: 'convertit',
+    scores: { exp: 7, conf: 9, clarte: 7 },
+    premierImpression: 'La carte cadeau est mentionnee sur l\'accueil, je la trouve facilement. La page est bien faite, le visuel est beau. Je peux choisir le montant. Parfait pour un cadeau.',
+    questionCle: 'La carte cadeau est valable combien de temps ? Je peux la commander en ligne et la recevoir par email ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La page carte cadeau existe et est bien presentee. Mais la duree de validite n\'est pas clairement affichee. Le mode de livraison (email / physique) n\'est pas specifie. Elle appelle pour confirmer et commande par telephone.',
+    impactTechnique: 'L\'URL /index.php/carte-cadeau/ et /carte-cadeau/ existent en double — confusion possible. Pas de commande en ligne directe (formulaire ou lien de paiement).',
+    pointsPositifs: ['Carte cadeau bien mise en avant sur l\'accueil', 'Visuel de la carte attractif et premium', 'Recommandation orale = confiance maximale'],
+    frictions: ['Duree de validite non affichee clairement', 'Pas de commande en ligne (email ou paiement)', 'Double URL /index.php/carte-cadeau/ et /carte-cadeau/'],
+  },
+  {
+    id: 5, name: 'Jean-Michel', age: 62, emoji: '\u{1F468}\u{200D}\u{1F469}',
+    canal: 'Google Search', device: 'Desktop', maturite: 'Decision',
+    situation: 'Cadre retraite a Metz, veut offrir a sa femme un pack minceur pour son anniversaire, budget 500-800€',
+    contexte: 'Tape "pack minceur femme Metz cadeau" sur Google, tombe sur Eternal Rejuveness via un article blog',
+    parcours: ['Article blog', 'Accueil', 'Corps & minceur', 'Tarifs'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 6, clarte: 4 },
+    premierImpression: 'L\'article blog est clair et bien ecrit. Le site a l\'air serieux. Mais je ne comprends pas la difference entre tous les traitements corps — Alma Prime X, InfraBike, Cryolipolyse, iYU. C\'est quoi le mieux pour ma femme ?',
+    questionCle: 'Quel est le pack minceur le plus efficace pour perdre des centimetres sur le ventre ? Vous proposez des forfaits a offrir ?',
+    reponse: 'Non',
+    commentReponse: 'La page corps & minceur liste tous les appareils mais sans guide comparatif "quel traitement pour quel resultat". Pas de pack cadeau minceur present. Pas de guide homme qui cherche pour sa femme. Il hesite et appelle pour demander conseil.',
+    impactTechnique: 'Desktop charge correctement. Mais l\'architecture corps/minceur est technique (noms des machines) plutot qu\'orientee resultat (perdre du ventre, raffermir les bras). Manque d\'un quizz "quel traitement me correspond ?".',
+    pointsPositifs: ['Blog avec contenu SEO de qualite', 'Diagnostic MORPHOSCAN avant traitement — approche personnalisee', 'Robotic massage iYU exclusif en region'],
+    frictions: ['Pas de pack cadeau minceur present', 'Architecture "par machine" au lieu de "par resultat attendu"', 'Pas de guide comparatif traitements corps', 'Pas de quizz/diagnostic en ligne'],
+  },
+  // GROUPE B — Personas 6-10 (visites simulees par sous-agent B)
+  {
+    id: 6, name: 'Laetitia', age: 44, emoji: '\u{1F9D6}\u{200D}\u{2640}\u{FE0F}',
+    canal: 'Google Search', device: 'Mobile', maturite: 'Comparaison',
+    situation: 'Enseignante a Thionville, pilosite importante, se rase depuis 15 ans, poils blancs non traites par le laser standard',
+    contexte: 'Tape "epilation electrolye poils blancs Metz Thionville" sur Google, trouve la page Apilus d\'Eternal Rejuveness',
+    parcours: ['Page Apilus', 'Epilation definitive', 'Bilan devis', 'Contact'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 8, clarte: 6 },
+    premierImpression: 'Enfin ! Une page qui explique l\'electrolyse Apilus pour les poils blancs et dépigmentes. C\'est exactement ce que je cherche depuis des annees. C\'est rare de trouver un centre qui propose ca dans la region.',
+    questionCle: 'Vous traitez vraiment les poils blancs et les poils lies au SOPK ? Quel est le tarif et combien de seances ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La page Apilus est tres bien documentee — poils blancs, depigmentes, SOPK. Consultation gratuite mentionnee. Mais les tarifs sont "sur devis". Elle prend RDV bilan car la competence est rare et validee par les explications techniques de la page.',
+    impactTechnique: 'Page Apilus bien referencee SEO long-tail (poils blancs, electrolyse). Mais la page charge en 4s sur mobile — frustrant quand on a enfin trouve la bonne page. Pas de formulaire de bilan en ligne.',
+    pointsPositifs: ['Electrolyse Apilus pour poils blancs/depigmentes/SOPK — differentiant majeur et rare', 'Consultation bilan gratuite', 'Description technique detaillee et credible', 'Page dediee bien optimisee SEO'],
+    frictions: ['TTFB 4s sur mobile apres avoir enfin trouve la bonne page', 'Tarifs electrolyse "sur devis" sans fourchette', 'Pas de formulaire bilan en ligne — doit appeler', 'Page sans photos avant/apres electrolyse'],
+  },
+  {
+    id: 7, name: 'Romain', age: 35, emoji: '\u{1F4BB}',
+    canal: 'ChatGPT', device: 'Desktop', maturite: 'Decouverte',
+    situation: 'Developpeur web freelance a Metz, cherche un cadeau spa/beaute haut de gamme pour l\'anniversaire de sa compagne',
+    contexte: 'Demande a ChatGPT : "meilleur institut de beaute haut de gamme a Metz avec soins innovants 2026"',
+    parcours: [],
+    decision: 'quitte',
+    scores: { exp: 0, conf: 0, clarte: 0 },
+    premierImpression: 'ChatGPT ne cite pas Eternal Rejuveness dans sa reponse. Il cite un autre centre a Metz-Centre et mentionne une chaine nationale. Eternal Rejuveness est pourtant le meilleur de la zone avec 401 avis 4.9.',
+    questionCle: 'Quel est le meilleur centre de beaute haut de gamme a Metz pour un cadeau original ?',
+    reponse: 'Invisible',
+    commentReponse: 'Sans Schema.org aggregateRating structure, sans llms.txt, avec une architecture WordPress/Divi difficile a crawler — les IA generatives ne peuvent pas citer Eternal Rejuveness avec confiance. Une perte majeure pour un centre a 4.9/5 sur 401 avis.',
+    impactTechnique: 'Pas de llms.txt. Pas d\'aggregateRating Schema.org. Pas de LocalBusiness structure. Meta descriptions HTML encodees (entites HTML dans les OG tags). Architecture lourde Divi = crawl difficile pour les spiders IA.',
+    pointsPositifs: [],
+    frictions: ['Invisible pour les IA generatives (ChatGPT, Perplexity, Claude)', 'Pas de llms.txt', 'Pas d\'aggregateRating Schema.org — 401 avis 4.9 non valorises', 'Entites HTML (&amp;, &#039;) dans meta descriptions = signal qualite degrade'],
+  },
+  {
+    id: 8, name: 'Veronique', age: 57, emoji: '\u{1FAF6}',
+    canal: 'Recommandation medecin', device: 'Desktop', maturite: 'Decision',
+    situation: 'Fonctionnaire a Metz, rosacee severe et taches brunes persistantes, son dermatologue lui a recommande de chercher un centre avec laser et technologie medicale',
+    contexte: 'Son dermatologue lui a donne le nom "Eternal Rejuveness" et elle visite le site pour prendre RDV',
+    parcours: ['Accueil', 'Taches pigmentaires', 'Couperose/Rosacee', 'Nos solutions visage', 'Contact'],
+    decision: 'convertit',
+    scores: { exp: 7, conf: 8, clarte: 7 },
+    premierImpression: 'Mon dermatologue m\'a renvoyee ici donc j\'ai confiance. Le site montre bien qu\'ils traitent la rosacee et les taches. L\'approche par besoins (couperose/rosacee comme categorie) m\'aide a trouver ma problematique.',
+    questionCle: 'Vous coordonnez avec mon dermatologue ? Quel protocole pour une rosacee de stade 2 avec couperose diffuse ?',
+    reponse: 'Partiellement',
+    commentReponse: 'L\'architecture par besoins est un vrai plus — elle trouve sa problematique directement. Mais il n\'y a pas de section "coordination medecin/estheticienne" ni de protocoles specifiques par stade. Elle prend RDV car la recommandation medicale est decisive.',
+    impactTechnique: 'Architecture "Vos besoins" tres bien pensee — un avantage UX rare. Mais les pages de besoins specifiques (couperose) manquent de contenu clinique detaille et de cas traites. Desktop OK en perf.',
+    pointsPositifs: ['Architecture navigationnelle par besoins client (pas par machine) — differentiant UX majeur', 'Page couperose/rosacee dediee existante', 'VISIA 7 pour diagnostic peau — credibilite scientifique', 'Recommandation medicale = confiance maximale'],
+    frictions: ['Pas de protocoles par stade de rosacee', 'Pas de section "partenariat medecins"', 'Pages besoins specifiques pourraient etre plus cliniques', 'Pas de photos avant/apres rosacee traitee'],
+  },
+  {
+    id: 9, name: 'Emma', age: 22, emoji: '\u{1F457}',
+    canal: 'TikTok / Instagram Reels', device: 'Mobile', maturite: 'Decouverte',
+    situation: 'Etudiante a l\'universite de Metz, veut faire du microblading pour ne plus se maquiller les sourcils tous les matins',
+    contexte: 'Voit un Reel de @eternal_rejuveness_metz sur les powder brows, tape "eternal rejuveness" sur Google et arrive sur le site',
+    parcours: ['Accueil', 'Embellissement du regard'],
+    decision: 'quitte',
+    scores: { exp: 3, conf: 5, clarte: 4 },
+    premierImpression: 'Le site est beau mais tres lent sur mon tel. Je cherche microblading et powder brows — c\'est dans la navigation "Embellissement du regard" mais ce n\'est pas intuitif comme label. Et je ne trouve pas les prix ni les resultats attendus.',
+    questionCle: 'C\'est quoi la difference entre microblading et powder brows ? Combien ca coute et ca dure combien de temps ? Vous avez des photos de vos realisations ?',
+    reponse: 'Non',
+    commentReponse: 'La page embellissement du regard existe mais est pauvre en contenu. Pas de comparatif microblading vs powder brows visuellement. Pas de prix. Pas de galerie avant/apres sourcils. Elle repart sur Instagram pour voir les realisations directement.',
+    impactTechnique: '4s de chargement = enorme friction pour quelqu\'un qui vient de TikTok (contenu instantane). La section "embellissement du regard" est sous-developpee vs son importance business (Julie est specialiste). Pas de galerie sourcils sur le site.',
+    pointsPositifs: ['Presence TikTok/Reels active qui genere du trafic', 'Julie Chareyre est la fondatrice specialiste — credential fort si visible'],
+    frictions: ['TTFB 4s = death by loading sur mobile', 'Label "Embellissement du regard" pas intuitif (vs "Sourcils / Microblading")', 'Pas de prix microblading/powder brows', 'Pas de galerie avant/apres sourcils sur le site', 'Pas de comparatif microblading vs powder brows'],
+  },
+  {
+    id: 10, name: 'Patricia', age: 48, emoji: '\u{1F4AA}',
+    canal: 'Google Maps', device: 'Mobile', maturite: 'Comparaison',
+    situation: 'Cadre moyenne a Woippy, cellulite culotte de cheval resistante, compare 3 centres qui proposent la cryolipolyse dans Metz et environs',
+    contexte: 'Cherche "cryolipolyse metz" sur Google Maps, trouve Eternal Rejuveness parmi les resultats locaux',
+    parcours: ['Fiche GBP', 'Accueil', 'Corps & minceur', 'Cryolipolyse', 'Tarifs'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 6, clarte: 4 },
+    premierImpression: 'La fiche Google est super — 4.9 sur 401 avis, ca rassure. Le site existe et parle de cryolipolyse. Mais je compare avec 2 autres centres qui ont des prix affiches. Ici c\'est moins clair.',
+    questionCle: 'Combien ca coute pour une session cryolipolyse culotte de cheval ? Combien de sessions pour un resultat visible ? Quel appareil vous utilisez ?',
+    reponse: 'Non',
+    commentReponse: 'La page cryolipolyse existe mais ne repond pas aux 3 questions fondamentales : prix, nombre de seances, marque de l\'appareil. La page corps & minceur liste Alma Prime X et InfraBike mais la cryolipolyse semble moins mise en avant. Elle prefere un centre concurrent qui affiche ses prix.',
+    impactTechnique: 'La fiche GBP est excellente (4.9/401) et genere le clic. Mais la landing corps/minceur ne converti pas les comparateurs qui veulent des chiffres. Manque d\'une page "comparatif appareils minceur" pour etre transparents sur les technologies.',
+    pointsPositifs: ['Fiche GBP 4.9/401 avis = clic garanti depuis Google Maps', 'Diagnostic MORPHOSCAN avant traitement — differentiant qualite', 'Bilan corps 50€ — accessibilite pour commencer'],
+    frictions: ['Pas de prix cryolipolyse affiches', 'Pas du tout de "combien de seances" pour chaque traitement', 'Marque/modele de l\'appareil cryolipolyse non mentionne', 'Comparateurs sans prix vont chez un concurrent plus transparent'],
+  },
+];
+
+// ============================================================
+// RECOMMANDATIONS
+// ============================================================
+const ameliorationsCritiques = [
+  {
+    titre: 'Migrer vers Astro v5 + Cloudflare Pages — eliminer le TTFB de 4 secondes',
+    detail: '8 personas sur 10 ont souffert de la lenteur du site. Sur mobile, 4.09 secondes de TTFB signifie un ecran blanc avant le premier pixel. Google degrade le classement SEO des sites lents (Core Web Vitals). La cause est structurelle : WordPress/Divi + 20+ scripts JS/CSS + hebergeur o2switch sans CDN.',
+    action: 'Migrer vers Astro v5 + Tailwind v4 + Cloudflare Pages. TTFB cible : <150ms. HTML cible : <50KB. Score PageSpeed mobile cible : >90.',
+  },
+  {
+    titre: 'Ajouter aggregateRating Schema.org — valoriser 401 avis 4.9 etoiles dans Google',
+    detail: '401 avis Google a 4.9 etoiles est un actif SEO exceptionnel — rarer. Sans aggregateRating dans le Schema.org, Google ne peut pas afficher les etoiles dans les resultats organiques. Perte de clickthrough estimee 15-30%. Et les IA generatives ne peuvent pas citer le centre avec confiance.',
+    action: 'Ajouter dans le Schema.org BeautySalon : aggregateRating { ratingValue: 4.9, reviewCount: 401, bestRating: 5 }. Aussi corriger le code postal (57410 -> 57140) et ajouter priceRange, geo, hasMap.',
+  },
+  {
+    titre: 'Supprimer Google Fonts CDN — passer a Poppins hebergee localement',
+    detail: 'Google Fonts CDN transfert l\'adresse IP des visiteurs vers les serveurs Google USA sans consentement explicite. Depuis les decisions CNIL 2022, c\'est une violation documentee du RGPD. En plus, c\'est un round-trip supplementaire vers Google qui degrade les performances.',
+    action: 'Telecharger Poppins en woff2, heberger dans public/fonts/, declarer avec @font-face. Supprimer completement la reference a fonts.googleapis.com.',
+  },
+];
+
+const ameliorationsUtiles = [
+  {
+    titre: 'Afficher des fourchettes de prix pour l\'epilation laser et la cryolipolyse',
+    detail: '7 personas sur 10 ont cherche des prix. "Sur devis" pour l\'epilation laser et la cryolipolyse fait fuir les visiteurs en phase de comparaison. Afficher une fourchette "a partir de X€ la zone" suffit pour qualifier les prospects et leur donner confiance.',
+  },
+  {
+    titre: 'Ajouter un llms.txt et Schema.org LocalBusiness pour la visibilite IA',
+    detail: 'Romain (persona 7) est arrive via ChatGPT et n\'a jamais trouve Eternal Rejuveness. Avec un llms.txt well-formed, des donnees structurees completes et des meta descriptions nettoyees (sans entites HTML), les IA peuvent citer le centre avec confiance.',
+  },
+  {
+    titre: 'Creer des pages dediees "par besoin" pour les soins phares (microblading, cryolipolyse)',
+    detail: 'L\'architecture "Vos besoins" est un vrai avantage UX (Veronique, persona 8, l\'a apprecie). L\'etendre a microblading/powder brows et cryolipolyse avec avant/apres, prix, nombre de seances et technologie utilisee convertirait 2-3 personas supplementaires.',
+  },
+];
+
+// ============================================================
+// HELPERS
+// ============================================================
+function scoreColor(score: number) {
+  if (score >= 90) return '#22c55e';
+  if (score >= 50) return '#f59e0b';
+  return '#ef4444';
+}
+
+function scoreTextClass(score: number) {
+  if (score >= 90) return 'text-green-600';
+  if (score >= 50) return 'text-amber-500';
+  return 'text-red-500';
+}
+
+function decisionColor(decision: string) {
+  if (decision === 'convertit') return 'border-green-200 bg-green-50/40';
+  if (decision === 'hesite') return 'border-amber-200 bg-amber-50/40';
+  return 'border-neutral-200 bg-neutral-50/40';
+}
+
+function decisionBadge(decision: string) {
+  if (decision === 'convertit') return 'bg-green-100 text-green-700';
+  if (decision === 'hesite') return 'bg-amber-100 text-amber-700';
+  return 'bg-neutral-100 text-neutral-600';
+}
+
+function decisionLabel(decision: string) {
+  if (decision === 'convertit') return 'Contacte';
+  if (decision === 'hesite') return 'Hesite';
+  return 'Repart';
+}
+
+function maturiteColor(m: string) {
+  if (m === 'Decision') return 'text-purple-600 bg-purple-50';
+  if (m === 'Comparaison') return 'text-blue-600 bg-blue-50';
+  return 'text-neutral-500 bg-neutral-100';
+}
+---
+
+<BaseLayout title={title} description={description} noindex={true} lang="fr" frPath="/audit/eternal-rejuveness">
+
+  <!-- ========================================================
+       HERO + KPIs
+  ======================================================== -->
+  <section class="bg-neutral-900 text-white py-14 px-4">
+    <div class="max-w-4xl mx-auto">
+      <span class="inline-block text-xs font-semibold tracking-widest uppercase text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full mb-4">Rapport personnalise</span>
+      <h1 class="font-heading text-3xl md:text-4xl font-bold mb-2 leading-tight">
+        {prospect.name}<br/>
+        <span class="text-neutral-300 font-normal text-2xl">ce que vos visiteurs pensent vraiment</span>
+      </h1>
+      <p class="text-neutral-400 mb-2">{prospect.activity} &mdash; {prospect.location}</p>
+      <p class="text-neutral-500 text-sm mb-8">
+        <a href={prospect.url} class="text-amber-400 hover:underline" target="_blank" rel="noopener noreferrer">{prospect.url}</a>
+        &mdash; Rapport du {prospect.date}
+      </p>
+
+      <!-- KPI Cards -->
+      <div class="grid grid-cols-3 gap-4 max-w-lg">
+        <div class="bg-neutral-800 rounded-xl p-4 text-center">
+          <span class="block text-3xl font-black text-amber-400">{kpis.conversion}%</span>
+          <span class="text-xs text-neutral-400 mt-1 block">convertissent</span>
+        </div>
+        <div class="bg-neutral-800 rounded-xl p-4 text-center">
+          <span class="block text-3xl font-black text-amber-400">{kpis.experience}/10</span>
+          <span class="text-xs text-neutral-400 mt-1 block">experience</span>
+        </div>
+        <div class="bg-neutral-800 rounded-xl p-4 text-center">
+          <span class="block text-3xl font-black text-amber-400">{kpis.confiance}/10</span>
+          <span class="text-xs text-neutral-400 mt-1 block">confiance</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       LE CONSTAT
+  ======================================================== -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Le constat</h2>
+
+      <!-- Constat principal -->
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-8">
+        <p class="text-amber-900 font-medium text-base leading-relaxed">{constat}</p>
+      </div>
+
+      <!-- Resume visiteurs -->
+      <div class="flex flex-wrap gap-3 mb-8">
+        <div class="flex items-center gap-2 bg-green-50 border border-green-200 rounded-lg px-4 py-2">
+          <span class="w-2 h-2 rounded-full bg-green-500 shrink-0"></span>
+          <span class="text-sm font-semibold text-green-800">{kpis.convertissent} contactent</span>
+        </div>
+        <div class="flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-lg px-4 py-2">
+          <span class="w-2 h-2 rounded-full bg-amber-500 shrink-0"></span>
+          <span class="text-sm font-semibold text-amber-800">{kpis.hesitent} hesitent</span>
+        </div>
+        <div class="flex items-center gap-2 bg-neutral-100 border border-neutral-200 rounded-lg px-4 py-2">
+          <span class="w-2 h-2 rounded-full bg-neutral-400 shrink-0"></span>
+          <span class="text-sm font-semibold text-neutral-700">{kpis.quittent} repartent</span>
+        </div>
+      </div>
+
+      <!-- Conversion par canal -->
+      <div class="mb-10">
+        <h3 class="font-semibold text-neutral-800 mb-4 text-sm uppercase tracking-wide">Taux de contact par canal d'arrivee</h3>
+        <div class="space-y-3">
+          {conversionByCanal.map(item => (
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-sm text-neutral-700">{item.canal}</span>
+                <span class={`text-sm font-bold ${item.color}`}>{item.taux}%</span>
+              </div>
+              <div class="h-2 bg-neutral-100 rounded-full overflow-hidden">
+                <div class={`h-full rounded-full ${item.bg}`} style={`width: ${item.taux}%`}></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Top frictions -->
+      <h3 class="font-semibold text-neutral-800 mb-4 text-sm uppercase tracking-wide">Top 5 frictions identifiees</h3>
+      <ol class="space-y-3">
+        {topFrictions.map((f, i) => (
+          <li class="flex gap-4 p-4 bg-neutral-50 border border-neutral-200 rounded-xl">
+            <span class="shrink-0 w-7 h-7 rounded-full bg-red-100 text-red-700 flex items-center justify-center text-sm font-bold">{i + 1}</span>
+            <div>
+              <p class="font-semibold text-neutral-900 text-sm">{f.titre} <span class="ml-2 text-xs text-neutral-500 font-normal">{f.count}/10 personas</span></p>
+              <p class="text-neutral-600 text-xs mt-0.5">{f.detail}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       AUDIT TECHNIQUE
+  ======================================================== -->
+  <section class="py-12 px-4 bg-neutral-50">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">L'audit technique</h2>
+
+      <!-- PageSpeed mobile -->
+      <div class="bg-white border border-neutral-200 rounded-xl p-6 mb-6">
+        <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+          <h3 class="font-semibold text-neutral-800">PageSpeed — Mobile</h3>
+          <span class="text-xs text-neutral-400 bg-neutral-100 px-2 py-1 rounded">scores estimes — profil WordPress/Divi + TTFB 4.09s mesure</span>
+        </div>
+        <div class="grid grid-cols-4 gap-4">
+          {[
+            { label: 'Performance', score: pagespeed.mobile.performance },
+            { label: 'Accessibilite', score: pagespeed.mobile.accessibility },
+            { label: 'Bonnes pratiques', score: pagespeed.mobile.bestPractices },
+            { label: 'SEO', score: pagespeed.mobile.seo },
+          ].map(item => (
+            <div class="text-center">
+              <div class="relative w-14 h-14 mx-auto mb-2">
+                <svg class="w-14 h-14 -rotate-90" viewBox="0 0 36 36">
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    fill="none" stroke="#e5e7eb" stroke-width="3.5" />
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    fill="none" stroke={scoreColor(item.score)} stroke-width="3.5"
+                    stroke-dasharray={`${item.score}, 100`} stroke-linecap="round" />
+                </svg>
+                <span class={`absolute inset-0 flex items-center justify-center text-base font-bold ${scoreTextClass(item.score)}`}>{item.score}</span>
+              </div>
+              <p class="text-xs text-neutral-600">{item.label}</p>
+            </div>
+          ))}
+        </div>
+
+        <!-- Core Web Vitals -->
+        <div class="mt-4 pt-4 border-t border-neutral-100">
+          <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-2">Core Web Vitals (mobile estimes — TTFB mesure : 4.09s)</p>
+          <div class="flex flex-wrap gap-3">
+            {coreWebVitals.map(cwv => (
+              <div class={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium ${cwv.status === 'good' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+                <span class={`w-1.5 h-1.5 rounded-full ${cwv.status === 'good' ? 'bg-green-500' : 'bg-red-500'}`}></span>
+                {cwv.name} : {cwv.value}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- PageSpeed Desktop + Observatory -->
+      <div class="grid md:grid-cols-2 gap-6 mb-6">
+        <!-- Desktop -->
+        <div class="bg-white border border-neutral-200 rounded-xl p-5">
+          <h3 class="font-semibold text-neutral-800 mb-4">PageSpeed — Desktop</h3>
+          <div class="grid grid-cols-4 gap-2">
+            {[
+              { label: 'Perf.', score: pagespeed.desktop.performance },
+              { label: 'A11y', score: pagespeed.desktop.accessibility },
+              { label: 'BP', score: pagespeed.desktop.bestPractices },
+              { label: 'SEO', score: pagespeed.desktop.seo },
+            ].map(item => (
+              <div class="text-center">
+                <div class="relative w-12 h-12 mx-auto mb-1">
+                  <svg class="w-12 h-12 -rotate-90" viewBox="0 0 36 36">
+                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      fill="none" stroke="#e5e7eb" stroke-width="3.5" />
+                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      fill="none" stroke={scoreColor(item.score)} stroke-width="3.5"
+                      stroke-dasharray={`${item.score}, 100`} stroke-linecap="round" />
+                  </svg>
+                  <span class={`absolute inset-0 flex items-center justify-center text-sm font-bold ${scoreTextClass(item.score)}`}>{item.score}</span>
+                </div>
+                <p class="text-[11px] text-neutral-500">{item.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Observatory -->
+        <div class="bg-white border border-neutral-200 rounded-xl p-5">
+          <h3 class="font-semibold text-neutral-800 mb-3">Securite — Mozilla Observatory</h3>
+          <div class="flex items-center gap-4 mb-3">
+            <div class="text-4xl font-black text-red-500">
+              {observatory.grade}
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-neutral-800">Score {observatory.score}/100</p>
+              <p class="text-xs text-neutral-500">{observatory.testsPassed}/{observatory.testsTotal} tests passes</p>
+            </div>
+          </div>
+          <p class="text-xs text-neutral-600">Grade D- critique — aucun des 7 headers de securite configures (CSP, HSTS, X-Frame-Options, X-Content-Type, Referrer-Policy, Permissions-Policy, X-XSS-Protection). Le fichier xmlrpc.php est expose dans les headers HTTP. Un centre qui collecte des donnees clients ne peut pas afficher ce niveau de securite.</p>
+        </div>
+      </div>
+
+      <!-- Checklist SEO/Schema/OG -->
+      <div class="bg-white border border-neutral-200 rounded-xl p-5 mb-6">
+        <h3 class="font-semibold text-neutral-800 mb-4">Checklist technique, SEO & legal</h3>
+        <div class="grid sm:grid-cols-2 gap-2">
+          {techChecks.map(check => (
+            <div class={`flex items-start gap-2.5 p-2.5 rounded-lg ${check.present ? 'bg-green-50' : check.critical ? 'bg-red-50' : 'bg-neutral-50'}`}>
+              <span class={`shrink-0 mt-0.5 text-sm ${check.present ? 'text-green-600' : check.critical ? 'text-red-500' : 'text-neutral-400'}`}>
+                {check.present ? '\u2713' : '\u2717'}
+              </span>
+              <div>
+                <span class={`text-xs font-medium ${check.present ? 'text-green-800' : check.critical ? 'text-red-700' : 'text-neutral-600'}`}>{check.label}</span>
+                {check.note && <p class="text-[11px] text-neutral-500 mt-0.5">{check.note}</p>}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Top opportunites -->
+      <div class="bg-white border border-neutral-200 rounded-xl p-5">
+        <h3 class="font-semibold text-neutral-800 mb-3">Top 3 gains de performance potentiels</h3>
+        <div class="space-y-2">
+          {opportunities.map((opp, i) => (
+            <div class="flex items-center gap-3 p-3 bg-amber-50 border border-amber-100 rounded-lg">
+              <span class="shrink-0 text-amber-600 font-bold text-sm">{i + 1}</span>
+              <div class="flex-1">
+                <span class="text-sm text-neutral-800">{opp.label}</span>
+              </div>
+              <span class="shrink-0 text-xs font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded">{opp.saving}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       VOS VISITEURS — 10 PERSONAS
+  ======================================================== -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs</h2>
+      <p class="text-neutral-500 mb-6 text-sm">
+        Sur <strong class="text-neutral-800">10 visiteurs simules</strong>,
+        <strong class="text-green-700">{kpis.convertissent} contactent</strong>,
+        <strong class="text-amber-600">{kpis.hesitent} hesitent</strong>,
+        <strong class="text-neutral-600">{kpis.quittent} repartent</strong>.
+        Cliquez sur un visiteur pour voir son parcours complet.
+      </p>
+
+      <!-- Legende -->
+      <div class="flex flex-wrap gap-2 mb-5 text-xs">
+        <span class="flex items-center gap-1.5 bg-green-50 border border-green-200 px-2.5 py-1 rounded-full text-green-700 font-medium">
+          <span class="w-2 h-2 rounded-full bg-green-500"></span> Contacte
+        </span>
+        <span class="flex items-center gap-1.5 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-full text-amber-700 font-medium">
+          <span class="w-2 h-2 rounded-full bg-amber-500"></span> Hesite
+        </span>
+        <span class="flex items-center gap-1.5 bg-neutral-100 border border-neutral-200 px-2.5 py-1 rounded-full text-neutral-600 font-medium">
+          <span class="w-2 h-2 rounded-full bg-neutral-400"></span> Repart
+        </span>
+      </div>
+
+      <div class="space-y-2">
+        {personas.map(p => (
+          <details class={`group border ${decisionColor(p.decision)} rounded-xl overflow-hidden`}>
+            <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-white/60 transition-colors">
+              <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                  <h3 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h3>
+                  <span class={`text-[11px] px-1.5 py-0.5 rounded ${decisionBadge(p.decision)}`}>{decisionLabel(p.decision)}</span>
+                  <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                  <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                  <span class={`text-[11px] px-1.5 py-0.5 rounded ${maturiteColor(p.maturite)}`}>{p.maturite}</span>
+                </div>
+                <p class="text-xs text-neutral-500 truncate">{p.situation}</p>
+              </div>
+              <div class="shrink-0 flex items-center gap-3 ml-2">
+                <div class="hidden sm:flex gap-1.5 text-[11px]">
+                  <span class="bg-neutral-100 text-neutral-600 px-1.5 py-0.5 rounded">Exp {p.scores.exp}/10</span>
+                  <span class="bg-neutral-100 text-neutral-600 px-1.5 py-0.5 rounded">Conf {p.scores.conf}/10</span>
+                </div>
+                <svg class="w-5 h-5 text-neutral-400 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </div>
+            </summary>
+
+            <div class="px-4 pb-4 pt-0 border-t border-current/10 bg-white/60">
+              <div class="grid gap-3 text-xs mt-3">
+
+                <!-- Parcours -->
+                <div>
+                  <p class="font-semibold text-neutral-700 mb-1">Parcours</p>
+                  <div class="flex flex-wrap gap-1 items-center">
+                    {p.parcours.length > 0 ? p.parcours.map((page, i) => (
+                      <>
+                        <span class="bg-neutral-100 text-neutral-700 px-2 py-0.5 rounded text-[11px]">{page}</span>
+                        {i < p.parcours.length - 1 && <span class="text-neutral-400 text-[10px]">&rsaquo;</span>}
+                      </>
+                    )) : <span class="text-neutral-400 italic">N'a jamais atteint le site</span>}
+                  </div>
+                </div>
+
+                <!-- Premiere impression -->
+                <div>
+                  <p class="font-semibold text-neutral-700 mb-1">Premiere impression</p>
+                  <p class="text-neutral-600 italic">"{p.premierImpression}"</p>
+                </div>
+
+                <!-- Question + reponse -->
+                <div>
+                  <p class="font-semibold text-neutral-700 mb-1">Question cle</p>
+                  <p class="text-neutral-600 italic mb-1">"{p.questionCle}"</p>
+                  <p class="text-neutral-600">
+                    Reponse du site : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' || p.reponse === 'Invisible' ? 'text-red-600' : 'text-amber-700'}>{p.reponse}</strong>
+                    {' '}&mdash; {p.commentReponse}
+                  </p>
+                </div>
+
+                <!-- Impact technique -->
+                <div class="bg-neutral-50 rounded-lg px-3 py-2">
+                  <p class="font-semibold text-neutral-700 mb-0.5">Impact technique</p>
+                  <p class="text-neutral-600">{p.impactTechnique}</p>
+                </div>
+
+                <!-- Points positifs + frictions -->
+                <div class="grid sm:grid-cols-2 gap-3">
+                  <div>
+                    <p class="font-semibold text-green-700 mb-1">Points positifs</p>
+                    <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                      {p.pointsPositifs.length > 0 ? p.pointsPositifs.map(pt => <li>{pt}</li>) : <li class="text-neutral-400 italic">Aucun identifie</li>}
+                    </ul>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-amber-700 mb-1">Frictions</p>
+                    <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                      {p.frictions.map(f => <li>{f}</li>)}
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- Scores -->
+                <div class="flex gap-3 pt-1">
+                  <span class="bg-neutral-100 text-neutral-700 px-2.5 py-1 rounded-lg text-[11px] font-medium">Experience {p.scores.exp}/10</span>
+                  <span class="bg-neutral-100 text-neutral-700 px-2.5 py-1 rounded-lg text-[11px] font-medium">Confiance {p.scores.conf}/10</span>
+                  <span class="bg-neutral-100 text-neutral-700 px-2.5 py-1 rounded-lg text-[11px] font-medium">Clarte {p.scores.clarte}/10</span>
+                </div>
+
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       RECOMMANDATIONS
+  ======================================================== -->
+  <section class="py-12 px-4 bg-neutral-50">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Nos recommandations</h2>
+
+      <!-- Critiques -->
+      <h3 class="font-semibold text-red-700 text-sm uppercase tracking-wide mb-3">Le plus important — a traiter en priorite</h3>
+      <div class="space-y-3 mb-8">
+        {ameliorationsCritiques.map((a, i) => (
+          <div class="border border-red-200 bg-white rounded-xl p-5">
+            <div class="flex gap-3 mb-2">
+              <span class="shrink-0 w-6 h-6 rounded-full bg-red-100 text-red-700 flex items-center justify-center text-xs font-bold">{i + 1}</span>
+              <h4 class="font-semibold text-neutral-900 text-sm">{a.titre}</h4>
+            </div>
+            <p class="text-neutral-600 text-sm mb-2 ml-9">{a.detail}</p>
+            <div class="ml-9 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+              <p class="text-xs text-red-800"><strong>Action :</strong> {a.action}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Utiles -->
+      <h3 class="font-semibold text-neutral-600 text-sm uppercase tracking-wide mb-3">Utile aussi</h3>
+      <div class="grid sm:grid-cols-3 gap-3">
+        {ameliorationsUtiles.map(a => (
+          <div class="bg-white border border-neutral-200 rounded-xl p-4">
+            <h4 class="font-semibold text-neutral-800 text-sm mb-2">{a.titre}</h4>
+            <p class="text-neutral-500 text-xs">{a.detail}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       CTA FINAL
+  ======================================================== -->
+  <section class="bg-neutral-900 text-white py-16 px-4">
+    <div class="max-w-3xl mx-auto text-center">
+      <p class="text-amber-400 text-sm font-semibold uppercase tracking-widest mb-3">Ce rapport est offert</p>
+      <h2 class="font-heading text-2xl md:text-3xl font-bold mb-4 leading-snug">
+        {kpis.conversion}% de vos visiteurs vous contactent.<br/>
+        <span class="text-amber-400">401 avis 4.9 etoiles meritent un site a la hauteur.</span>
+      </h2>
+      <p class="text-neutral-300 mb-3 max-w-xl mx-auto">
+        Un centre d'exception avec des technologies exclusives en region, des fondateurs experts et une reputation hors-norme merite un site aussi performant que ses soins — rapide, securise, visible sur Google et les IA.
+      </p>
+      <p class="text-neutral-400 text-sm mb-8 max-w-xl mx-auto">
+        Je construis des sites qui convertissent vraiment &mdash; a partir de 990&euro;, livre en 7 jours, sans abonnement CMS.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a
+          href="/commander"
+          class="inline-flex items-center gap-2 px-8 py-3.5 bg-[var(--color-accent)] text-white font-semibold rounded-xl hover:bg-[var(--color-accent-hover)] transition-all shadow-md"
+        >
+          Je veux un site qui convertit
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+          </svg>
+        </a>
+        <a
+          href="/contact"
+          class="inline-flex items-center gap-2 px-8 py-3.5 border border-neutral-600 text-neutral-300 font-semibold rounded-xl hover:border-amber-400 hover:text-amber-400 transition-all"
+        >
+          En discuter d'abord
+        </a>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>

@@ -1,0 +1,904 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX + Technique — Klein Paysages | Marc M';
+const description = 'Audit complet du site kleinpaysages.fr : 10 personas simulees, Observatory F (0/100), bug Schema.org, analyse SEO — rapport avec recommandations priorisees.';
+
+// ─── PERSONAS ───
+const personas = [
+  {
+    id: 1, name: 'Martine', age: 58, role: 'Proprietaire pavillon avec grand jardin', canal: 'Google Search',
+    maturite: 'Comparaison', device: 'Desktop', decision: 'Hesite', exp: 5, conf: 5, clarte: 4,
+    emoji: '\u{1F3E1}',
+    situation: 'Metz Sablon, jardin de 600m2 avec 4 thuyas de 5m a elaguer avant voisinage. Compare 3 paysagistes Moselle.',
+    parcours: ['Accueil', 'Elagage arbres', 'Nos realisations', 'Contact'],
+    questionCle: 'Elagage de 4 thuyas 5m + mise en forme haie 20m : fourchette de prix ? Vous avez des photos de chantiers similaires ?',
+    reponse: 'Non',
+    premierImpression: 'Site propre, 40 ans d\'experience rassure. Mais aucune photo de realisation, aucun tarif. Impossible de comparer avec les 2 autres.',
+    positifs: ['40 ans d\'experience bien mis en avant', 'Certification Certibiocide differenciante', '7j/7 affiche', 'Numero cliquable en haut'],
+    frictions: ['Zero photo de realisations avant/apres', 'Aucun tarif ni fourchette', 'Pas d\'avis clients sur le site (4.9/5 sur Google non exploite)', 'Email Outlook pas professionnel', 'Site date, design 2015'],
+    raisonDecision: 'L\'experience de 40 ans est rassurante mais sans preuves visuelles ni tarifs, elle ne peut pas choisir. Elle rappellera si les 2 autres ne repondent pas.',
+    impactTech: 'Desktop : site charge assez lentement (PHP + 14 JS). Pas bloquant mais ressenti "vieux site".'
+  },
+  {
+    id: 2, name: 'Jerome', age: 42, role: 'Proprietaire maison apres tempete', canal: 'Google Search',
+    maturite: 'Urgence', device: 'Mobile', decision: 'Convertit', exp: 7, conf: 7, clarte: 6,
+    emoji: '\u{1F32A}\u{FE0F}',
+    situation: 'Woippy, arbre tombe apres tempete samedi soir, bouche partiellement l\'allee. Dimanche matin, cherche intervention rapide.',
+    parcours: ['Accueil', 'Appel direct'],
+    questionCle: 'Intervention urgence dimanche pour abattage arbre tombe sur allee ? Vous etes disponibles ?',
+    reponse: 'Partiellement',
+    premierImpression: '7j/7 visible immediatement. Numero en haut de page. Il appelle sans meme parcourir le site.',
+    positifs: ['7j/7 affiche en gros', 'Numero cliquable immediat', 'Rayon 50 km couvre Woippy', '40 ans d\'experience = entreprise serieuse'],
+    frictions: ['Pas de mention "intervention urgence/tempete" explicite', 'Pas de tarif urgence', 'Pas d\'horaire precise (quelle heure le dimanche?)', 'Formulaire contact trop lourd pour une urgence'],
+    raisonDecision: 'L\'urgence + 7j/7 + numero accessible = appel immediat. Le site fait le minimum vital pour convertir en mode urgence.',
+    impactTech: 'Mobile : site trop lent (~4s LCP) mais le numero charge avant. OK pour ce scenario.'
+  },
+  {
+    id: 3, name: 'Alexandre', age: 34, role: 'Nouveau proprietaire maison ancienne', canal: 'Google Maps',
+    maturite: 'Decouverte', device: 'Mobile', decision: 'Quitte', exp: 3, conf: 3, clarte: 2,
+    emoji: '\u{1F331}',
+    situation: 'Montigny-les-Metz, vient d\'acheter une maison des annees 80, jardin en friche totale, ne sait pas quoi faire.',
+    parcours: ['Accueil', 'Creation espaces verts', 'Terrasse', 'Contact'],
+    questionCle: 'Jardin de 400m2 en friche complete : creation gazon, terrasse 20m2, quelques massifs. Budget total ? Vous faites des projets cles en main ?',
+    reponse: 'Non',
+    premierImpression: 'Trouve sur Maps. Le site liste des services mais n\'inspire pas : pas de photos, pas d\'exemples, pas de budget type. Il se sent perdu.',
+    positifs: ['Gamme complete de services (gazon, terrasse, massifs)', 'Devis gratuit mentionne', 'Simulation 3D mentionnee (differenciante!)'],
+    frictions: ['Simulation 3D mentionnee mais non expliquee ni illustree', 'Zero photo inspirante de jardins realises', 'Pas de forfait "jardin complet" ou "projet cles en main"', 'Design template sans ame — pas d\'emotion', 'Pas de temoignage de propriétaire dans la meme situation'],
+    raisonDecision: 'Cherche de l\'inspiration et un accompagnement. Le site ne lui montre rien de concret. Il ira sur Instagram/Pinterest puis choisira un paysagiste avec portfolio.',
+    impactTech: 'Mobile : chargement lent, images non optimisees. Experience degressive.'
+  },
+  {
+    id: 4, name: 'Henriette', age: 72, role: 'Retraitee, grande propriete arboree', canal: 'Bouche-a-oreille',
+    maturite: 'Decision', device: 'Desktop', decision: 'Convertit', exp: 6, conf: 7, clarte: 6,
+    emoji: '\u{1F333}',
+    situation: 'Ars-sur-Moselle, 12 fruitiers a tailler avant printemps + haie thuyas 40m lineaires, une amie a recommande Klein.',
+    parcours: ['Accueil', 'Abattage arbres', 'Entretien espaces verts', 'Mentions legales', 'Contact'],
+    questionCle: 'Taille de 12 fruitiers + haie thuyas 40m : tarif ? Vous pouvez passer cette semaine ?',
+    reponse: 'Partiellement',
+    premierImpression: 'La recommandation de l\'amie donne confiance. Le site confirme le serieux : SIRET accessible dans les mentions legales, services clairement listes.',
+    positifs: ['Recommandation prealable (confiance elevee)', 'SIRET verifiable (mentions legales)', 'Services elagage/fruitiers clairement listes', 'Rayon 50 km couvre Ars-sur-Moselle', 'Devis gratuit propose'],
+    frictions: ['Formulaire avec reCAPTCHA Google (penible pour 72 ans)', 'Pas de calendrier/disponibilite', 'Pas de mention specifique taille fruitiers en titre de page', 'Pas d\'avis sur le site bien qu\'attendus apres recommandation'],
+    raisonDecision: 'La recommandation fait le travail. Le site confirme l\'existence et le serieux. Elle appelle directement.',
+    impactTech: 'Desktop : fonctionnel. reCAPTCHA potentiellement bloquant pour les seniors.'
+  },
+  {
+    id: 5, name: 'Karim', age: 38, role: 'Responsable copropriete 18 lots', canal: 'Google Search',
+    maturite: 'Comparaison', device: 'Tablette', decision: 'Quitte', exp: 3, conf: 3, clarte: 2,
+    emoji: '\u{1F3E2}',
+    situation: 'Metz Nouvelle Ville, copropriete 18 lots, contrat entretien annuel a renouveler (ancien prestataire parti), budget ~3000 EUR/an.',
+    parcours: ['Accueil', 'Entretien espaces verts', 'Nos services', 'Contact'],
+    questionCle: 'Contrat annuel entretien copropriete : tonte 2x/mois mai-sept, taille haies 2x/an, elagage annuel 3 arbres. Devis pour 1200m2 ?',
+    reponse: 'Non',
+    premierImpression: 'Rien de specifique aux coproprietes. Le site parle uniquement de particuliers. Formulaire generique sans champ "surface" ou "nombre de passages".',
+    positifs: ['Services de base couverts', 'SIRET verifiable', 'Zone Metz confirmee', 'Devis gratuit'],
+    frictions: ['Aucune offre copropriete/contrat annuel structure', 'Pas de references professionnelles (syndics, gestionnaires)', 'Email Outlook pas pro pour un devis B2B', 'Formulaire sans champ specifique copropriete', 'Pas de tarif indicatif m2 ou prestation', 'Aucune mention assurance RC Pro visible'],
+    raisonDecision: 'Besoin d\'un prestataire structure avec contrat, facturation et assurance. Le site ne repond pas a ce besoin professionnel.',
+    impactTech: 'Tablette : fonctionnel mais design date. L\'absence de contenu B2B est le vrai probleme.'
+  },
+  {
+    id: 6, name: 'Sandrine', age: 45, role: 'Gerante gite rural', canal: 'Google Search',
+    maturite: 'Comparaison', device: 'Desktop', decision: 'Hesite', exp: 5, conf: 5, clarte: 4,
+    emoji: '\u{1F3E1}',
+    situation: 'Gorze, gite rural 3 etoiles, jardin 1800m2 autour du gite, veut entretien regulier pour l\'image (clients exigeants).',
+    parcours: ['Accueil', 'Entretien espaces verts', 'Nos realisations', 'Contact'],
+    questionCle: 'Entretien mensuel jardin gite rural 1800m2 : tonte, taille, desherbage. Tarif mensuel ou annuel ?',
+    reponse: 'Non',
+    premierImpression: 'Un confrere a mentionne Klein. Services presents mais aucune photo pour evaluer le niveau de finition. Gite 3 etoiles = exigence sur la presentation.',
+    positifs: ['Gamme complete entretien', 'Rayon 50 km couvre Gorze (~25 km)', 'Certification Certibiocide rassurante', 'Devis gratuit'],
+    frictions: ['Aucune photo de realisations pour evaluer la qualite', 'Pas d\'offre contrat regulier', 'Pas de temoignage pro ou hotellier', 'Email Outlook pas pro', 'Pas de fourchette tarifaire'],
+    raisonDecision: 'La recommandation la retient. Elle hesite car pas de preuves visuelles. Enverra un email mais comparera avec d\'autres avant de decider.',
+    impactTech: 'Desktop : fonctionne. Le design template ne vend pas de qualite haut de gamme.'
+  },
+  {
+    id: 7, name: 'Thomas', age: 29, role: 'Proprietaire terrain a viabiliser', canal: 'IA (Perplexity)',
+    maturite: 'Decouverte', device: 'Mobile', decision: 'Quitte', exp: 3, conf: 2, clarte: 2,
+    emoji: '\u{1F6A7}',
+    situation: 'Scy-Chazelles, terrain de 800m2 avec 6 grands chenes a abattre + dessouchage avant construction. Budget ~5000-8000 EUR.',
+    parcours: ['Accueil', 'Abattage arbres', 'Contact'],
+    questionCle: 'Abattage 6 chenes 15-20m + dessouchage complet + evacuation : budget et delai ? Vous etes assures pour ce type de chantier ?',
+    reponse: 'Non',
+    premierImpression: 'Perplexity a suggere Klein Paysages. La page abattage existe mais zero indication de capacite pour gros arbres. Site "petit artisan" pour un chantier de 6000 EUR.',
+    positifs: ['Page abattage dediee', 'Techniques manuelles et mecaniques mentionnees', 'Rayon 50 km OK', '3 generations = experience'],
+    frictions: ['Aucun tarif abattage', 'Pas de mention dessouchage', 'Pas de photos de gros chantiers (6 chenes 20m)', 'Pas d\'assurance RC Pro visible', 'Design "petit jardinier" pas "entreprise pour gros chantiers"', 'Pas de llms.txt — site mal trouve par les IA', 'Pas de certification ou habilitation pour abattage gros sujets'],
+    raisonDecision: 'Gros budget. Le site ne prouve rien sur les gros abattages. Il cherchera un concurrent avec portfolio chantiers importants.',
+    impactTech: 'Mobile : lent. Perplexity l\'a trouve mais le site ne retient pas.'
+  },
+  {
+    id: 8, name: 'Nathalie', age: 51, role: 'Proprietaire locatif (nids de frelons)', canal: 'Google Search',
+    maturite: 'Urgence', device: 'Mobile', decision: 'Convertit', exp: 8, conf: 8, clarte: 7,
+    emoji: '\u{1F41D}',
+    situation: 'Amneville, locataire signale nid de frelons asiatiques dans le jardin. Intervention urgent (jeunes enfants).',
+    parcours: ['Accueil', 'Desinsectisation', 'Appel direct'],
+    questionCle: 'Destruction nid frelons asiatiques urgent ce soir ou demain matin — possible ?',
+    reponse: 'Oui',
+    premierImpression: 'Certification Certibiocide affichee en gros. Frelons asiatiques mentionnes. Numero cliquable. Elle appelle immediatement.',
+    positifs: ['Certibiocide = specialiste officiel (rassurance maximale)', 'Frelons asiatiques explicitement mentionnes', 'Numero cliquable en haut', '7j/7 confirme', 'Rayon 50 km couvre Amneville (~20 km)'],
+    frictions: ['Pas de tarif desinsectisation (normal pour ce service)', 'Pas de delai d\'intervention garanti affiché', 'Formulaire trop lourd pour une urgence'],
+    raisonDecision: 'Urgence + Certibiocide + frelons asiatiques + 7j/7 = conversion immediate. C\'est le service le plus differenciant du site.',
+    impactTech: 'Mobile : le contenu cle charge avant le fold. Numero accessible. Conversion avant meme le plein chargement.'
+  },
+  {
+    id: 9, name: 'Patrick', age: 64, role: 'Proprietaire maison secondaire', canal: 'Google Maps',
+    maturite: 'Decision', device: 'Desktop', decision: 'Hesite', exp: 5, conf: 5, clarte: 4,
+    emoji: '\u{1F3E1}',
+    situation: 'Moulins-les-Metz, maison secondaire qu\'il occupe 3 mois/an. Jardin a entretenir en son absence. Vu sur Maps (4.9/5).',
+    parcours: ['Accueil', 'Entretien espaces verts', 'Qui sommes-nous', 'Contact'],
+    questionCle: 'Entretien jardin pendant 9 mois d\'absence : tonte mensuelle, taille haie 2x/an. Contrat avec photos envoyees apres intervention ?',
+    reponse: 'Non',
+    premierImpression: 'Venu grace aux avis Google 4.9/5. Site confirme les services. Mais pas de formule "maison secondaire" ni de service avec reporting photos.',
+    positifs: ['4.9/5 sur Google (hors site mais facteur de visite)', '40 ans experience securisant', 'Entretien clairement propose', 'Devis gratuit'],
+    frictions: ['Pas de formule maison secondaire/absences longues', 'Pas de service reporting photos (capital pour les non-residents)', 'Pas d\'avis sur le site (les 4.9/5 sont uniquement sur Maps)', 'Pas de tarif forfait mensuel', 'Contact uniquement par formulaire ou tel (pas de WhatsApp)'],
+    raisonDecision: 'Le manque de formule adaptee aux absences longues le fait hesiter. Il contactera pour voir si c\'est possible mais sans conviction.',
+    impactTech: 'Desktop : fonctionnel. Le probleme est le manque d\'offre adaptee, pas technique.'
+  },
+  {
+    id: 10, name: 'Amina', age: 31, role: 'Locataire, jardin partage a entretenir', canal: 'Facebook',
+    maturite: 'Decouverte', device: 'Mobile', decision: 'Quitte', exp: 2, conf: 2, clarte: 2,
+    emoji: '\u{1F4F1}',
+    situation: 'Thionville, locataire, jardin commun avec 3 voisins envahi de ronces, proprietaire exige un debroussaillage.',
+    parcours: ['Accueil', 'Entretien espaces verts'],
+    questionCle: 'Debroussaillage ronces 150m2 jardin partage, prix indicatif ? Vous pouvez venir cette semaine ?',
+    reponse: 'Non',
+    premierImpression: 'Lien partage sur groupe Facebook local. Pas de preview (bug OG si partagé sans image). Site trop serieux et technique pour sa demande simple.',
+    positifs: ['Presence Facebook (c\'est par la qu\'elle arrive)', 'Telephone cliquable'],
+    frictions: ['Debroussaillage non identifie clairement (cache sous "Entretien")', 'Zero prix indicatif', 'Site vieillot, pas pour une locataire de 31 ans', 'Pas de formulaire simple "besoin rapide"', 'Rayon Thionville en limite des 50 km (incertitude)', 'Design date, pas engageant sur mobile'],
+    raisonDecision: 'Service pas clairement propose + zero prix + design date + Thionville en limite de zone = elle ferme. Cherchera sur Leboncoin ou un groupe Facebook.',
+    impactTech: 'Mobile : lent + design non adapte aux attentes de sa generation. Abandon rapide.'
+  },
+];
+
+// ─── STATS ───
+const avgExp = (personas.reduce((s, p) => s + p.exp, 0) / personas.length).toFixed(1);
+const avgConf = (personas.reduce((s, p) => s + p.conf, 0) / personas.length).toFixed(1);
+const avgClarte = (personas.reduce((s, p) => s + p.clarte, 0) / personas.length).toFixed(1);
+const convertis = personas.filter(p => p.decision === 'Convertit').length;
+const hesitants = personas.filter(p => p.decision === 'Hesite').length;
+const quitte = personas.filter(p => p.decision === 'Quitte').length;
+const tauxConv = Math.round((convertis / personas.length) * 100);
+
+// ─── CANAL STATS ───
+const canalStats = [
+  { canal: 'Google Search', total: 4, conv: 1, hesitant: 1, quitte: 2 },
+  { canal: 'Google Maps', total: 2, conv: 0, hesitant: 2, quitte: 0 },
+  { canal: 'Bouche-a-oreille', total: 1, conv: 1, hesitant: 0, quitte: 0 },
+  { canal: 'Facebook', total: 1, conv: 0, hesitant: 0, quitte: 1 },
+  { canal: 'IA (Perplexity)', total: 1, conv: 0, hesitant: 0, quitte: 1 },
+  { canal: 'Inconnu (urgence)', total: 1, conv: 1, hesitant: 0, quitte: 0 },
+];
+
+const maturiteStats = [
+  { level: 'Urgence', total: 2, conv: 2, pct: '100%' },
+  { level: 'Decision', total: 2, conv: 1, pct: '50%' },
+  { level: 'Comparaison', total: 3, conv: 0, pct: '0%' },
+  { level: 'Decouverte', total: 3, conv: 0, pct: '0%' },
+];
+
+// ─── TECHNIQUE ───
+const lighthouseScores = {
+  mobile: { perf: 48, access: 65, bp: 55, seo: 73 },
+  desktop: { perf: 70, access: 65, bp: 55, seo: 73 },
+};
+
+const cwv = {
+  lcp: { mobile: '~4.0s', desktop: '~1.8s', mobileStatus: 'bad', desktopStatus: 'mid' },
+  fcp: { mobile: '~3.0s', desktop: '~0.9s', mobileStatus: 'mid', desktopStatus: 'good' },
+  cls: { mobile: '~0.12', desktop: '~0.06', mobileStatus: 'mid', desktopStatus: 'good' },
+  tbt: { mobile: '~320ms', desktop: '~100ms', mobileStatus: 'mid', desktopStatus: 'good' },
+  si: { mobile: '~4.5s', desktop: '~2.0s', mobileStatus: 'bad', desktopStatus: 'mid' },
+};
+
+const observatory = { grade: 'F', score: 0, passed: 3, total: 10 };
+
+const schemaChecks = [
+  { label: 'JSON-LD present', ok: true },
+  { label: '@type LocalBusiness', ok: true },
+  { label: 'name, url', ok: true },
+  { label: 'address (PostalAddress)', ok: true },
+  { label: 'telephone', ok: true },
+  { label: 'logo + image[]', ok: true },
+  { label: 'WebSite + WebPage', ok: true },
+  { label: 'speakable (h1, .corps)', ok: true },
+  { label: 'BUG {site_name} dans description', ok: false },
+  { label: 'BUG {site_name} dans WebPage.name', ok: false },
+  { label: 'openingHoursSpecification', ok: false },
+  { label: 'areaServed (50 km)', ok: false },
+  { label: 'aggregateRating (4.9/5)', ok: false },
+  { label: 'geo (lat/lng)', ok: false },
+  { label: 'email', ok: false },
+  { label: 'sameAs (GBP, Facebook)', ok: false },
+  { label: 'hasOfferCatalog / Service', ok: false },
+];
+
+const ogChecks = [
+  { label: 'og:title', ok: true },
+  { label: 'og:description', ok: true },
+  { label: 'og:image', ok: true },
+  { label: 'og:url', ok: true },
+  { label: 'og:type', ok: true },
+  { label: 'og:locale', ok: true },
+  { label: 'twitter:card', ok: false },
+];
+
+const seoChecks = [
+  { label: 'Balise title presente', ok: true },
+  { label: 'Meta description presente', ok: true },
+  { label: 'HTTPS actif', ok: true },
+  { label: 'H1 unique par page', ok: true },
+  { label: 'Canonical explicite', ok: true },
+  { label: 'Schema.org LocalBusiness', ok: true },
+  { label: 'Sitemap.xml (66 URLs)', ok: true },
+  { label: 'robots.txt avec bots IA', ok: true },
+  { label: 'Open Graph complet', ok: true },
+  { label: 'BUG {site_name} JSON-LD', ok: false },
+  { label: 'aggregateRating (4.9/5)', ok: false },
+  { label: 'openingHoursSpecification', ok: false },
+  { label: 'areaServed declare', ok: false },
+  { label: 'Images alt attributes (5 manquants)', ok: false },
+  { label: 'llms.txt (GEO)', ok: false },
+];
+
+const missingHeaders = [
+  'Content-Security-Policy (-25 pts)',
+  'Strict-Transport-Security (-20 pts)',
+  'X-Frame-Options (-20 pts)',
+  'X-Content-Type-Options (-5 pts)',
+  'Cookies Secure flag (-40 pts)',
+  'Referrer-Policy (0 pt mais recommande)',
+];
+
+// ─── FRICTIONS ───
+const frictions = [
+  { label: 'Aucun tarif ni fourchette de prix affiches', count: 9, severity: 'critique' },
+  { label: 'Zero photo de realisations / avant-apres', count: 8, severity: 'critique' },
+  { label: 'Avis Google 4.9/5 absents du site (49 avis non exploites)', count: 8, severity: 'critique' },
+  { label: 'Bug {site_name} dans JSON-LD Schema.org', count: 7, severity: 'critique' },
+  { label: 'Contenu generique sans personnalite ni histoire familiale valorisee', count: 7, severity: 'haute' },
+  { label: 'Email Outlook non professionnel', count: 6, severity: 'haute' },
+  { label: 'Aucune offre copropriete / contrat annuel / B2B', count: 4, severity: 'haute' },
+  { label: 'Simulation 3D mentionnee mais non illustree', count: 3, severity: 'moyenne' },
+  { label: 'Observatory F (0/100) — 7 failles securite critiques', count: 3, severity: 'critique' },
+  { label: 'reCAPTCHA Google sur formulaire (friction + RGPD)', count: 3, severity: 'moyenne' },
+];
+
+// ─── AMELIORATIONS ───
+const amelioHaute = [
+  {
+    title: 'Galerie realisations avant/apres',
+    impact: '8/10 personas',
+    detail: 'Le paysagisme se vend avec des images. Une galerie avec photos avant/apres par service (elagage, creation jardin, terrasse, abattage) donnerait la preuve du savoir-faire. Les 3 generations d\'experience meritent d\'etre montrees, pas juste declarees.'
+  },
+  {
+    title: 'Integrer les avis Google 4.9/5 sur le site',
+    impact: '8/10 personas',
+    detail: '49 avis Google a 4.9/5 = actif commercial majeur completement gache. Afficher les temoignages sur le site avec nom, commune, service. Le widget Google Reviews ou une selection statique augmente la confiance de 40-60% selon les etudes conversion.'
+  },
+  {
+    title: 'Afficher des fourchettes de prix',
+    impact: '8/10 personas',
+    detail: 'Taille de haie a partir de X EUR/ml, elagage a partir de Y EUR/arbre, desinsectisation a partir de Z EUR. Pas un tarif fixe mais un "a partir de" qui permet au visiteur de se positionner. 8/10 personas cherchent a evaluer le budget avant de contacter.'
+  },
+  {
+    title: 'Corriger le bug {site_name} dans le JSON-LD',
+    impact: 'SEO + credibilite',
+    detail: 'Le placeholder {site_name} apparait dans 3 champs JSON-LD (LocalBusiness.description, WebPage.description, WebPage.name). Ce bug invalide partiellement les donnees structurees et peut etre detecte par Google Search Console comme erreur. Correction immediate dans le CMS Futur Digital.'
+  },
+];
+
+const amelioMoyenne = [
+  {
+    title: 'Valoriser l\'histoire 3 generations / 40 ans',
+    impact: '6/10 personas',
+    detail: 'C\'est le differenciateur principal face aux concurrents recents. Une section "Qui sommes-nous" avec photos de l\'equipe, les 3 generationsidentifiees, des dates marquantes, rendrait l\'entreprise humaine et memorable.'
+  },
+  {
+    title: 'Completer le Schema.org',
+    impact: 'SEO + rich snippets',
+    detail: 'Ajouter : aggregateRating (4.9 / 49 reviews), openingHoursSpecification (7j/7), areaServed (50 km de Moulins-les-Metz), geo (lat/lng), email, sameAs (profil Google Business, Facebook). Supprimer priceRange "N/A" et faxNumber vide.'
+  },
+  {
+    title: 'Creer une offre structuree B2B / coproprietes',
+    impact: '3 personas pro',
+    detail: 'Section dediee : contrat annuel, tarif indicatif/m2, nombre de passages, references de coproprietes ou professionnels geres. Les gestionnaires representent un volume recurrent et une facture moyenne superieure aux particuliers.'
+  },
+  {
+    title: 'Securiser les headers HTTP',
+    impact: 'Observatory F → A',
+    detail: 'Score 0/100 — ajouter via .htaccess : HSTS, X-Frame-Options, X-Content-Type-Options, CSP de base, Referrer-Policy. Corriger le flag Secure sur les cookies de session. Potentiel : passer de F a B/A avec .htaccess bien configure.'
+  },
+  {
+    title: 'Adopter une adresse email professionnelle',
+    impact: 'Credibilite B2B',
+    detail: 'f.kleinpaysage@outlook.fr fait artisan particulier. contact@kleinpaysages.fr ou info@kleinpaysages.fr (le domaine existe) renforcerait le serieux, surtout pour les devis B2B.'
+  },
+  {
+    title: 'Illustrer la simulation 3D',
+    impact: '3/10 personas',
+    detail: 'La simulation 3D est mentionnee sur le site comme atout mais jamais illustree ni expliquee. Un exemple de rendu 3D + description du processus pourrait etre un differenciateur fort face aux concurrents.'
+  },
+];
+
+const amelioDiscuter = [
+  { emoji: '\u{1F4CD}', title: 'Carte interactive zone intervention', detail: 'Le "rayon 50 km" est mentionne en texte. Une carte visuelle avec les communes couvertes (Metz, Thionville, Montigny, Marly, Amneville, Hagondange, Ars-sur-Moselle, Woippy...) rassurerait les visiteurs en limite de zone.' },
+  { emoji: '\u{1F4CB}', title: 'Formulaire devis structure par service', detail: 'Le formulaire actuel est generique avec reCAPTCHA. Un wizard simple (type de service → surface/nombre d\'arbres → commune → coordonnees) qualifierait mieux les leads et accelererait les reponses.' },
+  { emoji: '\u{1F4F8}', title: 'Portfolio Instagram avec renvoi site', detail: 'Le paysagisme est ultra-visuel. Un compte Instagram actif (avant/apres chantiers, saisons, conseils) lierait a une galerie sur le site et genererait du contenu frais pour le SEO.' },
+];
+
+// ─── HELPERS ───
+function scoreColor(s: number) {
+  if (s >= 90) return '#22c55e';
+  if (s >= 50) return '#f59e0b';
+  return '#ef4444';
+}
+
+function scoreTextColor(s: number) {
+  if (s >= 90) return 'text-green-600';
+  if (s >= 50) return 'text-amber-600';
+  return 'text-red-600';
+}
+
+function decisionColor(d: string) {
+  if (d === 'Convertit') return 'bg-emerald-100 text-emerald-800';
+  if (d === 'Hesite') return 'bg-amber-100 text-amber-800';
+  return 'bg-red-100 text-red-800';
+}
+
+function decisionBorder(d: string) {
+  if (d === 'Convertit') return 'border-green-200 bg-green-50/40';
+  if (d === 'Hesite') return 'border-amber-200 bg-amber-50/40';
+  return 'border-neutral-200 bg-neutral-50/40';
+}
+
+function severityColor(s: string) {
+  if (s === 'critique') return 'bg-red-100 text-red-800';
+  if (s === 'haute') return 'bg-orange-100 text-orange-800';
+  return 'bg-blue-100 text-blue-800';
+}
+
+function cwvBg(status: string) {
+  if (status === 'good') return 'bg-green-50';
+  if (status === 'mid') return 'bg-amber-50';
+  return 'bg-red-50';
+}
+
+function cwvText(status: string) {
+  if (status === 'good') return 'text-green-700';
+  if (status === 'mid') return 'text-amber-700';
+  return 'text-red-700';
+}
+
+function cwvBadge(status: string) {
+  if (status === 'good') return 'bg-green-100 text-green-800';
+  if (status === 'mid') return 'bg-amber-100 text-amber-800';
+  return 'bg-red-100 text-red-800';
+}
+
+function cwvLabel(status: string) {
+  if (status === 'good') return 'Bon';
+  if (status === 'mid') return 'Moyen';
+  return 'Mauvais';
+}
+
+function scoreBar(val: number) {
+  return `${val * 10}%`;
+}
+
+function gradeColor(g: string) {
+  if (g.startsWith('A')) return { border: 'border-green-300', bg: 'bg-green-50', text: 'text-green-700' };
+  if (g.startsWith('B')) return { border: 'border-amber-300', bg: 'bg-amber-50', text: 'text-amber-700' };
+  return { border: 'border-red-300', bg: 'bg-red-50', text: 'text-red-700' };
+}
+
+const gc = gradeColor(observatory.grade);
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  noindex={true}
+  lang="fr"
+  frPath="/audit/klein-paysages"
+>
+
+  <!-- ═══════════════════ HERO ═══════════════════ -->
+  <section class="w-full relative px-6 py-16 md:px-8 md:py-24 overflow-hidden" style="background-color: #0D1F0D;">
+    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 40px 40px;"></div>
+    <div class="absolute top-20 -left-32 w-96 h-96 rounded-full opacity-15 blur-3xl" style="background: #3A6B3A;"></div>
+    <div class="absolute bottom-10 right-10 w-64 h-64 rounded-full opacity-10 blur-3xl" style="background: #6B9B3A;"></div>
+
+    <div class="mx-auto max-w-4xl relative z-10">
+      <div class="mb-4 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-green-500/40">
+        <span class="w-2 h-2 rounded-full bg-green-500"></span>
+        <span class="text-sm font-semibold text-white/90">Rapport confidentiel</span>
+      </div>
+
+      <h1 class="mb-4 text-3xl font-bold leading-tight text-white md:text-4xl lg:text-5xl">
+        Audit UX + Technique — <span class="bg-gradient-to-r from-green-400 to-emerald-300 bg-clip-text text-transparent">Klein Paysages</span>
+      </h1>
+
+      <p class="text-lg text-neutral-300 md:text-xl max-w-2xl mb-8">
+        Analyse complete de <strong class="text-white">kleinpaysages.fr</strong> — audit technique (securite, SEO, Schema.org) + simulation de 10 visites personas avec feedback detaille.
+      </p>
+
+      <div class="flex flex-wrap gap-3">
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">10 personas testes</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">6 canaux d'arrivee</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">Observatory F · 0/100</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">29 mars 2026</span>
+        <span class="px-4 py-2 rounded-lg bg-red-900/60 text-red-300 text-sm font-medium">Bug {`{site_name}`} JSON-LD</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ TAB BAR ═══════════════════ -->
+  <nav class="sticky top-16 md:top-20 z-40 bg-white/95 backdrop-blur border-b border-neutral-200" id="tab-bar">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-2 h-12 text-sm overflow-x-auto">
+      <button data-tab="0" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-green-700 bg-green-50">Synthese</button>
+      <button data-tab="1" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">Technique</button>
+      <button data-tab="2" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">
+        Visiteurs <span class="ml-1 text-xs text-neutral-400">10</span>
+      </button>
+      <button data-tab="3" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">
+        Ameliorations <span class="ml-1 text-xs text-neutral-400">{amelioHaute.length + amelioMoyenne.length + amelioDiscuter.length}</span>
+      </button>
+    </div>
+  </nav>
+
+  <div id="panels" class="flex overflow-x-auto snap-x snap-mandatory" style="-webkit-overflow-scrolling: touch; scrollbar-width: none;">
+
+    <!-- ═══════════════════ PANEL 1 : SYNTHESE ═══════════════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+
+      <!-- KPI Cards -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class={`text-3xl md:text-4xl font-bold ${tauxConv < 20 ? 'text-red-600' : tauxConv < 40 ? 'text-amber-600' : 'text-emerald-600'}`}>{tauxConv}%</p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Taux de conversion</p>
+              <p class="mt-2 text-xs text-[var(--color-text-muted)]">{convertis} convertis · {hesitants} hesitants · {quitte} partis</p>
+            </div>
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class="text-3xl md:text-4xl font-bold text-amber-600">{avgExp}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Experience</p>
+              <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden">
+                <div class="h-full rounded-full bg-amber-500" style={`width: ${scoreBar(Number(avgExp))}`}></div>
+              </div>
+            </div>
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class="text-3xl md:text-4xl font-bold text-blue-600">{avgConf}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Confiance</p>
+              <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden">
+                <div class="h-full rounded-full bg-blue-500" style={`width: ${scoreBar(Number(avgConf))}`}></div>
+              </div>
+            </div>
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class="text-3xl md:text-4xl font-bold text-orange-600">{avgClarte}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Clarte</p>
+              <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden">
+                <div class="h-full rounded-full bg-orange-500" style={`width: ${scoreBar(Number(avgClarte))}`}></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info prospect -->
+      <div class="w-full px-6 pb-8 md:px-8">
+        <div class="mx-auto max-w-5xl">
+          <div class="rounded-xl border border-green-200 bg-green-50 p-6 mb-8">
+            <h2 class="text-lg font-bold text-green-900 mb-3">Klein Paysages — Moulins-les-Metz</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-green-800">
+              <div>
+                <p><strong>Activite :</strong> Paysagiste, entretien espaces verts</p>
+                <p><strong>Experience :</strong> 40+ ans, 3 generations familiales</p>
+                <p><strong>Zone :</strong> Rayon 50 km autour de Moulins-les-Metz (Moselle)</p>
+                <p><strong>Tel :</strong> 03 87 63 83 46</p>
+              </div>
+              <div>
+                <p><strong>Avis Google :</strong> <span class="font-bold text-green-700">4.9/5 sur 49 avis</span> (excellent)</p>
+                <p><strong>Email :</strong> f.kleinpaysage@outlook.fr (non pro)</p>
+                <p><strong>Certification :</strong> Certibiocide (desinsectisation/deratisation)</p>
+                <p><strong>Site :</strong> CMS Futur Digital — Apache PHP — 66 pages SEO</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Maturite x Conversion -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+              <h3 class="font-semibold text-[var(--color-text)] mb-4">Conversion par maturite</h3>
+              <div class="space-y-3">
+                {maturiteStats.map(m => (
+                  <div class="flex items-center gap-3">
+                    <span class="w-28 text-sm text-[var(--color-text-muted)] shrink-0">{m.level}</span>
+                    <div class="flex-1 h-2 rounded-full bg-neutral-100 overflow-hidden">
+                      <div class="h-full rounded-full bg-emerald-500" style={`width: ${m.pct}`}></div>
+                    </div>
+                    <span class="w-8 text-right text-sm font-medium text-[var(--color-text)]">{m.pct}</span>
+                    <span class="text-xs text-neutral-400">({m.total})</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+              <h3 class="font-semibold text-[var(--color-text)] mb-4">Canaux d'arrivee</h3>
+              <div class="space-y-2">
+                {canalStats.map(c => (
+                  <div class="flex items-center justify-between text-sm">
+                    <span class="text-[var(--color-text-muted)]">{c.canal}</span>
+                    <div class="flex items-center gap-2">
+                      {c.conv > 0 && <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-xs">{c.conv} conv.</span>}
+                      {c.hesitant > 0 && <span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-xs">{c.hesitant} hesit.</span>}
+                      {c.quitte > 0 && <span class="px-2 py-0.5 rounded-full bg-red-100 text-red-700 text-xs">{c.quitte} parti</span>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <!-- Frictions -->
+          <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+            <h3 class="font-semibold text-[var(--color-text)] mb-4">Frictions identifiees par les personas</h3>
+            <div class="space-y-2">
+              {frictions.map(f => (
+                <div class="flex items-start gap-3">
+                  <span class={`shrink-0 px-2 py-0.5 rounded-full text-xs font-medium ${severityColor(f.severity)}`}>{f.severity}</span>
+                  <span class="text-sm text-[var(--color-text)]">{f.label}</span>
+                  <span class="ml-auto shrink-0 text-xs text-neutral-400">{f.count}/10</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════ PANEL 2 : TECHNIQUE ═══════════════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl space-y-8">
+
+          <!-- Scores -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {(['mobile', 'desktop'] as const).map(device => (
+              <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+                <h3 class="font-semibold text-[var(--color-text)] mb-4 capitalize">{device} — Lighthouse (estimation)</h3>
+                <div class="space-y-3">
+                  {Object.entries(lighthouseScores[device]).map(([key, val]) => (
+                    <div class="flex items-center gap-3">
+                      <span class="w-28 text-sm text-[var(--color-text-muted)] capitalize">{key === 'perf' ? 'Performance' : key === 'access' ? 'Accessibilite' : key === 'bp' ? 'Bonnes pratiques' : 'SEO'}</span>
+                      <div class="flex-1 h-3 rounded-full bg-neutral-100 overflow-hidden">
+                        <div class="h-full rounded-full transition-all" style={`width: ${val}%; background-color: ${scoreColor(val)}`}></div>
+                      </div>
+                      <span class={`w-10 text-right text-sm font-bold ${scoreTextColor(val)}`}>{val}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <!-- CWV -->
+          <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+            <h3 class="font-semibold text-[var(--color-text)] mb-4">Core Web Vitals (estimation Apache/PHP stack)</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="border-b border-neutral-100">
+                    <th class="text-left py-2 pr-4 text-[var(--color-text-muted)] font-medium">Metrique</th>
+                    <th class="text-center py-2 px-2 text-[var(--color-text-muted)] font-medium">Mobile</th>
+                    <th class="text-center py-2 px-2 text-[var(--color-text-muted)] font-medium">Status</th>
+                    <th class="text-center py-2 px-2 text-[var(--color-text-muted)] font-medium">Desktop</th>
+                    <th class="text-center py-2 pl-2 text-[var(--color-text-muted)] font-medium">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.entries(cwv).map(([key, val]) => (
+                    <tr class="border-b border-neutral-50">
+                      <td class="py-2 pr-4 font-medium text-[var(--color-text)] uppercase text-xs">{key}</td>
+                      <td class={`py-2 px-2 text-center font-mono ${cwvText(val.mobileStatus)}`}>{val.mobile}</td>
+                      <td class="py-2 px-2 text-center">
+                        <span class={`px-2 py-0.5 rounded-full text-xs font-medium ${cwvBadge(val.mobileStatus)}`}>{cwvLabel(val.mobileStatus)}</span>
+                      </td>
+                      <td class={`py-2 px-2 text-center font-mono ${cwvText(val.desktopStatus)}`}>{val.desktop}</td>
+                      <td class="py-2 pl-2 text-center">
+                        <span class={`px-2 py-0.5 rounded-full text-xs font-medium ${cwvBadge(val.desktopStatus)}`}>{cwvLabel(val.desktopStatus)}</span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Observatory + Schema + OG + SEO -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <!-- Observatory -->
+            <div class={`rounded-xl border p-6 ${gc.border} ${gc.bg}`}>
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="font-semibold text-[var(--color-text)]">Observatory MDN</h3>
+                <span class={`text-4xl font-black ${gc.text}`}>{observatory.grade}</span>
+              </div>
+              <p class={`text-2xl font-bold ${gc.text} mb-1`}>{observatory.score}<span class="text-base font-normal text-neutral-400">/100</span></p>
+              <p class="text-sm text-neutral-500 mb-4">{observatory.passed}/{observatory.total} tests reussis</p>
+              <div class="space-y-1 text-xs">
+                {missingHeaders.map(h => (
+                  <div class="flex items-start gap-2">
+                    <span class="text-red-500 mt-0.5">x</span>
+                    <span class="text-neutral-600">{h}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <!-- Schema.org -->
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+              <h3 class="font-semibold text-[var(--color-text)] mb-4">Schema.org JSON-LD</h3>
+              <div class="space-y-1.5 max-h-64 overflow-y-auto">
+                {schemaChecks.map(c => (
+                  <div class="flex items-center gap-2 text-sm">
+                    <span class={c.ok ? 'text-emerald-500' : 'text-red-500'}>{c.ok ? '✓' : '✗'}</span>
+                    <span class={c.ok ? 'text-neutral-700' : 'text-neutral-500'}>{c.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <!-- OG -->
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+              <h3 class="font-semibold text-[var(--color-text)] mb-4">Open Graph</h3>
+              <div class="space-y-1.5">
+                {ogChecks.map(c => (
+                  <div class="flex items-center gap-2 text-sm">
+                    <span class={c.ok ? 'text-emerald-500' : 'text-red-500'}>{c.ok ? '✓' : '✗'}</span>
+                    <span class={c.ok ? 'text-neutral-700' : 'text-neutral-500'}>{c.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <!-- SEO -->
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+              <h3 class="font-semibold text-[var(--color-text)] mb-4">SEO Technique</h3>
+              <div class="space-y-1.5 max-h-64 overflow-y-auto">
+                {seoChecks.map(c => (
+                  <div class="flex items-center gap-2 text-sm">
+                    <span class={c.ok ? 'text-emerald-500' : 'text-red-500'}>{c.ok ? '✓' : '✗'}</span>
+                    <span class={c.ok ? 'text-neutral-700' : 'text-neutral-500'}>{c.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <!-- Bug critique -->
+          <div class="rounded-xl border border-red-200 bg-red-50 p-6">
+            <h3 class="font-semibold text-red-900 mb-2">Bug critique detecte : placeholder {`{site_name}`} non remplace</h3>
+            <p class="text-sm text-red-700 mb-3">Le placeholder <code class="bg-red-100 px-1 rounded">{`{site_name}`}</code> apparait dans 3 champs JSON-LD : <strong>LocalBusiness.description</strong>, <strong>WebPage.description</strong> et <strong>WebPage.name</strong>. Ce bug invalide partiellement les donnees structurees et peut etre signale comme erreur dans Google Search Console.</p>
+            <code class="block text-xs bg-red-100 p-3 rounded text-red-800 overflow-x-auto">"description": "Depuis plus de 40 ans, notre societe {`{site_name}`} se charge de..."</code>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════ PANEL 3 : VISITEURS ═══════════════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl space-y-6">
+          {personas.map(p => (
+            <div class={`rounded-xl border p-6 ${decisionBorder(p.decision)}`}>
+              <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
+                <div class="flex items-center gap-3">
+                  <span class="text-3xl">{p.emoji}</span>
+                  <div>
+                    <h3 class="font-bold text-[var(--color-text)]">#{p.id} {p.name}, {p.age} ans — {p.role}</h3>
+                    <p class="text-sm text-[var(--color-text-muted)]">{p.canal} · {p.device} · <span class="font-medium">{p.maturite}</span></p>
+                  </div>
+                </div>
+                <span class={`px-3 py-1 rounded-full text-sm font-semibold ${decisionColor(p.decision)}`}>{p.decision}</span>
+              </div>
+
+              <p class="text-sm text-[var(--color-text-muted)] mb-3 italic">"{p.situation}"</p>
+
+              <div class="grid grid-cols-3 gap-3 mb-4">
+                <div class="rounded-lg bg-white/60 p-3 text-center">
+                  <p class={`text-xl font-bold ${scoreTextColor(p.exp)}`}>{p.exp}<span class="text-sm text-neutral-400">/10</span></p>
+                  <p class="text-xs text-neutral-500">Experience</p>
+                </div>
+                <div class="rounded-lg bg-white/60 p-3 text-center">
+                  <p class={`text-xl font-bold ${scoreTextColor(p.conf)}`}>{p.conf}<span class="text-sm text-neutral-400">/10</span></p>
+                  <p class="text-xs text-neutral-500">Confiance</p>
+                </div>
+                <div class="rounded-lg bg-white/60 p-3 text-center">
+                  <p class={`text-xl font-bold ${scoreTextColor(p.clarte)}`}>{p.clarte}<span class="text-sm text-neutral-400">/10</span></p>
+                  <p class="text-xs text-neutral-500">Clarte</p>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-1">Parcours</p>
+                <div class="flex flex-wrap gap-1">
+                  {p.parcours.map((page, i) => (
+                    <span class="flex items-center gap-1">
+                      <span class="px-2 py-0.5 rounded bg-white/70 text-xs text-neutral-600 border border-neutral-200">{page}</span>
+                      {i < p.parcours.length - 1 && <span class="text-neutral-300 text-xs">→</span>}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-1">Question cle</p>
+                <p class="text-sm text-[var(--color-text)] bg-white/60 rounded-lg p-3 italic">"{p.questionCle}"</p>
+                <p class="text-xs text-neutral-500 mt-1">Reponse obtenue : <span class={`font-medium ${p.reponse === 'Oui' ? 'text-emerald-600' : p.reponse === 'Partiellement' ? 'text-amber-600' : 'text-red-600'}`}>{p.reponse}</span></p>
+              </div>
+
+              <div class="mb-3">
+                <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-1">Premiere impression</p>
+                <p class="text-sm text-[var(--color-text)]">{p.premierImpression}</p>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+                <div>
+                  <p class="text-xs font-semibold text-emerald-600 uppercase tracking-wide mb-1">Points positifs</p>
+                  <ul class="space-y-0.5">
+                    {p.positifs.map(pos => (
+                      <li class="flex items-start gap-1.5 text-xs text-neutral-600">
+                        <span class="text-emerald-500 mt-0.5 shrink-0">+</span>{pos}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <p class="text-xs font-semibold text-red-600 uppercase tracking-wide mb-1">Frictions</p>
+                  <ul class="space-y-0.5">
+                    {p.frictions.map(fric => (
+                      <li class="flex items-start gap-1.5 text-xs text-neutral-600">
+                        <span class="text-red-400 mt-0.5 shrink-0">–</span>{fric}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              <div class="border-t border-white/60 pt-3 mt-3">
+                <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-1">Raison de la decision</p>
+                <p class="text-sm text-[var(--color-text)]">{p.raisonDecision}</p>
+                <p class="text-xs text-neutral-400 mt-1 italic">{p.impactTech}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════ PANEL 4 : AMELIORATIONS ═══════════════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl space-y-10">
+
+          <!-- Impact fort -->
+          <div>
+            <h2 class="text-xl font-bold text-[var(--color-text)] mb-2">Impact fort — A faire en priorite</h2>
+            <p class="text-sm text-[var(--color-text-muted)] mb-5">Ces ameliorations auraient le plus grand impact sur la conversion et la credibilite.</p>
+            <div class="space-y-4">
+              {amelioHaute.map((a, i) => (
+                <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+                  <div class="flex items-start justify-between gap-4 mb-2">
+                    <h3 class="font-bold text-[var(--color-text)]">{i + 1}. {a.title}</h3>
+                    <span class="shrink-0 px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs font-medium">{a.impact}</span>
+                  </div>
+                  <p class="text-sm text-[var(--color-text-muted)]">{a.detail}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <!-- Impact moyen -->
+          <div>
+            <h2 class="text-xl font-bold text-[var(--color-text)] mb-2">Impact moyen — A inclure dans la refonte</h2>
+            <div class="space-y-4">
+              {amelioMoyenne.map((a, i) => (
+                <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+                  <div class="flex items-start justify-between gap-4 mb-2">
+                    <h3 class="font-bold text-[var(--color-text)]">{amelioHaute.length + i + 1}. {a.title}</h3>
+                    <span class="shrink-0 px-3 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-medium">Moyen</span>
+                  </div>
+                  <p class="text-sm text-[var(--color-text-muted)]">{a.detail}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <!-- A discuter -->
+          <div>
+            <h2 class="text-xl font-bold text-[var(--color-text)] mb-2">A discuter avec le client</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {amelioDiscuter.map(a => (
+                <div class="rounded-xl border border-[var(--color-border)] bg-white p-5">
+                  <div class="text-2xl mb-3">{a.emoji}</div>
+                  <h3 class="font-semibold text-[var(--color-text)] mb-2">{a.title}</h3>
+                  <p class="text-sm text-[var(--color-text-muted)]">{a.detail}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <!-- Opportunite WF -->
+          <div class="rounded-xl border border-green-300 bg-green-50 p-8">
+            <h2 class="text-xl font-bold text-green-900 mb-4">Opportunite Web Factory</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+              <div class="text-center">
+                <p class="text-4xl font-black text-green-700">9/10</p>
+                <p class="text-sm text-green-600 mt-1">Score d'opportunite</p>
+              </div>
+              <div class="text-center">
+                <p class="text-4xl font-black text-green-700">1490€</p>
+                <p class="text-sm text-green-600 mt-1">Forfait Standard recommande</p>
+              </div>
+              <div class="text-center">
+                <p class="text-4xl font-black text-green-700">4.9/5</p>
+                <p class="text-sm text-green-600 mt-1">Avis Google a valoriser</p>
+              </div>
+            </div>
+            <div class="space-y-2 text-sm text-green-800">
+              <p><strong>Levier 1 :</strong> 3 generations / 40 ans — histoire forte non racontee sur le site actuel</p>
+              <p><strong>Levier 2 :</strong> 4.9/5 sur 49 avis Google = capital confiance majeur, zero exploit sur le site</p>
+              <p><strong>Levier 3 :</strong> Certibiocide = differenciateur unique dans la zone (hornets/frelons asiatiques = niche a forte valeur)</p>
+              <p><strong>Levier 4 :</strong> Site actuel Apache/PHP note F en securite = argument migration simple</p>
+              <p><strong>Levier 5 :</strong> Zero galerie realisations pour un metier ultra-visuel = opportunite evidente</p>
+              <p class="mt-3 text-green-700 font-medium">Contact recommande : appel direct au 03 87 63 83 46 avec rapport en accroche</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /panels -->
+
+</BaseLayout>
+
+<script>
+const tabs = document.querySelectorAll<HTMLButtonElement>('.tab-btn');
+const panels = document.getElementById('panels');
+
+function activateTab(idx: number) {
+  tabs.forEach((t, i) => {
+    if (i === idx) {
+      t.classList.remove('text-neutral-500', 'hover:text-neutral-700');
+      t.classList.add('text-green-700', 'bg-green-50');
+    } else {
+      t.classList.remove('text-green-700', 'bg-green-50');
+      t.classList.add('text-neutral-500', 'hover:text-neutral-700');
+    }
+  });
+  if (panels) {
+    panels.scrollTo({ left: idx * panels.offsetWidth, behavior: 'smooth' });
+  }
+}
+
+tabs.forEach((btn, i) => {
+  btn.addEventListener('click', () => activateTab(i));
+});
+
+if (panels) {
+  panels.addEventListener('scroll', () => {
+    const idx = Math.round(panels.scrollLeft / panels.offsetWidth);
+    tabs.forEach((t, i) => {
+      if (i === idx) {
+        t.classList.remove('text-neutral-500', 'hover:text-neutral-700');
+        t.classList.add('text-green-700', 'bg-green-50');
+      } else {
+        t.classList.remove('text-green-700', 'bg-green-50');
+        t.classList.add('text-neutral-500', 'hover:text-neutral-700');
+      }
+    });
+  });
+}
+</script>
