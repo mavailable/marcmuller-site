@@ -21,8 +21,8 @@ export const business = {
 
   // Contact
   email: 'marc@muller.im',
-  phone: '+33688776648',
-  whatsapp: '33688776648', // format sans +, pour wa.me/
+  phone: '+33688766648',
+  whatsapp: '33688766648', // format sans +, pour wa.me/
   whatsappMessage: 'Bonjour Marc, je souhaite discuter d\'un projet de site web.',
   url: 'https://marcm.fr',
 
