@@ -1,0 +1,778 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+// ==================== DATA ====================
+
+const prospect = {
+  name: 'Taoni Koh Tao',
+  url: 'https://taoni-kohtao.com/',
+  date: '29 mars 2026',
+  activity: 'Restaurant, Coworking & Boutique',
+  location: 'Chalok, Koh Tao, Thailande',
+};
+
+const kpis = {
+  conversion: 35,
+  experience: 4.4,
+  confiance: 4.2,
+  clarte: 4.4,
+};
+
+const paradox = "Le bouche-a-oreille convertit a 100% mais le site ne convertit aucun visiteur desktop. Le site confirme une decision deja prise — il ne convainc personne de nouveau.";
+
+const conversionByCanal = [
+  { canal: 'Bouche-a-oreille', taux: 100, color: 'green' },
+  { canal: 'Instagram', taux: 67, color: 'green' },
+  { canal: 'Facebook', taux: 50, color: 'orange' },
+  { canal: 'Google Search', taux: 40, color: 'orange' },
+  { canal: 'Google Maps', taux: 0, color: 'red' },
+  { canal: 'IA (ChatGPT, Perplexity, Claude)', taux: 0, color: 'red' },
+  { canal: 'Autre (email, QR code)', taux: 0, color: 'red' },
+];
+
+const conversionByMaturite = [
+  { label: 'Decouverte', taux: 50, total: 6, convertis: 3 },
+  { label: 'Comparaison', taux: 12, total: 8, convertis: 1 },
+  { label: 'Decision', taux: 50, total: 6, convertis: 3 },
+];
+
+const conversionByDevice = [
+  { label: 'Mobile', taux: 50, total: 12, convertis: 6 },
+  { label: 'Desktop', taux: 0, total: 5, convertis: 0 },
+  { label: 'Tablette', taux: 0, total: 2, convertis: 0 },
+];
+
+// PageSpeed scores
+const pagespeed = {
+  mobile: {
+    performance: 81,
+    accessibility: 85,
+    bestPractices: 100,
+    seo: 61,
+  },
+  desktop: {
+    performance: 98,
+    accessibility: 85,
+    bestPractices: 100,
+    seo: 61,
+  },
+};
+
+const coreWebVitals = [
+  { name: 'LCP', desc: 'Largest Contentful Paint', mobile: '4.4s', desktop: '1.0s', mobileStatus: 'bad', desktopStatus: 'good' },
+  { name: 'CLS', desc: 'Cumulative Layout Shift', mobile: '0.039', desktop: '0.024', mobileStatus: 'good', desktopStatus: 'good' },
+  { name: 'TBT', desc: 'Total Blocking Time', mobile: '40ms', desktop: '0ms', mobileStatus: 'good', desktopStatus: 'good' },
+  { name: 'FCP', desc: 'First Contentful Paint', mobile: '2.5s', desktop: '0.6s', mobileStatus: 'medium', desktopStatus: 'good' },
+];
+
+const observatory = {
+  grade: 'D-',
+  score: 25,
+  testsPassed: 5,
+  testsTotal: 10,
+};
+
+const missingHeaders = [
+  'Content-Security-Policy (CSP)',
+  'Strict-Transport-Security (HSTS)',
+  'X-Content-Type-Options',
+  'X-Frame-Options',
+  'Referrer-Policy',
+  'Permissions-Policy',
+];
+
+const schemaChecks = [
+  { label: 'JSON-LD present (Yoast SEO)', present: true },
+  { label: 'Type Restaurant / LocalBusiness', present: false },
+  { label: 'Type CoworkingSpace', present: false },
+  { label: 'Nom + URL + Description', present: true },
+  { label: 'Adresse + Geolocalisation', present: false },
+  { label: 'Telephone', present: false },
+  { label: 'Horaires d\'ouverture', present: false },
+  { label: 'Image / Logo', present: false },
+  { label: 'Liens reseaux sociaux (sameAs)', present: false },
+  { label: 'Notes / Avis (aggregateRating)', present: false },
+  { label: 'Menu du restaurant', present: false },
+  { label: 'Fourchette de prix', present: false },
+];
+
+const ogChecks = [
+  { label: 'og:title', present: false },
+  { label: 'og:description', present: false },
+  { label: 'og:image', present: false },
+  { label: 'og:url', present: false },
+  { label: 'og:type', present: false },
+  { label: 'twitter:card', present: false },
+  { label: 'twitter:image', present: false },
+];
+
+const seoChecks = [
+  { label: 'Redirection HTTP vers HTTPS', present: true },
+  { label: 'Sitemap XML accessible', present: true },
+  { label: 'robots.txt accessible', present: true },
+  { label: 'robots.txt autorise l\'indexation', present: false, critical: true },
+  { label: 'Meta title sur chaque page', present: true },
+  { label: 'Meta description sur chaque page', present: true },
+  { label: 'Balise canonical', present: false },
+  { label: 'Alt text descriptifs sur les images', present: false },
+];
+
+const opportunities = [
+  { title: 'Reduire le temps de reponse serveur', savings: '~814ms' },
+  { title: 'Reduire le CSS inutilise', savings: '~340ms' },
+  { title: 'Minifier le CSS', savings: 'Taille fichier' },
+  { title: 'Optimiser la livraison des images', savings: 'Poids page' },
+  { title: 'Optimiser la decouverte du LCP', savings: 'Temps rendu' },
+];
+
+// Personas data
+const personas = [
+  { id: 1, name: 'Lucas', age: 28, emoji: '👨‍💻', canal: 'Google Search', device: 'Mobile', maturite: 'Comparaison', situation: 'Dev freelance francais, voyage en Asie depuis 3 mois', contexte: 'Cherche un coworking avec bon wifi pour un call client demain', parcours: ['Coworking', 'Prix', 'Restaurant', 'Contact'], decision: 'hesite', scores: { exp: 6, conf: 4, clarte: 7 }, premierImpression: 'Voit "Coworking" dans le titre — rassurant. Mais "A place to feel good" ne dit rien sur le wifi.', questionCle: 'Le wifi est-il assez rapide pour des visio ?', reponse: 'Non', commentReponse: '"Best WiFi on Koh Tao" est un slogan marketing, pas une specification. Aucun speedtest, aucun chiffre.', impactTechnique: 'LCP 4.4s agacant sur mobile. En tant que dev, il remarque le PHP 7.4 et le grade D- — ca ne rassure pas sur la fiabilite technique.', pointsPositifs: ['Prix coworking clairs et competitifs (5000 THB/mois)', 'Formule 2h gratuites avec repas', 'Combo coworking + restaurant sur place'], frictions: ['Aucune preuve wifi (speedtest, debit, temoignages)', 'Pas de carte Google Maps', 'Menu restaurant = PDF penible sur mobile'] },
+  { id: 2, name: 'Mei-Lin', age: 34, emoji: '🤿', canal: 'Google Maps', device: 'Mobile', maturite: 'Decision', situation: 'Designeuse UX singapourienne, vacances a Koh Tao', contexte: 'Affamee apres une plongee a Chalok, compare les restos proches', parcours: ['Accueil', 'Restaurant', 'Download Menu PDF', 'Contact'], decision: 'hesite', scores: { exp: 4, conf: 4, clarte: 3 }, premierImpression: 'Voit "Restaurant" dans le titre — ok. Smoothies, avocado toast — ca lui parle post-plongee. Mais aucun prix.', questionCle: 'Combien coute un dejeuner ici ?', reponse: 'Partiellement', commentReponse: 'Les prix existent dans un PDF telechargeable, mais sur mobile c\'est 3-4 taps et un zoom. Un concurrent avec prix en ligne gagne.', impactTechnique: 'LCP 4.4s critique — elle a faim, chaque seconde augmente le risque de retour sur Google Maps.', pointsPositifs: ['Photos de plats appetissantes (18 images)', 'Variete de la carte (thai, birman, occidental)', 'Horaires 8h-22h couvrent le dejeuner'], frictions: ['Aucun prix visible sans telecharger le PDF', 'Pas de carte Google Maps integree', 'Pas d\'avis clients pour rassurer'] },
+  { id: 3, name: 'Sophie', age: 42, emoji: '✈️', canal: 'Instagram', device: 'Mobile', maturite: 'Decouverte', situation: 'Dir. marketing Lyon, premier voyage solo en Thailande', contexte: 'A vu un post Instagram reposte par une amie, curieuse de ce lieu atypique', parcours: ['Accueil', 'Taoni (histoire)', 'Restaurant', 'Gallery', 'Contact'], decision: 'convertit', scores: { exp: 7, conf: 5, clarte: 6 }, premierImpression: '"A place to feel good" resonne avec son envie d\'authenticite. L\'ambiance l\'attire.', questionCle: 'Qu\'est-ce qui rend cet endroit special ?', reponse: 'Oui', commentReponse: 'L\'histoire de Virginie (25 ans en com a Paris, reconversion Koh Tao) la touche profondement. Elle se projette.', impactTechnique: 'LCP 4.4s tolere car elle est en mode flanerie, pas urgence. L\'absence d\'avis la gene sans la bloquer.', pointsPositifs: ['L\'histoire de Virginie est le meilleur atout du site', 'Ambiance "feel good" alignee avec ses attentes', 'Combinaison restaurant + boutique artisanale'], frictions: ['Pas d\'avis/temoignages pour un premier voyage solo', 'Reseaux sociaux caches en page Contact', 'Pas d\'Open Graph pour partager le lien'] },
+  { id: 4, name: 'James', age: 31, emoji: '🎬', canal: 'IA (ChatGPT)', device: 'Desktop', maturite: 'Comparaison', situation: 'Content creator US, digital nomad depuis 2 ans', contexte: 'Son coworking ferme pour renovation, cherche une alternative cette semaine', parcours: ['Coworking', 'Prix', 'Restaurant', 'Contact'], decision: 'quitte', scores: { exp: 4, conf: 3, clarte: 5 }, premierImpression: 'Concept hybride restaurant/coworking — ca peut etre un plus ou un moins. Cherche un vrai coworking, pas un resto avec wifi.', questionCle: 'Quel est le debit wifi reel ?', reponse: 'Non', commentReponse: '"Best WiFi on Koh Tao" — il a vu cette phrase sur 15 coworkings en Asie. Zero chiffre, zero temoignage.', impactTechnique: 'Sur desktop le LCP est acceptable. Mais le site PHP 7.4 grade D- donne une impression d\'amateurisme. Si le site est mal maintenu, le wifi l\'est peut-etre aussi.', pointsPositifs: ['Prix mensuel competitif (5000 THB)', 'Formule test gratuite (2h + repas)', 'Horaires 8h-22h'], frictions: ['Aucun speedtest ou preuve wifi', 'Aucun temoignage de nomads', 'Chalok loin de Mae Haad', 'Pas de communaute visible'] },
+  { id: 5, name: 'Camille', age: 26, emoji: '🥞', canal: 'Bouche-a-oreille', device: 'Mobile', maturite: 'Decision', situation: 'Serveuse francaise en PVT, vit a Chalok depuis 2 mois', contexte: 'Une amie lui a dit "va bruncher chez Taoni, c\'est trop bon"', parcours: ['Accueil', 'Restaurant', 'Download Menu PDF'], decision: 'convertit', scores: { exp: 5, conf: 7, clarte: 3 }, premierImpression: '"Smoothies, avocado toast, pancakes, pain perdu" — ca correspond au brunch mentionne par son amie. OK.', questionCle: 'Combien coute le brunch ?', reponse: 'Partiellement', commentReponse: 'Le prix est dans le PDF mais sur iPhone, c\'est 3 minutes de manipulation penible. Le bouche-a-oreille fait le travail, pas le site.', impactTechnique: 'LCP 4.4s + telechargement PDF = experience lente. Le grade D- est invisible pour elle — la confiance vient de l\'amie.', pointsPositifs: ['Photos de plats correspondent a la description de l\'amie', 'Le site confirme que le lieu existe et sert du brunch', 'Localisation Chalok = zero friction de distance'], frictions: ['Menu PDF illisible sur mobile (zoom, scroll horizontal)', 'Pas de prix visibles sur la page Restaurant', 'Pas de lien Instagram sur la page Restaurant'] },
+  { id: 6, name: 'Tom', age: 38, emoji: '🇬🇧', canal: 'Google Search', device: 'Desktop', maturite: 'Comparaison', situation: 'Chef de projet IT Londres, vacances 5 jours avec sa femme vegetarienne', contexte: 'Compare 5-6 restaurants pour sa semaine sur l\'ile', parcours: ['Accueil', 'Restaurant', 'Cherche avis', 'Quitte vers TripAdvisor'], decision: 'quitte', scores: { exp: 3, conf: 2, clarte: 3 }, premierImpression: '"Restaurant, Coworking & Shop" — pas un restaurant pur. Aucun signal de qualite visible (notes, avis, prix).', questionCle: 'Y a-t-il des options vegetariennes ?', reponse: 'Non', commentReponse: 'Le mot "vegetarien" n\'apparait nulle part. La page restaurant ne contient aucun texte — uniquement des photos.', impactTechnique: 'Sur desktop l\'experience est correcte. Mais le SEO a 61/100 et le robots.txt bloquant font que Tom n\'aurait probablement jamais trouve le site.', pointsPositifs: ['Diversite du menu (thai, birman, occidental)', 'Photos appetissantes'], frictions: ['Zero avis — redhibitoire en mode comparaison', 'Aucune mention vegetarienne', 'Prix uniquement en PDF', 'Localisation sans carte'] },
+  { id: 7, name: 'Yuki', age: 29, emoji: '📸', canal: 'Instagram', device: 'Mobile', maturite: 'Decouverte', situation: 'Photographe freelance japonaise, backpackeuse en Asie', contexte: 'A decouvert Taoni via #kohtao sur Instagram, attirer par l\'esthetique', parcours: ['Accueil', 'Gallery', 'Coworking', 'Restaurant'], decision: 'hesite', scores: { exp: 5, conf: 5, clarte: 4 }, premierImpression: 'Le site est correct mais fade compare a ce qu\'elle vient de voir sur Instagram. Seulement 2 images en accueil.', questionCle: 'L\'endroit est-il aussi beau qu\'en photo ?', reponse: 'Partiellement', commentReponse: 'Le site montre des plats (beaucoup) mais tres peu l\'espace physique. Aucune image terrasse, interieur, lumiere.', impactTechnique: 'LCP 4.4s brutal apres Instagram qui charge instantanement. 18 images PNG non optimisees.', pointsPositifs: ['Concept multi-espace attractif pour une nomade creative', 'Photos de plats photogeniques', 'Horaires 8h-22h couvrent sa journee'], frictions: ['Site visuellement fade vs Instagram', 'Galerie tres pauvre (3 photos boutique)', 'Pas de photos d\'ambiance du lieu'] },
+  { id: 8, name: 'Martin', age: 55, emoji: '🇧🇪', canal: 'Google Maps', device: 'Tablette', maturite: 'Decouverte', situation: 'Comptable belge, voyage organise 15 jours avec sa femme', contexte: 'De passage a Koh Tao 1 nuit, cherche un restaurant thai traditionnel', parcours: ['Accueil', 'Restaurant', 'Quitte'], decision: 'quitte', scores: { exp: 2, conf: 2, clarte: 3 }, premierImpression: '"Coworking" le destabilise. Smoothies, avocado toast, pancakes — ce n\'est pas un restaurant thai.', questionCle: 'C\'est un vrai restaurant thai ?', reponse: 'Non', commentReponse: 'Taoni met en avant la cuisine francaise/italienne. Le thai est en arriere-plan. Pas ce que Martin cherche.', impactTechnique: 'Les 18 images PNG sont lourdes sur tablette en wifi d\'hotel. Zero avis, pas de note Google.', pointsPositifs: ['La mention de cuisine thai/birmane existe', 'Photos soignees', 'Localisation Chalok = pres de son hotel'], frictions: ['Positionnement confus (resto? coworking? shop?)', 'Cuisine occidentale en avant, thai en second', 'Zero prix, zero avis', 'L\'histoire de Virginie renforce l\'image "resto d\'expat"'] },
+  { id: 9, name: 'Klara', age: 24, emoji: '🎓', canal: 'IA (Perplexity)', device: 'Mobile', maturite: 'Comparaison', situation: 'Etudiante allemande, semestre off en Asie', contexte: 'Doit finir son memoire, le cafe ou elle travaille est trop bruyant', parcours: ['Coworking', 'Prix', 'Restaurant', 'Contact (Maps)'], decision: 'hesite', scores: { exp: 5, conf: 4, clarte: 6 }, premierImpression: 'Les prix du coworking sont la — c\'est encourageant. Mais la distance Sairee-Chalok la freine.', questionCle: 'Ca vaut le deplacement depuis Sairee ?', reponse: 'Partiellement', commentReponse: 'Les prix sont clairs et competitifs. Mais aucun temoignage d\'etudiant, pas d\'info sur le calme, pas de carte pour evaluer la distance.', impactTechnique: 'LCP 4.4s sur Pixel 8 — le site parait "vieux" compare aux apps qu\'elle utilise.', pointsPositifs: ['Prix coworking affiches et competitifs', 'Formule 2h + repas gratuit pour tester', 'Horaires flexibles 8h-22h'], frictions: ['Distance Sairee-Chalok non mentionnee', 'Zero temoignage de coworkers', 'Prix restaurant introuvables sans PDF'] },
+  { id: 10, name: 'Antoine', age: 33, emoji: '🇫🇷', canal: 'Google Search', device: 'Mobile', maturite: 'Decision', situation: 'Dev web francais freelance, nomade avec sa copine, bungalow a Chalok', contexte: 'Debut de contrat client, besoin d\'un bureau fixe pour le mois', parcours: ['Coworking', 'Prix', 'Restaurant', 'Contact'], decision: 'convertit', scores: { exp: 6, conf: 5, clarte: 6 }, premierImpression: 'Voit "Coworking" — parfait. 12 postes, clim, wifi, 8h-22h. Les prix mensuels sont la. Il est convaincu a 80%.', questionCle: 'Le forfait mensuel inclut quoi exactement ?', reponse: 'Partiellement', commentReponse: '5000 THB/mois + -10% menu + cafe gratuit sont clairs. Mais details manquants : poste dedie ? prises ? politique si plein ?', impactTechnique: 'En tant que dev, il remarque PHP 7.4, grade D- — signal negatif mais pas bloqueur. Le LCP est tolere car il est en mode decision.', pointsPositifs: ['Prix mensuel imbattable (5000 THB ~130 EUR)', 'Proximite (il est a Chalok)', 'Ecosysteme complet coworking + restaurant', 'Clim + horaires larges'], frictions: ['"Best WiFi" sans preuve', 'Pas de details sur les postes (prise, espace)', 'Site techniquement mal maintenu'] },
+  { id: 11, name: 'Nina', age: 27, emoji: '📱', canal: 'Facebook', device: 'Mobile', maturite: 'Decouverte', situation: 'Community manager francaise, remote pour startup parisienne', contexte: 'Samedi matin, envie de se faire plaisir avec un bon brunch', parcours: ['Accueil', 'Restaurant', 'Gallery', 'Retour Instagram'], decision: 'convertit', scores: { exp: 5, conf: 6, clarte: 4 }, premierImpression: 'Les mots "smoothies, avocado toast, pancakes" captent son attention. Les 2 images sont sympas mais insuffisantes.', questionCle: 'Ca a l\'air aussi bon qu\'en photo ?', reponse: 'Partiellement', commentReponse: 'Les 18 images confirment la presentation soignee. Mais ce sont des photos produit, pas des photos d\'ambiance. Instagram repond mieux.', impactTechnique: 'LCP 4.4s — transition brutale depuis Facebook qui est fluide. 18 images PNG aggravent le temps de chargement.', pointsPositifs: ['Photos de plats instagrammables', 'Concept multi-espace intrigue', 'Localisation Chalok = proximite'], frictions: ['Menu images + PDF illisible sur mobile', 'Zero prix sur la page Restaurant', 'Pas de lien Instagram visible hors /contact'] },
+  { id: 12, name: 'David', age: 45, emoji: '💼', canal: 'Google Maps', device: 'Desktop', maturite: 'Comparaison', situation: 'Entrepreneur US, SaaS founder, workation haut de gamme', contexte: 'Board meeting en visio mercredi, besoin d\'un espace pro et prive', parcours: ['Coworking', 'Pas de salle privee', 'Contact', 'Quitte'], decision: 'quitte', scores: { exp: 3, conf: 2, clarte: 5 }, premierImpression: '"Restaurant, Coworking & Shop" — concept hybride = le coworking n\'est pas le coeur de metier. Design amateur.', questionCle: 'Y a-t-il des salles de reunion privees ?', reponse: 'Non', commentReponse: 'Aucune mention de salle privee, cabine d\'appel ou espace isole. Offre exclusivement open space. Deal-breaker.', impactTechnique: 'Desktop acceptable en vitesse. Mais l\'email gmail et le design date confirment l\'impression d\'amateurisme pour un profil corporate.', pointsPositifs: ['Prix clairs sur la page Coworking', 'Horaires precis', 'Formule 2h + repas originale'], frictions: ['Zero salle privee — deal-breaker', '"Best WiFi" sans specs', 'Zero temoignage business', 'Email gmail = amateur', 'Site positionne restaurant en premier'] },
+  { id: 13, name: 'Lea', age: 30, emoji: '🎨', canal: 'Google Search', device: 'Mobile', maturite: 'Comparaison', situation: 'Graphiste freelance, en couple, nomade 6 mois, vient d\'arriver', contexte: 'Premier matin a Chalok, cherche un bon spot brunch', parcours: ['Accueil', 'Restaurant', 'Download Menu PDF', 'Contact'], decision: 'convertit', scores: { exp: 5, conf: 6, clarte: 4 }, premierImpression: '"Restaurant" dans le titre, smoothies et toast dans la description — potentiellement son brunch. Mais le mot "brunch" est absent.', questionCle: 'Le menu est-il plutot healthy ou comfort food ?', reponse: 'Partiellement', commentReponse: 'Le PDF du menu revele les deux (bowls, salades + pancakes, pates). Mais cette info n\'est accessible qu\'apres telechargement.', impactTechnique: 'LCP 4.4s en contexte comparaison (3-4 onglets) — les concurrents plus rapides captent l\'attention en premier.', pointsPositifs: ['Photos de plats de qualite', 'Offre brunch/healthy + comfort food', 'Proximite Chalok', 'Prix raisonnables dans le PDF'], frictions: ['Le mot "brunch" n\'apparait pas sur le site', 'Menu PDF = friction mobile', 'Pas de carte Google Maps', 'Pas d\'Open Graph pour partager'] },
+  { id: 14, name: 'Raj', age: 36, emoji: '🌏', canal: 'IA (Claude)', device: 'Desktop', maturite: 'Comparaison', situation: 'Product manager indien, remote SF, planifie son prochain mois de nomadisme', contexte: 'Compare Koh Tao vs Chiang Mai vs Bali — doit decider cette semaine', parcours: ['Coworking', 'Restaurant', 'Taoni (histoire)', 'Contact'], decision: 'hesite', scores: { exp: 4, conf: 3, clarte: 5 }, premierImpression: '"Restaurant, Coworking & Shop" — petit et artisanal compare a ses references (Hubud Bali, Punspace Chiang Mai).', questionCle: 'Y a-t-il une communaute de nomads active ici ?', reponse: 'Non', commentReponse: 'Le site ne mentionne aucune communaute : pas de temoignages, pas de Slack, pas d\'events. Raj doit deviner.', impactTechnique: 'Sur desktop la vitesse est acceptable. Le vrai impact : le robots.txt bloque le crawl, donc l\'IA qui l\'a oriente avait des infos incompletes.', pointsPositifs: ['Prix imbattables (5000 THB vs 200-300 USD Bali)', 'Restaurant integre = routine simple', 'Histoire de Virginie donne une dimension humaine'], frictions: ['Zero temoignage de nomads', 'Aucune info communaute', '"Best WiFi" sans specs', 'Site basique vs concurrents Bali/Chiang Mai'] },
+  { id: 15, name: 'Emma', age: 22, emoji: '🦘', canal: 'Instagram', device: 'Mobile', maturite: 'Decouverte', situation: 'Etudiante australienne en gap year, budget backpacker', contexte: 'Jour de repos apres 3 jours de plongee, envie d\'un contenu Instagram', parcours: ['Accueil', 'Restaurant', 'Download Menu PDF'], decision: 'convertit', scores: { exp: 4, conf: 5, clarte: 3 }, premierImpression: '"Avocado toast, smoothies, pancakes" — Instagrammable mais potentiellement cher vs street food a 50 THB.', questionCle: 'C\'est combien un plat ?', reponse: 'Partiellement', commentReponse: 'Les prix existent dans le PDF (150-280 THB). Plus cher que la street food mais accessible pour un "treat". L\'info devrait etre visible directement.', impactTechnique: 'LCP 4.4s — transition brutale depuis Instagram (instantane). Le PDF hostile sur mobile iPhone 13.', pointsPositifs: ['Plats extremement photogeniques', 'Offre alignee avec les codes Instagram', 'Prix finalement accessibles pour un treat'], frictions: ['Prix invisibles sans PDF — anxiete budgetaire', 'PDF hostile sur mobile', '"Coworking & Shop" dans le titre refroidit — "c\'est pour les nomades riches"'] },
+  { id: 16, name: 'Pierre', age: 61, emoji: '🧳', canal: 'Email', device: 'Tablette', maturite: 'Decouverte', situation: 'Retraite francais, voyage organise en couple, peu digital', contexte: 'Premier soir sur l\'ile, l\'hotel n\'a pas de restaurant', parcours: ['Accueil', 'Restaurant (frustre)', 'Contact (adresse)', 'Quitte'], decision: 'quitte', scores: { exp: 2, conf: 3, clarte: 2 }, premierImpression: 'Site en anglais — premier obstacle. "Coworking" incomprehensible. Cherche un menu et des prix : introuvables.', questionCle: 'Ou est-ce exactement et qu\'est-ce qu\'on y mange ?', reponse: 'Non', commentReponse: 'L\'adresse est en texte brut sans carte. Le menu est un PDF de photos illisibles sur tablette. Pierre ne sait rien.', impactTechnique: 'Le PDF du menu pixellise a l\'agrandissement sur iPad. Les 18 images lourdes ralentissent tout sur wifi d\'hotel.', pointsPositifs: ['Numero de telephone francais (+33) rassurant', 'Localisation Chalok = pres de son hotel'], frictions: ['Site entierement en anglais', 'Menu = images illisibles sur tablette', 'Zero prix affiche', 'Pas de carte ni plan d\'acces', 'Pas de mention "on parle francais"'] },
+  { id: 17, name: 'Anja', age: 32, emoji: '✍️', canal: 'Google Search', device: 'Mobile', maturite: 'Decision', situation: 'Copywriter allemande freelance, nomade, Chalok depuis 2 semaines', contexte: 'Son client a escalade car un call a lagge — besoin URGENT de wifi fiable', parcours: ['Coworking', 'Prix', 'Contact (message wifi)'], decision: 'hesite', scores: { exp: 5, conf: 4, clarte: 6 }, premierImpression: 'Le mot "Coworking" la rassure. Les prix sont la. Mais aucune preuve wifi, c\'est LE critere.', questionCle: 'Le wifi tient-il pour des visios HD ?', reponse: 'Non', commentReponse: 'Zero speedtest, zero debit, zero temoignage. "Best WiFi" est vide. Elle contactera pour demander.', impactTechnique: 'LCP 4.4s sur Samsung en 4G thai. Le robots.txt bloquant fait que le site n\'apparait probablement pas pour "coworking koh tao".', pointsPositifs: ['Page Coworking bien structuree avec prix clairs', 'Formule 2h + repas gratuit pour tester', 'Reduction -10% menu'], frictions: ['Zero preuve wifi — le critere #1', 'Zero temoignage de freelance/nomade', 'Email gmail peu professionnel', 'Pas de reservation en ligne'] },
+  { id: 18, name: 'Ben', age: 40, emoji: '🏖️', canal: 'Facebook', device: 'Desktop', maturite: 'Comparaison', situation: 'Consultant strategie UK, mini-retraite 3 mois en Asie', contexte: 'S\'installe dans sa routine a Chalok, explore les options du quartier', parcours: ['Accueil', 'Taoni (histoire)', 'Restaurant', 'Coworking', 'Gallery'], decision: 'hesite', scores: { exp: 5, conf: 4, clarte: 5 }, premierImpression: 'Concept hybride intrigant. Deux images seulement — ca manque d\'ame pour un lieu qui vend une ambiance.', questionCle: 'Est-ce un lieu ou j\'aurais envie de revenir souvent ?', reponse: 'Partiellement', commentReponse: 'L\'histoire de Virginie cree une connexion. Le concept est attractif. Mais pas assez de contenu pour se projeter dans une routine.', impactTechnique: 'Desktop acceptable en vitesse. L\'absence d\'OG fait que le lien partage par son ami sur Facebook n\'avait pas d\'apercu.', pointsPositifs: ['L\'histoire de Virginie cree une connexion emotionnelle', 'Concept unique restaurant + coworking + boutique', 'Prix coworking tres competitifs'], frictions: ['Zero temoignage de reguliers', 'Pas assez de photos d\'ambiance', 'Aucune video du lieu', 'Gallery squelettique (3 photos)', 'Pas de "journee type" immersive'] },
+  { id: 19, name: 'Sakura', age: 25, emoji: '🐠', canal: 'Bouche-a-oreille', device: 'Mobile', maturite: 'Decision', situation: 'Prof d\'anglais japonaise, ecole de plongee a Koh Tao depuis 4 mois', contexte: 'Jour de repos, envie de varier du thai quotidien — collegue dit "pancakes incroyables"', parcours: ['Accueil', 'Restaurant', 'Coworking (horaires)', 'Decide de venir'], decision: 'convertit', scores: { exp: 5, conf: 6, clarte: 4 }, premierImpression: 'Cherche directement le menu et les horaires. "Smoothies, pancakes" — ca correspond a la recommandation.', questionCle: 'Ils sont ouverts le matin ?', reponse: 'Partiellement', commentReponse: 'Les horaires 8h-22h sont sur la page Coworking, pas sur Accueil ni Restaurant. Elle doit deduire.', impactTechnique: 'LCP 4.4s penalisant sur iPhone SE (petit ecran). Le PDF du menu est quasi inutilisable sur ecran 4.7".', pointsPositifs: ['Le site confirme les pancakes', 'Localisation Chalok = elle y vit', 'Prix accessibles dans le PDF'], frictions: ['Horaires absents de la page Restaurant', 'PDF illisible sur iPhone SE', 'Pas de section "petit-dejeuner" identifiable'] },
+  { id: 20, name: 'Marco', age: 48, emoji: '👨‍🍳', canal: 'QR code', device: 'Mobile', maturite: 'Decision', situation: 'Chef cuisinier italien, en reperage pour ouvrir un restaurant', contexte: 'Scanne le QR par reflexe professionnel pour evaluer la concurrence', parcours: ['Accueil', 'Restaurant', 'Download Menu PDF', 'Quitte'], decision: 'quitte', scores: { exp: 3, conf: 3, clarte: 3 }, premierImpression: 'Concept hybride, carte eclatee entre brunch et thai. En tant que chef : "cuisine d\'identite ou fourre-tout ?"', questionCle: 'Quel est leur niveau de cuisine et positionnement prix ?', reponse: 'Partiellement', commentReponse: 'Le PDF donne les prix et la gamme. Positionnement casual/brunch, pas gastronomique. Pas de concurrent pour son projet haut de gamme.', impactTechnique: 'LCP 4.4s sur Xiaomi irritant. Le PDF en format image empecche de copier les prix dans son tableur de reperage.', pointsPositifs: ['Les 18 photos donnent une idee du niveau de cuisine', 'Le PDF permet d\'acceder aux prix', 'Le QR code sur le flyer a fonctionne'], frictions: ['Menu images uniquement — pas d\'analyse possible', 'Zero description plats, ingredients, sourcing', 'Aucune mention du chef ou de l\'equipe', 'Identite culinaire pas assumee'] },
+];
+
+const convertis = personas.filter(p => p.decision === 'convertit');
+const hesitent = personas.filter(p => p.decision === 'hesite');
+const quittent = personas.filter(p => p.decision === 'quitte');
+
+// Ameliorations
+const ameliorationsCritiques = [
+  { titre: 'Debloquer le robots.txt', detail: 'Le fichier robots.txt contient "Disallow: *" — il bloque TOUS les moteurs de recherche. Le site est invisible sur Google, Google Maps et les IA. C\'est comme avoir une vitrine avec les volets fermes.', action: 'Remplacer "Disallow: *" par des regles sensees : bloquer /wp-admin et autoriser tout le reste. Resultat : le site reapparait sur Google en quelques jours.' },
+  { titre: 'Afficher le menu avec prix en ligne', detail: '16 visiteurs sur 20 veulent connaitre les prix. Aujourd\'hui, il faut telecharger un PDF illisible sur mobile. Chaque tap supplementaire = des clients perdus.', action: 'Creer une page menu HTML avec les plats, descriptions et prix directement visibles. Organiser par categories : Brunch, Dejeuner, Boissons.' },
+  { titre: 'Ajouter des temoignages clients', detail: 'Zero preuve sociale sur le site. Les visiteurs en mode comparaison (44% du trafic) quittent tous faute d\'avis. Sans temoignages, ils vont sur TripAdvisor.', action: 'Integrer 5-10 avis clients sur la page d\'accueil et les pages Restaurant / Coworking. Prenom, contexte, photo idealement.' },
+  { titre: 'Prouver la qualite du wifi', detail: 'Tous les visiteurs coworking cherchent une preuve wifi. "Best WiFi on Koh Tao" est un slogan — pas une specification. Les nomades digitaux ne font confiance qu\'aux chiffres.', action: 'Afficher un speedtest sur la page Coworking (screenshot Speedtest.net ou debit annonce). Ajouter 2-3 temoignages de nomades validant la fiabilite.' },
+  { titre: 'Ajouter Schema.org + Open Graph', detail: 'Google ne comprend pas que Taoni est un restaurant ET un coworking. Quand quelqu\'un partage le site sur WhatsApp ou Facebook, aucun apercu ne s\'affiche.', action: 'Ajouter le balisage Schema.org (Restaurant, CoworkingSpace, LocalBusiness) et les meta Open Graph (image, titre, description) sur toutes les pages.' },
+];
+
+const ameliorationsUtiles = [
+  { titre: 'Integrer une carte Google Maps', detail: 'L\'adresse est en texte brut, sans lien cliquable. 12 visiteurs sur 20 auraient voulu lancer la navigation en un tap.' },
+  { titre: 'Afficher les reseaux sociaux partout', detail: 'Les liens Instagram et Facebook sont caches sur la page Contact. 10 visiteurs les cherchent ailleurs.' },
+  { titre: 'Mettre les horaires en footer global', detail: 'Les horaires ne sont visibles que sur la page Coworking. L\'info devrait etre sur toutes les pages.' },
+  { titre: 'Optimiser les images (WebP, compression)', detail: '18 photos PNG non optimisees sur la page Restaurant. Le site met 4.4 secondes a s\'afficher sur mobile.' },
+  { titre: 'Utiliser un email professionnel', detail: 'L\'adresse vbrueltao06@gmail.com ne fait pas serieux. Un hello@taoni-kohtao.com inspire davantage confiance.' },
+];
+
+const ameliorationsDiscuter = [
+  { emoji: '🔒', titre: 'Salles privees au coworking', detail: 'Les profils corporate ont besoin d\'espaces isoles pour les visios. Ca elargirait la clientele.' },
+  { emoji: '📅', titre: 'Reservation en ligne', detail: 'Un systeme de booking pour le coworking (et eventuellement le restaurant) reduirait les frictions.' },
+  { emoji: '🌱', titre: 'Identifier les plats vegetariens', detail: 'Marquer les options vegetariennes et veganes sur le menu attirerait une clientele supplementaire.' },
+  { emoji: '🤝', titre: 'Page communaute / events', detail: 'Les nomades cherchent une communaute, pas juste un bureau. Des meetups hebdomadaires changeraient la perception.' },
+  { emoji: '🇫🇷', titre: 'Mention "On parle francais"', detail: 'Virginie est francaise — c\'est un atout. Les voyageurs francophones seraient rassures.' },
+];
+
+function getScoreColor(score: number): string {
+  if (score >= 90) return '#22c55e';
+  if (score >= 50) return '#f59e0b';
+  return '#ef4444';
+}
+
+function getScoreTextClass(score: number): string {
+  if (score >= 90) return 'text-green-600';
+  if (score >= 50) return 'text-amber-500';
+  return 'text-red-500';
+}
+
+function getScoreLabel(score: number): string {
+  if (score >= 90) return 'Bon';
+  if (score >= 50) return 'A ameliorer';
+  return 'Mauvais';
+}
+
+function getCwvBg(status: string): string {
+  if (status === 'good') return 'bg-green-50';
+  if (status === 'medium') return 'bg-amber-50';
+  return 'bg-red-50';
+}
+
+function getCwvText(status: string): string {
+  if (status === 'good') return 'text-green-700';
+  if (status === 'medium') return 'text-amber-700';
+  return 'text-red-700';
+}
+
+function getCwvBadge(status: string): string {
+  if (status === 'good') return 'bg-green-100 text-green-800';
+  if (status === 'medium') return 'bg-amber-100 text-amber-800';
+  return 'bg-red-100 text-red-800';
+}
+
+function getCwvLabel(status: string): string {
+  if (status === 'good') return 'Bon';
+  if (status === 'medium') return 'Moyen';
+  return 'Lent';
+}
+
+function getBarColor(taux: number): string {
+  if (taux >= 60) return 'bg-green-500';
+  if (taux >= 30) return 'bg-amber-500';
+  return 'bg-red-400';
+}
+
+const psLabels: Record<string, string> = { performance: 'Performance', accessibility: 'Accessibilite', bestPractices: 'Bonnes Pratiques', seo: 'SEO' };
+---
+
+<BaseLayout
+  title={`Audit UX + Technique — ${prospect.name}`}
+  description={`Rapport d'audit complet du site ${prospect.url} : 20 personas, scores techniques, ameliorations priorisees.`}
+  noindex={true}
+  lang="fr"
+  frPath={`/audit/taoni-kohtao`}
+>
+
+<!-- HERO -->
+<section class="bg-primary-900 text-white py-16 md:py-20">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+    <span class="inline-block text-[11px] font-semibold uppercase tracking-wider bg-white/10 backdrop-blur px-3 py-1 rounded-full mb-6">
+      Rapport confidentiel
+    </span>
+    <h1 class="font-heading text-3xl md:text-4xl lg:text-5xl font-bold mb-4">
+      Audit UX + Technique
+    </h1>
+    <p class="text-xl md:text-2xl text-primary-200 font-medium mb-2">{prospect.name}</p>
+    <p class="text-primary-300 mb-6">{prospect.activity} — {prospect.location}</p>
+    <div class="flex flex-wrap gap-2 text-xs">
+      <span class="bg-white/10 px-3 py-1.5 rounded-lg">20 personas simulees</span>
+      <span class="bg-white/10 px-3 py-1.5 rounded-lg">7 canaux d'arrivee</span>
+      <span class="bg-white/10 px-3 py-1.5 rounded-lg">{prospect.date}</span>
+      <a href={prospect.url} target="_blank" rel="noopener" class="bg-white/10 px-3 py-1.5 rounded-lg hover:bg-white/20 transition-colors">{prospect.url}</a>
+    </div>
+  </div>
+</section>
+
+<!-- TAB BAR -->
+<nav class="sticky top-16 md:top-20 z-40 bg-white/95 backdrop-blur border-b border-neutral-200" id="tab-bar">
+  <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-2 h-12 text-sm overflow-x-auto">
+    <button data-tab="0" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-primary-700 bg-primary-50">Synthese</button>
+    <button data-tab="1" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">Technique</button>
+    <button data-tab="2" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">
+      Visiteurs <span class="ml-1 text-xs text-neutral-400">20</span>
+    </button>
+    <button data-tab="3" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">
+      Ameliorations <span class="ml-1 text-xs text-neutral-400">{ameliorationsCritiques.length + ameliorationsUtiles.length + ameliorationsDiscuter.length}</span>
+    </button>
+  </div>
+</nav>
+
+<!-- PANELS -->
+<div id="panels" class="flex overflow-x-auto snap-x snap-mandatory" style="-webkit-overflow-scrolling: touch; scrollbar-width: none;">
+
+  <!-- ==================== PANEL 1: SYNTHESE ==================== -->
+  <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+      <!-- KPI Cards -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+        <div class="bg-white border border-neutral-200 rounded-xl p-5 text-center">
+          <p class="text-3xl font-bold text-red-500">{kpis.conversion}%</p>
+          <p class="text-xs text-neutral-500 mt-1">Taux de conversion</p>
+        </div>
+        <div class="bg-white border border-neutral-200 rounded-xl p-5 text-center">
+          <p class="text-3xl font-bold text-amber-500">{kpis.experience}/10</p>
+          <p class="text-xs text-neutral-500 mt-1">Experience moyenne</p>
+        </div>
+        <div class="bg-white border border-neutral-200 rounded-xl p-5 text-center">
+          <p class="text-3xl font-bold text-amber-500">{kpis.confiance}/10</p>
+          <p class="text-xs text-neutral-500 mt-1">Confiance moyenne</p>
+        </div>
+        <div class="bg-white border border-neutral-200 rounded-xl p-5 text-center">
+          <p class="text-3xl font-bold text-amber-500">{kpis.clarte}/10</p>
+          <p class="text-xs text-neutral-500 mt-1">Clarte moyenne</p>
+        </div>
+      </div>
+
+      <!-- Paradoxe -->
+      <div class="bg-accent-50 border border-accent-200 rounded-xl p-5 mb-10">
+        <p class="text-sm font-semibold text-accent-800 mb-1">Le paradoxe principal</p>
+        <p class="text-sm text-accent-700">{paradox}</p>
+      </div>
+
+      <!-- Conversion par canal -->
+      <h2 class="font-heading text-xl font-bold text-neutral-900 mb-4">Conversion par canal d'arrivee</h2>
+      <div class="space-y-3 mb-10">
+        {conversionByCanal.map(c => (
+          <div class="flex items-center gap-3">
+            <span class="text-sm text-neutral-700 w-44 shrink-0">{c.canal}</span>
+            <div class="flex-1 bg-neutral-100 rounded-full h-5 overflow-hidden">
+              <div class={`h-full rounded-full ${getBarColor(c.taux)}`} style={`width: ${Math.max(c.taux, 2)}%`}></div>
+            </div>
+            <span class={`text-sm font-bold w-12 text-right ${c.taux >= 60 ? 'text-green-600' : c.taux >= 30 ? 'text-amber-600' : 'text-red-500'}`}>{c.taux}%</span>
+          </div>
+        ))}
+      </div>
+
+      <!-- Conversion par maturite -->
+      <h2 class="font-heading text-xl font-bold text-neutral-900 mb-4">Conversion par maturite</h2>
+      <div class="grid grid-cols-3 gap-4 mb-10">
+        {conversionByMaturite.map(m => (
+          <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
+            <p class="text-sm font-medium text-neutral-600 mb-1">{m.label}</p>
+            <p class={`text-2xl font-bold ${m.taux >= 50 ? 'text-green-600' : m.taux >= 20 ? 'text-amber-500' : 'text-red-500'}`}>{m.taux}%</p>
+            <p class="text-xs text-neutral-400 mt-1">{m.convertis}/{m.total} personas</p>
+          </div>
+        ))}
+      </div>
+      <div class="bg-red-50 border border-red-200 rounded-xl p-4 mb-10">
+        <p class="text-sm text-red-800"><strong>Alerte :</strong> le site ne convertit que 12.5% des visiteurs en mode comparaison. C'est le segment le plus strategique — ce sont les visiteurs qui hesitent entre vous et un concurrent.</p>
+      </div>
+
+      <!-- Conversion par device -->
+      <h2 class="font-heading text-xl font-bold text-neutral-900 mb-4">Conversion par device</h2>
+      <div class="grid grid-cols-3 gap-4">
+        {conversionByDevice.map(d => (
+          <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
+            <p class="text-sm font-medium text-neutral-600 mb-1">{d.label}</p>
+            <p class={`text-2xl font-bold ${d.taux >= 50 ? 'text-green-600' : d.taux >= 20 ? 'text-amber-500' : 'text-red-500'}`}>{d.taux}%</p>
+            <p class="text-xs text-neutral-400 mt-1">{d.convertis}/{d.total} personas</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== PANEL 2: TECHNIQUE ==================== -->
+  <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+      <!-- PageSpeed Mobile -->
+      <h2 class="font-heading text-xl font-bold text-neutral-900 mb-6">PageSpeed — Mobile</h2>
+      <div class="grid grid-cols-4 gap-4 mb-8">
+        {Object.entries(pagespeed.mobile).map(([key, score]) => (
+            <div class="text-center">
+              <div class="relative w-16 h-16 mx-auto mb-2">
+                <svg class="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3" />
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={getScoreColor(score)} stroke-width="3" stroke-dasharray={`${score}, 100`} stroke-linecap="round" />
+                </svg>
+                <span class={`absolute inset-0 flex items-center justify-center text-lg font-bold ${getScoreTextClass(score)}`}>{score}</span>
+              </div>
+              <p class="text-xs text-neutral-600 font-medium">{psLabels[key]}</p>
+            </div>
+          ))}
+      </div>
+
+      <!-- PageSpeed Desktop -->
+      <h2 class="font-heading text-xl font-bold text-neutral-900 mb-6">PageSpeed — Desktop</h2>
+      <div class="grid grid-cols-4 gap-4 mb-10">
+        {Object.entries(pagespeed.desktop).map(([key, score]) => (
+            <div class="text-center">
+              <div class="relative w-16 h-16 mx-auto mb-2">
+                <svg class="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3" />
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={getScoreColor(score)} stroke-width="3" stroke-dasharray={`${score}, 100`} stroke-linecap="round" />
+                </svg>
+                <span class={`absolute inset-0 flex items-center justify-center text-lg font-bold ${getScoreTextClass(score)}`}>{score}</span>
+              </div>
+              <p class="text-xs text-neutral-600 font-medium">{psLabels[key]}</p>
+            </div>
+          ))}
+      </div>
+
+      <!-- Core Web Vitals -->
+      <h2 class="font-heading text-xl font-bold text-neutral-900 mb-4">Core Web Vitals</h2>
+      <div class="grid md:grid-cols-2 gap-3 mb-10">
+        {coreWebVitals.map(cwv => (
+          <div>
+            <p class="text-[10px] text-neutral-400 mb-1 font-medium">MOBILE</p>
+            <div class={`flex items-center justify-between p-3 rounded-lg ${getCwvBg(cwv.mobileStatus)} mb-1`}>
+              <div>
+                <span class="text-xs font-bold text-neutral-700">{cwv.name}</span>
+                <span class="text-xs text-neutral-500 ml-1">({cwv.desc})</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class={`text-sm font-bold ${getCwvText(cwv.mobileStatus)}`}>{cwv.mobile}</span>
+                <span class={`text-[10px] px-1.5 py-0.5 rounded font-medium ${getCwvBadge(cwv.mobileStatus)}`}>{getCwvLabel(cwv.mobileStatus)}</span>
+              </div>
+            </div>
+            <p class="text-[10px] text-neutral-400 mb-1 font-medium">DESKTOP</p>
+            <div class={`flex items-center justify-between p-3 rounded-lg ${getCwvBg(cwv.desktopStatus)}`}>
+              <div>
+                <span class="text-xs font-bold text-neutral-700">{cwv.name}</span>
+              </div>
+              <div class="flex items-center gap-2">
+                <span class={`text-sm font-bold ${getCwvText(cwv.desktopStatus)}`}>{cwv.desktop}</span>
+                <span class={`text-[10px] px-1.5 py-0.5 rounded font-medium ${getCwvBadge(cwv.desktopStatus)}`}>{getCwvLabel(cwv.desktopStatus)}</span>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Observatory -->
+      <h2 class="font-heading text-xl font-bold text-neutral-900 mb-4">Securite HTTP</h2>
+      <div class="flex items-center gap-4 p-4 rounded-xl border border-red-200 bg-red-50 mb-4">
+        <div class="text-3xl font-black text-red-600">{observatory.grade}</div>
+        <div>
+          <p class="text-sm font-semibold text-neutral-900">Mozilla Observatory</p>
+          <p class="text-xs text-neutral-500">{observatory.testsPassed}/{observatory.testsTotal} tests passes — Score {observatory.score}/100</p>
+        </div>
+      </div>
+      <p class="text-sm text-neutral-600 mb-3">En clair : votre site manque de protections de securite basiques. Les headers suivants sont absents :</p>
+      <div class="grid grid-cols-2 gap-2 mb-10">
+        {missingHeaders.map(h => (
+          <div class="flex items-center gap-2 py-1.5">
+            <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            <span class="text-sm text-neutral-500">{h}</span>
+          </div>
+        ))}
+      </div>
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 mb-10">
+        <p class="text-sm text-amber-800"><strong>PHP 7.4</strong> — Votre site tourne sur une version de PHP qui n'est plus maintenue depuis novembre 2022. Cela signifie qu'aucune faille de securite ne sera corrigee.</p>
+      </div>
+
+      <!-- Schema.org -->
+      <h2 class="font-heading text-xl font-bold text-neutral-900 mb-4">Donnees structurees (Schema.org)</h2>
+      <p class="text-sm text-neutral-600 mb-3">Les donnees structurees aident Google a comprendre votre activite. Voici ce que votre site communique :</p>
+      <div class="grid grid-cols-1 sm:grid-cols-2 gap-1 mb-10">
+        {schemaChecks.map(s => (
+          <div class="flex items-center gap-2 py-1.5">
+            {s.present ? (
+              <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            ) : (
+              <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            )}
+            <span class={`text-sm ${s.present ? 'text-neutral-700' : 'text-neutral-400 line-through'}`}>{s.label}</span>
+          </div>
+        ))}
+      </div>
+
+      <!-- Open Graph -->
+      <h2 class="font-heading text-xl font-bold text-neutral-900 mb-4">Open Graph (partage reseaux sociaux)</h2>
+      <p class="text-sm text-neutral-600 mb-3">Quand quelqu'un partage votre site sur WhatsApp, Facebook ou LinkedIn, voici ce qui s'affiche : rien. Aucun tag Open Graph n'est configure.</p>
+      <div class="grid grid-cols-2 sm:grid-cols-4 gap-1 mb-10">
+        {ogChecks.map(o => (
+          <div class="flex items-center gap-2 py-1.5">
+            <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            <span class="text-sm text-neutral-400 line-through">{o.label}</span>
+          </div>
+        ))}
+      </div>
+
+      <!-- SEO technique -->
+      <h2 class="font-heading text-xl font-bold text-neutral-900 mb-4">SEO technique</h2>
+      <div class="space-y-1 mb-6">
+        {seoChecks.map(s => (
+          <div class={`flex items-center gap-2 py-1.5 ${s.critical ? 'bg-red-50 -mx-2 px-2 rounded-lg' : ''}`}>
+            {s.present ? (
+              <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            ) : (
+              <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            )}
+            <span class={`text-sm ${s.present ? 'text-neutral-700' : s.critical ? 'text-red-700 font-semibold' : 'text-neutral-400 line-through'}`}>{s.label}</span>
+            {s.critical && <span class="text-[10px] bg-red-100 text-red-700 px-1.5 py-0.5 rounded font-bold">CRITIQUE</span>}
+          </div>
+        ))}
+      </div>
+
+      <!-- Opportunities -->
+      <h2 class="font-heading text-xl font-bold text-neutral-900 mb-4">Opportunites d'amelioration (Lighthouse)</h2>
+      <div class="space-y-2">
+        {opportunities.map(o => (
+          <div class="flex items-center justify-between p-3 bg-neutral-50 rounded-lg">
+            <span class="text-sm text-neutral-700">{o.title}</span>
+            <span class="text-xs font-medium text-accent-600 bg-accent-50 px-2 py-1 rounded">{o.savings}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== PANEL 3: VISITEURS ==================== -->
+  <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+      <!-- Stats row -->
+      <div class="grid grid-cols-3 gap-4 mb-8">
+        <div class="bg-green-50 border border-green-200 rounded-xl p-4 text-center">
+          <p class="text-2xl font-bold text-green-600">{convertis.length}</p>
+          <p class="text-xs text-green-700">contactent</p>
+        </div>
+        <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-center">
+          <p class="text-2xl font-bold text-amber-600">{hesitent.length}</p>
+          <p class="text-xs text-amber-700">hesitent</p>
+        </div>
+        <div class="bg-neutral-50 border border-neutral-200 rounded-xl p-4 text-center">
+          <p class="text-2xl font-bold text-neutral-500">{quittent.length}</p>
+          <p class="text-xs text-neutral-600">repartent</p>
+        </div>
+      </div>
+
+      <!-- Convertis -->
+      <h3 class="font-heading text-lg font-bold text-green-700 mb-4">Ceux qui contactent ({convertis.length})</h3>
+      <div class="space-y-3 mb-10">
+        {convertis.map(p => (
+          <details class="group border border-green-200 bg-green-50/40 rounded-xl overflow-hidden">
+            <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+              <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                  <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                  <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                  <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                </div>
+                <p class="text-xs text-neutral-500 mb-2">{p.situation}</p>
+                <p class="text-xs text-neutral-600 mb-2.5">{p.contexte}</p>
+                <div class="flex flex-wrap items-center gap-1">
+                  {p.parcours.map((page, i) => (
+                    <Fragment>
+                      <span class="text-[10px] text-primary-700 bg-white border border-primary-100 px-1.5 py-0.5 rounded">{page}</span>
+                      {i < p.parcours.length - 1 && <span class="text-neutral-300 text-[10px]">›</span>}
+                    </Fragment>
+                  ))}
+                  <span class="text-[10px] bg-green-600 text-white px-1.5 py-0.5 rounded font-medium ml-0.5">Contacte</span>
+                </div>
+              </div>
+              <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <div class="px-4 pb-4 pt-0 border-t border-green-200 bg-white/50">
+              <div class="grid gap-3 text-xs mt-3">
+                <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.premierImpression}</p></div>
+                <div><p class="font-semibold text-neutral-700 mb-1">Question cle</p><p class="text-neutral-600 italic">"{p.questionCle}"</p><p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong> — {p.commentReponse}</p></div>
+                <div><p class="font-semibold text-neutral-700 mb-1">Impact technique</p><p class="text-neutral-600">{p.impactTechnique}</p></div>
+                <div class="flex gap-4">
+                  <div class="flex-1"><p class="font-semibold text-green-700 mb-1">Points positifs</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.pointsPositifs.map(pp => <li>{pp}</li>)}</ul></div>
+                  <div class="flex-1"><p class="font-semibold text-amber-700 mb-1">Frictions</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map(f => <li>{f}</li>)}</ul></div>
+                </div>
+                <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                  <div class="text-center"><span class={`block text-lg font-bold ${p.scores.exp >= 7 ? 'text-green-600' : p.scores.exp >= 5 ? 'text-amber-500' : 'text-red-500'}`}>{p.scores.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                  <div class="text-center"><span class={`block text-lg font-bold ${p.scores.conf >= 7 ? 'text-green-600' : p.scores.conf >= 5 ? 'text-amber-500' : 'text-red-500'}`}>{p.scores.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                  <div class="text-center"><span class={`block text-lg font-bold ${p.scores.clarte >= 7 ? 'text-green-600' : p.scores.clarte >= 5 ? 'text-amber-500' : 'text-red-500'}`}>{p.scores.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+                </div>
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+
+      <!-- Hesitent -->
+      <h3 class="font-heading text-lg font-bold text-amber-700 mb-4">Ceux qui hesitent ({hesitent.length})</h3>
+      <div class="space-y-3 mb-10">
+        {hesitent.map(p => (
+          <details class="group border border-amber-200 bg-amber-50/40 rounded-xl overflow-hidden">
+            <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+              <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                  <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                  <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                  <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                </div>
+                <p class="text-xs text-neutral-500 mb-2">{p.situation}</p>
+                <p class="text-xs text-neutral-600 mb-2.5">{p.contexte}</p>
+                <div class="flex flex-wrap items-center gap-1">
+                  {p.parcours.map((page, i) => (
+                    <Fragment>
+                      <span class="text-[10px] text-primary-700 bg-white border border-primary-100 px-1.5 py-0.5 rounded">{page}</span>
+                      {i < p.parcours.length - 1 && <span class="text-neutral-300 text-[10px]">›</span>}
+                    </Fragment>
+                  ))}
+                  <span class="text-[10px] bg-amber-500 text-white px-1.5 py-0.5 rounded font-medium ml-0.5">Hesite</span>
+                </div>
+              </div>
+              <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <div class="px-4 pb-4 pt-0 border-t border-amber-200 bg-white/50">
+              <div class="grid gap-3 text-xs mt-3">
+                <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.premierImpression}</p></div>
+                <div><p class="font-semibold text-neutral-700 mb-1">Question cle</p><p class="text-neutral-600 italic">"{p.questionCle}"</p><p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong> — {p.commentReponse}</p></div>
+                <div><p class="font-semibold text-neutral-700 mb-1">Impact technique</p><p class="text-neutral-600">{p.impactTechnique}</p></div>
+                <div class="flex gap-4">
+                  <div class="flex-1"><p class="font-semibold text-green-700 mb-1">Points positifs</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.pointsPositifs.map(pp => <li>{pp}</li>)}</ul></div>
+                  <div class="flex-1"><p class="font-semibold text-amber-700 mb-1">Frictions</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map(f => <li>{f}</li>)}</ul></div>
+                </div>
+                <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                  <div class="text-center"><span class={`block text-lg font-bold ${p.scores.exp >= 7 ? 'text-green-600' : p.scores.exp >= 5 ? 'text-amber-500' : 'text-red-500'}`}>{p.scores.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                  <div class="text-center"><span class={`block text-lg font-bold ${p.scores.conf >= 7 ? 'text-green-600' : p.scores.conf >= 5 ? 'text-amber-500' : 'text-red-500'}`}>{p.scores.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                  <div class="text-center"><span class={`block text-lg font-bold ${p.scores.clarte >= 7 ? 'text-green-600' : p.scores.clarte >= 5 ? 'text-amber-500' : 'text-red-500'}`}>{p.scores.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+                </div>
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+
+      <!-- Quittent -->
+      <h3 class="font-heading text-lg font-bold text-neutral-500 mb-4">Ceux qui repartent ({quittent.length})</h3>
+      <div class="space-y-3">
+        {quittent.map(p => (
+          <details class="group border border-neutral-200 bg-neutral-50/40 rounded-xl overflow-hidden">
+            <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+              <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                  <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                  <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                  <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                </div>
+                <p class="text-xs text-neutral-500 mb-2">{p.situation}</p>
+                <p class="text-xs text-neutral-600 mb-2.5">{p.contexte}</p>
+                <div class="flex flex-wrap items-center gap-1">
+                  {p.parcours.map((page, i) => (
+                    <Fragment>
+                      <span class="text-[10px] text-primary-700 bg-white border border-primary-100 px-1.5 py-0.5 rounded">{page}</span>
+                      {i < p.parcours.length - 1 && <span class="text-neutral-300 text-[10px]">›</span>}
+                    </Fragment>
+                  ))}
+                  <span class="text-[10px] bg-neutral-400 text-white px-1.5 py-0.5 rounded font-medium ml-0.5">Quitte</span>
+                </div>
+              </div>
+              <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <div class="px-4 pb-4 pt-0 border-t border-neutral-200 bg-white/50">
+              <div class="grid gap-3 text-xs mt-3">
+                <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.premierImpression}</p></div>
+                <div><p class="font-semibold text-neutral-700 mb-1">Question cle</p><p class="text-neutral-600 italic">"{p.questionCle}"</p><p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong> — {p.commentReponse}</p></div>
+                <div><p class="font-semibold text-neutral-700 mb-1">Impact technique</p><p class="text-neutral-600">{p.impactTechnique}</p></div>
+                <div class="flex gap-4">
+                  <div class="flex-1"><p class="font-semibold text-green-700 mb-1">Points positifs</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.pointsPositifs.map(pp => <li>{pp}</li>)}</ul></div>
+                  <div class="flex-1"><p class="font-semibold text-amber-700 mb-1">Frictions</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map(f => <li>{f}</li>)}</ul></div>
+                </div>
+                <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                  <div class="text-center"><span class={`block text-lg font-bold ${p.scores.exp >= 7 ? 'text-green-600' : p.scores.exp >= 5 ? 'text-amber-500' : 'text-red-500'}`}>{p.scores.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                  <div class="text-center"><span class={`block text-lg font-bold ${p.scores.conf >= 7 ? 'text-green-600' : p.scores.conf >= 5 ? 'text-amber-500' : 'text-red-500'}`}>{p.scores.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                  <div class="text-center"><span class={`block text-lg font-bold ${p.scores.clarte >= 7 ? 'text-green-600' : p.scores.clarte >= 5 ? 'text-amber-500' : 'text-red-500'}`}>{p.scores.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+                </div>
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ==================== PANEL 4: AMELIORATIONS ==================== -->
+  <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+      <!-- Le plus important -->
+      <h2 class="font-heading text-xl font-bold text-neutral-900 mb-6">Le plus important</h2>
+      <div class="space-y-4 mb-12">
+        {ameliorationsCritiques.map(a => (
+          <div class="bg-white border-2 border-red-200 rounded-xl p-5 shadow-sm">
+            <h4 class="font-semibold text-neutral-900 mb-2">{a.titre}</h4>
+            <p class="text-sm text-neutral-600 mb-3">{a.detail}</p>
+            <div class="bg-primary-50 rounded-lg px-3 py-2.5 flex items-start gap-2">
+              <svg class="w-4 h-4 text-primary-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+              <p class="text-xs text-primary-800">{a.action}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Utile aussi -->
+      <h2 class="font-heading text-xl font-bold text-neutral-900 mb-6">Utile aussi</h2>
+      <div class="grid md:grid-cols-2 gap-4 mb-12">
+        {ameliorationsUtiles.map(a => (
+          <div class="bg-white border border-neutral-200 rounded-xl p-4">
+            <h4 class="font-semibold text-neutral-900 text-sm mb-1.5">{a.titre}</h4>
+            <p class="text-xs text-neutral-600">{a.detail}</p>
+          </div>
+        ))}
+      </div>
+
+      <!-- A discuter ensemble -->
+      <h2 class="font-heading text-xl font-bold text-neutral-900 mb-6">A discuter ensemble</h2>
+      <div class="space-y-3 mb-12">
+        {ameliorationsDiscuter.map(a => (
+          <div class="bg-neutral-50 border border-neutral-200 rounded-xl p-4 flex gap-3">
+            <span class="text-lg shrink-0">{a.emoji}</span>
+            <div>
+              <h4 class="font-semibold text-neutral-900 text-sm mb-0.5">{a.titre}</h4>
+              <p class="text-xs text-neutral-600">{a.detail}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+</div>
+
+<!-- METHODOLOGIE -->
+<section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-neutral-200">
+  <h2 class="font-heading text-xl font-bold text-neutral-900 mb-4">Methodologie</h2>
+  <ol class="list-decimal list-inside space-y-2 text-sm text-neutral-600">
+    <li><strong>Scraping complet</strong> — Les 6 pages du site ont ete analysees : contenu, structure, meta-donnees, images, liens.</li>
+    <li><strong>Audit technique</strong> — Scores Lighthouse (mobile + desktop), Mozilla Observatory (securite), Schema.org, Open Graph, SEO technique.</li>
+    <li><strong>20 personas</strong> — Profils realistes couvrant 7 canaux d'arrivee, 3 niveaux de maturite, 3 types d'appareils, dont 3 personas negatifs et 3 arrivant via IA.</li>
+    <li><strong>Simulation de visites</strong> — Chaque persona parcourt le site avec ses attentes, ses criteres et ses freins. Le feedback tient compte des problemes techniques reels (vitesse, securite, SEO).</li>
+    <li><strong>Agregation</strong> — Les 20 feedbacks sont compiles en metriques (taux de conversion, scores moyens) et ameliorations priorisees par impact.</li>
+  </ol>
+</section>
+
+<!-- DOUBLE CTA -->
+<section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+  <h2 class="font-heading text-2xl md:text-3xl font-bold text-neutral-900 mb-4">
+    Pret a transformer ces insights en resultats ?
+  </h2>
+  <p class="text-neutral-600 mb-8 max-w-xl mx-auto">
+    Ce rapport identifie des opportunites concretes. Je peux construire un site qui convertit vraiment vos visiteurs en clients.
+  </p>
+  <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+    <a href="/commander" class="inline-flex items-center gap-2 px-8 py-3.5 bg-[var(--color-accent)] text-white font-semibold rounded-xl hover:bg-[var(--color-accent-hover)] transition-all shadow-md">
+      Commander un site
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+    </a>
+    <a href="/contact" class="inline-flex items-center gap-2 px-8 py-3.5 border border-neutral-300 text-neutral-700 font-semibold rounded-xl hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-all">
+      En discuter d'abord
+    </a>
+  </div>
+</section>
+
+<style is:inline>
+  #panels { -ms-overflow-style: none; }
+  #panels::-webkit-scrollbar { display: none; }
+</style>
+
+<script is:inline>
+  const panels = document.getElementById('panels');
+  const tabs = document.querySelectorAll('.tab-btn');
+  const sections = panels.querySelectorAll('.tab-panel');
+
+  function activateTab(index) {
+    tabs.forEach((b, i) => {
+      if (i === index) {
+        b.classList.remove('text-neutral-500');
+        b.classList.add('text-primary-700', 'bg-primary-50');
+      } else {
+        b.classList.remove('text-primary-700', 'bg-primary-50');
+        b.classList.add('text-neutral-500');
+      }
+    });
+  }
+
+  tabs.forEach((btn, i) => {
+    btn.addEventListener('click', () => {
+      sections[i].scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+      activateTab(i);
+    });
+  });
+
+  let scrollTimeout;
+  panels.addEventListener('scroll', () => {
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(() => {
+      const index = Math.round(panels.scrollLeft / panels.offsetWidth);
+      activateTab(index);
+    }, 50);
+  }, { passive: true });
+</script>
+
+</BaseLayout>
