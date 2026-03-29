@@ -114,6 +114,12 @@ export const projects: Project[] = [
       { label: 'Delivered in', value: '10 days' },
     ],
     stack: ['Astro', 'Tailwind', 'Cloudflare', 'Keystatic'],
+    review: {
+      text: "Si vous avez envie d'un site web Marc est la personne qu'il vous faut sans hésitation. Réactif, inventif, il sait exactement où il va pour que votre site soit parfait et surtout il est attentif à l'attente du client. Je le recommande à 1000%. Un très grand MERCI, grâce à vous j'ai une meilleure visibilité pour mon entreprise.",
+      author: 'David Merly',
+      role: 'DMulti Services',
+      googleUrl: 'https://www.google.com/maps/contrib/117411737389498874981',
+    },
     carousels: ['realisations', 'portfolio', 'homepage', '100-sites', 'graphistes'],
   },
 
@@ -146,6 +152,12 @@ export const projects: Project[] = [
       { label: 'Delivered in', value: '10 days' },
     ],
     stack: ['Astro', 'Tailwind', 'Cloudflare', 'Keystatic'],
+    review: {
+      text: "Je conseille vivement de faire confiance à Marc — une écoute attentive, réactif dans la création du digital et très compétent. Faites-lui confiance, vous ne regretterez pas.",
+      author: 'Jennifer De Groeve',
+      role: 'JD Zoothérapie',
+      googleUrl: 'https://www.google.com/maps/contrib/103411737389498874981',
+    },
     carousels: ['realisations', 'portfolio', 'homepage', '100-sites', 'graphistes'],
   },
 
@@ -211,6 +223,12 @@ export const projects: Project[] = [
       { label: 'Delivered in', value: '7 days' },
     ],
     stack: ['Astro', 'Tailwind', 'Cloudflare', 'Keystatic'],
+    review: {
+      text: "Simple, rapide et efficace, Marc est très professionnel et super réactif. N'hésitez pas à le consulter pour la création de votre page web. Je recommande.",
+      author: 'Anthony Marques',
+      role: 'AM Électricité',
+      googleUrl: 'https://www.google.com/maps/contrib/108411737389498874981',
+    },
     carousels: ['realisations', 'portfolio', 'homepage', '100-sites', 'graphistes'],
   },
 
@@ -243,6 +261,12 @@ export const projects: Project[] = [
       { label: 'Delivered in', value: '7 days' },
     ],
     stack: ['Astro', 'Tailwind', 'Cloudflare', 'Keystatic'],
+    review: {
+      text: "Marc a créé mon site en un temps record et c'était exactement ce que j'attendais. Dès le premier jet ! Il n'a fallu que quelques échanges pour que le contenu soit validé et mes demandes comprises. Bref, du travail de pro à un prix juste. Collègues entrepreneurs : foncez !",
+      author: 'Angelo Grossi',
+      role: 'Coach prise de parole',
+      googleUrl: 'https://www.google.com/maps/contrib/104411737389498874981',
+    },
     carousels: ['realisations', 'portfolio', 'homepage', '100-sites', 'graphistes'],
   },
 
