@@ -116,9 +116,7 @@ const faqItems = [
           <div class="relative mx-auto flex items-end justify-center" style="height: 340px; max-width: 900px;">
             {heroProjects.slice(0, 3).map((p, i) => (
               <a
-                href={p.url}
-                target="_blank"
-                rel="noopener noreferrer"
+                href={`/realisations#${p.id}`}
                 class={`hero-card group/card absolute overflow-hidden rounded-2xl border border-white/[0.08] shadow-2xl shadow-black/50 transition-all duration-500 hover:shadow-black/70 ${i === 1 ? 'hero-card-center z-20' : i === 0 ? 'hero-card-left z-10' : 'hero-card-right z-10'}`}
                 style={`--card-delay: ${i === 1 ? '0.5' : i === 0 ? '0.65' : '0.8'}s;`}
                 data-umami-event="hero-project-click"
@@ -158,9 +156,8 @@ const faqItems = [
             <div class="mobile-track flex gap-3" id="mobile-track" style="width: max-content;">
               {[...heroProjects, ...heroProjects].map((p, i) => (
                 <div
-                  class="mobile-card carousel-item shrink-0 w-[260px] overflow-hidden rounded-xl border border-white/[0.08] shadow-xl shadow-black/40 transition-all duration-300 cursor-pointer relative"
-                  style={`--card-i: ${i % heroProjects.length}`}
-                  data-url={p.url}
+                  class="carousel-item shrink-0 w-[260px] overflow-hidden rounded-xl border border-white/[0.08] shadow-xl shadow-black/40 transition-all duration-300 cursor-pointer relative"
+                  data-url={`/realisations#${p.id}`}
                   data-name={p.name}
                 >
                   <div class="relative overflow-hidden">
@@ -757,27 +754,8 @@ const faqItems = [
   }
 
   /* ── Mobile carousel ── */
-  .mobile-card {
-    opacity: 0;
-    transform: translateX(60px) scale(0.92);
-    animation: mobileSlide 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    animation-delay: calc(0.7s + var(--card-i, 0) * 0.06s);
-  }
-  @keyframes mobileSlide {
-    to { opacity: 1; transform: none; }
-  }
-
   .mobile-track {
-    animation: marquee 28s linear 2s infinite;
-  }
-  @keyframes marquee {
-    0% { transform: translateX(0); }
-    100% { transform: translateX(-50%); }
-  }
-
-  /* Paused state */
-  .mobile-track.paused {
-    animation-play-state: paused;
+    will-change: transform;
   }
   .carousel-item.active {
     border-color: rgba(232, 108, 71, 0.4);
@@ -875,54 +853,61 @@ const faqItems = [
     });
   });
 
-  // ── Mobile carousel: tap to pause, show CTA, resume ──
-  const track = document.getElementById('mobile-track');
+  // ── Mobile carousel: JS-driven scroll + tap to pause ──
+  const track = document.getElementById('mobile-track') as HTMLElement | null;
   const resumeBtn = document.getElementById('carousel-resume');
   const items = document.querySelectorAll<HTMLElement>('.carousel-item');
-  let activeCard: HTMLElement | null = null;
 
-  function pauseCarousel(card: HTMLElement) {
-    if (!track || !resumeBtn) return;
-    // Clear previous active
-    if (activeCard) activeCard.classList.remove('active');
-    // Pause track
-    track.classList.add('paused');
-    // Activate this card
-    card.classList.add('active');
-    activeCard = card;
-    // Set the CTA link
-    const overlay = card.querySelector('.carousel-overlay a');
-    if (overlay) {
-      overlay.setAttribute('href', card.dataset.url || '#');
-      overlay.setAttribute('target', '_blank');
-      overlay.setAttribute('rel', 'noopener noreferrer');
-    }
-    // Show resume button
-    resumeBtn.classList.remove('hidden');
-    resumeBtn.classList.add('flex');
-  }
+  if (track) {
+    let offset = 0;
+    let paused = false;
+    let activeCard: HTMLElement | null = null;
+    const speed = 0.5; // px per frame (~30px/s at 60fps)
+    const halfWidth = track.scrollWidth / 2;
 
-  function resumeCarousel() {
-    if (!track || !resumeBtn) return;
-    if (activeCard) activeCard.classList.remove('active');
-    activeCard = null;
-    track.classList.remove('paused');
-    resumeBtn.classList.add('hidden');
-    resumeBtn.classList.remove('flex');
-  }
-
-  items.forEach(card => {
-    card.addEventListener('click', (e) => {
-      // Don't intercept clicks on the CTA link itself
-      if ((e.target as HTMLElement).closest('.carousel-overlay a')) return;
-      e.preventDefault();
-      if (card.classList.contains('active')) {
-        resumeCarousel();
-      } else {
-        pauseCarousel(card);
+    function tick() {
+      if (!paused) {
+        offset -= speed;
+        if (Math.abs(offset) >= halfWidth) offset = 0;
+        track!.style.transform = `translateX(${offset}px)`;
       }
-    });
-  });
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
 
-  resumeBtn?.addEventListener('click', resumeCarousel);
+    function pauseOn(card: HTMLElement) {
+      if (activeCard) activeCard.classList.remove('active');
+      paused = true;
+      card.classList.add('active');
+      activeCard = card;
+      // Set the CTA link href
+      const link = card.querySelector('.carousel-overlay a');
+      if (link) link.setAttribute('href', card.dataset.url || '/realisations');
+      // Show resume button
+      resumeBtn?.classList.remove('hidden');
+      resumeBtn?.classList.add('flex');
+    }
+
+    function resume() {
+      if (activeCard) activeCard.classList.remove('active');
+      activeCard = null;
+      paused = false;
+      resumeBtn?.classList.add('hidden');
+      resumeBtn?.classList.remove('flex');
+    }
+
+    items.forEach(card => {
+      card.addEventListener('click', (e) => {
+        // Let the CTA link work normally
+        if ((e.target as HTMLElement).closest('.carousel-overlay a')) return;
+        if (card.classList.contains('active')) {
+          resume();
+        } else {
+          pauseOn(card);
+        }
+      });
+    });
+
+    resumeBtn?.addEventListener('click', resume);
+  }
 </script>
