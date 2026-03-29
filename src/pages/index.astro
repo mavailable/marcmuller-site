@@ -861,29 +861,56 @@ const faqItems = [
   if (track) {
     let offset = 0;
     let paused = false;
+    let dragging = false;
+    let dragStartX = 0;
+    let dragMoved = false;
     let activeCard: HTMLElement | null = null;
-    const speed = 0.7; // px per frame (~42px/s at 60fps)
+    const speed = 0.7;
     const halfWidth = track.scrollWidth / 2;
 
+    function wrap() {
+      if (offset > 0) offset -= halfWidth;
+      if (Math.abs(offset) >= halfWidth) offset += halfWidth;
+    }
+
     function tick() {
-      if (!paused) {
+      if (!paused && !dragging) {
         offset -= speed;
-        if (Math.abs(offset) >= halfWidth) offset = 0;
-        track!.style.transform = `translateX(${offset}px)`;
+        wrap();
       }
+      track!.style.transform = `translateX(${offset}px)`;
       requestAnimationFrame(tick);
     }
     requestAnimationFrame(tick);
 
+    // ── Touch / drag to scroll ──
+    track.addEventListener('touchstart', (e) => {
+      dragging = true;
+      dragMoved = false;
+      dragStartX = e.touches[0].clientX;
+    }, { passive: true });
+
+    track.addEventListener('touchmove', (e) => {
+      if (!dragging) return;
+      const dx = e.touches[0].clientX - dragStartX;
+      if (Math.abs(dx) > 4) dragMoved = true;
+      offset += dx;
+      wrap();
+      dragStartX = e.touches[0].clientX;
+    }, { passive: true });
+
+    track.addEventListener('touchend', () => {
+      dragging = false;
+    });
+
+    // ── Tap to pause / show CTA ──
     function pauseOn(card: HTMLElement) {
       if (activeCard) activeCard.classList.remove('active');
       paused = true;
       card.classList.add('active');
       activeCard = card;
-      // Set the CTA link href
       const link = card.querySelector('.carousel-overlay a');
       if (link) link.setAttribute('href', card.dataset.url || '/realisations');
-      // Show resume button
       resumeBtn?.classList.remove('hidden');
       resumeBtn?.classList.add('flex');
     }
@@ -898,8 +925,9 @@ const faqItems = [
 
     items.forEach(card => {
       card.addEventListener('click', (e) => {
-        // Let the CTA link work normally
         if ((e.target as HTMLElement).closest('.carousel-overlay a')) return;
+        // Ignore if user was dragging
+        if (dragMoved) return;
         if (card.classList.contains('active')) {
           resume();
         } else {
