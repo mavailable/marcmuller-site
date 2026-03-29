@@ -129,6 +129,37 @@ export function getArticleSchema(article: {
   };
 }
 
+export function getHowToSchema(howTo: {
+  name: string;
+  description: string;
+  totalTime?: string;
+  steps: { name: string; text: string; url?: string }[];
+}) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "HowTo",
+    "name": howTo.name,
+    "description": howTo.description,
+    ...(howTo.totalTime && { "totalTime": howTo.totalTime }),
+    "step": howTo.steps.map((step, index) => ({
+      "@type": "HowToStep",
+      "position": index + 1,
+      "name": step.name,
+      "text": step.text,
+      ...(step.url && { "url": step.url }),
+    })),
+    "author": {
+      "@type": "Person",
+      "name": business.owner
+    },
+    "publisher": {
+      "@type": "Organization",
+      "name": business.name,
+      "url": business.url
+    }
+  };
+}
+
 export function getBreadcrumbSchema(items: { name: string; url: string }[]) {
   return {
     "@context": "https://schema.org",
