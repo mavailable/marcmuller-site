@@ -863,7 +863,7 @@ const faqItems = [
     let paused = false;
     let dragging = false;
     let dragStartX = 0;
-    let dragMoved = false;
+    let dragOriginX = 0;
     let activeCard: HTMLElement | null = null;
     const speed = 0.7;
     const halfWidth = track.scrollWidth / 2;
@@ -886,14 +886,13 @@ const faqItems = [
     // ── Touch / drag to scroll ──
     track.addEventListener('touchstart', (e) => {
       dragging = true;
-      dragMoved = false;
       dragStartX = e.touches[0].clientX;
+      dragOriginX = dragStartX;
     }, { passive: true });
 
     track.addEventListener('touchmove', (e) => {
       if (!dragging) return;
       const dx = e.touches[0].clientX - dragStartX;
-      if (Math.abs(dx) > 4) dragMoved = true;
       offset += dx;
       wrap();
       dragStartX = e.touches[0].clientX;
@@ -926,8 +925,8 @@ const faqItems = [
     items.forEach(card => {
       card.addEventListener('click', (e) => {
         if ((e.target as HTMLElement).closest('.carousel-overlay a')) return;
-        // Ignore if user was dragging
-        if (dragMoved) return;
+        // Ignore if user swiped more than 10px (not a tap)
+        if (Math.abs(dragStartX - dragOriginX) > 10) return;
         if (card.classList.contains('active')) {
           resume();
         } else {
