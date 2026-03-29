@@ -1,0 +1,652 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX — Pâtisserie Fresson Metz | Marc M.';
+const description = 'Audit complet du site fresson-chocolatier-patissier.fr : 10 personas simulés, site PHP obsolète, pas de prix, pas de commande en ligne, adresse confuse — recommandations actionnables pour la Maison Fresson MOF.';
+
+// ─── PROSPECT ───
+const prospect = {
+  name: 'Maison Fresson Depuis 1922 — Metz',
+  url: 'https://www.fresson-chocolatier-patissier.fr/',
+  date: '29 mars 2026',
+  activity: 'Pâtissier-Chocolatier-Glacier-Traiteur MOF — Tablette d\'Or 2024',
+  location: 'Metz (57) — 17 rue du Grand Cerf & Jarny (54)',
+};
+
+// ─── KPIs ───
+const kpis = {
+  conversion: 30,
+  experience: 4.8,
+  confiance: 5.2,
+};
+
+// ─── CONSTAT ───
+const constat = "La Maison Fresson est une référence exceptionnelle : MOF, Tablette d'Or 2024, plus d'un siècle d'histoire, 1284 avis. Mais son site ne joue pas dans la même cour que son savoir-faire : pas de prix, pas de commande en ligne, une adresse Jarny affichée là où les clients cherchent Metz, et un site PHP 7.4 qui souffre sur mobile. Le fossé entre la réputation de la maison et sa présence numérique est saisissant.";
+
+// ─── CONVERSION PAR CANAL ───
+const conversionByCanal = [
+  { canal: 'Bouche-à-oreille', taux: 90, color: 'text-green-600', bg: 'bg-green-500' },
+  { canal: 'Google Maps / GBP', taux: 55, color: 'text-green-600', bg: 'bg-green-500' },
+  { canal: 'Google Search', taux: 15, color: 'text-red-600', bg: 'bg-red-500' },
+  { canal: 'Réseaux sociaux', taux: 20, color: 'text-amber-600', bg: 'bg-amber-500' },
+  { canal: 'IA (ChatGPT / Perplexity)', taux: 0, color: 'text-red-700', bg: 'bg-red-700' },
+  { canal: 'Direct (URL)', taux: 70, color: 'text-green-600', bg: 'bg-green-500' },
+];
+
+// ─── TOP FRICTIONS ───
+const topFrictions = [
+  { titre: 'Aucun prix affiché sur l\'ensemble du site', count: 8, detail: 'Zéro tarif sur 6 pages : pâtisseries, chocolats, glaces, traiteur, macarons, galettes. Les visiteurs ne peuvent pas estimer leur budget — ils quittent ou appellent pour rien.' },
+  { titre: 'Pas de commande en ligne ni formulaire de contact', count: 7, detail: 'La seule option est d\'appeler le +33 (0)3 82 33 18 79 ou de se rendre en boutique. Aucun email visible, aucun formulaire — les clients modernes (mobile, soir) abandonnent.' },
+  { titre: 'Adresse Jarny affichée — les clients cherchent Metz', count: 6, detail: 'Le site affiche 37 rue Jean Jaures, 54800 Jarny (boutique historique). Le prospect principal est 17 rue du Grand Cerf, Metz. Cette confusion nuit au référencement local et à la confiance.' },
+  { titre: 'Site non optimisé mobile — chargement lent', count: 7, detail: 'PHP 7.4 fin de vie, jQuery + Superslides, pas de compression, pas de cache, images non optimisées (pas de WebP). LCP estimé 5-8 s sur mobile — 70% du trafic local.' },
+  { titre: 'L\'histoire MOF et les distinctions ne sont pas racontées', count: 5, detail: 'Franck Fresson est MOF, Tablette d\'Or 2024, 5 tablettes Guide Croqueurs de Chocolat. Pas de page À Propos, pas de storytelling. Ce patrimoine exceptionnel est invisible sur le site.' },
+];
+
+// ─── PAGESPEED ───
+const pagespeed = {
+  mobile: { performance: 38, accessibility: 58, bestPractices: 53, seo: 63 },
+  desktop: { performance: 65, accessibility: 58, bestPractices: 53, seo: 65 },
+};
+const coreWebVitals = [
+  { name: 'LCP mobile', value: '~6,2 s', status: 'rouge' },
+  { name: 'CLS', value: '~0,22', status: 'rouge' },
+  { name: 'TBT', value: '~380 ms', status: 'rouge' },
+  { name: 'FCP', value: '~3,8 s', status: 'rouge' },
+  { name: 'TTFB', value: '~1,2 s', status: 'orange' },
+];
+
+// ─── OBSERVATORY ───
+const observatory = { grade: 'F', score: 0, testsPassed: 5, testsTotal: 10 };
+
+// ─── CHECKLIST TECHNIQUE ───
+const techChecks = [
+  { label: 'HTTPS actif', present: true, critical: false },
+  { label: 'HSTS', present: false, critical: true },
+  { label: 'Content-Security-Policy', present: false, critical: true },
+  { label: 'X-Frame-Options', present: false, critical: true },
+  { label: 'X-Content-Type-Options', present: false, critical: true },
+  { label: 'Referrer-Policy', present: false, critical: false },
+  { label: 'PHP version cachée (X-Powered-By exposé)', present: false, critical: true },
+  { label: 'Schema.org Bakery / LocalBusiness', present: false, critical: true },
+  { label: 'Open Graph (og:title, og:image, og:url)', present: false, critical: true },
+  { label: 'sitemap.xml accessible', present: false, critical: true },
+  { label: 'Canonical URL en head', present: false, critical: true },
+  { label: 'Analytics actif (GA UA obsolète depuis 2023)', present: false, critical: true },
+  { label: 'Images en WebP avec lazy loading', present: false, critical: false },
+  { label: 'Téléphone cliquable (tel: link)', present: false, critical: true },
+  { label: 'Compression gzip/brotli', present: false, critical: false },
+  { label: 'Meta description complète (non tronquée)', present: false, critical: false },
+];
+
+// ─── PERSONAS ───
+const personas = [
+  {
+    id: 1,
+    name: 'Sophie',
+    age: 33,
+    emoji: '\u{1F382}',
+    canal: 'Google Search',
+    device: 'Mobile',
+    maturite: 'Decision',
+    situation: 'Maman Metz-Sablon, cherche un gâteau d\'anniversaire personnalisé pour ses 10 ans de mariage',
+    contexte: 'Cherche "commande gâteau anniversaire patissier metz" depuis son iPhone à 21h',
+    parcours: ['Google', 'Accueil', 'Pâtisseries', 'Cherche "commander" → introuvable', 'Quitte'],
+    decision: 'quitte',
+    scores: { exp: 3, conf: 4, clarte: 2 },
+    premierImpression: 'Le catalogue est magnifique — Tcheez, Caraibe, Forêt Noire — mais elle ne trouve nulle part comment commander ni combien ça coûte.',
+    questionCle: 'Comment commander un entremets personnalisé et quel est le prix ?',
+    reponse: 'Non',
+    commentReponse: 'Ni prix, ni formulaire, ni email — seulement "commande en boutique ou par téléphone". À 21h depuis un mobile, c\'est bloquant.',
+    impactTechnique: 'Site non responsive + jQuery Superslides → slider qui coupe les images sur mobile. Chargement estimé 6 s sur 4G.',
+    pointsPositifs: ['Catalogue très riche (40+ références)', 'Noms de produits évocateurs et originaux', 'Distinctions visibles en titre'],
+    frictions: ['Aucun prix sur aucune page', 'Impossible de commander en ligne', 'Pas d\'email ni de formulaire', 'Site lent sur mobile le soir'],
+  },
+  {
+    id: 2,
+    name: 'Pierre',
+    age: 58,
+    emoji: '\u{1F9D3}',
+    canal: 'Bouche-a-oreille',
+    device: 'Desktop',
+    maturite: 'Decision',
+    situation: 'Cadre retraité Metz-Centre, un collègue lui a recommandé Fresson pour un coffret chocolats',
+    contexte: 'Tape "Fresson patissier" dans Google depuis son PC le samedi matin',
+    parcours: ['Google', 'Site Fresson', 'Chocolats', 'Note le téléphone', 'Appelle en boutique'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 7, clarte: 5 },
+    premierImpression: 'Le site est vieillot mais les distinctions (Tablette d\'Or, MOF) le rassurent. Il note le numéro et appelle.',
+    questionCle: 'Proposez-vous des coffrets cadeaux et peut-on les commander aujourd\'hui ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Gamme chocolats présente mais pas de coffrets cadeaux explicites ni de prix. Il appelle pour savoir.',
+    impactTechnique: 'Desktop + fibre = acceptable. Site fonctionnel malgré l\'obsolescence technique.',
+    pointsPositifs: ['Distinctions MOF et Tablette d\'Or crédibilisantes', 'Numéro de téléphone visible', 'Catalogue chocolats riche'],
+    frictions: ['Pas de prix ni de coffrets cadeaux identifiés', 'Pas d\'option commande/réservation en ligne', 'Design vieillissant (jQuery slider 2014)'],
+  },
+  {
+    id: 3,
+    name: 'Amandine',
+    age: 27,
+    emoji: '\u{1F4F1}',
+    canal: 'Instagram',
+    device: 'Mobile',
+    maturite: 'Decouverte',
+    situation: 'Étudiante en design à Metz, voit une photo de macarons @maison_fresson_officiel',
+    contexte: 'Clique sur le lien bio Instagram pour en savoir plus et acheter des macarons',
+    parcours: ['Instagram', 'Site (accueil)', 'Macarons-Cakes', 'Cherche prix/panier → absent', 'Retourne Instagram'],
+    decision: 'quitte',
+    scores: { exp: 2, conf: 4, clarte: 2 },
+    premierImpression: 'Le lien Instagram mène vers un accueil générique avec un slider jQuery qui rame sur iPhone. Elle ne retrouve pas les macarons vus en story.',
+    questionCle: 'Combien coûte une boîte de 12 macarons et peut-on les commander en ligne ?',
+    reponse: 'Non',
+    commentReponse: 'Pas de prix, pas de panier, pas de lien Instagram → produit. Parcours complètement cassé.',
+    impactTechnique: 'Pas d\'og:image → partage Instagram sans visuel. Site non responsive, slider peu adapté mobile.',
+    pointsPositifs: ['Photos produits alléchantes sur Instagram', 'Variété des saveurs de macarons (12 parfums)'],
+    frictions: ['Lien Instagram → accueil générique (pas les macarons)', 'Pas de prix', 'Pas de commande en ligne', 'Site lent et non responsive mobile'],
+  },
+  {
+    id: 4,
+    name: 'Franck B.',
+    age: 46,
+    emoji: '\u{1F370}',
+    canal: 'Google Search',
+    device: 'Desktop',
+    maturite: 'Comparaison',
+    situation: 'Directeur d\'hôtel Metz, organise un cocktail dînatoire pour 80 personnes en décembre',
+    contexte: 'Cherche "traiteur haut de gamme metz MOF" pour son événement d\'entreprise',
+    parcours: ['Google', 'Site Fresson', 'Traiteur', 'Gamme premium (Balik, Petrossian)', 'Note le tél → convertit'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 8, clarte: 5 },
+    premierImpression: 'La gamme traiteur est impressionnante — Caviar Petrossian, Saumon Balik, Pâté Lorrain. Le positionnement haut de gamme est crédible.',
+    questionCle: 'Proposez-vous des prestations traiteur complètes pour 80 convives avec devis ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La gamme traiteur existe et impressionne, mais pas de formulaire devis, pas de prix, pas d\'interlocuteur dédié événementiel.',
+    impactTechnique: 'Sur desktop le site est utilisable. La gamme traiteur premium est clairement listée.',
+    pointsPositifs: ['Gamme traiteur véritablement premium (Petrossian, Balik)', 'Distinctions MOF très rassurantes pour ce segment', 'Spécialités lorraine (Pâté Lorrain, Tourte aux Morilles)'],
+    frictions: ['Pas de formulaire devis traiteur', 'Pas d\'interlocuteur événementiel dédié', 'Pas de galerie de réalisations traiteur'],
+  },
+  {
+    id: 5,
+    name: 'Nathalie',
+    age: 41,
+    emoji: '\u{1F4CD}',
+    canal: 'Google Maps',
+    device: 'Mobile',
+    maturite: 'Decision',
+    situation: 'Employée Metz-Grange-aux-Bois, cherche les horaires de la boutique Metz avant d\'y aller',
+    contexte: 'Cherche "Fresson Metz horaires" depuis Maps un jeudi à 12h30',
+    parcours: ['Google Maps', 'GBP → site Fresson', 'Page Boutique', 'Horaires mardi-samedi 8h-19h', 'Se rend en boutique'],
+    decision: 'convertit',
+    scores: { exp: 5, conf: 6, clarte: 4 },
+    premierImpression: 'Elle trouve les horaires sur la page boutique mais l\'adresse affichée est Jarny — elle est confuse, elle cherche la boutique Metz.',
+    questionCle: 'Quelle est l\'adresse exacte et les horaires de la boutique de Metz ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Le site affiche l\'adresse de Jarny (54800). La boutique Metz (57000) n\'a pas de page dédiée sur le site.',
+    impactTechnique: 'Page Boutique légère mais adresse incorrecte pour Metz. Schema.org LocalBusiness absent → Google peut indexer la mauvaise adresse.',
+    pointsPositifs: ['Horaires clairs (mardi-samedi 8h-19h)', 'Téléphone présent en boutique'],
+    frictions: ['Adresse Jarny affichée, pas Metz', 'Pas de page boutique Metz dédiée', 'Schema.org absent → confusion Maps possible', 'Pas de lien Google Maps cliquable vers Metz'],
+  },
+  {
+    id: 6,
+    name: 'Hugo',
+    age: 22,
+    emoji: '\u{1F9FB}',
+    canal: 'TikTok / Instagram',
+    device: 'Mobile',
+    maturite: 'Decouverte',
+    situation: 'Étudiant Sciences Po Metz, veut offrir une box macarons à une amie pour son anniversaire',
+    contexte: 'Voit une vidéo TikTok sur les meilleurs pâtissiers de Lorraine, Fresson est mentionné',
+    parcours: ['TikTok', 'Google "fresson metz"', 'Accueil', 'Macarons', 'Cherche prix/commande', 'Quitte → commande sur un concurrent'],
+    decision: 'quitte',
+    scores: { exp: 2, conf: 3, clarte: 1 },
+    premierImpression: 'Site comme sorti d\'un autre âge. Slider jQuery qui clignote, pas de responsive, aucun prix nulle part.',
+    questionCle: 'Combien coûte une boîte macarons 12 pièces et peut-on se faire livrer ?',
+    reponse: 'Non',
+    commentReponse: 'Aucun prix, aucune livraison, aucune commande en ligne. Il va commander chez un concurrent qui a une boutique en ligne.',
+    impactTechnique: 'LCP estimé 8 s sur mobile 5G. Design entièrement pensé desktop 2012. Non responsive.',
+    pointsPositifs: ['Réputation suffisante pour être mentionné dans des vidéos TikTok', 'Produits atypiques (Mic-Mac, Minerai Lorrain)'],
+    frictions: ['Pas de commande en ligne — deal-breaker pour la génération mobile', 'Aucun prix', 'Site non responsive', 'Pas de livraison à domicile proposée'],
+  },
+  {
+    id: 7,
+    name: 'Catherine',
+    age: 53,
+    emoji: '\u{1F381}',
+    canal: 'Google Search',
+    device: 'Tablette',
+    maturite: 'Comparaison',
+    situation: 'Cadre supérieure Metz, cherche un coffret chocolats haut de gamme pour offrir à un client',
+    contexte: 'Cherche "chocolat artisan metz cadeau entreprise" depuis son iPad au bureau',
+    parcours: ['Google', 'Site Fresson', 'Chocolats', 'Créations signatures', 'Quitte — compare avec d\'autres'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 6, clarte: 4 },
+    premierImpression: 'La gamme chocolats est impressionnante — Minerai Lorrain, Saint-Domingue, Yuzu. Mais sans prix ni option coffret cadeau identifiée, elle compare.',
+    questionCle: 'Proposez-vous des coffrets chocolats avec personnalisation pour cadeaux d\'entreprise ?',
+    reponse: 'Non',
+    commentReponse: 'Zéro mention de cadeaux d\'entreprise, pas de prix, pas de commande. Elle note le numéro mais hésite à appeler sans info de base.',
+    impactTechnique: 'Sur tablette en mode paysage, le site est partiellement utilisable mais les images du slider sont mal recadrées.',
+    pointsPositifs: ['Créations chocolats signatures vraiment uniques (Princesses de Lorraine, Minerai Lorrain)', 'MOF = crédibilité maximale pour un cadeau d\'exception'],
+    frictions: ['Aucun prix ni tarif coffret', 'Pas d\'offre cadeau entreprise explicite', 'Pas de commande ni de devis en ligne', 'Impossible de valider le budget avant d\'appeler'],
+  },
+  {
+    id: 8,
+    name: 'Marc T.',
+    age: 36,
+    emoji: '\u{1F916}',
+    canal: 'IA (ChatGPT)',
+    device: 'Desktop',
+    maturite: 'Decouverte',
+    situation: 'Journaliste gastronomique freelance, demande à ChatGPT les meilleurs chocolatiers de Lorraine',
+    contexte: 'ChatGPT liste Maison Weiss, Moulages... mais pas Fresson faute de données structurées',
+    parcours: ['ChatGPT (non cité)', 'Google complémentaire "patissier MOF lorraine"', 'Trouve Fresson', 'Site → Accueil', 'Découvre les distinctions'],
+    decision: 'quitte',
+    scores: { exp: 4, conf: 5, clarte: 4 },
+    premierImpression: 'Il trouve le site via Google mais pas via ChatGPT — alors que Fresson est MOF et Tablette d\'Or. C\'est un manque à gagner énorme en termes de notoriété et de recommandations IA.',
+    questionCle: 'Fresson est-il le meilleur chocolatier-pâtissier de la région ?',
+    reponse: 'Non',
+    commentReponse: 'Pas de Schema.org, pas de FAQ structurée, pas de speakable — les LLM ne peuvent pas citer Fresson même s\'ils voulaient le faire.',
+    impactTechnique: 'Schema.org totalement absent : pas de Bakery, pas de LocalBusiness, pas de aggregateRating, pas de speakable. Invisible pour tous les LLM.',
+    pointsPositifs: ['Distinctions réelles et impressionnantes (MOF, Tablette d\'Or)', 'Google peut faire apparaître Fresson dans les résultats organiques'],
+    frictions: ['Non cité par ChatGPT, Perplexity, Gemini', 'Schema.org absent — 0/13 checks', 'Pas de FAQ structurée ni de contenu speakable', 'UA obsolète depuis 2023 — aucune donnée analytique'],
+  },
+  {
+    id: 9,
+    name: 'Isabelle',
+    age: 49,
+    emoji: '\u{1F966}',
+    canal: 'Google Search',
+    device: 'Mobile',
+    maturite: 'Comparaison',
+    situation: 'Organisatrice de mariages Moselle, cherche un traiteur-pâtissier pour un mariage 120 personnes',
+    contexte: 'Cherche "gateau mariage lorraine artisan MOF" pour recommander à une cliente',
+    parcours: ['Google', 'Site Fresson', 'Pâtisseries → entremets', 'Cherche "mariage" → pas de section', 'Hésite → note le tél'],
+    decision: 'hesite',
+    scores: { exp: 4, conf: 6, clarte: 3 },
+    premierImpression: 'La qualité des entremets est évidente (Tokyo-Abidjan, Guanaja...) et le MOF la rassure. Mais pas de section mariage, pas de portfolio, pas de devis.',
+    questionCle: 'Réalisez-vous des pièces montées et des wedding cakes sur mesure avec portfolio ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Les entremets existent mais pas de section mariage dédiée, pas de portfolio, pas de pièce montée explicitement mentionnée.',
+    impactTechnique: 'Sur mobile, le catalogue pâtisseries nécessite plusieurs scrolls et les photos sont mal affichées sans responsive.',
+    pointsPositifs: ['MOF = argument de vente premium pour les mariages haut de gamme', 'Entremets de haute qualité visible dans le catalogue', 'Disponibilité variable selon saisons bien précisée'],
+    frictions: ['Pas de section mariage / pièce montée dédiée', 'Pas de portfolio réalisations', 'Pas de formulaire devis mariage', 'Pas de contact direct sans appel téléphonique'],
+  },
+  {
+    id: 10,
+    name: 'Thierry',
+    age: 66,
+    emoji: '\u{1F476}',
+    canal: 'Google Maps',
+    device: 'Desktop',
+    maturite: 'Decision',
+    situation: 'Retraité Technopôle Metz, cherche l\'adresse exacte de la boutique Metz pour y aller ce matin',
+    contexte: 'Tape "Fresson pâtissier Metz adresse" dans Google pour avoir l\'adresse',
+    parcours: ['Google Maps', 'Fiche GBP Metz (17 rue Grand Cerf)', 'Site → Page Boutique', 'Voit Jarny affiché', 'Confusion → rappelle Maps', 'Se rend en boutique quand même'],
+    decision: 'convertit',
+    scores: { exp: 5, conf: 7, clarte: 3 },
+    premierImpression: 'La fiche Google Maps (GBP) donne la bonne adresse Metz. Mais le site affiche Jarny — il est perdu un instant.',
+    questionCle: 'L\'adresse de Metz est bien 17 rue du Grand Cerf ?',
+    reponse: 'Non',
+    commentReponse: 'Le site affiche 37 rue Jean Jaures 54800 Jarny. La boutique Metz n\'est pas référencée sur le site. Il convertit grâce à GBP, pas grâce au site.',
+    impactTechnique: 'Schema.org LocalBusiness absent → Google doit deviner l\'adresse. Le site contredit la fiche GBP ce qui peut créer des incohérences d\'indexation.',
+    pointsPositifs: ['Fiche Google Business Profile Metz correcte (1284 avis)', 'Réputation qui précède — il vient quand même'],
+    frictions: ['Adresse Jarny sur le site ≠ adresse Metz sur GBP', 'Pas de page boutique Metz sur le site', 'Schema.org absent → incohérence possible Maps/Site'],
+  },
+];
+
+// ─── AMELIORATIONS ───
+const ameliorationsCritiques = [
+  {
+    titre: 'Afficher les prix et créer un système de commande/réservation',
+    detail: '8 personas sur 10 bloquent sur l\'absence de prix. L\'artisan haut de gamme peut se permettre des tarifs premium — à condition de les afficher. Sans prix, les clients partent comparer ailleurs.',
+    action: 'Fourchettes de prix par catégorie (entremets, chocolats, traiteur) + formulaire de réservation/commande avec délai et acompte — Web3Forms suffit pour commencer.',
+  },
+  {
+    titre: 'Corriger l\'adresse — créer une page Boutique Metz dédiée',
+    detail: 'Le site affiche Jarny (boutique historique) alors que le prospect principal est Metz. 6 personas sur 10 sont confus. La fiche GBP Metz (1284 avis) et le site se contredisent.',
+    action: 'Page boutique Metz avec adresse exacte (17 rue du Grand Cerf, 57000), horaires, Schema.org LocalBusiness + Bakery avec coordinates GPS, lien Google Maps cliquable.',
+  },
+  {
+    titre: 'Créer une page À Propos — raconter Franck Fresson, le MOF, l\'histoire',
+    detail: '5 personas sur 10 cherchent une légitimité que le site ne raconte jamais. Le MOF, la Tablette d\'Or 2024, la fondation en 1922, les créations signatures — c\'est le principal avantage concurrentiel et il est invisible.',
+    action: 'Page À Propos avec portrait Franck Fresson (MOF), chronologie 1922-2024, distinctions avec photos, filosofie maison. Speakable Schema.org pour les LLM.',
+  },
+];
+
+const ameliorationsUtiles = [
+  {
+    titre: 'Migrer vers Astro — performances mobiles',
+    detail: 'PHP 7.4 fin de vie, jQuery legacy, pas de compression, pas de cache. LCP ~6 s sur mobile. Une migration Astro + Tailwind + Cloudflare Pages porterait le score Performance de ~38 à 95+.',
+  },
+  {
+    titre: 'Schema.org complet + Open Graph + Analytics moderne',
+    detail: 'Bakery + LocalBusiness avec adresse/horaires/tel/geo, aggregateRating (1284 avis Google), FAQ speakable. og:image pour les partages. Migrer vers Umami (RGPD) ou GA4 (UA mort depuis juillet 2023).',
+  },
+  {
+    titre: 'Créer des landing pages par occasion (mariage, cadeaux entreprise, fêtes)',
+    detail: 'Gâteau de mariage, coffrets cadeaux, commandes de fêtes (Noël, Pâques, Fête des Mères) — autant de requêtes SEO inexploitées. Chaque page = une intention d\'achat spécifique avec un CTA adapté.',
+  },
+];
+
+function scoreColor(s: number) {
+  if (s >= 90) return '#22c55e';
+  if (s >= 50) return '#f59e0b';
+  return '#ef4444';
+}
+function scoreLabel(s: number) {
+  if (s >= 90) return 'text-green-600';
+  if (s >= 50) return 'text-amber-600';
+  return 'text-red-600';
+}
+function decisionStyle(d: string) {
+  if (d === 'convertit') return { border: 'border-green-200', bg: 'bg-green-50/40', badge: 'bg-green-100 text-green-700' };
+  if (d === 'hesite') return { border: 'border-amber-200', bg: 'bg-amber-50/40', badge: 'bg-amber-100 text-amber-700' };
+  return { border: 'border-neutral-200', bg: 'bg-neutral-50/40', badge: 'bg-red-100 text-red-700' };
+}
+function decisionLabel(d: string) {
+  if (d === 'convertit') return 'Contacte';
+  if (d === 'hesite') return 'Hésite';
+  return 'Repart';
+}
+
+const convertissent = personas.filter(p => p.decision === 'convertit').length;
+const hesitent = personas.filter(p => p.decision === 'hesite').length;
+const quittent = personas.filter(p => p.decision === 'quitte').length;
+---
+
+<BaseLayout {title} {description} noindex={true} lang="fr" frPath="/audit/fresson-patissier/">
+  <!-- HERO -->
+  <section class="bg-neutral-900 text-white py-12 px-4">
+    <div class="max-w-4xl mx-auto">
+      <span class="inline-block text-xs font-semibold tracking-widest uppercase text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full mb-4">Rapport personnalisé</span>
+      <h1 class="font-heading text-3xl md:text-4xl font-bold mb-2">{prospect.name} — ce que vos visiteurs pensent vraiment</h1>
+      <p class="text-neutral-400 mb-1">{prospect.activity} — <a href={prospect.url} class="text-amber-400 hover:underline" target="_blank" rel="noopener noreferrer">{prospect.url}</a></p>
+      <p class="text-neutral-500 text-sm mb-8">{prospect.location} · Analyse du {prospect.date}</p>
+      <div class="grid grid-cols-3 gap-4 max-w-lg">
+        <div class="text-center bg-neutral-800/60 rounded-xl p-4">
+          <span class="block text-3xl font-black text-amber-400">{kpis.conversion}%</span>
+          <span class="text-xs text-neutral-400">convertissent</span>
+        </div>
+        <div class="text-center bg-neutral-800/60 rounded-xl p-4">
+          <span class="block text-3xl font-black text-amber-400">{kpis.experience}/10</span>
+          <span class="text-xs text-neutral-400">expérience</span>
+        </div>
+        <div class="text-center bg-neutral-800/60 rounded-xl p-4">
+          <span class="block text-3xl font-black text-amber-400">{kpis.confiance}/10</span>
+          <span class="text-xs text-neutral-400">confiance</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONSTAT -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Le constat</h2>
+
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-8">
+        <p class="text-amber-900 font-medium text-base">{constat}</p>
+      </div>
+
+      <!-- Conversion par canal -->
+      <h3 class="font-semibold text-neutral-700 mb-4 text-sm uppercase tracking-wide">Conversion par canal d'arrivée</h3>
+      <div class="space-y-3 mb-10">
+        {conversionByCanal.map(item => (
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-sm text-neutral-700">{item.canal}</span>
+              <span class={`text-sm font-bold ${item.color}`}>{item.taux}%</span>
+            </div>
+            <div class="h-2 bg-neutral-100 rounded-full overflow-hidden">
+              <div class={`h-full rounded-full ${item.bg}`} style={`width: ${item.taux}%`}></div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Top frictions -->
+      <h3 class="font-semibold text-neutral-700 mb-4 text-sm uppercase tracking-wide">Top 5 frictions identifiées</h3>
+      <ol class="space-y-3">
+        {topFrictions.map((f, i) => (
+          <li class="flex gap-3 p-4 bg-neutral-50 border border-neutral-100 rounded-xl">
+            <span class="shrink-0 w-7 h-7 flex items-center justify-center bg-red-100 text-red-700 font-bold text-sm rounded-full">{i + 1}</span>
+            <div>
+              <p class="font-semibold text-neutral-900 text-sm">{f.titre} <span class="font-normal text-neutral-500">({f.count}/10 personas)</span></p>
+              <p class="text-xs text-neutral-600 mt-0.5">{f.detail}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- AUDIT TECHNIQUE -->
+  <section class="py-12 px-4 bg-neutral-50 border-y border-neutral-100">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">L'audit technique</h2>
+
+      <!-- PageSpeed mobile -->
+      <div class="bg-white rounded-xl border border-neutral-100 p-6 mb-6">
+        <h3 class="font-semibold text-neutral-700 mb-1 text-sm">Lighthouse Mobile <span class="text-neutral-400 font-normal">(scores estimés — PHP 7.4, jQuery Superslides, images non optimisées, pas de compression)</span></h3>
+        <p class="text-xs text-neutral-400 mb-5">Base : PHP 7.4 custom fin de vie, jQuery legacy, pas de WebP, pas de lazy loading, pas de cache headers</p>
+        <div class="grid grid-cols-4 gap-4">
+          {[
+            { label: 'Performance', score: pagespeed.mobile.performance },
+            { label: 'Accessibilité', score: pagespeed.mobile.accessibility },
+            { label: 'Bonnes pratiques', score: pagespeed.mobile.bestPractices },
+            { label: 'SEO', score: pagespeed.mobile.seo },
+          ].map(item => (
+            <div class="text-center">
+              <div class="relative w-16 h-16 mx-auto mb-2">
+                <svg class="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3"/>
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={scoreColor(item.score)} stroke-width="3" stroke-dasharray={`${item.score}, 100`} stroke-linecap="round"/>
+                </svg>
+                <span class={`absolute inset-0 flex items-center justify-center text-sm font-bold ${scoreLabel(item.score)}`}>{item.score}</span>
+              </div>
+              <p class="text-xs text-neutral-600">{item.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- PageSpeed desktop -->
+      <div class="bg-white rounded-xl border border-neutral-100 p-6 mb-6">
+        <h3 class="font-semibold text-neutral-700 mb-1 text-sm">Lighthouse Desktop</h3>
+        <div class="grid grid-cols-4 gap-4">
+          {[
+            { label: 'Performance', score: pagespeed.desktop.performance },
+            { label: 'Accessibilité', score: pagespeed.desktop.accessibility },
+            { label: 'Bonnes pratiques', score: pagespeed.desktop.bestPractices },
+            { label: 'SEO', score: pagespeed.desktop.seo },
+          ].map(item => (
+            <div class="text-center">
+              <div class="relative w-16 h-16 mx-auto mb-2">
+                <svg class="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3"/>
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={scoreColor(item.score)} stroke-width="3" stroke-dasharray={`${item.score}, 100`} stroke-linecap="round"/>
+                </svg>
+                <span class={`absolute inset-0 flex items-center justify-center text-sm font-bold ${scoreLabel(item.score)}`}>{item.score}</span>
+              </div>
+              <p class="text-xs text-neutral-600">{item.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Core Web Vitals + Observatory -->
+      <div class="grid md:grid-cols-2 gap-4 mb-6">
+        <div class="bg-white rounded-xl border border-neutral-100 p-5">
+          <h3 class="font-semibold text-neutral-700 mb-3 text-sm">Core Web Vitals (mobile)</h3>
+          <div class="space-y-2">
+            {coreWebVitals.map(v => (
+              <div class="flex items-center justify-between text-sm">
+                <span class="text-neutral-600">{v.name}</span>
+                <span class={`font-semibold px-2 py-0.5 rounded text-xs ${v.status === 'vert' ? 'bg-green-100 text-green-700' : v.status === 'orange' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'}`}>{v.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl border border-neutral-100 p-5">
+          <h3 class="font-semibold text-neutral-700 mb-3 text-sm">Sécurité — Headers HTTP</h3>
+          <div class="flex items-center gap-4 mb-3">
+            <div class={`text-4xl font-black ${observatory.grade.startsWith('A') ? 'text-green-600' : observatory.grade.startsWith('B') ? 'text-amber-500' : 'text-red-500'}`}>{observatory.grade}</div>
+            <div>
+              <p class="text-2xl font-bold text-neutral-800">{observatory.score}/100</p>
+              <p class="text-xs text-neutral-500">{observatory.testsPassed}/{observatory.testsTotal} tests passés</p>
+            </div>
+          </div>
+          <p class="text-xs text-neutral-500">0 header de sécurité (HSTS, CSP, X-Frame-Options, X-Content-Type-Options...). PHP 7.4 exposé via X-Powered-By — faille informationnelle critique.</p>
+        </div>
+      </div>
+
+      <!-- Checklist SEO + Schema -->
+      <div class="bg-white rounded-xl border border-neutral-100 p-5">
+        <h3 class="font-semibold text-neutral-700 mb-3 text-sm">Checklist Schema.org / OG / SEO / Sécurité</h3>
+        <div class="grid sm:grid-cols-2 gap-1.5">
+          {techChecks.map(c => (
+            <div class={`flex items-start gap-2 text-xs p-2 rounded-lg ${c.present ? 'bg-green-50' : c.critical ? 'bg-red-50' : 'bg-neutral-50'}`}>
+              <span class={`shrink-0 font-bold ${c.present ? 'text-green-600' : 'text-red-500'}`}>{c.present ? '\u2713' : '\u2717'}</span>
+              <span class={c.present ? 'text-neutral-700' : c.critical ? 'text-red-700 font-medium' : 'text-neutral-500'}>{c.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VISITEURS SIMULES -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs simulés</h2>
+      <p class="text-neutral-500 mb-6 text-sm">
+        Sur 10 visiteurs simulés :
+        <span class="font-semibold text-green-600">{convertissent} contactent</span>,
+        <span class="font-semibold text-amber-600">{hesitent} hésitent</span>,
+        <span class="font-semibold text-neutral-600">{quittent} repartent</span> sans agir.
+      </p>
+
+      <div class="space-y-3">
+        {personas.map(p => {
+          const ds = decisionStyle(p.decision);
+          const avgScore = Math.round((p.scores.exp + p.scores.conf + p.scores.clarte) / 3 * 10) / 10;
+          return (
+            <details class={`group border ${ds.border} ${ds.bg} rounded-xl overflow-hidden`}>
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                    <h3 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h3>
+                    <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    <span class={`text-[11px] px-1.5 py-0.5 rounded font-medium ${ds.badge}`}>{decisionLabel(p.decision)}</span>
+                  </div>
+                  <p class="text-xs text-neutral-500">{p.situation}</p>
+                </div>
+                <div class="text-right shrink-0">
+                  <span class="text-xs font-bold text-neutral-600">{avgScore}/10</span>
+                  <svg class="w-5 h-5 text-neutral-400 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                </div>
+              </summary>
+              <div class="px-4 pb-4 pt-3 border-t border-neutral-100 bg-white/70">
+                <div class="grid gap-3 text-xs">
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Première impression</p>
+                    <p class="text-neutral-600">{p.premierImpression}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Parcours</p>
+                    <p class="text-neutral-500">{p.parcours.join(' \u2192 ')}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Question clé</p>
+                    <p class="text-neutral-600 italic">"{p.questionCle}"</p>
+                    <p class="text-neutral-600 mt-1">Réponse du site : <strong>{p.reponse}</strong> — {p.commentReponse}</p>
+                  </div>
+                  <div class="text-xs text-neutral-500 bg-neutral-50 rounded-lg px-3 py-2">
+                    Impact technique : {p.impactTechnique}
+                  </div>
+                  <div class="grid sm:grid-cols-2 gap-3">
+                    <div>
+                      <p class="font-semibold text-green-700 mb-1">Points positifs</p>
+                      <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                        {p.pointsPositifs.map(pp => <li>{pp}</li>)}
+                      </ul>
+                    </div>
+                    <div>
+                      <p class="font-semibold text-amber-700 mb-1">Frictions</p>
+                      <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                        {p.frictions.map(fr => <li>{fr}</li>)}
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="flex gap-4 text-xs">
+                    <span class="text-neutral-500">Expérience : <strong>{p.scores.exp}/10</strong></span>
+                    <span class="text-neutral-500">Confiance : <strong>{p.scores.conf}/10</strong></span>
+                    <span class="text-neutral-500">Clarté : <strong>{p.scores.clarte}/10</strong></span>
+                  </div>
+                </div>
+              </div>
+            </details>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  <!-- RECOMMANDATIONS -->
+  <section class="py-12 px-4 bg-neutral-50 border-y border-neutral-100">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Nos recommandations</h2>
+
+      <h3 class="text-sm font-semibold uppercase tracking-wide text-red-600 mb-4">Le plus important — 3 actions critiques</h3>
+      <div class="grid gap-4 mb-10">
+        {ameliorationsCritiques.map((a, i) => (
+          <div class="bg-white border-l-4 border-red-400 rounded-r-xl p-5 shadow-sm">
+            <div class="flex items-start gap-3">
+              <span class="shrink-0 w-7 h-7 flex items-center justify-center bg-red-100 text-red-700 font-bold text-sm rounded-full">{i + 1}</span>
+              <div>
+                <h4 class="font-semibold text-neutral-900 mb-1">{a.titre}</h4>
+                <p class="text-sm text-neutral-600 mb-2">{a.detail}</p>
+                <p class="text-xs bg-red-50 text-red-800 px-3 py-2 rounded-lg"><strong>Action :</strong> {a.action}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <h3 class="text-sm font-semibold uppercase tracking-wide text-amber-600 mb-4">Utile aussi — 3 améliorations recommandées</h3>
+      <div class="grid sm:grid-cols-3 gap-4">
+        {ameliorationsUtiles.map(a => (
+          <div class="bg-white border border-amber-200 rounded-xl p-4">
+            <h4 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h4>
+            <p class="text-xs text-neutral-600">{a.detail}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="bg-neutral-900 text-white py-16 px-4">
+    <div class="max-w-3xl mx-auto text-center">
+      <h2 class="font-heading text-2xl md:text-3xl font-bold mb-4">
+        {kpis.conversion}% de vos visiteurs vous contactent.<br/>
+        <span class="text-amber-400">Votre savoir-faire mérite mieux.</span>
+      </h2>
+      <p class="text-neutral-300 mb-8 max-w-xl mx-auto text-sm">
+        MOF, Tablette d'Or 2024, plus d'un siècle d'histoire — et un site qui n'en parle presque pas.
+        Ce rapport identifie 3 leviers critiques : les prix, l'adresse Metz, et le storytelling MOF.
+        Je construis des sites qui font honneur à votre réputation — à partir de 990 euros, livré en 7 jours.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="/commander" class="inline-flex items-center gap-2 px-8 py-3.5 bg-[var(--color-accent)] text-white font-semibold rounded-xl hover:opacity-90 transition-all shadow-md">
+          Je veux un site à la hauteur
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a href="/contact" class="inline-flex items-center gap-2 px-8 py-3.5 border border-neutral-600 text-neutral-300 font-semibold rounded-xl hover:border-amber-400 hover:text-amber-400 transition-all">
+          En discuter d'abord
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

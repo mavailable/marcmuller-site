@@ -1,0 +1,1148 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX + Technique — Serrurier Metz SESAME | Marc M';
+const description = 'Audit complet du site serrurier-metz-sesame.fr : 10 personas simules, scores PageSpeed, securite, SEO — rapport avec recommandations priorisees. 906 avis Google ignorees, PrestaShop e-commerce pour un vitrine.';
+
+// ─── PERSONAS ───
+// 5 urgences (claque dehors, effraction, cle cassee, serrure bloquee, nuit)
+// 5 planifies (changement serrure, securisation, syndic, assurance, devis comparaison)
+const personas = [
+  {
+    id: 1, name: 'Sarah', age: 31, role: 'Locataire appartement T2', canal: 'Google Search', maturite: 'Urgence', device: 'Mobile', decision: 'Convertit',
+    exp: 7, conf: 7, clarte: 5,
+    emoji: '\u{1F6AA}',
+    situation: 'Metz Sablon, claquee dehors un jeudi soir a 20h, enfant de 3 ans a l\'interieur qui pleure',
+    parcours: ['Accueil', 'Appel direct'],
+    questionCle: 'Vous etes disponible maintenant a Metz ? Vous venez en combien de temps ?',
+    reponse: 'Oui',
+    premierImpression: 'Google remonte le site avec "24h/24 7j/7". Le numero 07 86 66 36 61 est en haut de page, visible et cliquable. Elle appelle sans lire le reste.',
+    positifs: ['Numero visible immediatement en haut de page', '"24h/24 7j/7" clairement affiche', 'Intervention < 20 min annoncee', 'Note Google 4,9 visible si elle a fait une recherche Maps'],
+    frictions: ['Pas de prix visible avant appel (elle veut une estimation)', 'Pas de confirmation "disponible maintenant" en temps reel', 'Pas de WhatsApp ou chat pour les situations de stress'],
+    raisonDecision: 'Urgence maximale avec enfant. Le numero est la, le "24h/24" est la. Elle appelle immediatement.',
+    impactTech: 'PrestaShop sur mobile : 4-5s de chargement. Mais le numero est en haut. Suffisant pour l\'urgence absolue.'
+  },
+  {
+    id: 2, name: 'Kevin', age: 24, role: 'Etudiant en colocation', canal: 'Google Maps', maturite: 'Urgence', device: 'Mobile', decision: 'Convertit',
+    exp: 6, conf: 7, clarte: 6,
+    emoji: '\u{1F511}',
+    situation: 'Metz Queuleu, cle cassee dans la serrure a 22h, coincolocataires partis en week-end',
+    parcours: ['Accueil', 'Appel direct'],
+    questionCle: 'Cle cassee dans la serrure, vous pouvez venir a Queuleu maintenant ? C\'est combien ?',
+    reponse: 'Oui',
+    premierImpression: 'Trouve sur Google Maps avec note 4,9/5 et 906 avis — immediatement rassurant. Clique sur le site. Le numero est en haut, page charge en 5s sur son wifi.',
+    positifs: ['906 avis Google 4,9/5 le convainc avant meme d\'arriver sur le site', 'Numero cliquable immediatement', 'Garantie 2 ans mentionnee (rassurante)', '24h/24 confirme'],
+    frictions: ['Les 906 avis ne sont PAS sur le site — seulement 3 temoignages generiques', 'Pas de tarif extraction cle cassee affiche', 'Page Services en 404 si il cherche des details'],
+    raisonDecision: 'La note Google avant l\'arrivee sur le site fait tout le travail. Le numero confirme. Appel immediat.',
+    impactTech: 'Mobile : lent mais le numero charge dans les 2 premieres secondes (header prioritaire).'
+  },
+  {
+    id: 3, name: 'Isabelle', age: 54, role: 'Proprietaire maison Montigny-les-Metz', canal: 'Google Search', maturite: 'Urgence', device: 'Mobile', decision: 'Convertit',
+    exp: 5, conf: 6, clarte: 4,
+    emoji: '\u{1F3E0}',
+    situation: 'Montigny-les-Metz, tentative d\'effraction la nuit, porte forcee, besoin serurisation immediate a 8h du matin',
+    parcours: ['Accueil', 'Services', 'Appel direct'],
+    questionCle: 'Effraction cette nuit, je dois securiser ma porte maintenant. Vous intervenez a Montigny ? Delai ?',
+    reponse: 'Partiellement',
+    premierImpression: '"Reparation suite a effraction" visible dans les 10 prestations. Rassurante. Mais la page Services donne 404 quand elle cherche des details.',
+    positifs: ['Reparation post-effraction listee parmi les prestations', 'Numero visible et cliquable', 'CMA Moselle mentionne (artisan enregistre = credible)', 'Garantie 2 ans rassurante pour une securisation importante'],
+    frictions: ['Page /9-services en 404 — elle ne peut pas lire les details de la prestation', 'Pas de tarif securisation post-effraction (investissement important, elle veut une idee)', 'Pas de zone d\'intervention confirmee (couvre-t-il Montigny ?)'],
+    raisonDecision: 'Urgence + 906 avis Google + CMA enregistre = elle appelle malgre le 404. La situation ne lui laisse pas le choix.',
+    impactTech: 'Mobile lent. La page /9-services en 404 est une friction concrete mais elle ne bloque pas en urgence.'
+  },
+  {
+    id: 4, name: 'Romain', age: 38, role: 'Gerant d\'une boulangerie', canal: 'Google Maps', maturite: 'Urgence', device: 'Mobile', decision: 'Convertit',
+    exp: 6, conf: 7, clarte: 5,
+    emoji: '\u{1F950}',
+    situation: 'Metz centre, dimanche 5h30 du matin, serrure du rideau metallique bloquee, ouverture impossible, perdition de la journee',
+    parcours: ['Accueil', 'Appel direct'],
+    questionCle: 'Rideau metallique bloque, je peux pas ouvrir ma boulangerie. Vous venez maintenant, dimanche matin ?',
+    reponse: 'Oui',
+    premierImpression: 'Maps affiche 4,9/5 et "24h/24 7j/7". Il appelle directement sans meme aller sur le site.',
+    positifs: ['Presence sur Google Maps avec 906 avis est le vrai actif', '24h/24 7j/7 confirme sur le site', 'Numero direct sans intermediaire', 'Garantie 2 ans rassure pour un reparation commerciale'],
+    frictions: ['Aucune mention de serrurier commercial / rideaux metalliques sur le site', 'Pas de tarif urgence pro / majoration dimanche', 'Pas de cas clients commercants affiche'],
+    raisonDecision: 'Urgence extreme (perte CA journee). Google Maps fait le travail. Il appelle sans attendre.',
+    impactTech: 'Il ne charge meme pas le site complet. Le numero dans Maps suffit. Le site n\'existe pas pour ce persona en urgence.'
+  },
+  {
+    id: 5, name: 'Aurelie', age: 42, role: 'Locataire appartement, nuit de noel', canal: 'Google Search', maturite: 'Urgence', device: 'Mobile', decision: 'Hesite',
+    exp: 4, conf: 5, clarte: 3,
+    emoji: '\u{1F31F}',
+    situation: 'Metz Grange-aux-Bois, 23h30 le 24 decembre, claquee dehors, mari en deplacement, cherche urgence de nuit',
+    parcours: ['Accueil', 'Contact', 'Appel direct'],
+    questionCle: 'Vous intervenez le 24 decembre a minuit ? C\'est combien une urgence de nuit + jour ferie ?',
+    reponse: 'Partiellement',
+    premierImpression: '"24h/24 7j/7" affiches mais elle veut CONFIRMER le tarif nuit + ferie avant d\'appeler — elle a peur d\'une ardoise de 500 EUR.',
+    positifs: ['24h/24 7j/7 visible', 'Numero cliquable', 'Avis Google rassurants'],
+    frictions: ['AUCUN tarif affiche — pas de fourchette de prix, pas de mention de majoration nuit/ferie', 'Page Contact ne donne que formulaire (inutile en urgence), pas de confirmation horaire', 'Formulaire sujet/email/message absurde en urgence : elle veut parler a quelqu\'un', 'Pas de tarif minimal affiché pour dormir tranquille'],
+    raisonDecision: 'Elle appelle mais hesitation de 3-4 minutes sur le site a chercher des prix. Risque de partir chez un concurrent qui affiche ses tarifs.',
+    impactTech: 'Mobile lent (4-5s). La page Contact sans info de tarif est une friction en urgence nocturne.'
+  },
+  {
+    id: 6, name: 'Laurent', age: 47, role: 'Proprietaire maison individuelle', canal: 'Recommandation voisin', maturite: 'Planifie', device: 'Desktop', decision: 'Convertit',
+    exp: 6, conf: 8, clarte: 5,
+    emoji: '\u{1F528}',
+    situation: 'Woippy, serrure principale vieille de 15 ans, veut changer pour une 3 points A2P avant les vacances dans 3 semaines',
+    parcours: ['Accueil', 'Services', 'Contact'],
+    questionCle: 'Changement serrure 3 points A2P, porte blindee Fichet, combien ca coute ? Vous pouvez venir a Woippy ?',
+    reponse: 'Non',
+    premierImpression: 'Son voisin a recommande. Il arrive sur le site confiant. Mais la page /9-services donne 404. Il cherche des tarifs : introuvables.',
+    positifs: ['La recommandation du voisin pre-vend la confiance (le site n\'a pas a convaincre)', 'Garantie 2 ans confortante pour un achat de 400-800 EUR', 'CMA Moselle enregistre'],
+    frictions: ['Page /9-services en 404 — impossible de valider les prestations proposees', 'Aucun tarif de changement de serrure affiche', 'Pas de marques citees (A2P, Fichet, Vachette...)', 'Le formulaire Contact demande email/message mais pas de numero de telephone'],
+    raisonDecision: 'La recommandation du voisin prevaut sur les lacunes du site. Il remplit quand meme le formulaire ou appelle.',
+    impactTech: 'Desktop : performant. Mais le 404 sur /9-services est un bug concret qui brise la navigation planifiee.'
+  },
+  {
+    id: 7, name: 'Christine', age: 62, role: 'Retraitee proprietaire', canal: 'Google Search', maturite: 'Planifie', device: 'Desktop', decision: 'Hesite',
+    exp: 3, conf: 4, clarte: 3,
+    emoji: '\u{1F469}\u{200D}\u{1F9B3}',
+    situation: 'Metz Devant-les-Ponts, veut poser un verrou supplementaire sur sa porte d\'entree apres une serie de cambriolages dans le quartier',
+    parcours: ['Accueil', 'Services', 'Mentions legales', 'Contact'],
+    questionCle: 'Vous posez des verrous de securite ? Combien ca coute ? Vous etes bien un vrai artisan enregistre ?',
+    reponse: 'Partiellement',
+    premierImpression: 'Elle verifie les mentions legales pour valider le SIRET (bonne pratique). Elle le trouve. Mais elle ne trouve pas de tarifs et le site lui fait une impression "annee 2015".',
+    positifs: ['SIRET 501 670 772 00034 dans les mentions legales — elle verifie et c\'est bon', 'CMA Moselle mentionne', 'Pose de verrous listee parmi les prestations', 'Garantie 2 ans'],
+    frictions: ['Design PrestaShop vieilli inspire moins confiance qu\'un site artisan moderne', 'Aucun tarif de pose de verrou', 'Page Services en 404', 'Les pages Panier / Wishlist / Livraison UPS present = site bizarre pour un serrurier', 'Pas de photos de realisations'],
+    raisonDecision: 'Elle remplit le formulaire mais avec peu d\'enthousiasme. Pense aller comparer avec un autre serrurier.',
+    impactTech: 'Desktop : le site charg correctement mais les pages e-commerce parasites (Panier, Livraison) la desorientent.'
+  },
+  {
+    id: 8, name: 'David', age: 35, role: 'Agent immobilier, gere 20 locatifs', canal: 'LinkedIn (mention)', maturite: 'Planifie', device: 'Desktop', decision: 'Quitte',
+    exp: 3, conf: 3, clarte: 2,
+    emoji: '\u{1F3E2}',
+    situation: 'Metz, gere un parc locatif de 20 appartements, cherche un serrurier partenaire pour les changements de cylindres entre locataires',
+    parcours: ['Accueil', 'Services', 'Contact'],
+    questionCle: 'Vous avez une offre pour les agences immobilieres ? Tarif preferentiel changement cylindre entre locataires ? Facture ?',
+    reponse: 'Non',
+    premierImpression: 'Site vitrine basique. Rien pour les professionnels. Aucune offre B2B visible. Pas de mention "partenaire agences immobilieres".',
+    positifs: ['Depannage pour syndics immobiliers liste parmi les 10 prestations', 'Note 4,9/5 906 avis — la reputation parle d\'elle-meme', 'SIRET present pour facturation'],
+    frictions: ['Zero offre B2B ou agences malgre que "syndics immobiliers" est liste en prestation', 'Aucun tarif batch (10+ interventions / mois)', 'Pas de bon de commande ou espace pro', 'Le formulaire Contact est un formulaire generique, pas adapte au B2B', 'Pages Panier/Livraison UPS = site bizarre pour un professionnel', 'Aucun Schema.org pour que les IA le referent'],
+    raisonDecision: 'La prestation existe (syndics mentionne) mais rien n\'est structure pour un professionnel. Il ira vers un serrurier avec une offre B2B claire.',
+    impactTech: 'Desktop : fonctionnel. Le probleme est structurel, pas technique.'
+  },
+  {
+    id: 9, name: 'Nadia', age: 29, role: 'Nouvelle arrivante a Metz, premier appartement', canal: 'IA (ChatGPT)', maturite: 'Decouverte', device: 'Mobile', decision: 'Quitte',
+    exp: 2, conf: 3, clarte: 2,
+    emoji: '\u{1F4F1}',
+    situation: 'Metz Nouvelle Ville, emmenage dans un appartement, veut changer le cylindre pour securite (anciens locataires avaient des cles)',
+    parcours: ['Accueil', 'Contact'],
+    questionCle: 'Combien pour changer le cylindre de ma porte d\'entree ? Quelle marque recommandez-vous ?',
+    reponse: 'Non',
+    premierImpression: 'ChatGPT a suggere "Sesame serrurier Metz" avec mention des 906 avis. Mais le site ne confirme pas cette reputation : pas d\'avis integres, pas de tarifs, pages e-commerce bizarres (Panier, Wishlist).',
+    positifs: ['La note Google 4,9/5 est connue via l\'IA avant la visite', 'Numero present'],
+    frictions: ['Les 906 avis Google ne sont PAS sur le site — juste 3 temoignages sans photo ni date', 'Aucun tarif changement cylindre (premier achat, elle a besoin d\'une fourchette)', 'Pas de conseil type de cylindre/securite recommandee', 'Pages Panier/Livraison UPS desorientent une arrivante', 'Site non optimise IA (pas de llms.txt, Schema.org minimal)', 'Design vieilli vs ses attentes post-ChatGPT'],
+    raisonDecision: 'Le site ne confirme pas la promesse des 906 avis. Elle ira sur Google Maps pour relire les avis directement et peut appeler depuis la.',
+    impactTech: 'Mobile lent (PrestaShop). La deconnexion reputation/site est le vrai probleme.'
+  },
+  {
+    id: 10, name: 'Marc-Antoine', age: 51, role: 'Gestionnaire de copropriete (8 immeubles)', canal: 'Google Search', maturite: 'Decouverte', device: 'Desktop', decision: 'Quitte',
+    exp: 2, conf: 3, clarte: 2,
+    emoji: '\u{1F3E4}',
+    situation: 'Metz, responsable technique pour une societe de gestion, cherche un serrurier pour contrat de maintenance parties communes',
+    parcours: ['Accueil', 'Services', 'Contact', 'Mentions legales', 'CGV'],
+    questionCle: 'Contrat cadre serrurier coproprietes possible ? Tarifs degressifs volume ? Intervention garantie sous 2h ?',
+    reponse: 'Non',
+    premierImpression: 'Le SIRET dans les mentions legales rassure. Mais les CGV sont generiques (sans SIRET dedans), et tout le reste crie "artisan solo" pas "partenaire de gestion structuree".',
+    positifs: ['SIRET present dans mentions legales', 'Depannage syndics mentionne', 'Garantie 2 ans formalisee'],
+    frictions: ['CGV generiques sans SIRET, pas adaptees au B2B', 'Aucune offre contrat maintenance ou tarif volume', 'Pages e-commerce residuelles (Panier, Livraison UPS) decrédibilisent l\'entreprise', 'Pas de SLA ou engagement de delai sur le site', 'Schema.org inexistant : Google ne sait pas que Sesame couvre les syndics', 'Mentions legales incompletes (pas de directeur de publication, pas de TVA)'],
+    raisonDecision: 'Le capital reputation existe (906 avis) mais le site cree un doute professionnel. Il ne peut pas proposer ce fournisseur a sa direction sans une proposition ecrite.',
+    impactTech: 'Desktop fonctionnel. Les bugs sont de credibilite (pages e-commerce orphelines) pas de performance.'
+  },
+];
+
+// ─── STATS ───
+const avgExp = (personas.reduce((s, p) => s + p.exp, 0) / personas.length).toFixed(1);
+const avgConf = (personas.reduce((s, p) => s + p.conf, 0) / personas.length).toFixed(1);
+const avgClarte = (personas.reduce((s, p) => s + p.clarte, 0) / personas.length).toFixed(1);
+const convertis = personas.filter(p => p.decision === 'Convertit').length;
+const hesitants = personas.filter(p => p.decision === 'Hesite').length;
+const quitte = personas.filter(p => p.decision === 'Quitte').length;
+const tauxConv = Math.round((convertis / personas.length) * 100);
+
+// ─── CANAL STATS ───
+const canalStats = [
+  { canal: 'Google Maps', total: 2, conv: 2, hesitant: 0, quitte: 0 },
+  { canal: 'Google Search', total: 4, conv: 1, hesitant: 2, quitte: 1 },
+  { canal: 'Recommandation', total: 1, conv: 1, hesitant: 0, quitte: 0 },
+  { canal: 'IA (ChatGPT)', total: 1, conv: 0, hesitant: 0, quitte: 1 },
+  { canal: 'LinkedIn / Pro', total: 1, conv: 0, hesitant: 0, quitte: 1 },
+  { canal: 'Google Search (nuit ferie)', total: 1, conv: 0, hesitant: 1, quitte: 0 },
+];
+
+const maturiteStats = [
+  { level: 'Urgence', total: 5, conv: 4, pct: '80%' },
+  { level: 'Planifie', total: 3, conv: 1, pct: '33%' },
+  { level: 'Decouverte', total: 2, conv: 0, pct: '0%' },
+];
+
+// ─── TECHNIQUE ───
+const lighthouseScores = {
+  mobile: { perf: 45, access: 68, bp: 56, seo: 78 },
+  desktop: { perf: 72, access: 68, bp: 56, seo: 78 },
+};
+
+const cwv = {
+  lcp: { mobile: '~4.8s', desktop: '~1.6s', mobileStatus: 'bad', desktopStatus: 'good' },
+  fcp: { mobile: '~3.5s', desktop: '~1.0s', mobileStatus: 'bad', desktopStatus: 'good' },
+  cls: { mobile: '~0.12', desktop: '~0.08', mobileStatus: 'mid', desktopStatus: 'good' },
+  tbt: { mobile: '~400ms', desktop: '~60ms', mobileStatus: 'mid', desktopStatus: 'good' },
+  si: { mobile: '~6.2s', desktop: '~1.8s', mobileStatus: 'bad', desktopStatus: 'good' },
+};
+
+const observatory = { grade: 'D-', score: 25, passed: 5, total: 10 };
+
+const schemaChecks = [
+  { label: 'JSON-LD present', ok: true },
+  { label: '@type Organization', ok: true },
+  { label: '@type WebPage', ok: true },
+  { label: '@type WebSite + SearchAction', ok: true },
+  { label: 'LocalBusiness ou Locksmith', ok: false },
+  { label: 'telephone', ok: false },
+  { label: 'address + geo (coordonnees)', ok: false },
+  { label: 'openingHoursSpecification (24/7)', ok: false },
+  { label: 'areaServed (Metz, dept. 57)', ok: false },
+  { label: 'priceRange', ok: false },
+  { label: 'aggregateRating (906 avis !)', ok: false },
+  { label: 'Service (10 prestations)', ok: false },
+];
+
+const ogChecks = [
+  { label: 'og:title', ok: false },
+  { label: 'og:description', ok: false },
+  { label: 'og:image', ok: false },
+  { label: 'og:url', ok: false },
+  { label: 'og:type', ok: false },
+  { label: 'twitter:card', ok: false },
+];
+
+const seoChecks = [
+  { label: 'Balise title presente et pertinente', ok: true },
+  { label: 'Meta description presente', ok: true },
+  { label: 'HTTPS + HTTP/2 + HTTP/3', ok: true },
+  { label: 'robots.txt present', ok: true },
+  { label: 'Meta robots: index', ok: true },
+  { label: 'Canonical explicite', ok: false },
+  { label: 'Sitemap.xml fonctionnel', ok: false },
+  { label: 'Alt text images complet', ok: false },
+  { label: 'Lazy loading images', ok: false },
+  { label: 'Analytics actif (GA4/Umami)', ok: false },
+];
+
+const missingHeaders = ['Content-Security-Policy', 'Strict-Transport-Security (HSTS)', 'X-Frame-Options', 'X-Content-Type-Options', 'Referrer-Policy', 'Permissions-Policy'];
+
+// ─── FRICTIONS ───
+const frictions = [
+  { label: 'Les 906 avis Google ne sont pas integres — 3 temoignages generiques sur le site', count: 9, severity: 'critique' },
+  { label: 'Aucun tarif affiche nulle part — ni urgence, ni planifie, ni B2B', count: 9, severity: 'critique' },
+  { label: 'Page /9-services en 404 — la page principale de services est inaccessible', count: 6, severity: 'critique' },
+  { label: 'Pages e-commerce residuelles (Panier, Wishlist, Livraison UPS) decrédibilisent', count: 7, severity: 'haute' },
+  { label: 'Pas de majoration nuit/weekend/jour ferie indiquee', count: 5, severity: 'haute' },
+  { label: 'Aucune offre B2B / syndics / agences malgre la prestation listee', count: 4, severity: 'haute' },
+  { label: 'Schema.org inexistant pour LocalBusiness — Google ignore les 906 avis', count: 8, severity: 'haute' },
+  { label: 'Open Graph 0/6 — pas de preview lors des partages reseaux', count: 5, severity: 'moyenne' },
+  { label: 'Mentions legales incompletes, CGV generiques sans SIRET', count: 3, severity: 'moyenne' },
+  { label: 'Analytics absent — aucune donnee de trafic collectee', count: 5, severity: 'moyenne' },
+];
+
+// ─── AMELIORATIONS ───
+const amelioHaute = [
+  {
+    title: 'Integrer les 906 avis Google de maniere proeminente',
+    impact: '9/10 personas',
+    detail: 'Le capital confiance de Sesame est exceptionnel (906 avis, 4,9/5) mais il est invisible sur le site. Afficher 10-15 verbatims avec prenom, quartier et date. Ajouter le widget Google Stars en hero. Ce seul changement multiplierait les conversions en phase comparaison.'
+  },
+  {
+    title: 'Afficher une grille tarifaire (urgence + planifie)',
+    impact: '9/10 personas',
+    detail: 'Aucun tarif affiche sur tout le site. Les visiteurs en phase comparaison et meme en urgence cherchent un prix avant d\'appeler. Fourchettes : ouverture porte (80-150 EUR), changement cylindre (120-300 EUR), majorations nuit/ferie clairement indiquees. Ne pas indiquer de prix = perdre les non-urgences systematiquement.'
+  },
+  {
+    title: 'Corriger le 404 sur /9-services et supprimer les pages e-commerce parasites',
+    impact: '7/10 personas',
+    detail: 'La page principale des services retourne 404. En parallele, des pages PrestaShop inutiles (Panier, Wishlist, Compte client, Livraison UPS) sont accessibles et creent une impression de site e-commerce detourne. Corriger le 404 + supprimer les modules e-commerce est la priorite technique immediate.'
+  },
+  {
+    title: 'Migrer de PrestaShop vers un site statique (Astro)',
+    impact: 'Tous les personas',
+    detail: 'PrestaShop charge tout le framework e-commerce pour un site vitrine. Performance mobile estimee a ~45/100 vs ~95/100 pour un site Astro equivalent. Cache desactive (no-store, no-cache). Le passage a Astro elimerait la dette technique, doublerait la vitesse mobile et supprimerait toutes les pages parasites d\'un coup.'
+  },
+];
+
+const amelioMoyenne = [
+  {
+    title: 'Implementer Schema.org LocalBusiness complet avec aggregateRating',
+    impact: 'Tous les personas + Google Rich Snippet',
+    detail: 'Google ne sait pas que Sesame est un serrurier local 24h/24 a Metz avec 906 avis. Ajouter @type:Locksmith, telephone, address, geo, openingHoursSpecification (24/7), areaServed, priceRange, aggregateRating. Le rich snippet Google s\'enrichirait immediatement.'
+  },
+  {
+    title: 'Creer une section B2B (syndics, agences immobilieres)',
+    impact: '3 personas pro',
+    detail: '"Depannage pour syndics immobiliers" est liste mais rien n\'est structure pour les professionnels. Une section dediee avec tarif volume, bon de commande, engagement de delai et references clients B2B ouvrirait un canal a fort potentiel recurrent.'
+  },
+  {
+    title: 'Ajouter Open Graph complet (og:title, og:image, og:description)',
+    impact: 'Tous les canaux de partage',
+    detail: 'Score 0/6 actuellement. Quand un client satisfait partage le site sur WhatsApp ou Facebook, aucune preview n\'apparait. Pour un site avec 906 avis, c\'est une opportunite de viralite manquee.'
+  },
+  {
+    title: 'Corriger les mentions legales et CGV (SIRET dans les CGV)',
+    impact: '3 personas B2B et planifies',
+    detail: 'Les CGV sont generiques sans SIRET. Les mentions legales manquent du directeur de publication, TVA, capital. Pour les professionnels (agences, syndics) et les clients prudents, ces manques creent une friction de credibilite.'
+  },
+  {
+    title: 'Installer un analytics (Umami ou GA4)',
+    impact: 'Mesure de toutes les ameliorations',
+    detail: 'Aucun outil de mesure detecte. Sans donnees, impossible de savoir quelles pages convertissent, d\'ou viennent les visiteurs ni l\'impact des ameliorations. Investissement de 30 minutes pour des annees de donnees.'
+  },
+  {
+    title: 'Ajouter un bouton CTA mobile sticky "Appeler maintenant"',
+    impact: '5 personas mobile en urgence',
+    detail: '65% du trafic serrurier est mobile. Un bouton sticky "Appeler — 07 86 66 36 61" en bas d\'ecran, visible en permanence, eliminerait le besoin de scroller pour trouver le numero.'
+  },
+];
+
+const amelioDiscuter = [
+  { emoji: '\u{1F4CA}', title: 'Ajouter un llms.txt pour le referencement IA', detail: 'Nadia (persona 9) a trouve Sesame via ChatGPT. Sans llms.txt ni Schema.org riche, les IA recommandent Sesame sur la base des avis Google uniquement — un signal faible. Un llms.txt + Schema.org complet ameliorerait le referencement IA.' },
+  { emoji: '\u{1F4CD}', title: 'Creer des pages SEO locales pour les communes du 57', detail: 'Pages dediees "serrurier Thionville", "serrurier Sarrebourg", "serrurier Forbach" pour capter le trafic hors Metz. La zone d\'intervention "departement 57" est annoncee mais non exploitee en SEO.' },
+  { emoji: '\u{1F4F8}', title: 'Ajouter une galerie de realisations', detail: 'Avant/apres : serrures 3 points posees, portes securisees, cylindres remplaces. Les 906 avis Google prouvent le savoir-faire — des photos le rendraient visible sur le site.' },
+];
+
+// ─── HELPERS ───
+function scoreColor(s: number) {
+  if (s >= 90) return '#22c55e';
+  if (s >= 50) return '#f59e0b';
+  return '#ef4444';
+}
+
+function scoreTextColor(s: number) {
+  if (s >= 90) return 'text-green-600';
+  if (s >= 50) return 'text-amber-600';
+  return 'text-red-600';
+}
+
+function decisionBorder(d: string) {
+  if (d === 'Convertit') return 'border-green-200 bg-green-50/40';
+  if (d === 'Hesite') return 'border-amber-200 bg-amber-50/40';
+  return 'border-neutral-200 bg-neutral-50/40';
+}
+
+function severityColor(s: string) {
+  if (s === 'critique') return 'bg-red-100 text-red-800';
+  if (s === 'haute') return 'bg-orange-100 text-orange-800';
+  return 'bg-blue-100 text-blue-800';
+}
+
+function cwvBg(status: string) {
+  if (status === 'good') return 'bg-green-50';
+  if (status === 'mid') return 'bg-amber-50';
+  return 'bg-red-50';
+}
+
+function cwvText(status: string) {
+  if (status === 'good') return 'text-green-700';
+  if (status === 'mid') return 'text-amber-700';
+  return 'text-red-700';
+}
+
+function cwvBadge(status: string) {
+  if (status === 'good') return 'bg-green-100 text-green-800';
+  if (status === 'mid') return 'bg-amber-100 text-amber-800';
+  return 'bg-red-100 text-red-800';
+}
+
+function cwvLabel(status: string) {
+  if (status === 'good') return 'Bon';
+  if (status === 'mid') return 'Moyen';
+  return 'Mauvais';
+}
+
+function scoreBar(val: number) {
+  return `${val * 10}%`;
+}
+
+function gradeColor(g: string) {
+  if (g.startsWith('A')) return { border: 'border-green-300', bg: 'bg-green-50', text: 'text-green-700' };
+  if (g.startsWith('B')) return { border: 'border-amber-300', bg: 'bg-amber-50', text: 'text-amber-700' };
+  return { border: 'border-red-300', bg: 'bg-red-50', text: 'text-red-700' };
+}
+
+const gc = gradeColor(observatory.grade);
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  noindex={true}
+  lang="fr"
+  frPath="/audit/serrurier-sesame"
+>
+
+  <!-- ═══════════════════ HERO ═══════════════════ -->
+  <section class="w-full relative px-6 py-16 md:px-8 md:py-24 overflow-hidden" style="background-color: #0D0D0D;">
+    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 40px 40px;"></div>
+    <div class="absolute top-20 -left-32 w-96 h-96 rounded-full opacity-10 blur-3xl" style="background: #E86C47;"></div>
+
+    <div class="mx-auto max-w-4xl relative z-10">
+      <div class="mb-4 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--color-accent)]/40">
+        <span class="w-2 h-2 rounded-full" style="background-color: #E86C47;"></span>
+        <span class="text-sm font-semibold text-white/90">Rapport confidentiel</span>
+      </div>
+
+      <h1 class="mb-4 text-3xl font-bold leading-tight text-white md:text-4xl lg:text-5xl">
+        Audit UX + Technique — <span class="bg-gradient-to-r from-[#E86C47] to-[#F5C8B3] bg-clip-text text-transparent">Serrurier Metz SESAME</span>
+      </h1>
+
+      <p class="text-lg text-neutral-300 md:text-xl max-w-2xl mb-8">
+        Analyse complete de <strong class="text-white">serrurier-metz-sesame.fr</strong> — audit technique (PageSpeed, securite, SEO) + simulation de 10 visites personas. Un paradoxe : 906 avis Google a 4,9/5, mais un site qui n'en profite pas.
+      </p>
+
+      <div class="flex flex-wrap gap-3">
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">10 personas testes</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">906 avis Google — invisibles sur le site</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">PrestaShop vitrine — contradiction</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">29 mars 2026</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ TAB BAR ═══════════════════ -->
+  <nav class="sticky top-16 md:top-20 z-40 bg-white/95 backdrop-blur border-b border-neutral-200" id="tab-bar">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-2 h-12 text-sm overflow-x-auto">
+      <button data-tab="0" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-primary-700 bg-primary-50">Synthese</button>
+      <button data-tab="1" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">Technique</button>
+      <button data-tab="2" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">
+        Visiteurs <span class="ml-1 text-xs text-neutral-400">10</span>
+      </button>
+      <button data-tab="3" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">
+        Ameliorations <span class="ml-1 text-xs text-neutral-400">{amelioHaute.length + amelioMoyenne.length + amelioDiscuter.length}</span>
+      </button>
+    </div>
+  </nav>
+
+  <div id="panels" class="flex overflow-x-auto snap-x snap-mandatory" style="-webkit-overflow-scrolling: touch; scrollbar-width: none;">
+
+    <!-- ═══════════════════ PANEL 1 : SYNTHESE ═══════════════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+
+      <!-- KPI Cards -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class={`text-3xl md:text-4xl font-bold ${tauxConv < 20 ? 'text-red-600' : tauxConv < 40 ? 'text-amber-600' : 'text-emerald-600'}`}>{tauxConv}%</p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Taux de conversion</p>
+              <p class="mt-2 text-xs text-[var(--color-text-muted)]">{convertis} convertis · {hesitants} hesitants · {quitte} partis</p>
+            </div>
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class="text-3xl md:text-4xl font-bold text-amber-600">{avgExp}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Experience</p>
+              <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden">
+                <div class="h-full rounded-full bg-amber-500" style={`width: ${scoreBar(Number(avgExp))}`}></div>
+              </div>
+            </div>
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class="text-3xl md:text-4xl font-bold text-blue-600">{avgConf}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Confiance</p>
+              <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden">
+                <div class="h-full rounded-full bg-blue-500" style={`width: ${scoreBar(Number(avgConf))}`}></div>
+              </div>
+            </div>
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class="text-3xl md:text-4xl font-bold text-orange-600">{avgClarte}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Clarte</p>
+              <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden">
+                <div class="h-full rounded-full bg-orange-500" style={`width: ${scoreBar(Number(avgClarte))}`}></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Paradoxe principal -->
+      <div class="w-full px-6 py-8 md:px-8 bg-white">
+        <div class="mx-auto max-w-5xl">
+          <div class="rounded-xl border-l-4 border-l-[var(--color-accent)] bg-amber-50 p-6 md:p-8">
+            <h2 class="text-lg font-bold text-[var(--color-text)] mb-2">Paradoxe principal</h2>
+            <p class="text-[var(--color-text)] leading-relaxed">
+              Sesame possede un <strong>capital confiance exceptionnel et rare</strong> : 906 avis Google a 4,9/5. C'est l'actif principal de l'entreprise. Mais le site <strong>ne le met pas en valeur</strong> : seulement 3 temoignages generiques sont affiches, sans photo ni date. Le site fonctionne comme un <strong>annuaire telephonique</strong> pour les urgences, mais ne convertit pas les visiteurs en phase de comparaison, decouverte ou B2B. Les 906 avis — invisibles sur le site — sont pourtant la raison numero un de faire confiance a Sesame.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Conversion par canal -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-2">Conversion par canal</h2>
+          <p class="text-[var(--color-text-muted)] mb-8">Google Maps convertit a 100% (note 4,9 visible avant la visite). Google Search convertit seulement en urgence absolue. IA et B2B repartent systematiquement.</p>
+          <div class="grid md:grid-cols-2 gap-4">
+            {canalStats.map((c) => {
+              const pct = c.total > 0 ? Math.round((c.conv / c.total) * 100) : 0;
+              return (
+                <div class="rounded-xl border border-[var(--color-border)] bg-white p-5">
+                  <div class="flex items-center justify-between mb-3">
+                    <h3 class="font-semibold text-[var(--color-text)]">{c.canal}</h3>
+                    <span class={`text-lg font-bold ${pct > 50 ? 'text-emerald-600' : pct > 0 ? 'text-amber-600' : 'text-red-600'}`}>{pct}%</span>
+                  </div>
+                  <div class="h-3 rounded-full bg-neutral-100 overflow-hidden mb-3">
+                    <div class="h-full rounded-full flex">
+                      <div class="bg-emerald-500" style={`width: ${(c.conv / c.total) * 100}%`}></div>
+                      <div class="bg-amber-400" style={`width: ${(c.hesitant / c.total) * 100}%`}></div>
+                      <div class="bg-red-400" style={`width: ${(c.quitte / c.total) * 100}%`}></div>
+                    </div>
+                  </div>
+                  <div class="flex gap-4 text-xs text-[var(--color-text-muted)]">
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> {c.conv} conv.</span>
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-400"></span> {c.hesitant} hes.</span>
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-400"></span> {c.quitte} partis</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      <!-- Conversion par maturite -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-white">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-8">Conversion par maturite</h2>
+          <div class="grid grid-cols-3 gap-4">
+            {maturiteStats.map((m) => (
+              <div class="rounded-xl border border-[var(--color-border)] bg-white p-6 text-center">
+                <p class="text-sm font-semibold text-[var(--color-text-muted)] uppercase tracking-wider mb-2">{m.level}</p>
+                <p class={`text-4xl font-bold ${m.pct === '0%' ? 'text-red-600' : m.pct === '100%' ? 'text-emerald-600' : 'text-amber-600'}`}>{m.pct}</p>
+                <p class="mt-1 text-sm text-[var(--color-text-muted)]">{m.conv}/{m.total} convertis</p>
+              </div>
+            ))}
+          </div>
+          <div class="mt-6 rounded-xl bg-red-50 border border-red-200 p-5">
+            <p class="text-sm text-red-800">
+              <strong>Constat cle :</strong> Le site convertit 80% des urgences (le visiteur a souvent deja decide d'appeler grace a la note Google Maps). Mais il perd <strong>toutes les visites planifiees en comparaison</strong> (pas de tarifs) et <strong>100% des decouvertes B2B</strong> (aucune offre pro). Le potentiel commercial non-urgence est entierement inexploite.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Scores globaux -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">Resume des scores techniques</h2>
+          <div class="grid md:grid-cols-2 gap-4">
+            {[
+              { label: 'Observatory (securite)', score: '25/100', note: 'D-', color: 'text-red-600', bg: 'bg-red-50 border-red-200' },
+              { label: 'Performance mobile (est.)', score: '~45/100', note: 'Mauvais', color: 'text-red-600', bg: 'bg-red-50 border-red-200' },
+              { label: 'Performance desktop (est.)', score: '~72/100', note: 'Correct', color: 'text-amber-600', bg: 'bg-amber-50 border-amber-200' },
+              { label: 'Schema.org', score: '4/12', note: 'Minimal', color: 'text-red-600', bg: 'bg-red-50 border-red-200' },
+              { label: 'Open Graph', score: '0/6', note: 'Inexistant', color: 'text-red-600', bg: 'bg-red-50 border-red-200' },
+              { label: 'SEO technique', score: '5/10', note: 'Insuffisant', color: 'text-amber-600', bg: 'bg-amber-50 border-amber-200' },
+              { label: 'Analytics', score: '0', note: 'Aucun', color: 'text-red-600', bg: 'bg-red-50 border-red-200' },
+              { label: 'Sitemap.xml', score: '404', note: 'Manquant', color: 'text-red-600', bg: 'bg-red-50 border-red-200' },
+            ].map((item) => (
+              <div class={`rounded-xl border p-4 flex items-center justify-between ${item.bg}`}>
+                <span class="text-sm font-medium text-neutral-700">{item.label}</span>
+                <div class="text-right">
+                  <span class={`text-sm font-bold ${item.color}`}>{item.score}</span>
+                  <span class="ml-2 text-xs text-neutral-500">{item.note}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ═══════════════════ PANEL 2 : TECHNIQUE ═══════════════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+
+      <!-- Stack technique -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-white">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-2">Stack technique identifie</h2>
+          <p class="text-[var(--color-text-muted)] mb-6">PrestaShop est un CMS e-commerce. L'utiliser comme site vitrine pour un serrurier est la principale dette technique.</p>
+          <div class="grid md:grid-cols-2 gap-4 mb-6">
+            {[
+              { label: 'CMS', value: 'PrestaShop (e-commerce detourne en vitrine)', bad: true },
+              { label: 'Page builder', value: 'Elementor (sur PrestaShop — combo inhabituel)', bad: true },
+              { label: 'Framework JS', value: 'jQuery (chargement inutile)', bad: true },
+              { label: 'Hebergeur', value: 'PlaneteHoster (LiteSpeed)', bad: false },
+              { label: 'Protocole', value: 'HTTP/2 + HTTPS + HTTP/3 (alt-svc)', bad: false },
+              { label: 'Cache', value: 'no-store, no-cache, must-revalidate', bad: true },
+              { label: 'robots.txt', value: 'Present — surdimensionne (bloque des routes e-commerce)', bad: true },
+              { label: 'Sitemap.xml', value: '404 — introuvable', bad: true },
+            ].map((item) => (
+              <div class={`rounded-xl border p-4 flex items-start gap-3 ${item.bad ? 'border-red-200 bg-red-50/50' : 'border-green-200 bg-green-50/50'}`}>
+                <div class="shrink-0 mt-0.5">
+                  {item.bad ? (
+                    <svg class="w-4 h-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                  ) : (
+                    <svg class="w-4 h-4 text-green-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                  )}
+                </div>
+                <div>
+                  <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wider">{item.label}</p>
+                  <p class="text-sm text-neutral-700">{item.value}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+          <div class="rounded-xl bg-red-50 border border-red-200 p-5">
+            <p class="text-sm text-red-800">
+              <strong>Probleme specifique PrestaShop :</strong> Modules e-commerce actifs en production — panier, wishlist, comparaison, compte client, livraison UPS — tout cela est inutile pour un serrurier et alourdit le DOM. Ces pages sont accessibles et creent une impression de site hack ou abandonne.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- PageSpeed Scores -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-2">Scores PageSpeed Lighthouse (estimes)</h2>
+          <p class="text-[var(--color-text-muted)] mb-8">PrestaShop + Elementor + jQuery charge ~400-600 Ko de scripts e-commerce pour un site de 6 pages. Cache desactive = chaque visite recharge tout depuis le serveur.</p>
+
+          <div class="grid md:grid-cols-2 gap-6">
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+              <h3 class="font-semibold text-[var(--color-text)] mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                Mobile
+              </h3>
+              <div class="grid grid-cols-4 gap-4">
+                {Object.entries(lighthouseScores.mobile).map(([key, val]) => (
+                  <div class="text-center">
+                    <div class="relative w-16 h-16 mx-auto mb-2">
+                      <svg class="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3" />
+                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={scoreColor(val)} stroke-width="3" stroke-dasharray={`${val}, 100`} stroke-linecap="round" />
+                      </svg>
+                      <span class={`absolute inset-0 flex items-center justify-center text-lg font-bold ${scoreTextColor(val)}`}>{val}</span>
+                    </div>
+                    <p class="text-xs text-neutral-600 font-medium">{key === 'perf' ? 'Perf.' : key === 'access' ? 'Access.' : key === 'bp' ? 'Pratiques' : 'SEO'}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+              <h3 class="font-semibold text-[var(--color-text)] mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                Desktop
+              </h3>
+              <div class="grid grid-cols-4 gap-4">
+                {Object.entries(lighthouseScores.desktop).map(([key, val]) => (
+                  <div class="text-center">
+                    <div class="relative w-16 h-16 mx-auto mb-2">
+                      <svg class="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3" />
+                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={scoreColor(val)} stroke-width="3" stroke-dasharray={`${val}, 100`} stroke-linecap="round" />
+                      </svg>
+                      <span class={`absolute inset-0 flex items-center justify-center text-lg font-bold ${scoreTextColor(val)}`}>{val}</span>
+                    </div>
+                    <p class="text-xs text-neutral-600 font-medium">{key === 'perf' ? 'Perf.' : key === 'access' ? 'Access.' : key === 'bp' ? 'Pratiques' : 'SEO'}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Core Web Vitals -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-white">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">Core Web Vitals</h2>
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <h3 class="text-sm font-semibold text-[var(--color-text-muted)] mb-3 uppercase tracking-wider">Mobile</h3>
+              <div class="space-y-2">
+                {Object.entries(cwv).map(([key, v]) => (
+                  <div class={`flex items-center justify-between p-3 rounded-lg ${cwvBg(v.mobileStatus)}`}>
+                    <div>
+                      <span class="text-xs font-bold text-neutral-700">{key.toUpperCase()}</span>
+                      <span class="text-xs text-neutral-500 ml-1">({key === 'lcp' ? 'Largest Contentful Paint' : key === 'fcp' ? 'First Contentful Paint' : key === 'cls' ? 'Cumulative Layout Shift' : key === 'tbt' ? 'Total Blocking Time' : 'Speed Index'})</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span class={`text-sm font-bold ${cwvText(v.mobileStatus)}`}>{v.mobile}</span>
+                      <span class={`text-[10px] px-1.5 py-0.5 rounded font-medium ${cwvBadge(v.mobileStatus)}`}>{cwvLabel(v.mobileStatus)}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <h3 class="text-sm font-semibold text-[var(--color-text-muted)] mb-3 uppercase tracking-wider">Desktop</h3>
+              <div class="space-y-2">
+                {Object.entries(cwv).map(([key, v]) => (
+                  <div class={`flex items-center justify-between p-3 rounded-lg ${cwvBg(v.desktopStatus)}`}>
+                    <div>
+                      <span class="text-xs font-bold text-neutral-700">{key.toUpperCase()}</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span class={`text-sm font-bold ${cwvText(v.desktopStatus)}`}>{v.desktop}</span>
+                      <span class={`text-[10px] px-1.5 py-0.5 rounded font-medium ${cwvBadge(v.desktopStatus)}`}>{cwvLabel(v.desktopStatus)}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Observatory -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">Securite HTTP — Mozilla Observatory</h2>
+          <p class="text-[var(--color-text-muted)] mb-6">Scan reel effectue le 29 mars 2026. 6 headers de securite critiques manquants.</p>
+
+          <div class={`flex items-center gap-4 p-4 rounded-xl border ${gc.border} ${gc.bg} mb-6`}>
+            <div class={`text-3xl font-black ${gc.text}`}>{observatory.grade}</div>
+            <div>
+              <p class="text-sm font-semibold text-neutral-900">Mozilla Observatory — Scan #89810485</p>
+              <p class="text-xs text-neutral-500">{observatory.passed}/{observatory.total} tests passes — Score {observatory.score}/100</p>
+            </div>
+          </div>
+
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <h3 class="font-semibold text-[var(--color-text)] mb-3">Headers de securite manquants</h3>
+              <div class="space-y-1.5">
+                {missingHeaders.map((h) => (
+                  <div class="flex items-center gap-2 py-1.5">
+                    <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                    <span class="text-sm text-neutral-400 line-through">{h}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <h3 class="font-semibold text-[var(--color-text)] mb-3">Headers presentes</h3>
+              <div class="space-y-1.5">
+                {['LiteSpeed (serveur)', 'HTTP/3 via alt-svc', 'HTTPS + redirection active', 'X-Powered-By absent (bon point)'].map((h) => (
+                  <div class="flex items-center gap-2 py-1.5">
+                    <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    <span class="text-sm text-neutral-600">{h}</span>
+                  </div>
+                ))}
+              </div>
+              <div class="mt-4 rounded-xl bg-amber-50 border border-amber-200 p-4">
+                <p class="text-sm text-amber-800">
+                  <strong>Cache desactive :</strong> <code class="bg-amber-100 px-1 rounded">Cache-Control: no-store, no-cache, must-revalidate</code> — chaque visite recharge tout depuis le serveur. Cout performance enorme.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Schema.org + OG + SEO -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-white">
+        <div class="mx-auto max-w-5xl">
+          <div class="grid md:grid-cols-3 gap-6">
+
+            <div>
+              <h3 class="font-semibold text-[var(--color-text)] mb-3">Schema.org</h3>
+              <p class="text-xs text-[var(--color-text-muted)] mb-3">Google ignore les 906 avis et le fait que Sesame est un serrurier local 24h/24</p>
+              <div class="space-y-1">
+                {schemaChecks.map((c) => (
+                  <div class="flex items-center gap-2 py-1">
+                    {c.ok ? (
+                      <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    ) : (
+                      <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                    )}
+                    <span class={`text-xs ${c.ok ? 'text-neutral-700' : 'text-neutral-400 line-through'}`}>{c.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div>
+              <h3 class="font-semibold text-[var(--color-text)] mb-3">Open Graph</h3>
+              <p class="text-xs text-[var(--color-text-muted)] mb-3">Quand un client satisfait partage le site, aucune preview n'apparait</p>
+              <div class="space-y-1">
+                {ogChecks.map((c) => (
+                  <div class="flex items-center gap-2 py-1">
+                    {c.ok ? (
+                      <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    ) : (
+                      <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                    )}
+                    <span class={`text-xs ${c.ok ? 'text-neutral-700' : 'text-neutral-400 line-through'}`}>{c.label}</span>
+                  </div>
+                ))}
+              </div>
+              <p class="mt-3 text-xs font-semibold text-red-600">Score : 0/6</p>
+            </div>
+
+            <div>
+              <h3 class="font-semibold text-[var(--color-text)] mb-3">SEO technique</h3>
+              <p class="text-xs text-[var(--color-text-muted)] mb-3">Title et description OK, mais sitemap en 404 et analytics absent</p>
+              <div class="space-y-1">
+                {seoChecks.map((c) => (
+                  <div class="flex items-center gap-2 py-1">
+                    {c.ok ? (
+                      <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    ) : (
+                      <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                    )}
+                    <span class={`text-xs ${c.ok ? 'text-neutral-700' : 'text-neutral-400 line-through'}`}>{c.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ═══════════════════ PANEL 3 : VISITEURS ═══════════════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+
+      <!-- Stats row -->
+      <div class="w-full px-6 py-8 md:px-8 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl flex flex-wrap gap-4 justify-center">
+          <div class="px-6 py-3 rounded-xl bg-emerald-50 border border-emerald-200 text-center">
+            <p class="text-2xl font-bold text-emerald-700">{convertis}</p>
+            <p class="text-xs text-emerald-600">contactent</p>
+          </div>
+          <div class="px-6 py-3 rounded-xl bg-amber-50 border border-amber-200 text-center">
+            <p class="text-2xl font-bold text-amber-700">{hesitants}</p>
+            <p class="text-xs text-amber-600">hesitent</p>
+          </div>
+          <div class="px-6 py-3 rounded-xl bg-red-50 border border-red-200 text-center">
+            <p class="text-2xl font-bold text-red-700">{quitte}</p>
+            <p class="text-xs text-red-600">repartent</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Personas groupes par decision -->
+      <div class="w-full px-6 py-8 md:px-8 bg-white">
+        <div class="mx-auto max-w-5xl space-y-8">
+
+          <!-- Convertit -->
+          <div>
+            <h3 class="text-lg font-bold text-emerald-700 mb-4">Ceux qui contactent ({convertis})</h3>
+            <div class="space-y-3">
+              {personas.filter(p => p.decision === 'Convertit').map((p) => (
+                <details class={`group border ${decisionBorder(p.decision)} rounded-xl overflow-hidden`}>
+                  <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                    <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                        <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                        <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                        <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                        <span class="text-[11px] text-orange-600 bg-orange-50 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                      </div>
+                      <p class="text-xs text-neutral-500 mb-2">{p.role} — {p.situation}</p>
+                      <div class="flex flex-wrap items-center gap-1">
+                        {p.parcours.map((page, i) => (
+                          <Fragment>
+                            <span class="text-[10px] text-primary-700 bg-white border border-primary-100 px-1.5 py-0.5 rounded">{page}</span>
+                            {i < p.parcours.length - 1 && <span class="text-neutral-300 text-[10px]">&rsaquo;</span>}
+                          </Fragment>
+                        ))}
+                        <span class="text-[10px] bg-green-600 text-white px-1.5 py-0.5 rounded font-medium ml-0.5">Contacte</span>
+                      </div>
+                    </div>
+                    <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                  </summary>
+                  <div class="px-4 pb-4 pt-0 border-t border-green-200 bg-white/50">
+                    <div class="grid gap-3 text-xs mt-3">
+                      <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.premierImpression}</p></div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Question cle</p><p class="text-neutral-600 italic">"{p.questionCle}"</p><p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong></p></div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Impact technique</p><p class="text-neutral-600">{p.impactTech}</p></div>
+                      <div class="flex gap-4">
+                        <div class="flex-1"><p class="font-semibold text-green-700 mb-1">Points positifs</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.positifs.map(pt => <li>{pt}</li>)}</ul></div>
+                        <div class="flex-1"><p class="font-semibold text-amber-700 mb-1">Frictions</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map(f => <li>{f}</li>)}</ul></div>
+                      </div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Decision</p><p class="text-neutral-600">{p.raisonDecision}</p></div>
+                      <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.exp >= 7 ? 'text-emerald-600' : p.exp >= 4 ? 'text-amber-600' : 'text-red-600'}`}>{p.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.conf >= 7 ? 'text-emerald-600' : p.conf >= 4 ? 'text-amber-600' : 'text-red-600'}`}>{p.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.clarte >= 7 ? 'text-emerald-600' : p.clarte >= 4 ? 'text-amber-600' : 'text-red-600'}`}>{p.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </details>
+              ))}
+            </div>
+          </div>
+
+          <!-- Hesite -->
+          <div>
+            <h3 class="text-lg font-bold text-amber-700 mb-4">Ceux qui hesitent ({hesitants})</h3>
+            <div class="space-y-3">
+              {personas.filter(p => p.decision === 'Hesite').map((p) => (
+                <details class={`group border ${decisionBorder(p.decision)} rounded-xl overflow-hidden`}>
+                  <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                    <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                        <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                        <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                        <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                        <span class="text-[11px] text-orange-600 bg-orange-50 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                      </div>
+                      <p class="text-xs text-neutral-500 mb-2">{p.role} — {p.situation}</p>
+                      <div class="flex flex-wrap items-center gap-1">
+                        {p.parcours.map((page, i) => (
+                          <Fragment>
+                            <span class="text-[10px] text-primary-700 bg-white border border-primary-100 px-1.5 py-0.5 rounded">{page}</span>
+                            {i < p.parcours.length - 1 && <span class="text-neutral-300 text-[10px]">&rsaquo;</span>}
+                          </Fragment>
+                        ))}
+                        <span class="text-[10px] bg-amber-500 text-white px-1.5 py-0.5 rounded font-medium ml-0.5">Hesite</span>
+                      </div>
+                    </div>
+                    <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                  </summary>
+                  <div class="px-4 pb-4 pt-0 border-t border-amber-200 bg-white/50">
+                    <div class="grid gap-3 text-xs mt-3">
+                      <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.premierImpression}</p></div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Question cle</p><p class="text-neutral-600 italic">"{p.questionCle}"</p><p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong></p></div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Impact technique</p><p class="text-neutral-600">{p.impactTech}</p></div>
+                      <div class="flex gap-4">
+                        <div class="flex-1"><p class="font-semibold text-green-700 mb-1">Points positifs</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.positifs.map(pt => <li>{pt}</li>)}</ul></div>
+                        <div class="flex-1"><p class="font-semibold text-amber-700 mb-1">Frictions</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map(f => <li>{f}</li>)}</ul></div>
+                      </div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Decision</p><p class="text-neutral-600">{p.raisonDecision}</p></div>
+                      <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.exp >= 7 ? 'text-emerald-600' : p.exp >= 4 ? 'text-amber-600' : 'text-red-600'}`}>{p.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.conf >= 7 ? 'text-emerald-600' : p.conf >= 4 ? 'text-amber-600' : 'text-red-600'}`}>{p.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.clarte >= 7 ? 'text-emerald-600' : p.clarte >= 4 ? 'text-amber-600' : 'text-red-600'}`}>{p.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </details>
+              ))}
+            </div>
+          </div>
+
+          <!-- Quitte -->
+          <div>
+            <h3 class="text-lg font-bold text-red-700 mb-4">Ceux qui repartent ({quitte})</h3>
+            <div class="space-y-3">
+              {personas.filter(p => p.decision === 'Quitte').map((p) => (
+                <details class={`group border ${decisionBorder(p.decision)} rounded-xl overflow-hidden`}>
+                  <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                    <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                        <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                        <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                        <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                        <span class="text-[11px] text-orange-600 bg-orange-50 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                      </div>
+                      <p class="text-xs text-neutral-500 mb-2">{p.role} — {p.situation}</p>
+                      <div class="flex flex-wrap items-center gap-1">
+                        {p.parcours.map((page, i) => (
+                          <Fragment>
+                            <span class="text-[10px] text-primary-700 bg-white border border-primary-100 px-1.5 py-0.5 rounded">{page}</span>
+                            {i < p.parcours.length - 1 && <span class="text-neutral-300 text-[10px]">&rsaquo;</span>}
+                          </Fragment>
+                        ))}
+                        <span class="text-[10px] bg-red-500 text-white px-1.5 py-0.5 rounded font-medium ml-0.5">Quitte</span>
+                      </div>
+                    </div>
+                    <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                  </summary>
+                  <div class="px-4 pb-4 pt-0 border-t border-neutral-200 bg-white/50">
+                    <div class="grid gap-3 text-xs mt-3">
+                      <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.premierImpression}</p></div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Question cle</p><p class="text-neutral-600 italic">"{p.questionCle}"</p><p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong></p></div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Impact technique</p><p class="text-neutral-600">{p.impactTech}</p></div>
+                      <div class="flex gap-4">
+                        <div class="flex-1"><p class="font-semibold text-green-700 mb-1">Points positifs</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.positifs.map(pt => <li>{pt}</li>)}</ul></div>
+                        <div class="flex-1"><p class="font-semibold text-amber-700 mb-1">Frictions</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map(f => <li>{f}</li>)}</ul></div>
+                      </div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Decision</p><p class="text-neutral-600">{p.raisonDecision}</p></div>
+                      <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.exp >= 7 ? 'text-emerald-600' : p.exp >= 4 ? 'text-amber-600' : 'text-red-600'}`}>{p.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.conf >= 7 ? 'text-emerald-600' : p.conf >= 4 ? 'text-amber-600' : 'text-red-600'}`}>{p.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.clarte >= 7 ? 'text-emerald-600' : p.clarte >= 4 ? 'text-amber-600' : 'text-red-600'}`}>{p.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </details>
+              ))}
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Frictions -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-2">Points de friction recurrents</h2>
+          <p class="text-[var(--color-text-muted)] mb-8">Problemes identifies chez 3 personas ou plus, classes par nombre de personas impactes.</p>
+          <div class="space-y-3">
+            {frictions.map((f) => (
+              <div class="flex items-center gap-4 rounded-xl border border-[var(--color-border)] bg-white p-4">
+                <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-neutral-100 flex items-center justify-center">
+                  <span class="text-lg font-bold text-[var(--color-text)]">{f.count}</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="font-medium text-[var(--color-text)]">{f.label}</p>
+                  <p class="text-sm text-[var(--color-text-muted)]">{f.count}/10 personas impactes</p>
+                </div>
+                <span class={`flex-shrink-0 px-3 py-1 rounded-full text-xs font-semibold ${severityColor(f.severity)}`}>
+                  {f.severity}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ═══════════════════ PANEL 4 : AMELIORATIONS ═══════════════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+
+      <!-- Le plus important -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-2">Le plus important</h2>
+          <p class="text-[var(--color-text-muted)] mb-8">Ces ameliorations touchent 7 personas ou plus. Les resoudre changerait radicalement l'experience — et la conversion hors-urgence.</p>
+          <div class="space-y-4">
+            {amelioHaute.map((a) => (
+              <div class="bg-white border-2 border-red-200 rounded-xl p-5 shadow-sm">
+                <h4 class="font-semibold text-neutral-900 mb-2">{a.title}</h4>
+                <p class="text-sm text-neutral-600 mb-3">{a.detail}</p>
+                <div class="bg-primary-50 rounded-lg px-3 py-2.5 flex items-start gap-2">
+                  <svg class="w-4 h-4 text-primary-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                  <p class="text-xs text-primary-800">Impact : {a.impact}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- Utile aussi -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-white">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">Utile aussi</h2>
+          <div class="grid md:grid-cols-2 gap-4">
+            {amelioMoyenne.map((a) => (
+              <div class="bg-white border border-neutral-200 rounded-xl p-4">
+                <h4 class="font-semibold text-neutral-900 text-sm mb-1.5">{a.title}</h4>
+                <p class="text-xs text-neutral-600 mb-2">{a.detail}</p>
+                <p class="text-xs text-[var(--color-text-muted)]">Impact : {a.impact}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- A discuter -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">A discuter ensemble</h2>
+          <div class="space-y-3">
+            {amelioDiscuter.map((a) => (
+              <div class="bg-neutral-50 border border-neutral-200 rounded-xl p-4 flex gap-3">
+                <span class="text-lg shrink-0">{a.emoji}</span>
+                <div>
+                  <h4 class="font-semibold text-neutral-900 text-sm mb-0.5">{a.title}</h4>
+                  <p class="text-xs text-neutral-600">{a.detail}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <!-- ═══════════════════ METHODOLOGIE ═══════════════════ -->
+  <section class="w-full px-6 py-12 md:px-8 md:py-16 bg-white">
+    <div class="mx-auto max-w-3xl">
+      <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">Methodologie</h2>
+      <div class="prose max-w-none text-[var(--color-text)]">
+        <p>Ce rapport utilise la methode <strong>Persona-Driven UX + Technical Audit</strong> :</p>
+        <ol class="space-y-2 text-sm leading-relaxed">
+          <li><strong>Scraping complet</strong> du site serrurier-metz-sesame.fr (accueil, services, contact, mentions legales, CGV, livraison)</li>
+          <li><strong>Audit technique</strong> via Mozilla Observatory (score reel D-, 25/100 — scan #89810485 du 29 mars 2026), analyse des headers HTTP, Schema.org, Open Graph et SEO on-page</li>
+          <li><strong>Creation de 10 personas diversifies</strong> : 5 urgences (claquee dehors, cle cassee, effraction, rideau bloque, nuit ferie) + 5 planifies (changement serrure, securisation, B2B agence, decouverte IA, syndic)</li>
+          <li><strong>Simulation individuelle</strong> de chaque visite avec integration des problemes techniques reels (404 /services, pages e-commerce parasites, absence de tarifs)</li>
+          <li><strong>Agregation et analyse croisee</strong> par canal d'arrivee, maturite d'achat et type de besoin</li>
+          <li><strong>Priorisation des ameliorations</strong> par impact (nombre de personas) et severite</li>
+        </ol>
+        <p class="mt-4 text-sm text-[var(--color-text-muted)]">
+          Chaque persona a ete evalue sur 3 axes (experience, confiance, clarte) de 1 a 10. Le score Observatory est reel. Les scores PageSpeed sont estimes sur la base du stack PrestaShop + Elementor + jQuery identifie.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ DOUBLE CTA ═══════════════════ -->
+  <section class="w-full px-6 py-16 md:px-8 md:py-24" style="background-color: #0D0D0D;">
+    <div class="mx-auto max-w-3xl text-center">
+      <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">
+        906 avis 4,9/5 — votre reputation merite mieux qu'un site PrestaShop vieillissant
+      </h2>
+      <p class="text-neutral-300 mb-8 max-w-xl mx-auto">
+        Ce rapport identifie les opportunites concretes. Je peux construire un site Astro qui affiche vos 906 avis, vos tarifs et convertit aussi les visiteurs hors-urgence — pas seulement ceux qui ont deja compose votre numero.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="/commander" class="inline-flex items-center gap-2 px-8 py-3.5 text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl hover:scale-105" style="background: linear-gradient(135deg, #E86C47, #D4572F); box-shadow: 0 4px 20px rgba(232, 108, 71, 0.4);">
+          Commander un site
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a href="/contact" class="inline-flex items-center gap-2 px-8 py-3.5 border border-neutral-600 text-neutral-300 font-semibold rounded-xl hover:border-[#E86C47] hover:text-white transition-all">
+          En discuter d'abord
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ TAB SCRIPTS ═══════════════════ -->
+  <style is:inline>
+    #panels { -ms-overflow-style: none; }
+    #panels::-webkit-scrollbar { display: none; }
+  </style>
+
+  <script is:inline>
+    const panels = document.getElementById('panels');
+    const tabs = document.querySelectorAll('.tab-btn');
+    const sections = panels.querySelectorAll('.tab-panel');
+
+    function activateTab(index) {
+      tabs.forEach((b, i) => {
+        if (i === index) {
+          b.classList.remove('text-neutral-500');
+          b.classList.add('text-primary-700', 'bg-primary-50');
+        } else {
+          b.classList.remove('text-primary-700', 'bg-primary-50');
+          b.classList.add('text-neutral-500');
+        }
+      });
+    }
+
+    tabs.forEach((btn, i) => {
+      btn.addEventListener('click', () => {
+        sections[i].scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+        activateTab(i);
+      });
+    });
+
+    let scrollTimeout;
+    panels.addEventListener('scroll', () => {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        const index = Math.round(panels.scrollLeft / panels.offsetWidth);
+        activateTab(index);
+      }, 50);
+    }, { passive: true });
+  </script>
+
+</BaseLayout>

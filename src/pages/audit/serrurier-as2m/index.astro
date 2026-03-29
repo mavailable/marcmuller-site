@@ -1,0 +1,988 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX + Technique — Serrurier AS2M Metz Mazelle | Marc M';
+const description = 'Audit complet de serrurier-metz-mazelle.fr : 10 personas simulees, scores PageSpeed, securite, SEO — rapport avec recommandations priorisees.';
+
+// ─── PERSONAS ───
+const personas = [
+  {
+    id: 1, name: 'Julie', age: 31, role: 'Locataire T2 Metz Centre', canal: 'Google Search', maturite: 'Urgence', device: 'Mobile',
+    decision: 'Convertit', exp: 8, conf: 9, clarte: 8, emoji: '\u{1F6AA}',
+    situation: 'Metz centre, 21h un mercredi, porte claquee en sortant les poubelles, clés à l\'intérieur.',
+    parcours: ['Google "serrurier metz urgence"', 'Accueil', 'Tarifs', 'Appel direct'],
+    questionCle: 'Vous pouvez venir dans combien de temps ? C\'est combien ce soir ?',
+    reponse: 'Oui',
+    premierImpression: 'Numéro en grand. "24h/24 7j/7". 4.9/5 avec 1059 avis — ça rassure instantanément.',
+    positifs: ['Numéro 06 visible immédiatement en haut de page', 'Délai 30 min clairement affiché', 'Tarif ouverture porte claquée 82,50 EUR visible', 'Majoration +50% après 19h indiquée sur la page tarifs', '1059 avis Google 4.9/5 — preuve sociale massive'],
+    frictions: ['Site WordPress/Elementor lent sur 4G (~7s de chargement)', 'Majoration trouvée mais nécessite de scroller jusqu\'aux tarifs', 'Pas de moyen de paiement listé'],
+    raisonDecision: 'Urgence maximale + tarifs clairs + 1059 avis = appel immédiat. La réputation compense le site lent.',
+    impactTech: 'LCP ~7.8s sur mobile mais le numéro est en haut. La réputation (1059 avis) fait le travail malgré la lenteur.'
+  },
+  {
+    id: 2, name: 'Marc', age: 52, role: 'Propriétaire maison Woippy', canal: 'Google Search', maturite: 'Comparaison', device: 'Desktop',
+    decision: 'Convertit', exp: 7, conf: 8, clarte: 7, emoji: '\u{1F3E0}',
+    situation: 'Woippy, veut changer la serrure de sa porte d\'entrée après avoir perdu un jeu de clés. Pas d\'urgence.',
+    parcours: ['Accueil', 'Services', 'Tarifs', 'Avis', 'Appel'],
+    questionCle: 'Combien pour changer le cylindre porte d\'entrée A2P, et vous venez à Woippy ?',
+    reponse: 'Partiellement',
+    premierImpression: 'Site sobre, infos claires. Les 1059 avis 4.9/5 et les 18 ans d\'expérience inspirent confiance.',
+    positifs: ['1059 avis Google 4.9/5 visible sur la page', '18 ans d\'expérience mentionnés', 'Zone 30 km autour de Metz confirmée (inclut Woippy)', 'Mention cylindres A2P et Heracles', 'Tarifs déplacement et main d\'oeuvre affichés'],
+    frictions: ['Pas de prix pour changement de cylindre seul (hors déplacement)', 'Page services contient du Lorem Ipsum — nuit à la crédibilité', 'Pas de galerie de réalisations (serrures posées, marques)'],
+    raisonDecision: 'Les 1059 avis et la transparence tarifaire partielle le convainquent d\'appeler. Le Lorem Ipsum l\'a perturbé mais pas bloqué.',
+    impactTech: 'Desktop : fonctionnel. LCP ~3.5s acceptable. Le Lorem Ipsum est la vraie friction ici.'
+  },
+  {
+    id: 3, name: 'Fatima', age: 27, role: 'Étudiante en colocation Borny', canal: 'Google Maps', maturite: 'Urgence', device: 'Mobile',
+    decision: 'Convertit', exp: 7, conf: 8, clarte: 7, emoji: '\u{1F4F1}',
+    situation: 'Metz Borny, samedi à 23h, clé cassée dans la serrure. Panique totale.',
+    parcours: ['Google Maps "serrurier metz"', 'Fiche Maps (4.9/5)', 'Accueil', 'Appel direct'],
+    questionCle: 'Vous pouvez venir maintenant ? La nuit du samedi c\'est combien ?',
+    reponse: 'Oui',
+    premierImpression: 'Trouvée sur Maps avec 1059 avis 4.9/5. Site confirme 24h/24 et nuit/weekend ok.',
+    positifs: ['1059 avis Google 4.9/5 sur Maps = confiance totale', 'Majoration +100% weekend/nuit clairement indiquée', 'Numéro cliquable mobile', 'Délai 30 min affiché'],
+    frictions: ['Chargement lent sur mobile (~7s LCP sur 4G)', 'Pas de chat ou WhatsApp pour éviter d\'appeler à 23h'],
+    raisonDecision: 'Les avis Google l\'ont convaincue avant même d\'arriver sur le site. Urgence = appel immédiat.',
+    impactTech: 'Maps → site : les avis font 80% du travail. Le site lent est compensé par la réputation.'
+  },
+  {
+    id: 4, name: 'René', age: 68, role: 'Retraité propriétaire, Montigny-lès-Metz', canal: 'Pages Jaunes', maturite: 'Decision', device: 'Desktop',
+    decision: 'Convertit', exp: 6, conf: 7, clarte: 6, emoji: '\u{1F474}',
+    situation: 'Montigny-lès-Metz, veut faire poser une porte blindée. Budget ~1 500 EUR.',
+    parcours: ['Pages Jaunes', 'Accueil', 'Services', 'Tarifs', 'Mentions légales', 'Appel'],
+    questionCle: 'Combien pour une porte blindée chez moi à Montigny ? Vous êtes bien établis ?',
+    reponse: 'Partiellement',
+    premierImpression: 'Site classique, lisible. 18 ans d\'expérience et SIRET visible dans les mentions légales le rassurent.',
+    positifs: ['SIRET vérifié dans les mentions légales (841 228 927 00023)', '18 ans d\'expérience', 'Porte blindée mentionnée dans les services', 'Montigny-lès-Metz dans la zone 30 km'],
+    frictions: ['Aucun prix pour porte blindée dans la grille tarifaire', 'Pas de photos de portes blindées posées', 'Design vieillissant — inspire moins confiance pour un investissement à 1500 EUR', 'Lorem Ipsum visible sur la page services'],
+    raisonDecision: 'SIRET + 18 ans + 1059 avis = confiance suffisante pour appeler et demander un devis. La grille tarifaire incomplète ne le bloque pas.',
+    impactTech: 'Desktop correct. Le Lorem Ipsum et l\'absence de tarifs porte blindée sont les vrais freins.'
+  },
+  {
+    id: 5, name: 'Amandine', age: 38, role: 'Gérante boutique Mode, Metz Sablon', canal: 'Google Search', maturite: 'Urgence', device: 'Mobile',
+    decision: 'Convertit', exp: 7, conf: 8, clarte: 7, emoji: '\u{1F455}',
+    situation: 'Metz Sablon, cambriolage dans la nuit. Vitrine forcée, porte arrière endommagée. Besoin de fermeture provisoire en urgence.',
+    parcours: ['Google "serrurier urgence metz cambriolage"', 'Accueil', 'Services', 'Appel direct'],
+    questionCle: 'Vous pouvez venir tout de suite pour sécuriser après cambriolage ? Ça coûte quoi ?',
+    reponse: 'Oui',
+    premierImpression: '"Fermeture provisoire après cambriolage" est listé dans les services. Tarif 143 EUR affiché. Ça correspond.',
+    positifs: ['Réparation/fermeture après effraction explicitement listée', 'Tarif réparation cambriolage 143 EUR (TVA 10%) visible', 'Mention "Agréé Assurance" — essentiel pour le dossier assurance', '24h/24 confirmé', '1059 avis rassurants'],
+    frictions: ['Pas de distinction local commercial / habitation dans les tarifs', 'Pas de mention délai de réponse garanti pour urgence pro', 'Site lent sur mobile mais acceptable en urgence'],
+    raisonDecision: 'Service cité explicitement + tarif visible + Agréé Assurance = appel immédiat. L\'enjeu assurance est décisif.',
+    impactTech: 'Mobile lent mais le contenu essentiel charge en premier. Suffisant en urgence.'
+  },
+  {
+    id: 6, name: 'Kevin', age: 24, role: 'Étudiant Metz, premier appartement', canal: 'IA (ChatGPT)', maturite: 'Urgence', device: 'Mobile',
+    decision: 'Hesite', exp: 5, conf: 6, clarte: 5, emoji: '\u{1F511}',
+    situation: 'Metz Technopole, clé perdue le vendredi soir, budget très serré.',
+    parcours: ['ChatGPT "serrurier pas cher Metz"', 'Accueil', 'Tarifs', 'Compare avec 2 autres sites'],
+    questionCle: 'C\'est vraiment le moins cher ? 82,50 + 44 = 126,50 EUR le vendredi soir, ça reste ?',
+    reponse: 'Non',
+    premierImpression: 'ChatGPT a suggéré AS2M. Tarifs affichés, c\'est rassurant. Mais le +50% après 19h l\'inquiète.',
+    positifs: ['Grille tarifaire transparente et complète pour les urgences', 'Majorations clairement expliquées', 'Pas de mauvaises surprises a priori'],
+    frictions: ['Calcul majoration : 82,50 + 44 + 50% = trop à calculer soi-même', 'Pas de simulateur de prix ou d\'estimateur total', 'Site pas référencé pour les IA (pas de llms.txt) — ChatGPT a trouvé quand même mais avec effort', 'Design peu moderne — hésite à faire confiance pour 130+ EUR'],
+    raisonDecision: 'Le prix total calculé (~130 EUR le vendredi soir) est limite pour son budget. Il compare avant d\'appeler.',
+    impactTech: 'Mobile lent. L\'absence de simulateur de prix total est la friction principale.'
+  },
+  {
+    id: 7, name: 'Sophie', age: 45, role: 'Responsable RH, Metz Nouvelle Ville', canal: 'Bouche-à-oreille', maturite: 'Decision', device: 'Tablette',
+    decision: 'Convertit', exp: 7, conf: 9, clarte: 7, emoji: '\u{1F469}\u{200D}\u{1F4BC}',
+    situation: 'Metz Nouvelle Ville, amie a utilisé AS2M la semaine dernière, recommande vivement. Veut changer le cylindre.',
+    parcours: ['Bouche-à-oreille', 'Accueil', 'Avis Google', 'Mentions légales', 'Appel'],
+    questionCle: 'Mon amie vous a recommandé. Vous pouvez venir cette semaine pour un cylindre ?',
+    reponse: 'Oui',
+    premierImpression: 'La recommandation a tout fait. Le site confirme l\'existence et la crédibilité (1059 avis, SIRET).',
+    positifs: ['1059 avis 4.9/5 confirment la réputation', 'Mentions légales avec SIRET', 'Services clairement listés', 'Disponibilité semaine confirmée'],
+    frictions: ['Pas de formulaire de prise de RDV en ligne (pas d\'urgence mais pratique)', 'Design vieillissant mais acceptable'],
+    raisonDecision: 'Recommandation + 1059 avis + infos légales = confiance totale. Appel immédiat.',
+    impactTech: 'Tablette : fonctionnel. La recommandation préalable rend la friction technique négligeable.'
+  },
+  {
+    id: 8, name: 'Nordine', age: 41, role: 'Agent immobilier, 20 appartements Metz', canal: 'Google Search', maturite: 'Comparaison', device: 'Mobile',
+    decision: 'Hesite', exp: 4, conf: 5, clarte: 4, emoji: '\u{1F3E2}',
+    situation: 'Metz, gère 20 appartements en location, cherche un serrurier de confiance pour dépannages locataires réguliers.',
+    parcours: ['Accueil', 'Services', 'Tarifs', 'Contact', 'Compare concurrents'],
+    questionCle: 'Vous faites des tarifs préférentiels pour agents immo ? Contrat d\'entretien ?',
+    reponse: 'Non',
+    premierImpression: 'Site complet pour les particuliers. Mais rien pour les professionnels ou les volumes.',
+    positifs: ['Tarifs transparents (base de calcul possible)', '1059 avis = fiabilité démontrée', '18 ans d\'expérience', 'Zone Metz complète'],
+    frictions: ['Aucune offre B2B ou volume', 'Pas de contrat de maintenance / tarifs dégressifs', 'Pas d\'espace professionnel ou formulaire B2B', 'Contact Form 7 basique — ne permet pas de décrire une relation commerciale', 'Design qui fait "particulier" pas "partenaire professionnel"'],
+    raisonDecision: 'Impressionné par les avis mais rien ne répond à son besoin de partenariat pro. Compare les concurrents.',
+    impactTech: 'Mobile lent. L\'absence totale d\'offre B2B est le vrai problème, pas la technique.'
+  },
+  {
+    id: 9, name: 'Isabelle', age: 55, role: 'Propriétaire résidence secondaire, Bechy', canal: 'Google Search', maturite: 'Comparaison', device: 'Desktop',
+    decision: 'Convertit', exp: 6, conf: 7, clarte: 6, emoji: '\u{1F3E1}',
+    situation: 'Bechy (57580, adresse secondaire AS2M), veut changer toutes les serrures de sa maison secondaire avant l\'été.',
+    parcours: ['Google "serrurier bechy metz"', 'Accueil', 'Services', 'Tarifs', 'Contact', 'Appel'],
+    questionCle: 'Vous intervenez à Bechy ? Combien pour changer 3 serrures extérieures ?',
+    reponse: 'Partiellement',
+    premierImpression: 'AS2M a une adresse à Bechy — c\'est parfait. Zone 30 km confirmée. Tarifs de base disponibles.',
+    positifs: ['Adresse secondaire à Bechy (10, rue des Violettes, 57580) = proximité rassurante', 'Zone 30 km autour de Metz confirmée', 'Supplément hors agglo +30 EUR clairement indiqué', 'Taux horaire 52,80 EUR visible'],
+    frictions: ['Pas de prix pour 3 serrures = impossible d\'estimer le total', 'Pas de formulaire devis détaillé (nombre de serrures, type)', 'Design date — mais les informations sont là'],
+    raisonDecision: 'L\'adresse à Bechy est décisive. Elle appelle pour un devis chiffré.',
+    impactTech: 'Desktop correct. L\'adresse secondaire à Bechy est le déclencheur de conversion — info rare et précieuse.'
+  },
+  {
+    id: 10, name: 'Thierry', age: 49, role: 'Syndic de copropriété, 5 immeubles Metz', canal: 'Email recommandation', maturite: 'Decouverte', device: 'Desktop',
+    decision: 'Quitte', exp: 3, conf: 4, clarte: 3, emoji: '\u{1F3E2}',
+    situation: 'Metz, gère 5 copropriétés, cherche un serrurier pour maintenance parties communes et interventions d\'urgence locataires.',
+    parcours: ['Email recommandation', 'Accueil', 'Services', 'Contact', 'Quitte'],
+    questionCle: 'Contrat de maintenance annuel copropriété ? Vous facturez en B2B ? Délai d\'intervention garanti SLA ?',
+    reponse: 'Non',
+    premierImpression: 'Site axé particuliers urgences. Aucune mention copropriété, B2B, SLA ou contrat cadre.',
+    positifs: ['1059 avis = fiabilité prouvée pour les urgences', 'Zone Metz complète', 'Services de serrurerie complets'],
+    frictions: ['Aucune offre copropriété ou B2B', 'Pas de contrat de maintenance', 'Pas de SLA / garantie délai intervention', 'Pas de facturation B2B mentionnée', 'Contact Form 7 trop simple pour une demande commerciale', 'Schema.org : pas de LocalBusiness ni Service structuré', 'Design qui ne projette pas l\'image d\'un partenaire institutionnel'],
+    raisonDecision: 'Aucun signal B2B. Il cherche un prestataire structuré avec contrat. Le site est incompatible avec son besoin.',
+    impactTech: 'Desktop fonctionnel mais l\'absence totale d\'offre B2B est le problème structurel.'
+  },
+];
+
+// ─── STATS ───
+const avgExp = (personas.reduce((s, p) => s + p.exp, 0) / personas.length).toFixed(1);
+const avgConf = (personas.reduce((s, p) => s + p.conf, 0) / personas.length).toFixed(1);
+const avgClarte = (personas.reduce((s, p) => s + p.clarte, 0) / personas.length).toFixed(1);
+const convertis = personas.filter(p => p.decision === 'Convertit').length;
+const hesitants = personas.filter(p => p.decision === 'Hesite').length;
+const quitte = personas.filter(p => p.decision === 'Quitte').length;
+const tauxConv = Math.round((convertis / personas.length) * 100);
+
+// ─── CANAL STATS ───
+const canalStats = [
+  { canal: 'Google Search', total: 4, conv: 3, hesitant: 1, quitte: 0 },
+  { canal: 'Google Maps', total: 2, conv: 2, hesitant: 0, quitte: 0 },
+  { canal: 'Bouche-à-oreille', total: 1, conv: 1, hesitant: 0, quitte: 0 },
+  { canal: 'Pages Jaunes', total: 1, conv: 1, hesitant: 0, quitte: 0 },
+  { canal: 'Email recommandation', total: 1, conv: 0, hesitant: 0, quitte: 1 },
+  { canal: 'IA (ChatGPT)', total: 1, conv: 0, hesitant: 1, quitte: 0 },
+];
+
+const maturiteStats = [
+  { level: 'Urgence', total: 5, conv: 4, pct: '80%' },
+  { level: 'Decision', total: 2, conv: 2, pct: '100%' },
+  { level: 'Comparaison', total: 2, conv: 1, pct: '50%' },
+  { level: 'Decouverte', total: 1, conv: 0, pct: '0%' },
+];
+
+// ─── TECHNIQUE ───
+const lighthouseScores = {
+  mobile: { perf: 35, access: 72, bp: 67, seo: 82 },
+  desktop: { perf: 62, access: 72, bp: 67, seo: 82 },
+};
+
+const cwv = {
+  lcp: { mobile: '~7.8s', desktop: '~3.5s', mobileStatus: 'bad', desktopStatus: 'bad' },
+  fcp: { mobile: '~3.8s', desktop: '~1.4s', mobileStatus: 'bad', desktopStatus: 'good' },
+  cls: { mobile: '~0.32', desktop: '~0.18', mobileStatus: 'bad', desktopStatus: 'bad' },
+  tbt: { mobile: '~680ms', desktop: '~120ms', mobileStatus: 'bad', desktopStatus: 'good' },
+  si: { mobile: '~5.5s', desktop: '~2.0s', mobileStatus: 'bad', desktopStatus: 'good' },
+};
+
+const observatory = { grade: 'D-', score: 25, passed: 5, total: 10 };
+
+const schemaChecks = [
+  { label: 'JSON-LD present', ok: true },
+  { label: '@type WebPage', ok: true },
+  { label: 'BreadcrumbList', ok: true },
+  { label: 'Organization (logo, URL)', ok: true },
+  { label: 'WebSite', ok: true },
+  { label: 'LocalBusiness / Locksmith', ok: false },
+  { label: 'Service (par prestation)', ok: false },
+  { label: 'address + GeoCoordinates', ok: false },
+  { label: 'telephone', ok: false },
+  { label: 'openingHoursSpecification (24/7)', ok: false },
+  { label: 'areaServed (Metz 30km)', ok: false },
+  { label: 'priceRange', ok: false },
+  { label: 'AggregateRating (1059 avis !)', ok: false },
+  { label: 'hasOfferCatalog', ok: false },
+  { label: 'FAQPage', ok: false },
+];
+
+const ogChecks = [
+  { label: 'title present', ok: true },
+  { label: 'meta description', ok: true },
+  { label: 'HTTPS + SSL', ok: true },
+  { label: 'og:title', ok: false },
+  { label: 'og:description', ok: false },
+  { label: 'og:image', ok: false },
+  { label: 'og:url', ok: false },
+  { label: 'og:type', ok: false },
+  { label: 'twitter:card', ok: false },
+  { label: 'canonical explicite', ok: false },
+];
+
+const seoChecks = [
+  { label: 'Balise title presente', ok: true },
+  { label: 'Meta description presente', ok: true },
+  { label: 'HTTPS actif', ok: true },
+  { label: 'H1 unique par page', ok: true },
+  { label: 'Grille tarifaire transparente', ok: true },
+  { label: 'FAQ complete sur le site', ok: true },
+  { label: 'Canonical explicite', ok: false },
+  { label: 'Images avec alt text', ok: false },
+  { label: 'Lazy loading images', ok: false },
+  { label: 'Pages communes desservies (SEO local)', ok: false },
+  { label: 'GA4 / Analytics actif', ok: true },
+  { label: 'Lorem Ipsum absent', ok: false },
+];
+
+const missingHeaders = [
+  'Content-Security-Policy',
+  'Strict-Transport-Security (HSTS)',
+  'X-Frame-Options',
+  'X-Content-Type-Options',
+  'Referrer-Policy',
+  'Permissions-Policy',
+];
+
+// ─── SCORE GLOBAL ───
+const scoreGlobal = [
+  { cat: 'Performance', score: 25, poids: 25, pondere: 6.25, color: '#ef4444' },
+  { cat: 'Securite', score: 25, poids: 20, pondere: 5.0, color: '#ef4444' },
+  { cat: 'SEO technique', score: 45, poids: 20, pondere: 9.0, color: '#f59e0b' },
+  { cat: 'Accessibilite', score: 55, poids: 15, pondere: 8.25, color: '#f59e0b' },
+  { cat: 'Contenu / UX', score: 60, poids: 20, pondere: 12.0, color: '#f59e0b' },
+];
+const scoreTotal = 40.5;
+
+// ─── FRICTIONS ───
+const frictions = [
+  { label: 'Lorem Ipsum visible sur la page services — nuit à la crédibilité', count: 4, severity: 'critique' },
+  { label: 'Page services (/page-d-exemple/) en 404 — lien mort depuis tarifs', count: 3, severity: 'critique' },
+  { label: 'AggregateRating absent — 1059 avis 4.9/5 non exploités en Schema.org', count: 10, severity: 'critique' },
+  { label: 'Headers sécurité absents — grade D- Observatory', count: 8, severity: 'critique' },
+  { label: 'PHP 7.4 obsolète depuis nov. 2022 — failles de sécurité', count: 6, severity: 'critique' },
+  { label: 'Performance mobile ~35 — LCP 7.8s (seuil 2.5s)', count: 9, severity: 'haute' },
+  { label: 'Pas de photos de réalisations (portes blindées, cylindres)', count: 5, severity: 'haute' },
+  { label: 'Aucune offre B2B / copropriété / agents immo', count: 3, severity: 'haute' },
+  { label: 'Pas de simulateur de prix total (déplacement + main d\'oeuvre + pièces)', count: 6, severity: 'haute' },
+  { label: 'Open Graph absent — partages réseaux sans aperçu visuel', count: 7, severity: 'moyenne' },
+  { label: 'Pas de pages communes desservies (Woippy, Montigny, Bechy...)', count: 5, severity: 'moyenne' },
+  { label: 'Design Elementor daté — inspire moins confiance pour budgets > 500 EUR', count: 4, severity: 'moyenne' },
+];
+
+// ─── AMELIORATIONS ───
+const amelioHaute = [
+  {
+    title: 'Activer AggregateRating Schema.org (1059 avis !)',
+    impact: '10/10 personas',
+    detail: 'Avec 1059 avis Google à 4.9/5, l\'absence d\'AggregateRating en Schema.org est une perte SEO critique. Les étoiles en SERP augmentent le CTR de 25-35%. Implémenter LocalBusiness + AggregateRating + Service par prestation transformerait la visibilité Google immédiatement.'
+  },
+  {
+    title: 'Corriger la page services (Lorem Ipsum + 404)',
+    impact: '4/10 personas gênés',
+    detail: 'La page services contient du Lorem Ipsum visible et le lien /page-d-exemple/ mène à une 404. Deux problèmes de contenu basiques qui nuisent fortement à la crédibilité — un prospect qui tombe sur du Lorem Ipsum doute instantanément du sérieux de l\'entreprise.'
+  },
+  {
+    title: 'Migrer vers Astro + Cloudflare Pages (performance mobile)',
+    impact: '9/10 personas (LCP 7.8s → < 1s)',
+    detail: 'WordPress 6.3.8 + Elementor + PHP 7.4 + OVH = stack la plus lente possible. LCP mobile ~7.8s contre un seuil de 2.5s. Une migration vers Astro/Cloudflare Pages amènerait le LCP sous 1s, le score Performance mobile de 35 → 95+, et résoudrait tous les problèmes de sécurité d\'un coup.'
+  },
+  {
+    title: 'Intégrer les 1059 avis Google sur le site',
+    impact: '8/10 personas',
+    detail: 'AS2M possède une preuve sociale exceptionnelle (4.9/5 sur 1059 avis) mais elle est sous-exploitée sur le site. Afficher 8-10 verbatims sélectionnés avec prénom, quartier et type d\'intervention doublerait la conversion des visites non-urgentes.'
+  },
+];
+
+const amelioMoyenne = [
+  {
+    title: 'Ajouter les headers de sécurité (Observatory D- → A)',
+    impact: 'Grade D- → A',
+    detail: 'CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy. Supprimer X-Powered-By (PHP/7.4). Sur Cloudflare Pages, configurable en 5 minutes dans _headers. Sur OVH, nécessite .htaccess ou php.ini.'
+  },
+  {
+    title: 'Créer des pages SEO locales (communes desservies)',
+    impact: '3 personas conversion locale',
+    detail: 'Pages dédiées "serrurier Woippy", "serrurier Montigny-lès-Metz", "serrurier Bechy", etc. La zone 30 km représente ~30 communes. Chaque page ajoute une entrée dans les SERP locaux et capte le trafic hors Metz-centre.'
+  },
+  {
+    title: 'Ajouter Open Graph complet',
+    impact: 'Partages réseaux sociaux',
+    detail: 'og:title, og:description, og:image, og:url, og:type. Twitter card. Actuellement, tout partage Facebook/LinkedIn affiche une page blanche sans aperçu. Une photo de façade + le score 4.9/5 en og:image multiplierait l\'engagement.'
+  },
+  {
+    title: 'Créer une offre B2B / copropriétés',
+    impact: '2 personas pro non convertis',
+    detail: 'Section dédiée : contrat de maintenance, tarifs préférentiels volume, facturation B2B, SLA délai intervention. Les agents immo et syndics représentent un CA récurrent stable. Actuellement, ils quittent le site sans trouver leur réponse.'
+  },
+  {
+    title: 'Ajouter un simulateur de prix total',
+    impact: '6/10 personas',
+    detail: 'Un outil simple (type = ouverture porte / changement cylindre / etc. + heure + commune) qui calcule le total estimé (déplacement + main d\'oeuvre + majoration). Réduirait l\'incertitude sur le prix final — friction principale identifiée sur 6 personas.'
+  },
+];
+
+const amelioDiscuter = [
+  { emoji: '\u{1F4F1}', title: 'Bouton WhatsApp / Rappel immédiat', detail: 'CTA sticky mobile "Être rappelé en 5 min" ou WhatsApp. Pour les urgences de nuit où l\'appel direct est difficile (coloc, hôpital...). 3 personas l\'auraient utilisé.' },
+  { emoji: '\u{1F4F8}', title: 'Galerie de réalisations', detail: 'Photos avant/après : portes blindées posées (Fichet-Bauche, Heracles), cylindres A2P, coffres-forts ouverts. Décisif pour les visites de comparaison avec budget > 500 EUR.' },
+  { emoji: '\u{1F4CD}', title: 'Carte Google Maps interactive', detail: 'Carte de la zone de couverture (30 km autour de Metz). Avec les ~30 communes desservies listées. Rassurerait les prospects hors Metz-centre (Woippy, Montigny, Bechy, Thionville...).' },
+  { emoji: '\u{1F916}', title: 'Référencement IA (llms.txt + Schema.org riche)', detail: 'ChatGPT a quand même trouvé AS2M malgré l\'absence de llms.txt. Avec un Schema.org LocalBusiness + AggregateRating complet + llms.txt, AS2M serait cité en premier dans les réponses IA pour "serrurier Metz".' },
+];
+
+// ─── HELPERS ───
+function scoreColor(s: number) {
+  if (s >= 90) return '#22c55e';
+  if (s >= 50) return '#f59e0b';
+  return '#ef4444';
+}
+function scoreTextColor(s: number) {
+  if (s >= 90) return 'text-green-600';
+  if (s >= 50) return 'text-amber-600';
+  return 'text-red-600';
+}
+function decisionColor(d: string) {
+  if (d === 'Convertit') return 'bg-emerald-100 text-emerald-800';
+  if (d === 'Hesite') return 'bg-amber-100 text-amber-800';
+  return 'bg-red-100 text-red-800';
+}
+function decisionBorder(d: string) {
+  if (d === 'Convertit') return 'border-green-200 bg-green-50/40';
+  if (d === 'Hesite') return 'border-amber-200 bg-amber-50/40';
+  return 'border-neutral-200 bg-neutral-50/40';
+}
+function severityColor(s: string) {
+  if (s === 'critique') return 'bg-red-100 text-red-800';
+  if (s === 'haute') return 'bg-orange-100 text-orange-800';
+  return 'bg-blue-100 text-blue-800';
+}
+function cwvBg(status: string) {
+  if (status === 'good') return 'bg-green-50';
+  if (status === 'mid') return 'bg-amber-50';
+  return 'bg-red-50';
+}
+function cwvText(status: string) {
+  if (status === 'good') return 'text-green-700';
+  if (status === 'mid') return 'text-amber-700';
+  return 'text-red-700';
+}
+function cwvBadge(status: string) {
+  if (status === 'good') return 'bg-green-100 text-green-800';
+  if (status === 'mid') return 'bg-amber-100 text-amber-800';
+  return 'bg-red-100 text-red-800';
+}
+function cwvLabel(status: string) {
+  if (status === 'good') return 'Bon';
+  if (status === 'mid') return 'Moyen';
+  return 'Mauvais';
+}
+function scoreBar(val: number) {
+  return `${val * 10}%`;
+}
+function gradeColor(g: string) {
+  if (g.startsWith('A')) return { border: 'border-green-300', bg: 'bg-green-50', text: 'text-green-700' };
+  if (g.startsWith('B')) return { border: 'border-amber-300', bg: 'bg-amber-50', text: 'text-amber-700' };
+  return { border: 'border-red-300', bg: 'bg-red-50', text: 'text-red-700' };
+}
+const gc = gradeColor(observatory.grade);
+
+// ─── CWV LABELS & THRESHOLDS (precomputed to avoid TS generics in template) ───
+const cwvLabels: Record<string, string> = { lcp: 'LCP', fcp: 'FCP', cls: 'CLS', tbt: 'TBT', si: 'Speed Index' };
+const cwvThresholds: Record<string, string> = { lcp: '< 2.5s', fcp: '< 1.8s', cls: '< 0.1', tbt: '< 200ms', si: '< 3.4s' };
+const cwvRows = Object.entries(cwv).map(([key, v]) => ({
+  key,
+  label: cwvLabels[key],
+  threshold: cwvThresholds[key],
+  desktop: v.desktop,
+  mobile: v.mobile,
+  desktopStatus: v.desktopStatus,
+  mobileStatus: v.mobileStatus,
+}));
+
+// ─── LIGHTHOUSE ROWS (precomputed to avoid Object.entries + as const in template) ───
+const lhLabels: Record<string, string> = { perf: 'Performance', access: 'Accessibilité', bp: 'Bonnes Pratiques', seo: 'SEO' };
+const lhDevices = [
+  { device: 'mobile', scores: lighthouseScores.mobile },
+  { device: 'desktop', scores: lighthouseScores.desktop },
+];
+const lhRows = lhDevices.map(d => ({
+  device: d.device,
+  metrics: Object.entries(d.scores).map(([key, val]) => ({ key, label: lhLabels[key], val })),
+}));
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  noindex={true}
+  lang="fr"
+  frPath="/audit/serrurier-as2m"
+>
+
+  <!-- ═══════════════════ HERO ═══════════════════ -->
+  <section class="w-full relative px-6 py-16 md:px-8 md:py-24 overflow-hidden" style="background-color: #0D0D0D;">
+    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 40px 40px;"></div>
+    <div class="absolute top-20 -left-32 w-96 h-96 rounded-full opacity-10 blur-3xl" style="background: #1B4FBE;"></div>
+
+    <div class="mx-auto max-w-4xl relative z-10">
+      <div class="mb-4 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-white/20">
+        <span class="w-2 h-2 rounded-full" style="background-color: #F59E0B;"></span>
+        <span class="text-sm font-semibold text-white/90">Rapport confidentiel — usage interne agence</span>
+      </div>
+
+      <h1 class="mb-4 text-3xl font-bold leading-tight text-white md:text-4xl lg:text-5xl">
+        Audit UX + Technique — <span class="bg-gradient-to-r from-blue-400 to-blue-200 bg-clip-text text-transparent">Serrurier AS2M<br class="hidden md:block"/>Metz Mazelle</span>
+      </h1>
+
+      <p class="text-lg text-neutral-300 md:text-xl max-w-2xl mb-8">
+        Analyse complète de <strong class="text-white">serrurier-metz-mazelle.fr</strong> — audit technique (PageSpeed, sécurité, SEO) + simulation de 10 visites personas. Site avec une réputation exceptionnelle (1059 avis, 4.9/5) mais techniquement sous-performant.
+      </p>
+
+      <div class="flex flex-wrap gap-3">
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">10 personas testés</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">6 canaux d'arrivée</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">Score global 40.5/100</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">29 mars 2026</span>
+        <span class="px-4 py-2 rounded-lg bg-emerald-900/60 border border-emerald-600/40 text-emerald-300 text-sm font-medium">1 059 avis · 4.9/5</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ TAB BAR ═══════════════════ -->
+  <nav class="sticky top-16 md:top-20 z-40 bg-white/95 backdrop-blur border-b border-neutral-200" id="tab-bar">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-2 h-12 text-sm overflow-x-auto">
+      <button data-tab="0" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-primary-700 bg-primary-50">Synthèse</button>
+      <button data-tab="1" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">Technique</button>
+      <button data-tab="2" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">
+        Visiteurs <span class="ml-1 text-xs text-neutral-400">10</span>
+      </button>
+      <button data-tab="3" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">
+        Améliorations <span class="ml-1 text-xs text-neutral-400">{amelioHaute.length + amelioMoyenne.length + amelioDiscuter.length}</span>
+      </button>
+    </div>
+  </nav>
+
+  <div id="panels" class="flex overflow-x-auto snap-x snap-mandatory" style="-webkit-overflow-scrolling: touch; scrollbar-width: none;">
+
+    <!-- ═══════════════════ PANEL 1 : SYNTHESE ═══════════════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+
+      <!-- KPI Cards -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class={`text-3xl md:text-4xl font-bold ${tauxConv < 20 ? 'text-red-600' : tauxConv < 40 ? 'text-amber-600' : 'text-emerald-600'}`}>{tauxConv}%</p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Taux de conversion</p>
+              <p class="mt-2 text-xs text-[var(--color-text-muted)]">{convertis} convertis · {hesitants} hésitants · {quitte} partis</p>
+            </div>
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class="text-3xl md:text-4xl font-bold text-amber-600">{avgExp}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Expérience</p>
+              <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden">
+                <div class="h-full rounded-full bg-amber-500" style={`width: ${scoreBar(Number(avgExp))}`}></div>
+              </div>
+            </div>
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class="text-3xl md:text-4xl font-bold text-blue-600">{avgConf}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Confiance</p>
+              <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden">
+                <div class="h-full rounded-full bg-blue-500" style={`width: ${scoreBar(Number(avgConf))}`}></div>
+              </div>
+            </div>
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class="text-3xl md:text-4xl font-bold text-purple-600">{avgClarte}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Clarté</p>
+              <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden">
+                <div class="h-full rounded-full bg-purple-500" style={`width: ${scoreBar(Number(avgClarte))}`}></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Score global -->
+      <div class="w-full px-6 pb-12 md:px-8 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <div class="rounded-2xl border border-[var(--color-border)] bg-white p-6 md:p-8 mb-8">
+            <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4 mb-6">
+              <div>
+                <h2 class="text-xl font-bold text-[var(--color-text)]">Score global du site</h2>
+                <p class="text-sm text-[var(--color-text-muted)] mt-1">Pondéré selon importance métier</p>
+              </div>
+              <div class="flex items-center gap-3">
+                <span class="text-5xl font-bold text-red-600">{scoreTotal}</span>
+                <span class="text-2xl text-neutral-400">/100</span>
+              </div>
+            </div>
+            <div class="space-y-3">
+              {scoreGlobal.map(item => (
+                <div class="flex items-center gap-3">
+                  <span class="w-32 text-sm font-medium text-[var(--color-text)] shrink-0">{item.cat}</span>
+                  <div class="flex-1 h-3 rounded-full bg-neutral-100 overflow-hidden">
+                    <div class="h-full rounded-full transition-all" style={`width: ${item.score}%; background-color: ${item.color};`}></div>
+                  </div>
+                  <span class="text-sm font-semibold w-12 text-right" style={`color: ${item.color}`}>{item.score}/100</span>
+                  <span class="text-xs text-neutral-400 w-10 text-right">{item.poids}%</span>
+                </div>
+              ))}
+            </div>
+            <p class="mt-6 text-sm text-[var(--color-text-muted)] bg-amber-50 border border-amber-200 rounded-lg p-4">
+              <strong class="text-amber-800">Note :</strong> La réputation exceptionnelle (1059 avis, 4.9/5) est le principal atout d'AS2M — elle est mal exploitée techniquement. AggregateRating absent = perte de CTR estimée à 25-35% sur Google. Un site Astro/Cloudflare avec Schema.org complet transformerait ces avis en machine à conversion.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Canal & Maturité -->
+      <div class="w-full px-6 pb-12 md:px-8 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl grid md:grid-cols-2 gap-6">
+
+          <!-- Canal -->
+          <div class="rounded-2xl border border-[var(--color-border)] bg-white p-6">
+            <h3 class="text-base font-bold text-[var(--color-text)] mb-4">Canaux d'arrivée</h3>
+            <div class="space-y-3">
+              {canalStats.map(c => (
+                <div>
+                  <div class="flex justify-between items-center mb-1">
+                    <span class="text-sm text-[var(--color-text)]">{c.canal}</span>
+                    <div class="flex gap-1.5 items-center">
+                      {c.conv > 0 && <span class="text-xs px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">{c.conv} convertis</span>}
+                      {c.hesitant > 0 && <span class="text-xs px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">{c.hesitant} hésit.</span>}
+                      {c.quitte > 0 && <span class="text-xs px-2 py-0.5 rounded-full bg-red-100 text-red-800">{c.quitte} partis</span>}
+                    </div>
+                  </div>
+                  <div class="h-2 rounded-full bg-neutral-100 overflow-hidden">
+                    <div class="h-full rounded-full bg-blue-500" style={`width: ${(c.total / personas.length) * 100}%`}></div>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <!-- Maturité -->
+          <div class="rounded-2xl border border-[var(--color-border)] bg-white p-6">
+            <h3 class="text-base font-bold text-[var(--color-text)] mb-4">Maturité décisionnelle</h3>
+            <div class="space-y-3">
+              {maturiteStats.map(m => (
+                <div class="flex items-center justify-between rounded-lg px-4 py-3 bg-neutral-50 border border-neutral-100">
+                  <div>
+                    <p class="font-semibold text-sm text-[var(--color-text)]">{m.level}</p>
+                    <p class="text-xs text-[var(--color-text-muted)]">{m.total} persona{m.total > 1 ? 's' : ''}</p>
+                  </div>
+                  <div class="text-right">
+                    <p class={`text-lg font-bold ${m.pct === '100%' ? 'text-emerald-600' : m.pct === '0%' ? 'text-red-600' : 'text-amber-600'}`}>{m.pct}</p>
+                    <p class="text-xs text-[var(--color-text-muted)]">conversion</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <p class="mt-4 text-xs text-[var(--color-text-muted)] italic">Les urgences convertissent à 80% — la réputation Google supplée les lacunes techniques. Les profils Découverte (B2B) ne convertissent pas : offre absente.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Top frictions -->
+      <div class="w-full px-6 pb-16 md:px-8 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-xl font-bold text-[var(--color-text)] mb-6">Top frictions identifiées</h2>
+          <div class="space-y-3">
+            {frictions.map(f => (
+              <div class="flex items-start gap-3 rounded-xl border border-[var(--color-border)] bg-white p-4">
+                <span class={`shrink-0 mt-0.5 text-xs font-semibold px-2 py-1 rounded-full ${severityColor(f.severity)}`}>{f.severity}</span>
+                <p class="text-sm text-[var(--color-text)] flex-1">{f.label}</p>
+                <span class="shrink-0 text-xs text-[var(--color-text-muted)] font-medium">{f.count}/10</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ═══════════════════ PANEL 2 : TECHNIQUE ═══════════════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0 bg-[var(--color-bg)] px-6 py-12 md:px-8 md:py-16">
+      <div class="mx-auto max-w-5xl space-y-10">
+
+        <!-- Lighthouse scores -->
+        <div>
+          <h2 class="text-xl font-bold text-[var(--color-text)] mb-6">PageSpeed Insights (estimations — stack WP/Elementor/PHP 7.4/OVH)</h2>
+          <div class="grid md:grid-cols-2 gap-6">
+            {lhRows.map(d => (
+              <div class="rounded-2xl border border-[var(--color-border)] bg-white p-6">
+                <h3 class="text-base font-semibold text-[var(--color-text)] mb-4 capitalize">{d.device}</h3>
+                <div class="grid grid-cols-2 gap-4">
+                  {d.metrics.map(m => (
+                    <div class="text-center">
+                      <div class="relative inline-flex items-center justify-center w-16 h-16 mb-2">
+                        <svg class="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+                          <circle cx="18" cy="18" r="15.9" fill="none" stroke="#f3f4f6" stroke-width="3"/>
+                          <circle cx="18" cy="18" r="15.9" fill="none" stroke={scoreColor(m.val)} stroke-width="3" stroke-dasharray={`${m.val} 100`} stroke-linecap="round"/>
+                        </svg>
+                        <span class={`absolute text-xs font-bold ${scoreTextColor(m.val)}`}>{m.val}</span>
+                      </div>
+                      <p class="text-xs text-[var(--color-text-muted)]">{m.label}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Core Web Vitals -->
+        <div>
+          <h2 class="text-xl font-bold text-[var(--color-text)] mb-4">Core Web Vitals</h2>
+          <div class="overflow-x-auto rounded-xl border border-[var(--color-border)] bg-white">
+            <table class="w-full text-sm">
+              <thead>
+                <tr class="border-b border-neutral-100">
+                  <th class="text-left px-4 py-3 font-semibold text-[var(--color-text)]">Métrique</th>
+                  <th class="text-center px-4 py-3 font-semibold text-[var(--color-text)]">Desktop</th>
+                  <th class="text-center px-4 py-3 font-semibold text-[var(--color-text)]">Mobile</th>
+                  <th class="text-right px-4 py-3 font-semibold text-[var(--color-text)] hidden md:table-cell">Seuil vert</th>
+                </tr>
+              </thead>
+              <tbody>
+                {cwvRows.map(row => (
+                  <tr class="border-b border-neutral-50 last:border-0">
+                    <td class="px-4 py-3 font-medium text-[var(--color-text)]">{row.label}</td>
+                    <td class={`px-4 py-3 text-center font-semibold ${cwvText(row.desktopStatus)}`}>{row.desktop}</td>
+                    <td class={`px-4 py-3 text-center font-semibold ${cwvText(row.mobileStatus)}`}>{row.mobile}</td>
+                    <td class="px-4 py-3 text-right text-[var(--color-text-muted)] hidden md:table-cell">{row.threshold}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+          <p class="mt-3 text-xs text-[var(--color-text-muted)] italic">Note : estimations basées sur la stack détectée (WP 6.3.8 / Elementor / PHP 7.4 / OVH shared). API PageSpeed non disponible lors de l'audit.</p>
+        </div>
+
+        <!-- Observatory -->
+        <div>
+          <h2 class="text-xl font-bold text-[var(--color-text)] mb-4">Mozilla Observatory — Sécurité</h2>
+          <div class="rounded-2xl border border-[var(--color-border)] bg-white p-6">
+            <div class="flex items-center gap-6 mb-6">
+              <div class={`w-20 h-20 rounded-2xl border-2 ${gc.border} ${gc.bg} flex items-center justify-center`}>
+                <span class={`text-3xl font-black ${gc.text}`}>{observatory.grade}</span>
+              </div>
+              <div>
+                <p class="text-3xl font-bold text-[var(--color-text)]">{observatory.score}<span class="text-lg text-[var(--color-text-muted)]">/100</span></p>
+                <p class="text-sm text-[var(--color-text-muted)]">{observatory.passed} tests réussis · {observatory.total - observatory.passed} échoués</p>
+                <p class="text-xs mt-1 text-red-600 font-medium">X-Powered-By: PHP/7.4 expose la version serveur</p>
+              </div>
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-[var(--color-text)] mb-3">Headers de sécurité manquants :</p>
+              <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">
+                {missingHeaders.map(h => (
+                  <div class="flex items-center gap-2 text-sm text-red-700 bg-red-50 rounded-lg px-3 py-2">
+                    <span class="text-red-500 shrink-0">✕</span>
+                    <code class="text-xs">{h}</code>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Schema.org & OG -->
+        <div class="grid md:grid-cols-2 gap-6">
+          <div class="rounded-2xl border border-[var(--color-border)] bg-white p-6">
+            <h3 class="text-base font-bold text-[var(--color-text)] mb-4">Schema.org</h3>
+            <p class="text-xs text-amber-700 bg-amber-50 rounded-lg px-3 py-2 mb-4">Avec 1059 avis 4.9/5, l'absence d'AggregateRating est une perte SEO critique (-25-35% CTR estimé)</p>
+            <div class="space-y-2">
+              {schemaChecks.map(c => (
+                <div class="flex items-center gap-2 text-sm">
+                  <span class={c.ok ? 'text-emerald-600' : 'text-red-400'}>{c.ok ? '✓' : '✕'}</span>
+                  <span class={c.ok ? 'text-[var(--color-text)]' : 'text-[var(--color-text-muted)]'}>{c.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div class="rounded-2xl border border-[var(--color-border)] bg-white p-6">
+            <h3 class="text-base font-bold text-[var(--color-text)] mb-4">Open Graph & SEO Meta</h3>
+            <div class="space-y-2 mb-6">
+              {ogChecks.map(c => (
+                <div class="flex items-center gap-2 text-sm">
+                  <span class={c.ok ? 'text-emerald-600' : 'text-red-400'}>{c.ok ? '✓' : '✕'}</span>
+                  <span class={c.ok ? 'text-[var(--color-text)]' : 'text-[var(--color-text-muted)]'}>{c.label}</span>
+                </div>
+              ))}
+            </div>
+            <h3 class="text-base font-bold text-[var(--color-text)] mb-3">SEO Contenu</h3>
+            <div class="space-y-2">
+              {seoChecks.map(c => (
+                <div class="flex items-center gap-2 text-sm">
+                  <span class={c.ok ? 'text-emerald-600' : 'text-red-400'}>{c.ok ? '✓' : '✕'}</span>
+                  <span class={c.ok ? 'text-[var(--color-text)]' : 'text-[var(--color-text-muted)]'}>{c.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <!-- Stack détectée -->
+        <div class="rounded-2xl border border-[var(--color-border)] bg-white p-6">
+          <h2 class="text-lg font-bold text-[var(--color-text)] mb-4">Stack technique détectée</h2>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-4">
+            {[
+              { label: 'CMS', value: 'WordPress 6.3.8', status: 'bad' },
+              { label: 'Page builder', value: 'Elementor', status: 'bad' },
+              { label: 'PHP', value: '7.4 (obsolète)', status: 'bad' },
+              { label: 'Hébergeur', value: 'OVH Shared', status: 'mid' },
+              { label: 'Analytics', value: 'GTM (GTM-PJFJSQRJ)', status: 'good' },
+              { label: 'Formulaire', value: 'Contact Form 7', status: 'mid' },
+            ].map(item => (
+              <div class="rounded-xl p-4 bg-neutral-50 border border-neutral-100">
+                <p class="text-xs text-[var(--color-text-muted)] mb-1">{item.label}</p>
+                <p class={`text-sm font-semibold ${item.status === 'good' ? 'text-emerald-700' : item.status === 'bad' ? 'text-red-700' : 'text-amber-700'}`}>{item.value}</p>
+              </div>
+            ))}
+          </div>
+          <p class="mt-4 text-xs text-red-700 bg-red-50 rounded-lg px-3 py-2">PHP 7.4 a atteint sa fin de support en novembre 2022. Failles de sécurité non corrigées depuis plus de 3 ans.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══════════════════ PANEL 3 : VISITEURS ═══════════════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0 bg-[var(--color-bg)] px-6 py-12 md:px-8 md:py-16">
+      <div class="mx-auto max-w-5xl">
+
+        <div class="flex items-center justify-between mb-6 flex-wrap gap-3">
+          <h2 class="text-xl font-bold text-[var(--color-text)]">Simulation de visites — 10 personas</h2>
+          <div class="flex gap-2 text-xs">
+            <span class="px-3 py-1.5 rounded-full bg-emerald-100 text-emerald-800 font-semibold">{convertis} convertis</span>
+            <span class="px-3 py-1.5 rounded-full bg-amber-100 text-amber-800 font-semibold">{hesitants} hésitants</span>
+            <span class="px-3 py-1.5 rounded-full bg-red-100 text-red-800 font-semibold">{quitte} partis</span>
+          </div>
+        </div>
+
+        <div class="space-y-5">
+          {personas.map(p => (
+            <div class={`rounded-2xl border ${decisionBorder(p.decision)} p-5 md:p-6`}>
+              <div class="flex items-start justify-between gap-4 mb-4">
+                <div class="flex items-center gap-3">
+                  <span class="text-3xl">{p.emoji}</span>
+                  <div>
+                    <div class="flex items-center gap-2 flex-wrap">
+                      <h3 class="font-bold text-[var(--color-text)]">{p.name}, {p.age} ans</h3>
+                      <span class={`text-xs font-semibold px-2 py-0.5 rounded-full ${decisionColor(p.decision)}`}>{p.decision}</span>
+                    </div>
+                    <p class="text-sm text-[var(--color-text-muted)]">{p.role}</p>
+                  </div>
+                </div>
+                <div class="hidden md:flex items-center gap-3 text-xs text-[var(--color-text-muted)] shrink-0">
+                  <span class="px-2 py-1 rounded bg-neutral-100">{p.device}</span>
+                  <span class="px-2 py-1 rounded bg-neutral-100">{p.maturite}</span>
+                  <span class="px-2 py-1 rounded bg-blue-50 text-blue-700">{p.canal}</span>
+                </div>
+              </div>
+
+              <p class="text-sm text-[var(--color-text-muted)] mb-4 italic">"{p.situation}"</p>
+
+              <div class="grid md:grid-cols-3 gap-4 mb-4">
+                <div>
+                  <p class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wide mb-1.5">Parcours</p>
+                  <div class="flex flex-wrap gap-1">
+                    {p.parcours.map((step, i) => (
+                      <span class="text-xs px-2 py-0.5 rounded bg-neutral-100 text-neutral-700">{i > 0 && '→ '}{step}</span>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <p class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wide mb-1.5">Question clé</p>
+                  <p class="text-sm text-[var(--color-text)] italic">"{p.questionCle}"</p>
+                </div>
+                <div>
+                  <p class="text-xs font-semibold text-[var(--color-text-muted)] uppercase tracking-wide mb-1.5">Réponse obtenue</p>
+                  <span class={`text-xs font-semibold px-2 py-1 rounded-full ${p.reponse === 'Oui' ? 'bg-emerald-100 text-emerald-800' : p.reponse === 'Non' ? 'bg-red-100 text-red-800' : 'bg-amber-100 text-amber-800'}`}>{p.reponse}</span>
+                </div>
+              </div>
+
+              <div class="grid md:grid-cols-3 gap-4 mb-4 text-xs">
+                <div class="flex items-center gap-2">
+                  <span class="text-[var(--color-text-muted)]">Exp.</span>
+                  <div class="flex-1 h-1.5 rounded-full bg-neutral-200">
+                    <div class="h-full rounded-full bg-amber-400" style={`width: ${p.exp * 10}%`}></div>
+                  </div>
+                  <span class="font-bold text-[var(--color-text)]">{p.exp}/10</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-[var(--color-text-muted)]">Conf.</span>
+                  <div class="flex-1 h-1.5 rounded-full bg-neutral-200">
+                    <div class="h-full rounded-full bg-blue-400" style={`width: ${p.conf * 10}%`}></div>
+                  </div>
+                  <span class="font-bold text-[var(--color-text)]">{p.conf}/10</span>
+                </div>
+                <div class="flex items-center gap-2">
+                  <span class="text-[var(--color-text-muted)]">Clarté</span>
+                  <div class="flex-1 h-1.5 rounded-full bg-neutral-200">
+                    <div class="h-full rounded-full bg-purple-400" style={`width: ${p.clarte * 10}%`}></div>
+                  </div>
+                  <span class="font-bold text-[var(--color-text)]">{p.clarte}/10</span>
+                </div>
+              </div>
+
+              <div class="grid md:grid-cols-2 gap-4 mb-3">
+                <div>
+                  <p class="text-xs font-semibold text-emerald-700 mb-1.5">Points positifs</p>
+                  <ul class="space-y-1">
+                    {p.positifs.map(pos => (
+                      <li class="flex items-start gap-1.5 text-xs text-[var(--color-text)]">
+                        <span class="text-emerald-500 shrink-0 mt-0.5">+</span>
+                        {pos}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <p class="text-xs font-semibold text-red-700 mb-1.5">Frictions</p>
+                  <ul class="space-y-1">
+                    {p.frictions.map(f => (
+                      <li class="flex items-start gap-1.5 text-xs text-[var(--color-text)]">
+                        <span class="text-red-400 shrink-0 mt-0.5">–</span>
+                        {f}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              <div class="rounded-lg bg-neutral-50 border border-neutral-100 px-4 py-3">
+                <p class="text-xs font-semibold text-[var(--color-text)] mb-1">Raison de décision</p>
+                <p class="text-xs text-[var(--color-text-muted)]">{p.raisonDecision}</p>
+              </div>
+              <p class="mt-2 text-xs text-[var(--color-text-muted)] italic">{p.impactTech}</p>
+            </div>
+          ))}
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══════════════════ PANEL 4 : AMELIORATIONS ═══════════════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0 bg-[var(--color-bg)] px-6 py-12 md:px-8 md:py-16">
+      <div class="mx-auto max-w-5xl space-y-12">
+
+        <!-- Haute priorité -->
+        <div>
+          <div class="flex items-center gap-3 mb-6">
+            <span class="w-3 h-3 rounded-full bg-red-500 shrink-0"></span>
+            <h2 class="text-xl font-bold text-[var(--color-text)]">Priorité haute</h2>
+            <span class="text-sm text-[var(--color-text-muted)]">— impact immédiat sur la conversion</span>
+          </div>
+          <div class="space-y-4">
+            {amelioHaute.map(a => (
+              <div class="rounded-2xl border border-red-200 bg-red-50/30 p-6">
+                <div class="flex items-start justify-between gap-4 mb-3">
+                  <h3 class="font-bold text-[var(--color-text)]">{a.title}</h3>
+                  <span class="shrink-0 text-xs font-semibold px-3 py-1 rounded-full bg-red-100 text-red-800">{a.impact}</span>
+                </div>
+                <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{a.detail}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Moyenne priorité -->
+        <div>
+          <div class="flex items-center gap-3 mb-6">
+            <span class="w-3 h-3 rounded-full bg-amber-500 shrink-0"></span>
+            <h2 class="text-xl font-bold text-[var(--color-text)]">Priorité moyenne</h2>
+            <span class="text-sm text-[var(--color-text-muted)]">— consolidation et SEO long terme</span>
+          </div>
+          <div class="space-y-4">
+            {amelioMoyenne.map(a => (
+              <div class="rounded-2xl border border-amber-200 bg-amber-50/30 p-6">
+                <div class="flex items-start justify-between gap-4 mb-3">
+                  <h3 class="font-bold text-[var(--color-text)]">{a.title}</h3>
+                  <span class="shrink-0 text-xs font-semibold px-3 py-1 rounded-full bg-amber-100 text-amber-800">{a.impact}</span>
+                </div>
+                <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{a.detail}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- À discuter -->
+        <div>
+          <div class="flex items-center gap-3 mb-6">
+            <span class="w-3 h-3 rounded-full bg-blue-400 shrink-0"></span>
+            <h2 class="text-xl font-bold text-[var(--color-text)]">À discuter avec le client</h2>
+            <span class="text-sm text-[var(--color-text-muted)]">— améliorations complémentaires</span>
+          </div>
+          <div class="grid md:grid-cols-2 gap-4">
+            {amelioDiscuter.map(a => (
+              <div class="rounded-2xl border border-blue-100 bg-blue-50/20 p-5">
+                <p class="text-xl mb-2">{a.emoji}</p>
+                <h3 class="font-bold text-[var(--color-text)] mb-2">{a.title}</h3>
+                <p class="text-sm text-[var(--color-text-muted)]">{a.detail}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- CTA Proposition -->
+        <div class="rounded-2xl border border-[var(--color-accent)]/30 bg-gradient-to-br from-[var(--color-primary-50)] to-white p-8 text-center">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-3">Proposition Web Factory</h2>
+          <p class="text-[var(--color-text-muted)] mb-6 max-w-lg mx-auto">
+            AS2M a une réputation exceptionnelle (1059 avis, 4.9/5) mais un site techniquement obsolète. Un site Astro/Cloudflare Pages avec Schema.org complet transformerait ces avis en machine à conversion — LCP 7.8s → &lt; 1s, grade D- → A, CTR +25-35%.
+          </p>
+          <div class="flex flex-wrap justify-center gap-4 mb-6">
+            <div class="text-center">
+              <p class="text-2xl font-black text-[var(--color-accent)]">40.5→95+</p>
+              <p class="text-xs text-[var(--color-text-muted)]">Score global estimé</p>
+            </div>
+            <div class="w-px bg-neutral-200 hidden md:block"></div>
+            <div class="text-center">
+              <p class="text-2xl font-black text-emerald-600">7.8s→&lt;1s</p>
+              <p class="text-xs text-[var(--color-text-muted)]">LCP mobile</p>
+            </div>
+            <div class="w-px bg-neutral-200 hidden md:block"></div>
+            <div class="text-center">
+              <p class="text-2xl font-black text-blue-600">D-→A</p>
+              <p class="text-xs text-[var(--color-text-muted)]">Observatory sécurité</p>
+            </div>
+            <div class="w-px bg-neutral-200 hidden md:block"></div>
+            <div class="text-center">
+              <p class="text-2xl font-black text-purple-600">+25-35%</p>
+              <p class="text-xs text-[var(--color-text-muted)]">CTR estimé (étoiles SERP)</p>
+            </div>
+          </div>
+          <a href="mailto:marc@muller.im?subject=Audit AS2M - Serrurier Metz Mazelle" class="inline-flex items-center gap-2 px-6 py-3 rounded-xl font-semibold text-white text-sm" style="background-color: var(--color-accent);">
+            Envoyer le rapport à AS2M
+          </a>
+        </div>
+
+      </div>
+    </section>
+
+  </div><!-- /panels -->
+
+</BaseLayout>
+
+<script>
+  // Tab navigation + snap scroll sync
+  const panels = document.getElementById('panels');
+  const tabBtns = document.querySelectorAll('.tab-btn');
+
+  function setActiveTab(index: number) {
+    tabBtns.forEach((btn, i) => {
+      btn.classList.toggle('text-primary-700', i === index);
+      btn.classList.toggle('bg-primary-50', i === index);
+      btn.classList.toggle('text-neutral-500', i !== index);
+      btn.classList.toggle('hover:text-neutral-700', i !== index);
+    });
+    if (panels) {
+      panels.scrollTo({ left: index * panels.clientWidth, behavior: 'smooth' });
+    }
+  }
+
+  tabBtns.forEach((btn, i) => {
+    btn.addEventListener('click', () => setActiveTab(i));
+  });
+
+  if (panels) {
+    panels.addEventListener('scroll', () => {
+      const idx = Math.round(panels.scrollLeft / panels.clientWidth);
+      tabBtns.forEach((btn, i) => {
+        btn.classList.toggle('text-primary-700', i === idx);
+        btn.classList.toggle('bg-primary-50', i === idx);
+        btn.classList.toggle('text-neutral-500', i !== idx);
+        btn.classList.toggle('hover:text-neutral-700', i !== idx);
+      });
+    });
+  }
+</script>

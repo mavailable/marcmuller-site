@@ -1,0 +1,653 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX — Edison Electricite Generale | Marc M.';
+const description = 'Audit complet du site electricien-metz.info : 10 personas simules, WordPress/Breakdance lourd, aucun telephone ni adresse visible, zero temoignage, recommandations actionnables pour electricien Montigny-les-Metz.';
+
+// ─── PROSPECT ───
+const prospect = {
+  name: 'Edison - Electricite Generale',
+  url: 'https://electricien-metz.info/',
+  date: '29 mars 2026',
+  activity: 'Electricien — Electricite generale, Depannage 24/7',
+  location: 'Montigny-les-Metz (57) — Metz Metropole, Grand Est',
+};
+
+// ─── KPIs ───
+const kpis = {
+  conversion: 20,
+  experience: 4.4,
+  confiance: 3.9,
+  clarte: 4.8,
+};
+
+// ─── CONSTAT ───
+const constat = "Le site presente 10 services et 13 realisations photo, mais ne convertit qu'un visiteur sur cinq : aucun telephone visible, aucune adresse, zero temoignage, descriptions generiques sans ancrage local — et une page contact sans coordonnees qui oblige le visiteur a remplir un formulaire a l'aveugle.";
+
+// ─── CONVERSION PAR CANAL ───
+const conversionByCanal = [
+  { canal: 'Bouche-a-oreille', taux: 60, color: 'text-green-600', bg: 'bg-green-500' },
+  { canal: 'Google Maps / GBP', taux: 40, color: 'text-green-600', bg: 'bg-green-500' },
+  { canal: 'Google Search', taux: 10, color: 'text-red-600', bg: 'bg-red-500' },
+  { canal: 'Reseaux sociaux', taux: 0, color: 'text-red-600', bg: 'bg-red-500' },
+  { canal: 'IA (ChatGPT / Perplexity)', taux: 0, color: 'text-red-700', bg: 'bg-red-700' },
+  { canal: 'Autre (direct)', taux: 20, color: 'text-amber-600', bg: 'bg-amber-500' },
+];
+
+// ─── TOP FRICTIONS ───
+const topFrictions = [
+  { titre: 'Aucun telephone visible sur le site', count: 10, detail: 'Pas de numero de telephone en header, footer, ni sur la page contact. Pour un electricien proposant du depannage 24/7, c\'est un frein majeur — les urgences appellent, elles ne remplissent pas de formulaire.' },
+  { titre: 'Aucune adresse physique ni zone d\'intervention', count: 9, detail: 'Montigny-les-Metz n\'apparait nulle part. Le mot "Metz" est dans le titre SEO mais pas dans le contenu visible. Le visiteur ne sait pas ou l\'entreprise se situe ni si elle intervient chez lui.' },
+  { titre: 'Zero temoignage ni avis client', count: 9, detail: 'Aucun verbatim, aucun avis Google integre, aucune note — les visiteurs en phase de comparaison n\'ont aucune preuve sociale pour se decider.' },
+  { titre: 'Descriptions de services generiques sans specificite', count: 7, detail: 'Les 10 services sont decrits en une phrase marketing creuse ("Offrez une dimension nouvelle a vos espaces"). Pas de chiffres, pas d\'exemples concrets, pas de tarifs indicatifs.' },
+  { titre: 'Page contact sans coordonnees', count: 8, detail: 'La page contact ne contient qu\'un formulaire et des liens Facebook/Instagram. Pas de telephone, pas d\'email, pas d\'adresse, pas d\'horaires, pas de carte — un visiteur presse ne peut pas appeler.' },
+];
+
+// ─── PAGESPEED ───
+const pagespeed = {
+  mobile: { performance: 40, accessibility: 72, bestPractices: 78, seo: 85 },
+  desktop: { performance: 62, accessibility: 72, bestPractices: 78, seo: 85 },
+};
+const coreWebVitals = [
+  { name: 'LCP mobile', value: '~3,8 s', status: 'rouge' },
+  { name: 'INP/TBT', value: '~250 ms', status: 'orange' },
+  { name: 'CLS', value: '~0,15', status: 'orange' },
+  { name: 'FCP', value: '~2,5 s', status: 'orange' },
+  { name: 'TTFB', value: '~0,6 s', status: 'orange' },
+];
+
+// ─── OBSERVATORY ───
+const observatory = { grade: 'B+', score: 80, testsPassed: 9, testsTotal: 10 };
+
+// ─── CHECKLIST TECHNIQUE ───
+const techChecks = [
+  { label: 'HTTPS + HTTP/2 actif', present: true, critical: false },
+  { label: 'Meta title + description (Yoast)', present: true, critical: false },
+  { label: 'Open Graph image + tags complets', present: true, critical: false },
+  { label: 'robots.txt + sitemap.xml accessibles', present: true, critical: false },
+  { label: 'HSTS (Strict-Transport-Security)', present: true, critical: false },
+  { label: 'X-Content-Type-Options: nosniff', present: true, critical: false },
+  { label: 'Referrer-Policy + Permissions-Policy', present: true, critical: false },
+  { label: 'Schema.org type Electrician / LocalBusiness', present: false, critical: true },
+  { label: 'NAP (Name, Address, Phone) visible', present: false, critical: true },
+  { label: 'Telephone cliquable en header', present: false, critical: true },
+  { label: 'Temoignages / avis clients visibles', present: false, critical: true },
+  { label: 'FAQ structuree (Schema FAQPage)', present: false, critical: true },
+  { label: 'Images avec alt descriptif (pas IMG_...)', present: false, critical: false },
+  { label: 'CSP stricte (default-src)', present: false, critical: false },
+  { label: 'PHP version masquee (X-Powered-By)', present: false, critical: false },
+  { label: 'llms.txt pour visibilite IA', present: false, critical: false },
+];
+
+// ─── PERSONAS ───
+const personas = [
+  {
+    id: 1,
+    name: 'Gerard',
+    age: 65,
+    emoji: '\u{1F3E0}',
+    canal: 'Google Search',
+    device: 'Mobile',
+    maturite: 'Decision',
+    situation: 'Proprietaire Montigny-les-Metz, panne electrique soudaine, cherche un depannage rapide',
+    contexte: 'Cherche "electricien depannage urgence metz" a 21h depuis son smartphone',
+    parcours: ['Google', 'Accueil', 'Services/Depannage', 'Contact → cherche tel → formulaire → quitte'],
+    decision: 'quitte',
+    scores: { exp: 3, conf: 2, clarte: 4 },
+    premierImpression: 'Le hero mentionne "Depannage 24/7" mais impossible de trouver un numero de telephone pour appeler. La page contact n\'a pas de numero non plus.',
+    questionCle: 'Quel est votre numero pour un depannage urgent ce soir ?',
+    reponse: 'Non',
+    commentReponse: 'Aucun numero de telephone visible sur tout le site — ni en header, ni en footer, ni sur la page contact',
+    impactTechnique: 'Breakdance met 3-4 secondes a charger sur mobile 4G — frustrant pour une urgence',
+    pointsPositifs: ['Le service depannage est bien identifie sur la page Services'],
+    frictions: ['Zero telephone visible', 'Pas de mention "disponible ce soir"', 'Formulaire = trop lent pour une urgence', 'Site lent sur mobile'],
+  },
+  {
+    id: 2,
+    name: 'Sandrine',
+    age: 38,
+    emoji: '\u{1F469}',
+    canal: 'Google Maps',
+    device: 'Mobile',
+    maturite: 'Comparaison',
+    situation: 'Proprietaire Metz-Queuleu, veut installer une borne de recharge pour sa voiture electrique',
+    contexte: 'Cherche "installateur borne recharge metz" sur Google Maps, voit la fiche GBP Edison',
+    parcours: ['Maps', 'Accueil', 'Services (borne de recharge)', 'A propos', 'Contact → formulaire'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 4, clarte: 5 },
+    premierImpression: 'Le service "Installation Borne de Recharge" est liste mais juste une phrase marketing. Pas de details techniques, pas de certifications IRVE, pas de tarif.',
+    questionCle: 'Etes-vous certifies IRVE pour l\'installation d\'une borne Wallbox chez moi ?',
+    reponse: 'Non',
+    commentReponse: 'Aucune certification mentionnee sur le site — ni IRVE, ni Qualifelec, ni ADVENIR',
+    impactTechnique: 'Navigation correcte entre les pages mais le contenu ne repond pas aux questions techniques',
+    pointsPositifs: ['Service borne de recharge identifie', 'Page A propos avec valeurs', 'Presence reseaux sociaux'],
+    frictions: ['Pas de certification IRVE visible', 'Pas de tarif indicatif', 'Description trop vague', 'Aucun temoignage client borne'],
+  },
+  {
+    id: 3,
+    name: 'Laurent',
+    age: 52,
+    emoji: '\u{1F528}',
+    canal: 'Bouche-a-oreille',
+    device: 'Desktop',
+    maturite: 'Decision',
+    situation: 'Gerant restaurant Montigny, un voisin lui recommande Edison pour renovation electrique',
+    contexte: 'Tape l\'URL dans son navigateur pour verifier le serieux avant d\'appeler',
+    parcours: ['URL directe', 'Accueil', 'Services/Renovation', 'Realisations', 'Contact → formulaire'],
+    decision: 'convertit',
+    scores: { exp: 5, conf: 5, clarte: 5 },
+    premierImpression: 'Le site existe, les services sont listes, il y a des photos de realisations. La recommandation du voisin pese plus que le site.',
+    questionCle: 'Vous faites de la renovation electrique pour les commerces ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Le service renovation est liste mais pas de mention specifique pour les professionnels/commerces',
+    impactTechnique: 'Sur desktop avec fibre le site est acceptable malgre Breakdance',
+    pointsPositifs: ['Service renovation identifie', '13 photos de realisations', 'Formulaire de contact fonctionnel'],
+    frictions: ['Pas de section pro/commerce', 'Aucun temoignage', 'Photos sans descriptions', 'Pas de tarif renovation'],
+  },
+  {
+    id: 4,
+    name: 'Chloe',
+    age: 26,
+    emoji: '\u{1F4F1}',
+    canal: 'Reseaux sociaux',
+    device: 'Mobile',
+    maturite: 'Decouverte',
+    situation: 'Locataire Metz-Sablon, voit un post Instagram d\'Edison, clique par curiosite',
+    contexte: 'Navigue sur Instagram, voit des photos de chantier, clique sur le lien du profil',
+    parcours: ['Instagram', 'Accueil', 'A propos', 'Quitte'],
+    decision: 'quitte',
+    scores: { exp: 3, conf: 3, clarte: 4 },
+    premierImpression: 'Le site est impersonnel. Pas de visage humain, pas de nom du fondateur, textes marketing generiques. Rien ne donne envie de sauvegarder le contact.',
+    questionCle: 'Qui est derriere Edison ? C\'est une entreprise serieuse ?',
+    reponse: 'Non',
+    commentReponse: 'La page A propos parle de "notre fondateur" sans le nommer, aucune photo d\'equipe, aucun avis visible',
+    impactTechnique: 'Sur mobile Instagram → site Breakdance, la transition est lente et l\'UX casse',
+    pointsPositifs: ['Presence Instagram active', 'Page A propos avec valeurs declarees'],
+    frictions: ['Pas de visage humain', 'Fondateur anonyme', 'Aucun temoignage', 'Contenu generique', 'Site lent sur mobile'],
+  },
+  {
+    id: 5,
+    name: 'Philippe',
+    age: 58,
+    emoji: '\u{1F3E2}',
+    canal: 'Google Search',
+    device: 'Desktop',
+    maturite: 'Comparaison',
+    situation: 'Syndic copropriete Metz-Nord, cherche un electricien pour mise aux normes parties communes',
+    contexte: 'Cherche "electricien mise en conformite copropriete metz" sur Google',
+    parcours: ['Google', 'Accueil', 'Services/Mise en Conformite', 'Realisations', 'Contact → hesite'],
+    decision: 'hesite',
+    scores: { exp: 4, conf: 4, clarte: 5 },
+    premierImpression: 'Le service mise en conformite existe mais juste une phrase. Pas de mention copropriete, pas de reference, pas de norme citee.',
+    questionCle: 'Avez-vous de l\'experience en copropriete et pouvez-vous fournir des references ?',
+    reponse: 'Non',
+    commentReponse: 'Aucune reference nommee, aucune mention de copropriete, aucun temoignage professionnel',
+    impactTechnique: 'Desktop correct mais 206 Ko de HTML pour un contenu minimal',
+    pointsPositifs: ['Service mise en conformite identifie', 'Realisations photos disponibles'],
+    frictions: ['Pas de reference B2B', 'Pas de norme citee (NF C15-100)', 'Aucun temoignage pro', 'Pas de SIRET visible'],
+  },
+  {
+    id: 6,
+    name: 'Marie',
+    age: 34,
+    emoji: '\u{1F50C}',
+    canal: 'Google Search',
+    device: 'Mobile',
+    maturite: 'Decouverte',
+    situation: 'Jeune proprietaire Woippy, renovation maison ancienne, compare les electriciens du coin',
+    contexte: 'Cherche "devis electricite renovation maison metz" sur Google',
+    parcours: ['Google', 'Accueil', 'Services/Installation Neuve', 'Quitte → concurrent'],
+    decision: 'quitte',
+    scores: { exp: 4, conf: 3, clarte: 4 },
+    premierImpression: 'Les services sont listes mais pas de contenu specifique renovation. Aucun tarif, aucun avis, aucun avant/apres — elle compare avec un concurrent qui a tout ca.',
+    questionCle: 'Combien coute une renovation electrique complete pour une maison de 90 m2 ?',
+    reponse: 'Non',
+    commentReponse: 'Aucune indication de prix, meme approximative, nulle part sur le site',
+    impactTechnique: 'Site lent sur mobile 4G (3-4 s) — elle part chez un concurrent plus rapide',
+    pointsPositifs: ['Services renovation et installation listes'],
+    frictions: ['Zero tarif indicatif', 'Pas de contenu renovation specifique', 'Pas d\'avant/apres', 'Aucun temoignage', 'Site lent sur mobile'],
+  },
+  {
+    id: 7,
+    name: 'Karim',
+    age: 42,
+    emoji: '\u{1F916}',
+    canal: 'IA (ChatGPT)',
+    device: 'Desktop',
+    maturite: 'Decouverte',
+    situation: 'Ingenieur Metz, demande a ChatGPT "meilleurs electriciens metz moselle recommandes"',
+    contexte: 'ChatGPT ne cite pas Edison faute de Schema.org type Electrician, pas de FAQ, pas de speakable',
+    parcours: ['ChatGPT', 'Non cite', 'Google en complement', 'Site Edison'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 4, clarte: 5 },
+    premierImpression: 'Arrive via Google car non cite par l\'IA. Le site montre des services mais manque de donnees structurees et d\'autorite pour les LLM.',
+    questionCle: 'Cet electricien est-il reconnu et fiable a Metz ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Schema.org generique Organization, pas de type Electrician, pas de FAQ, pas de speakable, pas de llms.txt',
+    impactTechnique: 'Schema.org trop generique pour etre cite par les moteurs IA — invisible pour ChatGPT/Perplexity',
+    pointsPositifs: ['10 services clairement nommes', 'OG tags corrects'],
+    frictions: ['Non cite par ChatGPT/Perplexity', 'Schema.org generique', 'Pas de FAQ structuree', 'Pas de speakable', 'Pas de llms.txt'],
+  },
+  {
+    id: 8,
+    name: 'Nathalie',
+    age: 48,
+    emoji: '\u{1F3E1}',
+    canal: 'Google Maps',
+    device: 'Tablette',
+    maturite: 'Comparaison',
+    situation: 'Proprietaire Augny, compare 3 electriciens pour installation interphone + videophone',
+    contexte: 'Voit Edison sur Google Maps, clique sur le site pour en savoir plus',
+    parcours: ['Maps', 'Accueil', 'Services/Interphone', 'Realisations', 'Contact → formulaire'],
+    decision: 'convertit',
+    scores: { exp: 5, conf: 5, clarte: 5 },
+    premierImpression: 'Le service interphone est bien identifie. Les photos de realisations montrent du travail. Elle remplit le formulaire malgre l\'absence de tel.',
+    questionCle: 'Installez-vous des videophones connectes a Augny ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Le service interphone est liste mais pas de detail sur les videophones connectes ni sur la zone d\'intervention',
+    impactTechnique: 'Sur tablette le site est correct, galerie lightbox fonctionnelle',
+    pointsPositifs: ['Service interphone identifie', '13 realisations photos', 'WhatsApp disponible', 'Galerie lightbox'],
+    frictions: ['Pas de detail sur videophone connecte', 'Pas de tarif indicatif', 'Zone d\'intervention non precisee', 'Aucun temoignage'],
+  },
+  {
+    id: 9,
+    name: 'Antoine',
+    age: 30,
+    emoji: '\u{1F4BB}',
+    canal: 'Google Search',
+    device: 'Mobile',
+    maturite: 'Comparaison',
+    situation: 'Locataire devenant proprietaire a Ars-sur-Moselle, cherche un electricien pour chauffage electrique',
+    contexte: 'Cherche "installation chauffage electrique metz" sur Google',
+    parcours: ['Google', 'Accueil', 'Services/Chauffage', 'A propos', 'Quitte'],
+    decision: 'quitte',
+    scores: { exp: 4, conf: 3, clarte: 4 },
+    premierImpression: '"Decouvrez une chaleur enveloppante avec nos solutions de chauffage electrique" — ca ne dit rien. Pas de marque, pas de type de radiateur, pas de tarif, pas de conseil.',
+    questionCle: 'Quels types de chauffage electrique installez-vous et a quel prix ?',
+    reponse: 'Non',
+    commentReponse: 'Une seule phrase marketing, aucun detail technique, aucune marque, aucun tarif',
+    impactTechnique: 'Content marketing trop faible pour retenir un visiteur qui compare',
+    pointsPositifs: ['Service chauffage electrique identifie dans la liste'],
+    frictions: ['Description en une phrase marketing', 'Zero detail technique', 'Pas de marques citees', 'Pas de tarif', 'Aucun temoignage chauffage'],
+  },
+  {
+    id: 10,
+    name: 'Dominique',
+    age: 60,
+    emoji: '\u{1F4DE}',
+    canal: 'Autre (direct — Pages Jaunes)',
+    device: 'Mobile',
+    maturite: 'Decision',
+    situation: 'Proprietaire Montigny, trouve Edison sur PagesJaunes, veut verifier le site avant de contacter',
+    contexte: 'Tape l\'URL depuis PagesJaunes — intention forte, vient juste confirmer le serieux',
+    parcours: ['URL directe', 'Accueil', 'Realisations', 'Contact → WhatsApp'],
+    decision: 'convertit',
+    scores: { exp: 5, conf: 5, clarte: 5 },
+    premierImpression: 'Le site confirme l\'existence de l\'entreprise. Les 13 photos de realisations montrent du travail concret. Il utilise le WhatsApp car pas de tel visible.',
+    questionCle: 'L\'entreprise existe bien et fait du bon travail ?',
+    reponse: 'Oui',
+    commentReponse: 'Les photos de realisations et la page A propos confirment l\'activite, le WhatsApp chat permet un premier contact',
+    impactTechnique: 'WhatsApp est le seul canal de contact rapide — il compense l\'absence de telephone',
+    pointsPositifs: ['13 realisations photo concretes', 'WhatsApp chat disponible', 'Site confirme l\'existence de l\'entreprise'],
+    frictions: ['Pas de tel direct', 'Pas d\'adresse', 'Pas d\'avis client', 'Section Actualites / blog spam'],
+  },
+];
+
+// ─── AMELIORATIONS ───
+const ameliorationsCritiques = [
+  {
+    titre: 'Afficher telephone + adresse + horaires sur toutes les pages',
+    detail: '10 personas sur 10 cherchent un numero de telephone. Zero coordonnee visible = zero credibilite pour un artisan local. L\'urgence "Depannage 24/7" ne sert a rien si personne ne peut appeler.',
+    action: 'Numero cliquable (tel: link) dans le header sticky + footer. Adresse complete Montigny-les-Metz avec carte Google Maps sur la page contact. Horaires d\'ouverture visibles.',
+  },
+  {
+    titre: 'Integrer des temoignages clients et avis Google',
+    detail: '9 personas sur 10 cherchent des preuves sociales. Zero temoignage = zero reassurance. Les visiteurs en comparaison partent chez le concurrent qui affiche des avis.',
+    action: 'Integrer 5-8 avis Google recents sur l\'accueil + section temoignages dediee. Ajouter des verbatims sur les pages services les plus demandees (depannage, bornes, renovation).',
+  },
+  {
+    titre: 'Migrer vers un site rapide, sur et structure (Astro / Cloudflare)',
+    detail: 'WordPress + Breakdance = 206 Ko HTML, 33 JS, jQuery, cache off, LCP ~3,8 s. Un site Astro statique serait 5x plus leger et 3x plus rapide, avec Schema.org Electrician, FAQ structuree et visibilite IA.',
+    action: 'Site Astro statique : LCP < 1,5 s, Performance 95+, CDN Cloudflare, security headers, Schema.org Electrician + speakable + FAQ — 7 jours de livraison, a partir de 990 euros.',
+  },
+];
+
+const ameliorationsUtiles = [
+  {
+    titre: 'Etoffer le contenu de chaque service avec des details concrets',
+    detail: 'Les 10 services ont chacun une seule phrase marketing. Ajouter des details techniques, marques, tarifs indicatifs et photos avant/apres pour chaque service.',
+  },
+  {
+    titre: 'Afficher les certifications (Qualifelec, IRVE, etc.)',
+    detail: 'Si Edison detient des certifications, les afficher sur l\'accueil et les pages services concernees. C\'est un critere de decision majeur pour les bornes et la mise en conformite.',
+  },
+  {
+    titre: 'Supprimer ou refaire le blog (8 articles spam quasi-identiques)',
+    detail: 'Les 8 articles avec des titres quasi-identiques ("Les services d\'une entreprise...") nuisent au SEO par cannibalisation. Soit supprimer, soit remplacer par 5 articles utiles et uniques.',
+  },
+];
+
+function scoreColor(s: number) {
+  if (s >= 90) return '#22c55e';
+  if (s >= 50) return '#f59e0b';
+  return '#ef4444';
+}
+function scoreLabel(s: number) {
+  if (s >= 90) return 'text-green-600';
+  if (s >= 50) return 'text-amber-600';
+  return 'text-red-600';
+}
+function decisionStyle(d: string) {
+  if (d === 'convertit') return { border: 'border-green-200', bg: 'bg-green-50/40', badge: 'bg-green-100 text-green-700' };
+  if (d === 'hesite') return { border: 'border-amber-200', bg: 'bg-amber-50/40', badge: 'bg-amber-100 text-amber-700' };
+  return { border: 'border-neutral-200', bg: 'bg-neutral-50/40', badge: 'bg-red-100 text-red-700' };
+}
+function decisionLabel(d: string) {
+  if (d === 'convertit') return 'Contacte';
+  if (d === 'hesite') return 'Hesite';
+  return 'Repart';
+}
+
+const convertissent = personas.filter(p => p.decision === 'convertit').length;
+const hesitent = personas.filter(p => p.decision === 'hesite').length;
+const quittent = personas.filter(p => p.decision === 'quitte').length;
+---
+
+<BaseLayout {title} {description} noindex={true} lang="fr" frPath="/audit/edison-electricite/">
+  <!-- HERO -->
+  <section class="bg-neutral-900 text-white py-12 px-4">
+    <div class="max-w-4xl mx-auto">
+      <span class="inline-block text-xs font-semibold tracking-widest uppercase text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full mb-4">Rapport personnalise</span>
+      <h1 class="font-heading text-3xl md:text-4xl font-bold mb-2">{prospect.name} — ce que vos visiteurs pensent vraiment</h1>
+      <p class="text-neutral-400 mb-1">{prospect.activity} — <a href={prospect.url} class="text-amber-400 hover:underline" target="_blank" rel="noopener noreferrer">{prospect.url}</a></p>
+      <p class="text-neutral-500 text-sm mb-8">{prospect.location} · Analyse du {prospect.date}</p>
+      <div class="grid grid-cols-3 gap-4 max-w-lg">
+        <div class="text-center bg-neutral-800/60 rounded-xl p-4">
+          <span class="block text-3xl font-black text-amber-400">{kpis.conversion}%</span>
+          <span class="text-xs text-neutral-400">convertissent</span>
+        </div>
+        <div class="text-center bg-neutral-800/60 rounded-xl p-4">
+          <span class="block text-3xl font-black text-amber-400">{kpis.experience}/10</span>
+          <span class="text-xs text-neutral-400">experience</span>
+        </div>
+        <div class="text-center bg-neutral-800/60 rounded-xl p-4">
+          <span class="block text-3xl font-black text-amber-400">{kpis.confiance}/10</span>
+          <span class="text-xs text-neutral-400">confiance</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONSTAT -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Le constat</h2>
+
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-8">
+        <p class="text-amber-900 font-medium text-base">{constat}</p>
+      </div>
+
+      <!-- Conversion par canal -->
+      <h3 class="font-semibold text-neutral-700 mb-4 text-sm uppercase tracking-wide">Conversion par canal d'arrivee</h3>
+      <div class="space-y-3 mb-10">
+        {conversionByCanal.map(item => (
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-sm text-neutral-700">{item.canal}</span>
+              <span class={`text-sm font-bold ${item.color}`}>{item.taux}%</span>
+            </div>
+            <div class="h-2 bg-neutral-100 rounded-full overflow-hidden">
+              <div class={`h-full rounded-full ${item.bg}`} style={`width: ${item.taux}%`}></div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Top frictions -->
+      <h3 class="font-semibold text-neutral-700 mb-4 text-sm uppercase tracking-wide">Top 5 frictions identifiees</h3>
+      <ol class="space-y-3">
+        {topFrictions.map((f, i) => (
+          <li class="flex gap-3 p-4 bg-neutral-50 border border-neutral-100 rounded-xl">
+            <span class="shrink-0 w-7 h-7 flex items-center justify-center bg-red-100 text-red-700 font-bold text-sm rounded-full">{i + 1}</span>
+            <div>
+              <p class="font-semibold text-neutral-900 text-sm">{f.titre} <span class="font-normal text-neutral-500">({f.count}/10 personas)</span></p>
+              <p class="text-xs text-neutral-600 mt-0.5">{f.detail}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- AUDIT TECHNIQUE -->
+  <section class="py-12 px-4 bg-neutral-50 border-y border-neutral-100">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">L'audit technique</h2>
+
+      <!-- PageSpeed mobile -->
+      <div class="bg-white rounded-xl border border-neutral-100 p-6 mb-6">
+        <h3 class="font-semibold text-neutral-700 mb-1 text-sm">Lighthouse Mobile <span class="text-neutral-400 font-normal">(scores estimes — WordPress + Breakdance + jQuery + 33 JS + GA4)</span></h3>
+        <p class="text-xs text-neutral-400 mb-5">Hebergement Hostinger, PHP 8.1, LiteSpeed Cache (desactive), WhatsApp plugin, 206 Ko HTML</p>
+        <div class="grid grid-cols-4 gap-4">
+          {[
+            { label: 'Performance', score: pagespeed.mobile.performance },
+            { label: 'Accessibilite', score: pagespeed.mobile.accessibility },
+            { label: 'Bonnes pratiques', score: pagespeed.mobile.bestPractices },
+            { label: 'SEO', score: pagespeed.mobile.seo },
+          ].map(item => (
+            <div class="text-center">
+              <div class="relative w-16 h-16 mx-auto mb-2">
+                <svg class="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3"/>
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={scoreColor(item.score)} stroke-width="3" stroke-dasharray={`${item.score}, 100`} stroke-linecap="round"/>
+                </svg>
+                <span class={`absolute inset-0 flex items-center justify-center text-sm font-bold ${scoreLabel(item.score)}`}>{item.score}</span>
+              </div>
+              <p class="text-xs text-neutral-600">{item.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- PageSpeed desktop -->
+      <div class="bg-white rounded-xl border border-neutral-100 p-6 mb-6">
+        <h3 class="font-semibold text-neutral-700 mb-1 text-sm">Lighthouse Desktop</h3>
+        <div class="grid grid-cols-4 gap-4">
+          {[
+            { label: 'Performance', score: pagespeed.desktop.performance },
+            { label: 'Accessibilite', score: pagespeed.desktop.accessibility },
+            { label: 'Bonnes pratiques', score: pagespeed.desktop.bestPractices },
+            { label: 'SEO', score: pagespeed.desktop.seo },
+          ].map(item => (
+            <div class="text-center">
+              <div class="relative w-16 h-16 mx-auto mb-2">
+                <svg class="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3"/>
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={scoreColor(item.score)} stroke-width="3" stroke-dasharray={`${item.score}, 100`} stroke-linecap="round"/>
+                </svg>
+                <span class={`absolute inset-0 flex items-center justify-center text-sm font-bold ${scoreLabel(item.score)}`}>{item.score}</span>
+              </div>
+              <p class="text-xs text-neutral-600">{item.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Core Web Vitals + Observatory -->
+      <div class="grid md:grid-cols-2 gap-4 mb-6">
+        <div class="bg-white rounded-xl border border-neutral-100 p-5">
+          <h3 class="font-semibold text-neutral-700 mb-3 text-sm">Core Web Vitals (mobile)</h3>
+          <div class="space-y-2">
+            {coreWebVitals.map(v => (
+              <div class="flex items-center justify-between text-sm">
+                <span class="text-neutral-600">{v.name}</span>
+                <span class={`font-semibold px-2 py-0.5 rounded text-xs ${v.status === 'vert' ? 'bg-green-100 text-green-700' : v.status === 'orange' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'}`}>{v.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl border border-neutral-100 p-5">
+          <h3 class="font-semibold text-neutral-700 mb-3 text-sm">Securite — Headers HTTP</h3>
+          <div class="flex items-center gap-4 mb-3">
+            <div class="text-4xl font-black text-amber-500">{observatory.grade}</div>
+            <div>
+              <p class="text-2xl font-bold text-neutral-800">{observatory.score}/100</p>
+              <p class="text-xs text-neutral-500">{observatory.testsPassed}/{observatory.testsTotal} tests de securite passes</p>
+            </div>
+          </div>
+          <p class="text-xs text-neutral-500">Bons headers de securite (HSTS, X-Content-Type-Options, X-Frame-Options, Referrer-Policy). Points faibles : PHP 8.1 expose dans les headers (X-Powered-By), CSP basique (upgrade-insecure-requests uniquement, pas de default-src).</p>
+        </div>
+      </div>
+
+      <!-- Checklist SEO + Schema -->
+      <div class="bg-white rounded-xl border border-neutral-100 p-5">
+        <h3 class="font-semibold text-neutral-700 mb-3 text-sm">Checklist Schema.org / OG / SEO / Securite</h3>
+        <div class="grid sm:grid-cols-2 gap-1.5">
+          {techChecks.map(c => (
+            <div class={`flex items-start gap-2 text-xs p-2 rounded-lg ${c.present ? 'bg-green-50' : c.critical ? 'bg-red-50' : 'bg-neutral-50'}`}>
+              <span class={`shrink-0 font-bold ${c.present ? 'text-green-600' : 'text-red-500'}`}>{c.present ? '\u2713' : '\u2717'}</span>
+              <span class={c.present ? 'text-neutral-700' : c.critical ? 'text-red-700 font-medium' : 'text-neutral-500'}>{c.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VISITEURS SIMULES -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs simules</h2>
+      <p class="text-neutral-500 mb-6 text-sm">
+        Sur 10 visiteurs simules :
+        <span class="font-semibold text-green-600">{convertissent} contactent</span>,
+        <span class="font-semibold text-amber-600">{hesitent} hesitent</span>,
+        <span class="font-semibold text-neutral-600">{quittent} repartent</span> sans agir.
+      </p>
+
+      <div class="space-y-3">
+        {personas.map(p => {
+          const ds = decisionStyle(p.decision);
+          const avgScore = Math.round((p.scores.exp + p.scores.conf + p.scores.clarte) / 3 * 10) / 10;
+          return (
+            <details class={`group border ${ds.border} ${ds.bg} rounded-xl overflow-hidden`}>
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                    <h3 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h3>
+                    <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    <span class={`text-[11px] px-1.5 py-0.5 rounded font-medium ${ds.badge}`}>{decisionLabel(p.decision)}</span>
+                  </div>
+                  <p class="text-xs text-neutral-500">{p.situation}</p>
+                </div>
+                <div class="text-right shrink-0">
+                  <span class="text-xs font-bold text-neutral-600">{avgScore}/10</span>
+                  <svg class="w-5 h-5 text-neutral-400 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                </div>
+              </summary>
+              <div class="px-4 pb-4 pt-3 border-t border-neutral-100 bg-white/70">
+                <div class="grid gap-3 text-xs">
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Premiere impression</p>
+                    <p class="text-neutral-600">{p.premierImpression}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Parcours</p>
+                    <p class="text-neutral-500">{p.parcours.join(' \u2192 ')}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Question cle</p>
+                    <p class="text-neutral-600 italic">"{p.questionCle}"</p>
+                    <p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong> — {p.commentReponse}</p>
+                  </div>
+                  <div class="text-xs text-neutral-500 bg-neutral-50 rounded-lg px-3 py-2">
+                    Impact technique : {p.impactTechnique}
+                  </div>
+                  <div class="grid sm:grid-cols-2 gap-3">
+                    <div>
+                      <p class="font-semibold text-green-700 mb-1">Points positifs</p>
+                      <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                        {p.pointsPositifs.map(pp => <li>{pp}</li>)}
+                      </ul>
+                    </div>
+                    <div>
+                      <p class="font-semibold text-amber-700 mb-1">Frictions</p>
+                      <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                        {p.frictions.map(fr => <li>{fr}</li>)}
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="flex gap-4 text-xs">
+                    <span class="text-neutral-500">Experience : <strong>{p.scores.exp}/10</strong></span>
+                    <span class="text-neutral-500">Confiance : <strong>{p.scores.conf}/10</strong></span>
+                    <span class="text-neutral-500">Clarte : <strong>{p.scores.clarte}/10</strong></span>
+                  </div>
+                </div>
+              </div>
+            </details>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  <!-- RECOMMANDATIONS -->
+  <section class="py-12 px-4 bg-neutral-50 border-y border-neutral-100">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Nos recommandations</h2>
+
+      <h3 class="text-sm font-semibold uppercase tracking-wide text-red-600 mb-4">Le plus important — 3 actions critiques</h3>
+      <div class="grid gap-4 mb-10">
+        {ameliorationsCritiques.map((a, i) => (
+          <div class="bg-white border-l-4 border-red-400 rounded-r-xl p-5 shadow-sm">
+            <div class="flex items-start gap-3">
+              <span class="shrink-0 w-7 h-7 flex items-center justify-center bg-red-100 text-red-700 font-bold text-sm rounded-full">{i + 1}</span>
+              <div>
+                <h4 class="font-semibold text-neutral-900 mb-1">{a.titre}</h4>
+                <p class="text-sm text-neutral-600 mb-2">{a.detail}</p>
+                <p class="text-xs bg-red-50 text-red-800 px-3 py-2 rounded-lg"><strong>Action :</strong> {a.action}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <h3 class="text-sm font-semibold uppercase tracking-wide text-amber-600 mb-4">Utile aussi — 3 ameliorations recommandees</h3>
+      <div class="grid sm:grid-cols-3 gap-4">
+        {ameliorationsUtiles.map(a => (
+          <div class="bg-white border border-amber-200 rounded-xl p-4">
+            <h4 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h4>
+            <p class="text-xs text-neutral-600">{a.detail}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="bg-neutral-900 text-white py-16 px-4">
+    <div class="max-w-3xl mx-auto text-center">
+      <h2 class="font-heading text-2xl md:text-3xl font-bold mb-4">
+        {kpis.conversion}% de vos visiteurs vous contactent.<br/>
+        <span class="text-amber-400">On peut faire beaucoup mieux.</span>
+      </h2>
+      <p class="text-neutral-300 mb-8 max-w-xl mx-auto text-sm">
+        Ce rapport identifie 3 actions prioritaires : des coordonnees visibles partout, des temoignages clients,
+        et un site moderne et rapide. Je construis des sites d'artisans qui convertissent vraiment — a partir de 990 euros,
+        livre en 7 jours.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="/commander" class="inline-flex items-center gap-2 px-8 py-3.5 bg-[var(--color-accent)] text-white font-semibold rounded-xl hover:opacity-90 transition-all shadow-md">
+          Je veux un site qui convertit
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a href="/contact" class="inline-flex items-center gap-2 px-8 py-3.5 border border-neutral-600 text-neutral-300 font-semibold rounded-xl hover:border-amber-400 hover:text-amber-400 transition-all">
+          En discuter d'abord
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

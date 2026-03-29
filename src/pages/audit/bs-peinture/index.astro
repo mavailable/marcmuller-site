@@ -1,0 +1,776 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX — BS Peinture | Marc M';
+const description = 'Simulation de 10 visites personas sur bs-peinture.com — rapport UX et technique avec recommandations priorisees.';
+
+// ============================================================
+// DONNEES PROSPECT
+// ============================================================
+const prospect = {
+  name: 'BS Peinture',
+  url: 'https://bs-peinture.com',
+  date: '29 mars 2026',
+  activity: 'Peintre en batiment / Decoration interieure / Ravalement de facade',
+  location: 'Marly (57155) — Agglomeration de Metz, Moselle',
+};
+
+// ============================================================
+// KPIs GLOBAUX
+// ============================================================
+const kpis = {
+  conversion: 50,
+  experience: 5.4,
+  confiance: 6.0,
+  clarte: 4.6,
+  convertissent: 5,
+  hesitent: 2,
+  quittent: 3,
+};
+
+const constat = "Un artisan passionne avec 10 ans d'experience et 53 avis Google excellents, dont le site WordPress/Elementor souffre d'un SEO generique (meta description 'Entreprise generale de batiment'), d'aucun Schema.org LocalBusiness, d'aucune og:image et d'un grade de securite D-. La reputation client est solide, mais le site ne la met pas assez en valeur et reste invisible pour Google enrichi et les IA generatives.";
+
+// ============================================================
+// CONVERSION PAR CANAL
+// ============================================================
+const conversionByCanal = [
+  { canal: 'Bouche-a-oreille', taux: 100, color: 'text-green-700', bg: 'bg-green-500' },
+  { canal: 'Google Maps / GBP', taux: 100, color: 'text-green-700', bg: 'bg-green-500' },
+  { canal: 'Google Search', taux: 50, color: 'text-amber-600', bg: 'bg-amber-400' },
+  { canal: 'Reseaux sociaux', taux: 0, color: 'text-red-600', bg: 'bg-red-500' },
+  { canal: 'IA (ChatGPT/Claude)', taux: 0, color: 'text-red-600', bg: 'bg-red-500' },
+];
+
+// ============================================================
+// TOP FRICTIONS
+// ============================================================
+const topFrictions = [
+  { titre: 'Meta description generique : "Entreprise generale de batiment"', count: 8, detail: 'Le titre et la description ne mentionnent ni la peinture, ni Marly, ni Metz. Google affiche un resultat terne qui ne se demarque pas des concurrents dans les SERP.' },
+  { titre: 'Aucun Schema.org LocalBusiness ni AggregateRating', count: 7, detail: '53 avis Google excellents mais aucune donnee structuree pour afficher les etoiles, l\'adresse et les horaires dans les resultats de recherche enrichis.' },
+  { titre: 'Pas d\'og:image — partages sociaux sans vignette', count: 6, detail: 'Quand quelqu\'un partage le site sur Facebook, LinkedIn ou WhatsApp, aucune image n\'apparait. Le lien est invisible dans un fil d\'actualites.' },
+  { titre: 'Aucun tarif indicatif ni mention "devis gratuit" visible', count: 6, detail: 'Les visiteurs sensibles au budget (primo-accedants, petits budgets) ne trouvent aucune indication de prix et quittent sans demander de devis.' },
+  { titre: 'Grade de securite D- (Observatory 25/100)', count: 5, detail: 'Aucun header de securite (CSP, X-Frame-Options, HSTS). Risques de clickjacking et XSS, et signal negatif pour les pros qui verifient.' },
+];
+
+// ============================================================
+// PAGESPEED (ESTIMES — profil WordPress/Elementor/WP Rocket)
+// ============================================================
+const pagespeed = {
+  mobile: { performance: 55, accessibility: 72, bestPractices: 78, seo: 75 },
+  desktop: { performance: 78, accessibility: 72, bestPractices: 78, seo: 75 },
+};
+
+const coreWebVitals = [
+  { name: 'LCP', value: '~3.8s', status: 'mediocre' },
+  { name: 'INP', value: '~280ms', status: 'mediocre' },
+  { name: 'CLS', value: '~0.12', status: 'mediocre' },
+];
+
+const opportunities = [
+  { label: 'Reduire le JavaScript inutilise (Elementor runtime)', saving: '~1.5s' },
+  { label: 'Passer a un framework statique (contenu HTML natif, sans bloat Elementor)', saving: '~2.0s' },
+  { label: 'Optimiser et convertir les images en WebP', saving: '~1.0s' },
+];
+
+// ============================================================
+// OBSERVATORY
+// ============================================================
+const observatory = {
+  grade: 'D-',
+  score: 25,
+  testsPassed: 5,
+  testsTotal: 10,
+};
+
+// ============================================================
+// CHECKLIST TECHNIQUE
+// ============================================================
+const techChecks = [
+  { label: 'HTTPS actif', present: true },
+  { label: 'HTTP/2', present: true },
+  { label: 'robots.txt + sitemap.xml', present: true, note: 'robots.txt pointe vers sitemaps.xml (possible coquille)' },
+  { label: 'Contenu visible dans le HTML source', present: true, note: 'WordPress SSR — bon point vs sites full JS' },
+  { label: 'Bandeau cookies RGPD (Complianz)', present: true },
+  { label: 'Mentions legales avec SIRET', present: true },
+  { label: 'Widget avis Google (Trustindex)', present: true },
+  { label: 'Blog actif (11 articles)', present: true },
+  { label: 'Schema.org LocalBusiness', present: false, critical: true },
+  { label: 'Schema.org AggregateRating', present: false, critical: true, note: '53 avis non structures' },
+  { label: 'Open Graph og:image', present: false, critical: true, note: 'Partages sociaux sans vignette' },
+  { label: 'Meta title optimise (mots-cles + ville)', present: false, critical: true, note: '"BS PEINTURE" — trop court' },
+  { label: 'Meta description optimisee', present: false, critical: true, note: '"Entreprise generale de batiment" — generique' },
+  { label: 'Content-Security-Policy', present: false, critical: true },
+  { label: 'X-Frame-Options', present: false },
+  { label: 'Referrer-Policy', present: false },
+  { label: 'Strict-Transport-Security (HSTS)', present: false },
+  { label: 'Assurance decennale mentionnee', present: false },
+  { label: 'llms.txt (visibilite IA)', present: false },
+];
+
+// ============================================================
+// PERSONAS (10)
+// ============================================================
+const personas = [
+  {
+    id: 1, name: 'Christelle', age: 44, emoji: '\u{1F3E0}',
+    canal: 'Google Search', device: 'Mobile', maturite: 'Decision',
+    situation: 'Proprietaire d\'un pavillon a Marly, veut refaire la peinture du salon et de l\'entree avant les fetes',
+    contexte: 'Tape "peintre interieur Marly devis" sur Google, trouve BS Peinture en 1ere page',
+    parcours: ['Accueil', 'Peinture interieure', 'Nos realisations', 'Contact'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 7, clarte: 5 },
+    premierImpression: 'Le site se charge assez vite. Je vois tout de suite que c\'est a Marly — c\'est local, ca me rassure. Les avis Google sur la page d\'accueil m\'impressionnent.',
+    questionCle: 'Combien ca coute pour un salon + entree ? Vous pouvez venir vite ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Pas de tarif indicatif mais le formulaire est accessible. Elle appelle directement grace au numero visible dans le header.',
+    impactTechnique: 'Mobile correct grace a WP Rocket. Les images mettent un peu de temps sur 4G mais rien de bloquant.',
+    pointsPositifs: ['Numero de telephone cliquable dans le header', '53 avis Google excellent — confiance immediate', 'Adresse locale Marly visible', 'Galerie de realisations'],
+    frictions: ['Pas de tarif indicatif', 'Formulaire sans champ "adresse du chantier"', 'Meta description generique dans Google'],
+  },
+  {
+    id: 2, name: 'Jean-Pierre', age: 58, emoji: '\u{1F3E1}',
+    canal: 'Google Maps', device: 'Mobile', maturite: 'Comparaison',
+    situation: 'Proprietaire maison a Augny, facade fissuree depuis l\'hiver, compare 3 artisans sur Google Maps',
+    contexte: 'Cherche "peintre facade Metz" sur Google Maps, voit BS Peinture avec 53 avis excellents',
+    parcours: ['Fiche GBP', 'Accueil', 'Ravalement de facade', 'Contact'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 7, clarte: 5 },
+    premierImpression: 'La fiche Google est bien notee — c\'est au-dessus de la plupart des concurrents. Le site confirme qu\'ils font du ravalement.',
+    questionCle: 'Vous avez fait des ravalements de maisons comme la mienne (annees 70) ? Vous avez la decennale ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La page ravalement existe mais manque de details techniques. Aucune mention de l\'assurance decennale. Il appelle quand meme grace aux avis.',
+    impactTechnique: 'La transition de Maps vers le site est correcte. Navigation fluide entre les pages.',
+    pointsPositifs: ['53 avis Google — preuve sociale forte', 'Page ravalement dediee', 'Numero de tel visible'],
+    frictions: ['Pas de mention assurance decennale', 'Pas de references chantiers facade detaillees', 'Pas de fourchette de prix'],
+  },
+  {
+    id: 3, name: 'Amandine', age: 32, emoji: '\u{1F4F1}',
+    canal: 'Facebook', device: 'Mobile', maturite: 'Decouverte',
+    situation: 'Jeune proprietaire a Woippy, voit un post Facebook de BS Peinture montrant une renovation',
+    contexte: 'Clique sur le lien du post Facebook, atterrit sur la page d\'accueil',
+    parcours: ['Accueil'],
+    decision: 'quitte',
+    scores: { exp: 3, conf: 4, clarte: 3 },
+    premierImpression: 'Le lien Facebook n\'affiche pas de vignette — j\'ai clique par hasard. Le site est OK mais je ne suis pas en recherche active. Rien ne me retient.',
+    questionCle: 'C\'est dans mon budget ? Vous faites des petits chantiers (une seule piece) ?',
+    reponse: 'Non',
+    commentReponse: 'Aucune mention de petits chantiers ou de budget accessible. Le site parle de "projets" sans preciser de taille minimum. Elle retourne sur Facebook.',
+    impactTechnique: 'Pas d\'og:image = vignette vide sur Facebook. Premier signal negatif avant meme d\'arriver sur le site.',
+    pointsPositifs: ['Page Facebook active'],
+    frictions: ['og:image absent — lien invisible sur Facebook', 'Pas de contenu pour petits budgets', 'Pas d\'accroches pour visiteurs en decouverte'],
+  },
+  {
+    id: 4, name: 'Philippe', age: 65, emoji: '\u{1F477}',
+    canal: 'Bouche-a-oreille', device: 'Desktop', maturite: 'Decision',
+    situation: 'Retraite a Marly, son voisin lui a recommande BS Peinture pour refaire sa cage d\'escalier',
+    contexte: 'Son voisin lui a montre le resultat chez lui. Philippe tape "BS Peinture Marly" sur Google pour trouver le numero.',
+    parcours: ['Accueil', 'Contact'],
+    decision: 'convertit',
+    scores: { exp: 7, conf: 9, clarte: 6 },
+    premierImpression: 'Je retrouve le nom et le numero rapidement. Les avis Google confirment ce que mon voisin m\'a dit. J\'appelle.',
+    questionCle: 'Vous pouvez passer chez moi cette semaine pour voir la cage d\'escalier ?',
+    reponse: 'Oui',
+    commentReponse: 'Le numero est visible partout, le formulaire de contact est simple. La recommandation du voisin fait le reste.',
+    impactTechnique: 'Desktop = chargement rapide. Philippe ne remarque aucun probleme technique.',
+    pointsPositifs: ['Numero bien visible dans le header et le footer', 'Avis Google confirment la recommandation', 'Adresse locale Marly = proximite'],
+    frictions: ['Pas d\'horaires affichees sur la page contact', 'Formulaire generique sans mention "visite gratuite"'],
+  },
+  {
+    id: 5, name: 'Karim', age: 29, emoji: '\u{1F4F2}',
+    canal: 'Google Search', device: 'Mobile', maturite: 'Decouverte',
+    situation: 'Premier achat a Montigny-les-Metz, tout a renover, budget serre',
+    contexte: 'Tape "peintre pas cher Metz" sur Google, arrive sur BS Peinture',
+    parcours: ['Accueil', 'Prestations'],
+    decision: 'quitte',
+    scores: { exp: 4, conf: 4, clarte: 3 },
+    premierImpression: 'Le site est correct mais je ne vois pas de prix. "Entreprise generale de batiment" ca sonne cher. Je cherche quelqu\'un qui affiche ses tarifs.',
+    questionCle: 'C\'est dans mes moyens ? Vous avez des forfaits pour petit appartement ?',
+    reponse: 'Non',
+    commentReponse: 'Aucun tarif, aucun forfait, aucune mention de devis gratuit visible rapidement. Il rebondit vers un concurrent avec des prix affiches.',
+    impactTechnique: 'Le meta title "BS PEINTURE" dans Google ne donne aucune indication de prix ou de zone — il a presque pas clique.',
+    pointsPositifs: ['Large gamme de services'],
+    frictions: ['Aucun tarif indicatif', 'Pas de mention "devis gratuit"', 'Meta description generique', 'Positionnement premium implicite sans l\'assumer'],
+  },
+  {
+    id: 6, name: 'Nathalie', age: 47, emoji: '\u{1F916}',
+    canal: 'ChatGPT', device: 'Desktop', maturite: 'Comparaison',
+    situation: 'Decoratrice d\'interieur a Metz, cherche un peintre partenaire fiable pour ses chantiers clients',
+    contexte: 'Demande a ChatGPT "meilleur peintre batiment Metz decoratif" — BS Peinture n\'est pas cite',
+    parcours: [],
+    decision: 'quitte',
+    scores: { exp: 0, conf: 0, clarte: 0 },
+    premierImpression: 'ChatGPT ne mentionne pas BS Peinture dans sa reponse. Je ne decouvre jamais ce site.',
+    questionCle: 'Quel peintre recommandez-vous a Metz pour des projets de decoration interieure haut de gamme ?',
+    reponse: 'Invisible',
+    commentReponse: 'Sans Schema.org LocalBusiness, sans llms.txt, avec une meta description generique — les IA generatives ne peuvent pas indexer ni citer BS Peinture avec precision.',
+    impactTechnique: 'Le Schema.org Organization est trop minimaliste (pas de logo, adresse, tel). Pas de llms.txt. Les IA n\'ont rien a exploiter.',
+    pointsPositifs: [],
+    frictions: ['Invisible pour les IA generatives', 'Pas de Schema.org LocalBusiness', 'Pas de llms.txt', 'Meta description non descriptive'],
+  },
+  {
+    id: 7, name: 'Marc', age: 41, emoji: '\u{1F3E2}',
+    canal: 'Google Maps', device: 'Mobile', maturite: 'Decision',
+    situation: 'Gerant d\'un restaurant a Metz Centre, besoin de repeindre la salle et la terrasse couverte avant la saison',
+    contexte: 'Cherche "entreprise peinture pro Metz" sur Maps, voit les 53 avis excellents de BS Peinture',
+    parcours: ['Fiche GBP', 'Accueil', 'Nos realisations', 'Cover Styl\'', 'Contact'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 7, clarte: 5 },
+    premierImpression: 'Les avis sont tres bons. La page Cover Styl\' m\'interesse pour les plans de travail et les portes. C\'est original, personne d\'autre ne propose ca.',
+    questionCle: 'Vous pouvez travailler le soir ou le lundi quand le restaurant est ferme ? Vous avez fait des commerces ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Pas d\'horaires de travail adaptees aux pros mentionnees. Pas de references commerces explicites. Mais Cover Styl\' le convainc de la polyvalence.',
+    impactTechnique: 'Mobile depuis Maps — transition correcte. Le site charge bien grace au cache WP Rocket.',
+    pointsPositifs: ['Cover Styl\' — offre differenciante', '53 avis excellents', 'Polyvalence des prestations', 'Blog avec articles recents = entreprise active'],
+    frictions: ['Pas de references pro/commerces', 'Pas d\'horaires flexibles mentionnees', 'Pas de mention "intervention hors horaires"'],
+  },
+  {
+    id: 8, name: 'Sophie', age: 36, emoji: '\u{1F3A8}',
+    canal: 'Google Search', device: 'Desktop', maturite: 'Comparaison',
+    situation: 'Proprietaire d\'une maison a Ars-sur-Moselle, veut du beton cire dans la cuisine et la salle de bain',
+    contexte: 'Tape "beton cire artisan Metz" sur Google, tombe sur la page Revetement de sol',
+    parcours: ['Revetement de sol', 'Nos realisations', 'A propos', 'Contact'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 6, clarte: 5 },
+    premierImpression: 'Il y a une page dediee au beton cire — c\'est deja bien. Le texte est informatif. J\'aimerais plus de photos de beton cire specifiquement.',
+    questionCle: 'Vous maitrisez le beton cire en piece humide ? Quels produits utilisez-vous ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La page beton cire est informative (etanche, resistant) mais ne nomme pas les marques de produits. Les photos sont dans la galerie generale sans filtre.',
+    impactTechnique: 'Desktop = navigation fluide. Le blog article sur le beton cire la conforte dans son choix.',
+    pointsPositifs: ['Page dediee beton cire', 'Article de blog sur le sujet', 'Realisations visibles', 'Temoignage salle de bain (Alain Gambetti)'],
+    frictions: ['Pas de noms de produits/marques', 'Galerie non filtrable par type de prestation', 'Pas de fourchette de prix au m2'],
+  },
+  {
+    id: 9, name: 'Laurent', age: 52, emoji: '\u{1F3D7}\u{FE0F}',
+    canal: 'Google Search', device: 'Tablette', maturite: 'Comparaison',
+    situation: 'Syndic de copropriete a Metz-Borny, doit chiffrer un ravalement pour l\'AG des coproprietaires',
+    contexte: 'Cherche "ravalement facade devis Moselle" sur Google, arrive sur la page ravalement',
+    parcours: ['Ravalement de facade', 'Contact'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 5, clarte: 4 },
+    premierImpression: 'La page ravalement existe, c\'est bien. Mais je cherche des references d\'immeubles collectifs et une assurance decennale — je ne trouve ni l\'un ni l\'autre.',
+    questionCle: 'Vous avez fait des immeubles collectifs ? Vous avez la decennale ? Quel delai pour un devis chiffre ?',
+    reponse: 'Non',
+    commentReponse: 'Aucune mention d\'assurance decennale, pas de references coproprietes. Le formulaire est trop generique pour un appel d\'offres pro.',
+    impactTechnique: 'Tablette = experience acceptable. Le formulaire de contact manque de champs specifiques (surface, nombre d\'etages).',
+    pointsPositifs: ['Page ravalement de facade dediee', 'Avis clients nombreux', 'Zone geographique coherente'],
+    frictions: ['Pas de references copropriete/immeuble', 'Pas de mention assurance decennale', 'Formulaire trop generique pour pro', 'Pas de portfolio facade filtre'],
+  },
+  {
+    id: 10, name: 'Emilie', age: 27, emoji: '\u{1F4F8}',
+    canal: 'Instagram', device: 'Mobile', maturite: 'Decouverte',
+    situation: 'En couple, vient d\'acheter un T2 a Metz, suit des comptes deco sur Instagram, tombe sur BS Peinture',
+    contexte: 'Voit un post Instagram de BS Peinture, clique sur le lien bio vers le site',
+    parcours: ['Accueil', 'Decoration interieure'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 5, clarte: 4 },
+    premierImpression: 'Le site est correct mais un peu classique. Les realisations montrees sur Instagram sont plus inspirantes que celles du site. J\'aimerais plus de photos "avant/apres".',
+    questionCle: 'Vous faites des petits appartements ? Vous avez des idees deco modernes pour T2 ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La page decoration interieure parle de "personnaliser votre interieur" mais sans exemples de petits espaces. Elle sauvegarde le lien mais ne contacte pas encore.',
+    impactTechnique: 'Instagram vers site mobile = transition passable. Pas d\'og:image = le lien en story est terne.',
+    pointsPositifs: ['Page decoration interieure dediee', 'Instagram actif avec de belles photos', 'Temoignage de decoratrice pro (Tiphaine)'],
+    frictions: ['Pas de portfolio "avant/apres"', 'Pas de contenu cible petits espaces', 'og:image absent pour partages sociaux', 'Site moins inspirant que le feed Instagram'],
+  },
+];
+
+// ============================================================
+// RECOMMANDATIONS
+// ============================================================
+const ameliorationsCritiques = [
+  {
+    titre: 'Optimiser le SEO on-page : meta title, description, Schema.org LocalBusiness',
+    detail: '8 personas sur 10 sont penalises par un titre "BS PEINTURE" et une description "Entreprise generale de batiment" dans Google. Les 53 avis ne s\'affichent pas en etoiles dans les resultats car il n\'y a pas de Schema.org AggregateRating.',
+    action: 'Meta title : "BS Peinture — Peintre en batiment a Marly pres de Metz | Devis gratuit". Meta description riche. Schema.org LocalBusiness complet avec AggregateRating, horaires, services.',
+  },
+  {
+    titre: 'Ajouter une og:image et completer l\'Open Graph',
+    detail: '6 personas sont impactes par l\'absence de vignette sur les reseaux sociaux. Les partages Facebook, LinkedIn, WhatsApp et Instagram stories sont invisibles — un levier gratuit totalement gache.',
+    action: 'Creer une og:image de 1200x630px avec photo de realisation + logo BS Peinture. Completer og:title et og:description par page.',
+  },
+  {
+    titre: 'Renforcer la securite HTTP (headers) — de D- a A',
+    detail: 'Grade Observatory D- avec 5 tests echoues. Aucun header de securite (CSP, HSTS, X-Frame-Options, Referrer-Policy). Signal negatif pour les navigateurs modernes et les pros qui verifient.',
+    action: 'Ajouter les headers Content-Security-Policy, X-Frame-Options, Referrer-Policy, Permissions-Policy, Strict-Transport-Security dans la config serveur o2switch.',
+  },
+];
+
+const ameliorationsUtiles = [
+  {
+    titre: 'Mentionner "devis gratuit" + tarifs indicatifs',
+    detail: 'Les visiteurs en decouverte ou a petit budget quittent sans trouver d\'indication de prix. Un simple "Devis gratuit sous 48h" en hero + fourchettes par prestation convertirait ces hesitants.',
+  },
+  {
+    titre: 'Ajouter l\'assurance decennale et les certifications',
+    detail: 'Les pros (syndics, decorateurs, commerces) cherchent des garanties. Mentionner la decennale, la RC pro et les agrements (Cover Styl\') sur chaque page service rassurerait ces profils.',
+  },
+  {
+    titre: 'Creer un llms.txt pour la visibilite IA',
+    detail: 'Les IA generatives (ChatGPT, Claude) ne citent pas BS Peinture. Un fichier llms.txt structure avec services, zone et avis rendrait l\'entreprise visible dans les reponses IA.',
+  },
+];
+
+// ============================================================
+// HELPERS
+// ============================================================
+function scoreColor(score: number) {
+  if (score >= 90) return '#22c55e';
+  if (score >= 50) return '#f59e0b';
+  return '#ef4444';
+}
+
+function scoreTextClass(score: number) {
+  if (score >= 90) return 'text-green-600';
+  if (score >= 50) return 'text-amber-500';
+  return 'text-red-500';
+}
+
+function decisionColor(decision: string) {
+  if (decision === 'convertit') return 'border-green-200 bg-green-50/40';
+  if (decision === 'hesite') return 'border-amber-200 bg-amber-50/40';
+  return 'border-neutral-200 bg-neutral-50/40';
+}
+
+function decisionBadge(decision: string) {
+  if (decision === 'convertit') return 'bg-green-100 text-green-700';
+  if (decision === 'hesite') return 'bg-amber-100 text-amber-700';
+  return 'bg-neutral-100 text-neutral-600';
+}
+
+function decisionLabel(decision: string) {
+  if (decision === 'convertit') return 'Contacte';
+  if (decision === 'hesite') return 'Hesite';
+  return 'Repart';
+}
+
+function maturiteColor(m: string) {
+  if (m === 'Decision') return 'text-purple-600 bg-purple-50';
+  if (m === 'Comparaison') return 'text-blue-600 bg-blue-50';
+  return 'text-neutral-500 bg-neutral-100';
+}
+---
+
+<BaseLayout title={title} description={description} noindex={true} lang="fr" frPath="/audit/bs-peinture">
+
+  <!-- ========================================================
+       HERO + KPIs
+  ======================================================== -->
+  <section class="bg-neutral-900 text-white py-14 px-4">
+    <div class="max-w-4xl mx-auto">
+      <span class="inline-block text-xs font-semibold tracking-widest uppercase text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full mb-4">Rapport personnalise</span>
+      <h1 class="font-heading text-3xl md:text-4xl font-bold mb-2 leading-tight">
+        {prospect.name}<br/>
+        <span class="text-neutral-300 font-normal text-2xl">ce que vos visiteurs pensent vraiment</span>
+      </h1>
+      <p class="text-neutral-400 mb-2">{prospect.activity} &mdash; {prospect.location}</p>
+      <p class="text-neutral-500 text-sm mb-8">
+        <a href={prospect.url} class="text-amber-400 hover:underline" target="_blank" rel="noopener noreferrer">{prospect.url}</a>
+        &mdash; Rapport du {prospect.date}
+      </p>
+
+      <!-- KPI Cards -->
+      <div class="grid grid-cols-3 gap-4 max-w-lg">
+        <div class="bg-neutral-800 rounded-xl p-4 text-center">
+          <span class="block text-3xl font-black text-amber-400">{kpis.conversion}%</span>
+          <span class="text-xs text-neutral-400 mt-1 block">convertissent</span>
+        </div>
+        <div class="bg-neutral-800 rounded-xl p-4 text-center">
+          <span class="block text-3xl font-black text-amber-400">{kpis.experience}/10</span>
+          <span class="text-xs text-neutral-400 mt-1 block">experience</span>
+        </div>
+        <div class="bg-neutral-800 rounded-xl p-4 text-center">
+          <span class="block text-3xl font-black text-amber-400">{kpis.confiance}/10</span>
+          <span class="text-xs text-neutral-400 mt-1 block">confiance</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       LE CONSTAT
+  ======================================================== -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Le constat</h2>
+
+      <!-- Constat principal -->
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-8">
+        <p class="text-amber-900 font-medium text-base leading-relaxed">{constat}</p>
+      </div>
+
+      <!-- Resume visiteurs -->
+      <div class="flex flex-wrap gap-3 mb-8">
+        <div class="flex items-center gap-2 bg-green-50 border border-green-200 rounded-lg px-4 py-2">
+          <span class="w-2 h-2 rounded-full bg-green-500 shrink-0"></span>
+          <span class="text-sm font-semibold text-green-800">{kpis.convertissent} contactent</span>
+        </div>
+        <div class="flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-lg px-4 py-2">
+          <span class="w-2 h-2 rounded-full bg-amber-500 shrink-0"></span>
+          <span class="text-sm font-semibold text-amber-800">{kpis.hesitent} hesitent</span>
+        </div>
+        <div class="flex items-center gap-2 bg-neutral-100 border border-neutral-200 rounded-lg px-4 py-2">
+          <span class="w-2 h-2 rounded-full bg-neutral-400 shrink-0"></span>
+          <span class="text-sm font-semibold text-neutral-700">{kpis.quittent} repartent</span>
+        </div>
+      </div>
+
+      <!-- Conversion par canal -->
+      <div class="mb-10">
+        <h3 class="font-semibold text-neutral-800 mb-4 text-sm uppercase tracking-wide">Taux de contact par canal d'arrivee</h3>
+        <div class="space-y-3">
+          {conversionByCanal.map(item => (
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-sm text-neutral-700">{item.canal}</span>
+                <span class={`text-sm font-bold ${item.color}`}>{item.taux}%</span>
+              </div>
+              <div class="h-2 bg-neutral-100 rounded-full overflow-hidden">
+                <div class={`h-full rounded-full ${item.bg}`} style={`width: ${item.taux}%`}></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Top frictions -->
+      <h3 class="font-semibold text-neutral-800 mb-4 text-sm uppercase tracking-wide">Top 5 frictions identifiees</h3>
+      <ol class="space-y-3">
+        {topFrictions.map((f, i) => (
+          <li class="flex gap-4 p-4 bg-neutral-50 border border-neutral-200 rounded-xl">
+            <span class="shrink-0 w-7 h-7 rounded-full bg-red-100 text-red-700 flex items-center justify-center text-sm font-bold">{i + 1}</span>
+            <div>
+              <p class="font-semibold text-neutral-900 text-sm">{f.titre} <span class="ml-2 text-xs text-neutral-500 font-normal">{f.count}/10 personas</span></p>
+              <p class="text-neutral-600 text-xs mt-0.5">{f.detail}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       AUDIT TECHNIQUE
+  ======================================================== -->
+  <section class="py-12 px-4 bg-neutral-50">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">L'audit technique</h2>
+
+      <!-- PageSpeed mobile -->
+      <div class="bg-white border border-neutral-200 rounded-xl p-6 mb-6">
+        <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+          <h3 class="font-semibold text-neutral-800">PageSpeed — Mobile</h3>
+          <span class="text-xs text-neutral-400 bg-neutral-100 px-2 py-1 rounded">scores estimes — profil WordPress/Elementor</span>
+        </div>
+        <div class="grid grid-cols-4 gap-4">
+          {[
+            { label: 'Performance', score: pagespeed.mobile.performance },
+            { label: 'Accessibilite', score: pagespeed.mobile.accessibility },
+            { label: 'Bonnes pratiques', score: pagespeed.mobile.bestPractices },
+            { label: 'SEO', score: pagespeed.mobile.seo },
+          ].map(item => (
+            <div class="text-center">
+              <div class="relative w-14 h-14 mx-auto mb-2">
+                <svg class="w-14 h-14 -rotate-90" viewBox="0 0 36 36">
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    fill="none" stroke="#e5e7eb" stroke-width="3.5" />
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    fill="none" stroke={scoreColor(item.score)} stroke-width="3.5"
+                    stroke-dasharray={`${item.score}, 100`} stroke-linecap="round" />
+                </svg>
+                <span class={`absolute inset-0 flex items-center justify-center text-base font-bold ${scoreTextClass(item.score)}`}>{item.score}</span>
+              </div>
+              <p class="text-xs text-neutral-600">{item.label}</p>
+            </div>
+          ))}
+        </div>
+
+        <!-- Core Web Vitals -->
+        <div class="mt-4 pt-4 border-t border-neutral-100">
+          <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-2">Core Web Vitals (mobile estimes)</p>
+          <div class="flex flex-wrap gap-3">
+            {coreWebVitals.map(cwv => (
+              <div class={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium bg-amber-50 text-amber-700`}>
+                <span class={`w-1.5 h-1.5 rounded-full bg-amber-500`}></span>
+                {cwv.name} : {cwv.value}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- PageSpeed Desktop + Observatory -->
+      <div class="grid md:grid-cols-2 gap-6 mb-6">
+        <!-- Desktop -->
+        <div class="bg-white border border-neutral-200 rounded-xl p-5">
+          <h3 class="font-semibold text-neutral-800 mb-4">PageSpeed — Desktop</h3>
+          <div class="grid grid-cols-4 gap-2">
+            {[
+              { label: 'Perf.', score: pagespeed.desktop.performance },
+              { label: 'A11y', score: pagespeed.desktop.accessibility },
+              { label: 'BP', score: pagespeed.desktop.bestPractices },
+              { label: 'SEO', score: pagespeed.desktop.seo },
+            ].map(item => (
+              <div class="text-center">
+                <div class="relative w-12 h-12 mx-auto mb-1">
+                  <svg class="w-12 h-12 -rotate-90" viewBox="0 0 36 36">
+                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      fill="none" stroke="#e5e7eb" stroke-width="3.5" />
+                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      fill="none" stroke={scoreColor(item.score)} stroke-width="3.5"
+                      stroke-dasharray={`${item.score}, 100`} stroke-linecap="round" />
+                  </svg>
+                  <span class={`absolute inset-0 flex items-center justify-center text-sm font-bold ${scoreTextClass(item.score)}`}>{item.score}</span>
+                </div>
+                <p class="text-[11px] text-neutral-500">{item.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Observatory -->
+        <div class="bg-white border border-neutral-200 rounded-xl p-5">
+          <h3 class="font-semibold text-neutral-800 mb-3">Securite — Mozilla Observatory</h3>
+          <div class="flex items-center gap-4 mb-3">
+            <div class="text-4xl font-black text-red-500">
+              {observatory.grade}
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-neutral-800">Score {observatory.score}/100</p>
+              <p class="text-xs text-neutral-500">{observatory.testsPassed}/{observatory.testsTotal} tests passes</p>
+            </div>
+          </div>
+          <p class="text-xs text-neutral-600">Grade D- mauvais — 5 tests echoues : Content-Security-Policy, X-Frame-Options, Referrer-Policy, Permissions-Policy et HSTS absents. Risques de clickjacking et XSS.</p>
+        </div>
+      </div>
+
+      <!-- Checklist SEO/Schema/OG -->
+      <div class="bg-white border border-neutral-200 rounded-xl p-5 mb-6">
+        <h3 class="font-semibold text-neutral-800 mb-4">Checklist technique, SEO & legal</h3>
+        <div class="grid sm:grid-cols-2 gap-2">
+          {techChecks.map(check => (
+            <div class={`flex items-start gap-2.5 p-2.5 rounded-lg ${check.present ? 'bg-green-50' : check.critical ? 'bg-red-50' : 'bg-neutral-50'}`}>
+              <span class={`shrink-0 mt-0.5 text-sm ${check.present ? 'text-green-600' : check.critical ? 'text-red-500' : 'text-neutral-400'}`}>
+                {check.present ? '\u2713' : '\u2717'}
+              </span>
+              <div>
+                <span class={`text-xs font-medium ${check.present ? 'text-green-800' : check.critical ? 'text-red-700' : 'text-neutral-600'}`}>{check.label}</span>
+                {check.note && <p class="text-[11px] text-neutral-500 mt-0.5">{check.note}</p>}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Top opportunites -->
+      <div class="bg-white border border-neutral-200 rounded-xl p-5">
+        <h3 class="font-semibold text-neutral-800 mb-3">Top 3 opportunites de performance</h3>
+        <div class="space-y-2">
+          {opportunities.map((opp, i) => (
+            <div class="flex items-center gap-3 p-3 bg-amber-50 border border-amber-100 rounded-lg">
+              <span class="shrink-0 text-amber-600 font-bold text-sm">{i + 1}</span>
+              <div class="flex-1">
+                <span class="text-sm text-neutral-800">{opp.label}</span>
+              </div>
+              <span class="shrink-0 text-xs font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded">{opp.saving}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       VOS VISITEURS — 10 PERSONAS
+  ======================================================== -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs</h2>
+      <p class="text-neutral-500 mb-6 text-sm">
+        Sur <strong class="text-neutral-800">10 visiteurs simules</strong>,
+        <strong class="text-green-700">{kpis.convertissent} contactent</strong>,
+        <strong class="text-amber-600">{kpis.hesitent} hesitent</strong>,
+        <strong class="text-neutral-600">{kpis.quittent} repartent</strong>.
+        Cliquez sur un visiteur pour voir son parcours complet.
+      </p>
+
+      <!-- Legende -->
+      <div class="flex flex-wrap gap-2 mb-5 text-xs">
+        <span class="flex items-center gap-1.5 bg-green-50 border border-green-200 px-2.5 py-1 rounded-full text-green-700 font-medium">
+          <span class="w-2 h-2 rounded-full bg-green-500"></span> Contacte
+        </span>
+        <span class="flex items-center gap-1.5 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-full text-amber-700 font-medium">
+          <span class="w-2 h-2 rounded-full bg-amber-500"></span> Hesite
+        </span>
+        <span class="flex items-center gap-1.5 bg-neutral-100 border border-neutral-200 px-2.5 py-1 rounded-full text-neutral-600 font-medium">
+          <span class="w-2 h-2 rounded-full bg-neutral-400"></span> Repart
+        </span>
+      </div>
+
+      <div class="space-y-2">
+        {personas.map(p => (
+          <details class={`group border ${decisionColor(p.decision)} rounded-xl overflow-hidden`}>
+            <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-white/60 transition-colors">
+              <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                  <h3 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h3>
+                  <span class={`text-[11px] px-1.5 py-0.5 rounded ${decisionBadge(p.decision)}`}>{decisionLabel(p.decision)}</span>
+                  <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                  <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                  <span class={`text-[11px] px-1.5 py-0.5 rounded ${maturiteColor(p.maturite)}`}>{p.maturite}</span>
+                </div>
+                <p class="text-xs text-neutral-500 truncate">{p.situation}</p>
+              </div>
+              <div class="shrink-0 flex items-center gap-3 ml-2">
+                <div class="hidden sm:flex gap-1.5 text-[11px]">
+                  <span class="bg-neutral-100 text-neutral-600 px-1.5 py-0.5 rounded">Exp {p.scores.exp}/10</span>
+                  <span class="bg-neutral-100 text-neutral-600 px-1.5 py-0.5 rounded">Conf {p.scores.conf}/10</span>
+                </div>
+                <svg class="w-5 h-5 text-neutral-400 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </div>
+            </summary>
+
+            <div class="px-4 pb-4 pt-0 border-t border-current/10 bg-white/60">
+              <div class="grid gap-3 text-xs mt-3">
+
+                <!-- Parcours -->
+                <div>
+                  <p class="font-semibold text-neutral-700 mb-1">Parcours</p>
+                  <div class="flex flex-wrap gap-1 items-center">
+                    {p.parcours.length > 0 ? p.parcours.map((page, i) => (
+                      <>
+                        <span class="bg-neutral-100 text-neutral-700 px-2 py-0.5 rounded text-[11px]">{page}</span>
+                        {i < p.parcours.length - 1 && <span class="text-neutral-400 text-[10px]">&rsaquo;</span>}
+                      </>
+                    )) : <span class="text-neutral-400 italic">N'a jamais atteint le site</span>}
+                  </div>
+                </div>
+
+                <!-- Premiere impression -->
+                <div>
+                  <p class="font-semibold text-neutral-700 mb-1">Premiere impression</p>
+                  <p class="text-neutral-600 italic">"{p.premierImpression}"</p>
+                </div>
+
+                <!-- Question + reponse -->
+                <div>
+                  <p class="font-semibold text-neutral-700 mb-1">Question cle</p>
+                  <p class="text-neutral-600 italic mb-1">"{p.questionCle}"</p>
+                  <p class="text-neutral-600">
+                    Reponse du site : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' || p.reponse === 'Invisible' ? 'text-red-600' : 'text-amber-700'}>{p.reponse}</strong>
+                    {' '}&mdash; {p.commentReponse}
+                  </p>
+                </div>
+
+                <!-- Impact technique -->
+                <div class="bg-neutral-50 rounded-lg px-3 py-2">
+                  <p class="font-semibold text-neutral-700 mb-0.5">Impact technique</p>
+                  <p class="text-neutral-600">{p.impactTechnique}</p>
+                </div>
+
+                <!-- Points positifs + frictions -->
+                <div class="grid sm:grid-cols-2 gap-3">
+                  <div>
+                    <p class="font-semibold text-green-700 mb-1">Points positifs</p>
+                    <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                      {p.pointsPositifs.length > 0 ? p.pointsPositifs.map(pt => <li>{pt}</li>) : <li class="text-neutral-400 italic">Aucun identifie</li>}
+                    </ul>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-amber-700 mb-1">Frictions</p>
+                    <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                      {p.frictions.map(f => <li>{f}</li>)}
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- Scores -->
+                <div class="flex gap-3 pt-1">
+                  <span class="bg-neutral-100 text-neutral-700 px-2.5 py-1 rounded-lg text-[11px] font-medium">Experience {p.scores.exp}/10</span>
+                  <span class="bg-neutral-100 text-neutral-700 px-2.5 py-1 rounded-lg text-[11px] font-medium">Confiance {p.scores.conf}/10</span>
+                  <span class="bg-neutral-100 text-neutral-700 px-2.5 py-1 rounded-lg text-[11px] font-medium">Clarte {p.scores.clarte}/10</span>
+                </div>
+
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       RECOMMANDATIONS
+  ======================================================== -->
+  <section class="py-12 px-4 bg-neutral-50">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Nos recommandations</h2>
+
+      <!-- Critiques -->
+      <h3 class="font-semibold text-red-700 text-sm uppercase tracking-wide mb-3">Le plus important — a traiter en priorite</h3>
+      <div class="space-y-3 mb-8">
+        {ameliorationsCritiques.map((a, i) => (
+          <div class="border border-red-200 bg-white rounded-xl p-5">
+            <div class="flex gap-3 mb-2">
+              <span class="shrink-0 w-6 h-6 rounded-full bg-red-100 text-red-700 flex items-center justify-center text-xs font-bold">{i + 1}</span>
+              <h4 class="font-semibold text-neutral-900 text-sm">{a.titre}</h4>
+            </div>
+            <p class="text-neutral-600 text-sm mb-2 ml-9">{a.detail}</p>
+            <div class="ml-9 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+              <p class="text-xs text-red-800"><strong>Action :</strong> {a.action}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Utiles -->
+      <h3 class="font-semibold text-neutral-600 text-sm uppercase tracking-wide mb-3">Utile aussi</h3>
+      <div class="grid sm:grid-cols-3 gap-3">
+        {ameliorationsUtiles.map(a => (
+          <div class="bg-white border border-neutral-200 rounded-xl p-4">
+            <h4 class="font-semibold text-neutral-800 text-sm mb-2">{a.titre}</h4>
+            <p class="text-neutral-500 text-xs">{a.detail}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       CTA FINAL
+  ======================================================== -->
+  <section class="bg-neutral-900 text-white py-16 px-4">
+    <div class="max-w-3xl mx-auto text-center">
+      <p class="text-amber-400 text-sm font-semibold uppercase tracking-widest mb-3">Ce rapport est offert</p>
+      <h2 class="font-heading text-2xl md:text-3xl font-bold mb-4 leading-snug">
+        {kpis.conversion}% de vos visiteurs vous contactent.<br/>
+        <span class="text-amber-400">Vos 53 avis excellents meritent un site a leur hauteur.</span>
+      </h2>
+      <p class="text-neutral-300 mb-3 max-w-xl mx-auto">
+        Un artisan passionne avec 10 ans d'experience et une reputation solide merite un site qui convertit chaque visiteur en client — avec ses avis en vitrine, un SEO local affute et une vraie identite visuelle.
+      </p>
+      <p class="text-neutral-400 text-sm mb-8 max-w-xl mx-auto">
+        Je construis des sites qui convertissent vraiment — a partir de 990&euro;, livre en 7 jours, sans abonnement CMS.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a
+          href="/commander"
+          class="inline-flex items-center gap-2 px-8 py-3.5 bg-[var(--color-accent)] text-white font-semibold rounded-xl hover:bg-[var(--color-accent-hover)] transition-all shadow-md"
+        >
+          Je veux un site qui convertit
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+          </svg>
+        </a>
+        <a
+          href="/contact"
+          class="inline-flex items-center gap-2 px-8 py-3.5 border border-neutral-600 text-neutral-300 font-semibold rounded-xl hover:border-amber-400 hover:text-amber-400 transition-all"
+        >
+          En discuter d'abord
+        </a>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>

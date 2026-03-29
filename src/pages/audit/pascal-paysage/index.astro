@@ -1,0 +1,948 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX + Technique — Pascal Paysage | Marc M';
+const description = 'Audit complet du site pascal-paysage.fr : 10 personas simulees, scores PageSpeed, securite, SEO — rapport avec recommandations priorisees.';
+
+// ─── PERSONAS ───
+const personas = [
+  { id: 1, name: 'Isabelle', age: 52, role: 'Proprietaire maison avec grand jardin', canal: 'Google Search', maturite: 'Comparaison', device: 'Desktop', decision: 'Hesite', exp: 5, conf: 5, clarte: 4, emoji: '\u{1F3E1}', situation: 'Montigny-les-Metz, 3 grands tilleuls a elaguer avant l\'hiver, compare 3 paysagistes', parcours: ['Accueil', 'Elagage', 'Contact'], questionCle: 'Combien coute l\'elagage de 3 tilleuls de 12m ? Vous avez des photos de chantiers similaires ?', reponse: 'Non', premierImpression: 'Site propre, services bien listes. Mais aucun prix, aucune photo de realisation. Impossible de comparer.', positifs: ['Services clairement listes', '7j/7 affiche', 'Telephone cliquable', 'Schema.org LocalBusiness present'], frictions: ['Aucun tarif ni fourchette de prix', 'Zero photo de realisation / avant-apres', 'Pas de temoignage client', 'Email numericable.fr pas professionnel', 'Contenu generique sans personnalite'], raisonDecision: 'Elle a besoin de comparer. Sans prix ni photos, elle ne peut pas evaluer. Demandera un devis mais sans conviction — le concurrent avec galerie aura l\'avantage.', impactTech: 'Desktop : site charge correctement. Design template generique mais fonctionnel.' },
+  { id: 2, name: 'Marc', age: 44, role: 'Proprietaire apres tempete', canal: 'Google Search', maturite: 'Urgence', device: 'Mobile', decision: 'Convertit', exp: 6, conf: 7, clarte: 5, emoji: '\u{1F32A}\u{FE0F}', situation: 'Metz Queuleu, arbre tombe sur la cloture du voisin apres tempete nocturne, dimanche matin', parcours: ['Accueil', 'Appel direct'], questionCle: 'Vous intervenez en urgence un dimanche pour un arbre tombe ? C\'est combien ?', reponse: 'Partiellement', premierImpression: '"7j/7" et "intervention tempete" le rassurent immediatement. Le numero est la. Il appelle.', positifs: ['7j/7 clairement affiche', 'Mention "intervention tempete"', 'Numero cliquable en haut de page', 'Rayon 50 km couvre Metz'], frictions: ['Pas de tarif urgence / majoration weekend', 'Pas de temps de reponse annonce', 'Pas de photos d\'interventions d\'urgence', 'Pas de garantie / assurance mentionnee clairement'], raisonDecision: 'Urgence + "7j/7 intervention tempete" + numero visible = appel immediat. Le site fait le minimum vital.', impactTech: 'Mobile : charge en 3-4s sur 4G. Le numero est accessible avant la fin du chargement.' },
+  { id: 3, name: 'Sophie', age: 38, role: 'Jeune proprietaire premiere maison', canal: 'Google Maps', maturite: 'Decouverte', device: 'Mobile', decision: 'Quitte', exp: 4, conf: 4, clarte: 3, emoji: '\u{1F331}', situation: 'Montigny-les-Metz, vient d\'acheter une maison avec jardin en friche, ne sait pas par ou commencer', parcours: ['Accueil', 'Entretien jardin', 'Creation gazon', 'Contact'], questionCle: 'Je pars de zero avec mon jardin. Vous pouvez me faire un plan d\'amenagement complet ? Budget ?', reponse: 'Non', premierImpression: 'Trouvee sur Maps. Le site liste des services mais ne propose pas de "projet complet". Pas d\'inspiration visuelle.', positifs: ['Trouvee facilement sur Google Maps', 'Services varies (gazon, entretien, haies)', 'Devis gratuit propose'], frictions: ['Pas de service "amenagement complet" visible', 'Aucune photo inspirante de jardins realises', 'Pas de fourchette budgetaire', 'Contenu froid et technique, pas inspirant', 'Pas d\'accompagnement projet mentionne', 'Design template sans ame'], raisonDecision: 'Cherche de l\'inspiration et un partenaire projet. Le site ne montre rien de concret. Elle ira sur Pinterest puis contactera un paysagiste avec portfolio.', impactTech: 'Mobile correct mais lent. Pas d\'images inspirantes a montrer de toute facon.' },
+  { id: 4, name: 'Jean-Pierre', age: 67, role: 'Retraite, proprietaire verger', canal: 'Pages Jaunes', maturite: 'Decision', device: 'Desktop', decision: 'Convertit', exp: 6, conf: 6, clarte: 5, emoji: '\u{1F333}', situation: 'Ars-sur-Moselle, 8 fruitiers a tailler avant le printemps, voisin a recommande Pascal', parcours: ['Accueil', 'Elagage', 'Mentions legales', 'Contact'], questionCle: 'Mon voisin m\'a parle de vous. Vous taillez les fruitiers ? Quand pouvez-vous passer ?', reponse: 'Partiellement', premierImpression: 'Site confirme l\'existence de l\'entreprise. SIRET verifie dans les mentions legales. L\'elagage est bien liste.', positifs: ['Elagage clairement presente', 'Mention desinfection des coupes (pro)', 'SIRET verifiable', 'Devis gratuit', 'Rayon 50 km couvre Ars-sur-Moselle'], frictions: ['Pas de mention specifique "fruitiers"', 'Pas d\'avis clients alors que le voisin est content', 'Formulaire avec reCAPTCHA Google (penible)', 'Pas de calendrier/disponibilite'], raisonDecision: 'La recommandation du voisin fait le travail. Le site confirme le serieux (SIRET, services). Il appelle.', impactTech: 'Desktop : correct. Le formulaire est un peu lourd mais il preferera appeler.' },
+  { id: 5, name: 'Karim', age: 35, role: 'Locataire maison avec haie mitoyenne', canal: 'Google Search', maturite: 'Urgence', device: 'Mobile', decision: 'Convertit', exp: 5, conf: 6, clarte: 5, emoji: '\u{1F33F}', situation: 'Metz Devant-les-Ponts, proprietaire exige taille de haie sous 15 jours sinon retenue sur caution', parcours: ['Accueil', 'Taille haies', 'Appel direct'], questionCle: 'Taille de haie de lauriers 25m lineaires, vous pouvez venir cette semaine ? C\'est combien ?', reponse: 'Partiellement', premierImpression: 'Page taille de haies existe. 7j/7 le rassure. Prix absent mais il est presse — il appelle.', positifs: ['Page dediee taille de haies', '2 passages/an recommandes (conseil pro)', '7j/7 disponible', 'Numero cliquable'], frictions: ['Pas de tarif au metre lineaire', 'Pas de delai annonce', 'Pas de photos de haies taillees', 'Contenu un peu court'], raisonDecision: 'Pression du proprietaire + service clairement propose + 7j/7 = appel. Le prix, il le demandera au telephone.', impactTech: 'Mobile : site charge assez vite. L\'essentiel est accessible.' },
+  { id: 6, name: 'Catherine', age: 61, role: 'Presidente association de copropriete', canal: 'Google Search', maturite: 'Comparaison', device: 'Tablette', decision: 'Quitte', exp: 3, conf: 3, clarte: 2, emoji: '\u{1F3E2}', situation: 'Metz Nouvelle Ville, copropriete de 12 lots, entretien annuel espaces verts a renouveler', parcours: ['Accueil', 'Entretien jardin', 'Entretien pelouse', 'Contact', 'Mentions legales'], questionCle: 'Contrat annuel d\'entretien pour copropriete : tonte, taille haies, elagage 2x/an. Devis pour 800m2 ?', reponse: 'Non', premierImpression: 'Rien pour les coproprietes ou les pros. Le site parle uniquement aux particuliers.', positifs: ['Services de base couverts', 'SIRET verifiable', 'Zone Metz confirmee'], frictions: ['Aucune offre copropriete/contrat annuel', 'Pas de references professionnelles', 'Pas de distinction particulier/professionnel', 'Pas de devis type ou fourchette pour surface', 'Email numericable.fr ne fait pas pro', 'Formulaire basique sans champ "surface" ou "nombre de passages"'], raisonDecision: 'Besoin d\'un prestataire structure avec contrat annuel. Le site ne repond pas a ce besoin. Elle contactera un paysagiste avec offre B2B.', impactTech: 'Tablette : fonctionnel mais design date. L\'absence de contenu B2B est le vrai probleme.' },
+  { id: 7, name: 'Antoine', age: 31, role: 'Proprietaire terrain a batir', canal: 'IA (ChatGPT)', maturite: 'Decouverte', device: 'Mobile', decision: 'Quitte', exp: 3, conf: 3, clarte: 2, emoji: '\u{1F3D7}\u{FE0F}', situation: 'Scy-Chazelles, terrain avec arbres a abattre avant construction maison, cherche devis', parcours: ['Accueil', 'Abattage', 'Contact'], questionCle: 'Abattage de 5 arbres (chenes 15-20m) sur terrain a batir + dessouchage + evacuation. Budget ?', reponse: 'Non', premierImpression: 'ChatGPT a suggere le site. La page abattage existe mais zero indication de prix ou de capacite pour gros arbres. Design qui fait "petit artisan" pas "entreprise equipee pour gros chantiers".', positifs: ['Page abattage dediee', 'Techniques manuelles + mecaniques mentionnees', 'Rayon 50 km couvre Scy-Chazelles'], frictions: ['Aucun tarif abattage', 'Pas de mention dessouchage', 'Pas de photos de gros chantiers', 'Pas de certification ou assurance visible', 'Site non optimise pour les IA (pas de llms.txt)', 'Design qui n\'inspire pas confiance pour un chantier a 3000-8000 EUR'], raisonDecision: 'Gros budget. Le site ne prouve rien : pas de photos, pas de certifications, pas de references. Il cherchera un concurrent avec portfolio.', impactTech: 'Mobile : correct. ChatGPT a trouve l\'entreprise mais le site ne retient pas.' },
+  { id: 8, name: 'Nadia', age: 45, role: 'Gerante chambre d\'hotes', canal: 'Bouche-a-oreille', maturite: 'Comparaison', device: 'Desktop', decision: 'Hesite', exp: 5, conf: 5, clarte: 4, emoji: '\u{1F3E8}', situation: 'Gorze, jardin de 2000m2 autour de la chambre d\'hotes, veut un entretien regulier pour l\'image', parcours: ['Accueil', 'Entretien jardin', 'Entretien pelouse', 'Creation gazon', 'Contact'], questionCle: 'Entretien mensuel du jardin de ma chambre d\'hotes : tonte, taille, desherbage. Tarif annuel ?', reponse: 'Non', premierImpression: 'Un ami l\'a recommande. Les services sont la mais rien sur l\'entretien regulier pro. Pas de photos pour montrer le niveau de qualite.', positifs: ['Gamme de services complete', '7j/7 rassurant', 'Rayon couvre Gorze (30 km)', 'Recommandation d\'un ami'], frictions: ['Pas d\'offre d\'entretien regulier/contrat', 'Aucune photo montrant la qualite du travail', 'Pas de temoignage hotelier/pro', 'Pas de tarif indicatif', 'Email pas professionnel'], raisonDecision: 'La recommandation pese. Mais l\'absence de photos et de tarifs la freine. Elle appellera pour un devis mais sans urgence — un concurrent avec beau portfolio pourrait la convaincre avant.', impactTech: 'Desktop : fonctionnel. Le design template n\'aide pas a vendre de la qualite paysagere.' },
+  { id: 9, name: 'Thierry', age: 55, role: 'Proprietaire 2 immeubles locatifs', canal: 'Google Maps', maturite: 'Decision', device: 'Mobile', decision: 'Hesite', exp: 5, conf: 5, clarte: 4, emoji: '\u{1F3E0}', situation: 'Metz Sablon, 2 immeubles avec cours arborees, veut elaguer les branches qui depassent chez les voisins', parcours: ['Accueil', 'Elagage', 'Abattage', 'Contact'], questionCle: 'Elagage sur 2 sites differents a Metz, branches en surplomb sur propriete voisine. Vous gerez les autorisations ?', reponse: 'Non', premierImpression: 'Vu sur Maps, bien note. Le site confirme l\'elagage. Mais rien sur les situations juridiques (branches chez le voisin, autorisations...).', positifs: ['Avis Google Maps visibles (hors site)', 'Elagage clairement propose', 'Zone Metz confirmee', 'SIRET verifiable'], frictions: ['Pas de mention aspects juridiques/reglementaires', 'Pas de tarif multi-sites', 'Pas d\'assurance responsabilite civile mentionnee', 'Pas de photos de chantiers "delicats"', 'Avis Google non integres au site'], raisonDecision: 'Il a presque decide grace aux avis Google Maps. Le site ne le fait pas changer d\'avis mais ne le convainc pas non plus. Il appellera pour poser ses questions techniques.', impactTech: 'Mobile : correct. Les avis Google compensent les faiblesses du site.' },
+  { id: 10, name: 'Lucie', age: 28, role: 'Jeune active location maison', canal: 'Facebook', maturite: 'Decouverte', device: 'Mobile', decision: 'Quitte', exp: 3, conf: 3, clarte: 2, emoji: '\u{1F4F1}', situation: 'Montigny-les-Metz, jardin de la location envahi par les ronces, proprietaire demande de nettoyer', parcours: ['Accueil', 'Debarras dechets'], questionCle: 'Debroussaillage + evacuation ronces sur 100m2, c\'est combien a peu pres ?', reponse: 'Non', premierImpression: 'Vu via la page Facebook. Le site ne mentionne pas le debroussaillage. "Debarras dechets" c\'est pas pareil. Aucun prix. Design qui fait "pas pour moi" — elle a 28 ans, le site a l\'air d\'un annuaire 2015.', positifs: ['Page Facebook active', 'Numero cliquable'], frictions: ['Pas de service "debroussaillage" identifie', 'Aucun prix, meme indicatif', 'Design tres date pour une jeune generation', 'Pas de photos inspirantes', 'Pas de partage reseaux sociaux facile', 'Open Graph absent — le lien Facebook n\'a pas de preview'], raisonDecision: 'Service pas clairement propose + zero prix + design date = elle ferme. Cherchera sur Leboncoin ou demandera sur un groupe Facebook local.', impactTech: 'Mobile : le lien depuis Facebook ne montre aucune preview (pas d\'OG). Premiere impression deja mauvaise avant d\'arriver sur le site.' },
+];
+
+// ─── STATS ───
+const avgExp = (personas.reduce((s, p) => s + p.exp, 0) / personas.length).toFixed(1);
+const avgConf = (personas.reduce((s, p) => s + p.conf, 0) / personas.length).toFixed(1);
+const avgClarte = (personas.reduce((s, p) => s + p.clarte, 0) / personas.length).toFixed(1);
+const convertis = personas.filter(p => p.decision === 'Convertit').length;
+const hesitants = personas.filter(p => p.decision === 'Hesite').length;
+const quitte = personas.filter(p => p.decision === 'Quitte').length;
+const tauxConv = Math.round((convertis / personas.length) * 100);
+
+// ─── CANAL STATS ───
+const canalStats = [
+  { canal: 'Google Search', total: 4, conv: 2, hesitant: 1, quitte: 1 },
+  { canal: 'Google Maps', total: 2, conv: 1, hesitant: 1, quitte: 0 },
+  { canal: 'IA (ChatGPT)', total: 1, conv: 0, hesitant: 0, quitte: 1 },
+  { canal: 'Bouche-a-oreille', total: 1, conv: 0, hesitant: 1, quitte: 0 },
+  { canal: 'Pages Jaunes', total: 1, conv: 1, hesitant: 0, quitte: 0 },
+  { canal: 'Facebook', total: 1, conv: 0, hesitant: 0, quitte: 1 },
+];
+
+const maturiteStats = [
+  { level: 'Urgence', total: 2, conv: 2, pct: '100%' },
+  { level: 'Comparaison', total: 3, conv: 0, pct: '0%' },
+  { level: 'Decouverte', total: 3, conv: 0, pct: '0%' },
+  { level: 'Decision', total: 2, conv: 1, pct: '50%' },
+];
+
+// ─── TECHNIQUE ───
+const lighthouseScores = {
+  mobile: { perf: 55, access: 68, bp: 52, seo: 75 },
+  desktop: { perf: 72, access: 68, bp: 52, seo: 75 },
+};
+
+const cwv = {
+  lcp: { mobile: '~3.8s', desktop: '~1.5s', mobileStatus: 'bad', desktopStatus: 'good' },
+  fcp: { mobile: '~2.8s', desktop: '~0.9s', mobileStatus: 'mid', desktopStatus: 'good' },
+  cls: { mobile: '~0.12', desktop: '~0.08', mobileStatus: 'mid', desktopStatus: 'good' },
+  tbt: { mobile: '~300ms', desktop: '~80ms', mobileStatus: 'mid', desktopStatus: 'good' },
+  si: { mobile: '~4.5s', desktop: '~1.8s', mobileStatus: 'bad', desktopStatus: 'good' },
+};
+
+const observatory = { grade: 'F', score: 5, passed: 4, total: 10 };
+
+const schemaChecks = [
+  { label: 'JSON-LD present', ok: true },
+  { label: '@type LocalBusiness', ok: true },
+  { label: 'name, url', ok: true },
+  { label: 'address', ok: true },
+  { label: 'telephone', ok: true },
+  { label: 'email', ok: true },
+  { label: 'sameAs (Facebook, Maps)', ok: true },
+  { label: 'openingHoursSpecification', ok: false },
+  { label: 'areaServed (50 km)', ok: false },
+  { label: 'Service (elagage, abattage...)', ok: false },
+  { label: 'geo (lat/lng)', ok: false },
+  { label: 'priceRange', ok: false },
+  { label: 'aggregateRating', ok: false },
+  { label: 'image', ok: false },
+];
+
+const ogChecks = [
+  { label: 'og:title', ok: false },
+  { label: 'og:description', ok: false },
+  { label: 'og:image', ok: false },
+  { label: 'og:url', ok: false },
+  { label: 'og:type', ok: false },
+  { label: 'twitter:card', ok: false },
+];
+
+const seoChecks = [
+  { label: 'Balise title presente', ok: true },
+  { label: 'Meta description', ok: false },
+  { label: 'HTTPS + redirection', ok: true },
+  { label: 'H1 unique par page', ok: true },
+  { label: 'Canonical explicite', ok: false },
+  { label: 'Schema.org LocalBusiness', ok: true },
+  { label: 'Pages SEO locales', ok: true },
+  { label: 'GA4 actif', ok: true },
+  { label: 'Sitemap.xml', ok: false },
+  { label: 'robots.txt', ok: false },
+];
+
+const missingHeaders = ['Content-Security-Policy', 'Strict-Transport-Security', 'X-Frame-Options', 'X-Content-Type-Options', 'Referrer-Policy', 'Permissions-Policy'];
+
+// ─── FRICTIONS ───
+const frictions = [
+  { label: 'Aucun tarif ni fourchette de prix affiches', count: 9, severity: 'critique' },
+  { label: 'Zero photo de realisations / avant-apres', count: 8, severity: 'critique' },
+  { label: 'Pas de temoignages / avis clients sur le site', count: 8, severity: 'critique' },
+  { label: 'Contenu generique sans personnalite ni ancres d\'authenticite', count: 7, severity: 'haute' },
+  { label: 'Design template Linkeo date — pas de personnalite visuelle', count: 6, severity: 'haute' },
+  { label: 'Aucune offre copropriete, contrat annuel ou B2B', count: 4, severity: 'haute' },
+  { label: 'Email numericable.fr pas professionnel', count: 4, severity: 'moyenne' },
+  { label: 'Open Graph absent — zero preview au partage', count: 3, severity: 'moyenne' },
+  { label: 'PHP 5.6 expose via X-Powered-By (fin de vie 2018)', count: 3, severity: 'moyenne' },
+  { label: 'reCAPTCHA Google sur formulaire (friction + RGPD)', count: 3, severity: 'moyenne' },
+];
+
+// ─── AMELIORATIONS ───
+const amelioHaute = [
+  { title: 'Afficher des fourchettes de prix', impact: '9/10 personas', detail: 'Pas un seul prix sur tout le site. Afficher des "a partir de" pour chaque service : elagage a partir de X EUR/arbre, taille de haie a partir de Y EUR/ml, abattage selon diametre. 9 personas sur 10 cherchent un indicateur de prix.' },
+  { title: 'Ajouter une galerie de realisations avant/apres', impact: '8/10 personas', detail: 'Le paysage, ca se montre. Une galerie avec photos avant/apres (elagage, abattage, creation de gazon, jardin entretenu) donnerait la preuve du savoir-faire. Absolument essentiel pour un metier visuel.' },
+  { title: 'Integrer des temoignages clients', impact: '8/10 personas', detail: 'Les avis Google existent probablement mais ne sont pas sur le site. Ajouter 5-10 temoignages avec prenom, commune et type d\'intervention (elagage, entretien, urgence tempete) donnerait un capital confiance immediat.' },
+  { title: 'Refondre le site avec un design moderne', impact: '7/10 personas', detail: 'Le template Linkeo fait generique et date. Un site moderne, rapide, avec de belles photos de jardins inspirerait confiance — crucial pour un metier ou l\'esthetique compte. Performance mobile a ameliorer (LCP sous 2.5s).' },
+];
+
+const amelioMoyenne = [
+  { title: 'Creer une offre coproprietes / contrat annuel', impact: '3 personas pro', detail: 'Section dediee : contrat d\'entretien annuel, tarif au m2, nombre de passages, references de coproprietes gerees. Les syndics et gestionnaires immobiliers representent un volume recurrent.' },
+  { title: 'Completer le Schema.org', impact: 'Tous les personas', detail: 'La base LocalBusiness existe. Ajouter openingHoursSpecification (7j/7), areaServed (50 km), Service (elagage, abattage...), geo, image. Ameliore le rich snippet Google.' },
+  { title: 'Ajouter les meta Open Graph', impact: '3 personas (partage social)', detail: 'Zero OG = zero preview quand quelqu\'un partage le lien sur Facebook, WhatsApp ou LinkedIn. Le lien apparait "nu" — pas de titre, pas d\'image, pas de description.' },
+  { title: 'Migrer hors PHP 5.6', impact: 'Securite critique', detail: 'PHP 5.6 est en fin de vie depuis decembre 2018. 7 ans de failles non corrigees. Le header X-Powered-By expose cette version aux attaquants.' },
+  { title: 'Securiser les headers HTTP', impact: 'Score Observatory F → A', detail: 'Score 5/100. Ajouter CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy. Retirer X-Powered-By.' },
+  { title: 'Adopter une adresse email professionnelle', impact: 'Credibilite', detail: 'pascal.parizot@numericable.fr fait artisan 2010. Une adresse contact@pascal-paysage.fr ou pascal@pascal-paysage.fr (le domaine existe deja) renforcerait le serieux.' },
+];
+
+const amelioDiscuter = [
+  { emoji: '\u{1F4F8}', title: 'Creer un portfolio Instagram/Facebook avec renvoi site', detail: 'Le paysagisme est ultra-visuel. Un flux de photos de chantiers sur Instagram (lie au site) servirait a la fois de vitrine et de contenu frais pour Google.' },
+  { emoji: '\u{1F4CD}', title: 'Afficher une carte de zone d\'intervention', detail: 'Le "rayon 50 km" est mentionne en texte. Une carte visuelle montrant les communes couvertes rassurerait les visiteurs hors Montigny.' },
+  { emoji: '\u{1F4CB}', title: 'Ajouter un formulaire de devis structure', detail: 'Le formulaire actuel est generique. Un formulaire avec champs specifiques (type de service, surface, nombre d\'arbres, acces) permettrait des devis plus rapides et qualifierait les leads.' },
+];
+
+// ─── HELPERS ───
+function scoreColor(s: number) {
+  if (s >= 90) return '#22c55e';
+  if (s >= 50) return '#f59e0b';
+  return '#ef4444';
+}
+
+function scoreTextColor(s: number) {
+  if (s >= 90) return 'text-green-600';
+  if (s >= 50) return 'text-amber-600';
+  return 'text-red-600';
+}
+
+function decisionColor(d: string) {
+  if (d === 'Convertit') return 'bg-emerald-100 text-emerald-800';
+  if (d === 'Hesite') return 'bg-amber-100 text-amber-800';
+  return 'bg-red-100 text-red-800';
+}
+
+function decisionBorder(d: string) {
+  if (d === 'Convertit') return 'border-green-200 bg-green-50/40';
+  if (d === 'Hesite') return 'border-amber-200 bg-amber-50/40';
+  return 'border-neutral-200 bg-neutral-50/40';
+}
+
+function severityColor(s: string) {
+  if (s === 'critique') return 'bg-red-100 text-red-800';
+  if (s === 'haute') return 'bg-orange-100 text-orange-800';
+  return 'bg-blue-100 text-blue-800';
+}
+
+function cwvBg(status: string) {
+  if (status === 'good') return 'bg-green-50';
+  if (status === 'mid') return 'bg-amber-50';
+  return 'bg-red-50';
+}
+
+function cwvText(status: string) {
+  if (status === 'good') return 'text-green-700';
+  if (status === 'mid') return 'text-amber-700';
+  return 'text-red-700';
+}
+
+function cwvBadge(status: string) {
+  if (status === 'good') return 'bg-green-100 text-green-800';
+  if (status === 'mid') return 'bg-amber-100 text-amber-800';
+  return 'bg-red-100 text-red-800';
+}
+
+function cwvLabel(status: string) {
+  if (status === 'good') return 'Bon';
+  if (status === 'mid') return 'Moyen';
+  return 'Mauvais';
+}
+
+function scoreBar(val: number) {
+  return `${val * 10}%`;
+}
+
+function gradeColor(g: string) {
+  if (g.startsWith('A')) return { border: 'border-green-300', bg: 'bg-green-50', text: 'text-green-700' };
+  if (g.startsWith('B')) return { border: 'border-amber-300', bg: 'bg-amber-50', text: 'text-amber-700' };
+  return { border: 'border-red-300', bg: 'bg-red-50', text: 'text-red-700' };
+}
+
+const gc = gradeColor(observatory.grade);
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  noindex={true}
+  lang="fr"
+  frPath="/audit/pascal-paysage"
+>
+
+  <!-- ═══════════════════ HERO ═══════════════════ -->
+  <section class="w-full relative px-6 py-16 md:px-8 md:py-24 overflow-hidden" style="background-color: #0D0D0D;">
+    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 40px 40px;"></div>
+    <div class="absolute top-20 -left-32 w-96 h-96 rounded-full opacity-10 blur-3xl" style="background: #4A7C59;"></div>
+
+    <div class="mx-auto max-w-4xl relative z-10">
+      <div class="mb-4 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--color-accent)]/40">
+        <span class="w-2 h-2 rounded-full" style="background-color: #4A7C59;"></span>
+        <span class="text-sm font-semibold text-white/90">Rapport confidentiel</span>
+      </div>
+
+      <h1 class="mb-4 text-3xl font-bold leading-tight text-white md:text-4xl lg:text-5xl">
+        Audit UX + Technique — <span class="bg-gradient-to-r from-[#4A7C59] to-[#8FBF9F] bg-clip-text text-transparent">Pascal Paysage</span>
+      </h1>
+
+      <p class="text-lg text-neutral-300 md:text-xl max-w-2xl mb-8">
+        Analyse complete de <strong class="text-white">pascal-paysage.fr</strong> — audit technique (PageSpeed, securite, SEO) + simulation de 10 visites personas avec feedback detaille.
+      </p>
+
+      <div class="flex flex-wrap gap-3">
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">10 personas testes</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">6 canaux d'arrivee</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">Audit Observatory + SEO</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">29 mars 2026</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ TAB BAR ═══════════════════ -->
+  <nav class="sticky top-16 md:top-20 z-40 bg-white/95 backdrop-blur border-b border-neutral-200" id="tab-bar">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-2 h-12 text-sm overflow-x-auto">
+      <button data-tab="0" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-primary-700 bg-primary-50">Synthese</button>
+      <button data-tab="1" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">Technique</button>
+      <button data-tab="2" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">
+        Visiteurs <span class="ml-1 text-xs text-neutral-400">10</span>
+      </button>
+      <button data-tab="3" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">
+        Ameliorations <span class="ml-1 text-xs text-neutral-400">{amelioHaute.length + amelioMoyenne.length + amelioDiscuter.length}</span>
+      </button>
+    </div>
+  </nav>
+
+  <div id="panels" class="flex overflow-x-auto snap-x snap-mandatory" style="-webkit-overflow-scrolling: touch; scrollbar-width: none;">
+
+    <!-- ═══════════════════ PANEL 1 : SYNTHESE ═══════════════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+
+      <!-- KPI Cards -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class={`text-3xl md:text-4xl font-bold ${tauxConv < 20 ? 'text-red-600' : tauxConv < 40 ? 'text-amber-600' : 'text-emerald-600'}`}>{tauxConv}%</p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Taux de conversion</p>
+              <p class="mt-2 text-xs text-[var(--color-text-muted)]">{convertis} convertis · {hesitants} hesitants · {quitte} partis</p>
+            </div>
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class="text-3xl md:text-4xl font-bold text-amber-600">{avgExp}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Experience</p>
+              <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden">
+                <div class="h-full rounded-full bg-amber-500" style={`width: ${scoreBar(Number(avgExp))}`}></div>
+              </div>
+            </div>
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class="text-3xl md:text-4xl font-bold text-blue-600">{avgConf}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Confiance</p>
+              <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden">
+                <div class="h-full rounded-full bg-blue-500" style={`width: ${scoreBar(Number(avgConf))}`}></div>
+              </div>
+            </div>
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class="text-3xl md:text-4xl font-bold text-orange-600">{avgClarte}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Clarte</p>
+              <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden">
+                <div class="h-full rounded-full bg-orange-500" style={`width: ${scoreBar(Number(avgClarte))}`}></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Paradoxe -->
+      <div class="w-full px-6 py-8 md:px-8 bg-white">
+        <div class="mx-auto max-w-5xl">
+          <div class="rounded-xl border-l-4 border-l-[var(--color-accent)] bg-accent-50 p-6 md:p-8">
+            <h2 class="text-lg font-bold text-[var(--color-text)] mb-2">Paradoxe principal</h2>
+            <p class="text-[var(--color-text)] leading-relaxed">
+              Le site convertit les <strong>urgences</strong> (tempete, arbre tombe) et les <strong>visiteurs deja convaincus</strong> par le bouche-a-oreille — mais perd <strong>100% des visiteurs en comparaison et decouverte</strong>. Sans prix, sans photos, sans temoignages, le site est une <strong>carte de visite numerique</strong> qui ne vend rien. Pour un metier aussi visuel que le paysagisme, c'est un gachis : le savoir-faire existe mais il est invisible.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Conversion par canal -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-2">Conversion par canal</h2>
+          <p class="text-[var(--color-text-muted)] mb-8">Google Search ne convertit que les urgences. Les visiteurs en phase de comparaison repartent faute de prix et de preuves visuelles.</p>
+          <div class="grid md:grid-cols-2 gap-4">
+            {canalStats.map((c) => {
+              const pct = c.total > 0 ? Math.round((c.conv / c.total) * 100) : 0;
+              return (
+                <div class="rounded-xl border border-[var(--color-border)] bg-white p-5">
+                  <div class="flex items-center justify-between mb-3">
+                    <h3 class="font-semibold text-[var(--color-text)]">{c.canal}</h3>
+                    <span class={`text-lg font-bold ${pct > 50 ? 'text-emerald-600' : pct > 0 ? 'text-amber-600' : 'text-red-600'}`}>{pct}%</span>
+                  </div>
+                  <div class="h-3 rounded-full bg-neutral-100 overflow-hidden mb-3">
+                    <div class="h-full rounded-full flex">
+                      <div class="bg-emerald-500" style={`width: ${(c.conv / c.total) * 100}%`}></div>
+                      <div class="bg-amber-400" style={`width: ${(c.hesitant / c.total) * 100}%`}></div>
+                      <div class="bg-red-400" style={`width: ${(c.quitte / c.total) * 100}%`}></div>
+                    </div>
+                  </div>
+                  <div class="flex gap-4 text-xs text-[var(--color-text-muted)]">
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> {c.conv} conv.</span>
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-400"></span> {c.hesitant} hes.</span>
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-400"></span> {c.quitte} partis</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      <!-- Conversion par maturite -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-white">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-8">Conversion par maturite</h2>
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+            {maturiteStats.map((m) => (
+              <div class="rounded-xl border border-[var(--color-border)] bg-white p-6 text-center">
+                <p class="text-sm font-semibold text-[var(--color-text-muted)] uppercase tracking-wider mb-2">{m.level}</p>
+                <p class={`text-4xl font-bold ${m.pct === '0%' ? 'text-red-600' : m.pct === '100%' ? 'text-emerald-600' : 'text-amber-600'}`}>{m.pct}</p>
+                <p class="mt-1 text-sm text-[var(--color-text-muted)]">{m.conv}/{m.total} convertis</p>
+              </div>
+            ))}
+          </div>
+          <div class="mt-6 rounded-xl bg-red-50 border border-red-200 p-5">
+            <p class="text-sm text-red-800">
+              <strong>Constat cle :</strong> Le site fonctionne comme une <strong>carte de visite</strong> — il convertit les urgences (le visiteur a deja decide d'appeler) et les recommandations (la confiance vient d'ailleurs) mais <strong>0% en comparaison et decouverte</strong>. Le paysagiste a probablement un excellent savoir-faire — mais son site ne le montre pas.
+            </p>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ═══════════════════ PANEL 2 : TECHNIQUE ═══════════════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+
+      <!-- PageSpeed Scores -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-2">Scores PageSpeed Lighthouse (estimes)</h2>
+          <p class="text-[var(--color-text-muted)] mb-8">Site PHP 5.6 sur framework Linkeo proprietaire (Apophis). Cache HTTP desactive. 4 scripts de tracking (GA4, Matomo, Google Ads, Remarketing).</p>
+
+          <div class="grid md:grid-cols-2 gap-6">
+            {/* Mobile */}
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+              <h3 class="font-semibold text-[var(--color-text)] mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="5" y="2" width="14" height="20" rx="2"/><line x1="12" y1="18" x2="12.01" y2="18"/></svg>
+                Mobile
+              </h3>
+              <div class="grid grid-cols-4 gap-4">
+                {Object.entries(lighthouseScores.mobile).map(([key, val]) => (
+                  <div class="text-center">
+                    <div class="relative w-16 h-16 mx-auto mb-2">
+                      <svg class="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3" />
+                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={scoreColor(val)} stroke-width="3" stroke-dasharray={`${val}, 100`} stroke-linecap="round" />
+                      </svg>
+                      <span class={`absolute inset-0 flex items-center justify-center text-lg font-bold ${scoreTextColor(val)}`}>{val}</span>
+                    </div>
+                    <p class="text-xs text-neutral-600 font-medium">{key === 'perf' ? 'Perf.' : key === 'access' ? 'Access.' : key === 'bp' ? 'Pratiques' : 'SEO'}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            {/* Desktop */}
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+              <h3 class="font-semibold text-[var(--color-text)] mb-4 flex items-center gap-2">
+                <svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><rect x="2" y="3" width="20" height="14" rx="2"/><line x1="8" y1="21" x2="16" y2="21"/><line x1="12" y1="17" x2="12" y2="21"/></svg>
+                Desktop
+              </h3>
+              <div class="grid grid-cols-4 gap-4">
+                {Object.entries(lighthouseScores.desktop).map(([key, val]) => (
+                  <div class="text-center">
+                    <div class="relative w-16 h-16 mx-auto mb-2">
+                      <svg class="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3" />
+                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={scoreColor(val)} stroke-width="3" stroke-dasharray={`${val}, 100`} stroke-linecap="round" />
+                      </svg>
+                      <span class={`absolute inset-0 flex items-center justify-center text-lg font-bold ${scoreTextColor(val)}`}>{val}</span>
+                    </div>
+                    <p class="text-xs text-neutral-600 font-medium">{key === 'perf' ? 'Perf.' : key === 'access' ? 'Access.' : key === 'bp' ? 'Pratiques' : 'SEO'}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Core Web Vitals -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-white">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">Core Web Vitals</h2>
+          <div class="grid md:grid-cols-2 gap-6">
+            <div>
+              <h3 class="text-sm font-semibold text-[var(--color-text-muted)] mb-3 uppercase tracking-wider">Mobile</h3>
+              <div class="space-y-2">
+                {Object.entries(cwv).map(([key, v]) => (
+                  <div class={`flex items-center justify-between p-3 rounded-lg ${cwvBg(v.mobileStatus)}`}>
+                    <div>
+                      <span class="text-xs font-bold text-neutral-700">{key.toUpperCase()}</span>
+                      <span class="text-xs text-neutral-500 ml-1">({key === 'lcp' ? 'Largest Contentful Paint' : key === 'fcp' ? 'First Contentful Paint' : key === 'cls' ? 'Cumulative Layout Shift' : key === 'tbt' ? 'Total Blocking Time' : 'Speed Index'})</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span class={`text-sm font-bold ${cwvText(v.mobileStatus)}`}>{v.mobile}</span>
+                      <span class={`text-[10px] px-1.5 py-0.5 rounded font-medium ${cwvBadge(v.mobileStatus)}`}>{cwvLabel(v.mobileStatus)}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <h3 class="text-sm font-semibold text-[var(--color-text-muted)] mb-3 uppercase tracking-wider">Desktop</h3>
+              <div class="space-y-2">
+                {Object.entries(cwv).map(([key, v]) => (
+                  <div class={`flex items-center justify-between p-3 rounded-lg ${cwvBg(v.desktopStatus)}`}>
+                    <div>
+                      <span class="text-xs font-bold text-neutral-700">{key.toUpperCase()}</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                      <span class={`text-sm font-bold ${cwvText(v.desktopStatus)}`}>{v.desktop}</span>
+                      <span class={`text-[10px] px-1.5 py-0.5 rounded font-medium ${cwvBadge(v.desktopStatus)}`}>{cwvLabel(v.desktopStatus)}</span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Observatory -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">Securite HTTP</h2>
+          <p class="text-[var(--color-text-muted)] mb-6">Le site expose PHP 5.6 (fin de vie depuis 2018) et ne possede aucune protection contre les attaques courantes.</p>
+
+          <div class={`flex items-center gap-4 p-4 rounded-xl border ${gc.border} ${gc.bg} mb-6`}>
+            <div class={`text-3xl font-black ${gc.text}`}>{observatory.grade}</div>
+            <div>
+              <p class="text-sm font-semibold text-neutral-900">Mozilla Observatory</p>
+              <p class="text-xs text-neutral-500">{observatory.passed}/{observatory.total} tests passes — Score {observatory.score}/100</p>
+            </div>
+          </div>
+
+          <h3 class="font-semibold text-[var(--color-text)] mb-3">Headers de securite manquants</h3>
+          <div class="space-y-1.5">
+            {missingHeaders.map((h) => (
+              <div class="flex items-center gap-2 py-1.5">
+                <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                <span class="text-sm text-neutral-400 line-through">{h}</span>
+              </div>
+            ))}
+          </div>
+
+          <div class="mt-6 rounded-xl bg-amber-50 border border-amber-200 p-4">
+            <p class="text-sm text-amber-800">
+              <strong>Risque critique :</strong> Le header <code class="bg-amber-100 px-1 rounded">X-Powered-By: PHP/5.6.40</code> expose une version de PHP en fin de vie depuis <strong>decembre 2018</strong>. C'est l'equivalent d'afficher "notre serrure est cassee" sur la porte. Plus de 7 ans de failles de securite non corrigees.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Schema.org + OG + SEO -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-white">
+        <div class="mx-auto max-w-5xl">
+          <div class="grid md:grid-cols-3 gap-6">
+
+            {/* Schema.org */}
+            <div>
+              <h3 class="font-semibold text-[var(--color-text)] mb-3">Schema.org</h3>
+              <p class="text-xs text-[var(--color-text-muted)] mb-3">Base LocalBusiness presente mais incomplete — Google ne connait pas vos horaires ni votre zone</p>
+              <div class="space-y-1">
+                {schemaChecks.map((c) => (
+                  <div class="flex items-center gap-2 py-1">
+                    {c.ok ? (
+                      <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    ) : (
+                      <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                    )}
+                    <span class={`text-xs ${c.ok ? 'text-neutral-700' : 'text-neutral-400 line-through'}`}>{c.label}</span>
+                  </div>
+                ))}
+              </div>
+              <p class="mt-3 text-xs font-semibold text-amber-600">Score : 7/14</p>
+            </div>
+
+            {/* Open Graph */}
+            <div>
+              <h3 class="font-semibold text-[var(--color-text)] mb-3">Open Graph</h3>
+              <p class="text-xs text-[var(--color-text-muted)] mb-3">Quand quelqu'un partage votre site, aucune preview n'apparait</p>
+              <div class="space-y-1">
+                {ogChecks.map((c) => (
+                  <div class="flex items-center gap-2 py-1">
+                    {c.ok ? (
+                      <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    ) : (
+                      <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                    )}
+                    <span class={`text-xs ${c.ok ? 'text-neutral-700' : 'text-neutral-400 line-through'}`}>{c.label}</span>
+                  </div>
+                ))}
+              </div>
+              <p class="mt-3 text-xs font-semibold text-red-600">Score : 0/6</p>
+            </div>
+
+            {/* SEO technique */}
+            <div>
+              <h3 class="font-semibold text-[var(--color-text)] mb-3">SEO technique</h3>
+              <p class="text-xs text-[var(--color-text-muted)] mb-3">Les bases sont la mais il manque des elements cles</p>
+              <div class="space-y-1">
+                {seoChecks.map((c) => (
+                  <div class="flex items-center gap-2 py-1">
+                    {c.ok ? (
+                      <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                    ) : (
+                      <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                    )}
+                    <span class={`text-xs ${c.ok ? 'text-neutral-700' : 'text-neutral-400 line-through'}`}>{c.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Opportunites PageSpeed -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">Opportunites d'amelioration technique</h2>
+          <div class="space-y-3">
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5">
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="font-semibold text-[var(--color-text)]">Migrer vers un site statique moderne</h3>
+                <span class="text-sm font-bold text-emerald-600">LCP divise par 2+</span>
+              </div>
+              <p class="text-sm text-[var(--color-text-muted)]">PHP 5.6 + framework Linkeo proprietaire genere chaque page dynamiquement. Un site statique (Astro) eliminerait le temps serveur et chargerait en moins d'une seconde.</p>
+            </div>
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5">
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="font-semibold text-[var(--color-text)]">Activer le cache HTTP</h3>
+                <span class="text-sm font-bold text-emerald-600">-60 a 80% de requetes</span>
+              </div>
+              <p class="text-sm text-[var(--color-text-muted)]">Le header Cache-Control est sur "no-store, no-cache". Chaque visite recharge tout depuis zero. Activer le cache diviserait le temps de chargement pour les visiteurs reguliers.</p>
+            </div>
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5">
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="font-semibold text-[var(--color-text)]">Reduire les scripts de tracking</h3>
+                <span class="text-sm font-bold text-emerald-600">~200-300 Ko economises</span>
+              </div>
+              <p class="text-sm text-[var(--color-text-muted)]">4 scripts de tracking actifs : GA4, Matomo, Google Ads, Remarketing. Garder uniquement GA4 ou Matomo (pas les deux) et charger les scripts publicitaires en differe.</p>
+            </div>
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5">
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="font-semibold text-[var(--color-text)]">Optimiser les images</h3>
+                <span class="text-sm font-bold text-amber-600">Ameliore le LCP</span>
+              </div>
+              <p class="text-sm text-[var(--color-text-muted)]">Convertir en WebP, dimensionner correctement (max 1920px hero, 800px galerie), activer le lazy loading pour les images en dessous de la ligne de flottaison.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ═══════════════════ PANEL 3 : VISITEURS ═══════════════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+
+      <!-- Stats row -->
+      <div class="w-full px-6 py-8 md:px-8 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl flex flex-wrap gap-4 justify-center">
+          <div class="px-6 py-3 rounded-xl bg-emerald-50 border border-emerald-200 text-center">
+            <p class="text-2xl font-bold text-emerald-700">{convertis}</p>
+            <p class="text-xs text-emerald-600">contactent</p>
+          </div>
+          <div class="px-6 py-3 rounded-xl bg-amber-50 border border-amber-200 text-center">
+            <p class="text-2xl font-bold text-amber-700">{hesitants}</p>
+            <p class="text-xs text-amber-600">hesitent</p>
+          </div>
+          <div class="px-6 py-3 rounded-xl bg-red-50 border border-red-200 text-center">
+            <p class="text-2xl font-bold text-red-700">{quitte}</p>
+            <p class="text-xs text-red-600">repartent</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Personas groupees par decision -->
+      <div class="w-full px-6 py-8 md:px-8 bg-white">
+        <div class="mx-auto max-w-5xl space-y-8">
+
+          {/* Convertit */}
+          <div>
+            <h3 class="text-lg font-bold text-emerald-700 mb-4">Ceux qui contactent ({convertis})</h3>
+            <div class="space-y-3">
+              {personas.filter(p => p.decision === 'Convertit').map((p) => (
+                <details class={`group border ${decisionBorder(p.decision)} rounded-xl overflow-hidden`}>
+                  <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                    <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                        <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                        <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                        <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                      </div>
+                      <p class="text-xs text-neutral-500 mb-2">{p.role} — {p.situation}</p>
+                      <div class="flex flex-wrap items-center gap-1">
+                        {p.parcours.map((page, i) => (
+                          <Fragment>
+                            <span class="text-[10px] text-primary-700 bg-white border border-primary-100 px-1.5 py-0.5 rounded">{page}</span>
+                            {i < p.parcours.length - 1 && <span class="text-neutral-300 text-[10px]">&rsaquo;</span>}
+                          </Fragment>
+                        ))}
+                        <span class="text-[10px] bg-green-600 text-white px-1.5 py-0.5 rounded font-medium ml-0.5">Contacte</span>
+                      </div>
+                    </div>
+                    <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                  </summary>
+                  <div class="px-4 pb-4 pt-0 border-t border-green-200 bg-white/50">
+                    <div class="grid gap-3 text-xs mt-3">
+                      <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.premierImpression}</p></div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Question cle</p><p class="text-neutral-600 italic">"{p.questionCle}"</p><p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong></p></div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Impact technique</p><p class="text-neutral-600">{p.impactTech}</p></div>
+                      <div class="flex gap-4">
+                        <div class="flex-1"><p class="font-semibold text-green-700 mb-1">Points positifs</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.positifs.map(pt => <li>{pt}</li>)}</ul></div>
+                        <div class="flex-1"><p class="font-semibold text-amber-700 mb-1">Frictions</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map(f => <li>{f}</li>)}</ul></div>
+                      </div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Decision</p><p class="text-neutral-600">{p.raisonDecision}</p></div>
+                      <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.exp >= 7 ? 'text-emerald-600' : p.exp >= 4 ? 'text-amber-600' : 'text-red-600'}`}>{p.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.conf >= 7 ? 'text-emerald-600' : p.conf >= 4 ? 'text-amber-600' : 'text-red-600'}`}>{p.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.clarte >= 7 ? 'text-emerald-600' : p.clarte >= 4 ? 'text-amber-600' : 'text-red-600'}`}>{p.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </details>
+              ))}
+            </div>
+          </div>
+
+          {/* Hesite */}
+          <div>
+            <h3 class="text-lg font-bold text-amber-700 mb-4">Ceux qui hesitent ({hesitants})</h3>
+            <div class="space-y-3">
+              {personas.filter(p => p.decision === 'Hesite').map((p) => (
+                <details class={`group border ${decisionBorder(p.decision)} rounded-xl overflow-hidden`}>
+                  <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                    <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                        <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                        <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                        <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                      </div>
+                      <p class="text-xs text-neutral-500 mb-2">{p.role} — {p.situation}</p>
+                      <div class="flex flex-wrap items-center gap-1">
+                        {p.parcours.map((page, i) => (
+                          <Fragment>
+                            <span class="text-[10px] text-primary-700 bg-white border border-primary-100 px-1.5 py-0.5 rounded">{page}</span>
+                            {i < p.parcours.length - 1 && <span class="text-neutral-300 text-[10px]">&rsaquo;</span>}
+                          </Fragment>
+                        ))}
+                        <span class="text-[10px] bg-amber-500 text-white px-1.5 py-0.5 rounded font-medium ml-0.5">Hesite</span>
+                      </div>
+                    </div>
+                    <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                  </summary>
+                  <div class="px-4 pb-4 pt-0 border-t border-amber-200 bg-white/50">
+                    <div class="grid gap-3 text-xs mt-3">
+                      <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.premierImpression}</p></div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Question cle</p><p class="text-neutral-600 italic">"{p.questionCle}"</p><p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong></p></div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Impact technique</p><p class="text-neutral-600">{p.impactTech}</p></div>
+                      <div class="flex gap-4">
+                        <div class="flex-1"><p class="font-semibold text-green-700 mb-1">Points positifs</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.positifs.map(pt => <li>{pt}</li>)}</ul></div>
+                        <div class="flex-1"><p class="font-semibold text-amber-700 mb-1">Frictions</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map(f => <li>{f}</li>)}</ul></div>
+                      </div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Decision</p><p class="text-neutral-600">{p.raisonDecision}</p></div>
+                      <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.exp >= 7 ? 'text-emerald-600' : p.exp >= 4 ? 'text-amber-600' : 'text-red-600'}`}>{p.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.conf >= 7 ? 'text-emerald-600' : p.conf >= 4 ? 'text-amber-600' : 'text-red-600'}`}>{p.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.clarte >= 7 ? 'text-emerald-600' : p.clarte >= 4 ? 'text-amber-600' : 'text-red-600'}`}>{p.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </details>
+              ))}
+            </div>
+          </div>
+
+          {/* Quitte */}
+          <div>
+            <h3 class="text-lg font-bold text-red-700 mb-4">Ceux qui repartent ({quitte})</h3>
+            <div class="space-y-3">
+              {personas.filter(p => p.decision === 'Quitte').map((p) => (
+                <details class={`group border ${decisionBorder(p.decision)} rounded-xl overflow-hidden`}>
+                  <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                    <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                        <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                        <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                        <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                      </div>
+                      <p class="text-xs text-neutral-500 mb-2">{p.role} — {p.situation}</p>
+                      <div class="flex flex-wrap items-center gap-1">
+                        {p.parcours.map((page, i) => (
+                          <Fragment>
+                            <span class="text-[10px] text-primary-700 bg-white border border-primary-100 px-1.5 py-0.5 rounded">{page}</span>
+                            {i < p.parcours.length - 1 && <span class="text-neutral-300 text-[10px]">&rsaquo;</span>}
+                          </Fragment>
+                        ))}
+                        <span class="text-[10px] bg-red-500 text-white px-1.5 py-0.5 rounded font-medium ml-0.5">Quitte</span>
+                      </div>
+                    </div>
+                    <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                  </summary>
+                  <div class="px-4 pb-4 pt-0 border-t border-neutral-200 bg-white/50">
+                    <div class="grid gap-3 text-xs mt-3">
+                      <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.premierImpression}</p></div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Question cle</p><p class="text-neutral-600 italic">"{p.questionCle}"</p><p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong></p></div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Impact technique</p><p class="text-neutral-600">{p.impactTech}</p></div>
+                      <div class="flex gap-4">
+                        <div class="flex-1"><p class="font-semibold text-green-700 mb-1">Points positifs</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.positifs.map(pt => <li>{pt}</li>)}</ul></div>
+                        <div class="flex-1"><p class="font-semibold text-amber-700 mb-1">Frictions</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map(f => <li>{f}</li>)}</ul></div>
+                      </div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Decision</p><p class="text-neutral-600">{p.raisonDecision}</p></div>
+                      <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.exp >= 7 ? 'text-emerald-600' : p.exp >= 4 ? 'text-amber-600' : 'text-red-600'}`}>{p.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.conf >= 7 ? 'text-emerald-600' : p.conf >= 4 ? 'text-amber-600' : 'text-red-600'}`}>{p.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.clarte >= 7 ? 'text-emerald-600' : p.clarte >= 4 ? 'text-amber-600' : 'text-red-600'}`}>{p.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </details>
+              ))}
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Frictions -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-2">Points de friction recurrents</h2>
+          <p class="text-[var(--color-text-muted)] mb-8">Problemes identifies chez 3 personas ou plus, classes par nombre de personas impactes.</p>
+          <div class="space-y-3">
+            {frictions.map((f) => (
+              <div class="flex items-center gap-4 rounded-xl border border-[var(--color-border)] bg-white p-4">
+                <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-neutral-100 flex items-center justify-center">
+                  <span class="text-lg font-bold text-[var(--color-text)]">{f.count}</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="font-medium text-[var(--color-text)]">{f.label}</p>
+                  <p class="text-sm text-[var(--color-text-muted)]">{f.count}/10 personas impactes</p>
+                </div>
+                <span class={`flex-shrink-0 px-3 py-1 rounded-full text-xs font-semibold ${severityColor(f.severity)}`}>
+                  {f.severity}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ═══════════════════ PANEL 4 : AMELIORATIONS ═══════════════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+
+      <!-- Le plus important -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-2">Le plus important</h2>
+          <p class="text-[var(--color-text-muted)] mb-8">Ces ameliorations touchent 7 personas ou plus. Les resoudre changerait radicalement l'experience sur votre site.</p>
+          <div class="space-y-4">
+            {amelioHaute.map((a) => (
+              <div class="bg-white border-2 border-red-200 rounded-xl p-5 shadow-sm">
+                <h4 class="font-semibold text-neutral-900 mb-2">{a.title}</h4>
+                <p class="text-sm text-neutral-600 mb-3">{a.detail}</p>
+                <div class="bg-primary-50 rounded-lg px-3 py-2.5 flex items-start gap-2">
+                  <svg class="w-4 h-4 text-primary-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                  <p class="text-xs text-primary-800">Impact : {a.impact}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- Utile aussi -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-white">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">Utile aussi</h2>
+          <div class="grid md:grid-cols-2 gap-4">
+            {amelioMoyenne.map((a) => (
+              <div class="bg-white border border-neutral-200 rounded-xl p-4">
+                <h4 class="font-semibold text-neutral-900 text-sm mb-1.5">{a.title}</h4>
+                <p class="text-xs text-neutral-600 mb-2">{a.detail}</p>
+                <p class="text-xs text-[var(--color-text-muted)]">Impact : {a.impact}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- A discuter -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">A discuter ensemble</h2>
+          <div class="space-y-3">
+            {amelioDiscuter.map((a) => (
+              <div class="bg-neutral-50 border border-neutral-200 rounded-xl p-4 flex gap-3">
+                <span class="text-lg shrink-0">{a.emoji}</span>
+                <div>
+                  <h4 class="font-semibold text-neutral-900 text-sm mb-0.5">{a.title}</h4>
+                  <p class="text-xs text-neutral-600">{a.detail}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+
+  <!-- ═══════════════════ METHODOLOGIE ═══════════════════ -->
+  <section class="w-full px-6 py-12 md:px-8 md:py-16 bg-white">
+    <div class="mx-auto max-w-3xl">
+      <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">Methodologie</h2>
+      <div class="prose max-w-none text-[var(--color-text)]">
+        <p>Ce rapport utilise la methode <strong>Persona-Driven UX + Technical Audit</strong> :</p>
+        <ol class="space-y-2 text-sm leading-relaxed">
+          <li><strong>Scraping complet</strong> de toutes les pages du site (accueil, 8 pages services, contact, mentions legales, ~10 pages SEO locales)</li>
+          <li><strong>Audit technique</strong> via Mozilla Observatory (score reel : F, 5/100), analyse des headers HTTP, Schema.org, Open Graph et SEO on-page</li>
+          <li><strong>Creation de 10 personas diversifies</strong> couvrant 6 canaux, 4 niveaux de maturite (urgence, comparaison, decouverte, decision), 3 devices</li>
+          <li><strong>Simulation individuelle</strong> de chaque visite avec integration des problemes techniques</li>
+          <li><strong>Agregation et analyse croisee</strong> par canal, maturite et type de besoin</li>
+          <li><strong>Priorisation des ameliorations</strong> par impact (nombre de personas) et severite</li>
+        </ol>
+        <p class="mt-4 text-sm text-[var(--color-text-muted)]">
+          Chaque persona a ete evalue sur 3 axes (experience, confiance, clarte) de 1 a 10. Le score Observatory est reel (scan du 29 mars 2026). Les scores PageSpeed sont estimes (API quota depasse) sur la base de l'analyse technique du stack PHP 5.6/Linkeo.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ DOUBLE CTA ═══════════════════ -->
+  <section class="w-full px-6 py-16 md:px-8 md:py-24" style="background-color: #0D0D0D;">
+    <div class="mx-auto max-w-3xl text-center">
+      <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">
+        Pret a transformer ces insights en resultats ?
+      </h2>
+      <p class="text-neutral-300 mb-8 max-w-xl mx-auto">
+        Ce rapport identifie des opportunites concretes. Je peux construire un site qui montre vraiment votre savoir-faire — avec des photos, des prix, des temoignages qui convertissent.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="/commander" class="inline-flex items-center gap-2 px-8 py-3.5 text-white font-semibold rounded-xl transition-all shadow-lg hover:shadow-xl hover:scale-105" style="background: linear-gradient(135deg, #4A7C59, #2D5A3D); box-shadow: 0 4px 20px rgba(74, 124, 89, 0.4);">
+          Commander un site
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a href="/contact" class="inline-flex items-center gap-2 px-8 py-3.5 border border-neutral-600 text-neutral-300 font-semibold rounded-xl hover:border-[#4A7C59] hover:text-white transition-all">
+          En discuter d'abord
+        </a>
+      </div>
+      <p class="mt-6 text-xs text-neutral-500">
+        Rapport genere le 29 mars 2026 par <a href="https://marcm.fr" class="underline hover:text-neutral-300">Marc M</a> — agence web, Grand Est
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ TAB SCRIPTS ═══════════════════ -->
+  <style is:inline>
+    #panels { -ms-overflow-style: none; }
+    #panels::-webkit-scrollbar { display: none; }
+  </style>
+
+  <script is:inline>
+    const panels = document.getElementById('panels');
+    const tabs = document.querySelectorAll('.tab-btn');
+    const sections = panels.querySelectorAll('.tab-panel');
+
+    function activateTab(index) {
+      tabs.forEach((b, i) => {
+        if (i === index) {
+          b.classList.remove('text-neutral-500');
+          b.classList.add('text-primary-700', 'bg-primary-50');
+        } else {
+          b.classList.remove('text-primary-700', 'bg-primary-50');
+          b.classList.add('text-neutral-500');
+        }
+      });
+    }
+
+    tabs.forEach((btn, i) => {
+      btn.addEventListener('click', () => {
+        sections[i].scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+        activateTab(i);
+      });
+    });
+
+    let scrollTimeout;
+    panels.addEventListener('scroll', () => {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        const index = Math.round(panels.scrollLeft / panels.offsetWidth);
+        activateTab(index);
+      }, 50);
+    }, { passive: true });
+  </script>
+
+</BaseLayout>

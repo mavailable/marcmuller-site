@@ -1,0 +1,773 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX — Antonicelli Peinture | Marc M';
+const description = 'Simulation de 10 visites personas sur antonicelli-peinture.fr — rapport UX et technique avec recommandations priorisees.';
+
+// ============================================================
+// DONNEES PROSPECT
+// ============================================================
+const prospect = {
+  name: 'Antonicelli Peinture',
+  url: 'https://www.antonicelli-peinture.fr',
+  date: '29 mars 2026',
+  activity: 'Peintre en batiment — Peinture, Facade, Sols, Platrerie',
+  location: 'Metz (57050) + Dudelange (Luxembourg) — Grand Est',
+};
+
+// ============================================================
+// KPIs GLOBAUX
+// ============================================================
+const kpis = {
+  conversion: 40,
+  experience: 5.3,
+  confiance: 5.8,
+  clarte: 4.8,
+  convertissent: 4,
+  hesitent: 3,
+  quittent: 3,
+};
+
+const constat = "Une entreprise familiale serieuse avec 45 ans d'experience, 25+ salaries et le label RGE — mais un site WordPress/Divi lent, sans temoignages, sans tarifs indicatifs, sans Schema.org LocalBusiness, et avec des mentions legales obsoletes. La credibilite hors-ligne est solide, mais le site ne la transmet pas : les visiteurs doivent deviner ce que l'entreprise vaut.";
+
+// ============================================================
+// CONVERSION PAR CANAL
+// ============================================================
+const conversionByCanal = [
+  { canal: 'Bouche-a-oreille', taux: 100, color: 'text-green-700', bg: 'bg-green-500' },
+  { canal: 'Google Maps / GBP', taux: 50, color: 'text-amber-600', bg: 'bg-amber-400' },
+  { canal: 'Google Search', taux: 33, color: 'text-amber-600', bg: 'bg-amber-400' },
+  { canal: 'Reseaux sociaux', taux: 0, color: 'text-red-600', bg: 'bg-red-500' },
+  { canal: 'IA (ChatGPT/Claude)', taux: 0, color: 'text-red-600', bg: 'bg-red-500' },
+];
+
+// ============================================================
+// TOP FRICTIONS
+// ============================================================
+const topFrictions = [
+  { titre: 'Aucun temoignage client visible sur le site', count: 8, detail: 'Les visiteurs ne trouvent aucune preuve sociale directe. Pas d\'avis Google integres, pas de temoignages, pas de note — ils doivent quitter le site pour aller verifier sur Google Maps.' },
+  { titre: 'Pas de tarifs indicatifs ni fourchettes de prix', count: 7, detail: 'Les particuliers comme les professionnels veulent estimer un budget avant de contacter. L\'absence totale de prix incite a chercher un concurrent plus transparent.' },
+  { titre: 'Site lent sur mobile (Divi lourd + Google Fonts CDN)', count: 6, detail: 'Le theme Divi genere un HTML tres lourd avec du CSS inline massif. Les polices chargees depuis Google Fonts CDN ajoutent du delai et posent un probleme RGPD.' },
+  { titre: 'Mentions legales obsoletes (directeur = Mario, pas Thomas)', count: 5, detail: 'Thomas dirige l\'entreprise depuis 2 ans mais les mentions legales indiquent toujours Mario. Signal de negligence et non-conformite legale.' },
+  { titre: 'Aucun Schema.org LocalBusiness — invisible pour Google enrichi', count: 5, detail: 'Google ne peut pas afficher adresse, telephone, horaires ou zone d\'intervention dans ses resultats. Perte de visibilite significative pour un artisan local.' },
+];
+
+// ============================================================
+// PAGESPEED (ESTIMES — profil WordPress Divi + WP Rocket)
+// ============================================================
+const pagespeed = {
+  mobile: { performance: 45, accessibility: 78, bestPractices: 72, seo: 82 },
+  desktop: { performance: 72, accessibility: 78, bestPractices: 72, seo: 82 },
+};
+
+const coreWebVitals = [
+  { name: 'LCP', value: '~4.5s', status: 'bad' },
+  { name: 'INP', value: '~320ms', status: 'bad' },
+  { name: 'CLS', value: '~0.12', status: 'bad' },
+];
+
+const opportunities = [
+  { label: 'Reduire le CSS/JS inutilise (Divi charge ~2 Mo de resources)', saving: '~2.0s' },
+  { label: 'Heberger les polices localement au lieu de Google Fonts CDN', saving: '~0.8s' },
+  { label: 'Mettre a jour PHP 7.4 (obsolete) vers 8.2+', saving: '~0.5s' },
+];
+
+// ============================================================
+// OBSERVATORY
+// ============================================================
+const observatory = {
+  grade: 'D-',
+  score: 25,
+  testsPassed: 5,
+  testsTotal: 10,
+};
+
+// ============================================================
+// CHECKLIST TECHNIQUE
+// ============================================================
+const techChecks = [
+  { label: 'HTTPS actif (redirection 301)', present: true },
+  { label: 'robots.txt + sitemap.xml (Yoast)', present: true },
+  { label: 'Alt text sur toutes les images (14/14)', present: true },
+  { label: 'H1 unique par page', present: true },
+  { label: 'Bandeau cookies RGPD', present: true },
+  { label: 'HTTP/2 actif (OVH)', present: true },
+  { label: 'Meta description page d\'accueil', present: false, critical: true, note: 'Totalement absente — Google genere un extrait aleatoire' },
+  { label: 'Schema.org LocalBusiness', present: false, critical: true, note: 'Seuls WebPage et BreadcrumbList (generique Yoast)' },
+  { label: 'Open Graph description', present: false, critical: true, note: 'Absente sur accueil, contact et devis' },
+  { label: 'HSTS (Strict-Transport-Security)', present: false, critical: true },
+  { label: 'Content-Security-Policy', present: false, critical: true },
+  { label: 'X-Frame-Options', present: false },
+  { label: 'Referrer-Policy / Permissions-Policy', present: false },
+  { label: 'Google Fonts hebergees localement (RGPD)', present: false, critical: true, note: 'Polices chargees depuis fonts.googleapis.com' },
+  { label: 'Mentions legales a jour', present: false, critical: true, note: 'Directeur = Mario au lieu de Thomas, email obsolete' },
+  { label: 'llms.txt pour IA generatives', present: false },
+];
+
+// ============================================================
+// PERSONAS (10)
+// ============================================================
+const personas = [
+  {
+    id: 1, name: 'Christelle', age: 41, emoji: '\u{1F3E0}',
+    canal: 'Google Search', device: 'Mobile', maturite: 'Decision',
+    situation: 'Proprietaire d\'un appartement a Metz-Borny, veut refaire la peinture du sejour et de la cuisine avant Noel',
+    contexte: 'Tape "peintre interieur Metz devis" sur Google, trouve Antonicelli en premiere page',
+    parcours: ['Accueil', 'Peinture interieure', 'Devis'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 6, clarte: 5 },
+    premierImpression: 'Le site est correct mais un peu lent sur mon telephone. L\'entreprise a l\'air serieuse — 45 ans d\'experience, 25 salaries. Mais je ne trouve pas de tarifs ni d\'avis clients.',
+    questionCle: 'Combien ca coute pour repeindre 60m2 ? Vous avez des avis clients ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Le formulaire de devis multi-etapes est bien fait. Mais sans fourchette de prix ni temoignages, elle reste incertaine. Elle remplit le devis quand meme car elle est pressee.',
+    impactTechnique: 'Divi charge lentement sur mobile (~4s). Le formulaire de devis fonctionne mais la navigation entre etapes est un peu saccadee.',
+    pointsPositifs: ['45 ans d\'experience, entreprise familiale', 'Formulaire devis interactif bien structure', 'Label RGE rassurant'],
+    frictions: ['Aucun temoignage visible', 'Pas de tarif indicatif', 'Site un peu lent sur mobile'],
+  },
+  {
+    id: 2, name: 'Jean-Pierre', age: 58, emoji: '\u{1F3E1}',
+    canal: 'Google Maps', device: 'Mobile', maturite: 'Comparaison',
+    situation: 'Proprietaire d\'une maison a Ars-sur-Moselle, facade qui s\'ecaille apres l\'hiver, compare 3 entreprises',
+    contexte: 'Cherche "ravalement facade Metz" sur Google Maps, voit Antonicelli dans les resultats locaux',
+    parcours: ['Fiche GBP', 'Accueil', 'Travaux facade', 'Contact'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 5, clarte: 4 },
+    premierImpression: 'La fiche Google est basique. Sur le site, je vois qu\'ils font des facades mais pas de photos avant/apres, pas de references concretes. Je compare avec 2 autres artisans.',
+    questionCle: 'Vous avez des exemples de ravalements de maison des annees 70 ? Quel budget pour 120m2 de facade ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La page facade existe mais sans detail technique ni portfolio filtre. La galerie est generique. Il envoie un message de contact mais met Antonicelli en 2e position.',
+    impactTechnique: 'La galerie ne filtre pas par type de travaux — il faut tout parcourir pour trouver des facades. Frustrant sur mobile.',
+    pointsPositifs: ['Page dediee facade avec 3 sous-services', 'Double implantation Metz + Luxembourg', 'Label RGE pour isolation facade'],
+    frictions: ['Pas de portfolio facade dedie avec avant/apres', 'Aucune fourchette de prix', 'Galerie non filtrable', 'Pas de processus chantier detaille'],
+  },
+  {
+    id: 3, name: 'Stephanie', age: 34, emoji: '\u{1F4F1}',
+    canal: 'Facebook', device: 'Mobile', maturite: 'Decouverte',
+    situation: 'Jeune maman a Woippy, vient d\'acheter un T4 avec son compagnon, tout a refaire',
+    contexte: 'Voit un post Facebook d\'un ami qui mentionne Antonicelli, clique sur le lien vers le site',
+    parcours: ['Accueil'],
+    decision: 'quitte',
+    scores: { exp: 3, conf: 3, clarte: 3 },
+    premierImpression: 'Le site est un peu vieillot dans le design. Je ne vois pas d\'avis clients, pas de photos de chantiers recents, pas d\'idees deco. Ca fait "entreprise ancienne" sans le cote rassurant.',
+    questionCle: 'Vous faites des renovations completes ? Peinture + sols + platrerie en une seule fois ? Budget pour un T4 complet ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Les services sont bien listes mais sans offre "renovation complete" packagisee. Elle veut un interlocuteur unique mais le site ne met pas ca en avant. Elle retourne sur Facebook.',
+    impactTechnique: 'Le partage Facebook n\'a pas de og:description — vignette sans texte de description. Premier signal negatif avant meme d\'arriver sur le site.',
+    pointsPositifs: ['Tous les services en un (peinture, sols, platrerie)'],
+    frictions: ['Pas d\'offre "renovation complete" mise en avant', 'Design date (Divi template)', 'Pas de photos recentes de chantiers', 'og:description absent sur accueil'],
+  },
+  {
+    id: 4, name: 'Pierre', age: 65, emoji: '\u{1F468}\u{200D}\u{1F527}',
+    canal: 'Bouche-a-oreille', device: 'Desktop', maturite: 'Decision',
+    situation: 'Retraite a Metz-Queuleu, son voisin a fait appel a Antonicelli pour la facade — resultat impeccable',
+    contexte: 'Son voisin lui a donne le nom. Pierre cherche le site pour trouver le numero de telephone.',
+    parcours: ['Accueil', 'Contact'],
+    decision: 'convertit',
+    scores: { exp: 7, conf: 8, clarte: 6 },
+    premierImpression: 'Le site confirme que c\'est une vraie entreprise — 45 ans, 25 salaries, c\'est serieux. Le numero est bien visible dans le footer. C\'est tout ce dont j\'ai besoin.',
+    questionCle: 'Vous pouvez passer chez moi pour voir mon hall d\'entree cette semaine ?',
+    reponse: 'Oui',
+    commentReponse: 'Le telephone et le formulaire de contact suffisent. La recommandation du voisin prime sur tout defaut du site.',
+    impactTechnique: 'Desktop charge plus vite (~2.5s). Pierre ne remarque pas les problemes techniques. Le numero est bien visible.',
+    pointsPositifs: ['Numero de telephone visible dans footer et contact', '45 ans d\'experience — tres rassurant par recommandation', 'Formulaire de contact simple et fonctionnel'],
+    frictions: ['Pas de mention "visite gratuite" ou "devis sur place"'],
+  },
+  {
+    id: 5, name: 'Karim', age: 29, emoji: '\u{1F4B0}',
+    canal: 'Google Search', device: 'Mobile', maturite: 'Decouverte',
+    situation: 'Premier achat immobilier a Montigny-les-Metz, budget serre, compare les prix',
+    contexte: 'Tape "peintre pas cher Metz" sur Google, arrive sur Antonicelli via un article blog',
+    parcours: ['Article blog', 'Accueil'],
+    decision: 'quitte',
+    scores: { exp: 3, conf: 4, clarte: 3 },
+    premierImpression: 'L\'article blog est correct mais generique. Sur l\'accueil je vois "25 salaries" — ca sonne gros et cher pour mon budget. Pas de tarif visible, je passe a un autre.',
+    questionCle: 'C\'est dans mon budget ? Vous avez des forfaits renovation petit appartement ?',
+    reponse: 'Non',
+    commentReponse: 'Aucun tarif, aucun forfait, aucune mention de gamme de prix. Il rebondit vers un auto-entrepreneur qui affiche ses tarifs.',
+    impactTechnique: 'Article blog = porte d\'entree SEO mais sans CTA clair vers le devis. L\'utilisateur se perd entre blog et site principal.',
+    pointsPositifs: ['Blog avec contenu SEO pertinent'],
+    frictions: ['Aucun tarif indicatif', 'Pas de CTA vers devis dans les articles', 'Image "grosse entreprise" = perception "prix eleve"', 'Pas de forfait renovation accessible'],
+  },
+  {
+    id: 6, name: 'Nathalie', age: 47, emoji: '\u{1F916}',
+    canal: 'ChatGPT', device: 'Desktop', maturite: 'Comparaison',
+    situation: 'Architecte d\'interieur a Metz, cherche un peintre partenaire fiable pour ses chantiers clients haut de gamme',
+    contexte: 'Demande a ChatGPT "entreprise peinture batiment serieuse Metz label RGE"',
+    parcours: [],
+    decision: 'quitte',
+    scores: { exp: 0, conf: 0, clarte: 0 },
+    premierImpression: 'ChatGPT ne mentionne pas Antonicelli dans sa reponse. L\'entreprise est invisible pour les IA generatives.',
+    questionCle: 'Quelle entreprise de peinture a Metz recommandez-vous pour des projets de renovation haut de gamme ?',
+    reponse: 'Invisible',
+    commentReponse: 'Sans Schema.org LocalBusiness, sans llms.txt, et avec un profil technique Divi difficile a crawler — les IA generatives ignorent Antonicelli.',
+    impactTechnique: 'Pas de donnees structurees exploitables, pas de llms.txt, meta descriptions absentes — les IA n\'ont rien a citer.',
+    pointsPositifs: [],
+    frictions: ['Invisible pour les IA generatives', 'Pas de Schema.org LocalBusiness', 'Pas de llms.txt', 'Meta descriptions absentes'],
+  },
+  {
+    id: 7, name: 'Thomas L.', age: 43, emoji: '\u{1F3E2}',
+    canal: 'Google Maps', device: 'Mobile', maturite: 'Decision',
+    situation: 'Gerant d\'un restaurant a Metz centre, besoin de repeindre la salle et la terrasse couverte avant la saison',
+    contexte: 'Cherche "entreprise peinture professionnelle Metz" sur Google Maps, compare 4 resultats',
+    parcours: ['Fiche GBP', 'Accueil', 'Peinture interieure', 'Facade', 'Devis'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 6, clarte: 5 },
+    premierImpression: 'L\'entreprise a l\'air solide — 45 ans, 25 salaries, label RGE. Ils font interieur et exterieur, c\'est pratique. Le formulaire de devis est bien fait.',
+    questionCle: 'Vous travaillez le soir ou le dimanche pour ne pas perturber mon activite ? Quel delai pour 150m2 ?',
+    reponse: 'Non',
+    commentReponse: 'Aucune mention de flexibilite horaire ni de travaux pour professionnels. Le devis interactif l\'interesse mais il aimerait une section "pro/commerce" dediee.',
+    impactTechnique: 'Le formulaire devis demande "professionnel ou particulier" — bon point. Mais ensuite aucune option specifique pro (horaires, delais, surface).',
+    pointsPositifs: ['Devis interactif avec option pro/particulier', 'Polyvalence interieur + exterieur', '25 salaries = capacite a absorber un gros chantier'],
+    frictions: ['Pas de section dediee professionnels/commerces', 'Pas de mention flexibilite horaire', 'Pas de references pro (restaurants, bureaux, commerces)'],
+  },
+  {
+    id: 8, name: 'Sophie', age: 52, emoji: '\u{1F3E0}',
+    canal: 'Google Search', device: 'Desktop', maturite: 'Comparaison',
+    situation: 'Proprietaire d\'une maison bourgeoise a Longeville-les-Metz, veut des finitions decoratives haut de gamme pour le salon',
+    contexte: 'Tape "beton cire decoratif Metz artisan" sur Google, tombe sur un article blog Antonicelli',
+    parcours: ['Article blog beton cire', 'Peinture interieure', 'Galerie', 'Devis'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 5, clarte: 5 },
+    premierImpression: 'L\'article blog sur le beton cire est informatif mais generique. La page peinture interieure mentionne le beton cire et le papier peint. La galerie montre des realisations mais sans categories.',
+    questionCle: 'Vous maitrisez le beton cire, le stucco, le tadelakt ? Montrez-moi des exemples haut de gamme.',
+    reponse: 'Partiellement',
+    commentReponse: 'Le beton cire est mentionne dans les services et le blog. Mais la galerie ne filtre pas par technique et ne montre pas de realisations decoratives specifiques. Elle hesite et compare.',
+    impactTechnique: 'Desktop correct. Le blog SEO fonctionne comme porte d\'entree. Mais le parcours blog → service → galerie manque de fluidite.',
+    pointsPositifs: ['Blog SEO avec article beton cire', 'Beton cire et papier peint dans les services', 'Galerie de realisations existante'],
+    frictions: ['Galerie non filtrable par technique decorative', 'Pas de portfolio haut de gamme dedie', 'Article blog informatif mais sans CTA clair vers devis'],
+  },
+  {
+    id: 9, name: 'Marc-Antoine', age: 37, emoji: '\u{1F1F1}\u{1F1FA}',
+    canal: 'Google Search', device: 'Tablette', maturite: 'Decision',
+    situation: 'Frontalier vivant a Dudelange (Luxembourg), veut refaire les sols de sa maison — parquet sejour + carrelage cuisine',
+    contexte: 'Tape "pose parquet carrelage Dudelange" sur Google, trouve Antonicelli grace a leur adresse luxembourgeoise',
+    parcours: ['Revetements sols', 'Galerie', 'Devis'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 6, clarte: 5 },
+    premierImpression: 'Ils ont une adresse a Dudelange — ca me rassure pour un artisan qui interviendra chez moi. Les services sols sont bien detailles : parquet, carrelage, PVC.',
+    questionCle: 'Vous intervenez bien a Dudelange et environs ? Quel delai pour parquet + carrelage dans une maison de 90m2 ?',
+    reponse: 'Partiellement',
+    commentReponse: 'L\'adresse luxembourgeoise est rassurante. Les services sols sont bien presentes. Mais pas de delai indicatif ni de tarif. Il remplit le devis car la proximite le convainc.',
+    impactTechnique: 'Tablette = experience correcte. Le formulaire devis ne permet pas de preciser "Luxembourg" dans le secteur geographique — lacune pour les clients frontaliers.',
+    pointsPositifs: ['Adresse physique a Dudelange', 'Page sols complete (parquet, PVC, carrelage)', 'Lien vers realisations carrelage en bas de page'],
+    frictions: ['Pas de zone d\'intervention detaillee Luxembourg', 'Formulaire devis sans mention Luxembourg', 'Pas de tarifs indicatifs'],
+  },
+  {
+    id: 10, name: 'Emilie', age: 26, emoji: '\u{1F4F8}',
+    canal: 'Instagram', device: 'Mobile', maturite: 'Decouverte',
+    situation: 'Locataire a Metz, scrolle Instagram, voit une photo de chantier taguee Antonicelli',
+    contexte: 'Curieuse, elle clique sur le lien en bio Instagram vers le site',
+    parcours: ['Accueil'],
+    decision: 'quitte',
+    scores: { exp: 3, conf: 3, clarte: 3 },
+    premierImpression: 'Le site fait un peu date, le design Divi ne donne pas envie. Pas de galerie Instagram integree, pas de projets tendance. Ca ne correspond pas a ce que j\'ai vu sur Insta.',
+    questionCle: 'Vous avez des idees deco modernes ? Des transformations avant/apres que je peux montrer a ma proprio ?',
+    reponse: 'Non',
+    commentReponse: 'Le site ne propose ni galerie avant/apres, ni inspiration deco, ni lien vers les reseaux sociaux (le "Suivre" du footer est generique). Elle retourne sur Instagram.',
+    impactTechnique: 'Mobile Divi lent. Pas de galerie Instagram integree ni de feed social. Deconnexion totale entre presence sociale et site web.',
+    pointsPositifs: ['Le site existe et est fonctionnel'],
+    frictions: ['Design date (template Divi standard)', 'Pas de galerie avant/apres', 'Pas de lien Instagram visible', 'Pas de contenu inspirationnel / tendance'],
+  },
+];
+
+// ============================================================
+// RECOMMANDATIONS
+// ============================================================
+const ameliorationsCritiques = [
+  {
+    titre: 'Integrer des temoignages clients et avis Google directement sur le site',
+    detail: '8 personas sur 10 ont cherche une preuve sociale et n\'en ont trouve aucune. Antonicelli a probablement des clients satisfaits apres 45 ans d\'activite, mais le site ne montre rien. C\'est la friction n°1 — elle fait perdre des prospects a chaque visite.',
+    action: 'Ajouter une section temoignages en page d\'accueil (5-8 avis reels), integrer le widget avis Google, et ajouter aggregateRating en Schema.org.',
+  },
+  {
+    titre: 'Afficher des fourchettes de prix et mettre a jour les mentions legales',
+    detail: '7 personas ont cherche des tarifs sans en trouver. Les mentions legales sont obsoletes (Mario au lieu de Thomas). Ces deux problemes envoient un signal de negligence qui fait fuir les comparateurs.',
+    action: 'Ajouter des fourchettes de prix par service (ex: "peinture interieure a partir de X\u20AC/m2"). Corriger les mentions legales : Thomas Antonicelli comme directeur, email professionnel.',
+  },
+  {
+    titre: 'Migrer vers un site statique rapide avec polices locales et Schema.org complet',
+    detail: 'Divi genere un HTML lourd (~2 Mo de resources), Google Fonts viole le RGPD, PHP 7.4 est obsolete, et les headers de securite sont tous absents. Le score Observatory est D- (25/100). Le probleme est structurel.',
+    action: 'Migrer vers Astro + Tailwind : chargement < 1.5s mobile, polices locales (RGPD), Schema.org LocalBusiness complet, headers securite, score PageSpeed > 90.',
+  },
+];
+
+const ameliorationsUtiles = [
+  {
+    titre: 'Creer un portfolio filtre par type de travaux (facade, interieur, sols, platrerie)',
+    detail: 'La galerie actuelle melange tout. Les visiteurs cherchent des realisations specifiques a leur projet. Un filtre par categorie avec avant/apres augmenterait considerablement la confiance.',
+  },
+  {
+    titre: 'Ajouter Schema.org LocalBusiness + meta descriptions sur toutes les pages',
+    detail: 'La meta description est absente sur l\'accueil, le contact et le devis. Google genere des extraits aleatoires. Schema.org LocalBusiness permettrait d\'afficher adresse, telephone et zone directement dans les resultats.',
+  },
+  {
+    titre: 'Creer une section dediee professionnels (commerces, bureaux, coproprietes)',
+    detail: 'Antonicelli a 25+ salaries et peut absorber de gros chantiers — un avantage competitif fort face aux auto-entrepreneurs. Mais le site ne s\'adresse qu\'aux particuliers. Une page pro avec references, flexibilite horaire et capacite d\'intervention generait du B2B.',
+  },
+];
+
+// ============================================================
+// HELPERS
+// ============================================================
+function scoreColor(score: number) {
+  if (score >= 90) return '#22c55e';
+  if (score >= 50) return '#f59e0b';
+  return '#ef4444';
+}
+
+function scoreTextClass(score: number) {
+  if (score >= 90) return 'text-green-600';
+  if (score >= 50) return 'text-amber-500';
+  return 'text-red-500';
+}
+
+function decisionColor(decision: string) {
+  if (decision === 'convertit') return 'border-green-200 bg-green-50/40';
+  if (decision === 'hesite') return 'border-amber-200 bg-amber-50/40';
+  return 'border-neutral-200 bg-neutral-50/40';
+}
+
+function decisionBadge(decision: string) {
+  if (decision === 'convertit') return 'bg-green-100 text-green-700';
+  if (decision === 'hesite') return 'bg-amber-100 text-amber-700';
+  return 'bg-neutral-100 text-neutral-600';
+}
+
+function decisionLabel(decision: string) {
+  if (decision === 'convertit') return 'Contacte';
+  if (decision === 'hesite') return 'Hesite';
+  return 'Repart';
+}
+
+function maturiteColor(m: string) {
+  if (m === 'Decision') return 'text-purple-600 bg-purple-50';
+  if (m === 'Comparaison') return 'text-blue-600 bg-blue-50';
+  return 'text-neutral-500 bg-neutral-100';
+}
+---
+
+<BaseLayout title={title} description={description} noindex={true} lang="fr" frPath="/audit/antonicelli-peinture">
+
+  <!-- ========================================================
+       HERO + KPIs
+  ======================================================== -->
+  <section class="bg-neutral-900 text-white py-14 px-4">
+    <div class="max-w-4xl mx-auto">
+      <span class="inline-block text-xs font-semibold tracking-widest uppercase text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full mb-4">Rapport personnalise</span>
+      <h1 class="font-heading text-3xl md:text-4xl font-bold mb-2 leading-tight">
+        {prospect.name}<br/>
+        <span class="text-neutral-300 font-normal text-2xl">ce que vos visiteurs pensent vraiment</span>
+      </h1>
+      <p class="text-neutral-400 mb-2">{prospect.activity} &mdash; {prospect.location}</p>
+      <p class="text-neutral-500 text-sm mb-8">
+        <a href={prospect.url} class="text-amber-400 hover:underline" target="_blank" rel="noopener noreferrer">{prospect.url}</a>
+        &mdash; Rapport du {prospect.date}
+      </p>
+
+      <!-- KPI Cards -->
+      <div class="grid grid-cols-3 gap-4 max-w-lg">
+        <div class="bg-neutral-800 rounded-xl p-4 text-center">
+          <span class="block text-3xl font-black text-amber-400">{kpis.conversion}%</span>
+          <span class="text-xs text-neutral-400 mt-1 block">convertissent</span>
+        </div>
+        <div class="bg-neutral-800 rounded-xl p-4 text-center">
+          <span class="block text-3xl font-black text-amber-400">{kpis.experience}/10</span>
+          <span class="text-xs text-neutral-400 mt-1 block">experience</span>
+        </div>
+        <div class="bg-neutral-800 rounded-xl p-4 text-center">
+          <span class="block text-3xl font-black text-amber-400">{kpis.confiance}/10</span>
+          <span class="text-xs text-neutral-400 mt-1 block">confiance</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       LE CONSTAT
+  ======================================================== -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Le constat</h2>
+
+      <!-- Constat principal -->
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-8">
+        <p class="text-amber-900 font-medium text-base leading-relaxed">{constat}</p>
+      </div>
+
+      <!-- Resume visiteurs -->
+      <div class="flex flex-wrap gap-3 mb-8">
+        <div class="flex items-center gap-2 bg-green-50 border border-green-200 rounded-lg px-4 py-2">
+          <span class="w-2 h-2 rounded-full bg-green-500 shrink-0"></span>
+          <span class="text-sm font-semibold text-green-800">{kpis.convertissent} contactent</span>
+        </div>
+        <div class="flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-lg px-4 py-2">
+          <span class="w-2 h-2 rounded-full bg-amber-500 shrink-0"></span>
+          <span class="text-sm font-semibold text-amber-800">{kpis.hesitent} hesitent</span>
+        </div>
+        <div class="flex items-center gap-2 bg-neutral-100 border border-neutral-200 rounded-lg px-4 py-2">
+          <span class="w-2 h-2 rounded-full bg-neutral-400 shrink-0"></span>
+          <span class="text-sm font-semibold text-neutral-700">{kpis.quittent} repartent</span>
+        </div>
+      </div>
+
+      <!-- Conversion par canal -->
+      <div class="mb-10">
+        <h3 class="font-semibold text-neutral-800 mb-4 text-sm uppercase tracking-wide">Taux de contact par canal d'arrivee</h3>
+        <div class="space-y-3">
+          {conversionByCanal.map(item => (
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-sm text-neutral-700">{item.canal}</span>
+                <span class={`text-sm font-bold ${item.color}`}>{item.taux}%</span>
+              </div>
+              <div class="h-2 bg-neutral-100 rounded-full overflow-hidden">
+                <div class={`h-full rounded-full ${item.bg}`} style={`width: ${item.taux}%`}></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Top frictions -->
+      <h3 class="font-semibold text-neutral-800 mb-4 text-sm uppercase tracking-wide">Top 5 frictions identifiees</h3>
+      <ol class="space-y-3">
+        {topFrictions.map((f, i) => (
+          <li class="flex gap-4 p-4 bg-neutral-50 border border-neutral-200 rounded-xl">
+            <span class="shrink-0 w-7 h-7 rounded-full bg-red-100 text-red-700 flex items-center justify-center text-sm font-bold">{i + 1}</span>
+            <div>
+              <p class="font-semibold text-neutral-900 text-sm">{f.titre} <span class="ml-2 text-xs text-neutral-500 font-normal">{f.count}/10 personas</span></p>
+              <p class="text-neutral-600 text-xs mt-0.5">{f.detail}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       AUDIT TECHNIQUE
+  ======================================================== -->
+  <section class="py-12 px-4 bg-neutral-50">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">L'audit technique</h2>
+
+      <!-- PageSpeed mobile -->
+      <div class="bg-white border border-neutral-200 rounded-xl p-6 mb-6">
+        <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+          <h3 class="font-semibold text-neutral-800">PageSpeed — Mobile</h3>
+          <span class="text-xs text-neutral-400 bg-neutral-100 px-2 py-1 rounded">scores estimes — profil WordPress Divi</span>
+        </div>
+        <div class="grid grid-cols-4 gap-4">
+          {[
+            { label: 'Performance', score: pagespeed.mobile.performance },
+            { label: 'Accessibilite', score: pagespeed.mobile.accessibility },
+            { label: 'Bonnes pratiques', score: pagespeed.mobile.bestPractices },
+            { label: 'SEO', score: pagespeed.mobile.seo },
+          ].map(item => (
+            <div class="text-center">
+              <div class="relative w-14 h-14 mx-auto mb-2">
+                <svg class="w-14 h-14 -rotate-90" viewBox="0 0 36 36">
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    fill="none" stroke="#e5e7eb" stroke-width="3.5" />
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    fill="none" stroke={scoreColor(item.score)} stroke-width="3.5"
+                    stroke-dasharray={`${item.score}, 100`} stroke-linecap="round" />
+                </svg>
+                <span class={`absolute inset-0 flex items-center justify-center text-base font-bold ${scoreTextClass(item.score)}`}>{item.score}</span>
+              </div>
+              <p class="text-xs text-neutral-600">{item.label}</p>
+            </div>
+          ))}
+        </div>
+
+        <!-- Core Web Vitals -->
+        <div class="mt-4 pt-4 border-t border-neutral-100">
+          <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-2">Core Web Vitals (mobile estimes)</p>
+          <div class="flex flex-wrap gap-3">
+            {coreWebVitals.map(cwv => (
+              <div class={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium ${cwv.status === 'good' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+                <span class={`w-1.5 h-1.5 rounded-full ${cwv.status === 'good' ? 'bg-green-500' : 'bg-red-500'}`}></span>
+                {cwv.name} : {cwv.value}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- PageSpeed Desktop + Observatory -->
+      <div class="grid md:grid-cols-2 gap-6 mb-6">
+        <!-- Desktop -->
+        <div class="bg-white border border-neutral-200 rounded-xl p-5">
+          <h3 class="font-semibold text-neutral-800 mb-4">PageSpeed — Desktop</h3>
+          <div class="grid grid-cols-4 gap-2">
+            {[
+              { label: 'Perf.', score: pagespeed.desktop.performance },
+              { label: 'A11y', score: pagespeed.desktop.accessibility },
+              { label: 'BP', score: pagespeed.desktop.bestPractices },
+              { label: 'SEO', score: pagespeed.desktop.seo },
+            ].map(item => (
+              <div class="text-center">
+                <div class="relative w-12 h-12 mx-auto mb-1">
+                  <svg class="w-12 h-12 -rotate-90" viewBox="0 0 36 36">
+                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      fill="none" stroke="#e5e7eb" stroke-width="3.5" />
+                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      fill="none" stroke={scoreColor(item.score)} stroke-width="3.5"
+                      stroke-dasharray={`${item.score}, 100`} stroke-linecap="round" />
+                  </svg>
+                  <span class={`absolute inset-0 flex items-center justify-center text-sm font-bold ${scoreTextClass(item.score)}`}>{item.score}</span>
+                </div>
+                <p class="text-[11px] text-neutral-500">{item.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Observatory -->
+        <div class="bg-white border border-neutral-200 rounded-xl p-5">
+          <h3 class="font-semibold text-neutral-800 mb-3">Securite — Mozilla Observatory</h3>
+          <div class="flex items-center gap-4 mb-3">
+            <div class="text-4xl font-black text-red-500">
+              {observatory.grade}
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-neutral-800">Score {observatory.score}/100</p>
+              <p class="text-xs text-neutral-500">{observatory.testsPassed}/{observatory.testsTotal} tests passes</p>
+            </div>
+          </div>
+          <p class="text-xs text-neutral-600">Grade D- tres faible — aucun header de securite configure. Le serveur expose la version PHP (7.4, obsolete). Risques de clickjacking, MIME sniffing, et absence totale de politique de securite du contenu.</p>
+        </div>
+      </div>
+
+      <!-- Checklist SEO/Schema/OG -->
+      <div class="bg-white border border-neutral-200 rounded-xl p-5 mb-6">
+        <h3 class="font-semibold text-neutral-800 mb-4">Checklist technique, SEO & legal</h3>
+        <div class="grid sm:grid-cols-2 gap-2">
+          {techChecks.map(check => (
+            <div class={`flex items-start gap-2.5 p-2.5 rounded-lg ${check.present ? 'bg-green-50' : check.critical ? 'bg-red-50' : 'bg-neutral-50'}`}>
+              <span class={`shrink-0 mt-0.5 text-sm ${check.present ? 'text-green-600' : check.critical ? 'text-red-500' : 'text-neutral-400'}`}>
+                {check.present ? '\u2713' : '\u2717'}
+              </span>
+              <div>
+                <span class={`text-xs font-medium ${check.present ? 'text-green-800' : check.critical ? 'text-red-700' : 'text-neutral-600'}`}>{check.label}</span>
+                {check.note && <p class="text-[11px] text-neutral-500 mt-0.5">{check.note}</p>}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Top opportunites -->
+      <div class="bg-white border border-neutral-200 rounded-xl p-5">
+        <h3 class="font-semibold text-neutral-800 mb-3">Top 3 opportunites de performance</h3>
+        <div class="space-y-2">
+          {opportunities.map((opp, i) => (
+            <div class="flex items-center gap-3 p-3 bg-amber-50 border border-amber-100 rounded-lg">
+              <span class="shrink-0 text-amber-600 font-bold text-sm">{i + 1}</span>
+              <div class="flex-1">
+                <span class="text-sm text-neutral-800">{opp.label}</span>
+              </div>
+              <span class="shrink-0 text-xs font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded">{opp.saving}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       VOS VISITEURS — 10 PERSONAS
+  ======================================================== -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs</h2>
+      <p class="text-neutral-500 mb-6 text-sm">
+        Sur <strong class="text-neutral-800">10 visiteurs simules</strong>,
+        <strong class="text-green-700">{kpis.convertissent} contactent</strong>,
+        <strong class="text-amber-600">{kpis.hesitent} hesitent</strong>,
+        <strong class="text-neutral-600">{kpis.quittent} repartent</strong>.
+        Cliquez sur un visiteur pour voir son parcours complet.
+      </p>
+
+      <!-- Legende -->
+      <div class="flex flex-wrap gap-2 mb-5 text-xs">
+        <span class="flex items-center gap-1.5 bg-green-50 border border-green-200 px-2.5 py-1 rounded-full text-green-700 font-medium">
+          <span class="w-2 h-2 rounded-full bg-green-500"></span> Contacte
+        </span>
+        <span class="flex items-center gap-1.5 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-full text-amber-700 font-medium">
+          <span class="w-2 h-2 rounded-full bg-amber-500"></span> Hesite
+        </span>
+        <span class="flex items-center gap-1.5 bg-neutral-100 border border-neutral-200 px-2.5 py-1 rounded-full text-neutral-600 font-medium">
+          <span class="w-2 h-2 rounded-full bg-neutral-400"></span> Repart
+        </span>
+      </div>
+
+      <div class="space-y-2">
+        {personas.map(p => (
+          <details class={`group border ${decisionColor(p.decision)} rounded-xl overflow-hidden`}>
+            <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-white/60 transition-colors">
+              <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                  <h3 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h3>
+                  <span class={`text-[11px] px-1.5 py-0.5 rounded ${decisionBadge(p.decision)}`}>{decisionLabel(p.decision)}</span>
+                  <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                  <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                  <span class={`text-[11px] px-1.5 py-0.5 rounded ${maturiteColor(p.maturite)}`}>{p.maturite}</span>
+                </div>
+                <p class="text-xs text-neutral-500 truncate">{p.situation}</p>
+              </div>
+              <div class="shrink-0 flex items-center gap-3 ml-2">
+                <div class="hidden sm:flex gap-1.5 text-[11px]">
+                  <span class="bg-neutral-100 text-neutral-600 px-1.5 py-0.5 rounded">Exp {p.scores.exp}/10</span>
+                  <span class="bg-neutral-100 text-neutral-600 px-1.5 py-0.5 rounded">Conf {p.scores.conf}/10</span>
+                </div>
+                <svg class="w-5 h-5 text-neutral-400 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </div>
+            </summary>
+
+            <div class="px-4 pb-4 pt-0 border-t border-current/10 bg-white/60">
+              <div class="grid gap-3 text-xs mt-3">
+
+                <!-- Parcours -->
+                <div>
+                  <p class="font-semibold text-neutral-700 mb-1">Parcours</p>
+                  <div class="flex flex-wrap gap-1 items-center">
+                    {p.parcours.length > 0 ? p.parcours.map((page, i) => (
+                      <>
+                        <span class="bg-neutral-100 text-neutral-700 px-2 py-0.5 rounded text-[11px]">{page}</span>
+                        {i < p.parcours.length - 1 && <span class="text-neutral-400 text-[10px]">&rsaquo;</span>}
+                      </>
+                    )) : <span class="text-neutral-400 italic">N'a jamais atteint le site</span>}
+                  </div>
+                </div>
+
+                <!-- Premiere impression -->
+                <div>
+                  <p class="font-semibold text-neutral-700 mb-1">Premiere impression</p>
+                  <p class="text-neutral-600 italic">"{p.premierImpression}"</p>
+                </div>
+
+                <!-- Question + reponse -->
+                <div>
+                  <p class="font-semibold text-neutral-700 mb-1">Question cle</p>
+                  <p class="text-neutral-600 italic mb-1">"{p.questionCle}"</p>
+                  <p class="text-neutral-600">
+                    Reponse du site : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' || p.reponse === 'Invisible' ? 'text-red-600' : 'text-amber-700'}>{p.reponse}</strong>
+                    {' '}&mdash; {p.commentReponse}
+                  </p>
+                </div>
+
+                <!-- Impact technique -->
+                <div class="bg-neutral-50 rounded-lg px-3 py-2">
+                  <p class="font-semibold text-neutral-700 mb-0.5">Impact technique</p>
+                  <p class="text-neutral-600">{p.impactTechnique}</p>
+                </div>
+
+                <!-- Points positifs + frictions -->
+                <div class="grid sm:grid-cols-2 gap-3">
+                  <div>
+                    <p class="font-semibold text-green-700 mb-1">Points positifs</p>
+                    <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                      {p.pointsPositifs.length > 0 ? p.pointsPositifs.map(pt => <li>{pt}</li>) : <li class="text-neutral-400 italic">Aucun identifie</li>}
+                    </ul>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-amber-700 mb-1">Frictions</p>
+                    <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                      {p.frictions.map(f => <li>{f}</li>)}
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- Scores -->
+                <div class="flex gap-3 pt-1">
+                  <span class="bg-neutral-100 text-neutral-700 px-2.5 py-1 rounded-lg text-[11px] font-medium">Experience {p.scores.exp}/10</span>
+                  <span class="bg-neutral-100 text-neutral-700 px-2.5 py-1 rounded-lg text-[11px] font-medium">Confiance {p.scores.conf}/10</span>
+                  <span class="bg-neutral-100 text-neutral-700 px-2.5 py-1 rounded-lg text-[11px] font-medium">Clarte {p.scores.clarte}/10</span>
+                </div>
+
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       RECOMMANDATIONS
+  ======================================================== -->
+  <section class="py-12 px-4 bg-neutral-50">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Nos recommandations</h2>
+
+      <!-- Critiques -->
+      <h3 class="font-semibold text-red-700 text-sm uppercase tracking-wide mb-3">Le plus important — a traiter en priorite</h3>
+      <div class="space-y-3 mb-8">
+        {ameliorationsCritiques.map((a, i) => (
+          <div class="border border-red-200 bg-white rounded-xl p-5">
+            <div class="flex gap-3 mb-2">
+              <span class="shrink-0 w-6 h-6 rounded-full bg-red-100 text-red-700 flex items-center justify-center text-xs font-bold">{i + 1}</span>
+              <h4 class="font-semibold text-neutral-900 text-sm">{a.titre}</h4>
+            </div>
+            <p class="text-neutral-600 text-sm mb-2 ml-9">{a.detail}</p>
+            <div class="ml-9 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+              <p class="text-xs text-red-800"><strong>Action :</strong> {a.action}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Utiles -->
+      <h3 class="font-semibold text-neutral-600 text-sm uppercase tracking-wide mb-3">Utile aussi</h3>
+      <div class="grid sm:grid-cols-3 gap-3">
+        {ameliorationsUtiles.map(a => (
+          <div class="bg-white border border-neutral-200 rounded-xl p-4">
+            <h4 class="font-semibold text-neutral-800 text-sm mb-2">{a.titre}</h4>
+            <p class="text-neutral-500 text-xs">{a.detail}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       CTA FINAL
+  ======================================================== -->
+  <section class="bg-neutral-900 text-white py-16 px-4">
+    <div class="max-w-3xl mx-auto text-center">
+      <p class="text-amber-400 text-sm font-semibold uppercase tracking-widest mb-3">Ce rapport est offert</p>
+      <h2 class="font-heading text-2xl md:text-3xl font-bold mb-4 leading-snug">
+        {kpis.conversion}% de vos visiteurs vous contactent.<br/>
+        <span class="text-amber-400">45 ans d'experience meritent un site a la hauteur.</span>
+      </h2>
+      <p class="text-neutral-300 mb-3 max-w-xl mx-auto">
+        Une entreprise familiale avec 25+ salaries, le label RGE et une double implantation Metz-Luxembourg merite un site aussi solide que son savoir-faire — avec des temoignages, des tarifs clairs et une visibilite maximale sur Google et les IA.
+      </p>
+      <p class="text-neutral-400 text-sm mb-8 max-w-xl mx-auto">
+        Je construis des sites qui convertissent vraiment — a partir de 990&euro;, livre en 7 jours, sans abonnement CMS.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a
+          href="/commander"
+          class="inline-flex items-center gap-2 px-8 py-3.5 bg-[var(--color-accent)] text-white font-semibold rounded-xl hover:bg-[var(--color-accent-hover)] transition-all shadow-md"
+        >
+          Je veux un site qui convertit
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+          </svg>
+        </a>
+        <a
+          href="/contact"
+          class="inline-flex items-center gap-2 px-8 py-3.5 border border-neutral-600 text-neutral-300 font-semibold rounded-xl hover:border-amber-400 hover:text-amber-400 transition-all"
+        >
+          En discuter d'abord
+        </a>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>

@@ -1,0 +1,767 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX — Freitas Habitat | Marc M';
+const description = 'Simulation de 10 visites personas sur freitashabitat.com — rapport UX et technique avec recommandations priorisees.';
+
+// ============================================================
+// DONNEES PROSPECT
+// ============================================================
+const prospect = {
+  name: 'Freitas Habitat',
+  url: 'https://freitashabitat.com',
+  date: '29 mars 2026',
+  activity: 'Macon / Renovation — Amenagement exterieur',
+  location: 'Marly (57) — Moselle, Grand Est',
+};
+
+// ============================================================
+// KPIs GLOBAUX
+// ============================================================
+const kpis = {
+  conversion: 40,
+  experience: 5.9,
+  confiance: 6.2,
+  clarte: 5.5,
+  convertissent: 4,
+  hesitent: 3,
+  quittent: 3,
+};
+
+const constat = "Un artisan avec 60 avis Google a 5 etoiles dont le site ne montre ni l'equipe, ni les prix indicatifs, ni une page a-propos — les visiteurs voient les belles realisations mais ne trouvent pas assez d'elements humains et concrets pour franchir le pas de la demande de devis.";
+
+// ============================================================
+// CONVERSION PAR CANAL
+// ============================================================
+const conversionByCanal = [
+  { canal: 'Bouche-a-oreille', taux: 100, color: 'text-green-700', bg: 'bg-green-500' },
+  { canal: 'Google Maps / GBP', taux: 67, color: 'text-green-600', bg: 'bg-green-400' },
+  { canal: 'Google Search', taux: 33, color: 'text-amber-600', bg: 'bg-amber-400' },
+  { canal: 'Reseaux sociaux', taux: 50, color: 'text-amber-600', bg: 'bg-amber-500' },
+  { canal: 'IA (ChatGPT/Claude)', taux: 0, color: 'text-red-600', bg: 'bg-red-500' },
+];
+
+// ============================================================
+// TOP FRICTIONS
+// ============================================================
+const topFrictions = [
+  { titre: 'Aucun prix indicatif ni fourchette de budget', count: 8, detail: 'Pas de "a partir de", pas de fourchette par type de prestation. Les visiteurs en phase de comparaison quittent faute de pouvoir estimer le budget.' },
+  { titre: 'Pas de page A propos / Pas de presentation de l\'equipe', count: 7, detail: 'L\'entreprise familiale "Freitas pere et fils" est un atout de confiance enorme, mais le site ne le met pas en avant. Aucune photo de l\'equipe, aucune histoire.' },
+  { titre: 'Galerie de 45 photos sans categories ni descriptions', count: 6, detail: 'La page Realisations est un mur d\'images sans contexte — on ne sait pas quel type de projet, quels materiaux, quel budget.' },
+  { titre: 'Site lent sur mobile — HTML de 358 Ko', count: 5, detail: 'La page d\'accueil fait 358 Ko de HTML (60 reviews Schema.org embarques). Sur un mobile moyen, le chargement est perceptiblement lent.' },
+  { titre: 'Aucune certification ou qualification visible', count: 5, detail: 'Qualibat, RGE, assurance decennale — aucune mention. Pour les projets de renovation energetique, c\'est un critere eliminatoire.' },
+];
+
+// ============================================================
+// PAGESPEED (ESTIMES — API quota depasse)
+// ============================================================
+const pagespeed = {
+  mobile: { performance: 55, accessibility: 72, bestPractices: 78, seo: 75 },
+  desktop: { performance: 72, accessibility: 72, bestPractices: 78, seo: 75 },
+};
+
+const coreWebVitals = [
+  { name: 'LCP', value: '~3.8s', status: 'bad' },
+  { name: 'INP', value: '~280ms', status: 'bad' },
+  { name: 'CLS', value: '~0.07', status: 'good' },
+];
+
+const opportunities = [
+  { label: 'Reduire la taille du HTML (60 reviews Schema.org inline)', saving: '~1.8s' },
+  { label: 'Eliminer les ressources bloquantes (7 CSS Simplebo)', saving: '~1.2s' },
+  { label: 'Servir les images en format WebP moderne', saving: '~0.6s' },
+];
+
+// ============================================================
+// OBSERVATORY
+// ============================================================
+const observatory = {
+  grade: 'B',
+  score: 70,
+  testsPassed: 8,
+  testsTotal: 10,
+};
+
+// ============================================================
+// CHECKLIST TECHNIQUE
+// ============================================================
+const techChecks = [
+  { label: 'HTTPS actif + HSTS', present: true },
+  { label: 'robots.txt + sitemap.xml', present: true },
+  { label: 'Meta title', present: true },
+  { label: 'Un seul H1 par page', present: true },
+  { label: 'Schema.org HomeAndConstructionBusiness', present: true, note: '60 reviews integres — lourd mais complet' },
+  { label: 'Redirect HTTP vers HTTPS', present: true },
+  { label: 'Meta description', present: false, critical: true },
+  { label: 'Open Graph (og:title, og:image)', present: false, critical: true },
+  { label: 'Balise canonical', present: false, critical: true },
+  { label: 'Content-Security-Policy (header)', present: false },
+];
+
+// ============================================================
+// PERSONAS (10)
+// ============================================================
+const personas = [
+  {
+    id: 1, name: 'Christophe', age: 52, emoji: '\u{1F3E0}',
+    canal: 'Google Search', device: 'Mobile', maturite: 'Decision',
+    situation: 'Proprietaire a Metz, veut refaire l\'allee de son garage en paves avant l\'ete',
+    contexte: 'Tape "amenagement entree paves Metz" sur Google, trouve Freitas Habitat en 1ere page',
+    parcours: ['Accueil', 'Paves', 'Realisations', 'Contact'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 7, clarte: 6 },
+    premierImpression: 'Le site est propre, les photos de paves sont belles. Je vois que c\'est une entreprise locale, ca me rassure.',
+    questionCle: 'Combien ca coute pour une allee de 40m2 en paves granit ?',
+    reponse: 'Non',
+    commentReponse: 'Aucun prix indicatif nulle part. Mais les realisations le convainquent de demander un devis quand meme.',
+    impactTechnique: 'Chargement un peu lent sur mobile 4G — 4 secondes avant d\'avoir la page complete.',
+    pointsPositifs: ['Photos de realisations de qualite', 'Page dediee au pavage detaillee', 'Numero de telephone bien visible'],
+    frictions: ['Pas de prix indicatif', 'Galerie sans filtre par type de projet', 'Pas de delai estime'],
+  },
+  {
+    id: 2, name: 'Sophie', age: 38, emoji: '\u{1F469}',
+    canal: 'Google Maps / GBP', device: 'Mobile', maturite: 'Comparaison',
+    situation: 'Jeune proprietaire a Marly, compare 3 artisans pour renover sa terrasse fissures',
+    contexte: 'Cherche "macon Marly" sur Google Maps, voit les 60 avis a 5 etoiles, clique sur le site',
+    parcours: ['Accueil', 'Terrasse', 'Realisations', 'Contact'],
+    decision: 'convertit',
+    scores: { exp: 7, conf: 8, clarte: 6 },
+    premierImpression: 'Le nombre d\'avis Google est impressionnant. Le site montre des terrasses refaites, c\'est exactement ce que je cherche.',
+    questionCle: 'Est-ce que les joints epoxy resistent vraiment au gel mosellan ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La page terrasse mentionne les joints epoxy resistants a l\'eau mais pas specifiquement au gel.',
+    impactTechnique: 'Le scroll est fluide mais les images de la galerie mettent du temps a charger — elle perd un peu patience.',
+    pointsPositifs: ['60 avis a 5 etoiles tres rassurants', 'Page terrasse avec process detaille', 'Proximite geographique (Marly)'],
+    frictions: ['Pas de FAQ sur la durabilite', 'Pas de garantie mentionnee', 'Email non visible — seulement le formulaire'],
+  },
+  {
+    id: 3, name: 'Jean-Marc', age: 63, emoji: '\u{1F474}',
+    canal: 'Google Search', device: 'Desktop', maturite: 'Decouverte',
+    situation: 'Retraite a Thionville, envisage de faire poser une cloture alu autour de sa propriete',
+    contexte: 'Tape "pose cloture aluminium Moselle" sur Google, arrive sur la page cloture',
+    parcours: ['Cloture', 'Accueil', 'Realisations'],
+    decision: 'quitte',
+    scores: { exp: 5, conf: 4, clarte: 4 },
+    premierImpression: 'La page cloture est correcte mais je ne vois pas de photos de clotures alu terminees. Que du texte.',
+    questionCle: 'A quoi ressemble une cloture aluminium que vous avez deja posee ?',
+    reponse: 'Non',
+    commentReponse: 'La galerie Realisations melange tout — impossible de filtrer les clotures des terrasses.',
+    impactTechnique: 'Sur desktop le site charge correctement mais la navigation est tres basique — pas de menu sticky.',
+    pointsPositifs: ['Description technique des clotures correcte', 'Options bien detaillees (grillage, alu, occultant)'],
+    frictions: ['Pas de photos de clotures dans les realisations', 'Galerie sans categories', 'Pas de lien "voir nos realisations clotures" depuis la page cloture', 'Pas de prix meme indicatif'],
+  },
+  {
+    id: 4, name: 'Fatima', age: 44, emoji: '\u{1F469}\u{200D}\u{1F3ED}',
+    canal: 'Reseaux sociaux', device: 'Mobile', maturite: 'Comparaison',
+    situation: 'A vu un avant/apres impressionnant sur Facebook, veut refaire sa terrasse a Ars-sur-Moselle',
+    contexte: 'Clique sur le lien Facebook de Freitas Habitat, atterrit sur l\'accueil',
+    parcours: ['Accueil', 'Terrasse', 'Realisations', 'Contact'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 7, clarte: 5 },
+    premierImpression: 'Les photos Facebook etaient superbes, le site confirme le professionnalisme. Par contre je ne trouve pas les photos que j\'ai vues sur Facebook.',
+    questionCle: 'Vous intervenez jusqu\'a Ars-sur-Moselle ? C\'est a 20 minutes de Marly.',
+    reponse: 'Partiellement',
+    commentReponse: 'Le site dit "tout le departement" mais ne liste pas les communes precises.',
+    impactTechnique: 'Le partage Facebook n\'a pas de vignette Open Graph — le lien apparaissait sans image dans le post.',
+    pointsPositifs: ['Coherence entre Facebook et le site', 'Galerie de realisations fournie', 'CTA clair "Demandez un devis"'],
+    frictions: ['Pas d\'Open Graph — partage sans image', 'Zone d\'intervention floue', 'Pas de presentation de l\'equipe'],
+  },
+  {
+    id: 5, name: 'Karim', age: 35, emoji: '\u{1F477}',
+    canal: 'Google Search', device: 'Mobile', maturite: 'Decision',
+    situation: 'Jeune proprietaire a Augny, besoin urgent de refaire un mur de soutenement qui s\'effondre',
+    contexte: 'Tape "macon mur soutenement urgent Metz" sur Google',
+    parcours: ['Accueil', 'Maconnerie', 'Contact'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 6, clarte: 6 },
+    premierImpression: 'Le site est serieux, la page maconnerie couvre mon besoin. J\'aurais aime voir des photos de murs de soutenement.',
+    questionCle: 'Pouvez-vous intervenir rapidement pour un mur qui menace de s\'effondrer ?',
+    reponse: 'Non',
+    commentReponse: 'Aucune mention de delai d\'intervention ni de service urgent. Il appelle directement le numero.',
+    impactTechnique: 'Le formulaire de contact est fonctionnel mais le chargement mobile est lent — il prefere appeler.',
+    pointsPositifs: ['Numero bien visible', 'Page maconnerie complete', 'Mentions de fondations et drainage'],
+    frictions: ['Pas de mention d\'urgence ou de reactivite', 'Pas de photos de murs de soutenement', 'Pas de delai d\'intervention'],
+  },
+  {
+    id: 6, name: 'Nathalie', age: 48, emoji: '\u{1F3E1}',
+    canal: 'Google Maps / GBP', device: 'Desktop', maturite: 'Comparaison',
+    situation: 'Proprietaire a Woippy, compare les devis pour une terrasse en gres cerame de 30m2',
+    contexte: 'Cherche "terrasse gres cerame Metz" sur Google Maps, compare 3 artisans',
+    parcours: ['Accueil', 'Terrasse', 'Realisations', 'Mentions legales'],
+    decision: 'hesite',
+    scores: { exp: 6, conf: 5, clarte: 5 },
+    premierImpression: 'Les 60 avis 5 etoiles attirent mon attention. La page terrasse est bien faite. Mais je ne trouve pas le SIRET facilement.',
+    questionCle: 'Quelle est la garantie sur la pose de gres cerame ? Avez-vous une assurance decennale ?',
+    reponse: 'Non',
+    commentReponse: 'Aucune mention de garantie decennale, ni de qualification professionnelle. Elle doit fouiller les mentions legales pour trouver le RCS.',
+    impactTechnique: 'Sur desktop le site est correct mais la page Mentions legales est un bloc de texte sans structure — difficile a scanner.',
+    pointsPositifs: ['60 avis Google rassurants', 'Process de pose detaille', 'Materiaux haut de gamme mis en avant'],
+    frictions: ['Pas d\'assurance decennale mentionnee', 'SIRET non visible sur le site', 'Pas de garantie affichee', 'Pas de prix indicatif pour comparer'],
+  },
+  {
+    id: 7, name: 'Lucas', age: 28, emoji: '\u{1F4F1}',
+    canal: 'IA (ChatGPT/Claude)', device: 'Mobile', maturite: 'Decouverte',
+    situation: 'Premier achat immobilier a Metz, demande a ChatGPT des artisans pour amenager son jardin',
+    contexte: 'ChatGPT mentionne Freitas Habitat parmi d\'autres — il clique sur le lien',
+    parcours: ['Accueil', 'Realisations'],
+    decision: 'quitte',
+    scores: { exp: 4, conf: 4, clarte: 3 },
+    premierImpression: 'Le site fait un peu date, pas le design auquel je suis habitue. Les photos sont belles mais le site manque de structure.',
+    questionCle: 'Vous faites aussi la creation de jardin complet — cloture + terrasse + paves ? Un package tout compris ?',
+    reponse: 'Non',
+    commentReponse: 'Chaque service est sur une page separee, pas de notion de projet global ni de package.',
+    impactTechnique: 'Le site n\'a pas de donnees structurees speakable — ChatGPT avait peu d\'informations a citer.',
+    pointsPositifs: ['Galerie de realisations fournie', 'Variete des services couverts'],
+    frictions: ['Design desuet pour un jeune de 28 ans', 'Pas de notion de "projet complet"', 'Pas de prix pour budgetiser', 'Site non optimise pour les IA (pas de speakable, pas de llms.txt)'],
+  },
+  {
+    id: 8, name: 'Marie-Claire', age: 55, emoji: '\u{1F3E2}',
+    canal: 'Bouche-a-oreille', device: 'Desktop', maturite: 'Decision',
+    situation: 'Sa voisine lui a recommande Freitas Habitat pour refaire son allee en paves',
+    contexte: 'Tape directement "freitashabitat.com" dans la barre d\'adresse',
+    parcours: ['Accueil', 'Paves', 'Realisations', 'Contact'],
+    decision: 'hesite',
+    scores: { exp: 6, conf: 7, clarte: 6 },
+    premierImpression: 'Le site confirme ce que ma voisine m\'a dit. Les realisations sont belles. Mais j\'aurais aime voir plus de details sur les projets.',
+    questionCle: 'Combien de temps durent les travaux pour une allee de 50m2 ?',
+    reponse: 'Non',
+    commentReponse: 'Aucune indication de delai de chantier. Elle est en phase de decision mais ne peut pas planifier sans cette info.',
+    impactTechnique: 'RAS sur desktop — chargement acceptable.',
+    pointsPositifs: ['Recommandation voisine confirmee par le site', 'Photos de paves convaincantes', 'CTA devis clair'],
+    frictions: ['Pas de delai de chantier', 'Pas de process client detaille (etapes apres le devis)', 'Galerie sans description des projets'],
+  },
+  {
+    id: 9, name: 'Philippe', age: 61, emoji: '\u{1F468}\u{200D}\u{1F527}',
+    canal: 'Google Maps / GBP', device: 'Tablette', maturite: 'Decision',
+    situation: 'Proprietaire a Sarrebourg, veut poser une cloture grillage rigide autour de son terrain',
+    contexte: 'Cherche "poseur cloture Sarrebourg" sur Google Maps, voit Freitas Habitat a 45 min',
+    parcours: ['Accueil', 'Cloture', 'Contact'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 5, clarte: 5 },
+    premierImpression: 'Le site couvre la pose de cloture, c\'est bien. Mais Sarrebourg c\'est loin de Marly — est-ce qu\'ils se deplacent jusque la ?',
+    questionCle: 'Intervenez-vous a Sarrebourg ? Le deplacement est-il facture en supplement ?',
+    reponse: 'Non',
+    commentReponse: 'Le site mentionne "Sarrebourg" dans le texte generique mais aucun detail sur le deplacement ou les frais supplementaires.',
+    impactTechnique: 'Affichage correct sur tablette mais les images de la galerie sont un peu petites — pas de lightbox.',
+    pointsPositifs: ['Sarrebourg mentionne dans la zone d\'intervention', 'Page cloture detaillee', 'Numero bien visible'],
+    frictions: ['Frais de deplacement non precises', 'Pas de lightbox sur les photos', 'Zone d\'intervention vague', 'Pas de tarif meme indicatif pour une cloture au ml'],
+  },
+  {
+    id: 10, name: 'Amandine', age: 32, emoji: '\u{1F4BB}',
+    canal: 'Reseaux sociaux', device: 'Mobile', maturite: 'Decouverte',
+    situation: 'Locataire devenue proprietaire a Montigny-les-Metz, reve d\'une terrasse pour l\'ete',
+    contexte: 'Voit un post sponsorise Freitas Habitat sur Facebook, curieuse elle clique',
+    parcours: ['Accueil', 'Terrasse'],
+    decision: 'quitte',
+    scores: { exp: 5, conf: 4, clarte: 4 },
+    premierImpression: 'Les photos sont belles mais le site ne me parle pas. Je ne sais pas qui sont ces gens, il n\'y a pas de visage humain.',
+    questionCle: 'C\'est quoi le budget pour une terrasse basique de 15m2 ? C\'est mon premier projet, je n\'ai aucune idee.',
+    reponse: 'Non',
+    commentReponse: 'Zero information de prix. Pour une primo-accedante qui n\'a jamais fait de travaux, c\'est dissuasif.',
+    impactTechnique: 'Le partage Facebook sans vignette Open Graph donne une impression amateur.',
+    pointsPositifs: ['Photos de terrasses inspirantes', 'Description technique rassurante pour les materiaux'],
+    frictions: ['Aucun repere de prix pour budgetiser', 'Pas de presentation humaine', 'Site impersonnel — on ne sait pas a qui on s\'adresse', 'Design qui ne parle pas aux jeunes proprietaires'],
+  },
+];
+
+// ============================================================
+// AMELIORATIONS
+// ============================================================
+const ameliorationsCritiques = [
+  {
+    titre: 'Ajouter des fourchettes de prix par type de prestation',
+    detail: '8 personas sur 10 cherchent une idee de budget. Meme une fourchette large ("de 60 a 120 EUR/m2 pour une terrasse en gres cerame") suffit a retenir les visiteurs en phase de comparaison.',
+    action: 'Ajouter un encart "Budget indicatif" sur chaque page service avec une fourchette "a partir de" par type de projet.',
+  },
+  {
+    titre: 'Creer une page A propos avec l\'histoire familiale et des photos de l\'equipe',
+    detail: '7 personas regrettent de ne pas savoir a qui ils ont affaire. "Freitas pere et fils" est un argument de confiance enorme — mais il est invisible sur le site.',
+    action: 'Creer une page "Notre equipe" avec photos, parcours, valeurs. Mentionner l\'assurance decennale et les qualifications.',
+  },
+  {
+    titre: 'Organiser la galerie par categories avec descriptions',
+    detail: '6 personas trouvent la galerie inexploitable — 45 photos melangees sans contexte. Les visiteurs cherchent un projet similaire au leur et ne le trouvent pas.',
+    action: 'Classer les realisations en categories (terrasses, clotures, paves, murs) avec pour chaque projet : materiaux, surface, duree, lieu.',
+  },
+];
+
+const ameliorationsUtiles = [
+  {
+    titre: 'Ajouter les certifications et l\'assurance decennale',
+    detail: 'Qualibat, RGE si applicable, attestation decennale — ces elements sont obligatoires pour les aides et rassurent les clients sur les gros chantiers.',
+  },
+  {
+    titre: 'Implementer Open Graph et meta description',
+    detail: 'Chaque partage Facebook/LinkedIn apparait sans image ni description. 30 minutes de configuration pour un impact durable sur le trafic social.',
+  },
+  {
+    titre: 'Ajouter une FAQ par type de service',
+    detail: 'Les questions recurrentes (duree, garantie, zone d\'intervention, materiaux) restent sans reponse. Une FAQ reduit les appels inutiles et ameliore le SEO.',
+  },
+];
+
+// ============================================================
+// HELPERS
+// ============================================================
+function scoreColor(score: number) {
+  if (score >= 90) return '#22c55e';
+  if (score >= 50) return '#f59e0b';
+  return '#ef4444';
+}
+
+function scoreTextClass(score: number) {
+  if (score >= 90) return 'text-green-600';
+  if (score >= 50) return 'text-amber-500';
+  return 'text-red-500';
+}
+
+function decisionColor(decision: string) {
+  if (decision === 'convertit') return 'border-green-200 bg-green-50/40';
+  if (decision === 'hesite') return 'border-amber-200 bg-amber-50/40';
+  return 'border-neutral-200 bg-neutral-50/40';
+}
+
+function decisionBadge(decision: string) {
+  if (decision === 'convertit') return 'bg-green-100 text-green-700';
+  if (decision === 'hesite') return 'bg-amber-100 text-amber-700';
+  return 'bg-neutral-100 text-neutral-600';
+}
+
+function decisionLabel(decision: string) {
+  if (decision === 'convertit') return 'Contacte';
+  if (decision === 'hesite') return 'Hesite';
+  return 'Repart';
+}
+
+function maturiteColor(m: string) {
+  if (m === 'Decision') return 'text-purple-600 bg-purple-50';
+  if (m === 'Comparaison') return 'text-blue-600 bg-blue-50';
+  return 'text-neutral-500 bg-neutral-100';
+}
+---
+
+<BaseLayout title={title} description={description} noindex={true} lang="fr" frPath="/audit/freitas-habitat">
+
+  <!-- ========================================================
+       HERO + KPIs
+  ======================================================== -->
+  <section class="bg-neutral-900 text-white py-14 px-4">
+    <div class="max-w-4xl mx-auto">
+      <span class="inline-block text-xs font-semibold tracking-widest uppercase text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full mb-4">Rapport personnalise</span>
+      <h1 class="font-heading text-3xl md:text-4xl font-bold mb-2 leading-tight">
+        {prospect.name}<br/>
+        <span class="text-neutral-300 font-normal text-2xl">ce que vos visiteurs pensent vraiment</span>
+      </h1>
+      <p class="text-neutral-400 mb-2">{prospect.activity} &mdash; {prospect.location}</p>
+      <p class="text-neutral-500 text-sm mb-8">
+        <a href={prospect.url} class="text-amber-400 hover:underline" target="_blank" rel="noopener noreferrer">{prospect.url}</a>
+        &mdash; Rapport du {prospect.date}
+      </p>
+
+      <!-- KPI Cards -->
+      <div class="grid grid-cols-3 gap-4 max-w-lg">
+        <div class="bg-neutral-800 rounded-xl p-4 text-center">
+          <span class="block text-3xl font-black text-amber-400">{kpis.conversion}%</span>
+          <span class="text-xs text-neutral-400 mt-1 block">convertissent</span>
+        </div>
+        <div class="bg-neutral-800 rounded-xl p-4 text-center">
+          <span class="block text-3xl font-black text-amber-400">{kpis.experience}/10</span>
+          <span class="text-xs text-neutral-400 mt-1 block">experience</span>
+        </div>
+        <div class="bg-neutral-800 rounded-xl p-4 text-center">
+          <span class="block text-3xl font-black text-amber-400">{kpis.confiance}/10</span>
+          <span class="text-xs text-neutral-400 mt-1 block">confiance</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       LE CONSTAT
+  ======================================================== -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Le constat</h2>
+
+      <!-- Constat principal -->
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-8">
+        <p class="text-amber-900 font-medium text-base leading-relaxed">{constat}</p>
+      </div>
+
+      <!-- Resume visiteurs -->
+      <div class="flex flex-wrap gap-3 mb-8">
+        <div class="flex items-center gap-2 bg-green-50 border border-green-200 rounded-lg px-4 py-2">
+          <span class="w-2 h-2 rounded-full bg-green-500 shrink-0"></span>
+          <span class="text-sm font-semibold text-green-800">{kpis.convertissent} contactent</span>
+        </div>
+        <div class="flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-lg px-4 py-2">
+          <span class="w-2 h-2 rounded-full bg-amber-500 shrink-0"></span>
+          <span class="text-sm font-semibold text-amber-800">{kpis.hesitent} hesitent</span>
+        </div>
+        <div class="flex items-center gap-2 bg-neutral-100 border border-neutral-200 rounded-lg px-4 py-2">
+          <span class="w-2 h-2 rounded-full bg-neutral-400 shrink-0"></span>
+          <span class="text-sm font-semibold text-neutral-700">{kpis.quittent} repartent</span>
+        </div>
+      </div>
+
+      <!-- Conversion par canal -->
+      <div class="mb-10">
+        <h3 class="font-semibold text-neutral-800 mb-4 text-sm uppercase tracking-wide">Taux de contact par canal d'arrivee</h3>
+        <div class="space-y-3">
+          {conversionByCanal.map(item => (
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-sm text-neutral-700">{item.canal}</span>
+                <span class={`text-sm font-bold ${item.color}`}>{item.taux}%</span>
+              </div>
+              <div class="h-2 bg-neutral-100 rounded-full overflow-hidden">
+                <div class={`h-full rounded-full ${item.bg}`} style={`width: ${item.taux}%`}></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Top frictions -->
+      <h3 class="font-semibold text-neutral-800 mb-4 text-sm uppercase tracking-wide">Top 5 frictions identifiees</h3>
+      <ol class="space-y-3">
+        {topFrictions.map((f, i) => (
+          <li class="flex gap-4 p-4 bg-neutral-50 border border-neutral-200 rounded-xl">
+            <span class="shrink-0 w-7 h-7 rounded-full bg-red-100 text-red-700 flex items-center justify-center text-sm font-bold">{i + 1}</span>
+            <div>
+              <p class="font-semibold text-neutral-900 text-sm">{f.titre} <span class="ml-2 text-xs text-neutral-500 font-normal">{f.count}/10 personas</span></p>
+              <p class="text-neutral-600 text-xs mt-0.5">{f.detail}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       AUDIT TECHNIQUE
+  ======================================================== -->
+  <section class="py-12 px-4 bg-neutral-50">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">L'audit technique</h2>
+
+      <!-- PageSpeed mobile -->
+      <div class="bg-white border border-neutral-200 rounded-xl p-6 mb-6">
+        <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+          <h3 class="font-semibold text-neutral-800">PageSpeed — Mobile</h3>
+          <span class="text-xs text-neutral-400 bg-neutral-100 px-2 py-1 rounded">scores estimes — API quota depasse</span>
+        </div>
+        <div class="grid grid-cols-4 gap-4">
+          {[
+            { label: 'Performance', score: pagespeed.mobile.performance },
+            { label: 'Accessibilite', score: pagespeed.mobile.accessibility },
+            { label: 'Bonnes pratiques', score: pagespeed.mobile.bestPractices },
+            { label: 'SEO', score: pagespeed.mobile.seo },
+          ].map(item => (
+            <div class="text-center">
+              <div class="relative w-14 h-14 mx-auto mb-2">
+                <svg class="w-14 h-14 -rotate-90" viewBox="0 0 36 36">
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    fill="none" stroke="#e5e7eb" stroke-width="3.5" />
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    fill="none" stroke={scoreColor(item.score)} stroke-width="3.5"
+                    stroke-dasharray={`${item.score}, 100`} stroke-linecap="round" />
+                </svg>
+                <span class={`absolute inset-0 flex items-center justify-center text-base font-bold ${scoreTextClass(item.score)}`}>{item.score}</span>
+              </div>
+              <p class="text-xs text-neutral-600">{item.label}</p>
+            </div>
+          ))}
+        </div>
+
+        <!-- Core Web Vitals -->
+        <div class="mt-4 pt-4 border-t border-neutral-100">
+          <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-2">Core Web Vitals (mobile estimes)</p>
+          <div class="flex flex-wrap gap-3">
+            {coreWebVitals.map(cwv => (
+              <div class={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium ${cwv.status === 'good' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+                <span class={`w-1.5 h-1.5 rounded-full ${cwv.status === 'good' ? 'bg-green-500' : 'bg-red-500'}`}></span>
+                {cwv.name} : {cwv.value}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- PageSpeed Desktop + Observatory -->
+      <div class="grid md:grid-cols-2 gap-6 mb-6">
+        <!-- Desktop -->
+        <div class="bg-white border border-neutral-200 rounded-xl p-5">
+          <h3 class="font-semibold text-neutral-800 mb-4">PageSpeed — Desktop</h3>
+          <div class="grid grid-cols-4 gap-2">
+            {[
+              { label: 'Perf.', score: pagespeed.desktop.performance },
+              { label: 'A11y', score: pagespeed.desktop.accessibility },
+              { label: 'BP', score: pagespeed.desktop.bestPractices },
+              { label: 'SEO', score: pagespeed.desktop.seo },
+            ].map(item => (
+              <div class="text-center">
+                <div class="relative w-12 h-12 mx-auto mb-1">
+                  <svg class="w-12 h-12 -rotate-90" viewBox="0 0 36 36">
+                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      fill="none" stroke="#e5e7eb" stroke-width="3.5" />
+                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      fill="none" stroke={scoreColor(item.score)} stroke-width="3.5"
+                      stroke-dasharray={`${item.score}, 100`} stroke-linecap="round" />
+                  </svg>
+                  <span class={`absolute inset-0 flex items-center justify-center text-sm font-bold ${scoreTextClass(item.score)}`}>{item.score}</span>
+                </div>
+                <p class="text-[11px] text-neutral-500">{item.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Observatory -->
+        <div class="bg-white border border-neutral-200 rounded-xl p-5">
+          <h3 class="font-semibold text-neutral-800 mb-3">Securite — Mozilla Observatory</h3>
+          <div class="flex items-center gap-4 mb-3">
+            <div class={`text-4xl font-black ${observatory.grade === 'A' || observatory.grade === 'A+' ? 'text-green-600' : observatory.grade === 'B' ? 'text-amber-500' : 'text-red-500'}`}>
+              {observatory.grade}
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-neutral-800">Score {observatory.score}/100</p>
+              <p class="text-xs text-neutral-500">{observatory.testsPassed}/{observatory.testsTotal} tests passes</p>
+            </div>
+          </div>
+          <p class="text-xs text-neutral-600">Grade B correct — headers de securite principaux presents mais Content-Security-Policy et Permissions-Policy manquants.</p>
+        </div>
+      </div>
+
+      <!-- Checklist SEO/Schema/OG -->
+      <div class="bg-white border border-neutral-200 rounded-xl p-5 mb-6">
+        <h3 class="font-semibold text-neutral-800 mb-4">Checklist Schema.org / Open Graph / SEO</h3>
+        <div class="grid sm:grid-cols-2 gap-2">
+          {techChecks.map(check => (
+            <div class={`flex items-start gap-2.5 p-2.5 rounded-lg ${check.present ? 'bg-green-50' : check.critical ? 'bg-red-50' : 'bg-neutral-50'}`}>
+              <span class={`shrink-0 mt-0.5 text-sm ${check.present ? 'text-green-600' : check.critical ? 'text-red-500' : 'text-neutral-400'}`}>
+                {check.present ? '\u2713' : '\u2717'}
+              </span>
+              <div>
+                <span class={`text-xs font-medium ${check.present ? 'text-green-800' : check.critical ? 'text-red-700' : 'text-neutral-600'}`}>{check.label}</span>
+                {check.note && <p class="text-[11px] text-neutral-500 mt-0.5">{check.note}</p>}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Top opportunites -->
+      <div class="bg-white border border-neutral-200 rounded-xl p-5">
+        <h3 class="font-semibold text-neutral-800 mb-3">Top 3 opportunites de performance</h3>
+        <div class="space-y-2">
+          {opportunities.map((opp, i) => (
+            <div class="flex items-center gap-3 p-3 bg-amber-50 border border-amber-100 rounded-lg">
+              <span class="shrink-0 text-amber-600 font-bold text-sm">{i + 1}</span>
+              <div class="flex-1">
+                <span class="text-sm text-neutral-800">{opp.label}</span>
+              </div>
+              <span class="shrink-0 text-xs font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded">{opp.saving}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       VOS VISITEURS — 10 PERSONAS
+  ======================================================== -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs</h2>
+      <p class="text-neutral-500 mb-6 text-sm">
+        Sur <strong class="text-neutral-800">10 visiteurs simules</strong>,
+        <strong class="text-green-700">{kpis.convertissent} contactent</strong>,
+        <strong class="text-amber-600">{kpis.hesitent} hesitent</strong>,
+        <strong class="text-neutral-600">{kpis.quittent} repartent</strong>.
+        Cliquez sur un visiteur pour voir son parcours complet.
+      </p>
+
+      <!-- Legende -->
+      <div class="flex flex-wrap gap-2 mb-5 text-xs">
+        <span class="flex items-center gap-1.5 bg-green-50 border border-green-200 px-2.5 py-1 rounded-full text-green-700 font-medium">
+          <span class="w-2 h-2 rounded-full bg-green-500"></span> Contacte
+        </span>
+        <span class="flex items-center gap-1.5 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-full text-amber-700 font-medium">
+          <span class="w-2 h-2 rounded-full bg-amber-500"></span> Hesite
+        </span>
+        <span class="flex items-center gap-1.5 bg-neutral-100 border border-neutral-200 px-2.5 py-1 rounded-full text-neutral-600 font-medium">
+          <span class="w-2 h-2 rounded-full bg-neutral-400"></span> Repart
+        </span>
+      </div>
+
+      <div class="space-y-2">
+        {personas.map(p => (
+          <details class={`group border ${decisionColor(p.decision)} rounded-xl overflow-hidden`}>
+            <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-white/60 transition-colors">
+              <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                  <h3 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h3>
+                  <span class={`text-[11px] px-1.5 py-0.5 rounded ${decisionBadge(p.decision)}`}>{decisionLabel(p.decision)}</span>
+                  <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                  <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                  <span class={`text-[11px] px-1.5 py-0.5 rounded ${maturiteColor(p.maturite)}`}>{p.maturite}</span>
+                </div>
+                <p class="text-xs text-neutral-500 truncate">{p.situation}</p>
+              </div>
+              <div class="shrink-0 flex items-center gap-3 ml-2">
+                <div class="hidden sm:flex gap-1.5 text-[11px]">
+                  <span class="bg-neutral-100 text-neutral-600 px-1.5 py-0.5 rounded">Exp {p.scores.exp}/10</span>
+                  <span class="bg-neutral-100 text-neutral-600 px-1.5 py-0.5 rounded">Conf {p.scores.conf}/10</span>
+                </div>
+                <svg class="w-5 h-5 text-neutral-400 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </div>
+            </summary>
+
+            <div class="px-4 pb-4 pt-0 border-t border-current/10 bg-white/60">
+              <div class="grid gap-3 text-xs mt-3">
+
+                <!-- Parcours -->
+                <div>
+                  <p class="font-semibold text-neutral-700 mb-1">Parcours</p>
+                  <div class="flex flex-wrap gap-1 items-center">
+                    {p.parcours.map((page, i) => (
+                      <>
+                        <span class="bg-neutral-100 text-neutral-700 px-2 py-0.5 rounded text-[11px]">{page}</span>
+                        {i < p.parcours.length - 1 && <span class="text-neutral-400 text-[10px]">&rsaquo;</span>}
+                      </>
+                    ))}
+                  </div>
+                </div>
+
+                <!-- Premiere impression -->
+                <div>
+                  <p class="font-semibold text-neutral-700 mb-1">Premiere impression</p>
+                  <p class="text-neutral-600 italic">"{p.premierImpression}"</p>
+                </div>
+
+                <!-- Question + reponse -->
+                <div>
+                  <p class="font-semibold text-neutral-700 mb-1">Question cle</p>
+                  <p class="text-neutral-600 italic mb-1">"{p.questionCle}"</p>
+                  <p class="text-neutral-600">
+                    Reponse du site : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-700'}>{p.reponse}</strong>
+                    {' '}&mdash; {p.commentReponse}
+                  </p>
+                </div>
+
+                <!-- Impact technique -->
+                <div class="bg-neutral-50 rounded-lg px-3 py-2">
+                  <p class="font-semibold text-neutral-700 mb-0.5">Impact technique</p>
+                  <p class="text-neutral-600">{p.impactTechnique}</p>
+                </div>
+
+                <!-- Points positifs + frictions -->
+                <div class="grid sm:grid-cols-2 gap-3">
+                  <div>
+                    <p class="font-semibold text-green-700 mb-1">Points positifs</p>
+                    <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                      {p.pointsPositifs.map(pt => <li>{pt}</li>)}
+                    </ul>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-amber-700 mb-1">Frictions</p>
+                    <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                      {p.frictions.map(f => <li>{f}</li>)}
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- Scores -->
+                <div class="flex gap-3 pt-1">
+                  <span class="bg-neutral-100 text-neutral-700 px-2.5 py-1 rounded-lg text-[11px] font-medium">Experience {p.scores.exp}/10</span>
+                  <span class="bg-neutral-100 text-neutral-700 px-2.5 py-1 rounded-lg text-[11px] font-medium">Confiance {p.scores.conf}/10</span>
+                  <span class="bg-neutral-100 text-neutral-700 px-2.5 py-1 rounded-lg text-[11px] font-medium">Clarte {p.scores.clarte}/10</span>
+                </div>
+
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       RECOMMANDATIONS
+  ======================================================== -->
+  <section class="py-12 px-4 bg-neutral-50">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Nos recommandations</h2>
+
+      <!-- Critiques -->
+      <h3 class="font-semibold text-red-700 text-sm uppercase tracking-wide mb-3">Le plus important — a traiter en priorite</h3>
+      <div class="space-y-3 mb-8">
+        {ameliorationsCritiques.map((a, i) => (
+          <div class="border border-red-200 bg-white rounded-xl p-5">
+            <div class="flex gap-3 mb-2">
+              <span class="shrink-0 w-6 h-6 rounded-full bg-red-100 text-red-700 flex items-center justify-center text-xs font-bold">{i + 1}</span>
+              <h4 class="font-semibold text-neutral-900 text-sm">{a.titre}</h4>
+            </div>
+            <p class="text-neutral-600 text-sm mb-2 ml-9">{a.detail}</p>
+            <div class="ml-9 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+              <p class="text-xs text-red-800"><strong>Action :</strong> {a.action}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Utiles -->
+      <h3 class="font-semibold text-neutral-600 text-sm uppercase tracking-wide mb-3">Utile aussi</h3>
+      <div class="grid sm:grid-cols-3 gap-3">
+        {ameliorationsUtiles.map(a => (
+          <div class="bg-white border border-neutral-200 rounded-xl p-4">
+            <h4 class="font-semibold text-neutral-800 text-sm mb-2">{a.titre}</h4>
+            <p class="text-neutral-500 text-xs">{a.detail}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       CTA FINAL
+  ======================================================== -->
+  <section class="bg-neutral-900 text-white py-16 px-4">
+    <div class="max-w-3xl mx-auto text-center">
+      <p class="text-amber-400 text-sm font-semibold uppercase tracking-widest mb-3">Ce rapport est offert</p>
+      <h2 class="font-heading text-2xl md:text-3xl font-bold mb-4 leading-snug">
+        {kpis.conversion}% de vos visiteurs vous contactent.<br/>
+        <span class="text-amber-400">On peut faire beaucoup mieux.</span>
+      </h2>
+      <p class="text-neutral-300 mb-3 max-w-xl mx-auto">
+        Avec 60 avis 5 etoiles, votre reputation est en or. Votre site devrait en etre le reflet — avec des prix indicatifs, votre histoire familiale, et une galerie qui vend vos realisations.
+      </p>
+      <p class="text-neutral-400 text-sm mb-8 max-w-xl mx-auto">
+        Je construis des sites qui convertissent vraiment — a partir de 990&euro;, livre en 7 jours, sans abonnement CMS.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a
+          href="/commander"
+          class="inline-flex items-center gap-2 px-8 py-3.5 bg-[var(--color-accent)] text-white font-semibold rounded-xl hover:bg-[var(--color-accent-hover)] transition-all shadow-md"
+        >
+          Je veux un site qui convertit
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+          </svg>
+        </a>
+        <a
+          href="/contact"
+          class="inline-flex items-center gap-2 px-8 py-3.5 border border-neutral-600 text-neutral-300 font-semibold rounded-xl hover:border-amber-400 hover:text-amber-400 transition-all"
+        >
+          En discuter d'abord
+        </a>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
