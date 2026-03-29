@@ -42,10 +42,11 @@ const steps = [
   },
   {
     name: 'Désignez-moi comme contact technique',
-    text: 'Connectez-vous à votre espace client OVH, puis accédez à la gestion des contacts de votre domaine. Remplacez le contact technique par mon identifiant :',
+    text: 'Ouvrez le lien ci-dessous pour accéder à la liste de vos domaines dans l\'espace client OVH. Cliquez sur votre domaine, puis sur l\'onglet "Contacts". Dans la colonne "Contact technique", remplacez l\'identifiant par le mien :',
     code: 'uo9730-ovh',
-    detail: 'Vous restez propriétaire du domaine. Le contact technique me permet uniquement de configurer les DNS pour pointer vers votre site.',
-    link: { href: 'https://help.ovhcloud.com/csm/fr-dns-domain-contact-management?id=kb_article_view&sysparm_article=KB0058104', label: 'Voir le guide OVH "Gérer les contacts"' },
+    copyable: true,
+    detail: 'Validez la modification. Vous restez propriétaire du domaine — le contact technique me permet uniquement de configurer les DNS pour pointer vers votre site.',
+    link: { href: 'https://manager.eu.ovhcloud.com/#/web-domains/domain', label: 'Ouvrir mes domaines — Espace client OVH' },
     path: 'Espace client > Noms de domaine > votre-domaine.fr > Contacts',
   },
   {
@@ -131,11 +132,25 @@ const faq = [
                 <h2 class="text-lg font-bold text-[var(--color-text)] mb-2">{step.name}</h2>
                 <p class="text-[var(--color-text-muted)] leading-relaxed">{step.text}</p>
 
-                {/* Code block (identifiant OVH) */}
+                {/* Code block (identifiant OVH) with copy button */}
                 {step.code && (
-                  <div class="mt-3 rounded-lg bg-[#0D0D0D] px-5 py-3 inline-flex items-center gap-3">
-                    <code class="text-lg font-mono font-bold text-white tracking-wide">{step.code}</code>
-                    <span class="text-xs text-neutral-400">(mon identifiant OVH)</span>
+                  <div class="mt-3 rounded-lg bg-[#0D0D0D] px-5 py-3 flex items-center gap-3 max-w-fit">
+                    <code class="text-lg font-mono font-bold text-white tracking-wide" id="ovh-id">{step.code}</code>
+                    <button
+                      type="button"
+                      class="copy-btn flex items-center gap-1.5 rounded-md bg-white/10 px-3 py-1.5 text-xs font-semibold text-white hover:bg-white/20 transition-colors"
+                      data-copy={step.code}
+                      data-umami-event="aide-domaine-copier-id"
+                      aria-label="Copier l'identifiant OVH"
+                    >
+                      <svg class="w-3.5 h-3.5 copy-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                      </svg>
+                      <svg class="w-3.5 h-3.5 check-icon hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span class="copy-label">Copier</span>
+                    </button>
                   </div>
                 )}
 
@@ -243,4 +258,25 @@ const faq = [
       </article>
     </div>
   </section>
+
+  <script>
+    document.querySelectorAll('.copy-btn').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const text = btn.getAttribute('data-copy');
+        if (!text) return;
+        await navigator.clipboard.writeText(text);
+        const copyIcon = btn.querySelector('.copy-icon');
+        const checkIcon = btn.querySelector('.check-icon');
+        const label = btn.querySelector('.copy-label');
+        if (copyIcon) copyIcon.classList.add('hidden');
+        if (checkIcon) checkIcon.classList.remove('hidden');
+        if (label) label.textContent = 'Copié !';
+        setTimeout(() => {
+          if (copyIcon) copyIcon.classList.remove('hidden');
+          if (checkIcon) checkIcon.classList.add('hidden');
+          if (label) label.textContent = 'Copier';
+        }, 2000);
+      });
+    });
+  </script>
 </BaseLayout>
