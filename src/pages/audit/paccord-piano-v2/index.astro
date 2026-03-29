@@ -1,0 +1,881 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = "Audit UX + Technique — P'accord Piano v2 | Marc M";
+const description = "Rapport UX + technique v2 de paccord-piano.fr — Simon Pacor, accordeur-reparateur, Chartres. 20 personas, PageSpeed, Schema.org, recommandations priorisees.";
+
+// ── Personas ──
+const personas = [
+  {
+    id: 1, name: 'Francoise', age: 67, role: 'Retraitee EN, Yamaha U1 a Chartres',
+    canal: 'Google Search', maturite: 'Comparaison', device: 'Desktop',
+    decision: 'Hesite', exp: 6, conf: 4, clarte: 7,
+    impression: 'Site propre, positionnement clair. Le calculateur de prix attire immediatement. Cherche instinctivement un numero de telephone en haut de page — ne le trouve pas.',
+    parcours: ['Accueil — lit la presentation, ITEMM rassurant', 'Calculateur 28000 → 90€ OK', 'Cherche temoignages — absent', 'Page contact — telephone trouvable mais decision reportee'],
+    question: 'Est-ce aussi competent que M. Lefevre qui accordait mon piano depuis 20 ans ?',
+    reponse: 'Non', repDetail: 'Diplome ITEMM visible mais sans temoignages clients, impossible d\'evaluer la qualite.',
+    technique: 'Desktop impeccable (LCP 1.5s). Pas de frustration technique.',
+    positifs: ['Calculateur prix transparent (90€ Chartres)', 'Diplome BMA ITEMM mentionne', 'Numero de telephone trouvable dans le contact'],
+    frictions: ['Zero temoignage client — point bloquant principal', 'Pas d\'horaires → ne sait pas si elle peut appeler maintenant', 'Pas de mention des marques travaillees'],
+    raison: 'Site credible mais pas de preuves sociales. Va chercher des avis Google avant d\'appeler.'
+  },
+  {
+    id: 2, name: 'Julien', age: 34, role: 'Dev web, Petrof achete LBC, Mainvilliers',
+    canal: 'Google Maps', maturite: 'Decision', device: 'Mobile',
+    decision: 'Convertit', exp: 5, conf: 6, clarte: 8,
+    impression: 'Arrive depuis Google Maps, motivation forte. Site lent sur mobile (LCP 6.6s) mais il patiente — besoin concret et urgent.',
+    parcours: ['Fiche GBP → lien site', 'Accueil — attend ~4s, reste', 'Calculateur 28300 → 90€', 'Formulaire → envoie demande RDV'],
+    question: 'Combien ca coute et quand est-ce qu\'il peut passer ?',
+    reponse: 'Oui', repDetail: 'Calculateur repond en 10s. Formulaire permet la demande de RDV.',
+    technique: 'LCP 6.6s = risque reel de rebond sur appareils milieu de gamme. iPhone 15 absorbe mieux.',
+    positifs: ['Calculateur prix = reponse directe', 'Zone Mainvilliers couverte', 'Formulaire simple'],
+    frictions: ['Chargement mobile tres lent', 'Pas de disponibilites en ligne', 'Pas de confirmation delai de rappel'],
+    raison: 'Besoin urgent + proximite → convertit malgre le site lent.'
+  },
+  {
+    id: 3, name: 'Helene', age: 45, role: 'Prof piano, Kawai GL-10 quart de queue, Dreux',
+    canal: 'Bouche-a-oreille', maturite: 'Decision', device: 'Mobile',
+    decision: 'Hesite', exp: 5, conf: 6, clarte: 5,
+    impression: 'Lien SMS d\'une collegue. Cherche immediatement "piano a queue" et "harmonisation". Trouve l\'harmonisation mais pas de reference aux queues.',
+    parcours: ['Lien direct → accueil', 'Services — harmonisation presente, rassurant', 'Cherche "quart de queue" — absent', 'Calculateur 28100 OK', 'Formulaire — message detaille avec description du Kawai'],
+    question: 'Est-ce qu\'il travaille sur des pianos a queue et comprend les exigences d\'une prof de piano ?',
+    reponse: 'Partiellement', repDetail: 'Harmonisation mentionnee mais pas de reference explicite aux pianos a queue.',
+    technique: 'Site lent sur mobile mais tolerable grace a la recommandation forte.',
+    positifs: ['Harmonisation dans les services', 'Double competence technicien + pianiste', 'Recommandation collegue = confiance baseline'],
+    frictions: ['Pas de mention explicite des pianos a queue', 'Pas de photos d\'interventions', 'Pas de FAQ accord vs harmonisation'],
+    raison: 'Recommandation forte mais elle ecrit un message pour confirmer avant de s\'engager.'
+  },
+  {
+    id: 4, name: 'Romain', age: 28, role: 'Chef de projet Paris, cherche piano occasion 1500€',
+    canal: 'ChatGPT', maturite: 'Comparaison', device: 'Mobile',
+    decision: 'Quitte', exp: 4, conf: 4, clarte: 5,
+    impression: 'ChatGPT l\'a mentionne. Site lent sur mobile. Cherche le stock avec photos et infos livraison IDF.',
+    parcours: ['Accueil — chargement lent', 'Page pianos occasion — 4 pianos, prix OK', 'Cherche photos detaillees — insuffisant', 'Cherche info livraison 92 — absent', 'Quitte pour comparer'],
+    question: 'Est-ce que je peux venir essayer et est-ce qu\'il livre sur Boulogne-Billancourt ?',
+    reponse: 'Non', repDetail: 'Garantie 5 ans mentionnee mais livraison IDF floue, essai non explique.',
+    technique: 'LCP 6.6s sur mobile + pas de Schema.org → ChatGPT avait peu d\'infos sur le stock. Double frein.',
+    positifs: ['Young Chang 1200€ dans budget', 'Garantie 5 ans vs LBC', 'Banquette incluse'],
+    frictions: ['Photos insuffisantes', 'Livraison Paris/92 non clarifiee', 'Pas de formulaire "essai piano"', 'Site trop lent'],
+    raison: 'L\'offre existe mais pas assez d\'infos. Repart comparer sur LBC et Marketplace.'
+  },
+  {
+    id: 5, name: 'Martine', age: 72, role: 'Retraitee agricole, vieux Pleyel 1960 non accorde 8 ans',
+    canal: 'Google Search', maturite: 'Decouverte', device: 'Desktop',
+    decision: 'Quitte', exp: 4, conf: 3, clarte: 4,
+    impression: 'Cherche si son vieux piano est recuperable. Trouve le site mais pas de reponse a sa question principale.',
+    parcours: ['Accueil — lit la presentation', 'Services (expertise) — trop technique', 'Cherche FAQ — absent', 'Tarifs — expertise 60€ mais hesite', 'Quitte pour en parler a sa fille'],
+    question: 'Est-ce que mon vieux Pleyel non accorde depuis 8 ans peut encore etre sauve ?',
+    reponse: 'Non', repDetail: 'Aucune FAQ sur la recuperabilite des vieux pianos.',
+    technique: 'Desktop correct. Sans contenu FAQ, la technique ne compense pas.',
+    positifs: ['Expertise mentionnee dans les services', 'Prix expertise visible (60€)'],
+    frictions: ['Pas de FAQ "mon vieux piano est-il recuperable ?"', 'Vocabulaire technique intimidant', 'Pas d\'adresse sur la homepage', 'Pas de temoignage avec vieux piano'],
+    raison: 'Sans reponse et sans rassurance, prefere en parler a sa fille avant de contacter un inconnu.'
+  },
+  {
+    id: 6, name: 'Sebastien', age: 41, role: 'Gerant restaurant, Yamaha C3 queue, Rambouillet',
+    canal: 'Facebook', maturite: 'Comparaison', device: 'Mobile',
+    decision: 'Hesite', exp: 4, conf: 5, clarte: 5,
+    impression: 'Post Facebook. Besoin pro d\'un contrat annuel. Le site ne s\'adresse pas aux professionnels.',
+    parcours: ['Post → accueil', 'Services — accord, harmonisation OK', 'Cherche contrat annuel/pro — absent', 'Calculateur 78120 — dans la zone', 'Formulaire — mentionne besoin annuel'],
+    question: 'Est-ce qu\'il propose un forfait annuel pour un piano de restaurant intensivement utilise ?',
+    reponse: 'Non', repDetail: 'Aucune offre pro ni contrat recurrent visible.',
+    technique: 'Pas d\'OG → post Facebook sans preview attractive = moins de clics. Mobile lent.',
+    positifs: ['Competence queue (diplome ITEMM)', 'Zone Rambouillet couverte', 'Contact possible'],
+    frictions: ['Pas d\'offre pro/contrat annuel', 'Pas d\'horaires (intervention matin en semaine ?)', 'Post Facebook sans preview'],
+    raison: 'Interesse mais veut confirmation sur le contrat avant de s\'engager.'
+  },
+  {
+    id: 7, name: 'Claire', age: 38, role: 'Infirmiere liberale, Yamaha B2 neuf, Epernon',
+    canal: 'Google Maps', maturite: 'Comparaison', device: 'Mobile',
+    decision: 'Hesite', exp: 5, conf: 5, clarte: 7,
+    impression: 'Cherche accordeur moins cher que SAV Yamaha. Le calculateur repond exactement a sa question de prix.',
+    parcours: ['Google Maps → accueil (lent)', 'Calculateur 28230 → 90€ vs ~150€ SAV = excellent', 'Cherche avis — absent', 'Hesite — va chercher avis Google'],
+    question: 'C\'est moins cher que le SAV Yamaha et c\'est aussi bien ?',
+    reponse: 'Partiellement', repDetail: 'Prix confirme. Qualite = ITEMM rassurant mais sans temoignages.',
+    technique: 'Mobile lent + CLS visible = impression de site instable.',
+    positifs: ['Prix nettement inferieur au SAV (90€ vs 150€)', 'Proximite Epernon-Chartres', 'Calculateur = reponse directe'],
+    frictions: ['Pas d\'avis clients pour confirmer la qualite', 'Site lent + CLS', 'Compare en externe avant de revenir'],
+    raison: 'Le prix convainc mais elle veut des avis. Va chercher sur Google — peut ne pas revenir.'
+  },
+  {
+    id: 8, name: 'Dominique', age: 59, role: 'Directeur ecole musique, 5 pianos droits, Nogent',
+    canal: 'Bouche-a-oreille', maturite: 'Decision', device: 'Tablette',
+    decision: 'Convertit', exp: 5, conf: 6, clarte: 5,
+    impression: 'Recommandation directe du prof. Deadline CA dans 10 jours. Doit obtenir un devis formel.',
+    parcours: ['Lien recu → accueil (tablette OK)', 'Services — OK', 'Calculateur 28400 — 60 km, zone couverte', 'Formulaire — message detaille : 5 pianos, devis formel, deadline'],
+    question: 'Pouvez-vous etablir un devis forfaitaire pour 5 pianos droits ?',
+    reponse: 'Partiellement', repDetail: 'Formulaire general utilisable. Pas de formulaire devis specifique mais il l\'utilise.',
+    technique: 'Tablette = performances correctes. Pas de Schema.org = ITEMM pas ressort dans les previews.',
+    positifs: ['Diplome ITEMM verifiable pour le CA', 'Zone 60 km couverte', 'Contact par formulaire'],
+    frictions: ['Pas de mention "devis gratuit" ou "collectivites"', 'Pas de tarif degressif multi-pianos', 'Pas de mention facturation TVA'],
+    raison: 'Besoin urgent + recommandation directe → contacte quoi qu\'il en soit.'
+  },
+  {
+    id: 9, name: 'Amira', age: 31, role: 'UX designer, Bosendorfer 170 haut de gamme, Versailles',
+    canal: 'Perplexity', maturite: 'Decouverte', device: 'Mobile',
+    decision: 'Quitte', exp: 3, conf: 3, clarte: 5,
+    impression: 'Perplexity l\'a mentionnee. Cherche preuves d\'expertise sur pianos europeens de prestige. Le site ne "respire" pas le haut de gamme.',
+    parcours: ['Lien Perplexity → accueil (lent)', 'Bio Simon — double competence interessante', 'Cherche "Bosendorfer", "pianos europeens" — absent', 'Quitte pour accordeurs parisiens specialises'],
+    question: 'A-t-il deja travaille sur des Bosendorfer et comprend-il la specificite de ces instruments ?',
+    reponse: 'Non', repDetail: 'Aucune mention de marques europeennes prestigieuses.',
+    technique: 'LCP 6.6s + pas de Schema.org = Perplexity avait tres peu d\'infos. Invisible pour les IA.',
+    positifs: ['Double competence technicien + pianiste', 'Diplome ITEMM (reference connue)'],
+    frictions: ['Zero contenu "prestige" ou "pianos europeens"', 'Pas de photos de vrais instruments travailles', 'Site lent sur iPhone 16 Pro'],
+    raison: 'Le site ne convainc pas une experte exigeante. Preferera un accordeur parisien specialise.'
+  },
+  {
+    id: 10, name: 'Thomas', age: 26, role: 'Etudiant, visite de curiosite Facebook — aucun besoin',
+    canal: 'Facebook', maturite: 'Decouverte', device: 'Mobile',
+    decision: 'Quitte', exp: 3, conf: 4, clarte: 7,
+    impression: 'Clique sur une video par curiosite. Sur Xiaomi Redmi Note 13, le site met 8-9s a charger. Repart avant le premier affichage.',
+    parcours: ['Facebook video → lien site', 'Attend chargement… 8s…', 'Scroll rapide 3 secondes', 'Retour Facebook'],
+    question: 'Aucune — visite de curiosite pure.',
+    reponse: 'N/A', repDetail: 'Persona negatif partiel. Aucun besoin.',
+    technique: 'LCP 6.6s devient 8-9s sur Xiaomi milieu de gamme. Rebond avant tout affichage.',
+    positifs: ['Contenu clair une fois charge'],
+    frictions: ['Temps de chargement catastrophique sur mobile bas/milieu de gamme', 'Pas de storytelling pour retenir un curieux'],
+    raison: 'Aucun besoin + site trop lent = rebond systematique. Persona negatif partiel.'
+  },
+  {
+    id: 11, name: 'Genevieve', age: 74, role: 'Retraitee, vieux Gaveau desaccorde, Chateaudun',
+    canal: 'PagesJaunes', maturite: 'Decouverte', device: 'Desktop',
+    decision: 'Convertit', exp: 4, conf: 5, clarte: 3,
+    impression: 'Arrive de PagesJaunes. Cherche un numero de telephone visible en premiere instance. Met 3 minutes a le trouver.',
+    parcours: ['PagesJaunes → accueil Desktop', 'Cherche telephone en haut — ne le voit pas', 'Scroll bas — trouve le numero dans contact', 'Appelle directement (conversion hors-site)'],
+    question: 'C\'est quoi le numero pour appeler directement ?',
+    reponse: 'Oui', repDetail: 'Le numero est sur le site mais pas dans le header.',
+    technique: 'Desktop correct. Pas d\'alerte securite visible.',
+    positifs: ['Telephone present sur le site', 'Desktop chargement acceptable'],
+    frictions: ['Telephone PAS dans le header = 3 minutes de recherche', 'Pas d\'adresse visible homepage', 'Navigation peut derouter une utilisatrice peu experte'],
+    raison: 'Convertit en appelant directement. Experience degradee mais succes grace a sa determination.'
+  },
+  {
+    id: 12, name: 'Nicolas', age: 43, role: 'Cadre commercial, cherche piano acoustique pour fils 14 ans',
+    canal: 'Google Search', maturite: 'Comparaison', device: 'Mobile',
+    decision: 'Hesite', exp: 5, conf: 5, clarte: 6,
+    impression: 'Cherche piano d\'occasion garanti. Le stock avec garantie 5 ans est interessant mais les photos sont insuffisantes.',
+    parcours: ['Accueil → pianos occasion (lent)', 'Young Chang 1200€ — potentiel', 'Cherche photos detaillees — insuffisant', 'Hesite — revient dans 2 jours'],
+    question: 'Un piano correct pour mon fils a moins de 1500€ avec une vraie garantie ?',
+    reponse: 'Oui', repDetail: 'Young Chang 1200€ + garantie 5 ans repond au besoin. Photos insuffisantes ralentissent.',
+    technique: 'Mobile lent + pas d\'OG → partage WhatsApp avec sa femme sans preview.',
+    positifs: ['Young Chang 1200€ dans budget', 'Garantie 5 ans = argument decisif vs LBC', 'Banquette incluse'],
+    frictions: ['Photos insuffisantes', 'Pas de comparatif "pro vs LBC"', 'Essai non explique', 'Partage WhatsApp sans preview'],
+    raison: 'L\'offre est la mais confiance insuffisante pour convertir en une visite.'
+  },
+  {
+    id: 13, name: 'Sophie', age: 52, role: 'Notaire, Steinway B demi-queue, Chartres',
+    canal: 'Google Maps', maturite: 'Comparaison', device: 'Mobile',
+    decision: 'Quitte', exp: 4, conf: 3, clarte: 5,
+    impression: 'Cherche accordeur local moins cher que son Parisien (+40% cette annee). Veut des preuves de competence sur Steinway.',
+    parcours: ['Google Maps → accueil', 'Bio Simon — ITEMM bon signe', 'Cherche temoignages Steinway — absent', 'Recherche externe "Simon Pacor avis" — ne revient pas'],
+    question: 'Est-ce qu\'il a le niveau pour un Steinway B ou c\'est juste pour des pianos droits basiques ?',
+    reponse: 'Non', repDetail: 'ITEMM rassurant mais zero preuve concrete sur les pianos haut de gamme.',
+    technique: 'Mobile lent + pas de Schema.org. Peu de resultats structures quand elle cherche en externe.',
+    positifs: ['Diplome ITEMM (credentiel pertinent)', 'Prix tres avantageux (90€ vs 180€ Parisien)'],
+    frictions: ['Zero temoignage proprietaires haut de gamme', 'Pas de references Steinway / Kawai concert', 'Quitte pour chercher en externe et ne revient pas'],
+    raison: 'L\'economie est enorme mais elle n\'a pas assez de preuves. Le site la perd au profit de Google.'
+  },
+  {
+    id: 14, name: 'Etienne', age: 36, role: 'Ingenieur son, August Forster home studio, Mantes-la-Jolie',
+    canal: 'Claude (IA)', maturite: 'Comparaison', device: 'Desktop',
+    decision: 'Quitte', exp: 4, conf: 3, clarte: 4,
+    impression: 'Claude lui a recommande Simon pour l\'harmonisation. Cherche contenu technique detaille sur l\'harmonisation fine et le son studio.',
+    parcours: ['Lien Claude → accueil', 'Services harmonisation — trop vague', 'Bio Simon — double competence interessante', 'Calculateur 78200 — OK mais 80 km', 'Quitte en mettant en favori'],
+    question: 'Est-ce que Simon peut modifier le timbre de mon piano pour qu\'il sonne plus mat en studio ?',
+    reponse: 'Non', repDetail: 'Harmonisation mentionnee mais pas de contenu sur l\'ajustement de timbre/marteaux/studio.',
+    technique: 'Desktop OK. Pas de Schema.org = Claude avait peu d\'infos detaillees dans sa reponse initiale.',
+    positifs: ['Double competence = pertinent pour besoins studio', 'Harmonisation dans les services'],
+    frictions: ['Description harmonisation trop generale', 'Pas d\'exemples studio', 'Pas de mention pianos allemands', 'Schema.org absent = IA mal informee'],
+    raison: 'Profil de niche qui aurait converti avec le bon contenu. Repart insatisfait.'
+  },
+  {
+    id: 15, name: 'Valerie', age: 48, role: 'Resp. admin lycee prive, 3 pianos dont 1 queue, Chartres',
+    canal: 'Google Search', maturite: 'Decision', device: 'Mobile',
+    decision: 'Hesite', exp: 4, conf: 5, clarte: 5,
+    impression: 'Deadline : devis avant vendredi (5 jours). Cherche la possibilite d\'un devis multiple urgent.',
+    parcours: ['Google → accueil (lent iPhone SE)', 'Services OK', 'Calculateur 28000 → ~270€', 'Formulaire general — envoie message urgent avec deadline'],
+    question: 'Devis pour 3 pianos avant vendredi et intervention dans les 2 semaines ?',
+    reponse: 'Partiellement', repDetail: 'Formulaire utilisable mais pas de devis specifique ni confirmation delai de reponse.',
+    technique: 'iPhone SE + LCP 6.6s = navigation penible. CLS visible.',
+    positifs: ['Proximite maximale (0 km)', 'Zone confirmee', 'Formulaire contactable'],
+    frictions: ['Pas de formulaire devis', 'Pas de mention "reponse sous 24h"', 'Pas de mention etablissements scolaires', 'iPhone SE + LCP lent'],
+    raison: 'Envoie le formulaire mais ne sait pas si Simon respectera sa deadline.'
+  },
+  {
+    id: 16, name: 'Marc', age: 55, role: 'Plombier, vieux piano garage avec touches cassees, Bonneval',
+    canal: 'QR code flyer', maturite: 'Decouverte', device: 'Mobile',
+    decision: 'Hesite', exp: 4, conf: 4, clarte: 5,
+    impression: 'QR code chez un disquaire. Se demande si reparer ou racheter un piano d\'occasion.',
+    parcours: ['QR code → accueil (Samsung A54, lent)', 'Services reparations OK', 'Tarifs expertise 60€', 'Pianos occasion comme alternative', 'Favori — "en reparle avec ma femme"'],
+    question: 'Ca vaut le coup de reparer un vieux piano avec des touches cassees ou c\'est mieux d\'en racheter un ?',
+    reponse: 'Non', repDetail: 'Aucune FAQ ni contenu sur "restauration vs remplacement".',
+    technique: 'Samsung A54 + LCP 6.6s = tres lent. Risque de rebond reel.',
+    positifs: ['Reparations mentionnees', 'Stock occasion comme alternative', 'Expertise 60€ abordable'],
+    frictions: ['Pas de FAQ "reparation vs rachat"', 'Pas de photos avant/apres', 'LCP lent sur Samsung milieu de gamme'],
+    raison: 'Question sans reponse. Incertain — reviendra peut-etre.'
+  },
+  {
+    id: 17, name: 'Pauline', age: 30, role: 'Graphiste Nantes, piano numerique Roland — HORS ZONE',
+    canal: 'Facebook', maturite: 'Decouverte', device: 'Mobile',
+    decision: 'Quitte', exp: 3, conf: 5, clarte: 3,
+    impression: 'Hors zone (380 km) et confond piano acoustique/numerique. Double raison de rebond immediat.',
+    parcours: ['Facebook → accueil', 'Comprend = acoustiques uniquement', 'Voit zone 100 km', 'Quitte < 15 secondes'],
+    question: 'Est-ce qu\'il repare aussi les pianos numeriques ?',
+    reponse: 'Non', repDetail: 'Piano numerique non couvert + hors zone geographique.',
+    technique: 'LCP lent aggrave encore une experience deja condamnee.',
+    positifs: ['Zone geographique visible'],
+    frictions: ['Piano numerique non couvert (besoin inadapte)', 'Nantes = 380 km (hors zone)', 'Pas de redirection vers reparateurs de claviers'],
+    raison: 'Persona negatif. Besoin inadapte + hors zone = rebond inevitable.'
+  },
+  {
+    id: 18, name: 'Jean-Pierre', age: 63, role: 'Medecin semi-retraite, Bechstein + Steinway M, Chartres',
+    canal: 'Bouche-a-oreille', maturite: 'Decision', device: 'Desktop',
+    decision: 'Convertit', exp: 6, conf: 7, clarte: 6,
+    impression: 'SMS d\'un ami notaire. Decision quasi prise. Visite purement formelle pour trouver le contact.',
+    parcours: ['SMS ami → accueil Desktop', 'Verifie bio Simon rapidement — ITEMM OK', 'Cherche le telephone', 'Appelle directement'],
+    question: 'Quel est le numero pour prendre rendez-vous ?',
+    reponse: 'Oui', repDetail: 'Telephone trouvable. Recommandation personnelle = conversion certaine.',
+    technique: 'Desktop parfait. Visite formelle de 2 minutes.',
+    positifs: ['ITEMM confirme', 'Recommandation personnelle forte', 'Telephone trouvable'],
+    frictions: ['Telephone pas dans le header = quelques secondes de recherche'],
+    raison: 'Bouche-a-oreille qualifie entre proprietaires de Steinway = canal de conversion le plus puissant.'
+  },
+  {
+    id: 19, name: 'Camille', age: 22, role: 'Etudiante musicologie, cherche piano 400€ — HORS BUDGET',
+    canal: 'Google Maps', maturite: 'Decouverte', device: 'Mobile',
+    decision: 'Quitte', exp: 3, conf: 5, clarte: 7,
+    impression: 'Cherche un piano a 400€. Voit les prix 1200-4000€ et ferme immediatement.',
+    parcours: ['Google Maps → pianos occasion', 'Prix plancher 1200€ = 3x son budget', 'Ferme le site'],
+    question: 'Y a-t-il un piano a 400€ ?',
+    reponse: 'Non', repDetail: 'Budget etudiant totalement incompatible avec la gamme proposee.',
+    technique: 'N/A — rebond en 5 secondes.',
+    positifs: ['Prix clairement affiches'],
+    frictions: ['Gamme inadaptee au segment etudiant/budget serre'],
+    raison: 'Persona negatif. Budget incompatible = rebond inevitable. Valide la cible commerciale.'
+  },
+  {
+    id: 20, name: 'Abdel', age: 39, role: 'Resp. logistique, devis recu 90€, compare avec 50€ au black',
+    canal: 'Email (devis recu)', maturite: 'Decision', device: 'Mobile',
+    decision: 'Quitte', exp: 3, conf: 3, clarte: 4,
+    impression: 'Clique sur le site depuis la signature du devis. Cherche une justification du prix 90€ vs 50€ au black.',
+    parcours: ['Email devis → accueil', 'Tarifs — 90€ confirme', 'Cherche FAQ "pourquoi un pro" — absent', 'Cherche temoignages — absent', 'Revient vers le beau-frere'],
+    question: 'Pourquoi payer 90€ alors que le cousin de ma femme fait ca pour 50€ ?',
+    reponse: 'Non', repDetail: 'Aucune page valeur, aucune FAQ, aucun temoignage pour justifier l\'ecart.',
+    technique: 'Mobile lent + pas de contenu persuasif = double frein.',
+    positifs: ['Le devis est propre et professionnel'],
+    frictions: ['Pas de FAQ "pourquoi un accord professionnel"', 'Pas de mention credit d\'impot 50%', 'Pas de temoignages', 'Site lent'],
+    raison: 'Sans justification de prix ni preuve sociale, le black gagne par defaut.'
+  },
+];
+
+const convertis  = personas.filter(p => p.decision === 'Convertit').length;
+const hesitants  = personas.filter(p => p.decision === 'Hesite').length;
+const quittent   = personas.filter(p => p.decision === 'Quitte').length;
+const tauxConv   = Math.round((convertis / personas.length) * 100);
+const avgExp     = (personas.reduce((s, p) => s + p.exp,    0) / personas.length).toFixed(1);
+const avgConf    = (personas.reduce((s, p) => s + p.conf,   0) / personas.length).toFixed(1);
+const avgClarte  = (personas.reduce((s, p) => s + p.clarte, 0) / personas.length).toFixed(1);
+
+const canalStats = [
+  { canal: 'Google Search',                     total: 4, conv: 0, hesitant: 3, quitte: 1 },
+  { canal: 'Google Maps / GBP',                 total: 4, conv: 1, hesitant: 1, quitte: 2 },
+  { canal: 'IA (ChatGPT / Perplexity / Claude)',total: 3, conv: 0, hesitant: 0, quitte: 3 },
+  { canal: 'Facebook',                           total: 3, conv: 0, hesitant: 1, quitte: 2 },
+  { canal: 'Bouche-a-oreille',                  total: 3, conv: 2, hesitant: 1, quitte: 0 },
+  { canal: 'Autres (PagesJaunes, QR, email)',   total: 3, conv: 1, hesitant: 1, quitte: 1 },
+];
+
+const maturiteStats = [
+  { level: 'Decouverte', total: 7, conv: 1, pct: '14%' },
+  { level: 'Comparaison', total: 7, conv: 0, pct: '0%'  },
+  { level: 'Decision',    total: 6, conv: 3, pct: '50%' },
+];
+
+const deviceStats = [
+  { device: 'Mobile',   total: 13, conv: 1, pct: '8%'   },
+  { device: 'Desktop',  total: 6,  conv: 2, pct: '33%'  },
+  { device: 'Tablette', total: 1,  conv: 1, pct: '100%' },
+];
+
+const frictions = [
+  { label: 'Absence totale de temoignages / avis clients',     count: 15, severity: 'critique' },
+  { label: 'LCP mobile 6.6s — site trop lent sur smartphone', count: 13, severity: 'haute'    },
+  { label: 'Pas de FAQ (12 questions restent sans reponse)',   count: 9,  severity: 'haute'    },
+  { label: 'Pas de portfolio ni photos de realisations',       count: 8,  severity: 'haute'    },
+  { label: 'Pas de contenu pro / haut de gamme',              count: 7,  severity: 'haute'    },
+  { label: 'Telephone absent du header',                       count: 4,  severity: 'moyenne'  },
+  { label: 'Pas d\'horaires affiches',                        count: 4,  severity: 'moyenne'  },
+  { label: 'Pas de mention pianos a queue et marques',         count: 4,  severity: 'moyenne'  },
+  { label: 'Schema.org et Open Graph absents (0% conv IA)',    count: 3,  severity: 'moyenne'  },
+];
+
+const ameliorations = {
+  haute: [
+    { title: 'Ajouter des temoignages clients', impact: '15/20 personas', detail: '5 a 8 verbatims avec prenom, ville, type de piano. Frein n°1 a la conversion — 0% en comparaison sans preuve sociale.', action: 'Section temoignages entre services et contact sur la homepage.' },
+    { title: 'Optimiser la performance mobile', impact: '13/20 personas', detail: 'LCP 6.6s → 8% conversion mobile vs 33% desktop. Images WebP, polices locales (supprimer Google Fonts), JS differe.', action: 'Migration vers des fonts locales + images optimisees + JS lazyfied.' },
+    { title: 'Creer une FAQ', impact: '9/20 personas', detail: '8-10 questions : vieux piano recuperable ?, pianos a queue ?, pourquoi un pro vs black ?, zone ?, marques ?, pianos numeriques non couverts.', action: 'Section FAQ accordeon sur la homepage ou page dediee.' },
+    { title: 'Ajouter un portfolio de realisations', impact: '8/20 personas', detail: 'Photos avant/apres, types de pianos, marques. Les profils haut de gamme quittent systematiquement sans preuves visuelles.', action: 'Galerie ou section "Realisations" avec au moins 6-8 photos.' },
+    { title: 'Segmenter le contenu par profil', impact: '7/20 personas', detail: 'Section "Professionnels" + mention explicite des pianos a queue et marques (Steinway, Bosendorfer, Kawai, Pleyel).', action: 'Sous-sections ou cards par type de client sur la homepage.' },
+  ],
+  moyenne: [
+    { title: 'Telephone dans le header',          impact: '4/20 personas', detail: 'Afficher 06.22.26.77.83 en permanence. Sur mobile : bouton tap-to-call. Genevieve a cherche 3 minutes.' },
+    { title: 'Afficher les horaires',             impact: '4/20 personas', detail: '"Disponible lundi-samedi, 8h-19h" dans le header ou la section contact. 4 personas ne savent pas quand appeler.' },
+    { title: 'Schema.org JSON-LD + Open Graph',   impact: '0% conversion IA', detail: 'LocalBusiness + Service + og:title/image/description. Les IA (ChatGPT, Perplexity, Claude) ne peuvent pas repondre correctement.' },
+    { title: 'Mentionner pianos a queue et marques', impact: '4/20 personas', detail: '"J\'interviens sur droits et a queue — Yamaha, Kawai, Steinway, Pleyel, Bosendorfer…" Les proprietaires de queues partent sans ca.' },
+  ],
+  discuter: [
+    { emoji: '📋', title: 'Forfait pro / contrat annuel', detail: 'Sebastien (restaurant), Dominique (ecole), Valerie (lycee) cherchent tous un forfait. Decision commerciale.' },
+    { emoji: '🎹', title: 'Elargir et detailler le stock', detail: '4 pianos avec photos minimalistes. Ajouter : photos multiples, historique, audio 30s, dimensions, numero de serie.' },
+    { emoji: '💰', title: 'Credit d\'impot 50%', detail: 'Si eligible (service a domicile), 90€ devient 45€ nets — moins cher que le black. Argument decisif pour Abdel.' },
+    { emoji: '📖', title: 'Guide achat premier piano', detail: 'Capturer Romain, Nicolas, Camille et les orienter vers les pianos d\'occasion. Positionnement expert/conseil.' },
+  ],
+};
+
+// PageSpeed
+const ps = {
+  m: { perf: 68, access: 92, bp: 100, seo: 100 },
+  d: { perf: 90, access: 91, bp: 100, seo: 100 },
+};
+
+const observatory = { grade: 'C-', score: 45, passed: 6, total: 10 };
+
+const schemaChecks = [
+  { label: 'JSON-LD present',             ok: false },
+  { label: 'LocalBusiness',              ok: false },
+  { label: 'name / url / description',   ok: false },
+  { label: 'address + geo',              ok: false },
+  { label: 'telephone',                  ok: false },
+  { label: 'openingHours',               ok: false },
+  { label: 'image / logo',               ok: false },
+  { label: 'sameAs (reseaux sociaux)',   ok: false },
+  { label: 'aggregateRating',            ok: false },
+  { label: 'Service (accord / harmo)',   ok: false },
+];
+
+const ogChecks = [
+  { label: 'og:title',       ok: false },
+  { label: 'og:description', ok: false },
+  { label: 'og:image',       ok: false },
+  { label: 'og:url',         ok: false },
+  { label: 'twitter:card',   ok: false },
+  { label: 'canonical',      ok: true  },
+  { label: 'viewport',       ok: true  },
+  { label: 'meta description', ok: false },
+];
+
+const secHeaders = [
+  { header: 'Content Security Policy (CSP)', ok: false },
+  { header: 'X-Frame-Options',               ok: false },
+  { header: 'X-Content-Type-Options',        ok: false },
+  { header: 'Subresource Integrity (SRI)',   ok: false },
+  { header: 'Referrer-Policy',               ok: false },
+  { header: 'HSTS (max-age >= 6 mois)',      ok: true  },
+  { header: 'Cookies HttpOnly + SameSite',   ok: true  },
+  { header: 'HTTPS redirection',             ok: true  },
+  { header: 'CORS (non implemente = OK)',    ok: true  },
+];
+
+// ── Helpers ──
+function sc(v: number)  { return v >= 90 ? '#22c55e' : v >= 50 ? '#f59e0b' : '#ef4444'; }
+function stc(v: number) { return v >= 90 ? 'text-green-600' : v >= 50 ? 'text-amber-600' : 'text-red-600'; }
+function sev(s: string) { return s === 'critique' ? 'bg-red-100 text-red-800' : s === 'haute' ? 'bg-orange-100 text-orange-800' : 'bg-blue-100 text-blue-800'; }
+function dBorder(d: string) { return d === 'Convertit' ? 'border-green-200 bg-green-50/40' : d === 'Hesite' ? 'border-amber-200 bg-amber-50/40' : 'border-neutral-200 bg-neutral-50/40'; }
+function dBadge(d: string)  { return d === 'Convertit' ? 'bg-emerald-100 text-emerald-800' : d === 'Hesite' ? 'bg-amber-100 text-amber-800' : 'bg-neutral-100 text-neutral-700'; }
+function dtBorder(d: string){ return d === 'Convertit' ? 'border-green-200' : d === 'Hesite' ? 'border-amber-200' : 'border-neutral-200'; }
+function cwvBg(k: string, v: string) {
+  const n = parseFloat(v);
+  const good = k === 'lcp' ? n < 2.5 : k === 'cls' ? n < 0.1 : k === 'fcp' ? n < 1.8 : n < 200;
+  const mid  = k === 'lcp' ? n < 4   : k === 'cls' ? n < 0.25: k === 'fcp' ? n < 3   : n < 600;
+  return good ? 'bg-green-50 text-green-800' : mid ? 'bg-amber-50 text-amber-800' : 'bg-red-50 text-red-800';
+}
+function cwvLbl(k: string, v: string) {
+  const n = parseFloat(v);
+  const good = k === 'lcp' ? n < 2.5 : k === 'cls' ? n < 0.1 : k === 'fcp' ? n < 1.8 : n < 200;
+  const mid  = k === 'lcp' ? n < 4   : k === 'cls' ? n < 0.25: k === 'fcp' ? n < 3   : n < 600;
+  return good ? 'Bon' : mid ? 'A ameliorer' : 'Mauvais';
+}
+const obsClr = observatory.grade.startsWith('A') ? { border:'border-green-200', bg:'bg-green-50', text:'text-green-700' }
+             : observatory.grade.startsWith('B') ? { border:'border-amber-200',  bg:'bg-amber-50',  text:'text-amber-700'  }
+             :                                     { border:'border-red-200',     bg:'bg-red-50',    text:'text-red-700'    };
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  noindex={true}
+  lang="fr"
+  frPath="/audit/paccord-piano-v2"
+>
+
+  <!-- ═══════ HERO ═══════ -->
+  <section class="relative w-full px-6 py-16 md:px-8 md:py-24 overflow-hidden" style="background-color:#0D0D0D;">
+    <div class="absolute inset-0 opacity-10" style="background-image:radial-gradient(circle,white 1px,transparent 1px);background-size:40px 40px;"></div>
+    <div class="absolute top-20 -left-32 w-96 h-96 rounded-full opacity-10 blur-3xl" style="background:#E86C47;"></div>
+    <div class="mx-auto max-w-4xl relative z-10">
+      <div class="mb-4 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--color-accent)]/40">
+        <span class="w-2 h-2 rounded-full bg-[#E86C47]"></span>
+        <span class="text-sm font-semibold text-white/90">Rapport confidentiel — v2</span>
+      </div>
+      <h1 class="mb-4 text-3xl font-bold leading-tight text-white md:text-4xl lg:text-5xl">
+        Audit UX + Technique — <span class="bg-gradient-to-r from-[#E86C47] to-[#F5C8B3] bg-clip-text text-transparent">P'accord Piano</span>
+      </h1>
+      <p class="text-lg text-neutral-300 md:text-xl max-w-2xl mb-8">
+        20 personas + audit technique complet de <strong class="text-white">paccord-piano.fr</strong> — Simon Pacor, accordeur-reparateur, Chartres (28).
+      </p>
+      <div class="flex flex-wrap gap-3">
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">20 personas</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">6 canaux</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">5 pages scrapees</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">29 mars 2026</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════ TAB BAR ═══════ -->
+  <nav class="sticky top-16 md:top-20 z-40 bg-white/95 backdrop-blur border-b border-neutral-200" id="tab-bar">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-2 h-12 text-sm overflow-x-auto">
+      <button data-tab="0" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-[var(--color-accent)] bg-[var(--color-accent)]/10">Synthese</button>
+      <button data-tab="1" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">Technique</button>
+      <button data-tab="2" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">Visiteurs <span class="ml-1 text-xs text-neutral-400">20</span></button>
+      <button data-tab="3" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">Ameliorations <span class="ml-1 text-xs text-neutral-400">{ameliorations.haute.length + ameliorations.moyenne.length + ameliorations.discuter.length}</span></button>
+    </div>
+  </nav>
+
+  <div id="panels" class="flex overflow-x-auto snap-x snap-mandatory" style="-webkit-overflow-scrolling:touch;scrollbar-width:none;">
+
+    <!-- ════ PANEL 1 — SYNTHESE ════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+
+      <!-- KPIs -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+            <p class="text-3xl md:text-4xl font-bold text-red-600">{tauxConv}%</p>
+            <p class="mt-1 text-sm text-[var(--color-text-muted)]">Taux de conversion</p>
+            <p class="mt-2 text-xs text-[var(--color-text-muted)]">{convertis} conv · {hesitants} hes · {quittent} partis</p>
+          </div>
+          <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+            <p class="text-3xl md:text-4xl font-bold text-amber-600">{avgExp}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+            <p class="mt-1 text-sm text-[var(--color-text-muted)]">Experience</p>
+            <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden"><div class="h-full bg-amber-500" style={`width:${Number(avgExp)*10}%`}></div></div>
+          </div>
+          <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+            <p class="text-3xl md:text-4xl font-bold text-blue-600">{avgConf}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+            <p class="mt-1 text-sm text-[var(--color-text-muted)]">Confiance</p>
+            <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden"><div class="h-full bg-blue-500" style={`width:${Number(avgConf)*10}%`}></div></div>
+          </div>
+          <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+            <p class="text-3xl md:text-4xl font-bold text-orange-600">{avgClarte}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+            <p class="mt-1 text-sm text-[var(--color-text-muted)]">Clarte</p>
+            <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden"><div class="h-full bg-orange-500" style={`width:${Number(avgClarte)*10}%`}></div></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Paradoxe -->
+      <div class="w-full px-6 py-8 md:px-8 bg-white">
+        <div class="mx-auto max-w-5xl">
+          <div class="rounded-xl border-l-4 border-l-[var(--color-accent)] bg-[var(--color-accent)]/5 p-6 md:p-8">
+            <h2 class="text-lg font-bold text-[var(--color-text)] mb-2">Paradoxe principal</h2>
+            <p class="text-[var(--color-text)] leading-relaxed">
+              P'accord Piano a un <strong>outil de conversion excellent</strong> (le calculateur de prix par code postal) entoure d'un <strong>desert de reassurance</strong>. Le calculateur repond a "combien ?" en 10 secondes. Mais personne ne repond a "pourquoi vous ?". Les visiteurs obtiennent le prix puis quittent faute de preuves. Le bouche-a-oreille compense (67% de conversion) mais <strong>le site seul ne convertit aucun visiteur en phase de comparaison (0/7)</strong>.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Canal -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-2">Conversion par canal</h2>
+          <p class="text-[var(--color-text-muted)] mb-8">Bouche-a-oreille seul canal efficace (67%). Google Search, IA et Facebook : 0%.</p>
+          <div class="grid md:grid-cols-2 gap-4">
+            {canalStats.map((c) => {
+              const pct = Math.round((c.conv / c.total) * 100);
+              return (
+                <div class="rounded-xl border border-[var(--color-border)] bg-white p-5">
+                  <div class="flex items-center justify-between mb-3">
+                    <h3 class="font-semibold text-[var(--color-text)] text-sm">{c.canal}</h3>
+                    <span class={`text-base font-bold ${pct > 50 ? 'text-emerald-600' : pct > 0 ? 'text-amber-600' : 'text-red-600'}`}>{pct}%</span>
+                  </div>
+                  <div class="h-3 rounded-full bg-neutral-100 overflow-hidden mb-3">
+                    <div class="h-full flex">
+                      <div class="bg-emerald-500" style={`width:${(c.conv/c.total)*100}%`}></div>
+                      <div class="bg-amber-400" style={`width:${(c.hesitant/c.total)*100}%`}></div>
+                      <div class="bg-red-400" style={`width:${(c.quitte/c.total)*100}%`}></div>
+                    </div>
+                  </div>
+                  <div class="flex gap-4 text-xs text-[var(--color-text-muted)]">
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span>{c.conv} conv.</span>
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-400"></span>{c.hesitant} hes.</span>
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-400"></span>{c.quitte} partis</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      <!-- Maturite + Device -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-white">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-8">Conversion par maturite</h2>
+          <div class="grid md:grid-cols-3 gap-4 mb-6">
+            {maturiteStats.map((m) => (
+              <div class="rounded-xl border border-[var(--color-border)] bg-white p-6 text-center">
+                <p class="text-sm font-semibold text-[var(--color-text-muted)] uppercase tracking-wider mb-2">{m.level}</p>
+                <p class={`text-4xl font-bold ${m.pct === '0%' ? 'text-red-600' : m.pct === '14%' ? 'text-amber-600' : 'text-emerald-600'}`}>{m.pct}</p>
+                <p class="mt-1 text-sm text-[var(--color-text-muted)]">{m.conv}/{m.total} convertis</p>
+              </div>
+            ))}
+          </div>
+          <div class="rounded-xl bg-red-50 border border-red-200 p-4 text-sm text-red-800 mb-12">
+            <strong>Alerte :</strong> 0% de conversion en comparaison (7 personas). Le site donne le prix mais <strong>pas les preuves</strong> que le service vaut ce prix.
+          </div>
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-8">Conversion par device</h2>
+          <div class="grid md:grid-cols-3 gap-4 mb-6">
+            {deviceStats.map((d) => (
+              <div class="rounded-xl border border-[var(--color-border)] bg-white p-6 text-center">
+                <p class="text-sm font-semibold text-[var(--color-text-muted)] uppercase tracking-wider mb-2">{d.device}</p>
+                <p class={`text-4xl font-bold ${parseInt(d.pct) < 15 ? 'text-red-600' : parseInt(d.pct) < 50 ? 'text-amber-600' : 'text-emerald-600'}`}>{d.pct}</p>
+                <p class="mt-1 text-sm text-[var(--color-text-muted)]">{d.conv}/{d.total} convertis</p>
+              </div>
+            ))}
+          </div>
+          <div class="rounded-xl bg-amber-50 border border-amber-200 p-4 text-sm text-amber-800">
+            <strong>8% de conversion mobile</strong> vs 33% desktop. Le LCP de 6.6s penalise 13/20 personas.
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ════ PANEL 2 — TECHNIQUE ════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+
+      <!-- PageSpeed -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-8">PageSpeed Insights</h2>
+          <div class="grid md:grid-cols-2 gap-6 mb-8">
+            {[{ label:'Mobile', s: ps.m }, { label:'Desktop', s: ps.d }].map(({ label, s }) => (
+              <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+                <h3 class="text-sm font-semibold text-[var(--color-text-muted)] uppercase tracking-wider mb-6">{label}</h3>
+                <div class="grid grid-cols-4 gap-3">
+                  {([['Performance', s.perf], ['Accessibilite', s.access], ['Bonnes Pratiques', s.bp], ['SEO', s.seo]] as [string, number][]).map(([lbl, val]) => (
+                    <div class="text-center">
+                      <div class="relative w-14 h-14 mx-auto mb-2">
+                        <svg class="w-14 h-14 -rotate-90" viewBox="0 0 36 36">
+                          <path d="M18 2.0845 a15.9155 15.9155 0 0 1 0 31.831 a15.9155 15.9155 0 0 1 0-31.831" fill="none" stroke="#e5e7eb" stroke-width="3"/>
+                          <path d="M18 2.0845 a15.9155 15.9155 0 0 1 0 31.831 a15.9155 15.9155 0 0 1 0-31.831" fill="none" stroke={sc(val)} stroke-width="3" stroke-dasharray={`${val},100`} stroke-linecap="round"/>
+                        </svg>
+                        <span class={`absolute inset-0 flex items-center justify-center text-sm font-bold ${stc(val)}`}>{val}</span>
+                      </div>
+                      <p class="text-[10px] text-neutral-500 leading-tight">{lbl}</p>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <!-- CWV -->
+          <h3 class="text-lg font-bold text-[var(--color-text)] mb-4">Core Web Vitals</h3>
+          <div class="grid md:grid-cols-2 gap-6 mb-8">
+            {[
+              { title: 'Mobile', items: [['lcp','LCP affichage principal','6.6s'],['cls','CLS stabilite visuelle','0.137'],['tbt','TBT reactivite','60ms'],['fcp','FCP premier affichage','2.5s']] },
+              { title: 'Desktop', items: [['lcp','LCP affichage principal','1.5s'],['cls','CLS stabilite visuelle','0.128'],['tbt','TBT reactivite','0ms'],['fcp','FCP premier affichage','0.7s']] },
+            ].map(({ title, items }) => (
+              <div>
+                <p class="text-sm font-semibold text-neutral-500 mb-3">{title}</p>
+                <div class="space-y-2">
+                  {(items as [string, string, string][]).map(([k, desc, val]) => (
+                    <div class={`flex items-center justify-between p-3 rounded-lg ${cwvBg(k, val)}`}>
+                      <span class="text-xs font-bold">{k.toUpperCase()} <span class="font-normal opacity-70">({desc})</span></span>
+                      <div class="flex items-center gap-2">
+                        <span class="text-sm font-bold">{val}</span>
+                        <span class="text-[10px] px-1.5 py-0.5 rounded bg-white/60 font-medium">{cwvLbl(k, val)}</span>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <!-- Opportunites -->
+          <h3 class="text-lg font-bold text-[var(--color-text)] mb-4">Opportunites</h3>
+          <div class="space-y-2">
+            {[
+              { label: 'Reduire le JavaScript inutilise', gain: '63 KB', p: 'haute' },
+              { label: 'Polices Google Fonts → locales (RGPD + latence)', gain: '~200ms', p: 'haute' },
+              { label: 'Images en format WebP', gain: 'poids reduit', p: 'haute' },
+              { label: 'Reduire le CSS inutilise', gain: '11 KB', p: 'moyenne' },
+              { label: 'Minifier le CSS', gain: '3 KB', p: 'basse' },
+            ].map(o => (
+              <div class="flex items-center justify-between p-3 rounded-lg bg-white border border-[var(--color-border)]">
+                <span class="text-sm text-[var(--color-text)]">{o.label}</span>
+                <div class="flex items-center gap-2">
+                  <span class="text-xs text-[var(--color-text-muted)]">{o.gain}</span>
+                  <span class={`text-[10px] px-2 py-0.5 rounded font-semibold ${o.p === 'haute' ? 'bg-red-100 text-red-700' : o.p === 'moyenne' ? 'bg-amber-100 text-amber-700' : 'bg-blue-100 text-blue-700'}`}>{o.p}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- Securite -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-white">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">Securite — Mozilla Observatory</h2>
+          <div class={`flex items-center gap-5 p-5 rounded-xl border ${obsClr.border} ${obsClr.bg} mb-6`}>
+            <div class={`text-5xl font-black ${obsClr.text}`}>{observatory.grade}</div>
+            <div>
+              <p class="font-semibold text-neutral-900">Grade securite</p>
+              <p class="text-sm text-neutral-600">{observatory.passed}/{observatory.total} tests passes — Score {observatory.score}/100</p>
+              <p class="text-xs text-neutral-500 mt-1">Manque CSP et X-Frame-Options (critiques). HSTS et cookies OK grace a Cloudflare.</p>
+            </div>
+          </div>
+          <div class="space-y-1">
+            {secHeaders.map(h => (
+              <div class="flex items-center gap-3 py-2 border-b border-neutral-100 last:border-0">
+                {h.ok
+                  ? <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                  : <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                }
+                <span class={`text-sm ${h.ok ? 'text-neutral-700' : 'text-neutral-400 line-through'}`}>{h.header}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- Schema.org + OG -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl grid md:grid-cols-2 gap-8">
+          <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+            <div class="flex items-center justify-between mb-3">
+              <h3 class="text-lg font-bold text-[var(--color-text)]">Schema.org</h3>
+              <span class="text-xs px-2 py-1 rounded-full bg-red-100 text-red-700 font-semibold">0 / 10</span>
+            </div>
+            <p class="text-xs text-neutral-500 mb-4">Google et les IA ne comprennent pas que c'est un artisan accordeur a Chartres. 0% de conversion IA.</p>
+            <div class="space-y-1">
+              {schemaChecks.map(c => (
+                <div class="flex items-center gap-2 py-1">
+                  <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                  <span class="text-sm text-neutral-400 line-through">{c.label}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div class="space-y-6">
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+              <div class="flex items-center justify-between mb-3">
+                <h3 class="text-lg font-bold text-[var(--color-text)]">Open Graph & Meta</h3>
+                <span class="text-xs px-2 py-1 rounded-full bg-red-100 text-red-700 font-semibold">2 / 8</span>
+              </div>
+              <p class="text-xs text-neutral-500 mb-4">Partages Facebook/WhatsApp sans apercu image. Perte d'opportunite.</p>
+              <div class="space-y-1">
+                {ogChecks.map(c => (
+                  <div class="flex items-center gap-2 py-0.5">
+                    {c.ok
+                      ? <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                      : <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                    }
+                    <span class={`text-sm ${c.ok ? 'text-neutral-700' : 'text-neutral-400 line-through'}`}>{c.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- ════ PANEL 3 — VISITEURS ════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+
+          <div class="grid grid-cols-3 gap-4 mb-10">
+            <div class="rounded-xl bg-emerald-50 border border-emerald-200 p-4 text-center"><p class="text-3xl font-bold text-emerald-700">{convertis}</p><p class="text-sm text-emerald-600 font-medium">contactent</p></div>
+            <div class="rounded-xl bg-amber-50 border border-amber-200 p-4 text-center"><p class="text-3xl font-bold text-amber-700">{hesitants}</p><p class="text-sm text-amber-600 font-medium">hesitent</p></div>
+            <div class="rounded-xl bg-red-50 border border-red-200 p-4 text-center"><p class="text-3xl font-bold text-red-700">{quittent}</p><p class="text-sm text-red-600 font-medium">repartent</p></div>
+          </div>
+
+          {(['Convertit','Hesite','Quitte'] as const).map(decision => (
+            <div class="mb-10">
+              <h2 class={`text-lg font-bold mb-3 flex items-center gap-2 ${decision === 'Convertit' ? 'text-emerald-700' : decision === 'Hesite' ? 'text-amber-700' : 'text-neutral-600'}`}>
+                <span class={`w-3 h-3 rounded-full ${decision === 'Convertit' ? 'bg-emerald-500' : decision === 'Hesite' ? 'bg-amber-400' : 'bg-neutral-400'}`}></span>
+                {decision === 'Convertit' ? 'Ceux qui contactent' : decision === 'Hesite' ? 'Ceux qui hesitent' : 'Ceux qui repartent'}
+              </h2>
+              <div class="space-y-3">
+                {personas.filter(p => p.decision === decision).map(p => (
+                  <details class={`group border rounded-xl overflow-hidden ${dBorder(p.decision)}`}>
+                    <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                      <div class="flex-1 min-w-0">
+                        <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                          <h3 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h3>
+                          <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                          <span class="text-[11px] text-neutral-500 bg-white border border-neutral-200 px-1.5 py-0.5 rounded">{p.device}</span>
+                          <span class="text-[11px] text-neutral-500 bg-white border border-neutral-200 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                        </div>
+                        <p class="text-xs text-neutral-500">{p.role}</p>
+                      </div>
+                      <div class="flex items-center gap-2 shrink-0">
+                        <span class={`text-[11px] px-2 py-0.5 rounded-full font-semibold ${dBadge(p.decision)}`}>{p.decision}</span>
+                        <svg class="w-4 h-4 text-neutral-400 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                      </div>
+                    </summary>
+                    <div class={`px-4 pb-4 pt-0 border-t ${dtBorder(p.decision)} bg-white/60`}>
+                      <div class="grid gap-3 text-xs mt-3">
+                        <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.impression}</p></div>
+                        <div><p class="font-semibold text-neutral-700 mb-1">Parcours</p><ol class="list-decimal list-inside space-y-0.5 text-neutral-600">{p.parcours.map(e => <li>{e}</li>)}</ol></div>
+                        <div><p class="font-semibold text-neutral-700 mb-1">Question cle</p><p class="italic text-neutral-500">"{p.question}"</p><p class="text-neutral-600 mt-1">Reponse : <strong>{p.reponse}</strong> — {p.repDetail}</p></div>
+                        <div><p class="font-semibold text-neutral-700 mb-1">Impact technique</p><p class="text-neutral-600">{p.technique}</p></div>
+                        <div class="flex gap-4">
+                          <div class="flex-1"><p class="font-semibold text-green-700 mb-1">Points positifs</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.positifs.map(x => <li>{x}</li>)}</ul></div>
+                          <div class="flex-1"><p class={`font-semibold mb-1 ${decision === 'Convertit' ? 'text-amber-700' : 'text-red-600'}`}>Frictions</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map(x => <li>{x}</li>)}</ul></div>
+                        </div>
+                        <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                          <div class="text-center"><span class={`block text-base font-bold ${decision === 'Convertit' ? 'text-emerald-600' : decision === 'Hesite' ? 'text-amber-600' : 'text-red-500'}`}>{p.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                          <div class="text-center"><span class="block text-base font-bold text-blue-600">{p.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                          <div class="text-center"><span class="block text-base font-bold text-orange-600">{p.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+                          <div class="flex-1 flex items-end"><p class="text-xs text-neutral-500 italic">{p.raison}</p></div>
+                        </div>
+                      </div>
+                    </div>
+                  </details>
+                ))}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ════ PANEL 4 — AMELIORATIONS ════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+
+          <!-- Frictions -->
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-2">Points de friction recurrents</h2>
+          <p class="text-[var(--color-text-muted)] mb-6">Classes par nombre de personas impactes.</p>
+          <div class="space-y-3 mb-12">
+            {frictions.map(f => (
+              <div class="flex items-center gap-4 rounded-xl border border-[var(--color-border)] bg-white p-4">
+                <div class="shrink-0 w-11 h-11 rounded-xl bg-neutral-100 flex items-center justify-center">
+                  <span class="text-base font-bold text-[var(--color-text)]">{f.count}</span>
+                </div>
+                <div class="flex-1 min-w-0">
+                  <p class="font-medium text-[var(--color-text)] text-sm">{f.label}</p>
+                  <p class="text-xs text-[var(--color-text-muted)]">{f.count}/20 personas impactes</p>
+                </div>
+                <span class={`shrink-0 px-3 py-1 rounded-full text-xs font-semibold ${sev(f.severity)}`}>{f.severity}</span>
+              </div>
+            ))}
+          </div>
+
+          <!-- Haute -->
+          <h2 class="text-xl font-bold text-red-700 mb-4">Le plus important</h2>
+          <div class="space-y-4 mb-10">
+            {ameliorations.haute.map((a, i) => (
+              <div class="bg-white border-2 border-red-200 rounded-xl p-5 shadow-sm">
+                <div class="flex items-start gap-3 mb-2">
+                  <span class="shrink-0 w-7 h-7 rounded-lg bg-red-100 flex items-center justify-center text-sm font-bold text-red-700">{i+1}</span>
+                  <div><h3 class="font-semibold text-neutral-900">{a.title}</h3><p class="text-xs text-neutral-500">{a.impact}</p></div>
+                </div>
+                <p class="text-sm text-neutral-600 mb-3">{a.detail}</p>
+                <div class="bg-[var(--color-accent)]/5 rounded-lg px-3 py-2.5 flex items-start gap-2">
+                  <svg class="w-4 h-4 text-[var(--color-accent)] mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                  <p class="text-xs text-[var(--color-text)]">{a.action}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <!-- Moyenne -->
+          <h2 class="text-xl font-bold text-amber-700 mb-4">Utile aussi</h2>
+          <div class="grid md:grid-cols-2 gap-4 mb-10">
+            {ameliorations.moyenne.map(a => (
+              <div class="bg-white border border-neutral-200 rounded-xl p-4">
+                <p class="text-xs text-amber-600 font-semibold mb-1">{a.impact}</p>
+                <h4 class="font-semibold text-neutral-900 text-sm mb-1.5">{a.title}</h4>
+                <p class="text-xs text-neutral-600">{a.detail}</p>
+              </div>
+            ))}
+          </div>
+
+          <!-- Discuter -->
+          <h2 class="text-xl font-bold text-neutral-700 mb-4">A discuter ensemble</h2>
+          <div class="grid md:grid-cols-2 gap-4">
+            {ameliorations.discuter.map(a => (
+              <div class="bg-neutral-50 border border-neutral-200 rounded-xl p-4 flex gap-3">
+                <span class="text-xl shrink-0">{a.emoji}</span>
+                <div><h4 class="font-semibold text-neutral-900 text-sm mb-0.5">{a.title}</h4><p class="text-xs text-neutral-600">{a.detail}</p></div>
+              </div>
+            ))}
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Methodologie -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-white">
+        <div class="mx-auto max-w-3xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">Methodologie</h2>
+          <ol class="space-y-2 text-sm leading-relaxed text-[var(--color-text)]">
+            <li><strong>Scraping complet</strong> — 5/6 pages accessibles scrapees (accueil, pianos d'occasion, contact, mentions legales, CGV)</li>
+            <li><strong>Audit technique</strong> — PageSpeed Insights mobile + desktop, Mozilla Observatory, Schema.org, Open Graph, SEO technique</li>
+            <li><strong>20 personas diversifies</strong> — 6 canaux, 3 maturites, 3 devices, 3 personas negatifs (hors zone / hors budget / besoin inadapte), 3 personas IA</li>
+            <li><strong>Simulation individuelle</strong> — premiere impression, parcours, question cle, impact technique, decision</li>
+            <li><strong>Agregation et priorisation</strong> — par personas impactes et severite de friction</li>
+          </ol>
+          <p class="mt-4 text-xs text-[var(--color-text-muted)]">Chaque persona est evalue sur 3 axes (experience, confiance, clarte, 1-10). Resultats generes par simulation IA.</p>
+        </div>
+      </div>
+
+      <!-- CTA -->
+      <section class="w-full px-6 py-16 md:px-8 md:py-24" style="background-color:#0D0D0D;">
+        <div class="mx-auto max-w-3xl text-center">
+          <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">Pret a transformer ces insights en resultats ?</h2>
+          <p class="text-neutral-300 mb-8 max-w-xl mx-auto">Ce rapport identifie des opportunites concretes. Je peux construire un site qui convertit vraiment vos visiteurs en clients.</p>
+          <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+            <a href="/commander" class="inline-flex items-center gap-2 px-8 py-3.5 text-base font-semibold text-white rounded-xl transition-all shadow-lg hover:shadow-xl hover:scale-105" style="background:linear-gradient(135deg,#E86C47,#D4572F);box-shadow:0 4px 20px rgba(232,108,71,.4);">
+              Commander un site
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+            </a>
+            <a href="/contact" class="inline-flex items-center gap-2 px-8 py-3.5 border border-neutral-600 text-neutral-300 font-semibold rounded-xl hover:border-[#E86C47] hover:text-[#E86C47] transition-all">En discuter d'abord</a>
+          </div>
+        </div>
+      </section>
+
+    </section>
+
+  </div>
+
+  <style is:inline>
+    #panels { -ms-overflow-style:none; }
+    #panels::-webkit-scrollbar { display:none; }
+  </style>
+
+  <script is:inline>
+    const panels = document.getElementById('panels');
+    const tabs = document.querySelectorAll('.tab-btn');
+    const sections = panels.querySelectorAll('.tab-panel');
+    function activateTab(i) {
+      tabs.forEach((b, j) => {
+        if (j === i) { b.classList.remove('text-neutral-500','hover:text-neutral-700'); b.classList.add('text-[var(--color-accent)]','bg-[var(--color-accent)]/10'); }
+        else { b.classList.remove('text-[var(--color-accent)]','bg-[var(--color-accent)]/10'); b.classList.add('text-neutral-500','hover:text-neutral-700'); }
+      });
+    }
+    tabs.forEach((btn, i) => btn.addEventListener('click', () => { sections[i].scrollIntoView({behavior:'smooth',inline:'start',block:'nearest'}); activateTab(i); }));
+    let t;
+    panels.addEventListener('scroll', () => { clearTimeout(t); t = setTimeout(() => activateTab(Math.round(panels.scrollLeft / panels.offsetWidth)), 50); }, {passive:true});
+  </script>
+
+</BaseLayout>
