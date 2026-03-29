@@ -1,0 +1,811 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX + Technique — La Belle Vie Resort Koh Phangan | Marc M';
+const description = 'Simulation de 20 visites personas + audit technique complet sur labelleviekpg.com — rapport interactif avec recommandations.';
+
+// ─── PERSONAS DATA ───
+const personas = [
+  { id: 1, name: 'Chloe', age: 32, role: 'Architecte d\'interieur', canal: 'Google Search', maturite: 'Comparaison', device: 'Mobile', decision: 'Quitte', exp: 3, conf: 2, clarte: 4, emoji: '🏛️', situation: 'En couple a Lyon, planifie 2 semaines en Thailande pour decembre 2026', contexte: 'Recherche "boutique hotel koh phangan adults only" — compare 3 hotels en parallele', pages: ['Accueil', 'Chambres', 'Galerie'], questionCle: 'Quel est le tarif pour 4 nuits en chambre double en decembre ?', reponse: 'Non', reponseDetail: 'Aucun prix affiche sur le site. Impossible de comparer avec ses 2 autres options qui affichent leurs tarifs.', premierImpression: '23 secondes de chargement mobile. Elle attend, impatiente. La section "Near Destinations" affiche Londres — elle reste perplexe.', impactTechnique: 'LCP 23.6s : a failli fermer l\'onglet. Ses 2 autres hotels sur la short-list chargent en 3-4s — handicap concurrentiel immediat.', positifs: ['Positionnement adults-only correspond exactement a sa recherche', 'Photos des chambres correctes', 'Concept boutique hotel intimiste bien identifie'], frictions: ['Aucun prix = impossible de comparer', 'Temoignages Lorem Ipsum = template non personnalise identifie', 'Section "Near Destinations: London" pour un hotel en Thailande', 'Popup Christmas Flash Deal en mars 2026', 'Copyright 2024'] },
+  { id: 2, name: 'James', age: 45, role: 'Directeur marketing', canal: 'Google Maps', maturite: 'Decision', device: 'Desktop', decision: 'Hesite', exp: 5, conf: 4, clarte: 5, emoji: '💍', situation: 'A Melbourne, prepare une surprise pour son anniversaire de mariage dans 2 mois', contexte: 'A vu 4.9 etoiles sur Google Maps, a lu les avis avant de cliquer sur le site officiel', pages: ['Accueil', 'Galerie', 'A propos', 'Chambres', 'Contact'], questionCle: 'Comment reserver directement pour 5 nuits mi-mai ?', reponse: 'Non', reponseDetail: 'Pas de booking engine. Formulaire de contact uniquement. Un cadre habitue a reserver en 3 clics trouve ca frustrant.', premierImpression: 'Desktop, 4-5 secondes de chargement. Photos confirment Google Maps. Page A propos avec l\'art Anis Dargaa = exactement le differenciateur cherche.', impactTechnique: 'Les Lorem Ipsum l\'ont force a ouvrir TripAdvisor dans un onglet separe — risque de detourner son attention vers des concurrents deja ouverts.', positifs: ['Avis Google 4.9 etoiles = deja convaincu a l\'arrivee', 'Histoire Anis Dargaa et les oeuvres d\'art', 'Photos confirment l\'ambiance recherchee'], frictions: ['Pas de booking engine vs concurrents avec reservation en 3 clics', 'Temoignages Lorem Ipsum = doute apres bonne premiere impression', 'Section "Near Destinations: London"', 'Pas de prix affiches'] },
+  { id: 3, name: 'Mei-Lin', age: 28, role: 'Graphiste freelance', canal: 'Instagram', maturite: 'Decouverte', device: 'Mobile', decision: 'Quitte', exp: 3, conf: 2, clarte: 3, emoji: '🎨', situation: 'Singapour, voyage solo envisage, en phase de reperage inspiration sur Instagram', contexte: 'A vu un reel d\'un influenceur voyage avec la piscine et les oeuvres d\'art taggant @labelleviekpg', pages: ['Accueil', 'Galerie'], questionCle: 'Est-ce adapte pour une voyageuse solo ou c\'est vraiment que pour les couples ?', reponse: 'Non', reponseDetail: 'Rien ne rassure une voyageuse solo. Tout le contenu parle de "couples". Les retraites Clara Morgane sont "retraites couples".', premierImpression: 'Venant d\'Instagram (instantane), 23 secondes de chargement = choc. Photos jolies mais moins impactantes que le reel Instagram.', impactTechnique: 'LCP 23.6s depuis un feed Instagram instantane = contraste brutal. Popup Christmas Flash Deal = premier signal abandonne.', positifs: ['Photos de piscine visuellement attractives', 'Concept hotel-galerie original', 'Oeuvres d\'art differenciantes'], frictions: ['Aucun message solo-friendly', 'Tous les contenus orientes "couples"', '23 secondes de chargement depuis Instagram', 'Pas de prix = budget impossible a evaluer', 'Popup Christmas en mars 2026'] },
+  { id: 4, name: 'Sebastien', age: 38, role: 'Chirurgien-dentiste', canal: 'ChatGPT', maturite: 'Comparaison', device: 'Desktop', decision: 'Hesite', exp: 5, conf: 3, clarte: 4, emoji: '🦷', situation: 'Bordeaux, en couple avec Audrey. ChatGPT l\'a recommande en 1er parmi 4 options.', contexte: '"Petit hotel charme adults-only Koh Phangan avec caractere" → ChatGPT cite Anis Dargaa et 6 chambres', pages: ['Accueil', 'A propos', 'Galerie', 'Chambres', 'Contact'], questionCle: 'Petit-dejeuner inclus ? Y a-t-il des experiences sur place (yoga, massage) ?', reponse: 'Non', reponseDetail: 'Aucune info sur les services inclus ni les activites a proximite. Il faudrait envoyer plusieurs emails pour obtenir les informations de base.', premierImpression: 'Desktop, chargement correct. Page A propos confirme les infos ChatGPT (6 chambres, art, adults-only). C\'est rassurant jusqu\'aux temoignages Lorem Ipsum.', impactTechnique: 'Les temoignages faux invalident partiellement la recommandation IA. Force a aller sur TripAdvisor pour trouver des preuves de qualite reelle.', positifs: ['Le site confirme les informations ChatGPT : 6 chambres, art Anis Dargaa, adults-only', 'Photos coherentes avec la recommandation', 'Page A propos avec l\'histoire de l\'hotel'], frictions: ['Temoignages Lorem Ipsum apres recommandation IA enthousiasmante', 'Aucune info petit-dejeuner ni yoga/massage', 'Pas de prix', 'Section "Near Destinations: London"'] },
+  { id: 5, name: 'Karen', age: 55, role: 'Ex-DRH retraitee', canal: 'Bouche-a-oreille', maturite: 'Decision', device: 'Mobile', decision: 'Hesite', exp: 2, conf: 3, clarte: 2, emoji: '🧳', situation: 'Geneve, avec son compagnon Patrick (60 ans, problemes de dos). Recommandation enthousiaste d\'une amie.', contexte: 'Tape directement "La Belle Vie Koh Phangan" dans Google — deja convaincue avant d\'arriver', pages: ['Accueil', 'Chambres', 'Contact'], questionCle: 'Quelle chambre est au rez-de-chaussee ? Comment organiser le transfert depuis Koh Samui ?', reponse: 'Non', reponseDetail: 'Aucune info sur l\'accessibilite des chambres ni sur les transferts. Ces informations pratiques essentielles sont totalement absentes.', premierImpression: '23 secondes de chargement — Karen pense que son telephone a un probleme. Elle rafraichit la page. Site a failli perdre une cliente deja decidee par recommandation.', impactTechnique: 'Navigation mobile penible pour 55+ ans : textes petits, boutons rapproches. Offres speciales = liens morts. Popup Christmas l\'agace.', positifs: ['Recommandation amie = ancre de confiance absolue', 'Photos de chambres rassurantes', 'Le lieu semble exactement ce que son amie lui a decrit'], frictions: ['23s chargement → pense que son telephone est en panne', 'Zero info transferts depuis Koh Samui', 'Zero info chambre rez-de-chaussee', 'Temoignages Lorem Ipsum', 'Liens morts offres speciales'] },
+  { id: 6, name: 'Tobias', age: 34, role: 'Ingenieur logiciel', canal: 'Google Search', maturite: 'Comparaison', device: 'Mobile', decision: 'Quitte', exp: 3, conf: 2, clarte: 4, emoji: '🏳️‍🌈', situation: 'Heidelberg, en couple avec Felix (prof de yoga). Celebrent 5 ans ensemble.', contexte: 'Recherche "luxury small hotel koh phangan gay friendly"', pages: ['Accueil', 'A propos', 'Galerie'], questionCle: 'Y a-t-il des cours de yoga a proximite ? L\'hotel est-il gay-friendly ?', reponse: 'Non', reponseDetail: 'Aucun signal d\'inclusivite. Photos uniquement de couples hetero. Aucune mention yoga nearby.', premierImpression: '23 secondes de chargement. Il cherche des signaux d\'inclusivite. En tant qu\'ingenieur, il identifie immediatement les Lorem Ipsum.', impactTechnique: 'Ingenieur logiciel = particulierement sensible au Lorem Ipsum et a la section Londres. "Ce site n\'a pas ete fini."', positifs: ['Concept hotel intime et de qualite', 'Oeuvres d\'art differenciantes', 'Potentiellement parfait si signal inclusif present'], frictions: ['Zero signal gay-friendly', 'Photos uniquement couples hetero', 'Zero info yoga/activites bien-etre', 'Temoignages Lorem Ipsum reconnus immediatement', 'Section "Near Destinations: London"'] },
+  { id: 7, name: 'Aiko', age: 41, role: 'Editrice magazine voyage', canal: 'Blog voyage', maturite: 'Comparaison', device: 'Tablette', decision: 'Hesite', exp: 4, conf: 3, clarte: 5, emoji: '📖', situation: 'Tokyo, projet de livre photo sur les hotels d\'art en Asie du Sud-Est', contexte: 'A lu "Best hidden gems in Koh Phangan" mentionnant La Belle Vie et les oeuvres d\'Anis Dargaa', pages: ['Accueil', 'A propos', 'Galerie', 'Chambres'], questionCle: 'Les oeuvres d\'Anis Dargaa sont-elles des pieces originales et peut-on les acheter ?', reponse: 'Non', reponseDetail: 'Page A propos mentionne l\'artiste mais zero detail : originales ? reproductions ? bio ? Insuffisant pour une editrice professionnelle.', premierImpression: 'Sur tablette, ~8 secondes de chargement. Correct. Site avec un certain charme visuel. Page A propos mentionne Anis Dargaa — c\'est ce qu\'elle cherchait.', impactTechnique: 'Tablette = meilleur chargement (8s vs 23s mobile). Mais contenu superficiel sur l\'art = vrai frein. Les Lorem Ipsum la choquent professionnellement.', positifs: ['Oeuvres d\'art = angle editorial rare en Asie du Sud-Est', 'Concept hotel-galerie coherent', 'Positionnement 6 chambres valorisant pour un reportage'], frictions: ['Zero profondeur sur l\'artiste Anis Dargaa', 'Pas de bio, portfolio, dates, medium des oeuvres', 'Temoignages Lorem Ipsum = template non fini', 'Galerie melange piscine/chambres/art sans separation'] },
+  { id: 8, name: 'Ryan', age: 26, role: 'Serveur / backpackeur', canal: 'Instagram', maturite: 'Decouverte', device: 'Mobile', decision: 'Quitte', exp: 2, conf: 2, clarte: 2, emoji: '🎒', situation: 'Sydney, budget 40-60 EUR/nuit, cherche la Full Moon Party de Koh Phangan', contexte: 'A clique sur un post sponsorise avec la piscine au sunset — mauvais ciblage publicitaire', pages: ['Accueil'], questionCle: 'C\'est combien la nuit ?', reponse: 'Non', reponseDetail: 'Aucun prix. Il voit "Presidential Suite" et comprend immediatement que c\'est hors budget.', premierImpression: '23 secondes de chargement — a failli fermer. Voit "Adults Only Boutique Resort". Comprend en 5 secondes : trop cher, trop calme. Popup Christmas = premiere interaction.', impactTechnique: 'N\'a presque pas vu le site. Lenteur + non-pertinence = rebond total en moins de 30 secondes. Persona negatif — mauvais ciblage pub.', positifs: ['Le positionnement filtre naturellement les mauvaises cibles (c\'est voulu)'], frictions: ['23s chargement + non-cible = rebond instantane', 'Popup Christmas = premiere impression negative', 'Aucun prix = meme les non-cibles ne savent pas qu\'ils sont hors budget'] },
+  { id: 9, name: 'Nathalie', age: 48, role: 'Notaire', canal: 'Email promo', maturite: 'Decision', device: 'Desktop', decision: 'Hesite', exp: 5, conf: 3, clarte: 5, emoji: '⚖️', situation: 'Strasbourg, fan de Clara Morgane. A recu un email promo Songkran sur les retraites couples.', contexte: 'Budget valide (3500-4000 EUR). Son mari est partant. Elle veut confirmer les details du programme.', pages: ['Page retraite', 'Galerie', 'Chambres', 'Contact'], questionCle: 'Programme jour par jour de la retraite ? Que comprend exactement le tarif ?', reponse: 'Non', reponseDetail: '"5 jours guides" de quoi exactement ? Inclus/non-inclus pas definis. Vols ? Transferts ? Repas ?', premierImpression: 'Arrive via email directement sur la page retraite. Prix visibles (3500-4000 EUR) — seul endroit du site avec un tarif. Experience correcte grace au contenu cible.', impactTechnique: 'Desktop via email = meilleur scenario possible. Mais navigation vers le reste du site → Lorem Ipsum + section Londres → illusion cassee.', positifs: ['Page retraite avec dates et prix existe', 'Connexion Clara Morgane = motivation forte', 'Photos de l\'hotel confirment le standing'], frictions: ['Programme retraite vague : tantra, yoga, presence consciente — sans details concrets', 'Inclus/non-inclus non definis : repas ? transferts ? vols ?', 'Navigation vers reste du site → Lorem Ipsum + Londres → doute sur le serieux'] },
+  { id: 10, name: 'Liam', age: 30, role: 'Consultant McKinsey', canal: 'Google Search', maturite: 'Comparaison', device: 'Mobile', decision: 'Quitte', exp: 2, conf: 1, clarte: 3, emoji: '💎', situation: 'Londres, fiance, planifie sa lune de miel. Short-list de 5 hotels comparee methodiquement.', contexte: 'Recherche "honeymoon koh phangan intimate hotel"', pages: ['Accueil', 'Chambres'], questionCle: 'Proposez-vous un package lune de miel ?', reponse: 'Non', reponseDetail: 'Le mot "honeymoon" n\'apparait pas sur le site. Pas de package, pas de champagne, pas de massage couple.', premierImpression: '23 secondes de chargement — note mentalement que c\'est inacceptable. Habitue a des sites corporate performants. Cherche "honeymoon" dans la navigation. Rien.', impactTechnique: 'Pour un consultant, LCP 23.6s = red flag professionnel. Les Lorem Ipsum sont eliminatoires : signal de manque de rigueur dans le management.', positifs: ['Positionnement intimiste 6 chambres = ideal pour lune de miel en potentiel'], frictions: ['Zero package lune de miel, zero mot "honeymoon" sur le site', 'Temoignages Lorem Ipsum = eliminatoire pour un analyste', 'Pas de prix', 'LCP 23.6s', 'Section "Near Destinations: London"'] },
+  { id: 11, name: 'Brigitte', age: 62, role: 'Retraitee', canal: 'Claude (IA)', maturite: 'Comparaison', device: 'Desktop', decision: 'Quitte', exp: 3, conf: 2, clarte: 3, emoji: '👓', situation: 'Nice, veuve, voyage avec sa soeur Monique (65 ans). Claude IA a recommande La Belle Vie.', contexte: 'Claude a recommande pour "le calme, l\'art, le quartier Ban Tai loin de la Full Moon Party"', pages: ['Accueil', 'A propos', 'Galerie', 'Chambres'], questionCle: 'Comment se rendre depuis Bangkok et y a-t-il des chambres de plain-pied ?', reponse: 'Non', reponseDetail: 'Zero info transferts depuis Bangkok/Koh Samui. Zero mention accessibilite chambres. FAQ insuffisante pour des voyageuses seniors.', premierImpression: 'Desktop, chargement acceptable. Photos belles. Mais les temoignages la perturbent sans qu\'elle identifie precisement pourquoi ("ca fait bizarre ces avis").', impactTechnique: 'La section "Near Destinations: London" la perturbe enormement — elle croit avoir atterri sur le mauvais site. Choquant pour une utilisatrice qui fait confiance au web.', positifs: ['Recommandation Claude = ancre de confiance initiale', 'Photos belles et ambiance calme confirmee', 'Page A propos rassurante sur le positionnement'], frictions: ['Section "Near Destinations: London" = cru etre sur le mauvais site', 'Temoignages qui "font bizarre" (Lorem Ipsum non nomme mais senti)', 'Zero info transferts et logistique', 'Zero info accessibilite chambres', 'Google Translate widget peu professionnel'] },
+  { id: 12, name: 'Tom', age: 29, role: 'Educateur sportif', canal: 'Facebook', maturite: 'Decouverte', device: 'Mobile', decision: 'Quitte', exp: 2, conf: 5, clarte: 6, emoji: '👶', situation: 'Bruxelles, en couple avec Lucie, bebe de 8 mois. A vu un post dans un groupe "Voyager en famille en Asie".', contexte: 'Post disait "dommage que ce soit adults-only" → il va verifier si les bebes sont acceptes', pages: ['Accueil'], questionCle: 'Est-ce que les bebes sont acceptes ?', reponse: 'Oui', reponseDetail: 'La mention "adults-only" est presente et claire — reponse negative mais reponse quand meme. Tom trouve l\'info en 20 secondes.', premierImpression: '23 secondes de chargement mais il cherche une info precise. Une fois charge, il trouve rapidement la mention adults-only. Mission accomplie — ce n\'est pas pour lui.', impactTechnique: 'Tom n\'est pas reste assez longtemps pour voir les problemes. Experience minimale mais conclusive. Rebond attendu — bonne cible a ne pas cibler.', positifs: ['Adults-only clairement indique = filtre efficace des mauvaises cibles', 'Photos de la piscine impressionnantes', 'Il pensera "bel endroit, pour plus tard sans bebe"'], frictions: ['23s de chargement pour obtenir une reponse negative', 'Persona negatif — mauvaise cible famille avec bebe'] },
+  { id: 13, name: 'Priya', age: 35, role: 'Fondatrice startup', canal: 'Google Maps', maturite: 'Decision', device: 'Mobile', decision: 'Hesite', exp: 2, conf: 2, clarte: 2, emoji: '⚡', situation: 'Mumbai, deja a Koh Phangan, hotel actuel decevant. Cherche a changer pour ce soir ou demain.', contexte: 'Decision urgente — cherche sur Google Maps "hotels pres de Ban Tai Beach" avec disponibilite immediate', pages: ['Accueil', 'Chambres', 'Contact'], questionCle: 'Avez-vous une chambre disponible pour ce soir ?', reponse: 'Non', reponseDetail: 'Pas de booking engine, pas de WhatsApp visible, pas de telephone en header. Uniquement un formulaire email — inadapte pour une urgence.', premierImpression: '23 secondes de chargement sur reseau mobile thai. Cherche immediatement un numero WhatsApp ou telephone. Rien en header. Page Contact = formulaire email uniquement.', impactTechnique: 'Site vitrine passif = elimine pour les reservations urgentes. Booking.com est a 2 clics — elle y retourne. Pendant que le site met 23s, un concurrent confirme la reservation.', positifs: ['Position GBP sur Google Maps = point d\'entree valide', 'Photos et standing correspondent a ses criteres', 'Localisation Ban Tai Beach = convient'], frictions: ['Pas de WhatsApp ni telephone direct en header', 'Formulaire email inutilisable pour une urgence', 'LCP 23.6s sur reseau mobile thai = calvaire', 'Pas de booking engine ni disponibilite temps reel'] },
+  { id: 14, name: 'Markus', age: 42, role: 'Professeur d\'economie', canal: 'Perplexity', maturite: 'Comparaison', device: 'Desktop', decision: 'Quitte', exp: 3, conf: 1, clarte: 3, emoji: '🎓', situation: 'Zurich, en couple avec Anna (galeriste). Perplexity a cite La Belle Vie parmi "art hotels under $200/night".', contexte: 'Compare analytiquement une liste de 8 hotels — methode universitaire rigoureuse', pages: ['Accueil', 'A propos', 'Galerie', 'Chambres'], questionCle: 'Quel est le tarif moyen par nuit ? Les oeuvres sont-elles visibles depuis les espaces communs ?', reponse: 'Non', reponseDetail: 'Pas de prix = impossible de confirmer "under $200/night". Zero presentation detaillee des oeuvres dans les espaces communs.', premierImpression: 'Desktop, chargement correct. Il coche ses criteres : 6 chambres OK, art Anis Dargaa mentionne, adults-only OK. Puis les temoignages Lorem Ipsum.', impactTechnique: 'Pour un universitaire, les sources non verifiables sont eliminatoires. Ne peut pas confirmer le prix de Perplexity. Open Graph absent = le lien envoye par email a Anna n\'affiche aucune preview.', positifs: ['Concept art hotel = parfaitement aligne avec Anna (galeriste)', 'Mention Anis Dargaa = differenciateur reel', 'Positionnement 6 chambres = adapte a leur profil'], frictions: ['Temoignages Lorem Ipsum = eliminatoire pour un profil analytique', 'Impossible de confirmer "under $200" sans prix', 'Zero profondeur sur les oeuvres d\'art pour une galeriste', 'Open Graph absent = pas de preview email pour Anna'] },
+  { id: 15, name: 'Sophie', age: 37, role: 'Responsable communication', canal: 'Google Search', maturite: 'Decision', device: 'Mobile', decision: 'Convertit', exp: 3, conf: 3, clarte: 5, emoji: '💫', situation: 'Reims, fan de Clara Morgane. Mariee a Julien (viticulteur). Budget 4000 EUR valide.', contexte: 'Recherche "retraite couple clara morgane koh phangan" — motivation externe tres forte', pages: ['Page retraite', 'Galerie', 'Chambres', 'Contact'], questionCle: 'Reste-t-il des places ? Quel est le programme jour par jour ?', reponse: 'Partiellement', reponseDetail: 'Page retraite avec prix et dates. Mais programme vague, places restantes non indiquees. Sophie envoie un email de demande d\'informations.', premierImpression: 'Chargement long mais elle est tres motivee et patiente. La page retraite existe — soulagement. Prix visibles (3500-4000 EUR). Ce n\'est pas le site qui convertit, c\'est Clara Morgane.', impactTechnique: 'Sa conversion est une anomalie statistique due a sa motivation externe (fan Clara Morgane). LCP 23.6s aurait elimine tout autre profil. Les Lorem Ipsum ne la perturbent pas vraiment.', positifs: ['Page retraite avec prix et dates = seul endroit du site avec un tarif visible', 'Clara Morgane = motivation suffisante pour surmonter toutes les frictions du site', 'Photos de l\'hotel confirment le standing et l\'ambiance'], frictions: ['Programme retraite vague — 7 jours de quoi exactement ?', 'Places restantes non indiquees = pas d\'urgence creee', 'Confiance vient de Clara Morgane, pas du site — conversion fragile'] },
+  { id: 16, name: 'Dylan', age: 24, role: 'Etudiant master', canal: 'Instagram', maturite: 'Decouverte', device: 'Mobile', decision: 'Quitte', exp: 2, conf: 1, clarte: 3, emoji: '🎮', situation: 'Manchester, budget ultra-serre, gap semester avec 2 potes. Cherche la fete.', contexte: 'A clique sur un reel sponsorise par reflexe — hors-cible total', pages: ['Accueil'], questionCle: 'Aucune — quitte en 10 secondes', reponse: 'Non applicable', reponseDetail: 'Dylan quitte avant d\'avoir compris ce qu\'est le site. "Adults Only Boutique Resort" + chargement lent = bye immediat.', premierImpression: 'Le hero dit "Adults Only Boutique Resort". Dylan comprend immediatement : trop cher, trop calme. Il ne scrolle meme pas. 23 secondes = eternite pour un Gen Z.', impactTechnique: 'Gen Z = TikTok et Instagram instantanes. 23 secondes = eternite absolue. Jugement esthetique : "ce site est vieux". Popup Christmas = "meme pas a jour". Persona negatif.', positifs: ['Adults-only filtre la bonne cible — Dylan en est l\'illustration involontaire'], frictions: ['23s de chargement + site "vieux" = rebond Gen Z instantane', 'Popup Christmas = "ce site n\'est meme pas a jour"', 'Non-cible — aucune chance de conversion'] },
+  { id: 17, name: 'Valerie', age: 58, role: 'Enseignante de lettres', canal: 'Bouche-a-oreille', maturite: 'Comparaison', device: 'Tablette', decision: 'Hesite', exp: 4, conf: 3, clarte: 4, emoji: '📚', situation: 'Toulouse, en couple avec Marc (architecte). Sa collegue a fait la retraite Clara Morgane et en parle.', contexte: 'Intriguee mais prudente — veut comprendre le programme avant d\'en parler a Marc', pages: ['Accueil', 'Retraite Clara Morgane', 'A propos', 'Galerie'], questionCle: 'Concretement, qu\'est-ce qu\'on fait pendant 7 jours ?', reponse: 'Non', reponseDetail: '"5 jours guides" de quoi ? Valerie (enseignante, "image a tenir") a besoin d\'un programme precis avant d\'en parler a son mari.', premierImpression: 'Tablette, ~8 secondes de chargement. Site visuellement correct. Quand elle arrive aux temoignages : Lorem Ipsum. Enseignante de lettres — elle reconnait immediatement le faux texte latin.', impactTechnique: 'Tablette = chargement intermediaire (8s). Mais le Lorem Ipsum la scandalise plus que quiconque. "C\'est inadmissible" — reaction d\'enseignante de lettres.', positifs: ['Recommandation collegue = motivation forte', 'La page retraite existe et le concept est la', 'Galerie jolie et rassurante'], frictions: ['Temoignages Lorem Ipsum = "inadmissible" pour une enseignante qui reconnait le latin', 'Programme retraite vague sans detail jour par jour', 'Terme "tantra" potentiellement bloquant sans contexte explique', 'Copyright 2024 = signal d\'abandon'] },
+  { id: 18, name: 'Hiroshi', age: 50, role: 'Directeur PME', canal: 'Google Maps', maturite: 'Decision', device: 'Mobile', decision: 'Quitte', exp: 2, conf: 2, clarte: 3, emoji: '🗾', situation: 'Osaka, planifie voyage famille elargie : lui, femme, parents (73+75 ans), enfants (16+18 ans)', contexte: 'Cherche 2-3 chambres dans un endroit calme pour le Nouvel An. Critique : age minimum "adults-only".', pages: ['Accueil', 'Chambres', 'FAQ'], questionCle: 'Age minimum exact pour "adults-only" ? Peut-on reserver 3 chambres simultanement ?', reponse: 'Non', reponseDetail: '"Adults-only" sans age minimum precise. Son fils de 16 ans serait-il accepte ? Reserver 3/6 chambres = comment ? Aucune reponse.', premierImpression: '23 secondes sur reseau mobile thai. Il va aux chambres puis cherche une FAQ. L\'info sur l\'age minimum est introuvable. Au Japon, absence d\'information = signal negatif fort.', impactTechnique: 'Pour un profil culturellement habitue a des sites tres informatifs (culture japonaise), le site manque cruellement de details. Pas de booking engine = impossible pour un groupe complexe.', positifs: ['Calme et intimite = ideal pour des parents ages', 'Photos rassurantes', 'Position Google Maps valide'], frictions: ['Age minimum "adults-only" non defini = bloquant pour ado de 16 ans', 'Impossible de reserver 3 chambres en ligne', 'Zero info accessibilite parents ages', 'Absence d\'infos = red flag dans la culture japonaise'] },
+  { id: 19, name: 'Camille', age: 33, role: 'Sage-femme', canal: 'Bouche-a-oreille', maturite: 'Decouverte', device: 'Mobile', decision: 'Quitte', exp: 4, conf: 3, clarte: 4, emoji: '🌸', situation: 'Montpellier, celibataire depuis 2 mois (rupture). Son amie Julie lui recommande le lieu.', contexte: 'Dimanche soir, canape, verre de vin. Phase de reverie — pas un achat, une inspiration.', pages: ['Accueil', 'Galerie'], questionCle: 'Est-ce que ce serait bizarre d\'y aller seule ?', reponse: 'Non', reponseDetail: 'Le site ne mentionne jamais les voyageurs solos. Tout est couples/retraites couples. Le silence est une reponse negative implicite.', premierImpression: 'Malgre le chargement long, Camille est dans un etat contemplatif — elle n\'est pas pressee. Les photos de la piscine lui font du bien. Mais tout parle de couples.', impactTechnique: 'Le chargement 23s ne la choque pas dans cet etat de reverie. C\'est le contenu qui la renvoie a sa situation : tout est fait pour les couples.', positifs: ['Photos de piscine et jardin apaisantes', 'Le lieu semble beau et calme = remplit la mission de reverie', 'Recommandation amie = legere confiance'], frictions: ['Zero contenu solo-friendly', 'Tout oriente couples = renvoie douloureusement a la rupture recente', 'Pas de newsletter ni liste d\'attente pour "un jour peut-etre"', 'Conversion differee perdue'] },
+  { id: 20, name: 'Elena', age: 39, role: 'Responsable RH mode', canal: 'OTA (Booking)', maturite: 'Comparaison', device: 'Mobile', decision: 'Quitte', exp: 1, conf: 1, clarte: 2, emoji: '🇮🇹', situation: 'Milan, en couple avec Lorenzo (photographe). Mois sabbatique en Asie planifie.', contexte: 'Vient de Booking.com ou La Belle Vie etait en "non-reservable — consultez le site officiel"', pages: ['Accueil', 'Chambres'], questionCle: 'Pourquoi je ne peux pas voir les prix et reserver en ligne ?', reponse: 'Non', reponseDetail: 'Pas de prix, pas de booking engine, pas de politique d\'annulation. Tout ce qu\'elle avait sur Booking est absent.', premierImpression: 'Choc brutal : de Booking.com (structure parfaite : prix, photos, avis, annulation) a un site qui met 23s a charger avec zero information transactionnelle.', impactTechnique: 'Pire contraste possible : l\'interface la plus optimisee du web (Booking.com) → le site le moins fonctionnel. Open Graph absent = ne peut meme pas partager un lien propre avec Lorenzo.', positifs: ['La photo hero de l\'hotel semble belle', 'Le concept boutique hotel-galerie l\'aurait peut-etre attire avec les bonnes informations'], frictions: ['Pire experience UX apres Booking.com — contraste extremal', 'Zero prix, zero booking, zero conditions d\'annulation', 'Open Graph absent = pas de preview partage avec Lorenzo', 'Lorem Ipsum + Londres = tous les red flags en 60 secondes'] },
+];
+
+// ─── COMPUTED STATS ───
+const avgExp = (personas.reduce((s, p) => s + p.exp, 0) / personas.length).toFixed(1);
+const avgConf = (personas.reduce((s, p) => s + p.conf, 0) / personas.length).toFixed(1);
+const avgClarte = (personas.reduce((s, p) => s + p.clarte, 0) / personas.length).toFixed(1);
+const convertis = personas.filter(p => p.decision === 'Convertit').length;
+const hesitants = personas.filter(p => p.decision === 'Hesite').length;
+const quittent = personas.filter(p => p.decision === 'Quitte').length;
+const txConv = Math.round((convertis / personas.length) * 100);
+
+const canalStats = [
+  { canal: 'Google Search', total: 4, conv: 1, hesitant: 0, quitte: 3 },
+  { canal: 'Google Maps / GBP', total: 3, conv: 0, hesitant: 2, quitte: 1 },
+  { canal: 'IA (ChatGPT / Claude / Perplexity)', total: 3, conv: 0, hesitant: 1, quitte: 2 },
+  { canal: 'Reseaux sociaux (Instagram / Facebook)', total: 4, conv: 0, hesitant: 0, quitte: 4 },
+  { canal: 'Bouche-a-oreille', total: 3, conv: 0, hesitant: 2, quitte: 1 },
+  { canal: 'Autres (email, blog voyage, OTA)', total: 3, conv: 0, hesitant: 2, quitte: 1 },
+];
+
+const maturiteStats = [
+  { level: 'Decouverte', total: 5, conv: 0, pct: '0%' },
+  { level: 'Comparaison', total: 9, conv: 0, pct: '0%' },
+  { level: 'Decision', total: 6, conv: 1, pct: '17%' },
+];
+
+const deviceStats = [
+  { device: 'Mobile', total: 13, conv: 1, pct: '8%' },
+  { device: 'Desktop', total: 5, conv: 0, pct: '0%' },
+  { device: 'Tablette', total: 2, conv: 0, pct: '0%' },
+];
+
+// ─── PAGESPEED DATA ───
+const pagespeed = {
+  mobile: { perf: 48, access: 80, bp: 92, seo: 100, lcp: '23.6s', tbt: '430ms', cls: '0.09' },
+  desktop: { perf: 66, access: 80, bp: 92, seo: 100, lcp: '3.8s', tbt: '0ms', cls: '0.006' },
+};
+
+const observatory = { grade: 'D-', score: 25, passed: 5, total: 10 };
+
+const schemaChecks = [
+  { item: 'JSON-LD present (1 bloc @graph)', ok: true },
+  { item: 'Organization + WebSite + WebPage', ok: true },
+  { item: 'name, url, description renseignes', ok: true },
+  { item: 'image / logo presente', ok: true },
+  { item: '@type Hotel ou LodgingBusiness', ok: false },
+  { item: 'address + geo (coordonnees)', ok: false },
+  { item: 'telephone', ok: false },
+  { item: 'openingHoursSpecification', ok: false },
+  { item: 'checkinTime / checkoutTime', ok: false },
+  { item: 'priceRange', ok: false },
+  { item: 'amenityFeature (piscine, WiFi...)', ok: false },
+  { item: 'aggregateRating', ok: false },
+  { item: 'sameAs reseaux sociaux (Organization)', ok: false },
+];
+
+const ogChecks = [
+  { item: 'og:title', ok: false },
+  { item: 'og:description', ok: false },
+  { item: 'og:image', ok: false },
+  { item: 'og:url', ok: false },
+  { item: 'og:type', ok: false },
+  { item: 'twitter:card', ok: false },
+];
+
+const securityHeaders = [
+  { header: 'Strict-Transport-Security (HSTS)', ok: true },
+  { header: 'X-Content-Type-Options', ok: true },
+  { header: 'Content-Security-Policy (CSP)', ok: false },
+  { header: 'X-Frame-Options', ok: false },
+  { header: 'Referrer-Policy', ok: false },
+  { header: 'Permissions-Policy', ok: false },
+];
+
+const seoChecks = [
+  { item: 'robots.txt accessible (bloque /wp-admin/)', ok: true },
+  { item: 'sitemap.xml present (11 URLs indexees)', ok: true },
+  { item: 'HTTPS fonctionnel', ok: true },
+  { item: 'Viewport meta present', ok: true },
+  { item: 'Un seul H1 par page (2 H1 sur accueil)', ok: false },
+  { item: 'Alt texts descriptifs (~40% non descriptifs)', ok: false },
+  { item: 'Page retraites dans le sitemap', ok: false },
+];
+
+// ─── FRICTIONS ───
+const frictions = [
+  { label: 'Temoignages Lorem Ipsum (template non personnalise)', count: 20, severity: 'critique' },
+  { label: 'Prix absents (chambres + offres speciales)', count: 18, severity: 'critique' },
+  { label: 'Section "Near Destinations" = Londres (Big Ben, Buckingham...)', count: 18, severity: 'critique' },
+  { label: 'LCP 23.6s sur mobile', count: 13, severity: 'critique' },
+  { label: 'Popup "Christmas Flash Deal" obsolete (mars 2026)', count: 15, severity: 'haute' },
+  { label: 'Liens morts sur les 3 offres speciales', count: 8, severity: 'haute' },
+  { label: 'Open Graph absent (partage social sans preview)', count: 6, severity: 'haute' },
+  { label: 'Aucune info transferts / logistique depuis Koh Samui', count: 5, severity: 'moyenne' },
+  { label: 'Pas de contenu solo-friendly', count: 4, severity: 'moyenne' },
+  { label: 'Schema.org inadapte (Article au lieu de Hotel)', count: 3, severity: 'moyenne' },
+];
+
+// ─── AMELIORATIONS ───
+const ameliorations = {
+  haute: [
+    { title: 'Supprimer les temoignages Lorem Ipsum', impact: '20/20 personas', detail: 'C\'est le probleme le plus destructeur du site. 18 personas sur 20 perdent confiance en voyant le faux texte latin. Le premier signal de non-professionnalisme dans le parcours.', action: 'Integrer les avis Google (4.9 etoiles) directement sur la page d\'accueil avec un widget ou des verbatims + photo/nom. Supprimer entierement les 3 blocs Lorem Ipsum.' },
+    { title: 'Afficher les prix des chambres', impact: '18/20 personas', detail: 'L\'absence de tarif empeche toute comparaison et toute conversion spontanee. Meme une fourchette "a partir de X€/nuit" suffirait. 7 personas ont pose la question, 0 ont eu une reponse.', action: 'Ajouter sur chaque page chambre un tarif indicatif "a partir de X€/nuit" ou lier chaque chambre au moteur de reservation externe (book-directonline.com) avec les prix visibles.' },
+    { title: 'Supprimer la section "Near Destinations" avec Londres', impact: '18/20 personas', detail: 'Big Ben, Buckingham Palace et London Bridge pour un hotel a Koh Phangan. Ce template Elementor non personnalise choque 100% des personas. Eliminatoire pour la credibilite.', action: 'Remplacer par les vraies attractions locales : Ban Tai Beach (100m), Thong Sala Night Market (7km), Cascade Than Sadet (20km), Wat Pho (temple), activites nautiques.' },
+    { title: 'Optimiser les performances mobile', impact: '13/20 personas', detail: 'LCP de 23.6 secondes sur mobile = eliminatoire pour 10 des 13 personas mobiles. Les concurrents chargent en 2-3 secondes. La friction la plus sournoise : les visiteurs partent avant de voir le contenu.', action: 'Compresser toutes les images (WebP), supprimer les plugins inutilises, activer le cache (WP Rocket), desactiver le plugin Boxzilla (popup), optimiser les scripts Elementor.' },
+    { title: 'Supprimer le popup Christmas Flash Deal', impact: '15/20 personas', detail: 'Une promotion de Noel affichee en mars 2026 est le premier element que voit le visiteur. Detruit immediatement la credibilite du site et signale un abandon de maintenance.', action: 'Desactiver le plugin Boxzilla ou supprimer la popup Christmas. Si un popup promotionnel est souhaite, le mettre a jour avec une offre actuelle ou une offre permanente ("Direct booking discount").' },
+  ],
+  moyenne: [
+    { title: 'Ajouter les meta Open Graph', detail: 'og:title, og:description, og:image pour chaque page — necessaire pour que les partages sur Facebook, WhatsApp, email affichent une preview riche avec photo.' },
+    { title: 'Corriger le Schema.org', detail: 'Changer "Article" en "Hotel" ou "LodgingBusiness" et ajouter address, telephone, openingHours, amenityFeature. Indispensable pour les rich snippets Google et les recommandations IA.' },
+    { title: 'Creer une page Transferts / Comment venir', detail: 'Ferrys depuis Koh Samui, bateaux depuis Koh Tao, taxis, motos-taxis depuis le port. Karen, Brigitte et Hiroshi ont chacun cherche cette information — en vain.' },
+    { title: 'Creer un package Lune de Miel', detail: 'Champagne, petits-dejeuners au lit, decoration florale, massage couple en option. Liam et tous les couples en lune de miel cherchent cette offre. Un concurrent qui la propose l\'emportera.' },
+    { title: 'Ajouter du contenu solo-friendly', detail: '"Tous les voyageurs (en solo ou en couple) sont les bienvenus." Un seul temoignage d\'une voyageuse solo suffirait a retenir Mei-Lin et Camille.' },
+    { title: 'Detailler le programme retraite Clara Morgane', detail: 'Programme jour par jour, inclus/non-inclus (repas, transferts, materiel), places restantes, FAQ retraite. Nathalie, Valerie et Sophie attendaient ce detail pour s\'engager.' },
+  ],
+  discussion: [
+    { title: 'Booking engine direct avec prix en temps reel', emoji: '🛒', detail: 'Le principal frein de conversion. Book-directonline.com est en place mais peu visible. L\'integrer directement dans chaque page chambre reduirait drastiquement la friction.' },
+    { title: 'WhatsApp pour contact urgent', emoji: '💬', detail: 'Priya avait besoin d\'une chambre ce soir. Un bouton WhatsApp en header resoudrait les urgences et convertirait les hesitants qui n\'osent pas envoyer un email.' },
+    { title: 'Corriger les liens morts et mettre a jour le copyright', emoji: '🔧', detail: 'Offres speciales Honeymoon, Winter Sun, End of Year : liens vers "#". Copyright 2024 visible en mars 2026. Deux corrections triviales qui ameliorent immediatement la credibilite.' },
+    { title: 'Enrichir la page art / Anis Dargaa', emoji: '🎨', detail: 'Bio de l\'artiste, photos dediees des oeuvres, mention "oeuvres originales", possibilite de contact. Aiko et Markus etaient prets a faire un editorial — le contenu n\'etait pas a la hauteur.' },
+  ],
+};
+
+// ─── HELPERS ───
+function scoreColor(score: number) {
+  if (score >= 90) return { ring: '#22c55e', text: 'text-green-600', bg: 'bg-green-50' };
+  if (score >= 50) return { ring: '#f59e0b', text: 'text-amber-600', bg: 'bg-amber-50' };
+  return { ring: '#ef4444', text: 'text-red-600', bg: 'bg-red-50' };
+}
+
+function decisionColor(d: string) {
+  if (d === 'Convertit') return { border: 'border-green-200', bg: 'bg-green-50/40', badge: 'bg-green-600', text: 'text-green-800', badgeText: 'text-white' };
+  if (d === 'Hesite') return { border: 'border-amber-200', bg: 'bg-amber-50/40', badge: 'bg-amber-500', text: 'text-amber-800', badgeText: 'text-white' };
+  return { border: 'border-neutral-200', bg: 'bg-neutral-50/40', badge: 'bg-red-500', text: 'text-red-800', badgeText: 'text-white' };
+}
+
+function severityColor(s: string) {
+  if (s === 'critique') return 'bg-red-100 text-red-800';
+  if (s === 'haute') return 'bg-orange-100 text-orange-800';
+  return 'bg-blue-100 text-blue-800';
+}
+
+function cwvStatus(metric: string, value: string) {
+  const n = parseFloat(value);
+  let good = false, ok = false;
+  if (metric === 'lcp') { good = n < 2.5; ok = n < 4.0; }
+  else if (metric === 'tbt') { good = n < 200; ok = n < 600; }
+  else { good = n < 0.1; ok = n < 0.25; }
+  if (good) return { bg: 'bg-green-50', textClass: 'text-green-600', label: 'Bon', badgeClass: 'bg-green-100 text-green-700' };
+  if (ok) return { bg: 'bg-amber-50', textClass: 'text-amber-600', label: 'Moyen', badgeClass: 'bg-amber-100 text-amber-700' };
+  return { bg: 'bg-red-50', textClass: 'text-red-600', label: 'Mauvais', badgeClass: 'bg-red-100 text-red-700' };
+}
+---
+
+<BaseLayout title={title} description={description} noindex={true} lang="fr" frPath="/audit/belle-vie-kpg">
+
+  <!-- ══════════ HERO ══════════ -->
+  <section class="w-full relative px-6 py-16 md:px-8 md:py-24 overflow-hidden" style="background-color: #0D0D0D;">
+    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 40px 40px;"></div>
+    <div class="absolute top-20 -left-32 w-96 h-96 rounded-full opacity-10 blur-3xl" style="background: #E86C47;"></div>
+    <div class="mx-auto max-w-4xl relative z-10">
+      <div class="mb-4 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--color-accent)]/40">
+        <span class="w-2 h-2 rounded-full" style="background-color: #E86C47;"></span>
+        <span class="text-sm font-semibold text-white/90">Rapport confidentiel</span>
+      </div>
+      <h1 class="mb-4 text-3xl font-bold leading-tight text-white md:text-4xl lg:text-5xl">
+        Audit UX + Technique — <span class="bg-gradient-to-r from-[#E86C47] to-[#F5C8B3] bg-clip-text text-transparent">La Belle Vie Resort</span>
+      </h1>
+      <p class="text-lg text-neutral-300 md:text-xl max-w-2xl mb-8">
+        Audit complet de <strong class="text-white">labelleviekpg.com</strong> : performance, securite, SEO, et simulation de 20 visites personas realistes.
+      </p>
+      <div class="flex flex-wrap gap-3">
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">20 personas testes</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">6 canaux d'arrivee</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">8 audits techniques</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">29 mars 2026</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ TAB BAR ══════════ -->
+  <nav class="sticky top-16 md:top-20 z-40 bg-white/95 backdrop-blur border-b border-neutral-200" id="tab-bar">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-2 h-12 text-sm overflow-x-auto">
+      <button data-tab="0" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-primary-700 bg-primary-50">Synthese</button>
+      <button data-tab="1" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">Technique</button>
+      <button data-tab="2" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">
+        Visiteurs <span class="ml-1 text-xs text-neutral-400">20</span>
+      </button>
+      <button data-tab="3" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">
+        Ameliorations <span class="ml-1 text-xs text-neutral-400">{ameliorations.haute.length + ameliorations.moyenne.length + ameliorations.discussion.length}</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ══════════ PANELS ══════════ -->
+  <div id="panels" class="flex overflow-x-auto snap-x snap-mandatory" style="-webkit-overflow-scrolling: touch; scrollbar-width: none;">
+
+    <!-- ════════ PANEL 1 : SYNTHESE ════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+
+      <!-- KPI Cards -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class={`text-3xl md:text-4xl font-bold ${txConv < 30 ? 'text-red-600' : txConv < 60 ? 'text-amber-600' : 'text-emerald-600'}`}>{txConv}%</p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Taux de conversion</p>
+              <p class="mt-2 text-xs text-[var(--color-text-muted)]">{convertis} converti · {hesitants} hesitants · {quittent} partis</p>
+            </div>
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class="text-3xl md:text-4xl font-bold text-red-600">{avgExp}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Experience</p>
+              <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden">
+                <div class="h-full rounded-full bg-red-500" style={`width: ${Number(avgExp) * 10}%`}></div>
+              </div>
+            </div>
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class="text-3xl md:text-4xl font-bold text-red-600">{avgConf}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Confiance</p>
+              <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden">
+                <div class="h-full rounded-full bg-red-500" style={`width: ${Number(avgConf) * 10}%`}></div>
+              </div>
+            </div>
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class="text-3xl md:text-4xl font-bold text-red-600">{avgClarte}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Clarte</p>
+              <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden">
+                <div class="h-full rounded-full bg-red-500" style={`width: ${Number(avgClarte) * 10}%`}></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Paradoxe -->
+      <div class="w-full px-6 py-8 md:px-8 bg-white">
+        <div class="mx-auto max-w-5xl">
+          <div class="rounded-xl border-l-4 border-l-[var(--color-accent)] bg-accent-50 p-6 md:p-8">
+            <h2 class="text-lg font-bold text-[var(--color-text)] mb-2">Paradoxe principal</h2>
+            <p class="text-[var(--color-text)] leading-relaxed">
+              Le site ne <strong>convainc pas</strong> — meme les visiteurs deja decides de reserver partent ou hesitent. Les personas en <strong>Decision</strong> convertissent a seulement <strong>17%</strong> (partiellement, grace a Clara Morgane). Ceux en <strong>Comparaison</strong> convertissent a <strong>0%</strong> et ceux en <strong>Decouverte</strong> a <strong>0%</strong>. Les <strong>7 hesitants</strong> representent un reservoir de conversion perdu par manque d'information basique : prix, temoignages reels, reservation en ligne.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Conversion par canal -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-2">Conversion par canal</h2>
+          <p class="text-[var(--color-text-muted)] mb-8">Aucun canal ne produit de conversion organique. Les reseaux sociaux rebondissent a 100%. Le bouche-a-oreille est sabote par le site.</p>
+          <div class="grid md:grid-cols-2 gap-4">
+            {canalStats.map((c) => {
+              const pct = c.total > 0 ? Math.round((c.conv / c.total) * 100) : 0;
+              return (
+                <div class="rounded-xl border border-[var(--color-border)] bg-white p-5">
+                  <div class="flex items-center justify-between mb-3">
+                    <h3 class="font-semibold text-[var(--color-text)] text-sm">{c.canal}</h3>
+                    <span class={`text-lg font-bold ${pct > 50 ? 'text-emerald-600' : pct > 0 ? 'text-amber-600' : 'text-red-600'}`}>{pct}%</span>
+                  </div>
+                  <div class="h-3 rounded-full bg-neutral-100 overflow-hidden mb-3">
+                    <div class="h-full rounded-full flex">
+                      <div class="bg-emerald-500" style={`width: ${(c.conv / c.total) * 100}%`}></div>
+                      <div class="bg-amber-400" style={`width: ${(c.hesitant / c.total) * 100}%`}></div>
+                      <div class="bg-red-400" style={`width: ${(c.quitte / c.total) * 100}%`}></div>
+                    </div>
+                  </div>
+                  <div class="flex gap-4 text-xs text-[var(--color-text-muted)]">
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> {c.conv} conv.</span>
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-400"></span> {c.hesitant} hes.</span>
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-400"></span> {c.quitte} partis</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      <!-- Conversion par maturite -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-white">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-8">Conversion par maturite</h2>
+          <div class="grid md:grid-cols-3 gap-4">
+            {maturiteStats.map((m) => (
+              <div class="rounded-xl border border-[var(--color-border)] bg-white p-6 text-center">
+                <p class="text-sm font-semibold text-[var(--color-text-muted)] uppercase tracking-wider mb-2">{m.level}</p>
+                <p class={`text-4xl font-bold ${m.pct === '0%' ? 'text-red-600' : 'text-amber-600'}`}>{m.pct}</p>
+                <p class="mt-1 text-sm text-[var(--color-text-muted)]">{m.conv}/{m.total} convertis</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- Conversion par device -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-8">Conversion par device</h2>
+          <div class="grid md:grid-cols-3 gap-4">
+            {deviceStats.map((d) => (
+              <div class="rounded-xl border border-[var(--color-border)] bg-white p-6 text-center">
+                <p class="text-sm font-semibold text-[var(--color-text-muted)] uppercase tracking-wider mb-2">{d.device}</p>
+                <p class={`text-4xl font-bold ${d.pct === '0%' ? 'text-red-600' : 'text-amber-600'}`}>{d.pct}</p>
+                <p class="mt-1 text-sm text-[var(--color-text-muted)]">{d.conv}/{d.total} convertis</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════ PANEL 2 : TECHNIQUE ════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl space-y-12">
+
+          <!-- PageSpeed Scores -->
+          <div>
+            <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">PageSpeed Insights</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+              {(['mobile', 'desktop'] as const).map((strategy) => {
+                const data = pagespeed[strategy];
+                const scores = [
+                  { label: 'Performance', score: data.perf },
+                  { label: 'Accessibilite', score: data.access },
+                  { label: 'Bonnes Pratiques', score: data.bp },
+                  { label: 'SEO', score: data.seo },
+                ];
+                const lcpSt = cwvStatus('lcp', data.lcp);
+                const tbtSt = cwvStatus('tbt', data.tbt);
+                const clsSt = cwvStatus('cls', data.cls);
+                return (
+                  <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+                    <h3 class="font-bold text-[var(--color-text)] mb-4 text-center uppercase text-sm tracking-wider">{strategy === 'mobile' ? '📱 Mobile' : '💻 Desktop'}</h3>
+                    <div class="grid grid-cols-4 gap-4 mb-6">
+                      {scores.map((s) => {
+                        const c = scoreColor(s.score);
+                        return (
+                          <div class="text-center">
+                            <div class="relative w-16 h-16 mx-auto mb-2">
+                              <svg class="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+                                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3" />
+                                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={c.ring} stroke-width="3" stroke-dasharray={`${s.score}, 100`} stroke-linecap="round" />
+                              </svg>
+                              <span class={`absolute inset-0 flex items-center justify-center text-lg font-bold ${c.text}`}>{s.score}</span>
+                            </div>
+                            <p class="text-xs text-neutral-600 font-medium">{s.label}</p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <div class="space-y-2">
+                      <div class={`flex items-center justify-between p-3 rounded-lg ${lcpSt.bg}`}>
+                        <div><span class="text-xs font-bold text-neutral-700">LCP</span><span class="text-xs text-neutral-500 ml-1">(plus gros element)</span></div>
+                        <div class="flex items-center gap-2"><span class={`text-sm font-bold ${lcpSt.textClass}`}>{data.lcp}</span><span class={`text-[10px] px-1.5 py-0.5 rounded font-medium ${lcpSt.badgeClass}`}>{lcpSt.label}</span></div>
+                      </div>
+                      <div class={`flex items-center justify-between p-3 rounded-lg ${tbtSt.bg}`}>
+                        <div><span class="text-xs font-bold text-neutral-700">TBT</span><span class="text-xs text-neutral-500 ml-1">(temps de blocage)</span></div>
+                        <div class="flex items-center gap-2"><span class={`text-sm font-bold ${tbtSt.textClass}`}>{data.tbt}</span><span class={`text-[10px] px-1.5 py-0.5 rounded font-medium ${tbtSt.badgeClass}`}>{tbtSt.label}</span></div>
+                      </div>
+                      <div class={`flex items-center justify-between p-3 rounded-lg ${clsSt.bg}`}>
+                        <div><span class="text-xs font-bold text-neutral-700">CLS</span><span class="text-xs text-neutral-500 ml-1">(stabilite visuelle)</span></div>
+                        <div class="flex items-center gap-2"><span class={`text-sm font-bold ${clsSt.textClass}`}>{data.cls}</span><span class={`text-[10px] px-1.5 py-0.5 rounded font-medium ${clsSt.badgeClass}`}>{clsSt.label}</span></div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <!-- Observatory -->
+          <div>
+            <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">Securite HTTP</h2>
+            <div class="flex items-center gap-4 p-4 rounded-xl border border-red-200 bg-red-50 mb-6">
+              <div class="text-3xl font-black text-red-600">{observatory.grade}</div>
+              <div>
+                <p class="text-sm font-semibold text-neutral-900">Mozilla Observatory</p>
+                <p class="text-xs text-neutral-500">{observatory.passed}/{observatory.total} tests passes — Score {observatory.score}/100</p>
+              </div>
+            </div>
+            <div class="grid md:grid-cols-2 gap-3">
+              {securityHeaders.map((h) => (
+                <div class="flex items-center gap-2 py-1.5">
+                  {h.ok ? (
+                    <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                  ) : (
+                    <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                  )}
+                  <span class={`text-sm ${h.ok ? 'text-neutral-700' : 'text-neutral-400 line-through'}`}>{h.header}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <!-- Schema.org -->
+          <div>
+            <h2 class="text-2xl font-bold text-[var(--color-text)] mb-4">Schema.org (donnees structurees)</h2>
+            <p class="text-sm text-amber-700 font-medium mb-4">Schema.org present mais inadapte — le site utilise le type "Article" au lieu de "Hotel" ou "LodgingBusiness". Google et les IA ne comprennent pas que c'est un hotel boutique.</p>
+            <div class="grid md:grid-cols-2 gap-1">
+              {schemaChecks.map((c) => (
+                <div class="flex items-center gap-2 py-1.5">
+                  {c.ok ? (
+                    <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                  ) : (
+                    <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                  )}
+                  <span class={`text-sm ${c.ok ? 'text-neutral-700' : 'text-neutral-400 line-through'}`}>{c.item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <!-- Open Graph -->
+          <div>
+            <h2 class="text-2xl font-bold text-[var(--color-text)] mb-4">Open Graph (partage reseaux sociaux)</h2>
+            <p class="text-sm text-red-600 font-medium mb-4">Aucun tag Open Graph detecte — les partages sur Facebook, WhatsApp, LinkedIn et email n'affichent aucun apercu (pas d'image, pas de titre formate).</p>
+            <div class="grid md:grid-cols-2 gap-1">
+              {ogChecks.map((c) => (
+                <div class="flex items-center gap-2 py-1.5">
+                  <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                  <span class="text-sm text-neutral-400 line-through">{c.item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <!-- SEO Technique -->
+          <div>
+            <h2 class="text-2xl font-bold text-[var(--color-text)] mb-4">SEO technique</h2>
+            <div class="grid md:grid-cols-2 gap-1">
+              {seoChecks.map((c) => (
+                <div class="flex items-center gap-2 py-1.5">
+                  {c.ok ? (
+                    <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                  ) : (
+                    <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                  )}
+                  <span class={`text-sm ${c.ok ? 'text-neutral-700' : 'text-neutral-400 line-through'}`}>{c.item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════ PANEL 3 : VISITEURS ════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+
+          <!-- Stats row -->
+          <div class="grid grid-cols-3 gap-4 mb-8">
+            <div class="rounded-xl bg-emerald-50 border border-emerald-200 p-4 text-center">
+              <p class="text-3xl font-bold text-emerald-700">{convertis}</p>
+              <p class="text-xs text-emerald-600 font-medium">contactent</p>
+            </div>
+            <div class="rounded-xl bg-amber-50 border border-amber-200 p-4 text-center">
+              <p class="text-3xl font-bold text-amber-700">{hesitants}</p>
+              <p class="text-xs text-amber-600 font-medium">hesitent</p>
+            </div>
+            <div class="rounded-xl bg-red-50 border border-red-200 p-4 text-center">
+              <p class="text-3xl font-bold text-red-700">{quittent}</p>
+              <p class="text-xs text-red-600 font-medium">repartent</p>
+            </div>
+          </div>
+
+          <!-- Convertis -->
+          <h3 class="text-lg font-bold text-emerald-700 mb-4">Ceux qui contactent</h3>
+          <div class="space-y-3 mb-10">
+            {personas.filter(p => p.decision === 'Convertit').map((p) => {
+              const dc = decisionColor(p.decision);
+              return (
+                <details class={`group border ${dc.border} ${dc.bg} rounded-xl overflow-hidden`}>
+                  <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                    <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                        <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                        <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                        <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                      </div>
+                      <p class="text-xs text-neutral-500 mb-2">{p.situation}</p>
+                      <p class="text-xs text-neutral-600 mb-2.5">{p.contexte}</p>
+                      <div class="flex flex-wrap items-center gap-1">
+                        {p.pages.map((page, i) => (
+                          <Fragment>
+                            <span class="text-[10px] text-primary-700 bg-white border border-primary-100 px-1.5 py-0.5 rounded">{page}</span>
+                            {i < p.pages.length - 1 && <span class="text-neutral-300 text-[10px]">›</span>}
+                          </Fragment>
+                        ))}
+                        <span class={`text-[10px] ${dc.badge} ${dc.badgeText} px-1.5 py-0.5 rounded font-medium ml-0.5`}>Contacte</span>
+                      </div>
+                    </div>
+                    <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                  </summary>
+                  <div class="px-4 pb-4 pt-0 border-t border-green-200 bg-white/50">
+                    <div class="grid gap-3 text-xs mt-3">
+                      <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.premierImpression}</p></div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Question cle</p><p class="text-neutral-600 italic">"{p.questionCle}"</p><p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong> — {p.reponseDetail}</p></div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Impact technique</p><p class="text-neutral-600">{p.impactTechnique}</p></div>
+                      <div class="flex gap-4">
+                        <div class="flex-1"><p class="font-semibold text-green-700 mb-1">Points positifs</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.positifs.map(pt => <li>{pt}</li>)}</ul></div>
+                        <div class="flex-1"><p class="font-semibold text-amber-700 mb-1">Frictions</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map(f => <li>{f}</li>)}</ul></div>
+                      </div>
+                      <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.exp >= 5 ? 'text-amber-600' : 'text-red-600'}`}>{p.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.conf >= 5 ? 'text-amber-600' : 'text-red-600'}`}>{p.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.clarte >= 5 ? 'text-amber-600' : 'text-red-600'}`}>{p.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </details>
+              );
+            })}
+          </div>
+
+          <!-- Hesitants -->
+          <h3 class="text-lg font-bold text-amber-700 mb-4">Ceux qui hesitent</h3>
+          <div class="space-y-3 mb-10">
+            {personas.filter(p => p.decision === 'Hesite').map((p) => {
+              const dc = decisionColor(p.decision);
+              return (
+                <details class={`group border ${dc.border} ${dc.bg} rounded-xl overflow-hidden`}>
+                  <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                    <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                        <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                        <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                        <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                      </div>
+                      <p class="text-xs text-neutral-500 mb-2">{p.situation}</p>
+                      <p class="text-xs text-neutral-600 mb-2.5">{p.contexte}</p>
+                      <div class="flex flex-wrap items-center gap-1">
+                        {p.pages.map((page, i) => (
+                          <Fragment>
+                            <span class="text-[10px] text-primary-700 bg-white border border-primary-100 px-1.5 py-0.5 rounded">{page}</span>
+                            {i < p.pages.length - 1 && <span class="text-neutral-300 text-[10px]">›</span>}
+                          </Fragment>
+                        ))}
+                        <span class="text-[10px] bg-amber-500 text-white px-1.5 py-0.5 rounded font-medium ml-0.5">Hesite</span>
+                      </div>
+                    </div>
+                    <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                  </summary>
+                  <div class="px-4 pb-4 pt-0 border-t border-amber-200 bg-white/50">
+                    <div class="grid gap-3 text-xs mt-3">
+                      <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.premierImpression}</p></div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Question cle</p><p class="text-neutral-600 italic">"{p.questionCle}"</p><p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong> — {p.reponseDetail}</p></div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Impact technique</p><p class="text-neutral-600">{p.impactTechnique}</p></div>
+                      <div class="flex gap-4">
+                        <div class="flex-1"><p class="font-semibold text-green-700 mb-1">Points positifs</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.positifs.map(pt => <li>{pt}</li>)}</ul></div>
+                        <div class="flex-1"><p class="font-semibold text-amber-700 mb-1">Frictions</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map(f => <li>{f}</li>)}</ul></div>
+                      </div>
+                      <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.exp >= 5 ? 'text-amber-600' : 'text-red-600'}`}>{p.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.conf >= 5 ? 'text-amber-600' : 'text-red-600'}`}>{p.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.clarte >= 5 ? 'text-amber-600' : 'text-red-600'}`}>{p.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </details>
+              );
+            })}
+          </div>
+
+          <!-- Quittent -->
+          <h3 class="text-lg font-bold text-red-700 mb-4">Ceux qui repartent</h3>
+          <div class="space-y-3">
+            {personas.filter(p => p.decision === 'Quitte').map((p) => {
+              const dc = decisionColor(p.decision);
+              return (
+                <details class={`group border ${dc.border} ${dc.bg} rounded-xl overflow-hidden`}>
+                  <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                    <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                        <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                        <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                        <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                      </div>
+                      <p class="text-xs text-neutral-500 mb-2">{p.situation}</p>
+                      <p class="text-xs text-neutral-600 mb-2.5">{p.contexte}</p>
+                      <div class="flex flex-wrap items-center gap-1">
+                        {p.pages.map((page, i) => (
+                          <Fragment>
+                            <span class="text-[10px] text-primary-700 bg-white border border-primary-100 px-1.5 py-0.5 rounded">{page}</span>
+                            {i < p.pages.length - 1 && <span class="text-neutral-300 text-[10px]">›</span>}
+                          </Fragment>
+                        ))}
+                        <span class="text-[10px] bg-red-500 text-white px-1.5 py-0.5 rounded font-medium ml-0.5">Quitte</span>
+                      </div>
+                    </div>
+                    <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                  </summary>
+                  <div class="px-4 pb-4 pt-0 border-t border-neutral-200 bg-white/50">
+                    <div class="grid gap-3 text-xs mt-3">
+                      <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.premierImpression}</p></div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Question cle</p><p class="text-neutral-600 italic">"{p.questionCle}"</p><p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong> — {p.reponseDetail}</p></div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Impact technique</p><p class="text-neutral-600">{p.impactTechnique}</p></div>
+                      <div class="flex gap-4">
+                        <div class="flex-1"><p class="font-semibold text-green-700 mb-1">Points positifs</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.positifs.map(pt => <li>{pt}</li>)}</ul></div>
+                        <div class="flex-1"><p class="font-semibold text-amber-700 mb-1">Frictions</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map(f => <li>{f}</li>)}</ul></div>
+                      </div>
+                      <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.exp >= 5 ? 'text-amber-600' : 'text-red-600'}`}>{p.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.conf >= 5 ? 'text-amber-600' : 'text-red-600'}`}>{p.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.clarte >= 5 ? 'text-amber-600' : 'text-red-600'}`}>{p.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </details>
+              );
+            })}
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════ PANEL 4 : AMELIORATIONS ════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl space-y-12">
+
+          <!-- Frictions recurrentes -->
+          <div>
+            <h2 class="text-2xl font-bold text-[var(--color-text)] mb-2">Points de friction recurrents</h2>
+            <p class="text-[var(--color-text-muted)] mb-6">Classes par nombre de personas impactes.</p>
+            <div class="space-y-3">
+              {frictions.map((f) => (
+                <div class="flex items-center gap-4 rounded-xl border border-[var(--color-border)] bg-white p-4">
+                  <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-neutral-100 flex items-center justify-center">
+                    <span class="text-lg font-bold text-[var(--color-text)]">{f.count}</span>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="font-medium text-[var(--color-text)]">{f.label}</p>
+                    <p class="text-sm text-[var(--color-text-muted)]">{f.count}/20 personas impactes</p>
+                  </div>
+                  <span class={`flex-shrink-0 px-3 py-1 rounded-full text-xs font-semibold ${severityColor(f.severity)}`}>
+                    {f.severity}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <!-- Le plus important -->
+          <div>
+            <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">Le plus important</h2>
+            <div class="space-y-4">
+              {ameliorations.haute.map((a) => (
+                <div class="bg-white border-2 border-red-200 rounded-xl p-5 shadow-sm">
+                  <h4 class="font-semibold text-neutral-900 mb-2">{a.title}</h4>
+                  <p class="text-sm text-neutral-500 mb-1">Impact : {a.impact}</p>
+                  <p class="text-sm text-neutral-600 mb-3">{a.detail}</p>
+                  <div class="bg-primary-50 rounded-lg px-3 py-2.5 flex items-start gap-2">
+                    <svg class="w-4 h-4 text-primary-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                    <p class="text-xs text-primary-800">{a.action}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <!-- Utile aussi -->
+          <div>
+            <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">Utile aussi</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+              {ameliorations.moyenne.map((a) => (
+                <div class="bg-white border border-neutral-200 rounded-xl p-4">
+                  <h4 class="font-semibold text-neutral-900 text-sm mb-1.5">{a.title}</h4>
+                  <p class="text-xs text-neutral-600">{a.detail}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <!-- A discuter -->
+          <div>
+            <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">A discuter ensemble</h2>
+            <div class="space-y-3">
+              {ameliorations.discussion.map((a) => (
+                <div class="bg-neutral-50 border border-neutral-200 rounded-xl p-4 flex gap-3">
+                  <span class="text-lg shrink-0">{a.emoji}</span>
+                  <div>
+                    <h4 class="font-semibold text-neutral-900 text-sm mb-0.5">{a.title}</h4>
+                    <p class="text-xs text-neutral-600">{a.detail}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ══════════ METHODOLOGIE ══════════ -->
+  <section class="w-full px-6 py-12 md:px-8 md:py-16 bg-white">
+    <div class="mx-auto max-w-3xl">
+      <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">Methodologie</h2>
+      <div class="prose max-w-none text-[var(--color-text)]">
+        <p>Ce rapport combine un <strong>audit technique</strong> et une <strong>simulation UX personas</strong> :</p>
+        <ol class="space-y-2 text-sm leading-relaxed">
+          <li><strong>Scraping complet</strong> du site (6 pages) : accueil, about, accommodations, location, contact, retraites Clara Morgane</li>
+          <li><strong>Audit technique</strong> : PageSpeed Insights (mobile + desktop), Mozilla Observatory (securite), Schema.org, Open Graph, SEO technique</li>
+          <li><strong>Creation de 20 personas diversifies</strong> couvrant 6 canaux d'arrivee, 3 niveaux de maturite, 3 types de devices, incluant 4 personas negatifs (hors-cible) et 3 personas IA</li>
+          <li><strong>Simulation individuelle</strong> de chaque visite : premiere impression, parcours section par section, reponse a la question cle, impact technique, decision finale</li>
+          <li><strong>Agregation et analyse croisee</strong> par canal, maturite et device pour identifier les patterns recurrents</li>
+          <li><strong>Priorisation des ameliorations</strong> par nombre de personas impactes et severite</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ CTA ══════════ -->
+  <section class="w-full px-6 py-16 md:px-8 md:py-24" style="background-color: #0D0D0D;">
+    <div class="mx-auto max-w-3xl text-center">
+      <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">
+        Pret a transformer ces insights en resultats ?
+      </h2>
+      <p class="text-neutral-300 mb-8 max-w-xl mx-auto">
+        Ce rapport identifie des opportunites concretes. Je peux construire un site qui convertit vraiment vos visiteurs en clients.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="/commander" class="inline-flex items-center gap-2 px-8 py-3.5 text-white font-semibold rounded-xl transition-all shadow-md hover:shadow-xl hover:scale-105" style="background: linear-gradient(135deg, #E86C47, #D4572F); box-shadow: 0 4px 20px rgba(232, 108, 71, 0.4);">
+          Commander un site
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a href="/contact" class="inline-flex items-center gap-2 px-8 py-3.5 border border-neutral-600 text-neutral-300 font-semibold rounded-xl hover:border-[#E86C47] hover:text-[#E86C47] transition-all">
+          En discuter d'abord
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <style is:inline>
+    #panels { -ms-overflow-style: none; }
+    #panels::-webkit-scrollbar { display: none; }
+  </style>
+
+  <script is:inline>
+    const panels = document.getElementById('panels');
+    const tabs = document.querySelectorAll('.tab-btn');
+    const sections = panels.querySelectorAll('.tab-panel');
+
+    function activateTab(index) {
+      tabs.forEach((b, i) => {
+        if (i === index) {
+          b.classList.remove('text-neutral-500');
+          b.classList.add('text-primary-700', 'bg-primary-50');
+        } else {
+          b.classList.remove('text-primary-700', 'bg-primary-50');
+          b.classList.add('text-neutral-500');
+        }
+      });
+    }
+
+    tabs.forEach((btn, i) => {
+      btn.addEventListener('click', () => {
+        sections[i].scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+        activateTab(i);
+      });
+    });
+
+    let scrollTimeout;
+    panels.addEventListener('scroll', () => {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        const index = Math.round(panels.scrollLeft / panels.offsetWidth);
+        activateTab(index);
+      }, 50);
+    }, { passive: true });
+  </script>
+
+</BaseLayout>
