@@ -1,0 +1,792 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX + Technique — Harmony Koh Tao | Marc M';
+const description = 'Simulation de 20 visites personas + audit technique complet sur harmonykohtao.com — rapport interactif avec recommandations.';
+
+// ─── PERSONAS DATA ───
+const personas = [
+  { id: 1, name: 'Sophie', age: 34, role: 'Consultante marketing', canal: 'Google Search', maturite: 'Comparaison', device: 'Mobile', decision: 'Hesite', exp: 3, conf: 5, clarte: 3, emoji: '👩‍💼', situation: 'En couple, anniversaire demain soir', contexte: 'Cherche un restaurant special apres 3 jours de pad thai', pages: ['Accueil', 'Menu', 'About', 'Reservations'], questionCle: 'Combien coute un diner pour deux avec du vin ?', reponse: 'Non', reponseDetail: 'Aucun prix affiche. Impossible de comparer avec les autres restaurants.', premierImpression: 'Ecran blanc pendant 19 secondes. A failli fermer deux fois avant de voir le contenu.', impactTechnique: 'LCP 19s sur mobile = elle a failli partir avant de voir le contenu. La lenteur penalise la comparaison avec les concurrents.', positifs: ['Concept culinaire original et memorisable', 'Visuels soignes une fois charges', 'Reservation en ligne existante'], frictions: ['Aucun prix affiche — bloqueur pour la comparaison', 'LCP 19s — a failli quitter deux fois', 'Horaires et adresse peu visibles', 'Pas de formule occasion speciale'] },
+  { id: 2, name: 'James', age: 42, role: 'Chirurgien', canal: 'TripAdvisor', maturite: 'Decision', device: 'Mobile', decision: 'Convertit', exp: 5, conf: 7, clarte: 4, emoji: '👨‍⚕️', situation: 'Marie, derniere soiree a Koh Tao', contexte: 'A lu les 20 avis TripAdvisor (4.9/5), quasi-decide', pages: ['Menu', 'Book Online', 'Contact'], questionCle: 'Est-ce que je peux reserver une table pour ce soir ?', reponse: 'Partiellement', reponseDetail: 'Systeme de reservation existant mais pas de confirmation instantanee pour le jour meme.', premierImpression: 'Ecran blanc 15s mais il est patient — TripAdvisor lui a deja fourni la preuve sociale.', impactTechnique: 'Le formulaire de reservation charge lentement, ajoutant du stress pour une reservation urgente.', positifs: ['Reservation en ligne fonctionnelle', 'Menu lisible en anglais', 'Concept confirme les avis TripAdvisor'], frictions: ['Reservation jour meme sans confirmation', 'Telephone noye dans le site', 'Deux pages contact creent une hesitation'] },
+  { id: 3, name: 'Aurelie', age: 29, role: 'Photographe freelance', canal: 'Instagram', maturite: 'Decouverte', device: 'Mobile', decision: 'Quitte', exp: 2, conf: 4, clarte: 2, emoji: '📸', situation: 'Solo, budget voyage limite', contexte: 'A vu une story taggee @harmonykohtao, intrigue par les photos', pages: ['Accueil', 'Portfolio', 'Menu', 'About'], questionCle: "C'est dans mon budget pour un repas solo special ?", reponse: 'Non', reponseDetail: "Aucun prix. Le vocabulaire gastronomique lui fait craindre le pire pour son budget.", premierImpression: "Ecran blanc 19s — elle quitte une premiere fois. Revient 5 min plus tard depuis le WiFi.", impactTechnique: 'Eliminatoire au premier contact. A quitte puis est revenue par curiosite — la majorite ne reviendrait pas.', positifs: ['Visuels de qualite pour photographe', 'Histoire des fondateurs touchante', 'Concept original'], frictions: ['LCP 19s — a quitte la premiere fois', 'Aucun prix = auto-exclusion', 'Page en construction visible', 'Pas de menu decouverte ou formule solo'] },
+  { id: 4, name: 'Tom', age: 55, role: 'Directeur commercial retire', canal: 'Google Maps', maturite: 'Decision', device: 'Desktop', decision: 'Hesite', exp: 5, conf: 6, clarte: 4, emoji: '🍷', situation: 'Villa a Koh Tao, recoit 6 amis', contexte: 'Cherche un restaurant pour impressionner ses amis australiens', pages: ['Menu', 'Reservations', 'About', 'Contact', 'Boutique'], questionCle: 'Pouvez-vous accueillir un groupe de 6 avec une bonne selection de vins ?', reponse: 'Partiellement', reponseDetail: 'Le formulaire accepte 6 personnes mais pas de carte des vins ni option groupe detaillee.', premierImpression: 'Desktop + bonne connexion = chargement plus rapide mais toujours 10-12 secondes.', impactTechnique: 'Moins penalisant sur desktop mais 17s de LCP reste lent. Les doublons de pages creent de la confusion.', positifs: ['Concept parfait pour impressionner', 'Fromages artisanaux = sujet de conversation', 'Reservation accepte les groupes'], frictions: ['Pas de carte des vins detaillee', 'Pas de prix pour estimer le budget groupe', 'Doublons boutique et contact', 'Pas d\'option menu groupe'] },
+  { id: 5, name: 'Mei', age: 31, role: 'Data analyst', canal: 'ChatGPT', maturite: 'Comparaison', device: 'Mobile', decision: 'Hesite', exp: 3, conf: 5, clarte: 3, emoji: '📊', situation: 'En couple, anniversaire de mariage', contexte: 'ChatGPT a recommande Harmony parmi 3 restaurants', pages: ['Accueil', 'About', 'Menu', 'Reservations', 'Boutique'], questionCle: "Est-ce vraiment aussi special que l'IA le dit ?", reponse: 'Partiellement', reponseDetail: 'Le concept est unique mais le site ne fournit pas assez de preuves (temoignages, prix).', premierImpression: "19s de LCP colore toute la visite. Les concurrents recommandes chargent en 3s.", impactTechnique: "Compare 3 restaurants simultanement — Harmony part avec un handicap serieux.", positifs: ['Concept confirme la recommandation IA', 'TripAdvisor 4.9/5 rassure', 'Fromages = facteur differenciant'], frictions: ['LCP 19s = premier signal negatif', 'Impossible de comparer sans prix', 'Pas de temoignages sur le site', 'Pas d\'option anniversaire'] },
+  { id: 6, name: 'Patrick', age: 48, role: 'Proprietaire bar plongee', canal: 'Bouche-a-oreille', maturite: 'Decision', device: 'Mobile', decision: 'Convertit', exp: 3, conf: 5, clarte: 3, emoji: '🤿', situation: 'Expat francais, Koh Tao depuis 12 ans', contexte: 'Un ami plongeur lui a dit "c\'est des Francais"', pages: ['Accueil', 'Menu', 'Footer', 'Contact'], questionCle: "C'est ou exactement et c'est ouvert ce soir ?", reponse: 'Partiellement', reponseDetail: "Adresse presente mais pas mise en valeur, pas de lien Google Maps. Horaires difficiles a trouver.", premierImpression: 'Android ancien + 4G Koh Tao = probablement 25s de chargement. Attend car recommandation directe.', impactTechnique: 'Desastreux sur vieux Android. Le site Wix est un calvaire sur ce device.', positifs: ['Numero de telephone present', 'Concept intrigue un expat francais', 'Ambiance visuelle correcte'], frictions: ['Chargement 25s+ sur vieux Android', 'Horaires et adresse enfouis', 'Pas de lien Google Maps', 'Doublons de pages'] },
+  { id: 7, name: 'Lisa', age: 26, role: 'Influenceuse voyage (8K)', canal: 'Instagram', maturite: 'Decouverte', device: 'Mobile', decision: 'Hesite', exp: 4, conf: 5, clarte: 5, emoji: '📱', situation: 'Digital nomad, Berlin', contexte: 'A vu le profil via Instagram Explore, cherche du contenu', pages: ['Accueil', 'Gallery', 'Menu', 'Experiences', 'About'], questionCle: "L'endroit est-il assez photogenique pour un post ?", reponse: 'Partiellement', reponseDetail: 'La galerie existe mais charge lentement. Pas de feed Instagram integre ni UGC.', premierImpression: 'iPhone 15 Pro Max mais 10-12s de blanc quand meme. Signal negatif pour une habituee des sites rapides.', impactTechnique: 'Images de galerie lentes a charger. Un site template Wix ne donne pas une image premium.', positifs: ['Concept narrativement fort pour du contenu', 'Noms de plats evocateurs', 'Storytelling du couple francais'], frictions: ['Chargement lent des images galerie', 'Pas de feed Instagram integre', 'Site template Wix pas assez premium', 'Pages en construction'] },
+  { id: 8, name: 'Koichi', age: 38, role: 'Chef cuisinier', canal: 'Google Search', maturite: 'Comparaison', device: 'Desktop', decision: 'Hesite', exp: 4, conf: 4, clarte: 3, emoji: '👨‍🍳', situation: 'En vacances, passione cuisines fusion', contexte: 'Recherche "fusion cuisine Koh Tao artisan cheese Thailand"', pages: ['About', 'Menu', 'Blog', 'Boutique'], questionCle: "D'ou viennent les produits et comment sont-ils travailles ?", reponse: 'Non', reponseDetail: 'Le concept general est mentionne mais aucun detail sur les fournisseurs, techniques, ou sourcing.', premierImpression: '17s sur desktop. A ouvert 5 onglets — les concurrents chargent en 2-3s.', impactTechnique: 'Perd la course au chargement face aux 4 autres restaurants dans ses onglets.', positifs: ['Concept fusion authentiquement interessant', 'Fromages Jartisann = element rare', 'Wagyu thai = curiosite professionnelle'], frictions: ['Zero info sur techniques et sourcing', 'Pas de fiches produit detaillees', 'Menu sans descriptions approfondies', 'Pas de bio du chef'] },
+  { id: 9, name: 'Emma', age: 62, role: 'Retraitee', canal: 'Google Maps', maturite: 'Comparaison', device: 'Tablette', decision: 'Hesite', exp: 3, conf: 4, clarte: 2, emoji: '👵', situation: 'Veuve, voyage organise 8 personnes', contexte: 'Le guide a mentionne un bon restaurant, cherche sur Maps', pages: ['Accueil', 'Menu', 'Reservations', 'Photos', 'Contact'], questionCle: "C'est adapte pour quelqu'un qui n'aime pas l'epice ?", reponse: 'Non', reponseDetail: 'Aucune info sur le niveau d\'epices, allergenes, ou preferences. La mention "cuisine europeenne" pourrait rassurer mais ce n\'est pas explicite.', premierImpression: 'iPad en WiFi hotel = 15-18s. Pense que le site est casse. Attend grace a la note Maps.', impactTechnique: 'Naviguer entre pages = nouveau chargement a chaque fois. Penible sur tablette.', positifs: ['Note 4.9/5 rassurante (vue sur Maps)', 'Cuisine europeenne = plats familiers', 'Reservation en ligne existante'], frictions: ['Pas de prix = impossible pour 8 personnes', 'Aucune info allergenes/epices', 'Horaires peu visibles', 'Doublons de pages perturbants'] },
+  { id: 10, name: 'Marco', age: 35, role: 'Blogueur culinaire', canal: 'Blog voyage', maturite: 'Comparaison', device: 'Mobile', decision: 'Convertit', exp: 4, conf: 5, clarte: 3, emoji: '✍️', situation: 'En couple, tour gastronomique d\'Asie', contexte: 'A lu l\'article Koh Tao Complete Guide, intrigue par le fromage', pages: ['Menu', 'About', 'Reservations', 'Boutique', 'Blog'], questionCle: 'Comment est la ricotta comparee a l\'Italie ?', reponse: 'Non', reponseDetail: 'La boutique liste les fromages mais sans descriptions, notes de degustation, ou comparaisons.', premierImpression: '19s sur Pixel 8. Dernier des 5 onglets a se charger. Mauvais depart.', impactTechnique: 'Se classe dernier en temps de chargement parmi ses 5 restaurants. Handicap de comparaison.', positifs: ['Concept = angle parfait pour article', 'Fromages Jartisann = sujet en or', 'Boissons thai artisanales = curiosites'], frictions: ['Zero prix pour comparer', 'Pas de fiches produit fromages', 'Descriptions de plats insuffisantes', 'Doublons de pages = site en chantier'] },
+  { id: 11, name: 'Sarah', age: 27, role: 'Backpackeuse', canal: 'Google Search', maturite: 'Decouverte', device: 'Mobile', decision: 'Quitte', exp: 2, conf: 4, clarte: 2, emoji: '🎒', situation: 'Budget 30$/jour, Melbourne', contexte: 'Cherche "where to eat Koh Tao cheap" — atterrit par erreur', pages: ['Accueil', 'Menu'], questionCle: "C'est combien pour un plat ?", reponse: 'Non', reponseDetail: 'Aucun prix. Le vocabulaire "Gourmet Bistro" et "Wagyu" confirme que c\'est hors budget.', premierImpression: 'iPhone SE ancien = probablement 25s+ de chargement. Voit "Gourmet Bistro" et comprend immediatement.', impactTechnique: 'Desastreux sur vieux device. Elle n\'a meme pas pu voir le contenu correctement.', positifs: ['Le positionnement filtre naturellement les non-cibles'], frictions: ['Aucun prix = temps perdu pour tout le monde', 'Chargement inacceptable sur ancien device'] },
+  { id: 12, name: 'David', age: 44, role: 'Avocat d\'affaires', canal: 'Perplexity', maturite: 'Comparaison', device: 'Desktop', decision: 'Hesite', exp: 5, conf: 6, clarte: 4, emoji: '⚖️', situation: 'Divorce, voyage solo reset', contexte: 'Perplexity recommande pour le vin et le concept local', pages: ['Menu', 'About', 'Portfolio', 'Reservations'], questionCle: "C'est confortable d'y diner seul ?", reponse: 'Non', reponseDetail: 'Aucune mention de l\'accueil solo, pas de photo du bar/comptoir, pas d\'espace comptoir decrit.', premierImpression: '17s sur MacBook Air. Un site lent pour un restaurant $$$$ = decalage avec le positionnement.', impactTechnique: 'Habitue a des sites performants (Resy, OpenTable). La lenteur est un signe d\'amateurisme technique.', positifs: ['Concept parfaitement aligne', 'Carte des vins/boissons differenciant', 'TripAdvisor 4.9/5 rassure'], frictions: ['Pas d\'info accueil diner solo', 'Prix absents (agacant par principe)', 'Doublon reservations = confusion'] },
+  { id: 13, name: 'Camille', age: 33, role: 'Prof de yoga', canal: 'Facebook', maturite: 'Decouverte', device: 'Mobile', decision: 'Hesite', exp: 3, conf: 5, clarte: 3, emoji: '🧘', situation: 'En couple avec une Thailandaise, vit a Bangkok', contexte: 'Post Facebook avec une planche de charcuterie', pages: ['Accueil', 'Menu', 'About', 'Contact'], questionCle: 'Y a-t-il des options pour quelqu\'un qui mange peu de viande ?', reponse: 'Non', reponseDetail: 'Menu 90% viande/charcuterie. Aucune mention vegetarienne, aucun pictogramme. Silence total.', premierImpression: '19s depuis Facebook ou tout est instantane. Contraste brutal. Ambiance carnivore.', impactTechnique: 'Contraste Facebook (instantane) vs site Wix (19s) = experience degradee.', positifs: ['Photos appetissantes', 'Fromages pour sa compagne', 'Approche ingredients thai resonne'], frictions: ['Aucune option vegetarienne visible', 'Double page contact = confusion', 'Positionnement ultra-carnivore', 'Aucune mention de flexibilite du chef'] },
+  { id: 14, name: 'Ryan', age: 22, role: 'Etudiant', canal: 'Google Search', maturite: 'Decouverte', device: 'Mobile', decision: 'Quitte', exp: 1, conf: 3, clarte: 5, emoji: '🎉', situation: 'Spring break avec 4 potes, Austin TX', contexte: 'Cherche "Koh Tao nightlife restaurants bars"', pages: ['Accueil'], questionCle: "C'est un endroit ou on peut faire la fete ?", reponse: 'Non', reponseDetail: 'Harmony est l\'anti-spring break. Le positionnement premium filtre naturellement ce persona negatif.', premierImpression: '19s de blanc. Quitte apres 6-8 secondes. N\'a jamais vu le contenu.', impactTechnique: 'N\'a meme pas vu le site. La lenteur l\'a elimine avant le contenu.', positifs: ['Le positionnement filtre bien les non-cibles'], frictions: ['Temps de chargement = 100% de perte'] },
+  { id: 15, name: 'Nathalie', age: 51, role: 'Directrice agence immo', canal: 'Google Maps', maturite: 'Decision', device: 'Mobile', decision: 'Convertit', exp: 5, conf: 6, clarte: 4, emoji: '🏠', situation: 'Bordeaux, voyage avec sa fille de 25 ans', contexte: 'Cherche "restaurant francais Koh Tao" sur Maps', pages: ['Accueil', 'Menu', 'About', 'Boutique', 'Reservations'], questionCle: 'Les proprietaires sont vraiment francais ?', reponse: 'Partiellement', reponseDetail: 'About Us confirme Remy et Cynthia mais manque de details sur leur parcours.', premierImpression: 'iPhone 15 Pro mais 19s quand meme. "Pour un restaurant a ce prix, le site devrait etre plus pro."', impactTechnique: 'Les doublons de pages donnent une impression d\'amateurisme. La page "en construction" renforce.', positifs: ['Concept correspond exactement a sa recherche', 'Fromages artisanaux = argument fort pour une Francaise', 'Note 4.9/5 rassurante', 'Esthetique premium'], frictions: ['Prix absents = agacement', 'Doublons de pages = amateurisme', 'Horaires difficiles a trouver', 'Site en anglais uniquement'] },
+  { id: 16, name: 'Alex', age: 30, role: 'Dev web freelance', canal: 'Instagram', maturite: 'Decouverte', device: 'Mobile', decision: 'Quitte', exp: 3, conf: 4, clarte: 3, emoji: '💻', situation: 'Vegan, digital nomad, Amsterdam', contexte: 'Invite a un diner de groupe par des nomads', pages: ['Accueil', 'Menu', 'About', 'Experiences'], questionCle: 'Avez-vous des plats vegans ?', reponse: 'Non', reponseDetail: 'Menu 100% viande/poisson. Aucun signal vegan, aucune mention d\'adaptation.', premierImpression: 'En tant que dev, il identifie immediatement Wix + JS lourd. "Serieux, 2025 et ils livrent ca..."', impactTechnique: 'Dev = particulierement sensible a la performance. Note mentalement Wix, pas de lazy loading.', positifs: ['Belles photos, concept original', 'Il en parlerait au groupe malgre tout'], frictions: ['Zero option vegan', 'Pas de pictogrammes allergenes', 'Chargement mobile inacceptable', 'Prix absents'] },
+  { id: 17, name: 'Christine', age: 58, role: 'Ancienne restauratrice', canal: 'Bouche-a-oreille', maturite: 'Decision', device: 'Desktop', decision: 'Convertit', exp: 5, conf: 6, clarte: 4, emoji: '👩‍🍳', situation: 'Strasbourg, vacances longues en Thailande', contexte: 'Amie expat WhatsApp : "Tu dois aller chez Harmony"', pages: ['Accueil', 'About', 'Menu', 'Boutique', 'Blog', 'Reservations'], questionCle: "Comment s'approvisionnent-ils sur une ile ?", reponse: 'Partiellement', reponseDetail: 'Le concept 100% Thai et Jartisann donnent un debut mais manque le recit logistique detaille.', premierImpression: 'PC + WiFi hotel = ~20s. Patiente car vacances et motivee. "Ca a de la gueule."', impactTechnique: 'Doublons de pages et page en construction = impression de site pas fini pour une pro.', positifs: ['Concept fascine professionnellement', 'Fromages = preuve d\'un reseau serieux', 'Esthetique coherente haut de gamme', 'Histoire des proprietaires cree un lien'], frictions: ['Prix absents (elle sait que ca rebute)', 'Manque de details sourcing', 'Doublons amateur', 'Page en construction'] },
+  { id: 18, name: 'Lucas', age: 28, role: 'Ingenieur logiciel', canal: 'Claude AI', maturite: 'Comparaison', device: 'Mobile', decision: 'Hesite', exp: 4, conf: 5, clarte: 4, emoji: '💍', situation: 'Montreal, lune de miel', contexte: 'Claude AI recommande "romantic dinner Koh Tao"', pages: ['Accueil', 'Gallery', 'Menu', 'Experiences', 'Book Online'], questionCle: 'Proposez-vous un menu degustation ou experience speciale ?', reponse: 'Partiellement', reponseDetail: 'La page Experiences existe mais manque de details concrets. Pas de menu degustation affiche.', premierImpression: '19s mobile. Sa femme : "Ca charge pas, essaie un autre." Il insiste par curiosite.', impactTechnique: 'Sans Schema.org, les LLM ont du mal a crawler — il a failli ne pas trouver le site.', positifs: ['Esthetique romantique dans la galerie', 'Concept unique sur Koh Tao', 'Photos convaincantes pour soiree speciale'], frictions: ['LCP quasi-redhibitoire', 'Pas de menu degustation clair', 'Pas de formule couple/lune de miel', 'Prix absents = stress', 'Doublons de pages'] },
+  { id: 19, name: 'Priya', age: 36, role: 'Medecin vegetarienne', canal: 'Google Search', maturite: 'Comparaison', device: 'Mobile', decision: 'Quitte', exp: 2, conf: 2, clarte: 2, emoji: '👨‍👩‍👧‍👦', situation: 'Famille avec 2 enfants (4 et 7 ans), Mumbai', contexte: 'Cherche "family friendly restaurant Koh Tao"', pages: ['Accueil', 'Menu'], questionCle: "C'est adapte pour des enfants avec des options vegetariennes ?", reponse: 'Non', reponseDetail: 'Triple echec : pas de menu enfant, pas d\'options veg, pas d\'info allergenes. Ambiance fine dining ≠ enfants.', premierImpression: 'OnePlus en 4G, enfants qui tirent la manche. 19s = eternite. Ambiance adulte.', impactTechnique: 'Avec deux enfants impatients, 19s est une eternite absolue.', positifs: ['Esthetique professionnelle (mais inadaptee)'], frictions: ['Zero option vegetarienne', 'Zero menu enfant', 'Zero info allergenes', 'Ambiance adults-only fine dining', 'Chargement inacceptable avec enfants'] },
+  { id: 20, name: 'Hans', age: 67, role: 'Retraite', canal: 'Bouche-a-oreille', maturite: 'Decision', device: 'Tablette', decision: 'Hesite', exp: 3, conf: 5, clarte: 3, emoji: '🦯', situation: 'Munich, problemes de mobilite (canne)', contexte: 'Le receptionniste de l\'hotel recommande "excellent steak"', pages: ['Accueil', 'Contact', 'Reservations', 'Menu'], questionCle: "Comment y aller et est-ce accessible ?", reponse: 'Non', reponseDetail: 'Adresse sans contexte. Aucune mention d\'accessibilite physique, marches, terrain, transport.', premierImpression: 'Tablette Samsung en WiFi hotel = ~18s. Pense que c\'est le WiFi. Attend patiemment.', impactTechnique: 'La taille du texte peut etre petite sur tablette. Site Wix pas toujours responsive.', positifs: ['Numero de telephone accessible', 'Esthetique haut de gamme', 'Bouche-a-oreille compense les lacunes'], frictions: ['Aucune info accessibilite', 'Adresse sans carte ni reperes', 'Pas d\'indication transport', 'Doublons de pages', 'Prix absents'] },
+];
+
+// ─── COMPUTED STATS ───
+const avgExp = (personas.reduce((s, p) => s + p.exp, 0) / personas.length).toFixed(1);
+const avgConf = (personas.reduce((s, p) => s + p.conf, 0) / personas.length).toFixed(1);
+const avgClarte = (personas.reduce((s, p) => s + p.clarte, 0) / personas.length).toFixed(1);
+const convertis = personas.filter(p => p.decision === 'Convertit').length;
+const hesitants = personas.filter(p => p.decision === 'Hesite').length;
+const quittent = personas.filter(p => p.decision === 'Quitte').length;
+const txConv = Math.round((convertis / personas.length) * 100);
+
+const canalStats = [
+  { canal: 'Google Search', total: 5, conv: 0, hesitant: 2, quitte: 3 },
+  { canal: 'Google Maps', total: 3, conv: 1, hesitant: 2, quitte: 0 },
+  { canal: 'IA (ChatGPT / Perplexity / Claude)', total: 3, conv: 0, hesitant: 3, quitte: 0 },
+  { canal: 'Instagram', total: 3, conv: 0, hesitant: 1, quitte: 2 },
+  { canal: 'Bouche-a-oreille', total: 3, conv: 2, hesitant: 1, quitte: 0 },
+  { canal: 'Autres (TripAdvisor, Blog, Facebook)', total: 3, conv: 2, hesitant: 1, quitte: 0 },
+];
+
+const maturiteStats = [
+  { level: 'Decouverte', total: 6, conv: 0, pct: '0%' },
+  { level: 'Comparaison', total: 8, conv: 1, pct: '12%' },
+  { level: 'Decision', total: 6, conv: 4, pct: '67%' },
+];
+
+const deviceStats = [
+  { device: 'Mobile', total: 14, conv: 4, pct: '29%' },
+  { device: 'Desktop', total: 4, conv: 1, pct: '25%' },
+  { device: 'Tablette', total: 2, conv: 0, pct: '0%' },
+];
+
+// ─── PAGESPEED DATA ───
+const pagespeed = {
+  mobile: { perf: 40, access: 93, bp: 100, seo: 92, lcp: '19.1s', tbt: '1 420ms', cls: '0.009', si: '5.9s', fcp: '2.9s' },
+  desktop: { perf: 71, access: 93, bp: 100, seo: 92, lcp: '17.4s', tbt: '120ms', cls: '0', si: '1.7s', fcp: '0.2s' },
+};
+
+const observatory = { grade: 'C-', score: 45, passed: 6, total: 10 };
+
+const schemaChecks = [
+  { item: 'JSON-LD present', ok: false },
+  { item: 'Type Restaurant / FoodEstablishment', ok: false },
+  { item: 'name, url, description', ok: false },
+  { item: 'address + geo', ok: false },
+  { item: 'telephone', ok: false },
+  { item: 'openingHours', ok: false },
+  { item: 'image / logo', ok: false },
+  { item: 'sameAs (reseaux sociaux)', ok: false },
+  { item: 'aggregateRating', ok: false },
+  { item: 'menu', ok: false },
+  { item: 'servesCuisine', ok: false },
+  { item: 'priceRange', ok: false },
+];
+
+const ogChecks = [
+  { item: 'og:title', ok: false },
+  { item: 'og:description', ok: false },
+  { item: 'og:image', ok: false },
+  { item: 'og:url', ok: false },
+  { item: 'og:type', ok: false },
+  { item: 'twitter:card', ok: false },
+];
+
+const securityHeaders = [
+  { header: 'Strict-Transport-Security', ok: true },
+  { header: 'X-Content-Type-Options', ok: true },
+  { header: 'Content-Security-Policy', ok: false },
+  { header: 'X-Frame-Options', ok: false },
+  { header: 'Referrer-Policy', ok: false },
+  { header: 'Permissions-Policy', ok: false },
+];
+
+const seoChecks = [
+  { item: 'robots.txt accessible', ok: true },
+  { item: 'sitemap.xml accessible', ok: true },
+  { item: 'Redirection HTTP → HTTPS', ok: true },
+  { item: 'Viewport meta present', ok: true },
+  { item: 'Contenu indexable (SSR)', ok: false },
+  { item: 'Liens descriptifs', ok: false },
+  { item: 'iframes avec titre', ok: false },
+];
+
+// ─── FRICTIONS ───
+const frictions = [
+  { label: 'Prix absents (menu + boutique)', count: 18, severity: 'critique' },
+  { label: 'LCP 19s mobile / 17s desktop', count: 20, severity: 'critique' },
+  { label: 'Pas de temoignages integres', count: 14, severity: 'haute' },
+  { label: 'Horaires et adresse peu visibles', count: 12, severity: 'haute' },
+  { label: 'Doublons de pages (contact, boutique, reservation)', count: 10, severity: 'haute' },
+  { label: 'Pas d\'options vegetariennes/vegan visibles', count: 8, severity: 'haute' },
+  { label: 'Page en construction visible', count: 8, severity: 'moyenne' },
+  { label: 'Pas de FAQ', count: 7, severity: 'moyenne' },
+  { label: 'Schema.org absent', count: 6, severity: 'moyenne' },
+  { label: 'Pas d\'info accessibilite', count: 4, severity: 'moyenne' },
+];
+
+// ─── AMELIORATIONS ───
+const ameliorations = {
+  haute: [
+    { title: 'Afficher les prix sur le menu et la boutique', impact: '18/20 personas', detail: 'Meme une fourchette ("Plats de 350 a 1 200 THB") debloquerait la majorite des hesitants. L\'absence de prix est le premier frein de conversion.', action: 'Ajouter les prix a cote de chaque plat dans la section Menu et sur chaque fiche produit de la boutique.' },
+    { title: 'Optimiser drastiquement la performance', impact: '20/20 personas', detail: 'Le site met 19 secondes a s\'afficher sur mobile. Les visiteurs partent avant de voir le contenu. Migration hors Wix ou optimisation radicale necessaire.', action: 'Migrer vers un site statique (Astro, Next.js) ou optimiser le JS Wix : lazy loading, CDN images, suppression des 432 KiB de JS inutilise.' },
+    { title: 'Integrer des temoignages clients', impact: '14/20 personas', detail: 'Les 4.9/5 etoiles de TripAdvisor (20 avis) sont un atout majeur non exploite. Les visiteurs doivent quitter le site pour les trouver.', action: 'Ajouter 4-5 verbatims TripAdvisor sur la page d\'accueil avec la note globale et un lien vers la fiche complete.' },
+    { title: 'Afficher adresse + horaires + telephone en permanence', impact: '12/20 personas', detail: 'Les informations pratiques essentielles sont enfouies. Un visiteur devrait pouvoir trouver ou vous etes et quand vous etes ouvert en moins de 3 secondes.', action: 'Ajouter un bandeau fixe ou un footer visible sur toutes les pages avec adresse (lien Maps), horaires et telephone cliquable.' },
+    { title: 'Supprimer les doublons de pages', impact: '10/20 personas', detail: 'Deux pages Contact, deux pages Boutique, deux pages Reservation creent de la confusion et donnent une impression d\'amateurisme.', action: 'Fusionner les doublons : une seule page Contact, une seule Boutique, une seule Reservation. Supprimer la page en construction.' },
+  ],
+  moyenne: [
+    { title: 'Indiquer les options vegetariennes / allergenes', detail: 'Ajouter des pictogrammes sur le menu et une mention "Options vegetariennes sur demande".' },
+    { title: 'Ajouter une FAQ', detail: 'Repondre aux questions recurrentes : prix, epicement, groupes, accessibilite, reservations jour meme.' },
+    { title: 'Ajouter du Schema.org', detail: 'Restaurant, Menu, Product — pour les rich snippets Google et les recommandations IA.' },
+    { title: 'Detailler les fiches produits fromages', detail: 'Type de lait, affinage, notes de degustation — un argument de vente inexploite.' },
+  ],
+  discussion: [
+    { title: 'Migration hors Wix', emoji: '🔄', detail: 'Le rendu 100% JavaScript cause les problemes de performance, SEO et accessibilite IA. Un site statique chargerait en 1-2 secondes.' },
+    { title: 'Version francaise du site', emoji: '🇫🇷', detail: 'Trois personas francophones auraient prefere naviguer en francais. Les proprietaires sont francais — c\'est coherent.' },
+    { title: 'Menu degustation / experience couple', emoji: '💑', detail: 'Opportunite de vente additionnelle pour les occasions speciales (lune de miel, anniversaires).' },
+  ],
+};
+
+// ─── HELPERS ───
+function scoreColor(score: number) {
+  if (score >= 90) return { ring: '#22c55e', text: 'text-green-600', bg: 'bg-green-50' };
+  if (score >= 50) return { ring: '#f59e0b', text: 'text-amber-600', bg: 'bg-amber-50' };
+  return { ring: '#ef4444', text: 'text-red-600', bg: 'bg-red-50' };
+}
+
+function decisionColor(d: string) {
+  if (d === 'Convertit') return { border: 'border-green-200', bg: 'bg-green-50/40', badge: 'bg-green-600', text: 'text-green-800', badgeText: 'text-white' };
+  if (d === 'Hesite') return { border: 'border-amber-200', bg: 'bg-amber-50/40', badge: 'bg-amber-500', text: 'text-amber-800', badgeText: 'text-white' };
+  return { border: 'border-neutral-200', bg: 'bg-neutral-50/40', badge: 'bg-red-500', text: 'text-red-800', badgeText: 'text-white' };
+}
+
+function severityColor(s: string) {
+  if (s === 'critique') return 'bg-red-100 text-red-800';
+  if (s === 'haute') return 'bg-orange-100 text-orange-800';
+  return 'bg-blue-100 text-blue-800';
+}
+---
+
+<BaseLayout title={title} description={description} noindex={true} lang="fr" frPath="/audit/harmony-kohtao">
+
+  <!-- ══════════ HERO ══════════ -->
+  <section class="w-full relative px-6 py-16 md:px-8 md:py-24 overflow-hidden" style="background-color: #0D0D0D;">
+    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 40px 40px;"></div>
+    <div class="absolute top-20 -left-32 w-96 h-96 rounded-full opacity-10 blur-3xl" style="background: #E86C47;"></div>
+    <div class="mx-auto max-w-4xl relative z-10">
+      <div class="mb-4 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--color-accent)]/40">
+        <span class="w-2 h-2 rounded-full" style="background-color: #E86C47;"></span>
+        <span class="text-sm font-semibold text-white/90">Rapport confidentiel</span>
+      </div>
+      <h1 class="mb-4 text-3xl font-bold leading-tight text-white md:text-4xl lg:text-5xl">
+        Audit UX + Technique — <span class="bg-gradient-to-r from-[#E86C47] to-[#F5C8B3] bg-clip-text text-transparent">Harmony Koh Tao</span>
+      </h1>
+      <p class="text-lg text-neutral-300 md:text-xl max-w-2xl mb-8">
+        Audit complet de <strong class="text-white">harmonykohtao.com</strong> : performance, securite, SEO, et simulation de 20 visites personas realistes.
+      </p>
+      <div class="flex flex-wrap gap-3">
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">20 personas testes</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">6 canaux d'arrivee</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">8 audits techniques</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">29 mars 2026</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ TAB BAR ══════════ -->
+  <nav class="sticky top-16 md:top-20 z-40 bg-white/95 backdrop-blur border-b border-neutral-200" id="tab-bar">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-2 h-12 text-sm overflow-x-auto">
+      <button data-tab="0" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-primary-700 bg-primary-50">Synthese</button>
+      <button data-tab="1" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">Technique</button>
+      <button data-tab="2" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">
+        Visiteurs <span class="ml-1 text-xs text-neutral-400">20</span>
+      </button>
+      <button data-tab="3" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">
+        Ameliorations <span class="ml-1 text-xs text-neutral-400">{ameliorations.haute.length + ameliorations.moyenne.length + ameliorations.discussion.length}</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ══════════ PANELS ══════════ -->
+  <div id="panels" class="flex overflow-x-auto snap-x snap-mandatory" style="-webkit-overflow-scrolling: touch; scrollbar-width: none;">
+
+    <!-- ════════ PANEL 1 : SYNTHESE ════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+
+      <!-- KPI Cards -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class={`text-3xl md:text-4xl font-bold ${txConv < 30 ? 'text-red-600' : txConv < 60 ? 'text-amber-600' : 'text-emerald-600'}`}>{txConv}%</p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Taux de conversion</p>
+              <p class="mt-2 text-xs text-[var(--color-text-muted)]">{convertis} convertis · {hesitants} hesitants · {quittent} partis</p>
+            </div>
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class="text-3xl md:text-4xl font-bold text-red-600">{avgExp}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Experience</p>
+              <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden">
+                <div class="h-full rounded-full bg-red-500" style={`width: ${Number(avgExp) * 10}%`}></div>
+              </div>
+            </div>
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class="text-3xl md:text-4xl font-bold text-amber-600">{avgConf}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Confiance</p>
+              <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden">
+                <div class="h-full rounded-full bg-amber-500" style={`width: ${Number(avgConf) * 10}%`}></div>
+              </div>
+            </div>
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class="text-3xl md:text-4xl font-bold text-red-600">{avgClarte}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Clarte</p>
+              <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden">
+                <div class="h-full rounded-full bg-red-500" style={`width: ${Number(avgClarte) * 10}%`}></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Paradoxe -->
+      <div class="w-full px-6 py-8 md:px-8 bg-white">
+        <div class="mx-auto max-w-5xl">
+          <div class="rounded-xl border-l-4 border-l-[var(--color-accent)] bg-accent-50 p-6 md:p-8">
+            <h2 class="text-lg font-bold text-[var(--color-text)] mb-2">Paradoxe principal</h2>
+            <p class="text-[var(--color-text)] leading-relaxed">
+              Le site ne <strong>convainc pas</strong> — il se contente de ne pas <strong>dissuader</strong> ceux qui sont deja decides. Les visiteurs en <strong>Decision</strong> convertissent a <strong>67%</strong>, mais ceux en <strong>Comparaison</strong> seulement a <strong>12%</strong> et ceux en <strong>Decouverte</strong> a <strong>0%</strong>. Les <strong>10 hesitants</strong> sont un reservoir de conversion perdu par manque d'information (prix, temoignages, FAQ).
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Conversion par canal -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-2">Conversion par canal</h2>
+          <p class="text-[var(--color-text-muted)] mb-8">Seuls le bouche-a-oreille et les referrals externes convertissent. Google Search et Instagram = 0%.</p>
+          <div class="grid md:grid-cols-2 gap-4">
+            {canalStats.map((c) => {
+              const pct = c.total > 0 ? Math.round((c.conv / c.total) * 100) : 0;
+              return (
+                <div class="rounded-xl border border-[var(--color-border)] bg-white p-5">
+                  <div class="flex items-center justify-between mb-3">
+                    <h3 class="font-semibold text-[var(--color-text)] text-sm">{c.canal}</h3>
+                    <span class={`text-lg font-bold ${pct > 50 ? 'text-emerald-600' : pct > 0 ? 'text-amber-600' : 'text-red-600'}`}>{pct}%</span>
+                  </div>
+                  <div class="h-3 rounded-full bg-neutral-100 overflow-hidden mb-3">
+                    <div class="h-full rounded-full flex">
+                      <div class="bg-emerald-500" style={`width: ${(c.conv / c.total) * 100}%`}></div>
+                      <div class="bg-amber-400" style={`width: ${(c.hesitant / c.total) * 100}%`}></div>
+                      <div class="bg-red-400" style={`width: ${(c.quitte / c.total) * 100}%`}></div>
+                    </div>
+                  </div>
+                  <div class="flex gap-4 text-xs text-[var(--color-text-muted)]">
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-emerald-500"></span> {c.conv} conv.</span>
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-amber-400"></span> {c.hesitant} hes.</span>
+                    <span class="flex items-center gap-1"><span class="w-2 h-2 rounded-full bg-red-400"></span> {c.quitte} partis</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      </div>
+
+      <!-- Conversion par maturite -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-white">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-8">Conversion par maturite</h2>
+          <div class="grid md:grid-cols-3 gap-4">
+            {maturiteStats.map((m) => (
+              <div class="rounded-xl border border-[var(--color-border)] bg-white p-6 text-center">
+                <p class="text-sm font-semibold text-[var(--color-text-muted)] uppercase tracking-wider mb-2">{m.level}</p>
+                <p class={`text-4xl font-bold ${m.pct === '0%' ? 'text-red-600' : m.pct === '12%' ? 'text-amber-600' : 'text-emerald-600'}`}>{m.pct}</p>
+                <p class="mt-1 text-sm text-[var(--color-text-muted)]">{m.conv}/{m.total} convertis</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- Conversion par device -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <h2 class="text-2xl font-bold text-[var(--color-text)] mb-8">Conversion par device</h2>
+          <div class="grid md:grid-cols-3 gap-4">
+            {deviceStats.map((d) => (
+              <div class="rounded-xl border border-[var(--color-border)] bg-white p-6 text-center">
+                <p class="text-sm font-semibold text-[var(--color-text-muted)] uppercase tracking-wider mb-2">{d.device}</p>
+                <p class={`text-4xl font-bold ${d.pct === '0%' ? 'text-red-600' : 'text-amber-600'}`}>{d.pct}</p>
+                <p class="mt-1 text-sm text-[var(--color-text-muted)]">{d.conv}/{d.total} convertis</p>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════ PANEL 2 : TECHNIQUE ════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl space-y-12">
+
+          <!-- PageSpeed Scores -->
+          <div>
+            <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">PageSpeed Insights</h2>
+            <div class="grid md:grid-cols-2 gap-6">
+              {(['mobile', 'desktop'] as const).map((strategy) => {
+                const data = pagespeed[strategy];
+                const scores = [
+                  { label: 'Performance', score: data.perf },
+                  { label: 'Accessibilite', score: data.access },
+                  { label: 'Bonnes Pratiques', score: data.bp },
+                  { label: 'SEO', score: data.seo },
+                ];
+                return (
+                  <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+                    <h3 class="font-bold text-[var(--color-text)] mb-4 text-center uppercase text-sm tracking-wider">{strategy === 'mobile' ? '📱 Mobile' : '💻 Desktop'}</h3>
+                    <div class="grid grid-cols-4 gap-4 mb-6">
+                      {scores.map((s) => {
+                        const c = scoreColor(s.score);
+                        return (
+                          <div class="text-center">
+                            <div class="relative w-16 h-16 mx-auto mb-2">
+                              <svg class="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+                                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3" />
+                                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={c.ring} stroke-width="3" stroke-dasharray={`${s.score}, 100`} stroke-linecap="round" />
+                              </svg>
+                              <span class={`absolute inset-0 flex items-center justify-center text-lg font-bold ${c.text}`}>{s.score}</span>
+                            </div>
+                            <p class="text-xs text-neutral-600 font-medium">{s.label}</p>
+                          </div>
+                        );
+                      })}
+                    </div>
+                    <div class="space-y-2">
+                      <div class={`flex items-center justify-between p-3 rounded-lg ${data.lcp.includes('19') || data.lcp.includes('17') ? 'bg-red-50' : 'bg-green-50'}`}>
+                        <div><span class="text-xs font-bold text-neutral-700">LCP</span><span class="text-xs text-neutral-500 ml-1">(plus gros element)</span></div>
+                        <div class="flex items-center gap-2"><span class="text-sm font-bold text-red-600">{data.lcp}</span><span class="text-[10px] px-1.5 py-0.5 rounded font-medium bg-red-100 text-red-700">Mauvais</span></div>
+                      </div>
+                      <div class={`flex items-center justify-between p-3 rounded-lg ${strategy === 'mobile' ? 'bg-red-50' : 'bg-green-50'}`}>
+                        <div><span class="text-xs font-bold text-neutral-700">TBT</span><span class="text-xs text-neutral-500 ml-1">(temps de blocage)</span></div>
+                        <div class="flex items-center gap-2">
+                          <span class={`text-sm font-bold ${strategy === 'mobile' ? 'text-red-600' : 'text-green-600'}`}>{data.tbt}</span>
+                          <span class={`text-[10px] px-1.5 py-0.5 rounded font-medium ${strategy === 'mobile' ? 'bg-red-100 text-red-700' : 'bg-green-100 text-green-700'}`}>{strategy === 'mobile' ? 'Mauvais' : 'Bon'}</span>
+                        </div>
+                      </div>
+                      <div class="flex items-center justify-between p-3 rounded-lg bg-green-50">
+                        <div><span class="text-xs font-bold text-neutral-700">CLS</span><span class="text-xs text-neutral-500 ml-1">(stabilite visuelle)</span></div>
+                        <div class="flex items-center gap-2"><span class="text-sm font-bold text-green-600">{data.cls}</span><span class="text-[10px] px-1.5 py-0.5 rounded font-medium bg-green-100 text-green-700">Bon</span></div>
+                      </div>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+
+          <!-- Observatory -->
+          <div>
+            <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">Securite HTTP</h2>
+            <div class="flex items-center gap-4 p-4 rounded-xl border border-red-200 bg-red-50 mb-6">
+              <div class="text-3xl font-black text-red-600">{observatory.grade}</div>
+              <div>
+                <p class="text-sm font-semibold text-neutral-900">Mozilla Observatory</p>
+                <p class="text-xs text-neutral-500">{observatory.passed}/{observatory.total} tests passes — Score {observatory.score}/100</p>
+              </div>
+            </div>
+            <div class="grid md:grid-cols-2 gap-3">
+              {securityHeaders.map((h) => (
+                <div class="flex items-center gap-2 py-1.5">
+                  {h.ok ? (
+                    <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                  ) : (
+                    <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                  )}
+                  <span class={`text-sm ${h.ok ? 'text-neutral-700' : 'text-neutral-400 line-through'}`}>{h.header}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <!-- Schema.org -->
+          <div>
+            <h2 class="text-2xl font-bold text-[var(--color-text)] mb-4">Schema.org (donnees structurees)</h2>
+            <p class="text-sm text-red-600 font-medium mb-4">Aucune donnee structuree detectee — Google ne comprend pas que c'est un restaurant.</p>
+            <div class="grid md:grid-cols-2 gap-1">
+              {schemaChecks.map((c) => (
+                <div class="flex items-center gap-2 py-1.5">
+                  <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                  <span class="text-sm text-neutral-400 line-through">{c.item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <!-- Open Graph -->
+          <div>
+            <h2 class="text-2xl font-bold text-[var(--color-text)] mb-4">Open Graph (partage reseaux sociaux)</h2>
+            <p class="text-sm text-amber-600 font-medium mb-4">Non verifiable — le site Wix rend les meta tags cote client. Les partages risquent d'afficher un apercu vide.</p>
+            <div class="grid md:grid-cols-2 gap-1">
+              {ogChecks.map((c) => (
+                <div class="flex items-center gap-2 py-1.5">
+                  <svg class="w-4 h-4 text-amber-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M12 3a9 9 0 100 18 9 9 0 000-18z" /></svg>
+                  <span class="text-sm text-neutral-500">{c.item} — non verifiable</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <!-- SEO Technique -->
+          <div>
+            <h2 class="text-2xl font-bold text-[var(--color-text)] mb-4">SEO technique</h2>
+            <div class="grid md:grid-cols-2 gap-1">
+              {seoChecks.map((c) => (
+                <div class="flex items-center gap-2 py-1.5">
+                  {c.ok ? (
+                    <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7" /></svg>
+                  ) : (
+                    <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" /></svg>
+                  )}
+                  <span class={`text-sm ${c.ok ? 'text-neutral-700' : 'text-neutral-400 line-through'}`}>{c.item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════ PANEL 3 : VISITEURS ════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+
+          <!-- Stats row -->
+          <div class="grid grid-cols-3 gap-4 mb-8">
+            <div class="rounded-xl bg-emerald-50 border border-emerald-200 p-4 text-center">
+              <p class="text-3xl font-bold text-emerald-700">{convertis}</p>
+              <p class="text-xs text-emerald-600 font-medium">contactent</p>
+            </div>
+            <div class="rounded-xl bg-amber-50 border border-amber-200 p-4 text-center">
+              <p class="text-3xl font-bold text-amber-700">{hesitants}</p>
+              <p class="text-xs text-amber-600 font-medium">hesitent</p>
+            </div>
+            <div class="rounded-xl bg-red-50 border border-red-200 p-4 text-center">
+              <p class="text-3xl font-bold text-red-700">{quittent}</p>
+              <p class="text-xs text-red-600 font-medium">repartent</p>
+            </div>
+          </div>
+
+          <!-- Convertis -->
+          <h3 class="text-lg font-bold text-emerald-700 mb-4">Ceux qui contactent</h3>
+          <div class="space-y-3 mb-10">
+            {personas.filter(p => p.decision === 'Convertit').map((p) => {
+              const dc = decisionColor(p.decision);
+              return (
+                <details class={`group border ${dc.border} ${dc.bg} rounded-xl overflow-hidden`}>
+                  <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                    <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                        <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                        <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                        <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                      </div>
+                      <p class="text-xs text-neutral-500 mb-2">{p.situation}</p>
+                      <p class="text-xs text-neutral-600 mb-2.5">{p.contexte}</p>
+                      <div class="flex flex-wrap items-center gap-1">
+                        {p.pages.map((page, i) => (
+                          <Fragment>
+                            <span class="text-[10px] text-primary-700 bg-white border border-primary-100 px-1.5 py-0.5 rounded">{page}</span>
+                            {i < p.pages.length - 1 && <span class="text-neutral-300 text-[10px]">›</span>}
+                          </Fragment>
+                        ))}
+                        <span class={`text-[10px] ${dc.badge} ${dc.badgeText} px-1.5 py-0.5 rounded font-medium ml-0.5`}>Contacte</span>
+                      </div>
+                    </div>
+                    <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                  </summary>
+                  <div class="px-4 pb-4 pt-0 border-t border-green-200 bg-white/50">
+                    <div class="grid gap-3 text-xs mt-3">
+                      <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.premierImpression}</p></div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Question cle</p><p class="text-neutral-600 italic">"{p.questionCle}"</p><p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong> — {p.reponseDetail}</p></div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Impact technique</p><p class="text-neutral-600">{p.impactTechnique}</p></div>
+                      <div class="flex gap-4">
+                        <div class="flex-1"><p class="font-semibold text-green-700 mb-1">Points positifs</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.positifs.map(pt => <li>{pt}</li>)}</ul></div>
+                        <div class="flex-1"><p class="font-semibold text-amber-700 mb-1">Frictions</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map(f => <li>{f}</li>)}</ul></div>
+                      </div>
+                      <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.exp >= 5 ? 'text-amber-600' : 'text-red-600'}`}>{p.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.conf >= 5 ? 'text-amber-600' : 'text-red-600'}`}>{p.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.clarte >= 5 ? 'text-amber-600' : 'text-red-600'}`}>{p.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </details>
+              );
+            })}
+          </div>
+
+          <!-- Hesitants -->
+          <h3 class="text-lg font-bold text-amber-700 mb-4">Ceux qui hesitent</h3>
+          <div class="space-y-3 mb-10">
+            {personas.filter(p => p.decision === 'Hesite').map((p) => {
+              const dc = decisionColor(p.decision);
+              return (
+                <details class={`group border ${dc.border} ${dc.bg} rounded-xl overflow-hidden`}>
+                  <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                    <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                        <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                        <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                        <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                      </div>
+                      <p class="text-xs text-neutral-500 mb-2">{p.situation}</p>
+                      <p class="text-xs text-neutral-600 mb-2.5">{p.contexte}</p>
+                      <div class="flex flex-wrap items-center gap-1">
+                        {p.pages.map((page, i) => (
+                          <Fragment>
+                            <span class="text-[10px] text-primary-700 bg-white border border-primary-100 px-1.5 py-0.5 rounded">{page}</span>
+                            {i < p.pages.length - 1 && <span class="text-neutral-300 text-[10px]">›</span>}
+                          </Fragment>
+                        ))}
+                        <span class="text-[10px] bg-amber-500 text-white px-1.5 py-0.5 rounded font-medium ml-0.5">Hesite</span>
+                      </div>
+                    </div>
+                    <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                  </summary>
+                  <div class="px-4 pb-4 pt-0 border-t border-amber-200 bg-white/50">
+                    <div class="grid gap-3 text-xs mt-3">
+                      <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.premierImpression}</p></div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Question cle</p><p class="text-neutral-600 italic">"{p.questionCle}"</p><p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong> — {p.reponseDetail}</p></div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Impact technique</p><p class="text-neutral-600">{p.impactTechnique}</p></div>
+                      <div class="flex gap-4">
+                        <div class="flex-1"><p class="font-semibold text-green-700 mb-1">Points positifs</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.positifs.map(pt => <li>{pt}</li>)}</ul></div>
+                        <div class="flex-1"><p class="font-semibold text-amber-700 mb-1">Frictions</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map(f => <li>{f}</li>)}</ul></div>
+                      </div>
+                      <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.exp >= 5 ? 'text-amber-600' : 'text-red-600'}`}>{p.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.conf >= 5 ? 'text-amber-600' : 'text-red-600'}`}>{p.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.clarte >= 5 ? 'text-amber-600' : 'text-red-600'}`}>{p.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </details>
+              );
+            })}
+          </div>
+
+          <!-- Quittent -->
+          <h3 class="text-lg font-bold text-red-700 mb-4">Ceux qui repartent</h3>
+          <div class="space-y-3">
+            {personas.filter(p => p.decision === 'Quitte').map((p) => {
+              const dc = decisionColor(p.decision);
+              return (
+                <details class={`group border ${dc.border} ${dc.bg} rounded-xl overflow-hidden`}>
+                  <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                    <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                        <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                        <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                        <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                      </div>
+                      <p class="text-xs text-neutral-500 mb-2">{p.situation}</p>
+                      <p class="text-xs text-neutral-600 mb-2.5">{p.contexte}</p>
+                      <div class="flex flex-wrap items-center gap-1">
+                        {p.pages.map((page, i) => (
+                          <Fragment>
+                            <span class="text-[10px] text-primary-700 bg-white border border-primary-100 px-1.5 py-0.5 rounded">{page}</span>
+                            {i < p.pages.length - 1 && <span class="text-neutral-300 text-[10px]">›</span>}
+                          </Fragment>
+                        ))}
+                        <span class="text-[10px] bg-red-500 text-white px-1.5 py-0.5 rounded font-medium ml-0.5">Quitte</span>
+                      </div>
+                    </div>
+                    <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                  </summary>
+                  <div class="px-4 pb-4 pt-0 border-t border-neutral-200 bg-white/50">
+                    <div class="grid gap-3 text-xs mt-3">
+                      <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.premierImpression}</p></div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Question cle</p><p class="text-neutral-600 italic">"{p.questionCle}"</p><p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong> — {p.reponseDetail}</p></div>
+                      <div><p class="font-semibold text-neutral-700 mb-1">Impact technique</p><p class="text-neutral-600">{p.impactTechnique}</p></div>
+                      <div class="flex gap-4">
+                        <div class="flex-1"><p class="font-semibold text-green-700 mb-1">Points positifs</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.positifs.map(pt => <li>{pt}</li>)}</ul></div>
+                        <div class="flex-1"><p class="font-semibold text-amber-700 mb-1">Frictions</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map(f => <li>{f}</li>)}</ul></div>
+                      </div>
+                      <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.exp >= 5 ? 'text-amber-600' : 'text-red-600'}`}>{p.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.conf >= 5 ? 'text-amber-600' : 'text-red-600'}`}>{p.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                        <div class="text-center"><span class={`block text-lg font-bold ${p.clarte >= 5 ? 'text-amber-600' : 'text-red-600'}`}>{p.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+                      </div>
+                    </div>
+                  </div>
+                </details>
+              );
+            })}
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ════════ PANEL 4 : AMELIORATIONS ════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl space-y-12">
+
+          <!-- Frictions recurrentes -->
+          <div>
+            <h2 class="text-2xl font-bold text-[var(--color-text)] mb-2">Points de friction recurrents</h2>
+            <p class="text-[var(--color-text-muted)] mb-6">Classes par nombre de personas impactes.</p>
+            <div class="space-y-3">
+              {frictions.map((f) => (
+                <div class="flex items-center gap-4 rounded-xl border border-[var(--color-border)] bg-white p-4">
+                  <div class="flex-shrink-0 w-12 h-12 rounded-xl bg-neutral-100 flex items-center justify-center">
+                    <span class="text-lg font-bold text-[var(--color-text)]">{f.count}</span>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="font-medium text-[var(--color-text)]">{f.label}</p>
+                    <p class="text-sm text-[var(--color-text-muted)]">{f.count}/20 personas impactes</p>
+                  </div>
+                  <span class={`flex-shrink-0 px-3 py-1 rounded-full text-xs font-semibold ${severityColor(f.severity)}`}>
+                    {f.severity}
+                  </span>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <!-- Le plus important -->
+          <div>
+            <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">Le plus important</h2>
+            <div class="space-y-4">
+              {ameliorations.haute.map((a) => (
+                <div class="bg-white border-2 border-red-200 rounded-xl p-5 shadow-sm">
+                  <h4 class="font-semibold text-neutral-900 mb-2">{a.title}</h4>
+                  <p class="text-sm text-neutral-500 mb-1">Impact : {a.impact}</p>
+                  <p class="text-sm text-neutral-600 mb-3">{a.detail}</p>
+                  <div class="bg-primary-50 rounded-lg px-3 py-2.5 flex items-start gap-2">
+                    <svg class="w-4 h-4 text-primary-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                    <p class="text-xs text-primary-800">{a.action}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <!-- Utile aussi -->
+          <div>
+            <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">Utile aussi</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+              {ameliorations.moyenne.map((a) => (
+                <div class="bg-white border border-neutral-200 rounded-xl p-4">
+                  <h4 class="font-semibold text-neutral-900 text-sm mb-1.5">{a.title}</h4>
+                  <p class="text-xs text-neutral-600">{a.detail}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <!-- A discuter -->
+          <div>
+            <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">A discuter ensemble</h2>
+            <div class="space-y-3">
+              {ameliorations.discussion.map((a) => (
+                <div class="bg-neutral-50 border border-neutral-200 rounded-xl p-4 flex gap-3">
+                  <span class="text-lg shrink-0">{a.emoji}</span>
+                  <div>
+                    <h4 class="font-semibold text-neutral-900 text-sm mb-0.5">{a.title}</h4>
+                    <p class="text-xs text-neutral-600">{a.detail}</p>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ══════════ METHODOLOGIE ══════════ -->
+  <section class="w-full px-6 py-12 md:px-8 md:py-16 bg-white">
+    <div class="mx-auto max-w-3xl">
+      <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6">Methodologie</h2>
+      <div class="prose max-w-none text-[var(--color-text)]">
+        <p>Ce rapport combine un <strong>audit technique</strong> et une <strong>simulation UX personas</strong> :</p>
+        <ol class="space-y-2 text-sm leading-relaxed">
+          <li><strong>Scraping complet</strong> du site (15 pages + 13 produits) via sources externes (TripAdvisor, Koh Tao Complete Guide) car le site Wix est 100% JavaScript</li>
+          <li><strong>Audit technique</strong> : PageSpeed Insights (mobile + desktop), Mozilla Observatory (securite), Schema.org, Open Graph, SEO technique</li>
+          <li><strong>Creation de 20 personas diversifies</strong> couvrant 6 canaux d'arrivee, 3 niveaux de maturite, 3 types de devices, incluant 4 personas negatifs et 3 personas IA</li>
+          <li><strong>Simulation individuelle</strong> de chaque visite : premiere impression, parcours section par section, reponse a la question cle, impact technique, decision finale</li>
+          <li><strong>Agregation et analyse croisee</strong> par canal, maturite et device pour identifier les patterns recurrents</li>
+          <li><strong>Priorisation des ameliorations</strong> par nombre de personas impactes et severite</li>
+        </ol>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════ CTA ══════════ -->
+  <section class="w-full px-6 py-16 md:px-8 md:py-24" style="background-color: #0D0D0D;">
+    <div class="mx-auto max-w-3xl text-center">
+      <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">
+        Pret a transformer ces insights en resultats ?
+      </h2>
+      <p class="text-neutral-300 mb-8 max-w-xl mx-auto">
+        Ce rapport identifie des opportunites concretes. Je peux construire un site qui convertit vraiment vos visiteurs en clients.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="/commander" class="inline-flex items-center gap-2 px-8 py-3.5 text-white font-semibold rounded-xl transition-all shadow-md hover:shadow-xl hover:scale-105" style="background: linear-gradient(135deg, #E86C47, #D4572F); box-shadow: 0 4px 20px rgba(232, 108, 71, 0.4);">
+          Commander un site
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a href="/contact" class="inline-flex items-center gap-2 px-8 py-3.5 border border-neutral-600 text-neutral-300 font-semibold rounded-xl hover:border-[#E86C47] hover:text-[#E86C47] transition-all">
+          En discuter d'abord
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <style is:inline>
+    #panels { -ms-overflow-style: none; }
+    #panels::-webkit-scrollbar { display: none; }
+  </style>
+
+  <script is:inline>
+    const panels = document.getElementById('panels');
+    const tabs = document.querySelectorAll('.tab-btn');
+    const sections = panels.querySelectorAll('.tab-panel');
+
+    function activateTab(index) {
+      tabs.forEach((b, i) => {
+        if (i === index) {
+          b.classList.remove('text-neutral-500');
+          b.classList.add('text-primary-700', 'bg-primary-50');
+        } else {
+          b.classList.remove('text-primary-700', 'bg-primary-50');
+          b.classList.add('text-neutral-500');
+        }
+      });
+    }
+
+    tabs.forEach((btn, i) => {
+      btn.addEventListener('click', () => {
+        sections[i].scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+        activateTab(i);
+      });
+    });
+
+    let scrollTimeout;
+    panels.addEventListener('scroll', () => {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        const index = Math.round(panels.scrollLeft / panels.offsetWidth);
+        activateTab(index);
+      }, 50);
+    }, { passive: true });
+  </script>
+
+</BaseLayout>
