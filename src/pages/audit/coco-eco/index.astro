@@ -1,0 +1,1152 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+// ==================== DATA ====================
+
+const prospect = {
+  name: 'Coco-Eco',
+  url: 'https://coco-eco.fr/',
+  date: '29 mars 2026',
+  activity: 'Marketplace oeufs a couver races pures',
+  location: 'France entiere (siege Paris 75019)',
+};
+
+const kpis = {
+  conversion: 25,
+  experience: 5.0,
+  confiance: 5.5,
+  clarte: 5.1,
+};
+
+const paradox = "La plateforme convainc ceux qui arrivent deja convaincus — le bouche-a-oreille convertit a 67%, mais les visiteurs organiques (Google, reseaux sociaux) peinent a franchir le seuil de confiance. Le probleme n'est pas le produit ni le modele : c'est l'absence de preuves que la plateforme est vivante en 2026.";
+
+const conversionByCanal = [
+  { canal: 'Bouche-a-oreille', taux: 67, color: 'green' },
+  { canal: 'IA (ChatGPT, Perplexity)', taux: 50, color: 'green' },
+  { canal: 'Reseaux sociaux (Facebook, Instagram)', taux: 33, color: 'orange' },
+  { canal: 'Google Search', taux: 17, color: 'orange' },
+  { canal: 'Google Maps', taux: 0, color: 'red' },
+  { canal: 'Autres (forum, QR, newsletter)', taux: 0, color: 'red' },
+];
+
+const conversionByMaturite = [
+  { label: 'Decouverte', taux: 17, total: 6, convertis: 1 },
+  { label: 'Comparaison', taux: 14, total: 7, convertis: 1 },
+  { label: 'Decision', taux: 43, total: 7, convertis: 3 },
+];
+
+const conversionByDevice = [
+  { label: 'Mobile', taux: 27, total: 11, convertis: 3 },
+  { label: 'Desktop', taux: 29, total: 7, convertis: 2 },
+  { label: 'Tablette', taux: 0, total: 2, convertis: 0 },
+];
+
+// PageSpeed scores — quota API epuise ce jour, estimations basees sur observations
+const pagespeed = {
+  note: 'Quota API epuise — estimations basees sur le type de stack (Django marketplace) et observations terrain',
+  mobile: {
+    performance: null,
+    accessibility: null,
+    bestPractices: null,
+    seo: null,
+  },
+  desktop: {
+    performance: null,
+    accessibility: null,
+    bestPractices: null,
+    seo: null,
+  },
+};
+
+const coreWebVitals = [
+  { name: 'LCP', desc: 'Largest Contentful Paint', note: 'Non mesure — stack Django marketplace typiquement > 3s sur mobile', status: 'unknown' },
+  { name: 'INP', desc: 'Interaction to Next Paint', note: 'Non mesure', status: 'unknown' },
+  { name: 'CLS', desc: 'Cumulative Layout Shift', note: 'Non mesure', status: 'unknown' },
+];
+
+const observatory = {
+  grade: 'D',
+  score: 30,
+  testsPassed: 6,
+  testsTotal: 10,
+};
+
+const presentHeaders = [
+  'X-Frame-Options: DENY',
+  'X-Content-Type-Options: nosniff',
+  'Referrer-Policy: same-origin',
+];
+
+const missingHeaders = [
+  'Content-Security-Policy (CSP)',
+  'Strict-Transport-Security (HSTS)',
+  'Permissions-Policy',
+];
+
+const schemaChecks = [
+  { label: 'JSON-LD present', present: true },
+  { label: 'Type WebSite + SearchAction', present: true },
+  { label: 'Type Organization / Marketplace', present: false },
+  { label: 'Nom de l\'organisation', present: false },
+  { label: 'Description', present: false },
+  { label: 'Adresse (LocalBusiness)', present: false },
+  { label: 'Telephone', present: false },
+  { label: 'Email de contact', present: false },
+  { label: 'Logo / Image', present: false },
+  { label: 'Liens reseaux sociaux (sameAs)', present: false },
+  { label: 'Notes / Avis (aggregateRating)', present: false },
+  { label: 'BreadcrumbList sur les categories', present: false },
+];
+
+const ogChecks = [
+  { label: 'og:title', present: false },
+  { label: 'og:description', present: false },
+  { label: 'og:image', present: false },
+  { label: 'og:url', present: false },
+  { label: 'og:type', present: false },
+  { label: 'twitter:card', present: false },
+  { label: 'twitter:image', present: false },
+];
+
+const seoChecks = [
+  { label: 'Redirection HTTP vers HTTPS', present: true },
+  { label: 'Sitemap XML accessible (900+ URLs)', present: true },
+  { label: 'robots.txt accessible', present: false, critical: true },
+  { label: 'Meta title sur chaque page', present: true },
+  { label: 'Meta description sur la page d\'accueil', present: false, critical: true },
+  { label: 'Balise canonical', present: false },
+  { label: 'Un seul H1 par page', present: false, critical: true },
+  { label: 'Alt text sur les images produits', present: false },
+  { label: 'Redirection 301 (vs 302 actuelle)', present: false },
+];
+
+const opportunities = [
+  { title: 'Absence de meta description', savings: 'CTR Google +20-30% estime' },
+  { title: 'robots.txt absent (404)', savings: 'Risque crawl desoriente' },
+  { title: 'Images produits non optimisees (WebP)', savings: 'Poids page -50% estime' },
+  { title: 'Double H1 en accueil', savings: 'Signal SEO titre dilue' },
+  { title: 'Open Graph absent', savings: 'Partages sociaux sans preview' },
+];
+
+// Personas data
+const personas = [
+  {
+    id: 1, name: 'Martine', age: 52, emoji: '🐓',
+    canal: 'Google Search', device: 'Mobile', maturite: 'Comparaison',
+    situation: 'Institutrice retraitee, Gers, a une couveuse depuis Noel, 3 poules, veut des Marans coucou',
+    contexte: 'Cherche un site fiable pour acheter ses premiers oeufs a couver de race pure',
+    parcours: ['Accueil', 'Marans via SearchAction', 'Annonce vendeur', 'Mode d\'emploi', 'FAQ', 'Contact'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 5, clarte: 4 },
+    premierImpression: 'Voit les deux H1 : la proposition de valeur est la mais le double titre dilue le message. Le site charge lentement sur 4G Samsung. Aucun badge de confiance visible.',
+    questionCle: 'Les oeufs arrivent vraiment non casses ? Et si l\'eclosion ne marche pas ?',
+    reponse: 'Partiellement',
+    commentReponse: 'L\'Ovopack est documente mais pas de taux d\'eclosion moyen ni de politique litige claire et simple.',
+    impactTechnique: 'Lenteur perceptible sur 4G mid-range. Images sans alt text = blancs pendant chargement. Grade D Observatory contribue a une impression peu professionnelle.',
+    pointsPositifs: ['Systeme evaluation vendeurs rassure', 'Mode d\'emploi avec schema du processus clair', 'FAQ bien fournie cote acheteur'],
+    frictions: ['Double H1 — message dilue', 'Aucun temoignage ni stats en accueil', 'Pas de taux d\'eclosion moyen', 'Pas de telephone public', 'Blog 2020 — site abandonne ?', 'Prix non visibles en liste'],
+  },
+  {
+    id: 2, name: 'Julien', age: 34, emoji: '🥚',
+    canal: 'Google Search', device: 'Desktop', maturite: 'Decision',
+    situation: 'Developpeur web, Quimper, eleve Orpington buff 3 ans, veut vendre ses surplus sur une plateforme serieuse',
+    contexte: 'A eu des impayés sur Leboncoin, cherche une plateforme avec paiement securise et communaute active',
+    parcours: ['Page Vendre', 'Ovopack', 'CGU', 'Accueil (blog 2020)', 'Carte eleveurs'],
+    decision: 'hesite',
+    scores: { exp: 6, conf: 5, clarte: 7 },
+    premierImpression: 'Arrive sur la page Vendre. Commission 15% visible immediatement — tres positif. Mais l\'accueil montre le blog 2020 : signal d\'alarme immediate pour un developpeur.',
+    questionCle: 'Est-ce que la plateforme est encore active ? Les dernieres ventes datent de quand ?',
+    reponse: 'Non',
+    commentReponse: 'Aucune donnee d\'activite recente : pas de compteur d\'annonces actives, pas de date de derniere transaction, blog mort depuis 2020.',
+    impactTechnique: 'Desktop fluide. Il remarque la redirection 302 (devrait etre 301) et l\'Observatory D — signaux d\'un site maintenu a minima.',
+    pointsPositifs: ['Page Vendre tres complete : commission, Ovopack, processus', 'CGU serieuses avec infos fiscalite', 'Carte eleveurs : preuve qu\'une communaute existe'],
+    frictions: ['Blog inactif depuis 2020 — mort lente ?', 'Aucun indicateur d\'activite recent', 'Open Graph absent : partages sans preview', 'Redirection 302 + Observatory D'],
+  },
+  {
+    id: 3, name: 'Brigitte', age: 61, emoji: '🐔',
+    canal: 'Bouche-a-oreille', device: 'Tablette', maturite: 'Decision',
+    situation: 'Agricultrice retraitee, Ain, eleve poules de Bresse 20 ans, peu a l\'aise numerique, veut vendre 50+ oeufs',
+    contexte: 'Son amie Michele vend deja sur la plateforme et lui a recommande de s\'inscrire',
+    parcours: ['Accueil', 'Page Vendre', 'Mode d\'emploi', 'FAQ', 'Contact (no tel)'],
+    decision: 'quitte',
+    scores: { exp: 3, conf: 3, clarte: 3 },
+    premierImpression: 'Cherche un numero de telephone dans les 10 premieres secondes. Ne trouve rien. Premiere frustration immediate.',
+    questionCle: 'Je peux appeler quelqu\'un si j\'ai un probleme ?',
+    reponse: 'Non',
+    commentReponse: 'Aucun numero de telephone public. Formulaire email uniquement. Pour Brigitte, l\'absence de contact humain vocal est redhibitoire.',
+    impactTechnique: 'Images sans alt text = zones vides sur tablette. Jargon (Ovopack, MangoPay, dashboard) non explique en contexte. Pas de visage humain presente.',
+    pointsPositifs: ['Commission 15% explicite : elle comprend qu\'elle gagnera 85%', 'Carte eleveurs montre une communaute reelle'],
+    frictions: ['Pas de telephone — BLOQUANT pour profil 61 ans', 'Jargon Ovopack/MangoPay/dashboard non explique', 'FAQ dense et difficile a naviguer sur tablette', 'Pas de visage humain', 'Pas de guide inscription pas-a-pas'],
+  },
+  {
+    id: 4, name: 'Theo', age: 27, emoji: '🐣',
+    canal: 'Facebook', device: 'Mobile', maturite: 'Decouverte',
+    situation: 'Graphiste freelance, Montpellier, vient de louer une maison avec jardin, couveuse recuperee chez grand-mere',
+    contexte: 'A vu un partage de poussins Marans dans un groupe Facebook et a clique sur le lien',
+    parcours: ['Accueil', 'Races naines', 'Mode d\'emploi', 'Blog (decoit)', 'Annonces'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 5, clarte: 4 },
+    premierImpression: 'A clique depuis un partage Facebook SANS preview (Open Graph absent = lien brut). Voit les categories, comprend que c\'est une marketplace de races. Curiosite eveillee.',
+    questionCle: 'Par ou commencer ? Quelle race pour un debutant ?',
+    reponse: 'Non',
+    commentReponse: 'Pas de guide debutant, pas de filtre "adapte aux debutants", pas d\'article recent. Le site assume que le visiteur est deja eleveur.',
+    impactTechnique: 'Open Graph absent : le partage Facebook qui l\'a amene etait peu engageant (texte brut). Qualite photos heterogene entre vendeurs.',
+    pointsPositifs: ['Categories de races bien organisees', 'Mode d\'emploi avec schema accessible', 'Carte eleveurs visuellement interessante'],
+    frictions: ['Aucun guide "quelle race pour debuter"', 'Prix non visibles au niveau categorie', 'Open Graph absent — partage sans preview', 'Blog mort 2020', 'Qualite visuelle heterogene des annonces'],
+  },
+  {
+    id: 5, name: 'Nathalie', age: 45, emoji: '📦',
+    canal: 'Google Search', device: 'Mobile', maturite: 'Comparaison',
+    situation: 'Comptable mi-temps, Vendee, a recu des oeufs casses sur Leboncoin, cherche une alternative fiable',
+    contexte: 'Tape "site fiable vente oeufs a couver livraison" — en mode mefiance active',
+    parcours: ['Accueil (cherche garanties)', 'Annonce vendeur', 'Page Acheter (Ovopack)', 'FAQ (litiges flous)', 'Contact (no tel)'],
+    decision: 'hesite',
+    scores: { exp: 4, conf: 4, clarte: 5 },
+    premierImpression: 'Arrive en mode mefiance. Cherche immediatement un badge securite, mention "livraison garantie", numero. Aucun element de reassurance livraison en first screen.',
+    questionCle: 'Si les oeufs arrivent casses, qu\'est-ce qui se passe exactement ?',
+    reponse: 'Partiellement',
+    commentReponse: 'L\'Ovopack rassure sur l\'emballage mais la procedure de litige claire avec delais/montants est absente. MangoPay non valorise comme garantie paiement.',
+    impactTechnique: 'Samsung A53 / 4G : chargement perceptible, images sans alt = impression de site inacheve pour une visiteuse deja mefiante.',
+    pointsPositifs: ['Evaluations vendeurs = premier signal confiance', 'Ovopack comme garantie technique d\'emballage', 'Plateforme specialisee vs Leboncoin generaliste'],
+    frictions: ['Pas de garantie livraison visible en accueil', 'Procedure litige absente ou non mise en avant', 'Pas de telephone', 'Blog 2020', 'MangoPay non valorise comme garantie acheteur'],
+  },
+  {
+    id: 6, name: 'Robert', age: 68, emoji: '🎁',
+    canal: 'Google Maps', device: 'Desktop', maturite: 'Decouverte',
+    situation: 'Retraite de la Poste, appartement a Lyon, cherche un cadeau original pour son petit-fils (expose animaux)',
+    contexte: 'A cherche "oeufs de poule" sur Google Maps et a clique sur un resultat pointant vers coco-eco.fr',
+    parcours: ['Accueil (confusion)', 'Mode d\'emploi (couveuse = blocage)', 'Contact (no tel)', 'Quitte'],
+    decision: 'quitte',
+    scores: { exp: 4, conf: 5, clarte: 4 },
+    premierImpression: 'Voit le H1. Comprend vaguement. Cherche un numero de telephone → absent. Parcourt le site pour comprendre ce qu\'il peut acheter.',
+    questionCle: 'C\'est quoi exactement ? Je peux commander sans couveuse ?',
+    reponse: 'Non (mais apres navigation)',
+    commentReponse: 'Le Mode d\'emploi lui explique qu\'il faut une couveuse, mais aucun message de disambiguation en page d\'accueil n\'evite ce parcours de comprehension long.',
+    impactTechnique: 'Desktop fluide. Impact Observatory invisible pour lui. C\'est la confusion produit qui provoque le rebond.',
+    pointsPositifs: ['Mode d\'emploi clair une fois trouve', 'Interface desktop lisible, categories comprehensibles'],
+    frictions: ['Pas de message "ce site est pour les eleveurs avec couveuse" en accueil', 'Pas de telephone', 'Aucune alternative proposee pour les non-eleveurs'],
+  },
+  {
+    id: 7, name: 'Camille', age: 31, emoji: '🌿',
+    canal: 'IA (ChatGPT)', device: 'Mobile', maturite: 'Comparaison',
+    situation: 'Professeure de sciences naturelles, Correze, eleve 6 poules 2 ans, veut ajouter des Gatinaises (race en danger)',
+    contexte: 'ChatGPT a mentionne coco-eco.fr comme reponse a "ou acheter des oeufs a couver races patrimoniales en France"',
+    parcours: ['Accueil (cherche filtre patrimoniales)', 'Categories sans filtre', 'Carte eleveurs', 'Blog 2020', 'FAQ'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 5, clarte: 6 },
+    premierImpression: 'Arrive depuis ChatGPT via lien brut (pas d\'OG = pas de preview). Cherche immediatement un filtre "races patrimoniales/menacees" — absent.',
+    questionCle: 'Est-ce qu\'il y a des vendeurs specialises en races patrimoniales menacees ?',
+    reponse: 'Non',
+    commentReponse: 'Aucun filtre, label ou categorie "races patrimoniales". Camille doit chercher annonce par annonce sur mobile — tres fastidieux.',
+    impactTechnique: 'Lien IA sans OG = preview absente dans ChatGPT = mauvaise premiere impression avant l\'arrivee. Blog 2020 = signal d\'alarme majeur.',
+    pointsPositifs: ['Carte eleveurs geolocalisee = sourcing local possible', 'Systeme evaluations rassure sur la qualite', 'FAQ bien fournie sur le processus'],
+    frictions: ['Pas de filtre races patrimoniales/menacees', 'Blog 2020 — plateforme encore active ?', 'Pas de certification vendeur (club de race)', 'Open Graph absent — preview IA degradee'],
+  },
+  {
+    id: 8, name: 'Franck', age: 39, emoji: '🔒',
+    canal: 'Google Search', device: 'Desktop', maturite: 'Decision',
+    situation: 'Artisan menuisier, Charente, eleve Barbezieux 5 ans, a eu un impaye sur Leboncoin',
+    contexte: 'Cherche une plateforme avec paiement securise — son besoin principal est la securisation de la transaction',
+    parcours: ['Page Vendre', 'Mode d\'emploi (sequestre)', 'FAQ vendeurs', 'CGU', 'Ovopack (investissement)'],
+    decision: 'convertit',
+    scores: { exp: 7, conf: 7, clarte: 7 },
+    premierImpression: 'H1 clair pour un eleveur. Arrive sur la page Vendre directement. Commission 15% visible. En mode analytique.',
+    questionCle: 'Le paiement est bien securise avant que j\'envoie les oeufs ?',
+    reponse: 'Oui',
+    commentReponse: 'MangoPay + sequestre documentes dans le Mode d\'emploi et la page Vendre. Repond exactement a son vecu Leboncoin.',
+    impactTechnique: 'Desktop fluide. Il ne remarque pas l\'Observatory D (non tech). Le blog 2020 cree un doute peripherique mais son besoin principal est couvert.',
+    pointsPositifs: ['MangoPay + sequestre = reponse directe a son besoin', 'Commission 15% transparente et bien documentee', 'CGU serieuses avec infos fiscalite', 'FAQ vendeurs complete sur les litiges'],
+    frictions: ['Minimum 20 boites Ovopack (65,60€ investissement)', 'Blog 2020 sur l\'activite generale', 'Pas de telephone pour litiges potentiels'],
+  },
+  {
+    id: 9, name: 'Sylvie', age: 55, emoji: '🗺️',
+    canal: 'Bouche-a-oreille', device: 'Mobile', maturite: 'Decision',
+    situation: 'Infirmiere liberale, Normandie, ferme depuis 10 ans, veut des Coucou de Malines belges — introuvables localement',
+    contexte: 'Un membre de son club avicole a mentionne coco-eco.fr lors d\'une reunion mensuelle',
+    parcours: ['Accueil', 'Grandes races', 'Coucou de Malines', 'Profil vendeur', 'Carte eleveurs'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 8, clarte: 6 },
+    premierImpression: 'Arrive avec confiance a priori (recommandation club). Cherche immediatement "Coucou de Malines" dans la navigation.',
+    questionCle: 'Y a-t-il des vendeurs de Coucou de Malines belges ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La disponibilite depend des annonces actives. La carte montre les eleveurs du nord mais pas de filtre "race belge/importee".',
+    impactTechnique: 'iPhone 12 + Django : lenteur sur pages de liste. Sa confiance a priori (bouche-a-oreille) compense largement les frictions techniques.',
+    pointsPositifs: ['Systeme evaluations excellent pour valider un eleveur inconnu', 'Carte eleveurs = geolocalisation utile', 'FAQ et Mode d\'emploi clairs'],
+    frictions: ['Frais de port non affiches en liste', 'Pas de filtre race belge/importee', 'Fraicheur des annonces non visible sans cliquer'],
+  },
+  {
+    id: 10, name: 'Antoine', age: 23, emoji: '🐥',
+    canal: 'Instagram', device: 'Mobile', maturite: 'Decouverte',
+    situation: 'Etudiant BTS agricole, cite universitaire a Tours, pas de logement adapte',
+    contexte: 'A vu une story montrant des poussins Araucana et a cherche le site par curiosite',
+    parcours: ['Accueil', 'Oeufs colores', 'Mode d\'emploi (realise : hors cible)', 'Blog 2020', 'Quitte'],
+    decision: 'quitte',
+    scores: { exp: 4, conf: 5, clarte: 5 },
+    premierImpression: 'Arrive depuis Instagram. Voit les categories, comprend progressivement que ce sont des oeufs a faire eclore. Pas de logement adapte = hors cible.',
+    questionCle: 'C\'est pour des debutants aussi ?',
+    reponse: 'Non',
+    commentReponse: 'Nulle part le site n\'aborde l\'aspirant eleveur sans infrastructure. Le mode d\'emploi s\'adresse a des personnes deja equipees.',
+    impactTechnique: 'Xiaomi + Django = experience la plus lente. Interface percue comme "vieille" vs standards Instagram. Blog mort 2020 renforce ce ressenti.',
+    pointsPositifs: ['Photos de races attractives', 'Carte eleveurs visuellement engageante', 'Contenu informatif sur les races'],
+    frictions: ['Aucun contenu d\'entree pour les non-eleveurs aspirants', 'Vitesse mobile insuffisante sur appareil mid-range', 'Blog mort 2020', 'Interface peu moderne vs Instagram'],
+  },
+  {
+    id: 11, name: 'Gerard', age: 71, emoji: '📍',
+    canal: 'Google Maps', device: 'Desktop', maturite: 'Comparaison',
+    situation: 'Retraite EDF, Allier, eleve pintades 30 ans, son eleveur local a arrete — cherche une alternative',
+    contexte: 'A cherche "eleveur pintades Allier oeufs" sur Google Maps et a clique sur le resultat coco-eco.fr',
+    parcours: ['Header (no tel)', 'Carte eleveurs (LA fonctionnalite qui le retient)', 'Profil vendeur', 'FAQ (retrait main propre ?)'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 4, clarte: 6 },
+    premierImpression: '71 ans, eleve pintades 30 ans — comprend le concept immediatement. Cherche un numero de telephone → absent. Deception immediate.',
+    questionCle: 'Je peux aller chercher les oeufs directement chez l\'eleveur ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La carte montre la proximite mais aucune mention explicite que le retrait en main propre est possible. Le processus passe par la plateforme.',
+    impactTechnique: 'Desktop fluide. Reticence au paiement en ligne renforcee par l\'absence de telephone et de temoignages.',
+    pointsPositifs: ['Carte eleveurs geolocalisee = LA fonctionnalite qui lui parle', 'Concept "d\'eleveur a eleveur" lui parle', 'Systeme evaluations'],
+    frictions: ['Pas de telephone — bloquant pour profil 71 ans', 'Pas de mention retrait en main propre', 'MangoPay inconnu pour lui', 'Pas de temoignages en accueil'],
+  },
+  {
+    id: 12, name: 'Laure', age: 37, emoji: '🔬',
+    canal: 'IA (Perplexity)', device: 'Mobile', maturite: 'Comparaison',
+    situation: 'Ingenieure en reconversion agricole, Lot-et-Garonne, ferme depuis 6 mois, veut demarrer un elevage de Bresse',
+    contexte: 'Perplexity a recommande coco-eco.fr pour "trouver des oeufs a couver de races rares en France"',
+    parcours: ['Accueil (cherche date/activite)', 'Blog 2020 (alarme)', 'Categories (Bresse ?)', 'Page Vendre', 'FAQ', 'CGU'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 5, clarte: 7 },
+    premierImpression: 'Ingenieure : scanne pour des signaux de viabilite. Open Graph absent = preview Perplexity degradee = premier signal de site peu soigne.',
+    questionCle: 'Cette plateforme est-elle encore bien active en 2026 ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La selection du mois et les annonces suggerent une activite, mais sans preuves datees concretes. Blog 2020 est LA preuve d\'inactivite.',
+    impactTechnique: 'OG absent = mauvaise preview dans Perplexity = premier signal de site peu soigne avant meme l\'arrivee. Double H1 percu comme manque de soin.',
+    pointsPositifs: ['Concept C2C niche pertinent pour son projet', 'FAQ dense et serieuse', 'Commission transparente', 'Carte eleveurs utile'],
+    frictions: ['Blog 2020 = signal d\'alarme majeur', 'OG absent : preview degradee dans Perplexity', 'Pas d\'indicateur d\'activite recente', 'Prix non visibles en liste'],
+  },
+  {
+    id: 13, name: 'Pascal', age: 48, emoji: '🌾',
+    canal: 'Bouche-a-oreille', device: 'Desktop', maturite: 'Decision',
+    situation: 'Agriculteur Gers, excedents de Poules Gasconnes, voisine vend sur la plateforme depuis 2 ans avec succes',
+    contexte: 'Un conseiller de la chambre d\'agriculture lui a mentionne coco-eco.fr lors d\'une journee diversification',
+    parcours: ['Page Vendre', 'FAQ vendeurs (fiscalite pro ?)', 'CGU', 'Inscription'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 8, clarte: 7 },
+    premierImpression: 'Agriculteur decide a s\'inscrire. Va droit au but : page Vendre. Commission 15% valide, processus Ovopack compris.',
+    questionCle: 'Je suis agriculteur professionnel, ca s\'applique pareil pour la fiscalite ?',
+    reponse: 'Non',
+    commentReponse: 'La FAQ traite la fiscalite des vendeurs particuliers, pas des agriculteurs professionnels (MSA, regime reel agricole). Pascal part sans reponse sur ce point.',
+    impactTechnique: 'Desktop PC ferme, connexion parfois limitee zone rurale. Le bouche-a-oreille via chambre d\'agriculture + voisine surpasse tous les signaux techniques.',
+    pointsPositifs: ['Commission 15% claire', 'Ovopack bien documente', 'CGU serieuses', 'Temoignage implicite de la voisine = confiance maximale'],
+    frictions: ['Fiscalite agriculteur professionnel non traitee', 'Pas de temoignages vendeurs chiffres', 'Contact formulaire uniquement'],
+  },
+  {
+    id: 14, name: 'Ines', age: 29, emoji: '🎨',
+    canal: 'Facebook', device: 'Mobile', maturite: 'Decouverte',
+    situation: 'Photographe independante, Finistere, vient d\'acheter une couveuse Brinsea, veut une race belle et originale',
+    contexte: 'Un membre d\'un groupe Facebook couvaison a partage des photos de poussins Wyandotte avec lien vers coco-eco.fr',
+    parcours: ['Accueil (visuel)', 'Races naines', 'Oeufs colores', 'Annonce Wyandotte', 'Tentative commande (decouverte Ovopack min 20)'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 6, clarte: 5 },
+    premierImpression: 'Photographe — attirée par les visuels. Arrive depuis Facebook SANS preview (OG absent). Cherche des races visuellement attractives.',
+    questionCle: 'Quelles races sont jolies et faciles pour debuter ?',
+    reponse: 'Non',
+    commentReponse: 'Aucun guide debutant, pas de filtre niveau difficulte, pas de recommandations par profil. Les categories existent mais sans aide a la navigation.',
+    impactTechnique: 'iPhone 14 Pro fluide. Photos variables en qualite = experience heterogene pour une sensible au visuel. Contrainte Ovopack 20 boites = surprise au moment de commander.',
+    pointsPositifs: ['Concept C2C passionne = authentique', 'Categories adaptees a son attrait visuel', 'Systeme evaluations rassure'],
+    frictions: ['Pas de guide debutant ni filtre niveau', 'Contrainte Ovopack 20 boites minimum = frein achat test', 'Photos qualite heterogene', 'Blog mort 2020', 'OG absent — partage Facebook sans preview'],
+  },
+  {
+    id: 15, name: 'Maurice', age: 74, emoji: '🐓',
+    canal: 'Google Search', device: 'Desktop', maturite: 'Decision',
+    situation: 'Retraite de l\'education, maison de retraite Haute-Savoie, veut des poules pour la cour (accord du directeur)',
+    contexte: 'A tape "acheter poules races anciennes France" — cherche des poules ADULTES, pas des oeufs a couver',
+    parcours: ['Accueil', 'Categories (Grandes races)', 'Annonce (confusion)', 'Mode d\'emploi (comprend : mauvais produit)', 'Quitte'],
+    decision: 'quitte',
+    scores: { exp: 3, conf: 5, clarte: 3 },
+    premierImpression: 'Voit le H1 "Oeufs a couver". Ne realise pas immediatement ce que "a couver" implique. Croit trouver des poules de race.',
+    questionCle: 'Je peux acheter des poules deja adultes ?',
+    reponse: 'Non',
+    commentReponse: 'Le site vend exclusivement des oeufs a couver. L\'absence de meta description precise dans Google l\'a amene ici par erreur.',
+    impactTechnique: 'PC maison de retraite, potentiellement ancien. Chaque page de comprehension supplementaire aggrave la frustration.',
+    pointsPositifs: ['Mode d\'emploi clair une fois trouve', 'Interface desktop lisible'],
+    frictions: ['H1 + meta description absente dans Google → clic par erreur', 'Pas de disambiguation en accueil', 'Parcours de comprehension trop long', 'Pas d\'alternative proposee'],
+  },
+  {
+    id: 16, name: 'Emilie', age: 33, emoji: '🌱',
+    canal: 'Google Search', device: 'Mobile', maturite: 'Decouverte',
+    situation: 'Kinesitherapeute, Sarthe, son mari vient d\'acheter une couveuse, cherche les premiers oeufs a commander',
+    contexte: 'A recherche "oeufs a couver livraison domicile" apres avoir regarde des videos de couvaison sur TikTok',
+    parcours: ['Accueil', 'Mode d\'emploi', 'Grandes races (prix non visibles)', 'Annonce (evaluations)', 'FAQ', 'Blog 2020'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 4, clarte: 6 },
+    premierImpression: 'H1 clair sur iPhone SE. Cherche instinctivement des etoiles ou avis. Aucun en first screen. Continue tout de meme.',
+    questionCle: 'Y a-t-il des avis d\'autres clients ? Est-ce que c\'est fiable ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Les evaluations existent sur chaque annonce mais aucune preuve sociale globale en page d\'accueil. Elle doit naviguer pour la trouver — effort important sur mobile.',
+    impactTechnique: 'iPhone SE / 4G rurale Sarthe : lenteur notable. Alt text manquant = espaces vides pendant chargement.',
+    pointsPositifs: ['Concept immediatement compris', 'Mode d\'emploi bien visible et rassurant', 'FAQ couvre les questions d\'une debutante'],
+    frictions: ['Pas de preuve sociale en accueil', 'Blog 2020 : site encore actif ?', 'Double H1', 'Prix non visibles en liste'],
+  },
+  {
+    id: 17, name: 'Bernard', age: 58, emoji: '🪿',
+    canal: 'Google Maps', device: 'Mobile', maturite: 'Comparaison',
+    situation: 'Garagiste, Haute-Garonne, eleve oies de Toulouse 15 ans, veut etendre sa clientele au-dela de sa region',
+    contexte: 'A vu qu\'un concurrent vendait sur coco-eco.fr et a recherche le site sur son vieux Android',
+    parcours: ['Accueil', 'Autres volailles', 'Page Vendre (commission)', 'Ovopack (grands oeufs ?)', 'FAQ (rien sur oies)', 'Contact (no tel)'],
+    decision: 'hesite',
+    scores: { exp: 4, conf: 5, clarte: 5 },
+    premierImpression: 'Chargement 3-4 secondes sur vieux Android. Cherche immediatement une confirmation que les oies de Toulouse ont leur place.',
+    questionCle: 'L\'Ovopack fonctionne pour les grands oeufs d\'oies ?',
+    reponse: 'Non',
+    commentReponse: 'La page Ovopack documente le format standard pour poules mais ne mentionne jamais les cas hors-poule (oies, canards, dindes).',
+    impactTechnique: 'Vieux Android + Django = experience la plus degradee en mobile. Scroll saccade, boutons trop petits, timeout potentiel.',
+    pointsPositifs: ['Commission 15% claire', 'Carte eleveurs pour voir la concurrence', 'Categorie "Autres volailles" existe'],
+    frictions: ['Ovopack non documente pour oies — BLOQUANT operationnel', 'Pas de telephone', 'Ergonomie mobile degradee sur vieux Android', 'Pas de FAQ par espece'],
+  },
+  {
+    id: 18, name: 'Celine', age: 41, emoji: '🏆',
+    canal: 'Forum avicole', device: 'Desktop', maturite: 'Decision',
+    situation: 'Veterinaire rurale specialisee volailles, Deux-Sevres, eleve des Marans, cherche une lignee precise pour renouveler sa selection',
+    contexte: 'Un membre du forum Gallus a poste un lien vers coco-eco.fr dans un thread sur les Marans coucou',
+    parcours: ['Recherche Marans', 'Annonces (nombreuses)', 'Profils vendeurs (evaluations)', 'Cherche filtre exposition', 'Contact vendeurs'],
+    decision: 'hesite',
+    scores: { exp: 6, conf: 7, clarte: 5 },
+    premierImpression: 'Veterinaire experte : comprend instantanement le modele. Cherche immediatement un filtre ou recherche avancee pour cibler les Marans de qualite exposition.',
+    questionCle: 'Y a-t-il des vendeurs avec label d\'exposition ou certification qualite ?',
+    reponse: 'Non',
+    commentReponse: 'Aucun badge "eleveur exposant" standardise. Les vendeurs peuvent le mentionner dans leur description libre mais rien ne les distingue structurellement.',
+    impactTechnique: 'MacBook fluide. Elle apprecie la densite d\'information. L\'absence de HSTS la preoccuperait si elle l\'inspectait (profil professionnel).',
+    pointsPositifs: ['Evaluations detaillees utiles pour valider un eleveur', 'Carte eleveurs pour sourcer localement', 'Mentions legales serieuses, FAQ complete'],
+    frictions: ['Pas de filtre qualite/niveau eleveur', 'Pas de badge exposant', 'Blog 2020 = communaute non entretenue', 'Conversion en plusieurs jours (contacts directs)'],
+  },
+  {
+    id: 19, name: 'Dylan', age: 25, emoji: '🛒',
+    canal: 'QR code', device: 'Mobile', maturite: 'Decouverte',
+    situation: 'Employe de supermarche, banlieue Bordeaux, appartement, a scanne un QR code sur un flyer marche bio',
+    contexte: 'Curiosite pure — aucun projet d\'elevage, aucune couveuse, pas la cible du tout',
+    parcours: ['Accueil', 'Mode d\'emploi (hors cible)', 'Quelques annonces', 'Quitte'],
+    decision: 'quitte',
+    scores: { exp: 4, conf: 5, clarte: 3 },
+    premierImpression: 'Scanne le QR par curiosite au marche bio. Voit le H1. Ne comprend pas ce qu\'est "un oeuf a couver". Fait defiler.',
+    questionCle: 'C\'est quoi des oeufs a couver ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Le Mode d\'emploi explique mais il faut le trouver. Aucune explication en 2 lignes en page d\'accueil pour les neophytes complets.',
+    impactTechnique: 'Xiaomi Redmi recent : performances correctes. L\'absence de sens pour lui prime sur les problemes techniques.',
+    pointsPositifs: ['Mode d\'emploi pedagogique une fois trouve', 'Interface visuellement lisible'],
+    frictions: ['Pas d\'explication immediate du concept pour neophyte', 'Pas de "Pour qui est ce site ?"', 'Pas de redirection vers contenu de sensibilisation'],
+  },
+  {
+    id: 20, name: 'Helene', age: 44, emoji: '🌺',
+    canal: 'Newsletter', device: 'Tablette', maturite: 'Comparaison',
+    situation: 'Institutrice, Haute-Loire, eleve 5 poules depuis 3 ans, veut des Bourbonnaises (race locale auvergnate tres rare)',
+    contexte: 'La newsletter d\'une association avicole Auvergne a mentionne coco-eco.fr comme ressource',
+    parcours: ['Recherche Bourbonnaise (vide)', 'Grandes races (pas la race)', 'Carte eleveurs (Auvergne)', 'Contact (demande disponibilites futures)'],
+    decision: 'hesite',
+    scores: { exp: 6, conf: 6, clarte: 5 },
+    premierImpression: 'Institutrice avec 3 ans d\'elevage : comprend immediatement le concept. Cherche les Bourbonnaises dans la navigation.',
+    questionCle: 'Y a-t-il des oeufs de Bourbonnaises disponibles maintenant ?',
+    reponse: 'Non (probablement)',
+    commentReponse: 'Race tres rare. Pas de systeme d\'alerte de disponibilite par race. Pas de calendrier saisonnier des pontes.',
+    impactTechnique: 'Tablette Samsung Wi-Fi : performances correctes. Pas de blocage technique mais pas de signal de modernite non plus.',
+    pointsPositifs: ['Carte geolocalisee pour chercher eleveurs regionaux', 'Systeme evaluations', 'FAQ sur les delais de livraison', 'Mention Association La Galine = credibilite races pures'],
+    frictions: ['Pas de systeme alerte disponibilite par race', 'Race probablement indisponible', 'Blog mort — article sur races rares manque cruellement', 'Pas de calendrier saisonnier des pontes'],
+  },
+];
+
+const convertis = personas.filter(p => p.decision === 'convertit');
+const hesitent = personas.filter(p => p.decision === 'hesite');
+const quittent = personas.filter(p => p.decision === 'quitte');
+
+// Ameliorations
+const ameliorationsCritiques = [
+  {
+    titre: 'Ajouter une section chiffres/preuves en page d\'accueil',
+    detail: '7 personas hesitent ou rebondissent par manque de preuve sociale. Les evaluations vendeurs existent mais sont enfouies dans chaque annonce. Personne ne sait que la plateforme a X transactions reussies et Y eleveurs actifs — parce que ce n\'est ecrit nulle part.',
+    action: 'Ajouter en page d\'accueil : "X eleveurs inscrits — Y transactions reussies — Z races disponibles" + 2-3 temoignages acheteurs ou vendeurs avec prenom et date.'
+  },
+  {
+    titre: 'Publier un contenu editorial recent (1 article 2025 minimum)',
+    detail: '9 personas sur 20 citent le blog de 2020 comme signal d\'alarme. C\'est la friction la plus citee. Pour tous les profils qui ne sont pas encore convaincus, le blog mort signifie "la plateforme est peut-etre abandonnee". Impossible de s\'inscrire serieusement dans ce doute.',
+    action: 'Publier au moins 1 article en 2025-2026 : "Bilan de la plateforme 2025", "Races rares les plus demandees", "Comment reussir sa premiere couvaison". OU ajouter une section "Actualites" avec 2-3 entrees recentes datees.'
+  },
+  {
+    titre: 'Afficher un contact humain accessible',
+    detail: '6 personas bloquent sur l\'absence de contact humain, dont Brigitte (bouche-a-oreille, decidee) qui quitte malgre la recommendation d\'une amie. Un formulaire email uniquement n\'est pas suffisant pour une plateforme qui gere des transactions financieres et des litiges.',
+    action: 'Afficher un email visible avec prenom ("Ecrivez a Julie — reponse sous 48h") sur la page Contact et dans le footer. OU un lien WhatsApp. OU un numero de telephone avec horaires si possible.'
+  },
+  {
+    titre: 'Afficher les prix au niveau des categories',
+    detail: '5 personas sur mobile abandonnent la comparaison parce qu\'il faut entrer dans chaque annonce pour voir un prix. Sur un smartphone, parcourir 10 annonces une par une pour comparer les prix est epuisant — surtout si la page est lente.',
+    action: 'Afficher sur chaque vignette d\'annonce la fourchette de prix (ex : "A partir de 2,40€ / oeuf") directement dans la liste de categories.'
+  },
+];
+
+const ameliorationsUtiles = [
+  { titre: 'Corriger le double H1 en page d\'accueil', detail: 'Deux H1 sur une meme page confondent Google sur le sujet principal. Conserver "Oeufs a couver d\'eleveur a eleveur" et transformer "Rejoignez la communaute des eleveurs" en H2.' },
+  { titre: 'Ajouter meta description + balises Open Graph sur toutes les pages', detail: 'Meta description absente = resultats Google peu engageants. Open Graph absent = partages Facebook/Instagram sans image ni description. Maurice a clique par erreur — une meta precise l\'aurait filtre.' },
+  { titre: 'Creer un guide "Quelle race pour debuter ?"', detail: '4 personas en decouverte cherchent ce contenu et ne le trouvent pas. 3-4 races recommandees aux debutants avec taux d\'eclosion moyen, niveau de difficulte et fourchette de prix suffiraient.' },
+  { titre: 'Valoriser MangoPay comme garantie acheteur visible', detail: 'Le sequestre paiement est un argument de confiance fort — particulierement pour des profils comme Nathalie (victime de colis casse). Il faut le mettre en avant dans l\'accueil, pas l\'enterrer dans la FAQ.' },
+  { titre: 'Corriger l\'Observatory : ajouter HSTS + CSP', detail: 'Grade D (30/135). L\'ajout de HSTS et CSP monte facilement en B ou A-. Impacte la confiance perceptible (navigateur) et la securite reelle.' },
+];
+
+const ameliorationsDiscuter = [
+  { emoji: '📱', titre: 'Systeme d\'alerte disponibilite par race', detail: 'Helene (Bourbonnaise) et Camille (Gatinaise) ne trouvent pas leur race. Un bouton "Me prevenir quand des [race] sont disponibles" transformerait les visites sans issue en leads qualifies.' },
+  { emoji: '🏅', titre: 'Badge "Eleveur exposant" pour les vendeurs', detail: 'Celine (veterinaire experte) ne peut pas identifier les eleveurs de qualite genetique superieure. Un badge auto-declare ou valide par l\'association ferait la difference pour les acheteurs experts.' },
+  { emoji: '🌾', titre: 'FAQ "Agriculteurs professionnels"', detail: 'Pascal n\'a pas trouve de reponse sur sa situation fiscale specifique. Si des agriculteurs avec SIRET vendent sur la plateforme, une section FAQ dediee eviterait les doutes sur la legalite.' },
+  { emoji: '📅', titre: 'Calendrier saisonnier des pontes', detail: 'La couvaison est saisonniere — les oeufs sont disponibles principalement au printemps. Afficher un calendrier de disponibilite par mois aiderait les acheteurs a planifier.' },
+  { emoji: '🐣', titre: 'Reduire le minimum Ovopack de 20 a 5-10 boites', detail: 'Ines et Julien sont freines par l\'investissement initial de 65,60€ en boites. Un pack decouverte de 5 boites permettrait de tester avant d\'engager. Decision commerciale avec impact sur la rentabilite.' },
+];
+---
+
+<BaseLayout
+  title="Audit UX + Technique — Coco-Eco | Marc M. Agence Web"
+  description="Rapport confidentiel : audit UX et technique du site coco-eco.fr — 20 personas simulees, 4 onglets interactifs, ameliorations priorisees."
+  noindex={true}
+  lang="fr"
+  frPath="/audit/coco-eco/"
+>
+
+  <!-- HERO -->
+  <section class="bg-neutral-900 text-white py-12 px-4">
+    <div class="max-w-5xl mx-auto">
+      <span class="inline-block text-xs font-semibold tracking-widest uppercase text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full mb-4">Rapport confidentiel</span>
+      <h1 class="font-heading text-3xl md:text-4xl font-bold mb-3">Audit UX + Technique — Coco-Eco</h1>
+      <p class="text-neutral-300 mb-5 max-w-2xl">
+        Marketplace d'oeufs a couver de races pures &mdash; <a href="https://coco-eco.fr/" class="text-amber-400 hover:underline" target="_blank" rel="noopener">coco-eco.fr</a>
+      </p>
+      <div class="flex flex-wrap gap-2 text-xs">
+        <span class="bg-white/10 px-3 py-1 rounded-full">20 personas simulees</span>
+        <span class="bg-white/10 px-3 py-1 rounded-full">6 canaux d'arrivee</span>
+        <span class="bg-white/10 px-3 py-1 rounded-full">29 mars 2026</span>
+        <span class="bg-white/10 px-3 py-1 rounded-full">Taux de conversion : 25%</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- TAB BAR STICKY -->
+  <nav class="sticky top-16 md:top-20 z-40 bg-white/95 backdrop-blur border-b border-neutral-200" id="tab-bar">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-2 h-12 text-sm overflow-x-auto">
+      <button data-tab="0" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-primary-700 bg-primary-50">Synthese</button>
+      <button data-tab="1" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">Technique</button>
+      <button data-tab="2" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">
+        Visiteurs <span class="ml-1 text-xs text-neutral-400">20</span>
+      </button>
+      <button data-tab="3" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">
+        Ameliorations <span class="ml-1 text-xs text-neutral-400">9</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- PANELS CONTAINER -->
+  <div id="panels" class="flex overflow-x-auto snap-x snap-mandatory" style="-webkit-overflow-scrolling: touch; scrollbar-width: none;">
+
+    <!-- PANEL 1 : SYNTHESE -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0 py-10 px-4">
+      <div class="max-w-5xl mx-auto space-y-10">
+
+        <!-- KPI CARDS -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center shadow-sm">
+            <span class="block text-3xl font-black text-amber-500">{kpis.conversion}%</span>
+            <span class="text-xs text-neutral-500 mt-1 block">Taux de conversion</span>
+          </div>
+          <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center shadow-sm">
+            <span class="block text-3xl font-black text-amber-500">{kpis.experience}/10</span>
+            <span class="text-xs text-neutral-500 mt-1 block">Score experience</span>
+          </div>
+          <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center shadow-sm">
+            <span class="block text-3xl font-black text-amber-500">{kpis.confiance}/10</span>
+            <span class="text-xs text-neutral-500 mt-1 block">Score confiance</span>
+          </div>
+          <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center shadow-sm">
+            <span class="block text-3xl font-black text-amber-500">{kpis.clarte}/10</span>
+            <span class="text-xs text-neutral-500 mt-1 block">Score clarte</span>
+          </div>
+        </div>
+
+        <!-- PARADOXE PRINCIPAL -->
+        <div class="bg-amber-50 border border-amber-200 rounded-xl p-5">
+          <h2 class="font-semibold text-amber-900 mb-2 flex items-center gap-2">
+            <svg class="w-5 h-5 text-amber-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            Paradoxe principal
+          </h2>
+          <p class="text-amber-800 text-sm">{paradox}</p>
+        </div>
+
+        <!-- CONVERSION PAR CANAL -->
+        <div>
+          <h2 class="font-heading text-lg font-bold text-neutral-900 mb-4">Conversion par canal d'arrivee</h2>
+          <div class="space-y-3">
+            {conversionByCanal.map(item => (
+              <div>
+                <div class="flex items-center justify-between mb-1">
+                  <span class="text-sm text-neutral-700">{item.canal}</span>
+                  <span class={`text-sm font-bold ${item.color === 'green' ? 'text-green-600' : item.color === 'orange' ? 'text-amber-600' : 'text-red-500'}`}>{item.taux}%</span>
+                </div>
+                <div class="h-2 bg-neutral-100 rounded-full overflow-hidden">
+                  <div
+                    class={`h-full rounded-full ${item.color === 'green' ? 'bg-green-500' : item.color === 'orange' ? 'bg-amber-400' : 'bg-red-400'}`}
+                    style={`width: ${item.taux}%`}
+                  ></div>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- CONVERSION PAR MATURITE + DEVICE -->
+        <div class="grid md:grid-cols-2 gap-6">
+          <div>
+            <h2 class="font-heading text-lg font-bold text-neutral-900 mb-4">Par maturite</h2>
+            <div class="grid grid-cols-3 gap-3">
+              {conversionByMaturite.map(item => (
+                <div class="bg-white border border-neutral-200 rounded-xl p-3 text-center">
+                  <span class={`block text-xl font-black ${item.taux >= 40 ? 'text-green-600' : item.taux >= 20 ? 'text-amber-500' : 'text-red-500'}`}>{item.taux}%</span>
+                  <span class="text-xs text-neutral-500 block mt-0.5">{item.label}</span>
+                  <span class="text-[10px] text-neutral-400">{item.convertis}/{item.total}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+          <div>
+            <h2 class="font-heading text-lg font-bold text-neutral-900 mb-4">Par device</h2>
+            <div class="grid grid-cols-3 gap-3">
+              {conversionByDevice.map(item => (
+                <div class="bg-white border border-neutral-200 rounded-xl p-3 text-center">
+                  <span class={`block text-xl font-black ${item.taux >= 40 ? 'text-green-600' : item.taux >= 20 ? 'text-amber-500' : 'text-red-500'}`}>{item.taux}%</span>
+                  <span class="text-xs text-neutral-500 block mt-0.5">{item.label}</span>
+                  <span class="text-[10px] text-neutral-400">{item.convertis}/{item.total}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <!-- FRICTIONS RECURRENTES -->
+        <div>
+          <h2 class="font-heading text-lg font-bold text-neutral-900 mb-4">Frictions les plus citees</h2>
+          <div class="space-y-2">
+            {[
+              { label: 'Blog inactif depuis 2020 — signal "plateforme abandonnee"', n: 9, sev: 'critique' },
+              { label: 'Aucune preuve sociale (stats, temoignages) en page d\'accueil', n: 7, sev: 'critique' },
+              { label: 'Absence de numero de telephone public', n: 6, sev: 'critique' },
+              { label: 'Pas d\'indicateur d\'activite recente visible', n: 5, sev: 'haute' },
+              { label: 'Prix non visibles au niveau des categories', n: 5, sev: 'haute' },
+              { label: 'Double H1 en page d\'accueil', n: 5, sev: 'haute' },
+              { label: 'Pas de guide "quelle race pour debuter ?"', n: 4, sev: 'haute' },
+              { label: 'Open Graph absent — partages sociaux sans preview', n: 3, sev: 'haute' },
+              { label: 'Meta description absente — CTR degrade dans Google', n: 3, sev: 'haute' },
+            ].map(f => (
+              <div class="flex items-center justify-between p-3 bg-white border border-neutral-100 rounded-lg">
+                <span class="text-sm text-neutral-700 flex-1 mr-3">{f.label}</span>
+                <div class="flex items-center gap-2 shrink-0">
+                  <span class="text-xs text-neutral-500">{f.n} personas</span>
+                  <span class={`text-[10px] px-1.5 py-0.5 rounded font-medium ${f.sev === 'critique' ? 'bg-red-100 text-red-600' : 'bg-amber-100 text-amber-600'}`}>{f.sev}</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- PANEL 2 : TECHNIQUE -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0 py-10 px-4">
+      <div class="max-w-5xl mx-auto space-y-8">
+
+        <!-- PAGESPEED NOTE -->
+        <div class="bg-neutral-100 border border-neutral-200 rounded-xl p-4">
+          <h2 class="font-heading text-lg font-bold text-neutral-900 mb-2">PageSpeed Insights</h2>
+          <div class="flex items-start gap-3">
+            <svg class="w-5 h-5 text-amber-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v2m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+            <p class="text-sm text-neutral-600">
+              <strong>Quota API epuise ce jour</strong> — scores non disponibles. Le site tourne sur Django (marketplace Python), technologie reconnue comme plus lente sur mobile que les sites statiques modernes. Estimations : performance mobile probablement entre 40-60/100.
+            </p>
+          </div>
+          <div class="mt-4 grid grid-cols-2 gap-4">
+            <div>
+              <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-2">Mobile (estime)</p>
+              <div class="grid grid-cols-2 gap-2">
+                {['Performance ~45', 'Accessibilite ~65', 'Bonnes Pratiques ~75', 'SEO ~60'].map(s => (
+                  <div class="bg-white rounded-lg p-2 text-center border border-neutral-200">
+                    <span class="text-xs text-neutral-500">{s}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-2">Desktop (estime)</p>
+              <div class="grid grid-cols-2 gap-2">
+                {['Performance ~65', 'Accessibilite ~65', 'Bonnes Pratiques ~75', 'SEO ~60'].map(s => (
+                  <div class="bg-white rounded-lg p-2 text-center border border-neutral-200">
+                    <span class="text-xs text-neutral-500">{s}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- OBSERVATORY -->
+        <div>
+          <h2 class="font-heading text-lg font-bold text-neutral-900 mb-3">Securite HTTP — Mozilla Observatory</h2>
+          <div class="flex items-center gap-4 p-4 rounded-xl border-2 border-red-200 bg-red-50 mb-4">
+            <div class="text-4xl font-black text-red-500">{observatory.grade}</div>
+            <div>
+              <p class="text-sm font-semibold text-neutral-900">Securite insuffisante</p>
+              <p class="text-xs text-neutral-500">{observatory.testsPassed}/{observatory.testsTotal} tests passes — Score {observatory.score}/135</p>
+            </div>
+          </div>
+          <div class="grid md:grid-cols-2 gap-4">
+            <div>
+              <p class="text-xs font-semibold text-green-600 mb-2">Headers presents</p>
+              {presentHeaders.map(h => (
+                <div class="flex items-center gap-2 py-1">
+                  <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                  <span class="text-xs text-neutral-700 font-mono">{h}</span>
+                </div>
+              ))}
+            </div>
+            <div>
+              <p class="text-xs font-semibold text-red-500 mb-2">Headers manquants</p>
+              {missingHeaders.map(h => (
+                <div class="flex items-center gap-2 py-1">
+                  <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                  <span class="text-xs text-neutral-400 line-through">{h}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        <!-- SCHEMA.ORG -->
+        <div>
+          <h2 class="font-heading text-lg font-bold text-neutral-900 mb-3">Schema.org (donnees structurees)</h2>
+          <p class="text-sm text-neutral-600 mb-3 bg-amber-50 border border-amber-200 rounded-lg px-3 py-2">
+            Google ne comprend pas que coco-eco.fr est une marketplace d'oeufs a couver. Schema.org minimal (WebSite + SearchAction uniquement) — aucun rich result possible pour les produits, les vendeurs, ou l'organisation.
+          </p>
+          <div class="grid md:grid-cols-2 gap-2">
+            {schemaChecks.map(item => (
+              <div class="flex items-center gap-2 py-1.5">
+                {item.present ? (
+                  <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                ) : (
+                  <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                )}
+                <span class={`text-sm ${item.present ? 'text-neutral-700' : 'text-neutral-400 line-through'}`}>{item.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- OPEN GRAPH + SEO -->
+        <div class="grid md:grid-cols-2 gap-6">
+          <div>
+            <h2 class="font-heading text-base font-bold text-neutral-900 mb-3">Open Graph &amp; Twitter Card</h2>
+            <p class="text-xs text-red-600 font-semibold mb-2">0/7 tags presents — aucun partage social optimise</p>
+            {ogChecks.map(item => (
+              <div class="flex items-center gap-2 py-1">
+                <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                <span class="text-sm text-neutral-400 line-through">{item.label}</span>
+              </div>
+            ))}
+          </div>
+          <div>
+            <h2 class="font-heading text-base font-bold text-neutral-900 mb-3">SEO Technique</h2>
+            {seoChecks.map(item => (
+              <div class="flex items-center gap-2 py-1">
+                {item.present ? (
+                  <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                ) : (
+                  <svg class={`w-4 h-4 shrink-0 ${(item as any).critical ? 'text-red-500' : 'text-red-400'}`} fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                )}
+                <span class={`text-sm ${item.present ? 'text-neutral-700' : (item as any).critical ? 'text-red-600 font-medium' : 'text-neutral-400 line-through'}`}>{item.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- OPPORTUNITES -->
+        <div>
+          <h2 class="font-heading text-lg font-bold text-neutral-900 mb-3">Top 5 opportunites identifiees</h2>
+          <div class="space-y-2">
+            {opportunities.map((opp, i) => (
+              <div class="flex items-center gap-3 p-3 bg-white border border-neutral-100 rounded-lg">
+                <span class="text-xs font-bold text-neutral-400 w-5 shrink-0">#{i + 1}</span>
+                <span class="text-sm text-neutral-700 flex-1">{opp.title}</span>
+                <span class="text-xs text-primary-600 bg-primary-50 px-2 py-0.5 rounded shrink-0">{opp.savings}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- PANEL 3 : VISITEURS -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0 py-10 px-4">
+      <div class="max-w-5xl mx-auto space-y-8">
+
+        <!-- STATS ROW -->
+        <div class="grid grid-cols-3 gap-4 text-center">
+          <div class="bg-green-50 border border-green-200 rounded-xl p-4">
+            <span class="block text-2xl font-black text-green-600">{convertis.length}</span>
+            <span class="text-xs text-green-700">Contactent</span>
+          </div>
+          <div class="bg-amber-50 border border-amber-200 rounded-xl p-4">
+            <span class="block text-2xl font-black text-amber-600">{hesitent.length}</span>
+            <span class="text-xs text-amber-700">Hesitent</span>
+          </div>
+          <div class="bg-neutral-100 border border-neutral-200 rounded-xl p-4">
+            <span class="block text-2xl font-black text-neutral-600">{quittent.length}</span>
+            <span class="text-xs text-neutral-700">Repartent</span>
+          </div>
+        </div>
+
+        <!-- CEUX QUI CONVERTISSENT -->
+        <div>
+          <h2 class="font-heading text-base font-bold text-green-700 mb-3 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-green-500 inline-block"></span>
+            Ceux qui contactent ({convertis.length})
+          </h2>
+          <div class="space-y-3">
+            {convertis.map(p => (
+              <details class="group border border-green-200 bg-green-50/40 rounded-xl overflow-hidden">
+                <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                  <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                      <h3 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h3>
+                      <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                      <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    </div>
+                    <p class="text-xs text-neutral-500 mb-1">{p.situation}</p>
+                    <div class="flex flex-wrap items-center gap-1">
+                      {p.parcours.map((step, i) => (
+                        <>
+                          <span class="text-[10px] text-primary-700 bg-white border border-primary-100 px-1.5 py-0.5 rounded">{step}</span>
+                          {i < p.parcours.length - 1 && <span class="text-neutral-300 text-[10px]">›</span>}
+                        </>
+                      ))}
+                      <span class="text-[10px] bg-green-600 text-white px-1.5 py-0.5 rounded font-medium ml-0.5">Convertit</span>
+                    </div>
+                  </div>
+                  <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                </summary>
+                <div class="px-4 pb-4 pt-0 border-t border-green-200 bg-white/50">
+                  <div class="grid gap-3 text-xs mt-3">
+                    <div>
+                      <p class="font-semibold text-neutral-700 mb-1">Premiere impression</p>
+                      <p class="text-neutral-600">{p.premierImpression}</p>
+                    </div>
+                    <div>
+                      <p class="font-semibold text-neutral-700 mb-1">Question cle</p>
+                      <p class="text-neutral-600 italic">"{p.questionCle}"</p>
+                      <p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong> — {p.commentReponse}</p>
+                    </div>
+                    <div>
+                      <p class="font-semibold text-neutral-700 mb-1">Impact technique</p>
+                      <p class="text-neutral-600">{p.impactTechnique}</p>
+                    </div>
+                    <div class="flex gap-4">
+                      <div class="flex-1">
+                        <p class="font-semibold text-green-700 mb-1">Points positifs</p>
+                        <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                          {p.pointsPositifs.map(pp => <li>{pp}</li>)}
+                        </ul>
+                      </div>
+                      <div class="flex-1">
+                        <p class="font-semibold text-amber-700 mb-1">Frictions</p>
+                        <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                          {p.frictions.map(f => <li>{f}</li>)}
+                        </ul>
+                      </div>
+                    </div>
+                    <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                      <div class="text-center"><span class="block text-lg font-bold text-green-600">{p.scores.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                      <div class="text-center"><span class="block text-lg font-bold text-green-600">{p.scores.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                      <div class="text-center"><span class="block text-lg font-bold text-green-600">{p.scores.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+                    </div>
+                  </div>
+                </div>
+              </details>
+            ))}
+          </div>
+        </div>
+
+        <!-- CEUX QUI HESITENT -->
+        <div>
+          <h2 class="font-heading text-base font-bold text-amber-700 mb-3 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-amber-400 inline-block"></span>
+            Ceux qui hesitent ({hesitent.length})
+          </h2>
+          <div class="space-y-3">
+            {hesitent.map(p => (
+              <details class="group border border-amber-200 bg-amber-50/30 rounded-xl overflow-hidden">
+                <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                  <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                      <h3 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h3>
+                      <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                      <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    </div>
+                    <p class="text-xs text-neutral-500 mb-1">{p.situation}</p>
+                    <div class="flex flex-wrap items-center gap-1">
+                      {p.parcours.map((step, i) => (
+                        <>
+                          <span class="text-[10px] text-primary-700 bg-white border border-primary-100 px-1.5 py-0.5 rounded">{step}</span>
+                          {i < p.parcours.length - 1 && <span class="text-neutral-300 text-[10px]">›</span>}
+                        </>
+                      ))}
+                      <span class="text-[10px] bg-amber-500 text-white px-1.5 py-0.5 rounded font-medium ml-0.5">Hesite</span>
+                    </div>
+                  </div>
+                  <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                </summary>
+                <div class="px-4 pb-4 pt-0 border-t border-amber-200 bg-white/50">
+                  <div class="grid gap-3 text-xs mt-3">
+                    <div>
+                      <p class="font-semibold text-neutral-700 mb-1">Premiere impression</p>
+                      <p class="text-neutral-600">{p.premierImpression}</p>
+                    </div>
+                    <div>
+                      <p class="font-semibold text-neutral-700 mb-1">Question cle</p>
+                      <p class="text-neutral-600 italic">"{p.questionCle}"</p>
+                      <p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong> — {p.commentReponse}</p>
+                    </div>
+                    <div>
+                      <p class="font-semibold text-neutral-700 mb-1">Impact technique</p>
+                      <p class="text-neutral-600">{p.impactTechnique}</p>
+                    </div>
+                    <div class="flex gap-4">
+                      <div class="flex-1">
+                        <p class="font-semibold text-green-700 mb-1">Points positifs</p>
+                        <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                          {p.pointsPositifs.map(pp => <li>{pp}</li>)}
+                        </ul>
+                      </div>
+                      <div class="flex-1">
+                        <p class="font-semibold text-amber-700 mb-1">Frictions</p>
+                        <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                          {p.frictions.map(f => <li>{f}</li>)}
+                        </ul>
+                      </div>
+                    </div>
+                    <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                      <div class="text-center"><span class="block text-lg font-bold text-amber-500">{p.scores.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                      <div class="text-center"><span class="block text-lg font-bold text-amber-500">{p.scores.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                      <div class="text-center"><span class="block text-lg font-bold text-amber-500">{p.scores.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+                    </div>
+                  </div>
+                </div>
+              </details>
+            ))}
+          </div>
+        </div>
+
+        <!-- CEUX QUI REPARTENT -->
+        <div>
+          <h2 class="font-heading text-base font-bold text-neutral-600 mb-3 flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-neutral-400 inline-block"></span>
+            Ceux qui repartent ({quittent.length})
+          </h2>
+          <div class="space-y-3">
+            {quittent.map(p => (
+              <details class="group border border-neutral-200 bg-neutral-50/50 rounded-xl overflow-hidden">
+                <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                  <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                      <h3 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h3>
+                      <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                      <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    </div>
+                    <p class="text-xs text-neutral-500 mb-1">{p.situation}</p>
+                    <div class="flex flex-wrap items-center gap-1">
+                      {p.parcours.map((step, i) => (
+                        <>
+                          <span class="text-[10px] text-primary-700 bg-white border border-primary-100 px-1.5 py-0.5 rounded">{step}</span>
+                          {i < p.parcours.length - 1 && <span class="text-neutral-300 text-[10px]">›</span>}
+                        </>
+                      ))}
+                      <span class="text-[10px] bg-neutral-500 text-white px-1.5 py-0.5 rounded font-medium ml-0.5">Repart</span>
+                    </div>
+                  </div>
+                  <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                </summary>
+                <div class="px-4 pb-4 pt-0 border-t border-neutral-200 bg-white/50">
+                  <div class="grid gap-3 text-xs mt-3">
+                    <div>
+                      <p class="font-semibold text-neutral-700 mb-1">Premiere impression</p>
+                      <p class="text-neutral-600">{p.premierImpression}</p>
+                    </div>
+                    <div>
+                      <p class="font-semibold text-neutral-700 mb-1">Question cle</p>
+                      <p class="text-neutral-600 italic">"{p.questionCle}"</p>
+                      <p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong> — {p.commentReponse}</p>
+                    </div>
+                    <div>
+                      <p class="font-semibold text-neutral-700 mb-1">Impact technique</p>
+                      <p class="text-neutral-600">{p.impactTechnique}</p>
+                    </div>
+                    <div class="flex gap-4">
+                      <div class="flex-1">
+                        <p class="font-semibold text-green-700 mb-1">Points positifs</p>
+                        <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                          {p.pointsPositifs.map(pp => <li>{pp}</li>)}
+                        </ul>
+                      </div>
+                      <div class="flex-1">
+                        <p class="font-semibold text-amber-700 mb-1">Frictions</p>
+                        <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                          {p.frictions.map(f => <li>{f}</li>)}
+                        </ul>
+                      </div>
+                    </div>
+                    <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                      <div class="text-center"><span class="block text-lg font-bold text-neutral-500">{p.scores.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                      <div class="text-center"><span class="block text-lg font-bold text-neutral-500">{p.scores.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                      <div class="text-center"><span class="block text-lg font-bold text-neutral-500">{p.scores.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+                    </div>
+                  </div>
+                </div>
+              </details>
+            ))}
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- PANEL 4 : AMELIORATIONS -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0 py-10 px-4">
+      <div class="max-w-5xl mx-auto space-y-10">
+
+        <!-- LE PLUS IMPORTANT -->
+        <div>
+          <h2 class="font-heading text-lg font-bold text-neutral-900 mb-4">Le plus important</h2>
+          <div class="space-y-4">
+            {ameliorationsCritiques.map(a => (
+              <div class="bg-white border-2 border-red-200 rounded-xl p-5 shadow-sm">
+                <h4 class="font-semibold text-neutral-900 mb-2">{a.titre}</h4>
+                <p class="text-sm text-neutral-600 mb-3">{a.detail}</p>
+                <div class="bg-primary-50 rounded-lg px-3 py-2.5 flex items-start gap-2">
+                  <svg class="w-4 h-4 text-primary-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                  <p class="text-xs text-primary-800">{a.action}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- UTILE AUSSI -->
+        <div>
+          <h2 class="font-heading text-lg font-bold text-neutral-900 mb-4">Utile aussi</h2>
+          <div class="grid md:grid-cols-2 gap-4">
+            {ameliorationsUtiles.map(a => (
+              <div class="bg-white border border-neutral-200 rounded-xl p-4">
+                <h4 class="font-semibold text-neutral-900 text-sm mb-1.5">{a.titre}</h4>
+                <p class="text-xs text-neutral-600">{a.detail}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- A DISCUTER ENSEMBLE -->
+        <div>
+          <h2 class="font-heading text-lg font-bold text-neutral-900 mb-4">A discuter ensemble</h2>
+          <div class="space-y-3">
+            {ameliorationsDiscuter.map(a => (
+              <div class="bg-neutral-50 border border-neutral-200 rounded-xl p-4 flex gap-3">
+                <span class="text-lg shrink-0">{a.emoji}</span>
+                <div>
+                  <h4 class="font-semibold text-neutral-900 text-sm mb-0.5">{a.titre}</h4>
+                  <p class="text-xs text-neutral-600">{a.detail}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+  <!-- METHODOLOGIE -->
+  <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-neutral-100">
+    <h2 class="font-heading text-lg font-bold text-neutral-900 mb-4">Methodologie</h2>
+    <ol class="list-decimal list-inside space-y-2 text-sm text-neutral-600">
+      <li>Scraping complet du site (7 pages) via extraction HTML + contenu</li>
+      <li>Audit technique : Mozilla Observatory (securite HTTP), analyse Schema.org, Open Graph, SEO technique, robots.txt, sitemap</li>
+      <li>Note : scores PageSpeed non disponibles ce jour (quota API public epuise — estimations basees sur la stack observee)</li>
+      <li>Creation de 20 personas diversifiees : 6 canaux, 3 niveaux de maturite, 3 types de device, dont 3 personas negatifs hors cible</li>
+      <li>Simulation des 20 visites par 4 agents IA en parallele (lots de 5 personas), avec en contexte les donnees du site et les problemes techniques identifies</li>
+      <li>Agregation : tableau de synthese, analyse par canal / maturite / device, frictions recurrentes, ameliorations priorisees</li>
+    </ol>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+    <h2 class="font-heading text-2xl md:text-3xl font-bold text-neutral-900 mb-4">
+      Pret a transformer ces insights en resultats ?
+    </h2>
+    <p class="text-neutral-600 mb-8 max-w-xl mx-auto">
+      Ce rapport identifie des opportunites concretes. Je peux construire un site qui convertit vraiment vos visiteurs en clients.
+    </p>
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+      <a href="/commander" class="inline-flex items-center gap-2 px-8 py-3.5 bg-[var(--color-accent)] text-white font-semibold rounded-xl hover:bg-[var(--color-accent-hover)] transition-all shadow-md">
+        Commander un site
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      </a>
+      <a href="/contact" class="inline-flex items-center gap-2 px-8 py-3.5 border border-neutral-300 text-neutral-700 font-semibold rounded-xl hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] transition-all">
+        En discuter d'abord
+      </a>
+    </div>
+  </section>
+
+  <style is:inline>
+    #panels { -ms-overflow-style: none; }
+    #panels::-webkit-scrollbar { display: none; }
+  </style>
+
+  <script is:inline>
+    const panels = document.getElementById('panels');
+    const tabs = document.querySelectorAll('.tab-btn');
+    const sections = panels ? panels.querySelectorAll('.tab-panel') : [];
+
+    function activateTab(index) {
+      tabs.forEach((b, i) => {
+        if (i === index) {
+          b.classList.remove('text-neutral-500');
+          b.classList.add('text-primary-700', 'bg-primary-50');
+        } else {
+          b.classList.remove('text-primary-700', 'bg-primary-50');
+          b.classList.add('text-neutral-500');
+        }
+      });
+    }
+
+    tabs.forEach((btn, i) => {
+      btn.addEventListener('click', () => {
+        if (sections[i]) {
+          sections[i].scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+        }
+        activateTab(i);
+      });
+    });
+
+    let scrollTimeout;
+    if (panels) {
+      panels.addEventListener('scroll', () => {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+          const index = Math.round(panels.scrollLeft / panels.offsetWidth);
+          activateTab(index);
+        }, 50);
+      }, { passive: true });
+    }
+  </script>
+
+</BaseLayout>
