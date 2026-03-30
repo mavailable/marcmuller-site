@@ -4,6 +4,8 @@ import SchemaOrg from '../components/SchemaOrg.astro';
 import { business } from '../data/business';
 
 const vm = business.visiteMystere;
+const stripeComplet = vm.tiers[1].stripePaymentLink;
+const stripePro = vm.tiers[2].stripePaymentLink;
 
 const faqItems = [
   {
@@ -40,7 +42,7 @@ const faqItems = [
   },
   {
     question: 'Comment je règle ?',
-    answer: 'Après envoi du formulaire, je vous envoie un lien de paiement sécurisé (carte bancaire ou virement) sous 2h. Facture émise dès réception du paiement. La formule Découverte est gratuite — aucun paiement demandé.',
+    answer: 'Après envoi du formulaire, vous êtes redirigé vers une page de paiement sécurisée Stripe (carte bancaire). Facture envoyée par email dès réception. La formule Découverte est gratuite — aucun paiement demandé.',
   },
 ];
 
@@ -367,7 +369,7 @@ const demoPersonas = [
           <a href="?formule=complet#formulaire" class="block w-full text-center px-6 py-3.5 rounded-xl font-semibold text-white transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5" style="background: linear-gradient(135deg, #E86C47, #D4572F); box-shadow: 0 4px 20px rgba(232, 108, 71, 0.3);">
             Commander — 90€ HT
           </a>
-          <p class="text-center text-[11px] mt-2.5" style="color: var(--color-text-muted);">Lien de paiement sécurisé envoyé sous 2h. Facture immédiate.</p>
+          <p class="text-center text-[11px] mt-2.5" style="color: var(--color-text-muted);">Paiement sécurisé immédiat. Facture par email.</p>
         </div>
 
         <!-- 250€ — PRO -->
@@ -391,7 +393,7 @@ const demoPersonas = [
           <a href="?formule=pro#formulaire" class="block w-full text-center px-6 py-3.5 rounded-xl font-semibold border-2 transition-all duration-200 hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]" style="border-color: var(--color-border); color: var(--color-text);">
             Commander — 250€ HT
           </a>
-          <p class="text-center text-[11px] mt-2.5" style="color: var(--color-text-muted);">Lien de paiement sécurisé envoyé sous 2h. Facture immédiate.</p>
+          <p class="text-center text-[11px] mt-2.5" style="color: var(--color-text-muted);">Paiement sécurisé immédiat. Facture par email.</p>
         </div>
       </div>
     </div>
@@ -452,6 +454,7 @@ const demoPersonas = [
       </p>
 
       <form
+        id="echo-form"
         action="https://api.web3forms.com/submit"
         method="POST"
         class="space-y-5"
@@ -557,8 +560,15 @@ const demoPersonas = [
     </div>
   </section>
 
-  <script is:inline>
+  <script define:vars={{ stripeComplet, stripePro }}>
     (function () {
+      function getRedirectUrl(formuleValue) {
+        var v = formuleValue.toLowerCase();
+        if (v.startsWith('complet') && stripeComplet) return stripeComplet;
+        if (v.startsWith('pro') && stripePro) return stripePro;
+        return 'https://marcm.fr/merci';
+      }
+
       function updateRadioLabels() {
         document.querySelectorAll('input[name="formule"]').forEach(function (radio) {
           var label = radio.closest('label');
@@ -586,10 +596,39 @@ const demoPersonas = [
           });
         }
 
-        // Initialiser le visuel + écouter les changements
         updateRadioLabels();
         document.querySelectorAll('input[name="formule"]').forEach(function (radio) {
           radio.addEventListener('change', updateRadioLabels);
+        });
+
+        // Intercepter le submit : envoyer à Web3Forms, puis rediriger vers Stripe ou /merci
+        var form = document.getElementById('echo-form');
+        if (!form) return;
+
+        form.addEventListener('submit', function (e) {
+          e.preventDefault();
+
+          var checked = form.querySelector('input[name="formule"]:checked');
+          var redirectUrl = getRedirectUrl(checked ? checked.value : '');
+
+          var btn = form.querySelector('button[type="submit"]');
+          if (btn) { btn.disabled = true; btn.textContent = 'Envoi en cours…'; }
+
+          var controller = new AbortController();
+          var timeout = setTimeout(function () { controller.abort(); }, 8000);
+
+          fetch('https://api.web3forms.com/submit', {
+            method: 'POST',
+            body: new FormData(form),
+            signal: controller.signal,
+          }).then(function () {
+            clearTimeout(timeout);
+          }).catch(function () {
+            clearTimeout(timeout);
+            // Web3Forms KO — on redirige quand même
+          }).finally(function () {
+            window.location.href = redirectUrl;
+          });
         });
       }
 

@@ -92,9 +92,9 @@ export const business = {
     name: 'Écho',
     tagline: 'L\'écho de vos visiteurs — ce que votre site leur renvoie vraiment.',
     tiers: [
-      { name: 'Gratuit', price: 0, personas: 5, description: '5 visiteurs simulés, résumé + 1 recommandation, par email.' },
-      { name: 'Complet', price: 90, personas: 20, description: '20 visiteurs simulés, rapport interactif, audit technique, recommandations priorisées, page dédiée.' },
-      { name: 'Pro', price: 250, personas: 100, description: '100 visiteurs simulés, analyse par canal et maturité, score par profil client, appel de 30 min.' },
+      { name: 'Gratuit', price: 0, personas: 5, description: '5 visiteurs simulés, résumé + 1 recommandation, par email.', stripePaymentLink: '' },
+      { name: 'Complet', price: 90, personas: 20, description: '20 visiteurs simulés, rapport interactif, audit technique, recommandations priorisées, page dédiée.', stripePaymentLink: '' }, // TODO: remplacer par l'URL Stripe Payment Link 90€
+      { name: 'Pro', price: 250, personas: 100, description: '100 visiteurs simulés, analyse par canal et maturité, score par profil client, appel de 30 min.', stripePaymentLink: '' }, // TODO: remplacer par l'URL Stripe Payment Link 250€
     ],
     rapportsGeneres: 26,
   },
