@@ -7,7 +7,11 @@ const formuleLabel = 'Echo Decouverte';
 const nomProspect = 'LBA Chauffagiste Sarreguemines';
 const urlSite = 'https://lba-chauffagiste-sarreguemines.fr';
 const dateAudit = '30 mars 2026';
-const showUpsell = true;
+const showUpsell = false;
+const isProspection = true;
+const marcTel = '06 26 50 59 89';
+const marcTelLink = 'tel:+33626505989';
+const marcWhatsApp = 'https://wa.me/33626505989?text=Bonjour%20Marc%2C%20j%27ai%20lu%20votre%20rapport%20sur%20mon%20site';
 
 const kpis = {
   nbPersonas: 5,
@@ -244,6 +248,13 @@ const tech = {
     { item: 'Open Graph correctement configure', ok: false },
   ],
 };
+
+const alertes: { type: 'critique' | 'important'; titre: string; detail: string; chiffre: string; chiffreLabel: string }[] = [
+  { type: 'critique' as const, titre: '0 donnees structurees Schema.org', detail: 'Aucun JSON-LD detecte — Google ne peut pas afficher votre telephone, adresse ni horaires. Penalite SEO local directe sur un marche tres concurrentiel.', chiffre: '0', chiffreLabel: 'donnees structurees' },
+  { type: 'important' as const, titre: 'Certification RGE invisible', detail: 'Cyril et 30% des projets PAC en Moselle exigent un artisan RGE pour MaPrimeRenov. Si la certification n\'est pas affichee, le visiteur part chez un concurrent qui l\'affiche.', chiffre: '1/5', chiffreLabel: 'visiteur perdu sur cette friction' },
+  { type: 'important' as const, titre: 'og:title affiche "Index"', detail: 'Quand le lien est partage sur Facebook ou WhatsApp, il apparait comme "Index" — signal d\'amateurisme qui nuit a la credibilite.', chiffre: 'D', chiffreLabel: 'grade securite Mozilla Observatory' },
+  { type: 'important' as const, titre: 'Aucun avis client sur le site', detail: '3 visiteurs sur 5 cherchent une preuve sociale avant d\'appeler. Martine compare LBA avec un concurrent qui affiche 47 avis Google — et choisit le concurrent.', chiffre: '0', chiffreLabel: 'temoignages visibles sur le site' },
+];
 ---
 
 <BaseLayout
@@ -327,6 +338,39 @@ const tech = {
     </div>
   </details>
 </section>
+
+<!-- 2b. ALERTES -->
+{alertes.length > 0 && (
+  <section style="background: #fefce8;" class="py-12">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center gap-3 mb-6">
+        <svg class="w-6 h-6 text-amber-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+        <div>
+          <h2 class="text-lg font-bold text-neutral-900">Problemes detectes</h2>
+          <p class="text-sm text-neutral-600">
+            {alertes.filter(a => a.type === 'critique').length > 0 && <span class="text-red-700 font-medium">{alertes.filter(a => a.type === 'critique').length} critique{alertes.filter(a => a.type === 'critique').length > 1 ? 's' : ''}</span>}
+            {alertes.filter(a => a.type === 'critique').length > 0 && alertes.filter(a => a.type === 'important').length > 0 && <span class="mx-1 text-neutral-400">·</span>}
+            {alertes.filter(a => a.type === 'important').length > 0 && <span class="text-amber-700 font-medium">{alertes.filter(a => a.type === 'important').length} important{alertes.filter(a => a.type === 'important').length > 1 ? 's' : ''}</span>}
+          </p>
+        </div>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-4">
+        {alertes.map(a => (
+          <div class={`bg-white rounded-xl p-5 ${a.type === 'critique' ? 'border-2 border-red-300' : 'border border-amber-200'}`}>
+            <div class="flex items-start gap-4">
+              <div class={`text-2xl font-black rounded-lg px-3 py-1 shrink-0 ${a.type === 'critique' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>{a.chiffre}</div>
+              <div>
+                <p class="font-semibold text-neutral-900 text-sm mb-1">{a.titre}</p>
+                <p class="text-xs text-neutral-600">{a.detail}</p>
+                <p class="text-[10px] text-neutral-400 mt-1">{a.chiffreLabel}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
 
 <!-- 3. VOS VISITEURS -->
 <section class="py-16" style="background: #fafafa;">

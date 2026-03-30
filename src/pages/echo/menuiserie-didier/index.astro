@@ -7,7 +7,11 @@ const formuleLabel = 'Echo Decouverte';
 const nomProspect = 'Menuiserie Didier';
 const urlSite = 'https://www.menuiserie-didier.com';
 const dateAudit = '30 mars 2026';
-const showUpsell = true;
+const showUpsell = false;
+const isProspection = true;
+const marcTel = '06 26 50 59 89';
+const marcTelLink = 'tel:+33626505989';
+const marcWhatsApp = 'https://wa.me/33626505989?text=Bonjour%20Marc%2C%20j%27ai%20lu%20votre%20rapport%20sur%20mon%20site';
 
 const kpis = {
   nbPersonas: 5,
@@ -196,6 +200,12 @@ const ameliorationsHautes = [
 const ameliorationsUtiles: { titre: string; detail: string }[] = [];
 const ameliorationsDiscuter: { emoji: string; titre: string; detail: string }[] = [];
 
+const alertes: { type: 'critique' | 'important'; titre: string; detail: string; chiffre: string; chiffreLabel: string }[] = [
+  { type: 'important' as const, titre: 'Aucune page realisations', detail: '3 visiteurs sur 5 ont cherche des photos de chantiers termines et ne les ont pas trouvees. Sans preuves visuelles, les hesitants choisissent un concurrent mieux documente.', chiffre: '3/5', chiffreLabel: 'visiteurs cherchent des realisations' },
+  { type: 'important' as const, titre: 'Schema.org LocalBusiness absent', detail: 'Votre site a du Schema.org mais pas de type LocalBusiness. Google ne peut pas afficher vos coordonnees, horaires et avis dans les resultats locaux. Vos concurrents avec ces donnees apparaissent devant vous.', chiffre: '0', chiffreLabel: 'donnees de contact structurees' },
+  { type: 'important' as const, titre: 'Open Graph non configure', detail: 'Aucune balise Open Graph detectee. Vos liens partages sur WhatsApp ou Facebook s\'affichent sans image ni description — un signal de site non professionnel.', chiffre: '0', chiffreLabel: 'balises Open Graph' },
+];
+
 const techVerdicts = [
   { label: 'Vitesse', verdict: 'A verifier', ok: false, detail: 'Quota API epuise — WordPress + scripts tiers. Estimation mobile : 35-55/100.' },
   { label: 'Securite', verdict: 'Partielle', ok: false, detail: 'HTTPS + nosniff OK, mais CSP en report-only seulement, X-Frame-Options absent.' },
@@ -330,6 +340,39 @@ const tech = {
     </div>
   </details>
 </section>
+
+<!-- 2b. ALERTES -->
+{alertes.length > 0 && (
+  <section style="background: #fefce8;" class="py-12">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center gap-3 mb-6">
+        <svg class="w-6 h-6 text-amber-500 shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+        <div>
+          <h2 class="text-lg font-bold text-neutral-900">Problemes detectes</h2>
+          <p class="text-sm text-neutral-600">
+            {alertes.filter(a => a.type === 'critique').length > 0 && <span class="text-red-700 font-medium">{alertes.filter(a => a.type === 'critique').length} critique{alertes.filter(a => a.type === 'critique').length > 1 ? 's' : ''}</span>}
+            {alertes.filter(a => a.type === 'critique').length > 0 && alertes.filter(a => a.type === 'important').length > 0 && <span class="mx-1 text-neutral-400">·</span>}
+            {alertes.filter(a => a.type === 'important').length > 0 && <span class="text-amber-700 font-medium">{alertes.filter(a => a.type === 'important').length} important{alertes.filter(a => a.type === 'important').length > 1 ? 's' : ''}</span>}
+          </p>
+        </div>
+      </div>
+      <div class="grid sm:grid-cols-2 gap-4">
+        {alertes.map(a => (
+          <div class={`bg-white rounded-xl p-5 ${a.type === 'critique' ? 'border-2 border-red-300' : 'border border-amber-200'}`}>
+            <div class="flex items-start gap-4">
+              <div class={`text-2xl font-black rounded-lg px-3 py-1 shrink-0 ${a.type === 'critique' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>{a.chiffre}</div>
+              <div>
+                <p class="font-semibold text-neutral-900 text-sm mb-1">{a.titre}</p>
+                <p class="text-xs text-neutral-600">{a.detail}</p>
+                <p class="text-[10px] text-neutral-400 mt-1">{a.chiffreLabel}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
 
 <!-- 3. VOS VISITEURS -->
 <section class="py-16" style="background: #fafafa;">
