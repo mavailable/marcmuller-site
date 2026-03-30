@@ -1,0 +1,1183 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const slug = 'echo';
+const nomProspect = 'Landing page Echo — marcm.fr/echo/';
+const urlSite = 'https://marcm.fr/echo/';
+const dateAudit = '30 mars 2026';
+
+// ─── KPIs GLOBAUX ───
+const kpis = {
+  conversion: 35,
+  experience: 5.7,
+  confiance: 5.25,
+  clarte: 5.45,
+  nbPersonas: 20,
+  nbConvertissent: 7,
+  nbHesitent: 6,
+  nbRepartent: 7,
+};
+
+// ─── ANALYSE PAR CANAL ───
+const canalData = [
+  { canal: 'Bouche-a-oreille / reseau', nb: 3, rate: 67 },
+  { canal: 'Email direct (clients, reseau)', nb: 3, rate: 67 },
+  { canal: 'Google Maps / GBP', nb: 2, rate: 50 },
+  { canal: 'Google Search', nb: 5, rate: 40 },
+  { canal: 'IA (ChatGPT, Perplexity, Claude)', nb: 3, rate: 33 },
+  { canal: 'Reseaux sociaux (LinkedIn, FB, IG)', nb: 3, rate: 0 },
+  { canal: 'Cold email / QR code', nb: 2, rate: 0 },
+];
+
+// ─── ANALYSE PAR MATURITE ───
+const maturiteData = [
+  { label: 'Decouverte', total: 6, convert: 0, hesite: 2, quitte: 4, rate: 0 },
+  { label: 'Comparaison', total: 8, convert: 3, hesite: 3, quitte: 2, rate: 38 },
+  { label: 'Decision', total: 6, convert: 4, hesite: 2, quitte: 0, rate: 67 },
+];
+
+// ─── ANALYSE PAR DEVICE ───
+const deviceData = [
+  { device: 'Mobile', total: 11, convert: 4, hesite: 3, quitte: 4, rate: 36 },
+  { device: 'Desktop', total: 7, convert: 3, hesite: 2, quitte: 2, rate: 43 },
+  { device: 'Tablette', total: 2, convert: 0, hesite: 1, quitte: 1, rate: 0 },
+];
+
+// ─── TECHNIQUE ───
+const tech = {
+  observatory: { grade: 'B', score: 75, testsOk: 9, testsTotal: 10 },
+  pagespdMobile: null,
+  pagespdDesktop: null,
+  cwv: { lcp: 'Non disponible', inp: 'Non disponible', cls: 'Non disponible' },
+  schema: [
+    { item: 'JSON-LD present (WebSite + ProfessionalService)', ok: true },
+    { item: 'FAQPage Schema (8 questions presentes en HTML)', ok: false },
+    { item: 'Service / Product specifique Echo', ok: false },
+    { item: 'Champs name, url, description', ok: true },
+    { item: 'address + geo (LocalBusiness)', ok: true },
+    { item: 'telephone + email', ok: true },
+    { item: 'sameAs (LinkedIn)', ok: true },
+    { item: 'makesOffer (tarifs structures)', ok: true },
+    { item: 'aggregateRating', ok: false },
+  ],
+  og: [
+    { item: 'og:title', ok: true, val: "Echo — L'echo de vos visiteurs | Marc M" },
+    { item: 'og:description', ok: true, val: 'Vos visiteurs ne vous appellent pas... Rapport en 48h.' },
+    { item: 'og:url', ok: true, val: 'https://marcm.fr/echo/' },
+    { item: 'og:type', ok: true, val: 'website' },
+    { item: 'og:locale', ok: true, val: 'fr_FR' },
+    { item: 'og:image', ok: false, val: 'og-default.png (image generique agence)' },
+    { item: 'og:image:width / height', ok: false, val: 'Absent' },
+    { item: 'twitter:card', ok: true, val: 'summary_large_image' },
+  ],
+  seo: [
+    { item: 'Title (45 car.) — optimal', ok: true },
+    { item: 'Meta description specifique Echo (151 car.)', ok: true },
+    { item: 'Canonical correct (/echo/)', ok: true },
+    { item: 'H1 unique et pertinent', ok: true },
+    { item: 'Hierarchie H1>H2>H3 coherente', ok: true },
+    { item: 'viewport + lang="fr"', ok: true },
+    { item: 'Indexee dans sitemap', ok: true },
+    { item: 'robots.txt autorisant bots IA', ok: true },
+    { item: 'Images sur la page (0 image)', ok: false },
+    { item: 'Content-Security-Policy header', ok: false },
+  ],
+};
+
+// ─── PERSONAS ───
+const personas = [
+  {
+    id: 1, name: 'Thierry', age: 48, emoji: '🔧',
+    situation: 'Plombier-chauffagiste independant, Augny (57)',
+    canal: 'Google Search', maturite: 'Decouverte', device: 'Mobile',
+    decision: 'Hesite', decisionLabel: 'Hesite',
+    color: 'amber',
+    contexte: 'Beau-frere lui a dit que son site Wix 2019 faisait vieux. Cherche un audit pas cher.',
+    impression: 'H1 percutant, badge 48h rassurant. Mais "visiteurs IA" dans la suite cree un blocage conceptuel. Scroll instinctif vers le bas.',
+    parcours: [
+      ['Hero', 'Accroche percutante, CTA gratuit visible. Scroll plutot que cliquer.'],
+      ['Probleme', 'Se reconnait dans la colonne "Aujourd\'hui".'],
+      ['Comment ca marche', 'Bloque sur etape 2 : "des prospects IA, c\'est quoi ca ?"'],
+      ['Demo personas', 'Voit son prenom "Thierry" — effet miroir positif'],
+      ['Tarifs', 'S\'arrete sur "Gratuit". "Je risque rien."'],
+      ['Formulaire', 'Remplit l\'URL Wix, coche RGPD sans lire, envoie.'],
+    ],
+    questionCle: "C'est quoi ces visiteurs IA et qu'est-ce que ca m'apportera de concret ?",
+    reponse: 'Partiellement', commentReponse: 'Section "Comment ca marche" explique le mecanisme mais ne traduit jamais le concept en benefice artisan concret.',
+    impactVitesse: 'Page Astro statique sur Samsung 4G : ~1.5-2s. Satisfaisant.',
+    impactConfiance: 'Absence de photo du fondateur anxiogene pour un artisan habitue aux relations humaines.',
+    positifs: ['CTA "Tester gratuitement" sans friction financiere', 'H1 direct qui parle de son probleme', 'Son prenom "Thierry" dans la demo cree un effet miroir', 'Badge 48h visible'],
+    frictions: ['"Visiteurs IA" jamais traduit en langage artisan', 'Aucun numero de telephone visible', 'KPIs (6.7/6.1/7.1) abstraits sans referentiel'],
+    raisonDecision: 'Le gratuit leve la barriere. Il n\'est pas convaincu mais "risque rien a essayer". Ne convertira pas vers les formules payantes aujourd\'hui.',
+    ceQuiFeraitBasculer: 'Analogie "client mystere" + numero de telephone ou WhatsApp visible.',
+    exp: 6, conf: 5, clarte: 5,
+  },
+  {
+    id: 2, name: 'Nathalie', age: 39, emoji: '📊',
+    situation: 'Responsable marketing PME menuiseries sur mesure (15 personnes), Nancy (54)',
+    canal: 'Google Search', maturite: 'Comparaison', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    color: 'emerald',
+    contexte: 'Directeur lui a demande d\'evaluer le site avant refonte T3. Cherche outil UX sans protocole interne.',
+    impression: 'Angle pertinent mais legerement trop artisanal pour son contexte PME. Clique immediatement sur "Voir un rapport complet".',
+    parcours: [
+      ['Hero', 'Clique sur "Voir un rapport complet" — reflexe evaluateur.'],
+      ['Rapport marcm.fr', 'Lecture attentive. Decision se joue ici.'],
+      ['Retour /echo/', 'Cherche la methodologie et des cas PME — absent.'],
+      ['Tarifs', 'Note la formule 250€ avec appel 30 min.'],
+      ['FAQ', 'Cherche "PME", "entreprise" — absent. Legere frustration.'],
+      ['Formulaire', 'Hesite sur le paiement puis soumet 250€.'],
+    ],
+    questionCle: 'Ce rapport sera-t-il suffisamment detaille pour justifier une refonte aupres de ma direction ?',
+    reponse: 'Partiellement', commentReponse: 'Seul l\'exemple marcm.fr repond. La page seule ne montre pas le format livrable ni sa structure detaillee.',
+    impactVitesse: 'Desktop MacBook Safari + Cloudflare = quasi instantane. Aucune friction.',
+    impactConfiance: 'Absence logos clients et temoignages nominatifs nuit a la credibilite "professionnelle". Le service semble en phase beta pour une responsable habituee aux outils SaaS.',
+    positifs: ['Lien "Voir le rapport complet" satisfait son besoin d\'evaluation', 'KPIs chiffres parlent a son profil analytique', 'Formule 250€ avec appel 30 min'],
+    frictions: ['Positionnement TPE/artisan — aucune mention PME, equipe, direction', 'Processus de paiement absent', 'Un seul rapport exemple'],
+    raisonDecision: 'Rapport marcm.fr suffisamment convaincant. Appel 30 min repond a son besoin de personnalisation. 250€ HT justifiable pour refonte T3.',
+    ceQuiFeraitBasculer: 'Exemple rapport PME/B2B + mention "facturation possible sur devis".',
+    exp: 7, conf: 6, clarte: 7,
+  },
+  {
+    id: 3, name: 'Kevin', age: 31, emoji: '🎯',
+    situation: 'Fondateur micro-agence SEO (AE), Strasbourg (67)',
+    canal: 'Google Search', maturite: 'Decision', device: 'Mobile',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    color: 'emerald',
+    contexte: 'Client boulangerie lui demande aide sur conversion. Veut sous-traiter l\'audit UX.',
+    impression: 'Scan professionnel. Cherche la qualite du livrable et une mention partenariat/revente.',
+    parcours: [
+      ['Hero', 'Scroll rapide. Clique sur "Voir un rapport complet".'],
+      ['Rapport marcm.fr', 'Lecture attentive — la qualite du livrable decide 80% de son choix.'],
+      ['Tarifs', 'Cherche une option "agence" ou "revendeur" — absent.'],
+      ['FAQ', 'Cherche "agence", "white label" — absent. Legere frustration.'],
+      ['Formulaire', 'Commande 90€ + cherche un email Marc pour parler partenariat.'],
+    ],
+    questionCle: 'Ce rapport est-il assez professionnel pour que je le presente a mon propre client ?',
+    reponse: 'Partiellement', commentReponse: 'L\'exemple /audit/marcm/ est la seule reponse. La page ne dit pas si le rapport est rebrandable ni le format de livraison.',
+    impactVitesse: 'iPhone 15 Pro 5G + Astro statique = imperceptible.',
+    impactConfiance: 'Design sobre sans images = "quelqu\'un qui maitrise son sujet". Mais absence d\'un process de commande transparent interroge sur le professionnalisme operationnel.',
+    positifs: ['Prix 90€ accessible pour un test client', 'Rapport exemple cliquable', 'Personas notes et scores = look professionnel'],
+    frictions: ['Zero mention offre agence/revendeur/white label', 'Process de commande opaque', 'Prix bas peut generer un doute sur la profondeur'],
+    raisonDecision: 'Commande 90€ pour tester sur client boulangerie. Contacte Marc directement pour discuter partenariat.',
+    ceQuiFeraitBasculer: 'Section discrète "Vous etes agence ?" + format livrable (lien web, export PDF) dans la FAQ.',
+    exp: 7, conf: 7, clarte: 6,
+  },
+  {
+    id: 4, name: 'Isabelle', age: 55, emoji: '🛍️',
+    situation: 'Proprietaire boutique deco e-commerce Prestashop, Epinal (88)',
+    canal: 'Google Search', maturite: 'Comparaison', device: 'Mobile',
+    decision: 'Quitte', decisionLabel: 'Repart',
+    color: 'neutral',
+    contexte: 'Site Prestashop peu de conversions. Cherche pourquoi les gens partent sans acheter.',
+    impression: 'Decalage immediat — cherche aide e-commerce/panier abandonner, page ne mentionne jamais "e-commerce".',
+    parcours: [
+      ['Hero', 'H1 pertinent mais "vos visiteurs ne vous appellent pas" pas exact pour une boutique.'],
+      ['Comment ca marche', '"Simulent-ils un achat ?" — Pas de reponse.'],
+      ['Demo personas', '4 profils services/artisans, zero profil acheteur e-commerce.'],
+      ['FAQ', 'Cherche "e-commerce", "boutique", "panier" — absent.'],
+      ['Quitte', 'Pas convaincue que c\'est pour elle.'],
+    ],
+    questionCle: "Est-ce que ca va vraiment m'expliquer pourquoi mes clients n'achevent pas leurs achats ?",
+    reponse: 'Non', commentReponse: 'La landing page ne mentionne jamais e-commerce, abandons panier, tunnel d\'achat ou sites boutique.',
+    impactVitesse: 'iPhone SE 2020 = RAM limitee, potentiellement 4-5s de chargement avec les polices locales. Frustration initiale.',
+    impactConfiance: 'Page tres textuelle sur petit ecran = perception "brouillon".',
+    positifs: ['H1 touche un probleme reel', 'L\'offre gratuite aurait pu la retenir si e-commerce avait ete mentionne', 'Delai 48h rassurant'],
+    frictions: ['Zero mention e-commerce, boutique, panier, Prestashop', 'Personas demo : 4 profils services, 0 profil acheteur', '"Visiteurs IA" mal explicite : simulent-ils un vrai achat ?'],
+    raisonDecision: 'Ne peut pas confirmer que le service traite son cas e-commerce. Risque percu depasse le benefice potentiel.',
+    ceQuiFeraitBasculer: 'Une phrase hero type "Boutique en ligne ? Vos visiteurs IA testent votre tunnel d\'achat" + un persona demo e-commerce.',
+    exp: 4, conf: 4, clarte: 3,
+  },
+  {
+    id: 5, name: 'Roland', age: 62, emoji: '🏡',
+    situation: 'Retraite, gite rural avec sa femme, Sarrebourg (57)',
+    canal: 'Google Search', maturite: 'Decouverte', device: 'Desktop',
+    decision: 'Quitte', decisionLabel: 'Repart',
+    color: 'neutral',
+    contexte: 'Site fait par prestataire local, peu de reservations. Se demande si son site est "bien".',
+    impression: 'Le H1 ne resonne pas avec sa formulation mentale. Cherche une validation simple, pas une analyse comportementale.',
+    parcours: [
+      ['Hero', 'Lit lentement. "Tester gratuitement" l\'intrigue. Scroll pour comprendre.'],
+      ['Comment ca marche', 'Bloque sur "des robots visitent mon site ? C\'est legal ?"'],
+      ['Demo KPIs', '"6.7 sur quoi ? C\'est bien ou pas ?"'],
+      ['Cherche telephone', 'Introuvable. Cherche une page Contact. Uniquement marc@muller.im en footer.'],
+      ['Quitte', '"Je vais demander a mon prestataire local."'],
+    ],
+    questionCle: "Est-ce que je peux parler a quelqu'un pour savoir si mon site est correct ?",
+    reponse: 'Non', commentReponse: 'Aucun numero de telephone, pas de Calendly, pas de chat. La formule 250€ inclut un appel mais Roland ne depensera pas 250€ avant d\'avoir parle a quelqu\'un.',
+    impactVitesse: 'PC Desktop Firefox + Cloudflare = chargement rapide meme avec ADSL rural.',
+    impactConfiance: 'Absence de photo du fondateur particulierement prejudiciable. "Qui est Marc ? C\'est une agence ?"',
+    positifs: ['Page lisible en desktop, Roland peut lire a son rythme', 'FAQ presente', 'Ton "je" dans l\'upsell = signal d\'humanite'],
+    frictions: ['Aucun contact telephonique ni calendrier de RDV — bloquant absolu', '"Visiteurs IA" : vocabulaire incomprehensible', 'Pas de photo du fondateur', 'Formulaire ne dit pas ce qui se passe apres envoi'],
+    raisonDecision: 'Besoin de parler a un humain avant de s\'engager. L\'absence de contact direct conduit a l\'abandon.',
+    ceQuiFeraitBasculer: 'Numero de telephone ou lien Calendly "Appelez-moi 10 minutes — gratuit" + photo de Marc + reformulation "c\'est comme envoyer 5 personnes tester votre site".',
+    exp: 4, conf: 4, clarte: 3,
+  },
+  {
+    id: 6, name: 'Sophie', age: 34, emoji: '🌿',
+    situation: 'Sophrologue liberale, cabinet domicile + en ligne, Thionville (57)',
+    canal: 'Google Maps / GBP', maturite: 'Comparaison', device: 'Mobile',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    color: 'emerald',
+    contexte: 'Site Wix 2 ans, peu de contacts. Collegue sophologue a refait son site avec succes.',
+    impression: 'H1 frappe juste. Badge 48h rassurant. Mais absence totale d\'image cree une legere froideur pour un metier de relation.',
+    parcours: [
+      ['Hero', 'H1 resonne immediatement. Clique "Tester gratuitement" puis se ravise pour lire.'],
+      ['Probleme', 'Colonne "Aujourd\'hui" la touche directement.'],
+      ['Demo', 'Clique sur "Voir le rapport complet" — le voit mais prefererait un exemple sante/bien-etre.'],
+      ['Tarifs', 'Le gratuit est logique pour elle.'],
+      ['Upsell', 'S\'arrete : "audit ou refonte ?" — bifurcation strategique non voulue.'],
+      ['Formulaire', 'Remplit avec l\'option gratuit.'],
+    ],
+    questionCle: 'En 5 visiteurs simules, est-ce que je vais vraiment comprendre pourquoi mon site ne ramene pas de clients ?',
+    reponse: 'Partiellement', commentReponse: 'La page ne dit jamais combien de visiteurs sont necessaires pour un diagnostic fiable ni ce que 5 visiteurs permettent de conclure vs 20.',
+    impactVitesse: 'Astro statique, mobile rapide. Polices locales peuvent ralentir tres legerement le premier rendu.',
+    impactConfiance: 'Moderee — pas de photo de Marc, pas de temoignage, 1 seul exemple. Pour une sophologue habituee aux relations humaines, l\'absence de visage est un signal faible.',
+    positifs: ['H1 parfaitement calibre pour son probleme', 'Demo personas humanise le service', 'Prix gratuit leve la barriere d\'entree', '3 etapes comprehensibles'],
+    frictions: ['Upsell creation site cree une bifurcation strategique au mauvais moment', 'Aucune indication sur la valeur de 5 vs 20 visiteurs', 'Pas de photo ni de voix humaine'],
+    raisonDecision: 'Prix zero leve toute resistance, H1 a cree une resonance emotionnelle forte.',
+    ceQuiFeraitBasculer: 'Preciser ce que le gratuit permet de conclure + reduire la saillie de l\'upsell creation site.',
+    exp: 7, conf: 5, clarte: 7,
+  },
+  {
+    id: 7, name: 'Daniel', age: 43, emoji: '🍺',
+    situation: 'Gerant restaurant brasserie (12 employes), Forbach (57)',
+    canal: 'Google Maps / GBP', maturite: 'Decision', device: 'Mobile',
+    decision: 'Hesite', decisionLabel: 'Hesite',
+    color: 'amber',
+    contexte: 'Site fait par beau-neveu, pas de reservation en ligne. Devis refonte 3000€ deja recus. Veut comprendre ce qui ne va pas avant d\'investir.',
+    impression: 'En mode decision, scanne vite. H1 percutant. Mefiants depuis une mauvaise exp. Rapport demo = cle de sa decision.',
+    parcours: [
+      ['Hero', 'Note le gratuit. Scroll pour comprendre.'],
+      ['Rapport marcm.fr', 'Convaincu par la structure. "Ca, c\'est utilisable pour briefer quelqu\'un."'],
+      ['Tarifs', 'Cible 90€. Cherche un bouton "Payer" — absent.'],
+      ['FAQ', 'Cherche "comment payer" — absent. Frustration.'],
+      ['Formulaire', 'Hesite : "si je remplis ca, est-ce que je suis engage a payer ?"'],
+    ],
+    questionCle: "Ce rapport va-t-il m'aider a expliquer a un developpeur ce que je veux ?",
+    reponse: 'Partiellement', commentReponse: 'Le rapport exemple montre clairement une structure actionnable mais la page ne mentionne jamais l\'usage "cahier des charges". Daniel doit extrapoler seul.',
+    impactVitesse: 'Correcte sur 4G Android. Samsung Internet sans probleme sur page sans images.',
+    impactConfiance: 'Faible — pas de photo, pas de temoignage, processus de paiement invisible. Drapeaux rouges pour un restaurateur habituee aux arnaques en ligne.',
+    positifs: ['Rapport exemple est le meilleur argument — concret, visible', 'Badge "populaire" sur 90€ guide bien la decision', 'Proof points chiffres ajoutent une credibilite'],
+    frictions: ['Processus de paiement totalement absent — frein n°1', 'Aucune garantie ou politique de remboursement', 'Pas de photo de Marc ni temoignage client reel'],
+    raisonDecision: 'Rapport demo l\'a convaincu mais l\'opacite du paiement + absence de signaux humains l\'empechent de soumettre le formulaire 90€.',
+    ceQuiFeraitBasculer: 'FAQ "Comment je regle ?" (lien Stripe apres soumission) + 1 temoignage restaurateur/commerant.',
+    exp: 6, conf: 4, clarte: 6,
+  },
+  {
+    id: 8, name: 'Camille', age: 28, emoji: '💻',
+    situation: 'Freelance UX Designer, clients SaaS B2B, Paris 11e',
+    canal: 'IA — Perplexity', maturite: 'Comparaison', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    color: 'emerald',
+    contexte: 'Cherche des outils pour enrichir ses livrables clients avec des simulations de personas automatisees.',
+    impression: 'Regard professionnel critique. Evalue immediatement le positionnement TPE locale — elle est hors-cible mais le concept l\'interesse.',
+    parcours: [
+      ['Hero', 'Lit l\'accroche complete. "Prospects IA visitent" l\'interesse.'],
+      ['Rapport marcm.fr', '5-7 min d\'analyse. Cherche le LLM utilise, la methodologie — absent.'],
+      ['Comment ca marche', 'Trop simplifie. Veut savoir quel LLM, quelle validation, quelle reproductibilite.'],
+      ['FAQ', '"Comment choisis-tu les personas ?" — sa seule ouverture.'],
+      ['Formulaire', 'Soumet 90€ sur son propre portfolio pour voir le livrable de l\'interieur.'],
+    ],
+    questionCle: "Quelle est la rigueur methodologique — scraping IA ou vraie modelisation comportementale ?",
+    reponse: 'Non', commentReponse: 'La page ne mentionne aucun detail technique : pas de LLM cite, pas de methodologie de construction des personas, pas d\'explication sur la reproductibilite.',
+    impactVitesse: 'Excellente sur desktop Chrome MacBook.',
+    impactConfiance: 'Moderee — rapport exemple est le seul signal de qualite mais ne repond pas a ses criteres professionnels.',
+    positifs: ['Rapport exemple structurellement solide', 'Concept innovant et bien positionne sur une niche reelle', 'Prix 90€ competitif pour une experimentation pro'],
+    frictions: ['Zero info sur la methodologie : quel LLM, quel prompting, quelle validation', 'Positionnement 100% TPE locale — hors-cible pour clients SaaS', 'Pas de ressource complementaire (blog, article methodo)'],
+    raisonDecision: 'Malgre les lacunes methodologiques, prix faible + concept repond a un besoin reel dans son activite. Test d\'evaluation, pas d\'usage direct.',
+    ceQuiFeraitBasculer: 'Une FAQ "Quelle methode IA utilises-tu ?" avec une reponse honnete + 2-3 exemples de secteurs differents.',
+    exp: 6, conf: 5, clarte: 5,
+  },
+  {
+    id: 9, name: 'Julien', age: 36, emoji: '📐',
+    situation: 'Dirigeant agence communication print+web (4 employes), Metz (57)',
+    canal: 'IA — ChatGPT', maturite: 'Decision', device: 'Desktop',
+    decision: 'Hesite', decisionLabel: 'Hesite',
+    color: 'amber',
+    contexte: 'Client cabinet comptable lui demande preuves de conversion apres refonte. Cherche solution cle en main a proposer rapidement.',
+    impression: 'Pas de temps a perdre. Le H1 le concerne indirectement (c\'est le site de son client). Mode evaluation livrable.',
+    parcours: [
+      ['Hero', 'Clique immediatement sur "Voir un rapport complet".'],
+      ['Rapport marcm.fr', 'Analyse longuement. Rapport en HTML — pas exportable en PDF percu.'],
+      ['Tarifs', '250€ avec appel 30 min l\'interesse pour briefer sur le contexte client.'],
+      ['Upsell', '"Marc cree aussi des sites" = concurrent potentiel. Mefiance.'],
+      ['Formulaire', 'Ne remplit pas. Cherche un moyen de contacter Marc directement.'],
+    ],
+    questionCle: "Puis-je integrer ce service dans mon offre agence comme option post-livraison ?",
+    reponse: 'Non', commentReponse: 'La page ne mentionne aucune offre partenaire, aucune utilisation B2B, aucune option rapport rebrandable.',
+    impactVitesse: 'Excellente sur iMac Safari.',
+    impactConfiance: 'Moderee — rapport convaincant mais double casquette "createur de sites" de Marc genere une mefiance concurrentielle.',
+    positifs: ['Rapport exemple directement evaluable et convainquant', 'Formule 250€ avec appel 30 min est exactement ce qu\'il cherche', 'Prix raisonnable pour une option post-livraison refacturable'],
+    frictions: ['Aucune mention offre agence/partenaire/revendeur', 'Rapport HTML non exportable en PDF (perception)', 'Upsell positionne Marc comme concurrent potentiel', 'Pas de moyen de contact rapide avant achat'],
+    raisonDecision: 'Le manque d\'offre agence explicite et la crainte de conflit d\'interet l\'empechent de convertir sans dialogue prealable.',
+    ceQuiFeraitBasculer: 'Section "Vous etes une agence ?" + conditions usage commercial/revente + option rapport PDF rebrandable.',
+    exp: 7, conf: 6, clarte: 5,
+  },
+  {
+    id: 10, name: 'Aurore', age: 45, emoji: '🎵',
+    situation: 'Responsable comm association culturelle (festival musique), Colmar (68)',
+    canal: 'IA — Claude', maturite: 'Decouverte', device: 'Tablette',
+    decision: 'Hesite', decisionLabel: 'Hesite',
+    color: 'amber',
+    contexte: 'Site Wordpress vieux, peu engageant. Doit presenter une strategie digitale au CA dans 6 semaines.',
+    impression: 'Le H1 ne correspond pas exactement a son probleme : "benevoles ne s\'engagent pas" vs "visiteurs ne vous appellent pas".',
+    parcours: [
+      ['Hero', 'Cherche un signe que le service s\'adresse aux associations — absent.'],
+      ['Demo personas', 'Thierry, Emilie, Karim, Nathalie : tous B2C/commerciaux. Aucun profil associatif.'],
+      ['Tarifs', 'Gratuit = insuffisant pour un CA. 90€ = hors budget. 250€ = impensable.'],
+      ['Upsell 490€', 'Renforce l\'impression d\'un service oriente entreprises commerciales.'],
+      ['Formulaire', 'Envisage le gratuit avec hesitation.'],
+    ],
+    questionCle: "Est-ce que ce rapport gratuit sera suffisant pour montrer a mon CA pourquoi on doit refaire notre site ?",
+    reponse: 'Non', commentReponse: 'La page ne parle jamais d\'associations, CA, gouvernance associative ni d\'usage "argumentaire interne". Le gratuit n\'est pas presente comme outil de decision strategique.',
+    impactVitesse: 'Bonne sur iPad Safari. Format tablette bien gere.',
+    impactConfiance: 'Faible pour son usage — le service semble fiable pour les TPE mais pas calibre pour les associations.',
+    positifs: ['Concept clairement explique en 3 etapes', 'Prix gratuit leve la barriere financiere', 'Rapidite (48h) rassurante pour son calendrier CA'],
+    frictions: ['Zero mention secteur associatif, culturel ou non-profit', 'Personas demo B2C — aucun profil benevole ou donateur', '5 visiteurs insuffisant pour un argumentaire de CA'],
+    raisonDecision: 'Comprend le service et le trouve interessant mais ne se sent pas la cible. Ne sait pas si les personas IA simuleront des benevoles cherchant une cause ou des clients cherchant un produit.',
+    ceQuiFeraitBasculer: 'FAQ "Ca marche pour une association ?" avec exemple persona benevole/donateur + ligne dans la demo : "les personas s\'adaptent a votre contexte : clients, benevoles, donateurs".',
+    exp: 6, conf: 4, clarte: 5,
+  },
+  {
+    id: 11, name: 'Frederic', age: 42, emoji: '🏭',
+    situation: 'Directeur commercial PME industrielle (sous-traitance mecanique, 30 salaries), Sarreguemines (57)',
+    canal: 'LinkedIn', maturite: 'Comparaison', device: 'Desktop',
+    decision: 'Hesite', decisionLabel: 'Hesite',
+    color: 'amber',
+    contexte: 'Site B2B austere, commerciaux se plaignent que les prospects ne rappellent pas. Cherche un diagnostic sans refonte complete.',
+    impression: 'H1 fait mouche. Clique sur "Voir un rapport complet" en premier (reflexe acheteur B2B).',
+    parcours: [
+      ['Rapport marcm.fr', 'Exemple pour agence web solo, pas PME industrielle. Premiers doutes.'],
+      ['Demo', 'Aucun persona B2B acheteur industriel.'],
+      ['Tarifs', '250€ anecdotique mais cherche une option "agence" ou "B2B" — absent.'],
+      ['FAQ', 'Cherche "secteur industriel" ou "B2B" — absent.'],
+    ],
+    questionCle: "Ce rapport est-il utilisable comme argumentaire interne pour convaincre ma direction de refaire le site ?",
+    reponse: 'Partiellement', commentReponse: 'Les KPIs chiffres et le rapport demo donnent une idee du format. Mais la page ne mentionne pas explicitement "presentable en equipe dirigeante" ni que le rapport est exportable.',
+    impactVitesse: 'Bon sur desktop Edge. Aucun probleme.',
+    impactConfiance: 'Mitigee. Proof points faibles (26 rapports) pour un decideur B2B habitue a des prestataires avec portfolio conséquent.',
+    positifs: ['H1 et accroche directement lies a son probleme reel', 'Formule 250€ avec appel 30 min correspond a son besoin de dialogue', 'KPIs chiffres donnent une image de rigueur'],
+    frictions: ['Aucun exemple rapport pour un site B2B ou industriel', 'Impossible de savoir si personas IA peuvent simuler des acheteurs B2B', 'Pas de mention format livrable (PDF exportable ?)'],
+    raisonDecision: 'Probleme est le sien, budget non problematique, mais manque la preuve que le service est pertinent pour le B2B industriel.',
+    ceQuiFeraitBasculer: 'Cas d\'usage B2B dans la demo + mention "rapport partageable et imprimable" + precision que les personas peuvent etre configures.',
+    exp: 7, conf: 6, clarte: 6,
+  },
+  {
+    id: 12, name: 'Marie-Claire', age: 58, emoji: '🧀',
+    situation: 'Commercante epicerie fine produits terroir, Remiremont (88)',
+    canal: 'Facebook — groupe commercants Grand Est', maturite: 'Decouverte', device: 'Mobile',
+    decision: 'Quitte', decisionLabel: 'Repart',
+    color: 'neutral',
+    contexte: 'Sait que son site "ne fonctionne pas bien" mais jamais analyse. Curieuse mais mefiante du digital.',
+    impression: 'H1 pertinent. Mais sur iPhone 11, la page sans aucune image donne une impression froide. Son instinct de mefiance s\'active immediatement.',
+    parcours: [
+      ['Hero', 'Lit le H1, comprend l\'accroche. Scroll sans cliquer.'],
+      ['Probleme', 'Colonne "Aujourd\'hui" la touche. Interet qui monte.'],
+      ['Comment ca marche', 'Le mot IA lui fait peur : "donnees volees, profils pirates, arnaque".'],
+      ['Cherche photo de Marc', 'Introuvable. Cherche temoignages — absent.'],
+      ['Quitte', 'La mefiance devient dominante.'],
+    ],
+    questionCle: "Est-ce que Marc M est quelqu'un de serieux ou c'est encore une arnaque internet ?",
+    reponse: 'Non', commentReponse: 'Aucun signal d\'identite humaine — pas de photo, pas de nom complet dans le corps, pas de telephone, pas de temoignages de commercants comme elle.',
+    impactVitesse: 'iPhone 11 leger + Astro = chargement rapide. Mais l\'absence d\'images contribue a la perception "page vide = pas serieux".',
+    impactConfiance: 'Tres faible. Cumul de signaux negatifs : pas de visage, pas de telephone, "IA" anxiogene, "simules" ambigu.',
+    positifs: ['Accroche H1 pertinente pour son vecu', 'Option gratuite = porte d\'entree sans risque financier', 'Section probleme lisible et pedagogique'],
+    frictions: ['Pas de photo du fondateur — signal n°1 manquant', 'Pas de numero de telephone — eliminatoire pour ce profil', 'Aucun temoignage de commercant (epicerie, boucher, fleuriste)', 'Le mot "IA" sans explication rassurante', 'Page integralement textuelle : aucun visage ne cree de chaleur humaine'],
+    raisonDecision: 'Absence totale de signaux de confiance humaine + mefiance vis-a-vis de l\'IA.',
+    ceQuiFeraitBasculer: 'Photo de Marc + telephone/WhatsApp + temoignage d\'un commercant similaire + analogie "clients mysteres" pour l\'IA.',
+    exp: 4, conf: 2, clarte: 5,
+  },
+  {
+    id: 13, name: 'Dylan', age: 24, emoji: '🎨',
+    situation: 'Auto-entrepreneur tatoueur, Mulhouse (68)',
+    canal: 'Instagram', maturite: 'Decouverte', device: 'Mobile',
+    decision: 'Quitte', decisionLabel: 'Repart',
+    color: 'neutral',
+    contexte: 'Site Squarespace portfolio. Veut plus de clients en ligne. Zero culture UX.',
+    impression: 'Arrive depuis Instagram in-app browser. Pas de visuel accrocheur, pas de video. "Page qui ressemble a un contrat de location."',
+    parcours: [
+      ['Hero', '4 secondes. Scroll rapide.'],
+      ['Cherche un visuel', 'Aucune image, aucun GIF, aucune video.'],
+      ['Tarifs', 'Retient "Gratuit" et "90€".'],
+      ['Formulaire', 'Bloque sur "URL de votre site" — ne connait pas son URL Squarespace de tete.'],
+      ['Quitte', ''],
+    ],
+    questionCle: "Ca va vraiment m'apporter plus de clients, concretement ?",
+    reponse: 'Non', commentReponse: 'La promesse est formulee en termes de "rapport", "diagnostic", "KPIs" — vocabulaire UX invisible pour Dylan. Le benefice concret n\'est jamais nomme explicitement.',
+    impactVitesse: 'In-app browser Instagram peut degrader le rendu CSS. iPhone 15 compense en puissance.',
+    impactConfiance: 'Neutre. Pas de signal Instagram-natif (pas de video, pas de social proof "X personnes ont utilise ca").',
+    positifs: ['3 etapes "Comment ca marche" sont les plus scannables de la page', 'Le mot "Gratuit" capte l\'attention'],
+    frictions: ['Zero visuel sur toute la page — fatal pour un utilisateur Instagram', 'Pas de video demo de 30 secondes', 'Registre de la page : artisan/commercant etabli, pas jeune creatif Instagram', 'URL Squarespace inconnue de tete = friction de sortie immediate'],
+    raisonDecision: 'Trop textuel, aucun visuel, benefice pas exprime dans son langage, friction sur l\'URL.',
+    ceQuiFeraitBasculer: 'GIF ou video 15s du rapport en action + accroche "tu postes sur Instagram mais ton site ne convertit pas ? On t\'explique pourquoi" + champ URL pre-rempli.',
+    exp: 3, conf: 4, clarte: 3,
+  },
+  {
+    id: 14, name: 'Brigitte', age: 51, emoji: '💐',
+    situation: 'Fleuriste depuis 22 ans, Metz Queuleu — cliente existante Marc',
+    canal: 'Bouche-a-oreille', maturite: 'Decision', device: 'Mobile',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    color: 'emerald',
+    contexte: 'Site fait par Marc il y a 18 mois. Voisine commercante lui a parle d\'Echo. Confiance totale en Marc.',
+    impression: 'Cliente existante. Cherche immediatement le prix pour commander. Les signaux de confiance manquants pour les autres n\'ont aucun effet sur elle.',
+    parcours: [
+      ['Tarifs', 'Identifie 90€ "populaire" en quelques secondes.'],
+      ['Comment payer ?', 'Cherche un bouton de paiement — absent.'],
+      ['Formulaire', 'Remplit malgre l\'opacite du process. Confiance en Marc.'],
+    ],
+    questionCle: 'Comment je commande et je paie ?',
+    reponse: 'Non', commentReponse: 'Processus de paiement entierement opaque. Ni Stripe, ni virement, ni processus post-formulaire n\'est mentionne.',
+    impactVitesse: 'iPhone 12 Safari, page legere, chargement fluide.',
+    impactConfiance: 'Maximale — cliente existante. Les signaux manquants sont sans effet.',
+    positifs: ['Badge "populaire" l\'oriente sans friction vers la bonne formule', 'Formulaire simple et bien structure', 'Demo personas lui permet de visualiser son rapport'],
+    frictions: ['Processus de paiement entierement absent', 'Formulaire ne dit pas ce qui se passe apres envoi', 'Selection formule radio : est-ce vraiment pris en compte ?'],
+    raisonDecision: 'Confiance preexistante efface tous les freins. Soumet le formulaire en comptant sur Marc pour expliquer la suite.',
+    ceQuiFeraitBasculer: 'Note : Sa conversion est MALGRE le site, pas GRACE a lui. Pour tout prospect ne connaissant pas Marc, ce parcours se terminerait par un abandon au formulaire.',
+    exp: 6, conf: 10, clarte: 5,
+  },
+  {
+    id: 15, name: 'Luc', age: 38, emoji: '📷',
+    situation: 'Photographe independant mariages/portraits, Verdun (55)',
+    canal: 'Bouche-a-oreille', maturite: 'Comparaison', device: 'Mobile',
+    decision: 'Hesite', decisionLabel: 'Hesite',
+    color: 'amber',
+    contexte: 'Site portfolio avec des visites mais peu de devis. Compare Echo (90€) avec consultant UX humain (800€/j).',
+    impression: 'Arrive avec une attente calibree. Mode comparaison rationnelle. S\'installe pour lire serieusement.',
+    parcours: [
+      ['Rapport marcm.fr', 'Lecture attentive. Cherche si la simulation couvre les visiteurs photographe mariage — pas de reponse.'],
+      ['Comment ca marche', 'Cherche details methodologiques — absent.'],
+      ['Demo personas', 'Aucun profil creatif/photographe. Doute sur la representativite.'],
+      ['Tarifs', 'Hesite entre 90€ et 250€ (appel 30 min = porte de sortie pour ses doutes).'],
+      ['Relit le rapport demo une seconde fois', 'Ne remplit pas encore le formulaire.'],
+    ],
+    questionCle: "Ce rapport va-t-il vraiment m'expliquer pourquoi mes visiteurs ne me contactent pas ?",
+    reponse: 'Partiellement', commentReponse: 'Le rapport demo est accessible et convainquant mais porte sur un site d\'agence web. Luc ne peut pas extrapoler si les personas IA sauront evaluer l\'emotion d\'une galerie photo.',
+    impactVitesse: 'iPhone 13 Safari, aucun probleme.',
+    impactConfiance: 'Moderee. L\'acces direct au rapport demo est un tres fort signal positif. Mais proof points faibles (26 rapports) et pas de temoignage photographe.',
+    positifs: ['Rapport demo directement accessible — meilleure preuve possible en 1 clic', 'H1 correspond parfaitement a sa situation', 'Formule 250€ avec appel offre une porte de sortie pour ses doutes methodologiques', 'Prix 90€ objectivement faible vs 800€/jour consultant UX'],
+    frictions: ['Aucun exemple rapport pour un portfolio creatif ou photographe', 'Methodologie des personas non documentee', 'Pas de temoignage d\'un autre independant creatif', '"20 visiteurs" sans precision si on peut cibler leur profil'],
+    raisonDecision: 'Probleme pertinent, prix OK, rapport demo convainquant — mais absence de preuve de pertinence pour son secteur creatif laisse un doute reel.',
+    ceQuiFeraitBasculer: 'Exemple rapport pour un portfolio photographe/artiste + FAQ "Peut-on cibler les personas par clientele ?" + note "si vous avez des questions sur la methode, prenez le 250€ et on en parle".',
+    exp: 6, conf: 5, clarte: 6,
+  },
+  {
+    id: 16, name: 'Veronique', age: 46, emoji: '📋',
+    situation: 'Expert-comptable associee (cabinet 8 personnes), Metz hypercentre',
+    canal: 'Reseau pro — email de Marc', maturite: 'Decision', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    color: 'emerald',
+    contexte: 'Cabinet vient d\'investir 4500€ dans un nouveau site. Directeur associe veut mesurer si c\'est un bon investissement.',
+    impression: 'Email personnalise de Marc = deja en etat favorable. Premier impression : sobre, professionnelle, rassurante.',
+    parcours: [
+      ['Hero', 'Clique immediatement sur "Voir un rapport complet".'],
+      ['Rapport marcm.fr', 'Convaincu par la structure. Cherche "exportable PDF" — pas visible.'],
+      ['Demo KPIs', 'Scores numeriques lui parlent : "un cabinet comptable aime les chiffres."'],
+      ['Tarifs', '250€ avec appel 30 min. Prix anecdotique. Appel confirme qu\'il y a un interlocuteur humain.'],
+      ['Formulaire', 'Remplit avec soin, selectionne 250€.'],
+    ],
+    questionCle: "Puis-je presenter ce rapport a mes associes comme une evaluation objective de notre investissement digital ?",
+    reponse: 'Partiellement', commentReponse: 'Les KPIs et le rapport de demo donnent une idee du format. Mais "objectif", "presentable en reunion dirigeants", "exportable" ne sont jamais mentionnes.',
+    impactVitesse: 'Aucune image = quasi instantane sur MacBook Chrome.',
+    impactConfiance: 'Bonne — email personnalise de Marc compense l\'absence de photo sur la page. Sobre = professionnel a ses yeux.',
+    positifs: ['Rapport de demo est un element de preuve tangible et evaluable', 'KPIs numeriques = mode de pensee d\'une pro du chiffre', 'Tarif 250€ inclut appel 30 min — signal fort d\'interlocuteur joignable'],
+    frictions: ['Absence totale de mention "rapport exportable / PDF" — bloquant pour un usage en reunion', 'Mode de paiement opaque', 'Pas de photo ni bio courte de Marc'],
+    raisonDecision: 'Budget non-bloquant, email personnalise (credibilite), rapport demo accessible, besoin reel et urgent.',
+    ceQuiFeraitBasculer: 'Mention explicite "rapport telechargeable en PDF, pret a etre partage en equipe".',
+    exp: 7, conf: 7, clarte: 8,
+  },
+  {
+    id: 17, name: 'Patrick', age: 55, emoji: '🏨',
+    situation: 'Proprietaire hotel 3 etoiles (25 chambres), Bitche (57)',
+    canal: 'Email prospection personnalise de Marc', maturite: 'Comparaison', device: 'Desktop',
+    decision: 'Quitte', decisionLabel: 'Repart',
+    color: 'neutral',
+    contexte: 'Perd des reservations directes au profit Booking.com (18% commission). Deja decu par un prestataire web il y a 3 ans. Tres prudent.',
+    impression: 'H1 l\'interpelle. Mais son premier reflexe est defensif : "encore un truc qui va rien m\'apprendre."',
+    parcours: [
+      ['Rapport marcm.fr', 'Cherche mentions hotellerie, reservations, taux de conversion Booking — absent.'],
+      ['Demo personas', 'Cherche un persona hotelier — aucun.'],
+      ['Tarifs', 'Prix correct. Mais "comment je paie ?" — aucune info.'],
+      ['Decision', 'Ne remplit pas le formulaire. Decide de repondre a l\'email de Marc pour avoir une conversation.'],
+    ],
+    questionCle: "Est-ce que Marc comprend vraiment les enjeux d'un hotel independant face a Booking ?",
+    reponse: 'Non', commentReponse: 'La landing page ne mentionne ni l\'hotellerie, ni les reservations directes, ni la desintermediation. Les personas de demo sont generiques.',
+    impactVitesse: 'Rapide sur PC Windows Chrome. Pas le frein.',
+    impactConfiance: 'Faible. L\'absence de photo, de temoignages et de garantie amplifie la mefiance preexistante.',
+    positifs: ['H1 touche exactement son probleme de conversion', 'Formule 250€ avec appel 30 min : concept positif', 'Rapport demo = preuve de transparence partielle'],
+    frictions: ['Zero reference a l\'hotellerie, tourisme ou reservations directes', 'Personas de demo entierement generiques', 'Mode de paiement opaque — eliminatoire pour quelqu\'un de mefiant', 'Pas de temoignages ni de garantie'],
+    raisonDecision: 'Page seule ne convainc pas — trop generique, trop opaque sur le paiement. Mais l\'email etait personnalise et le H1 a touche son vrai probleme. Repondra a l\'email de Marc.',
+    ceQuiFeraitBasculer: 'Cas d\'usage hotelier dans la demo + "personas adaptes a votre secteur (hotellerie, restauration...)" + processus de paiement transparent.',
+    exp: 5, conf: 4, clarte: 6,
+  },
+  {
+    id: 18, name: 'Amandine', age: 32, emoji: '🩺',
+    situation: 'Kinesitherapeute liberale (cabinet 2 praticiens), Hagondange (57) — cliente existante',
+    canal: 'Email de suivi de Marc', maturite: 'Decision', device: 'Mobile',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    color: 'emerald',
+    contexte: 'Site fait par Marc il y a 8 mois. Peu de RDV via le site. L\'email de Marc tombe au bon moment.',
+    impression: 'Ouvre l\'email entre deux patients. Cliente existante satisfaite. Cherche le prix rapidement.',
+    parcours: [
+      ['Hero', 'H1 resonne. Mais le prix n\'est pas visible immediatement — doit scroller.'],
+      ['Probleme', 'Les 3 points "Aujourd\'hui" la decrivent exactement.'],
+      ['Tarifs', 'Compare gratuit vs 90€. Choisit 90€.'],
+      ['Formulaire', 'Remplit rapidement. Quelques micro-frictions.'],
+    ],
+    questionCle: "L'audit va-t-il identifier pourquoi mes patients ne prennent pas RDV en ligne ?",
+    reponse: 'Partiellement', commentReponse: 'La promesse "pourquoi vos visiteurs ne convertissent pas" repond indirectement. Mais "prise de RDV en ligne" ou "professionnel de sante" ne sont jamais mentionnes.',
+    impactVitesse: 'Page sans image = ultra-rapide sur mobile, parfait entre deux patients.',
+    impactConfiance: 'Haute — cliente existante. La page n\'a pas besoin de travailler dur pour elle.',
+    positifs: ['H1 et section Probleme decrivent exactement sa situation', 'Page rapide sur mobile', 'Prix 90€ accessible'],
+    frictions: ['Le prix n\'est pas visible dans les premieres secondes — doit scroller', 'Rien ne distingue clairement "5 gratuits" vs "20 a 90€" en termes de profondeur', 'Aucune mention de la prise de RDV ou des professions de sante'],
+    raisonDecision: 'Cliente existante satisfaite + email cible sur son site + probleme reconnu + prix accessible.',
+    ceQuiFeraitBasculer: 'Prix visible plus tot dans la page + mention "ideal pour les professionnels de sante avec agenda en ligne".',
+    exp: 7, conf: 8, clarte: 7,
+  },
+  {
+    id: 19, name: 'Jerome', age: 29, emoji: '🎓',
+    situation: 'Etudiant master marketing digital (alternance), Nancy (54)',
+    canal: 'QR code flyer — Startup Weekend Nancy', maturite: 'Decouverte', device: 'Mobile',
+    decision: 'Quitte', decisionLabel: 'Repart',
+    color: 'neutral',
+    contexte: 'Trouve le concept interessant pour son memoire sur l\'IA dans le marketing. Pas de site a auditer, pas de budget.',
+    impression: 'Curiosite intellectuelle. Cherche a comprendre la methodologie IA pour son memoire.',
+    parcours: [
+      ['Hero', 'Lit le H1. Clique sur "Voir un rapport complet" par curiosite methodologique.'],
+      ['Rapport marcm.fr', 'Cherche des indices sur la methode IA — insuffisant.'],
+      ['Comment ca marche', 'Veut savoir quel LLM, quelle methode de simulation — absent.'],
+      ['Formulaire', 'Bloque sur "URL de votre site". N\'a pas de site. Quitte.'],
+    ],
+    questionCle: "Comment exactement est-ce que l'IA simule le comportement d'un visiteur humain ?",
+    reponse: 'Non', commentReponse: '"Prospects IA visitent votre site" est la seule explication. Aucune mention des LLM utilises ni de la methodologie de simulation.',
+    impactVitesse: 'Tres rapide. Pas de probleme.',
+    impactConfiance: 'Jérome n\'est pas en mode achat donc les signaux de confiance ne l\'affectent pas. Ce qui lui manque : transparence methodologique.',
+    positifs: ['Concept original, documentable pour son memoire', 'Personas de demo = exemple concret de segmentation IA', 'Rapport de demo consultable = ressource potentielle'],
+    frictions: ['Formulaire exige une URL de site — bloquant sans site', 'Aucune explication technique sur "comment l\'IA fait ca"', 'Pas de contenu educatif accessible sans achat'],
+    raisonDecision: 'Hors cible absolue. Pas de site, pas de budget, pas d\'intention d\'achat.',
+    ceQuiFeraitBasculer: 'Article de blog "Comment l\'IA simule vos visiteurs" ou option "tester avec une URL d\'exemple" pour voir le service sans avoir de site.',
+    exp: 5, conf: 6, clarte: 5,
+  },
+  {
+    id: 20, name: 'Laure', age: 44, emoji: '🧘',
+    situation: 'Coach de vie certifiee ICF, AE depuis 2 ans, Lyon (69)',
+    canal: 'Cold email generique', maturite: 'Comparaison', device: 'Tablette',
+    decision: 'Quitte', decisionLabel: 'Repart',
+    color: 'neutral',
+    contexte: 'Site WordPress avec contenu mais peu de conversions. Compare activement Echo vs Hotjar vs consultant UX local.',
+    impression: 'Deja en mefiance (cold email generique). En mode comparaison active avec des alternatives identifiees.',
+    parcours: [
+      ['Rapport marcm.fr', 'Verbatims qualitatifs vs Hotjar quantitatif = avantage objectif. Mais seul exemple = agence web.'],
+      ['Proof points', '26 rapports vs millions d\'utilisateurs Hotjar. Fragile.'],
+      ['FAQ', 'Cherche "garantie", "remboursement", "en quoi different de Hotjar" — absent.'],
+      ['Quitte', ''],
+    ],
+    questionCle: "Pourquoi choisir Echo plutot que Hotjar ou un consultant UX que j'aurais trouve moi-meme ?",
+    reponse: 'Non', commentReponse: 'La landing page ne mentionne jamais les alternatives concurrentes ni ne positionne Echo contre elles. L\'avantage reel (qualitatif vs quantitatif) n\'est pas articule.',
+    impactVitesse: 'Tres rapide sur iPad Chrome. L\'absence d\'image ne lui apparait pas comme un avantage, juste comme un manque de soin editorial.',
+    impactConfiance: 'Critique. Pas de temoignages + pas de garantie + cold email generique + hors Grand Est = seuil de confiance insuffisant pour 90€.',
+    positifs: ['H1 touche son vrai probleme', 'Rapport demo = verbatims qualitatifs, avantage reel vs Hotjar', 'Format tablette bien gere'],
+    frictions: ['Cold email generique = mauvaise impression initiale irrecuperable', 'Aucun positionnement vs alternatives — sa vraie question reste sans reponse', 'Pas de temoignages', 'Pas de garantie satisfait/rembourse', 'Proof points trop faibles face aux SaaS etablis', 'Upsell creation site = contre-productif pour quelqu\'un qui a deja un site'],
+    raisonDecision: 'Cumul : cold email + pas de temoignages + pas de garantie + pas de comparaison alternatives + hors zone percue.',
+    ceQuiFeraitBasculer: '1 temoignage coach/consultant + comparaison explicite "Echo vs Hotjar" + mention "disponible partout en France" + garantie remboursement.',
+    exp: 4, conf: 3, clarte: 5,
+  },
+];
+
+// ─── AMELIORATIONS ───
+const ameliorationsHautes = [
+  {
+    titre: 'Photo + bio de Marc visible dans le hero',
+    detail: '7 personas sont freines par l\'anonymat de la page. Marie-Claire et Roland quittent specifiquement a cause de ca. Une photo de Marc + 2 lignes bio ("Marc Muller — 26 rapports crees pour des TPE et PME du Grand Est et de toute la France") transforme une page abstraite en un prestataire humain identifiable.',
+    action: 'Ajouter dans le hero (sous les CTA) : photo 80x80px + nom + ligne de bio + lien LinkedIn.',
+  },
+  {
+    titre: 'Clarifier le processus de paiement',
+    detail: '6 personas hesitent ou quittent parce qu\'ils ne savent pas comment payer les 90€ ou 250€. Daniel, Brigitte, Patrick, Veronique et Laure butent sur cette opacite. Brigitte convertit "malgre" la page, pas grace a elle.',
+    action: 'Ajouter sous les boutons de commande + dans la FAQ : "Apres envoi du formulaire, vous recevez un lien de paiement securise (carte ou virement) sous 2h. Facture emise des reception."',
+  },
+  {
+    titre: 'Ajouter 2 temoignages clients reels',
+    detail: 'Frein eliminatoire pour Marie-Claire et Laure, levier de confiance pour 8+ personas. Les proof points chiffres (26+ rapports) ne remplacent pas un verbatim humain avec prenom, activite et ville.',
+    action: 'Ajouter une section entre "proof points" et "FAQ" avec 2-3 temoignages courts : "Rapport recu en 48h, les recommandations etaient precises et directement actionnables." — Brigitte, fleuriste, Metz.',
+  },
+  {
+    titre: 'Traduire "visiteurs IA" en analogie "clients mysteres"',
+    detail: 'Thierry, Isabelle, Roland, Marie-Claire, Daniel et Sophie ne comprennent pas spontanement le concept. Le mot "IA" genere de la mefiance chez les profils non-tech.',
+    action: 'Ajouter dans le hero (accroche) ou l\'etape 2 : "C\'est comme envoyer 20 clients mysteres visiter votre site et vous dire exactement ce qui les a fait repartir. Sans frais, en 48h."',
+  },
+  {
+    titre: 'Ajouter un 2eme exemple de rapport (secteur different)',
+    detail: 'Seul marcm.fr est visible — un site d\'agence web solo. Nathalie, Kevin, Frederic, Luc et Patrick ne peuvent pas projeter leur cas dans cet unique exemple.',
+    action: 'Lier vers un 2eme rapport dans un secteur different (restaurant, sante, commerce, gite rural). Ajouter dans la section demo : "Voir un rapport : Restaurant | Kiné" a cote du lien actuel.',
+  },
+];
+
+const ameliorationsUtiles = [
+  {
+    titre: 'Mentionner le perimetre sectoriel et geographique',
+    detail: 'Patrick, Aurore, Isabelle, Frederic et Laure se demandent si le service s\'applique a leur secteur ou a leur zone. Une simple ligne leve ce doute : "Artisans, commercants, pros de sante, hotels, associations, e-commerce — disponible partout en France."',
+  },
+  {
+    titre: 'Clarifier la valeur des 5 visiteurs gratuits vs 20',
+    detail: 'Sophie, Aurore et Thierry se demandent si le gratuit est suffisant. Repondre directement dans la section tarifs : "5 visiteurs : une tendance et 1 recommandation prioritaire. 20 visiteurs : des patterns clairs, 3+ ameliorations priorisees, taux de conversion par canal."',
+  },
+  {
+    titre: 'Ajouter une FAQ "Comment je regle ?"',
+    detail: 'La question du paiement est absente des 8 FAQ actuelles mais est la 1ere preoccupation de 6 personas. C\'est la 9eme question FAQ la plus evidente a ajouter.',
+  },
+  {
+    titre: 'OG image specifique Echo (og-echo.png)',
+    detail: 'L\'image OG actuelle est generique (og-default.png, identique a toutes les pages du site). Un partage LinkedIn de la page Echo affiche une preview indistinguable de n\'importe quelle autre page de marcm.fr.',
+  },
+  {
+    titre: 'FAQPage Schema.org — 8 questions non exploitees',
+    detail: '8 questions FAQ sont presentes en HTML (<details><summary>) mais aucune n\'est declaree en JSON-LD. Google affiche les FAQPage en rich results (accordeons directs dans les SERP) — opportunite de visibilite gratuite immediatement exploitable.',
+  },
+];
+
+const ameliorationsDiscuter = [
+  { emoji: '🤝', titre: 'Offre agence / revendeur', detail: 'Kevin et Julien veulent revendre ou recommander le service a leurs clients. Une mention discrète "Vous etes une agence ?" + email de contact pourrait ouvrir un canal B2B non prevu actuellement.' },
+  { emoji: '🎬', titre: 'Video demonstration 30 secondes', detail: 'Dylan et Jerome ont quitte sans lire. Une video screencast montrant un rapport en action convertirait les profils visuels (Instagram, jeunes createurs). Effort de production a evaluer.' },
+  { emoji: '📍', titre: 'Repositionner l\'upsell creation de site', detail: 'L\'upsell en bas de page distrait Sophie (hesite audit vs refonte) et genere de la mefiance pour Julien (concurrent potentiel). Option : le deplacer en modal post-conversion ou remplacer par une FAQ question.' },
+];
+---
+
+<BaseLayout
+  title={`Audit UX — Landing page Echo | marcm.fr`}
+  description="Rapport confidentiel : simulation de 20 visites personas + audit technique de la landing page marcm.fr/echo/"
+  lang="fr"
+  frPath={`/audit/${slug}`}
+  noindex={true}
+>
+
+  <!-- ═══ HERO ═══ -->
+  <section class="relative w-full px-6 py-20 md:py-28 overflow-hidden" style="background: #0A0A0A;">
+    <div class="absolute top-[20%] left-[10%] w-[500px] h-[500px] rounded-full blur-[180px] pointer-events-none" style="background: #E86C47; opacity: 0.06;"></div>
+    <div class="relative mx-auto max-w-4xl z-10">
+      <div class="mb-6 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest" style="background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); color: #ef4444;">
+        Rapport confidentiel
+      </div>
+      <h1 class="mb-4 text-3xl md:text-4xl font-bold text-white leading-tight tracking-tight">
+        Audit UX + Technique<br/>
+        <span style="color: var(--color-accent);">Landing page Écho — marcm.fr/echo/</span>
+      </h1>
+      <p class="mb-8 text-sm md:text-base" style="color: rgba(255,255,255,0.45);">
+        Page testee : <a href={urlSite} target="_blank" class="underline hover:text-white transition-colors">{urlSite}</a> · {kpis.nbPersonas} personas simulees · {dateAudit}
+      </p>
+      <div class="flex flex-wrap gap-2">
+        {[`${kpis.nbPersonas} personas`, '7 canaux', 'Observatory B/75', 'FAQPage Schema manquant'].map(tag => (
+          <span class="text-[11px] px-2.5 py-1 rounded-full" style="background: rgba(255,255,255,0.06); color: rgba(255,255,255,0.4); border: 1px solid rgba(255,255,255,0.08);">{tag}</span>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ TAB BAR ═══ -->
+  <nav class="sticky top-16 md:top-20 z-40 bg-white/95 backdrop-blur border-b border-neutral-200" id="tab-bar">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-1 h-12 text-sm overflow-x-auto">
+      <button data-tab="0" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-primary-700 bg-primary-50">Synthese</button>
+      <button data-tab="1" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">Technique</button>
+      <button data-tab="2" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">
+        Visiteurs <span class="ml-1 text-xs text-neutral-400">{kpis.nbPersonas}</span>
+      </button>
+      <button data-tab="3" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">
+        Ameliorations <span class="ml-1 text-xs text-neutral-400">{ameliorationsHautes.length + ameliorationsUtiles.length}</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ═══ PANELS ═══ -->
+  <div id="panels" class="flex overflow-x-auto snap-x snap-mandatory" style="-webkit-overflow-scrolling: touch; scrollbar-width: none;">
+
+    <!-- PANEL 1 : SYNTHESE -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+        <!-- KPI cards -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+          <div class="bg-white border border-neutral-200 rounded-xl p-5 text-center">
+            <div class="text-3xl font-bold mb-1" style="color: var(--color-accent);">{kpis.conversion}%</div>
+            <div class="text-xs text-neutral-500">Taux de conversion</div>
+          </div>
+          <div class="bg-white border border-neutral-200 rounded-xl p-5 text-center">
+            <div class="text-3xl font-bold text-neutral-800 mb-1">{kpis.experience}</div>
+            <div class="text-xs text-neutral-500">Experience /10</div>
+          </div>
+          <div class="bg-white border border-neutral-200 rounded-xl p-5 text-center">
+            <div class="text-3xl font-bold text-neutral-800 mb-1">{kpis.confiance}</div>
+            <div class="text-xs text-neutral-500">Confiance /10</div>
+          </div>
+          <div class="bg-white border border-neutral-200 rounded-xl p-5 text-center">
+            <div class="text-3xl font-bold text-neutral-800 mb-1">{kpis.clarte}</div>
+            <div class="text-xs text-neutral-500">Clarte /10</div>
+          </div>
+        </div>
+
+        <!-- Paradoxe -->
+        <div class="rounded-xl p-5 mb-10 border-l-4" style="background: rgba(232,108,71,0.04); border-color: var(--color-accent);">
+          <p class="text-xs font-semibold uppercase tracking-widest mb-2" style="color: var(--color-accent);">Paradoxe principal</p>
+          <p class="text-sm text-neutral-700">La page convertit le mieux les personnes qui n'en ont pas besoin (clients existants) et perd celles qui pourraient en profiter le plus (prospects froids en decouverte). Le manque de signaux de confiance humaine (photo, temoignages, telephone) est le frein dominant.</p>
+        </div>
+
+        <!-- Par canal -->
+        <h2 class="text-lg font-bold text-neutral-900 mb-4">Conversion par canal</h2>
+        <div class="space-y-3 mb-10">
+          {canalData.map(c => (
+            <div>
+              <div class="flex items-center justify-between text-sm mb-1">
+                <span class="text-neutral-700">{c.canal}</span>
+                <span class="font-semibold" style={`color: ${c.rate >= 50 ? '#22c55e' : c.rate >= 25 ? '#f59e0b' : '#ef4444'}`}>{c.rate}%</span>
+              </div>
+              <div class="h-2 bg-neutral-100 rounded-full overflow-hidden">
+                <div class="h-full rounded-full transition-all" style={`width: ${c.rate}%; background: ${c.rate >= 50 ? '#22c55e' : c.rate >= 25 ? '#f59e0b' : '#ef4444'}`}></div>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <!-- Par maturite -->
+        <h2 class="text-lg font-bold text-neutral-900 mb-4">Conversion par maturite</h2>
+        <div class="grid grid-cols-3 gap-4 mb-10">
+          {maturiteData.map(m => (
+            <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
+              <div class="text-xl font-bold mb-1" style={`color: ${m.rate >= 50 ? '#22c55e' : m.rate >= 25 ? '#f59e0b' : '#6b7280'}`}>{m.rate}%</div>
+              <div class="text-sm font-semibold text-neutral-800 mb-2">{m.label}</div>
+              <div class="text-xs text-neutral-500">{m.total} personas</div>
+              <div class="mt-2 flex justify-center gap-1">
+                <span class="text-[10px] px-1.5 py-0.5 rounded bg-green-100 text-green-700">{m.convert} ✓</span>
+                <span class="text-[10px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-700">{m.hesite} ~</span>
+                <span class="text-[10px] px-1.5 py-0.5 rounded bg-neutral-100 text-neutral-500">{m.quitte} ✗</span>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <!-- Par device -->
+        <h2 class="text-lg font-bold text-neutral-900 mb-4">Conversion par device</h2>
+        <div class="grid grid-cols-3 gap-4">
+          {deviceData.map(d => (
+            <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
+              <div class="text-xl font-bold mb-1" style={`color: ${d.rate >= 40 ? '#22c55e' : d.rate >= 20 ? '#f59e0b' : '#6b7280'}`}>{d.rate}%</div>
+              <div class="text-sm font-semibold text-neutral-800 mb-1">{d.device}</div>
+              <div class="text-xs text-neutral-500">{d.total} personas</div>
+            </div>
+          ))}
+        </div>
+
+      </div>
+    </section>
+
+    <!-- PANEL 2 : TECHNIQUE -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+        <!-- PageSpeed -->
+        <h2 class="text-lg font-bold text-neutral-900 mb-4">PageSpeed Insights</h2>
+        <div class="bg-neutral-50 border border-neutral-200 rounded-xl p-5 mb-8">
+          <p class="text-sm text-neutral-600 mb-2">
+            <strong>Quota journalier epuise</strong> lors de l'audit (erreur 429 — limite de requetes par jour atteinte).
+          </p>
+          <p class="text-sm text-neutral-500">
+            Verifier manuellement : <a href={`https://pagespeed.web.dev/report?url=${urlSite}`} target="_blank" class="underline hover:text-neutral-700 transition-colors">pagespeed.web.dev/report?url={urlSite}</a>
+          </p>
+          <p class="text-xs text-neutral-400 mt-2">Note : le site est Astro statique sur Cloudflare Pages (sans images), probablement excellent en desktop. LCP mobile estime a 2-3s sur la base des audits precedents du site principal.</p>
+        </div>
+
+        <!-- Observatory -->
+        <h2 class="text-lg font-bold text-neutral-900 mb-4">Securite HTTP — Mozilla Observatory</h2>
+        <div class="flex items-center gap-4 p-4 rounded-xl border border-amber-200 bg-amber-50 mb-4">
+          <div class="text-4xl font-black text-amber-600">B</div>
+          <div>
+            <p class="text-sm font-semibold text-neutral-900">Securite correcte mais ameliorable</p>
+            <p class="text-xs text-neutral-500">{tech.observatory.testsOk}/{tech.observatory.testsTotal} tests passes — Score {tech.observatory.score}/100</p>
+          </div>
+        </div>
+        <div class="bg-white border border-neutral-200 rounded-xl p-4 mb-8">
+          <p class="text-xs font-semibold text-neutral-700 mb-3">Headers de securite</p>
+          {[
+            { ok: true, h: 'Strict-Transport-Security (HSTS + preload)' },
+            { ok: true, h: 'X-Content-Type-Options: nosniff' },
+            { ok: true, h: 'X-Frame-Options: DENY' },
+            { ok: true, h: 'Referrer-Policy' },
+            { ok: true, h: 'Permissions-Policy' },
+            { ok: false, h: 'Content-Security-Policy — ABSENT (cause du test echoue)' },
+          ].map(h => (
+            <div class="flex items-center gap-2 py-1">
+              {h.ok
+                ? <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                : <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+              }
+              <span class={`text-xs ${h.ok ? 'text-neutral-700' : 'text-red-500'}`}>{h.h}</span>
+            </div>
+          ))}
+        </div>
+
+        <!-- Schema.org -->
+        <h2 class="text-lg font-bold text-neutral-900 mb-4">Schema.org</h2>
+        <div class="bg-white border border-neutral-200 rounded-xl p-4 mb-8">
+          {tech.schema.map(s => (
+            <div class="flex items-center gap-2 py-1.5">
+              {s.ok
+                ? <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                : <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+              }
+              <span class={`text-sm ${s.ok ? 'text-neutral-700' : 'text-red-500 font-medium'}`}>{s.item}</span>
+            </div>
+          ))}
+          <div class="mt-3 pt-3 border-t border-neutral-100">
+            <p class="text-xs text-amber-700 bg-amber-50 rounded px-3 py-2">
+              <strong>Opportunite critique :</strong> 8 questions FAQ presentes en HTML (<code>&lt;details&gt;&lt;summary&gt;</code>) mais aucune declaree en JSON-LD FAQPage. Google affiche ces schemas en accordeons directs dans les SERP.
+            </p>
+          </div>
+        </div>
+
+        <!-- OG + Twitter -->
+        <h2 class="text-lg font-bold text-neutral-900 mb-4">Open Graph + Twitter Card</h2>
+        <div class="bg-white border border-neutral-200 rounded-xl p-4 mb-8">
+          {tech.og.map(o => (
+            <div class="flex items-start gap-2 py-1.5">
+              {o.ok
+                ? <svg class="w-4 h-4 text-green-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                : <svg class="w-4 h-4 text-amber-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+              }
+              <div>
+                <span class={`text-sm ${o.ok ? 'text-neutral-700' : 'text-neutral-500'}`}>{o.item}</span>
+                <span class="text-xs text-neutral-400 ml-2">{o.val}</span>
+              </div>
+            </div>
+          ))}
+          <div class="mt-3 pt-3 border-t border-neutral-100">
+            <p class="text-xs text-neutral-500">Image OG generique (og-default.png) : partage LinkedIn/Twitter = preview identique a toutes les autres pages du site. Creer <code>og-echo.png</code> (1200x630px) avec l'identite visuelle Echo.</p>
+          </div>
+        </div>
+
+        <!-- SEO Technique -->
+        <h2 class="text-lg font-bold text-neutral-900 mb-4">SEO Technique</h2>
+        <div class="bg-white border border-neutral-200 rounded-xl p-4">
+          {tech.seo.map(s => (
+            <div class="flex items-center gap-2 py-1.5">
+              {s.ok
+                ? <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                : <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+              }
+              <span class={`text-sm ${s.ok ? 'text-neutral-700' : 'text-red-500'}`}>{s.item}</span>
+            </div>
+          ))}
+        </div>
+
+      </div>
+    </section>
+
+    <!-- PANEL 3 : VISITEURS -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+        <!-- Stats row -->
+        <div class="grid grid-cols-3 gap-4 mb-10">
+          <div class="bg-green-50 border border-green-200 rounded-xl p-4 text-center">
+            <div class="text-2xl font-bold text-green-700 mb-1">{kpis.nbConvertissent}</div>
+            <div class="text-xs text-green-600">Contactent</div>
+          </div>
+          <div class="bg-amber-50 border border-amber-200 rounded-xl p-4 text-center">
+            <div class="text-2xl font-bold text-amber-700 mb-1">{kpis.nbHesitent}</div>
+            <div class="text-xs text-amber-600">Hesitent</div>
+          </div>
+          <div class="bg-neutral-50 border border-neutral-200 rounded-xl p-4 text-center">
+            <div class="text-2xl font-bold text-neutral-600 mb-1">{kpis.nbRepartent}</div>
+            <div class="text-xs text-neutral-500">Repartent</div>
+          </div>
+        </div>
+
+        <!-- Section verte : convertissent -->
+        <h2 class="text-base font-bold text-green-800 mb-3 flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-green-500 inline-block"></span>
+          Ceux qui contactent
+        </h2>
+        <div class="space-y-2 mb-8">
+          {personas.filter(p => p.decision === 'Convertit').map(p => (
+            <details class="group border border-green-200 bg-green-50/40 rounded-xl overflow-hidden">
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                    <h3 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h3>
+                    <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                  </div>
+                  <p class="text-xs text-neutral-500 mb-1">{p.situation}</p>
+                  <div class="flex flex-wrap items-center gap-1 mt-1">
+                    <span class="text-[10px] text-neutral-500 bg-white border border-neutral-200 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                    <span class="text-[10px] bg-green-600 text-white px-1.5 py-0.5 rounded font-medium">{p.decisionLabel}</span>
+                  </div>
+                </div>
+                <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </summary>
+              <div class="px-4 pb-4 pt-0 border-t border-green-200 bg-white/60">
+                <div class="grid gap-3 text-xs mt-3">
+                  <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.impression}</p></div>
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Parcours</p>
+                    <ol class="list-decimal list-inside space-y-1 text-neutral-600">
+                      {p.parcours.map(([section, reaction]) => <li><strong>{section}</strong>{reaction ? ` — ${reaction}` : ''}</li>)}
+                    </ol>
+                  </div>
+                  <div><p class="font-semibold text-neutral-700 mb-1">Question cle</p><p class="text-neutral-600 italic">"{p.questionCle}"</p><p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong> — {p.commentReponse}</p></div>
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Impact technique</p>
+                    <p class="text-neutral-600">Vitesse : {p.impactVitesse}</p>
+                    <p class="text-neutral-600 mt-0.5">Confiance : {p.impactConfiance}</p>
+                  </div>
+                  <div class="flex gap-4">
+                    <div class="flex-1"><p class="font-semibold text-green-700 mb-1">Points positifs</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.positifs.map(pt => <li>{pt}</li>)}</ul></div>
+                    <div class="flex-1"><p class="font-semibold text-amber-700 mb-1">Frictions</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map(f => <li>{f}</li>)}</ul></div>
+                  </div>
+                  <div class="pt-2 border-t border-neutral-200">
+                    <p class="font-semibold text-neutral-700 mb-1">Decision</p>
+                    <p class="text-neutral-600">{p.raisonDecision}</p>
+                    {p.ceQuiFeraitBasculer && <p class="text-neutral-500 mt-1 italic">Pour aller plus vite : {p.ceQuiFeraitBasculer}</p>}
+                  </div>
+                  <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                    <div class="text-center"><span class="block text-lg font-bold text-green-600">{p.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                    <div class="text-center"><span class="block text-lg font-bold text-green-600">{p.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                    <div class="text-center"><span class="block text-lg font-bold text-green-600">{p.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+                  </div>
+                </div>
+              </div>
+            </details>
+          ))}
+        </div>
+
+        <!-- Section ambre : hesitent -->
+        <h2 class="text-base font-bold text-amber-800 mb-3 flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-amber-500 inline-block"></span>
+          Ceux qui hesitent
+        </h2>
+        <div class="space-y-2 mb-8">
+          {personas.filter(p => p.decision === 'Hesite').map(p => (
+            <details class="group border border-amber-200 bg-amber-50/30 rounded-xl overflow-hidden">
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                    <h3 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h3>
+                    <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                  </div>
+                  <p class="text-xs text-neutral-500 mb-1">{p.situation}</p>
+                  <div class="flex flex-wrap items-center gap-1 mt-1">
+                    <span class="text-[10px] text-neutral-500 bg-white border border-neutral-200 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                    <span class="text-[10px] bg-amber-500 text-white px-1.5 py-0.5 rounded font-medium">{p.decisionLabel}</span>
+                  </div>
+                </div>
+                <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </summary>
+              <div class="px-4 pb-4 pt-0 border-t border-amber-200 bg-white/60">
+                <div class="grid gap-3 text-xs mt-3">
+                  <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.impression}</p></div>
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Parcours</p>
+                    <ol class="list-decimal list-inside space-y-1 text-neutral-600">
+                      {p.parcours.map(([section, reaction]) => <li><strong>{section}</strong>{reaction ? ` — ${reaction}` : ''}</li>)}
+                    </ol>
+                  </div>
+                  <div><p class="font-semibold text-neutral-700 mb-1">Question cle</p><p class="text-neutral-600 italic">"{p.questionCle}"</p><p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong> — {p.commentReponse}</p></div>
+                  <div class="flex gap-4">
+                    <div class="flex-1"><p class="font-semibold text-green-700 mb-1">Points positifs</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.positifs.map(pt => <li>{pt}</li>)}</ul></div>
+                    <div class="flex-1"><p class="font-semibold text-amber-700 mb-1">Frictions</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map(f => <li>{f}</li>)}</ul></div>
+                  </div>
+                  <div class="pt-2 border-t border-neutral-200">
+                    <p class="font-semibold text-neutral-700 mb-1">Ce qui ferait basculer</p>
+                    <p class="text-neutral-600">{p.ceQuiFeraitBasculer}</p>
+                  </div>
+                  <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                    <div class="text-center"><span class="block text-lg font-bold text-amber-600">{p.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                    <div class="text-center"><span class="block text-lg font-bold text-amber-600">{p.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                    <div class="text-center"><span class="block text-lg font-bold text-amber-600">{p.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+                  </div>
+                </div>
+              </div>
+            </details>
+          ))}
+        </div>
+
+        <!-- Section neutre : quittent -->
+        <h2 class="text-base font-bold text-neutral-700 mb-3 flex items-center gap-2">
+          <span class="w-2 h-2 rounded-full bg-neutral-400 inline-block"></span>
+          Ceux qui repartent
+        </h2>
+        <div class="space-y-2">
+          {personas.filter(p => p.decision === 'Quitte').map(p => (
+            <details class="group border border-neutral-200 bg-neutral-50/40 rounded-xl overflow-hidden">
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                    <h3 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h3>
+                    <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                  </div>
+                  <p class="text-xs text-neutral-500 mb-1">{p.situation}</p>
+                  <div class="flex flex-wrap items-center gap-1 mt-1">
+                    <span class="text-[10px] text-neutral-500 bg-white border border-neutral-200 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                    <span class="text-[10px] bg-neutral-400 text-white px-1.5 py-0.5 rounded font-medium">{p.decisionLabel}</span>
+                  </div>
+                </div>
+                <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </summary>
+              <div class="px-4 pb-4 pt-0 border-t border-neutral-200 bg-white/60">
+                <div class="grid gap-3 text-xs mt-3">
+                  <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.impression}</p></div>
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Parcours</p>
+                    <ol class="list-decimal list-inside space-y-1 text-neutral-600">
+                      {p.parcours.map(([section, reaction]) => <li><strong>{section}</strong>{reaction ? ` — ${reaction}` : ''}</li>)}
+                    </ol>
+                  </div>
+                  <div><p class="font-semibold text-neutral-700 mb-1">Question cle</p><p class="text-neutral-600 italic">"{p.questionCle}"</p><p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong> — {p.commentReponse}</p></div>
+                  <div class="flex gap-4">
+                    <div class="flex-1"><p class="font-semibold text-green-700 mb-1">Points positifs</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.positifs.map(pt => <li>{pt}</li>)}</ul></div>
+                    <div class="flex-1"><p class="font-semibold text-red-700 mb-1">Ce qui a fait partir</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map(f => <li>{f}</li>)}</ul></div>
+                  </div>
+                  <div class="pt-2 border-t border-neutral-200">
+                    <p class="font-semibold text-neutral-700 mb-1">Ce qui aurait pu retenir</p>
+                    <p class="text-neutral-600">{p.ceQuiFeraitBasculer}</p>
+                  </div>
+                  <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                    <div class="text-center"><span class="block text-lg font-bold text-neutral-500">{p.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                    <div class="text-center"><span class="block text-lg font-bold text-neutral-500">{p.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                    <div class="text-center"><span class="block text-lg font-bold text-neutral-500">{p.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+                  </div>
+                </div>
+              </div>
+            </details>
+          ))}
+        </div>
+
+      </div>
+    </section>
+
+    <!-- PANEL 4 : AMELIORATIONS -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+      <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12">
+
+        <h2 class="text-lg font-bold text-neutral-900 mb-2">Le plus important</h2>
+        <p class="text-sm text-neutral-500 mb-6">5 ameliorations impactant chacune 5 personas ou plus.</p>
+        <div class="space-y-4 mb-12">
+          {ameliorationsHautes.map(a => (
+            <div class="bg-white border-2 border-red-200 rounded-xl p-5 shadow-sm">
+              <h4 class="font-semibold text-neutral-900 mb-2">{a.titre}</h4>
+              <p class="text-sm text-neutral-600 mb-3">{a.detail}</p>
+              <div class="bg-primary-50 rounded-lg px-3 py-2.5 flex items-start gap-2">
+                <svg class="w-4 h-4 text-primary-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                <p class="text-xs text-primary-800">{a.action}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <h2 class="text-lg font-bold text-neutral-900 mb-2">Utile aussi</h2>
+        <p class="text-sm text-neutral-500 mb-6">Impactent 3-4 personas chacune.</p>
+        <div class="grid md:grid-cols-2 gap-4 mb-12">
+          {ameliorationsUtiles.map(a => (
+            <div class="bg-white border border-neutral-200 rounded-xl p-4">
+              <h4 class="font-semibold text-neutral-900 text-sm mb-1.5">{a.titre}</h4>
+              <p class="text-xs text-neutral-600">{a.detail}</p>
+            </div>
+          ))}
+        </div>
+
+        <h2 class="text-lg font-bold text-neutral-900 mb-2">A discuter ensemble</h2>
+        <p class="text-sm text-neutral-500 mb-6">Decisions business ou efforts de production a evaluer.</p>
+        <div class="space-y-3">
+          {ameliorationsDiscuter.map(a => (
+            <div class="bg-neutral-50 border border-neutral-200 rounded-xl p-4 flex gap-3">
+              <span class="text-lg shrink-0">{a.emoji}</span>
+              <div>
+                <h4 class="font-semibold text-neutral-900 text-sm mb-0.5">{a.titre}</h4>
+                <p class="text-xs text-neutral-600">{a.detail}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ═══ METHODOLOGIE ═══ -->
+  <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-neutral-200">
+    <h2 class="text-base font-bold text-neutral-900 mb-4">Methodologie</h2>
+    <ol class="list-decimal list-inside space-y-2 text-sm text-neutral-600">
+      <li>Scraping complet de la landing page — extraction du contenu, navigation, meta, Schema.org, OG</li>
+      <li>Audit technique — Mozilla Observatory, PageSpeed Insights (quota epuise), analyse Schema/OG/SEO depuis le HTML</li>
+      <li>Creation de 20 personas representatifs (matrice canal, maturite, device, secteur, zone geographique)</li>
+      <li>Simulation de 20 visites par 4 agents IA en parallele (lots de 5 personas)</li>
+      <li>Agregation des resultats et identification des frictions recurrentes</li>
+      <li>Publication de cette page sur marcm.fr (noindex)</li>
+    </ol>
+  </section>
+
+  <!-- ═══ CTA ═══ -->
+  <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center border-t border-neutral-200">
+    <h2 class="font-heading text-2xl md:text-3xl font-bold text-neutral-900 mb-4">
+      Pret a transformer ces insights en resultats ?
+    </h2>
+    <p class="text-neutral-600 mb-8 max-w-xl mx-auto">
+      Ce rapport identifie des opportunites concretes. Je peux construire un site qui convertit vraiment vos visiteurs en clients.
+    </p>
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+      <a href="/commander" class="inline-flex items-center gap-2 px-8 py-3.5 text-white font-semibold rounded-xl transition-all shadow-md hover:-translate-y-0.5" style="background: linear-gradient(135deg, #E86C47, #D4572F); box-shadow: 0 4px 20px rgba(232, 108, 71, 0.3);">
+        Commander un site
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      </a>
+      <a href="/contact" class="inline-flex items-center gap-2 px-8 py-3.5 border border-neutral-300 text-neutral-700 font-semibold rounded-xl transition-all hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]">
+        En discuter d'abord
+      </a>
+    </div>
+  </section>
+
+  <!-- TAB JS -->
+  <style is:inline>
+    #panels { -ms-overflow-style: none; }
+    #panels::-webkit-scrollbar { display: none; }
+  </style>
+
+  <script is:inline>
+    const panels = document.getElementById('panels');
+    const tabs = document.querySelectorAll('.tab-btn');
+    const sections = panels ? panels.querySelectorAll('.tab-panel') : [];
+
+    function activateTab(index) {
+      tabs.forEach((b, i) => {
+        if (i === index) {
+          b.classList.remove('text-neutral-500');
+          b.classList.add('text-primary-700', 'bg-primary-50');
+        } else {
+          b.classList.remove('text-primary-700', 'bg-primary-50');
+          b.classList.add('text-neutral-500');
+        }
+      });
+    }
+
+    tabs.forEach((btn, i) => {
+      btn.addEventListener('click', () => {
+        if (sections[i]) sections[i].scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+        activateTab(i);
+      });
+    });
+
+    let scrollTimeout;
+    if (panels) {
+      panels.addEventListener('scroll', () => {
+        clearTimeout(scrollTimeout);
+        scrollTimeout = setTimeout(() => {
+          const index = Math.round(panels.scrollLeft / panels.offsetWidth);
+          activateTab(index);
+        }, 50);
+      }, { passive: true });
+    }
+  </script>
+
+</BaseLayout>
