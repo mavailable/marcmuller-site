@@ -1,37 +1,51 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SchemaOrg from '../../components/SchemaOrg.astro';
-import PortfolioProjectCard from '../../components/PortfolioProjectCard.astro';
 import { getProjectsForCarousel } from '../../data/projects';
 
-const allProjects = getProjectsForCarousel('portfolio');
+const title = 'Portfolio — Marc M | Custom Website Projects';
+const description = "Websites built for real craftspeople and small businesses: piano tuner, security firm, storyteller, multi-trade. Fast, custom, SEO-optimised.";
 
-// Map to EN-friendly shape
-const mapProject = (p: ReturnType<typeof getProjectsForCarousel>[number]) => ({
-  id: p.id,
-  name: p.titleEn || p.title,
-  description: p.descriptionEn || p.description,
-  sector: p.sectorEn || p.sector,
-  sectorColor: p.sectorColor,
-  type: p.typeEn || p.type,
-  url: p.url,
-  gradient: `linear-gradient(135deg, ${p.gradientFrom}, ${p.gradientTo})`,
-  image: p.screenshot,
-  features: p.featuresEn || p.features,
-  stack: p.stack || ['Astro', 'Tailwind', 'Cloudflare'],
-  highlights: p.highlightsEn || p.highlights,
-  wip: p.wip || false,
-  multilingual: p.multilingual || false,
-  sample: p.sample || false,
-});
+// Real clients first, then samples
+const portfolioProjects = getProjectsForCarousel('portfolio');
+const allProjects = [
+  ...portfolioProjects.filter(p => !p.sample),
+  ...portfolioProjects.filter(p => p.sample),
+];
+const totalProjects = allProjects.length;
 
-const multilingualProjects = allProjects.filter(p => p.multilingual).map(mapProject);
-const otherProjects = allProjects.filter(p => !p.multilingual).map(mapProject);
+function slugify(text: string): string {
+  return text.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
+}
+
+// English sector groups — keys are EN slugs, members are FR sector values from data
+const sectorGroups: Record<string, { label: string; members: string[] }> = {
+  'crafts-retail':    { label: 'Crafts & Retail',   members: ['Artisanat', 'Commerce', 'Coiffure', 'E-commerce'] },
+  'construction':     { label: 'Construction',       members: ['Bâtiment', 'Immobilier'] },
+  'health-wellness':  { label: 'Health & Wellness',  members: ['Santé', 'Bien-être', 'Sport'] },
+  'food-beverage':    { label: 'Food & Beverage',    members: ['Restauration'] },
+  'creative':         { label: 'Creative',           members: ['Créatif'] },
+  'services':         { label: 'Services',           members: ['Conseil', 'Juridique', 'Association'] },
+  'tourism':          { label: 'Tourism',            members: ['Tourisme'] },
+};
+
+function getSectorGroup(sector: string): string {
+  for (const [slug, { members }] of Object.entries(sectorGroups)) {
+    if (members.includes(sector)) return slug;
+  }
+  return slugify(sector);
+}
+
+const filterCategories = Object.entries(sectorGroups).map(([slug, { label, members }]) => ({
+  label,
+  slug,
+  count: allProjects.filter(p => members.includes(p.sector)).length,
+})).filter(c => c.count > 0);
 ---
 
 <BaseLayout
-  title="Portfolio — Marc M | Custom Website Projects"
-  description="Websites built for real craftspeople and small businesses: piano tuner, security firm, storyteller, multi-trade. Fast, custom, SEO-optimised."
+  title={title}
+  description={description}
   lang="en"
   frPath="/realisations"
   enPath="/en/portfolio"
@@ -41,7 +55,7 @@ const otherProjects = allProjects.filter(p => !p.multilingual).map(mapProject);
   <!-- HERO -->
   <section class="relative w-full bg-[#0D0D0D] px-6 py-10 md:px-8 md:py-14 overflow-hidden">
     <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 40px 40px;"></div>
-    <div class="relative mx-auto max-w-5xl z-10">
+    <div class="relative mx-auto max-w-6xl z-10">
       <div class="flex flex-col md:flex-row md:items-end md:justify-between gap-6">
         <div>
           <h1 class="text-3xl font-bold text-white md:text-4xl">My work</h1>
@@ -49,7 +63,7 @@ const otherProjects = allProjects.filter(p => !p.multilingual).map(mapProject);
         </div>
         <div class="flex items-center gap-5 md:gap-6">
           <div class="text-center">
-            <p class="text-xl font-bold text-white">{allProjects.length}</p>
+            <p class="text-xl font-bold text-white">{totalProjects}</p>
             <p class="text-[10px] uppercase tracking-wider text-neutral-500">Projects</p>
           </div>
           <div class="w-px h-8 bg-white/10"></div>
@@ -67,42 +81,142 @@ const otherProjects = allProjects.filter(p => !p.multilingual).map(mapProject);
     </div>
   </section>
 
-  <!-- PROJECTS -->
-  <section class="w-full bg-[var(--color-bg)] px-6 py-8 md:px-8 md:py-12">
-    <div class="mx-auto max-w-5xl">
-
-      {/* — Multilingual projects — */}
-      {multilingualProjects.length > 0 && (
-        <div class="mb-4 flex items-center gap-3">
-          <span class="rounded-full border border-teal-400/30 bg-teal-400/10 px-3 py-1 text-xs font-semibold text-teal-600">FR + EN</span>
-          <span class="text-sm font-semibold text-[var(--color-text)]">Multilingual sites</span>
-          <span class="text-xs text-[var(--color-text-muted)]">— available in both French and English</span>
-        </div>
-      )}
-
-      <div class="space-y-12">
-        {multilingualProjects.map((project, index) => (
-          <PortfolioProjectCard project={project} index={index} />
+  <!-- FILTER BAR -->
+  <section id="filter-bar" class="w-full border-b border-[var(--color-border)] px-4 py-2.5 md:px-8 md:py-3 sticky top-0 z-40 bg-white/95 backdrop-blur-md transition-[top] duration-300">
+    <div class="mx-auto max-w-6xl">
+      <div class="flex items-center gap-2 overflow-x-auto scrollbar-hide md:flex-wrap md:justify-center md:overflow-visible" id="sector-filters">
+        <button
+          data-sector="all"
+          class="filter-btn filter-btn--active shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200 cursor-pointer whitespace-nowrap"
+        >
+          All <span class="ml-1 opacity-60">{totalProjects}</span>
+        </button>
+        {filterCategories.map((cat) => (
+          <button
+            data-sector={cat.slug}
+            class="filter-btn shrink-0 rounded-full px-4 py-1.5 text-sm font-medium transition-all duration-200 cursor-pointer whitespace-nowrap"
+          >
+            {cat.label} <span class="ml-1 opacity-60">{cat.count}</span>
+          </button>
         ))}
       </div>
+    </div>
+  </section>
 
-      {/* — Divider — */}
-      {multilingualProjects.length > 0 && otherProjects.length > 0 && (
-        <div class="my-14 flex items-center gap-4">
-          <div class="flex-1 border-t border-[var(--color-border)]"></div>
-          <span class="shrink-0 rounded-full border border-[var(--color-border)] bg-white px-4 py-1.5 text-xs font-medium text-[var(--color-text-muted)]">
-            Also in French
-          </span>
-          <div class="flex-1 border-t border-[var(--color-border)]"></div>
-        </div>
-      )}
+  <!-- PROJECTS GRID -->
+  <section class="w-full bg-[var(--color-bg)] px-6 py-12 md:px-8 md:py-16">
+    <div class="mx-auto max-w-6xl">
 
-      <div class="space-y-12">
-        {otherProjects.map((project, index) => (
-          <PortfolioProjectCard project={project} index={multilingualProjects.length + index} />
+      <p id="no-results" class="hidden text-center text-[var(--color-text-muted)] py-16 text-lg">
+        No projects in this category yet.
+      </p>
+
+      <div class="grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-3" id="projects-grid">
+        {allProjects.map((project) => (
+          <article
+            id={project.id}
+            class="project-card group relative flex flex-col overflow-hidden rounded-2xl border border-[var(--color-border)] bg-white shadow-sm transition-all duration-300 hover:-translate-y-1 hover:shadow-xl"
+            data-sector={getSectorGroup(project.sector)}
+            data-sample={project.sample ? 'true' : 'false'}
+          >
+            {/* Screenshot */}
+            <div class="relative overflow-hidden">
+              <div class="aspect-video overflow-hidden bg-neutral-100">
+                {project.sample ? (
+                  <img
+                    src={`/images/projects/${project.id}.webp`}
+                    alt={`Screenshot of ${project.titleEn || project.title}`}
+                    class="h-full w-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                    loading="lazy"
+                    onerror={`this.onerror=null;this.src='${project.screenshot}'`}
+                  />
+                ) : (
+                  <img
+                    src={project.screenshot}
+                    alt={`Screenshot of ${project.titleEn || project.title}`}
+                    class="h-full w-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    loading="lazy"
+                  />
+                )}
+              </div>
+              {/* Badges */}
+              <div class="absolute bottom-3 left-3 right-3 flex items-center justify-between">
+                <span class={`inline-block rounded-full border px-3 py-1 text-xs font-semibold backdrop-blur-sm ${project.sectorColor}`}>
+                  {project.sectorEn || project.sector}
+                </span>
+                {project.multilingual && (
+                  <span class="inline-block rounded-full border border-teal-400/30 bg-teal-500/20 px-3 py-1 text-xs font-semibold text-teal-300 backdrop-blur-sm">
+                    FR + EN
+                  </span>
+                )}
+                {project.sample && (
+                  <span class="inline-block rounded-full border border-emerald-400/30 bg-emerald-500/20 px-3 py-1 text-xs font-semibold text-emerald-300 backdrop-blur-sm">
+                    Demo
+                  </span>
+                )}
+                {project.wip && !project.sample && (
+                  <span class="inline-block rounded-full border border-amber-500/30 bg-amber-500/20 px-3 py-1 text-xs font-semibold text-amber-200 backdrop-blur-sm">
+                    In progress
+                  </span>
+                )}
+              </div>
+            </div>
+
+            {/* Content */}
+            <div class="flex flex-1 flex-col p-5">
+              <h3 class="mb-2 text-lg font-bold text-[var(--color-text)]">{project.titleEn || project.title}</h3>
+              <p class="mb-4 line-clamp-2 text-sm leading-relaxed text-[var(--color-text-muted)]">
+                {project.descriptionEn || project.description}
+              </p>
+
+              {/* Features pills */}
+              <div class="mb-5 flex flex-wrap gap-1.5">
+                {(project.featuresEn || project.features).slice(0, 4).map((f: string) => (
+                  <span class="rounded-md bg-[var(--color-bg-alt)] px-2 py-0.5 text-[11px] font-medium text-[var(--color-text)]">
+                    {f}
+                  </span>
+                ))}
+              </div>
+
+              {/* Review (clients only) */}
+              {'review' in project && project.review && !project.sample && (
+                <div class="mb-5 rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-alt)] p-3">
+                  <div class="mb-1.5 flex items-center gap-2">
+                    <div class="flex gap-0.5">
+                      {[1,2,3,4,5].map(() => (
+                        <svg class="h-3 w-3 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                      ))}
+                    </div>
+                    <span class="text-xs font-semibold text-[var(--color-text)]">{project.review.author}</span>
+                  </div>
+                  <p class="text-xs italic leading-relaxed text-[var(--color-text-muted)]">
+                    "{project.review.text.slice(0, 100)}..."
+                  </p>
+                </div>
+              )}
+
+              {/* CTA */}
+              <div class="mt-auto">
+                <a
+                  href={project.url}
+                  target={project.sample ? '_self' : '_blank'}
+                  rel={project.sample ? undefined : 'noopener noreferrer'}
+                  class={`inline-flex w-full items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-medium transition-all ${
+                    project.sample
+                      ? 'border-2 border-[var(--color-accent)]/20 text-[var(--color-accent)] hover:bg-[var(--color-accent)] hover:text-white hover:border-[var(--color-accent)] hover:shadow-lg'
+                      : 'bg-[var(--color-accent)] text-white hover:bg-[var(--color-accent-hover)] hover:shadow-lg'
+                  }`}
+                  style={project.sample ? undefined : 'box-shadow: 0 4px 15px rgba(232, 108, 71, 0.2);'}
+                  data-umami-event={`portfolio-en-visit-${project.id}`}
+                >
+                  View the site
+                  <svg class="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" /></svg>
+                </a>
+              </div>
+            </div>
+          </article>
         ))}
       </div>
-
     </div>
   </section>
 
@@ -138,14 +252,14 @@ const otherProjects = allProjects.filter(p => !p.multilingual).map(mapProject);
       <div class="flex flex-wrap items-center justify-center gap-4">
         <a
           href="/en/contact"
-          class="inline-block rounded-xl bg-[var(--color-accent)] px-8 py-3 font-medium text-white transition-all hover:bg-[var(--color-accent-hover)] hover:shadow-xl"
-          style="box-shadow: 0 10px 25px rgba(232, 108, 71, 0.3);"
+          class="inline-block rounded-xl bg-white px-8 py-3 font-semibold text-[var(--color-accent)] transition-all hover:bg-neutral-100 hover:shadow-xl"
+          style="box-shadow: 0 10px 25px rgba(255, 255, 255, 0.1);"
         >
           Tell me about your project
         </a>
         <a
           href="/en/services"
-          class="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/5 px-8 py-3 font-medium text-white/85 transition-all hover:bg-white/10"
+          class="inline-flex items-center gap-2 rounded-xl border border-white/20 bg-white/5 px-8 py-3 font-medium text-white/90 transition-all hover:bg-white/10"
         >
           See pricing
           <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
@@ -154,3 +268,128 @@ const otherProjects = allProjects.filter(p => !p.multilingual).map(mapProject);
     </div>
   </section>
 </BaseLayout>
+
+<style>
+  .filter-btn {
+    background: white;
+    color: var(--color-text-muted);
+    border: 1px solid var(--color-border);
+  }
+  .filter-btn:hover {
+    border-color: var(--color-accent);
+    color: var(--color-text);
+  }
+  .filter-btn--active {
+    background: var(--color-text) !important;
+    color: white !important;
+    border-color: var(--color-text) !important;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+  }
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const buttons = document.querySelectorAll<HTMLButtonElement>('.filter-btn');
+    const cards = document.querySelectorAll<HTMLElement>('.project-card');
+    const noResults = document.getElementById('no-results');
+    const filterBar = document.getElementById('filter-bar');
+
+    function positionFilterBar() {
+      const header = document.querySelector('header');
+      if (header && filterBar) {
+        filterBar.style.top = header.offsetHeight + 'px';
+      }
+    }
+    positionFilterBar();
+    window.addEventListener('resize', positionFilterBar);
+
+    function getInitialSector(): string {
+      const params = new URLSearchParams(window.location.search);
+      const fromParam = params.get('sector');
+      if (fromParam) return fromParam;
+
+      const hash = window.location.hash.replace('#', '');
+      if (hash) {
+        if (document.getElementById(hash)?.classList.contains('project-card')) {
+          return 'all';
+        }
+        return hash;
+      }
+      return 'all';
+    }
+
+    function scrollToProject() {
+      const hash = window.location.hash.replace('#', '');
+      if (!hash) return;
+      const card = document.getElementById(hash);
+      if (card?.classList.contains('project-card')) {
+        setTimeout(() => {
+          card.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          card.style.boxShadow = '0 0 0 3px var(--color-accent), 0 10px 30px rgba(0,0,0,0.15)';
+          setTimeout(() => { card.style.boxShadow = ''; }, 2000);
+        }, 300);
+      }
+    }
+
+    function setFilter(sector: string) {
+      let visibleCount = 0;
+
+      cards.forEach(card => {
+        const cardSector = card.dataset.sector;
+        const show = sector === 'all' || cardSector === sector;
+
+        if (show) {
+          visibleCount++;
+          card.style.display = '';
+          card.style.opacity = '0';
+          card.style.transform = 'translateY(12px)';
+          requestAnimationFrame(() => {
+            card.style.transition = 'opacity 0.35s ease, transform 0.35s ease';
+            card.style.opacity = '1';
+            card.style.transform = 'translateY(0)';
+          });
+        } else {
+          card.style.transition = 'opacity 0.15s ease';
+          card.style.opacity = '0';
+          setTimeout(() => { card.style.display = 'none'; }, 150);
+        }
+      });
+
+      if (noResults) {
+        noResults.classList.toggle('hidden', visibleCount > 0);
+      }
+
+      buttons.forEach(btn => btn.classList.remove('filter-btn--active'));
+      const activeBtn = document.querySelector<HTMLButtonElement>(`[data-sector="${sector}"]`);
+      if (activeBtn) activeBtn.classList.add('filter-btn--active');
+
+      const url = new URL(window.location.href);
+      if (sector === 'all') {
+        url.searchParams.delete('sector');
+      } else {
+        url.searchParams.set('sector', sector);
+      }
+      url.hash = '';
+      window.history.replaceState({}, '', url.toString());
+    }
+
+    buttons.forEach(btn => {
+      btn.addEventListener('click', () => {
+        setFilter(btn.dataset.sector as string);
+      });
+    });
+
+    const initial = getInitialSector();
+    if (initial !== 'all') setFilter(initial);
+    scrollToProject();
+
+    window.addEventListener('popstate', () => setFilter(getInitialSector()));
+  });
+</script>
