@@ -1,0 +1,706 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const slug = 'culture-bois';
+const formule: 'decouverte' | 'complet' | 'pro' = 'decouverte';
+const formuleLabel = 'Echo Decouverte';
+const nomProspect = 'Culture Bois';
+const urlSite = 'https://www.culture-bois.eu';
+const dateAudit = '30 mars 2026';
+const showUpsell = true;
+
+const kpis = {
+  nbPersonas: 5,
+  nbConvertissent: 2,
+  nbHesitent: 2,
+  nbRepartent: 1,
+  conversion: 40,
+  experience: 5.0,
+  confiance: 5.4,
+  clarte: 5.4,
+};
+
+const verdictHero = 'Sur 5 visiteurs, 2 vous contactent. 2 hesitent. 1 repart faute de photos.';
+
+const constat = 'Culture Bois a de vrais atouts : Xavier Gandon est Compagnon du Devoir avec 25 ans de metier, le SIRET est visible, la zone Moselle + Luxembourg est clairement annoncee. Mais le site n\'a pas ete mis a jour depuis juin 2023 et souffre d\'un manque critique : aucune photo de realisation. Pour un ebeniste-menuisier sur mesure, c\'est le frein numero 1. 4 visiteurs sur 5 ont cherche des photos et ne les ont pas trouvees. Ceux qui n\'avaient pas de recommandation sont repartis chez un concurrent mieux documente.';
+
+const canalData = [
+  { canal: 'Bouche-a-oreille', nb: 1, convert: 1, rate: 100 },
+  { canal: 'Reseaux sociaux', nb: 1, convert: 1, rate: 100 },
+  { canal: 'Google Search', nb: 2, convert: 0, rate: 0 },
+  { canal: 'Google Maps', nb: 1, convert: 0, rate: 0 },
+];
+
+const personas = [
+  {
+    id: 1,
+    name: 'Helene',
+    age: 47,
+    emoji: '🏡',
+    situation: 'Proprietaire a Bouzonville, compare 3 artisans pour sa cuisine sur mesure',
+    canal: 'Google Search',
+    device: 'Mobile',
+    decision: 'Hesite' as const,
+    decisionLabel: 'Hesite',
+    histoire: 'Elle compare 3 menuisiers. Elle cherche des photos de cuisines terminees sur le site — aucune galerie. Elle trouve le telephone mais envoie son formulaire de devis a un concurrent avec portfolio.',
+    localisation: 'Bouzonville (57320) — 12 km de Fixem',
+    maturite: 'Comparaison',
+    contexte: 'Elle refait sa cuisine apres une renovation complete de sa maison. Elle a demande 3 devis. Elle consulte chaque site pour voir des realisations avant de choisir.',
+    impression: 'Site propre, "Compagnon du Devoir" la rassure. Elle cherche immediatement des photos de cuisines.',
+    parcours: [
+      ['Accueil', 'Compagnon du Devoir repere — credible. Cherche une galerie.'],
+      ['Navigation', 'Pas d\'onglet Realisations ou Portfolio — deception.'],
+      ['Page Cuisine', '5 vignettes miniatures — pas de galerie detaillee ni de finitions.'],
+      ['Contact', 'Page 403 — inaccessible. Trouve le telephone mais n\'appelle pas.'],
+    ] as [string, string][],
+    questionCle: 'Est-ce qu\'ils font des cuisines dans mon style ? C\'est dans quel budget ?',
+    reponse: 'Non' as const,
+    commentReponse: 'Aucune photo de cuisine terminee, pas de budget indicatif, pas de style identifiable.',
+    impactVitesse: 'Lenteur estimee sur mobile — augmente la frustration lors de la navigation.',
+    impactConfiance: 'Email Yahoo dans les mentions legales — signal d\'amateurisme pour une cliente qui compare.',
+    positifs: ['Compagnon du Devoir mentionne', 'Telephone disponible', 'Zone Moselle confirmee'],
+    frictions: ['Aucune galerie de realisations', 'Page contact inaccessible (erreur 403)', 'Pas de prix ni fourchette', 'Email Yahoo'],
+    ceQuiFeraitBasculer: 'Une page /realisations avec 8-10 photos de cuisines terminees avec les materiaux utilises.',
+    exp: 4, conf: 5, clarte: 5,
+  },
+  {
+    id: 2,
+    name: 'Patrick',
+    age: 58,
+    emoji: '🔨',
+    situation: 'Artisan-electricien a Creutzwald, recommande par un collegue du batiment',
+    canal: 'Bouche-a-oreille',
+    device: 'Desktop',
+    decision: 'Convertit' as const,
+    decisionLabel: 'Contacte',
+    histoire: 'Un collegue lui a parle de Culture Bois pour un dressing sur mesure. Il tape le nom, confirme l\'identite sur le site, trouve le numero et appelle directement.',
+    localisation: 'Creutzwald (57150) — 25 km de Fixem',
+    maturite: 'Decision',
+    contexte: 'Un collegue artisan lui a recommande Culture Bois pour un dressing. Il veut confirmer que c\'est le bon artisan et trouver le numero de telephone.',
+    impression: '"Culture Bois — menuiserie Moselle." C\'est eux. Il cherche le numero.',
+    parcours: [
+      ['Accueil', 'Identite confirmee — Culture Bois, Fixem, Moselle.'],
+      ['Contact', 'Telephone trouve en bas de page sur desktop — appelle directement.'],
+    ] as [string, string][],
+    questionCle: 'C\'est bien eux ? Comment je les contacte ?',
+    reponse: 'Oui' as const,
+    commentReponse: 'Nom, adresse Fixem, telephone, SIRET — identite clairement etablie.',
+    impactVitesse: 'Acceptable sur desktop — pas de blocage.',
+    impactConfiance: 'La recommandation du collegue surpasse toutes les frictions du site.',
+    positifs: ['Identite claire et coherente', 'Telephone facilement accessible sur desktop', 'Compagnon du Devoir cite', 'SIRET visible'],
+    frictions: ['Peu de frictions pour ce profil Decision avec recommandation'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 8, clarte: 7,
+  },
+  {
+    id: 3,
+    name: 'Sebastien',
+    age: 34,
+    emoji: '📱',
+    situation: 'Frontalier a Hettange-Grande, cherche un menuisier pour un bureau a domicile',
+    canal: 'Google Maps',
+    device: 'Mobile',
+    decision: 'Quitte' as const,
+    decisionLabel: 'Repart',
+    histoire: 'Il cherche "menuisier pres de moi" sur Google Maps en rentrant du Luxembourg. Il clique sur Culture Bois. La page contact retourne une erreur 403. Pas de formulaire, pas de WhatsApp. Il repart vers le suivant.',
+    localisation: 'Hettange-Grande (57330) — 20 km de Fixem',
+    maturite: 'Decouverte',
+    contexte: 'Il rentre du Luxembourg, cherche un menuisier pour un bureau sur mesure a domicile. Il clique sur Culture Bois depuis la fiche Google Maps.',
+    impression: 'Site charge lentement. Il voit "Culture Bois" mais cherche immediatement comment envoyer un message.',
+    parcours: [
+      ['Accueil mobile', 'Charge, sobre. Cherche un formulaire ou un lien WhatsApp.'],
+      ['Navigation', 'Pas de formulaire visible, pas de chat.'],
+      ['Contact', 'Clique — erreur 403. Page inaccessible.'],
+      ['Quitte', 'Retourne sur Google Maps pour le concurrent suivant.'],
+    ] as [string, string][],
+    questionCle: 'Je peux leur envoyer un message rapide pour un devis ?',
+    reponse: 'Non' as const,
+    commentReponse: 'Page contact cassee (erreur 403). Seul le telephone est disponible — trop direct pour un premier contact mobile.',
+    impactVitesse: 'Lenteur probable sur mobile = frustration immediate pour un utilisateur frontalier pressé.',
+    impactConfiance: 'Page contact cassee = signal fort que le site est abandonne.',
+    positifs: ['Telephone mobile disponible', 'Zone Hettange-Grande mentionnee'],
+    frictions: ['Page contact inaccessible (erreur 403) — bloquant', 'Pas de formulaire ni WhatsApp', 'Pas de photos de realisations', 'Site parait abandonne (sitemap juin 2023)'],
+    ceQuiFeraitBasculer: 'Un formulaire de contact fonctionnel ou un lien WhatsApp Business.',
+    exp: 3, conf: 3, clarte: 4,
+  },
+  {
+    id: 4,
+    name: 'Anne-Sophie',
+    age: 41,
+    emoji: '✨',
+    situation: 'Cadre a Metz, cherche un ebeniste pour restaurer un meuble familial ancien',
+    canal: 'Google Search',
+    device: 'Desktop',
+    decision: 'Hesite' as const,
+    decisionLabel: 'Hesite',
+    histoire: 'Elle cherche un ebeniste pour restaurer un buffet Art Deco. Elle voit "Compagnon du Devoir" — tres positif. Mais pas de page Restauration, pas de photos. Elle hesite entre Culture Bois et un concurrent avec portfolio.',
+    localisation: 'Metz (57000) — 35 km de Fixem',
+    maturite: 'Comparaison',
+    contexte: 'Elle a un buffet Art Deco de famille a restaurer. Elle compare 2-3 artisans et cherche des preuves de savoir-faire en restauration.',
+    impression: 'Site sobre, "Compagnon du Devoir" repere immediatement — signal fort de qualite. Elle cherche des photos de restaurations.',
+    parcours: [
+      ['Accueil', '"Compagnon du Devoir" — tres rassurant pour ce profil.'],
+      ['Navigation', 'Cherche un onglet "Restauration" — absent du menu principal.'],
+      ['Accord\u00e9on accueil', 'Restauration mentionnee mais sans page ni photos.'],
+      ['Mentions legales', 'Email Yahoo repere — signal negatif inattendu.'],
+    ] as [string, string][],
+    questionCle: 'Il fait vraiment de la restauration de qualite ? Je peux voir des exemples ?',
+    reponse: 'Partiellement' as const,
+    commentReponse: 'La mention Compagnon du Devoir est credible mais insuffisante sans visuel. La restauration est citee mais sans page ni photos.',
+    impactVitesse: 'Acceptable sur desktop — pas de blocage technique.',
+    impactConfiance: 'Email Yahoo + page contact cassee nuisent a la credibilite pour ce profil exigeant.',
+    positifs: ['Compagnon du Devoir — titre reconnu pour les amateurs de mobilier ancien', 'SIRET visible', 'Adresse physique claire'],
+    frictions: ['Pas de page Restauration dans le menu', 'Zero photo de mobilier restaure', 'Email Yahoo', 'Page contact inaccessible'],
+    ceQuiFeraitBasculer: 'Une page /restauration avec 5-6 photos avant/apres de meubles anciens restaures.',
+    exp: 5, conf: 5, clarte: 5,
+  },
+  {
+    id: 5,
+    name: 'Jean-Pierre',
+    age: 63,
+    emoji: '🌳',
+    situation: 'Retraite a Sarreguemines, a vu une photo de terrasse Culture Bois partagee sur Facebook',
+    canal: 'Reseaux sociaux',
+    device: 'Mobile',
+    decision: 'Convertit' as const,
+    decisionLabel: 'Contacte',
+    histoire: 'Un ami a partage une photo d\'une terrasse bois sur Facebook. Jean-Pierre clique, arrive sur le site. Il voit que les terrasses sont dans les services, la zone Moselle est confirmee. Il appelle.',
+    localisation: 'Sarreguemines (57200) — 40 km de Fixem',
+    maturite: 'Comparaison',
+    contexte: 'Il veut faire construire une terrasse en bois. Un ami a partage une photo d\'une realisation Culture Bois sur Facebook, ce qui l\'a convaincu de visiter le site.',
+    impression: 'Il est deja convaincu par la photo vue sur Facebook. Il cherche confirmation et contact.',
+    parcours: [
+      ['Accueil', 'Culture Bois — zone Moselle OK. Cherche terrasses dans les services.'],
+      ['Menuiserie exterieure', 'Terrasses bois mentionnees — zone Moselle confirmee.'],
+      ['Contact', 'Trouve le telephone mobile — appelle.'],
+    ] as [string, string][],
+    questionCle: 'Ils font les terrasses bois dans ma region ?',
+    reponse: 'Partiellement' as const,
+    commentReponse: 'Terrasses bois mentionnees, zone Moselle confirmee. Mais pas de photos ni mention de Sarreguemines specifiquement.',
+    impactVitesse: 'Il patiente malgre la lenteur mobile car il est motive par la photo vue.',
+    impactConfiance: 'SIRET visible, nom complet, adresse — suffisant pour appeler.',
+    positifs: ['Terrasses bois mentionnees explicitement', 'Zone Moselle confirmee', 'SIRET et adresse visibles'],
+    frictions: ['Pas de galerie de terrasses sur le site', 'Zone exacte (Sarreguemines) non confirmee', 'Pas de page reseaux sociaux officielle'],
+    ceQuiFeraitBasculer: '',
+    exp: 6, conf: 6, clarte: 6,
+  },
+];
+
+const ameliorationsHautes = [
+  {
+    titre: 'Creer une page Realisations avec photos de chantiers termines',
+    pourquoi: '4 visiteurs sur 5 ont cherche des photos de realisations et ne les ont pas trouvees. La menuiserie et l\'ebenisterie sur mesure sont des metiers ou la decision passe par le visuel : aucun client ne peut evaluer la qualite d\'un dressing ou d\'une cuisine sans exemple concret. Les 2 visiteurs qui hesitent (Helene et Anne-Sophie) ont un budget reel — ils repartent uniquement parce qu\'ils ne peuvent pas "voir" le travail.',
+    action: 'Ajouter une page /realisations dans la navigation avec 10 a 15 photos de chantiers termines, par categorie (Cuisine, Dressing, Terrasse, Mobilier, Restauration). Chaque realisation : 1 photo principale + localisation approximative (ex. "Thionville") + type de travaux. Photos prises avec un smartphone suffisent si elles sont bien cadrees et eclairees.',
+    impact: '4 visiteurs sur 5',
+  },
+];
+
+const ameliorationsUtiles: { titre: string; detail: string }[] = [];
+const ameliorationsDiscuter: { emoji: string; titre: string; detail: string }[] = [];
+
+const techVerdicts = [
+  { label: 'Vitesse', verdict: 'Mauvais (estime)', ok: false, detail: 'PHP 5.6 + jQuery obsolete + scripts tiers bloquants. Quota API epuise — tester sur pagespeed.web.dev.' },
+  { label: 'Securite', verdict: 'F (0/100)', ok: false, detail: '7 headers manquants, cookie session non securise, PHP 5.6 en fin de vie depuis 2019.' },
+  { label: 'SEO', verdict: 'Basique', ok: false, detail: 'Title trop long, sitemap perime (juin 2023), pas de meta description ni Schema.org.' },
+  { label: 'Donnees structurees', verdict: 'Absent', ok: false, detail: 'Schema.org LocalBusiness absent — pas de rich snippets possibles, penalite SEO local.' },
+  { label: 'Partage reseaux', verdict: 'Non configure', ok: false, detail: 'Balises Open Graph absentes — partage Facebook/LinkedIn sans image ni description.' },
+];
+
+const tech = {
+  observatory: { grade: 'F', score: 0, testsOk: 3, testsTotal: 10 },
+  pagespdMobile: null as { performance: number; accessibility: number; bestPractices: number; seo: number } | null,
+  pagespdDesktop: null as { performance: number; accessibility: number; bestPractices: number; seo: number } | null,
+  cwv: { lcp: 'Non disponible (quota API)', inp: 'Non disponible', cls: 'Non disponible' } as { lcp: string; inp: string; cls: string },
+  headers: [
+    { ok: false, h: 'Strict-Transport-Security / HSTS (absent)' },
+    { ok: false, h: 'Content-Security-Policy (absent — -25 pts)' },
+    { ok: false, h: 'X-Frame-Options (absent — risque clickjacking, -20 pts)' },
+    { ok: false, h: 'X-Content-Type-Options (absent)' },
+    { ok: false, h: 'Cookie session sans flag Secure (-40 pts)' },
+    { ok: false, h: 'Redirection HTTP hors domaine (empeche HSTS)' },
+    { ok: true, h: 'HTTPS actif (connexion chiffree)' },
+    { ok: false, h: 'PHP 5.6 — version en fin de vie depuis 2019' },
+  ],
+  schema: [
+    { item: 'JSON-LD / Schema.org present', ok: false },
+    { item: '@type LocalBusiness ou Carpenter/Cabinetmaker', ok: false },
+    { item: 'name, url, description', ok: false },
+    { item: 'address + geo (Fixem, Moselle)', ok: false },
+    { item: 'telephone', ok: false },
+    { item: 'openingHours', ok: false },
+    { item: 'aggregateRating (avis)', ok: false },
+    { item: 'sameAs (reseaux sociaux)', ok: false },
+  ],
+  og: [
+    { item: 'og:title', ok: false, val: 'Non detecte' },
+    { item: 'og:description', ok: false, val: 'Non detecte' },
+    { item: 'og:image', ok: false, val: 'Non detecte' },
+    { item: 'og:url', ok: false, val: 'Non detecte' },
+    { item: 'twitter:card', ok: false, val: 'Non detecte' },
+  ],
+  seo: [
+    { item: 'H1 unique ("Bienvenue chez Culture Bois")', ok: true },
+    { item: 'Sitemap.xml present', ok: true },
+    { item: 'robots.txt present', ok: true },
+    { item: 'HTTPS actif', ok: true },
+    { item: 'Title optimise (< 60 caracteres)', ok: false },
+    { item: 'Meta description presente', ok: false },
+    { item: 'Schema.org LocalBusiness', ok: false },
+    { item: 'Open Graph configure', ok: false },
+    { item: 'Sitemap a jour (derniere MAJ < 1 an)', ok: false },
+    { item: 'Page contact accessible', ok: false },
+  ],
+};
+---
+
+<BaseLayout
+  title={`${formuleLabel} — ${nomProspect}`}
+  description={`Rapport Echo Decouverte pour ${nomProspect}. ${kpis.nbPersonas} visiteurs simules, audit technique, recommandation prioritaire.`}
+  noindex={true}
+  frPath={`/echo/${slug}`}
+  ogImage="/og-echo.png"
+>
+
+<!-- 1. HERO -->
+<section class="relative w-full px-6 py-20 md:py-28 overflow-hidden" style="background: #0A0A0A;">
+  <div class="absolute top-[20%] left-[10%] w-[500px] h-[500px] rounded-full blur-[180px] pointer-events-none" style="background: #E86C47; opacity: 0.06;"></div>
+  <div class="relative mx-auto max-w-4xl z-10">
+    <div class="mb-6 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5);">
+      {formuleLabel} · Rapport confidentiel
+    </div>
+    <h1 class="mb-6 text-3xl md:text-4xl font-bold text-white leading-tight tracking-tight">{verdictHero}</h1>
+    <p class="mb-10 text-sm" style="color: rgba(255,255,255,0.4);">
+      Site analyse : <a href={urlSite} target="_blank" class="underline hover:text-white transition-colors">{urlSite}</a> · {kpis.nbPersonas} visiteurs simules · {dateAudit}
+    </p>
+    <div class="grid grid-cols-3 gap-4">
+      <div class="rounded-xl p-5 text-center" style="background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2);">
+        <div class="text-4xl md:text-5xl font-black text-green-400 mb-1">{kpis.nbConvertissent}</div>
+        <div class="text-sm text-green-400/70">vous contactent</div>
+      </div>
+      <div class="rounded-xl p-5 text-center" style="background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2);">
+        <div class="text-4xl md:text-5xl font-black text-amber-400 mb-1">{kpis.nbHesitent}</div>
+        <div class="text-sm text-amber-400/70">hesitent</div>
+      </div>
+      <div class="rounded-xl p-5 text-center" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
+        <div class="text-4xl md:text-5xl font-black mb-1" style="color: rgba(255,255,255,0.5);">{kpis.nbRepartent}</div>
+        <div class="text-sm" style="color: rgba(255,255,255,0.3);">repartent</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. LE CONSTAT -->
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <div class="rounded-2xl p-6 md:p-8 mb-12 border-l-4" style="background: rgba(232,108,71,0.04); border-color: #E86C47;">
+    <p class="text-lg md:text-xl font-medium text-neutral-800 leading-relaxed">{constat}</p>
+  </div>
+  <h2 class="text-xl font-bold text-neutral-900 mb-2">D'ou viennent vos visiteurs</h2>
+  <p class="text-sm text-neutral-500 mb-6">Et combien vous contactent selon leur canal d'arrivee.</p>
+  <div class="space-y-4 mb-12">
+    {canalData.map(c => {
+      const color = c.rate >= 50 ? '#22c55e' : c.rate >= 25 ? '#f59e0b' : '#ef4444';
+      return (
+        <div class="flex items-center gap-4">
+          <div class="w-40 sm:w-48 text-sm text-neutral-700 shrink-0">{c.canal}</div>
+          <div class="flex-1 h-3 bg-neutral-100 rounded-full overflow-hidden">
+            <div class="h-full rounded-full transition-all" style={`width: ${c.rate}%; background: ${color}`}></div>
+          </div>
+          <div class="w-20 text-right">
+            <span class="text-sm font-bold" style={`color: ${color}`}>{c.rate}%</span>
+            <span class="text-xs text-neutral-400 ml-1">({c.convert}/{c.nb})</span>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+  <details class="group mb-4">
+    <summary class="flex items-center gap-2 cursor-pointer text-sm text-neutral-500 hover:text-neutral-700 py-2">
+      <svg class="w-4 h-4 transition-transform group-open:rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      Voir les scores detailles (experience, confiance, clarte)
+    </summary>
+    <div class="grid grid-cols-3 gap-4 mt-3">
+      <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
+        <div class="text-2xl font-bold text-neutral-800 mb-1">{kpis.experience}<span class="text-sm text-neutral-400">/10</span></div>
+        <div class="text-xs text-neutral-500">Experience</div>
+      </div>
+      <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
+        <div class="text-2xl font-bold text-neutral-800 mb-1">{kpis.confiance}<span class="text-sm text-neutral-400">/10</span></div>
+        <div class="text-xs text-neutral-500">Confiance</div>
+      </div>
+      <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
+        <div class="text-2xl font-bold text-neutral-800 mb-1">{kpis.clarte}<span class="text-sm text-neutral-400">/10</span></div>
+        <div class="text-xs text-neutral-500">Clarte</div>
+      </div>
+    </div>
+  </details>
+</section>
+
+<!-- 3. VOS VISITEURS -->
+<section class="py-16" style="background: #fafafa;">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs</h2>
+    <p class="text-neutral-600 mb-8">Voici ce qui se passe quand quelqu'un cherche vos services et tombe sur votre site.</p>
+
+    <div class="mb-10">
+      <h3 class="text-base font-bold text-green-800 mb-4 flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-green-500 inline-block"></span>
+        Ceux qui vous contactent <span class="text-sm font-normal text-green-600">({kpis.nbConvertissent})</span>
+      </h3>
+      <div class="space-y-3">
+        {personas.filter(p => p.decision === 'Convertit').map(p => (
+          <details class="group bg-white rounded-xl overflow-hidden shadow-sm border border-green-200">
+            <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+              <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1 flex-wrap">
+                  <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                  <span class="text-[10px] bg-green-600 text-white px-1.5 py-0.5 rounded font-medium">{p.decisionLabel}</span>
+                </div>
+                <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                  <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                  <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                </div>
+              </div>
+              <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <div class="px-4 pb-5 border-t border-green-200">
+              <div class="grid gap-4 text-xs mt-4">
+                <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p><p class="text-neutral-600">{p.contexte}</p></div>
+                <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Premiere impression (5 sec)</p><p class="text-neutral-600">{p.impression}</p></div>
+                <div>
+                  <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours sur le site</p>
+                  <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                    {p.parcours.map(([section, reaction]: [string, string]) => (
+                      <li><strong class="text-neutral-800">{section}</strong>{reaction ? ` — ${reaction}` : ''}</li>
+                    ))}
+                  </ol>
+                </div>
+                <div class="bg-neutral-50 rounded-lg p-3">
+                  <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p>
+                  <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
+                  <p class="text-neutral-600">Le site repond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> — {p.commentReponse}</p>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div><p class="font-semibold text-green-700 mb-1.5">Points positifs</p><ul class="space-y-1 text-neutral-600">{p.positifs.map(pt => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">·</span>{pt}</li>)}</ul></div>
+                  <div><p class="font-semibold text-amber-700 mb-1.5">Frictions</p><ul class="space-y-1 text-neutral-600">{p.frictions.map(f => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">·</span>{f}</li>)}</ul></div>
+                </div>
+                <div class="flex gap-6 pt-3 border-t border-neutral-100">
+                  {[{ label: 'Experience', val: p.exp }, { label: 'Confiance', val: p.conf }, { label: 'Clarte', val: p.clarte }].map(s => {
+                    const sColor = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500';
+                    return <div class="text-center"><span class={`block text-lg font-bold ${sColor}`}>{s.val}</span><span class="text-[10px] text-neutral-400">{s.label}</span></div>;
+                  })}
+                </div>
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <h3 class="text-base font-bold text-amber-800 mb-4 flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span>
+        Ceux qui hesitent <span class="text-sm font-normal text-amber-600">({kpis.nbHesitent})</span>
+      </h3>
+      <div class="space-y-3">
+        {personas.filter(p => p.decision === 'Hesite').map(p => (
+          <details class="group bg-white rounded-xl overflow-hidden shadow-sm border border-amber-200">
+            <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+              <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1 flex-wrap">
+                  <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                  <span class="text-[10px] bg-amber-500 text-white px-1.5 py-0.5 rounded font-medium">{p.decisionLabel}</span>
+                </div>
+                <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                  <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                  <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                </div>
+              </div>
+              <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <div class="px-4 pb-5 border-t border-amber-200">
+              <div class="grid gap-4 text-xs mt-4">
+                <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p><p class="text-neutral-600">{p.contexte}</p></div>
+                <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Premiere impression (5 sec)</p><p class="text-neutral-600">{p.impression}</p></div>
+                <div>
+                  <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours sur le site</p>
+                  <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                    {p.parcours.map(([section, reaction]: [string, string]) => (
+                      <li><strong class="text-neutral-800">{section}</strong>{reaction ? ` — ${reaction}` : ''}</li>
+                    ))}
+                  </ol>
+                </div>
+                <div class="bg-neutral-50 rounded-lg p-3">
+                  <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p>
+                  <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
+                  <p class="text-neutral-600">Le site repond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> — {p.commentReponse}</p>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div><p class="font-semibold text-green-700 mb-1.5">Points positifs</p><ul class="space-y-1 text-neutral-600">{p.positifs.map(pt => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">·</span>{pt}</li>)}</ul></div>
+                  <div><p class="font-semibold text-amber-700 mb-1.5">Frictions</p><ul class="space-y-1 text-neutral-600">{p.frictions.map(f => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">·</span>{f}</li>)}</ul></div>
+                </div>
+                <div class="bg-primary-50 rounded-lg p-3">
+                  <p class="font-semibold text-primary-700 text-[10px] uppercase tracking-wider mb-1">Ce qui le ferait passer a l'action</p>
+                  <p class="text-primary-800">{p.ceQuiFeraitBasculer}</p>
+                </div>
+                <div class="flex gap-6 pt-3 border-t border-neutral-100">
+                  {[{ label: 'Experience', val: p.exp }, { label: 'Confiance', val: p.conf }, { label: 'Clarte', val: p.clarte }].map(s => {
+                    const sColor = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500';
+                    return <div class="text-center"><span class={`block text-lg font-bold ${sColor}`}>{s.val}</span><span class="text-[10px] text-neutral-400">{s.label}</span></div>;
+                  })}
+                </div>
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+
+    <div class="rounded-xl p-5 mb-10 bg-amber-50 border border-amber-200 flex items-start gap-3">
+      <span class="text-lg shrink-0 mt-0.5">💡</span>
+      <div>
+        <p class="text-sm font-medium text-amber-900">Ce visiteur a besoin de vos services.</p>
+        <p class="text-xs text-amber-700 mt-1">Il lui manque un element de rassurance pour passer a l'action. C'est votre plus gros levier de croissance.</p>
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <h3 class="text-base font-bold text-neutral-600 mb-4 flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-neutral-400 inline-block"></span>
+        Ceux qui repartent <span class="text-sm font-normal text-neutral-500">({kpis.nbRepartent})</span>
+      </h3>
+      <div class="space-y-3">
+        {personas.filter(p => p.decision === 'Quitte').map(p => (
+          <details class="group bg-white rounded-xl overflow-hidden shadow-sm border border-neutral-200">
+            <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+              <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1 flex-wrap">
+                  <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                  <span class="text-[10px] bg-neutral-400 text-white px-1.5 py-0.5 rounded font-medium">{p.decisionLabel}</span>
+                </div>
+                <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                  <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                  <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                </div>
+              </div>
+              <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <div class="px-4 pb-5 border-t border-neutral-200">
+              <div class="grid gap-4 text-xs mt-4">
+                <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p><p class="text-neutral-600">{p.contexte}</p></div>
+                <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Premiere impression (5 sec)</p><p class="text-neutral-600">{p.impression}</p></div>
+                <div>
+                  <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours sur le site</p>
+                  <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                    {p.parcours.map(([section, reaction]: [string, string]) => (
+                      <li><strong class="text-neutral-800">{section}</strong>{reaction ? ` — ${reaction}` : ''}</li>
+                    ))}
+                  </ol>
+                </div>
+                <div class="bg-neutral-50 rounded-lg p-3">
+                  <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p>
+                  <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
+                  <p class="text-neutral-600">Le site repond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> — {p.commentReponse}</p>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div><p class="font-semibold text-green-700 mb-1.5">Points positifs</p><ul class="space-y-1 text-neutral-600">{p.positifs.map(pt => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">·</span>{pt}</li>)}</ul></div>
+                  <div><p class="font-semibold text-amber-700 mb-1.5">Frictions</p><ul class="space-y-1 text-neutral-600">{p.frictions.map(f => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">·</span>{f}</li>)}</ul></div>
+                </div>
+                <div class="bg-primary-50 rounded-lg p-3">
+                  <p class="font-semibold text-primary-700 text-[10px] uppercase tracking-wider mb-1">Ce qui l'aurait retenu</p>
+                  <p class="text-primary-800">{p.ceQuiFeraitBasculer}</p>
+                </div>
+                <div class="flex gap-6 pt-3 border-t border-neutral-100">
+                  {[{ label: 'Experience', val: p.exp }, { label: 'Confiance', val: p.conf }, { label: 'Clarte', val: p.clarte }].map(s => {
+                    const sColor = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500';
+                    return <div class="text-center"><span class={`block text-lg font-bold ${sColor}`}>{s.val}</span><span class="text-[10px] text-neutral-400">{s.label}</span></div>;
+                  })}
+                </div>
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+
+    <div class="rounded-xl p-5 bg-neutral-100 border border-neutral-200 flex items-start gap-3">
+      <span class="text-lg shrink-0 mt-0.5">📉</span>
+      <div>
+        <p class="text-sm font-medium text-neutral-800">Chaque visiteur qui repart, c'est un client en moins.</p>
+        <p class="text-xs text-neutral-600 mt-1">Certains n'etaient pas dans votre cible — c'est normal. Mais d'autres avaient un vrai besoin et votre site ne les a pas convaincus.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. CE QU'ON RECOMMANDE -->
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <h2 class="text-2xl font-bold text-neutral-900 mb-2">Ce qu'on recommande</h2>
+  <p class="text-neutral-600 mb-8">La priorite numero 1 identifiee sur vos 5 visiteurs.</p>
+  <p class="text-sm font-semibold text-red-700 mb-4">Si vous ne changez qu'une chose, changez ca :</p>
+  <div class="space-y-4 mb-12">
+    {ameliorationsHautes.map(a => (
+      <div class="bg-white border-2 border-red-200 rounded-xl p-6 shadow-sm">
+        <div class="flex items-start justify-between gap-4 mb-3">
+          <h4 class="font-bold text-neutral-900">{a.titre}</h4>
+          <span class="text-[10px] px-2 py-1 rounded-full bg-red-100 text-red-700 font-semibold shrink-0 whitespace-nowrap">{a.impact}</span>
+        </div>
+        <p class="text-sm text-neutral-600 mb-3">{a.pourquoi}</p>
+        <div class="bg-neutral-50 rounded-lg px-4 py-3 flex items-start gap-2">
+          <svg class="w-4 h-4 text-neutral-400 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+          <p class="text-xs text-neutral-700">{a.action}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+  {showUpsell && (
+    <div class="rounded-2xl p-8 text-center border-2 border-dashed" style="border-color: #E86C47; background: rgba(232,108,71,0.03);">
+      <p class="text-lg font-bold text-neutral-900 mb-2">{kpis.nbPersonas} visiteurs, c'est une tendance.</p>
+      <p class="text-sm text-neutral-600 mb-6">Avec 20 visiteurs (Echo Complet), ces frictions deviennent des certitudes. Avec 100 (Echo Pro), vous savez exactement quel canal investir.</p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+        <a href="/echo/" class="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-xl transition-all shadow-md hover:-translate-y-0.5" style="background: linear-gradient(135deg, #E86C47, #D4572F);">Echo Complet — 90€ <span class="text-xs opacity-70 ml-1">(20 visiteurs)</span></a>
+        <a href="/echo/" class="inline-flex items-center gap-2 px-6 py-3 border border-neutral-300 text-neutral-700 font-semibold rounded-xl transition-all hover:border-[#E86C47] hover:text-[#E86C47]">Echo Pro — 250€ <span class="text-xs opacity-70 ml-1">(100 visiteurs)</span></a>
+      </div>
+    </div>
+  )}
+</section>
+
+<!-- 5. SOUS LE CAPOT -->
+<section class="py-16 border-t border-neutral-200">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-2xl font-bold text-neutral-900 mb-2">Sous le capot</h2>
+    <p class="text-neutral-600 mb-8">Pour les curieux : ce que les outils techniques disent de votre site.</p>
+    <div class="flex flex-wrap gap-3 mb-10">
+      {techVerdicts.map(v => (
+        <div class={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium ${v.ok ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
+          {v.ok ? <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> : <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}
+          <span>{v.label}</span><span class="text-xs opacity-70">{v.verdict}</span>
+        </div>
+      ))}
+    </div>
+
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+        <div class="flex items-center gap-3"><span class="text-base">⚡</span><div><h3 class="font-semibold text-neutral-900 text-sm">Vitesse du site</h3><p class="text-[11px] text-neutral-500">{techVerdicts[0].detail}</p></div></div>
+        <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 border-t border-neutral-100">
+        <div class="py-4">
+          <p class="text-sm text-neutral-600">Donnees non disponibles lors de l'audit (quota API epuise).</p>
+          <p class="text-xs text-neutral-500 mt-2">PHP 5.6 avec jQuery 1.7 + jQuery UI 1.8 (bibliotheques obsoletes de 2011) et 2 scripts Google bloquants (GTM + GA4). Estimation mobile : 35-55/100 sur PageSpeed, bien en dessous du seuil "bon" (90+).</p>
+          <a href={`https://pagespeed.web.dev/report?url=${urlSite}`} target="_blank" class="text-sm text-primary-600 underline hover:text-primary-800 mt-2 inline-block">Tester sur PageSpeed →</a>
+        </div>
+      </div>
+    </details>
+
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+        <div class="flex items-center gap-3"><span class="text-base">🔒</span><div><h3 class="font-semibold text-neutral-900 text-sm">Securite</h3><p class="text-[11px] text-neutral-500">{techVerdicts[1].detail}</p></div></div>
+        <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 border-t border-neutral-100">
+        <p class="text-xs text-neutral-500 py-2">Note Mozilla Observatory : {tech.observatory.grade} ({tech.observatory.testsOk}/{tech.observatory.testsTotal} tests passes)</p>
+        {tech.headers.map(h => (
+          <div class="flex items-center gap-2 py-1">
+            {h.ok ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> : <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}
+            <span class={`text-xs ${h.ok ? 'text-neutral-600' : 'text-red-500'}`}>{h.h}</span>
+          </div>
+        ))}
+      </div>
+    </details>
+
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+        <div class="flex items-center gap-3"><span class="text-base">📊</span><div><h3 class="font-semibold text-neutral-900 text-sm">Donnees structurees (Schema.org)</h3><p class="text-[11px] text-neutral-500">{techVerdicts[3].detail}</p></div></div>
+        <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 border-t border-neutral-100">
+        {tech.schema.map(s => (
+          <div class="flex items-center gap-2 py-1">
+            {s.ok ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> : <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}
+            <span class={`text-xs ${s.ok ? 'text-neutral-600' : 'text-red-500 font-medium'}`}>{s.item}</span>
+          </div>
+        ))}
+      </div>
+    </details>
+
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+        <div class="flex items-center gap-3"><span class="text-base">🔗</span><div><h3 class="font-semibold text-neutral-900 text-sm">Apercu reseaux sociaux (Open Graph)</h3><p class="text-[11px] text-neutral-500">{techVerdicts[4].detail}</p></div></div>
+        <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 border-t border-neutral-100">
+        {tech.og.map(o => (
+          <div class="flex items-start gap-2 py-1">
+            {o.ok ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> : <svg class="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>}
+            <span class={`text-xs ${o.ok ? 'text-neutral-600' : 'text-neutral-500'}`}>{o.item} <span class="text-neutral-400">{o.val}</span></span>
+          </div>
+        ))}
+      </div>
+    </details>
+
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden bg-white">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+        <div class="flex items-center gap-3"><span class="text-base">🔍</span><div><h3 class="font-semibold text-neutral-900 text-sm">SEO technique</h3><p class="text-[11px] text-neutral-500">{techVerdicts[2].detail}</p></div></div>
+        <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 border-t border-neutral-100">
+        {tech.seo.map(s => (
+          <div class="flex items-center gap-2 py-1">
+            {s.ok ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> : <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}
+            <span class={`text-xs ${s.ok ? 'text-neutral-600' : 'text-red-500'}`}>{s.item}</span>
+          </div>
+        ))}
+      </div>
+    </details>
+
+    <div class="mt-8 rounded-xl p-5 bg-white border border-neutral-200 flex items-start gap-3">
+      <span class="text-lg shrink-0 mt-0.5">🔧</span>
+      <div>
+        <p class="text-sm font-medium text-neutral-800">Tout ca est corrigeable.</p>
+        <p class="text-xs text-neutral-600 mt-1">Un site bien construit obtient 90+ sur tous les indicateurs. C'est ce que je livre a mes clients.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. METHODOLOGIE -->
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-neutral-200">
+  <h2 class="text-base font-bold text-neutral-900 mb-4">Comment ca marche</h2>
+  <ol class="space-y-3 text-sm text-neutral-600">
+    <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">1</span><span>On scrape votre site — on lit chaque page comme un visiteur le ferait</span></li>
+    <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">2</span><span>On audite la technique — vitesse, securite, referencement, donnees structurees</span></li>
+    <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">3</span><span>On cree {kpis.nbPersonas} profils realistes — adaptes a votre secteur et votre zone geographique</span></li>
+    <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">4</span><span>Chaque profil visite votre site et donne son avis — premiere impression, parcours, decision</span></li>
+    <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">5</span><span>On compile les resultats — frictions recurrentes, canaux performants, recommandations</span></li>
+  </ol>
+  <div class="mt-6 p-4 rounded-lg bg-neutral-50 text-xs text-neutral-500">
+    <strong>Note :</strong> 5 visiteurs donnent une tendance. 20 (Echo Complet) la confirment. 100 (Echo Pro) la prouvent statistiquement.
+  </div>
+</section>
+
+<!-- 7. CTA FINAL -->
+<section class="relative w-full px-6 py-20 overflow-hidden" style="background: #0A0A0A;">
+  <div class="absolute bottom-[10%] right-[10%] w-[400px] h-[400px] rounded-full blur-[160px] pointer-events-none" style="background: #E86C47; opacity: 0.05;"></div>
+  <div class="relative mx-auto max-w-3xl z-10 text-center">
+    <h2 class="text-2xl md:text-3xl font-bold text-white mb-4 leading-tight">5 visiteurs. Imaginez ce que 20 reveleraient.</h2>
+    <p class="text-sm mb-8" style="color: rgba(255,255,255,0.5);">L'Echo Complet analyse 20 profils avec audit technique et recommandations priorisees. L'Echo Pro : 100 visiteurs, analyse par canal, et un appel pour en discuter.</p>
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+      <a href="/echo/" class="inline-flex items-center gap-2 px-8 py-4 text-white font-semibold rounded-xl transition-all shadow-lg hover:-translate-y-0.5" style="background: linear-gradient(135deg, #E86C47, #D4572F); box-shadow: 0 4px 24px rgba(232, 108, 71, 0.35);">
+        Echo Complet — 90€
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      </a>
+      <a href="/contact" class="inline-flex items-center gap-2 px-8 py-4 border border-neutral-600 font-semibold rounded-xl transition-all hover:border-white/40" style="color: rgba(255,255,255,0.6);">En discuter d'abord</a>
+    </div>
+  </div>
+</section>
+
+</BaseLayout>
