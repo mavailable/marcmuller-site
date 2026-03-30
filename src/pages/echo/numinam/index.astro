@@ -1,0 +1,755 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const slug = 'numinam';
+const formule: 'decouverte' | 'complet' | 'pro' = 'complet';
+const formuleLabel = 'Echo Complet';
+const nomProspect = 'Numinam';
+const urlSite = 'https://www.numinam.com/fr';
+const dateAudit = '30 mars 2026';
+const showUpsell = true;
+
+const kpis = {
+  nbPersonas: 20,
+  nbConvertissent: 7,
+  nbHesitent: 6,
+  nbRepartent: 7,
+  conversion: 35,
+  experience: 6.5,
+  confiance: 6.3,
+  clarte: 6.3,
+};
+
+const verdictHero = "7 visiteurs sur 20 vous contactent. Les 13 autres hesitent ou repartent \u2014 et on sait exactement pourquoi.";
+
+const constat = "Votre site est techniquement irreprochable. Il convertit parfaitement les gens qui arrivent deja convaincus \u2014 par un ami ou par une IA. Mais pour ceux qui vous decouvrent via Google, il manque une chose : la preuve que vous n'\u00eates pas seul.";
+
+const canalData = [
+  { canal: 'Bouche-a-oreille', nb: 3, convert: 3, rate: 100 },
+  { canal: 'IA (ChatGPT, Perplexity, Claude)', nb: 3, convert: 2, rate: 67 },
+  { canal: 'Google Search', nb: 6, convert: 2, rate: 33 },
+  { canal: 'LinkedIn', nb: 3, convert: 0, rate: 0 },
+  { canal: 'Instagram', nb: 1, convert: 0, rate: 0 },
+  { canal: 'Google Maps', nb: 1, convert: 0, rate: 0 },
+];
+
+const personas = [
+  {
+    id: 1, name: 'Maxime', age: 34, emoji: '\u{1F680}',
+    situation: 'CEO startup SaaS post-seed, 12 personnes',
+    canal: 'Google Search', device: 'Desktop', decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: "Site Webflow qui stagne \u2014 le PageSpeed 98 et l'expertise SEO/GEO le convainquent. Reserve l'audit gratuit.",
+    localisation: 'Bruxelles', maturite: 'Comparaison',
+    contexte: "Son site Webflow stagne sur Google. Besoin de refonte performante + CRM.",
+    impression: "Hero percutant, positionnement 'partenaire digital' clair. Le PageSpeed 98 parle directement a un CEO tech.",
+    parcours: [['Hero', 'Les 3 piliers correspondent a ses besoins'], ['Sites performants', 'PageSpeed 98, Astro, arguments techniques solides'], ['Prix', '5k-18k dans son budget'], ['Temoignages', 'Peu nombreux (5) mais concrets'], ['Portfolio', 'Pas de cas SaaS exact mais qualite visible'], ['Contact', 'Audit gratuit 30 min = declencheur']],
+    questionCle: "Peuvent-ils me faire un site performant avec SEO et CRM ?",
+    reponse: 'Oui', commentReponse: "Les 3 piliers couvrent site + automation + outils. Score technique irrefutable.",
+    impactVitesse: "LCP 2.3s desktop correct, coherent avec la promesse", impactConfiance: "Schema.org complet, bel apercu LinkedIn quand il partage a ses associes",
+    positifs: ['Positionnement clair et differenciant', 'Arguments techniques credibles', 'Parcours Coddy = preuve de scaling', 'Audit gratuit sans friction', 'Prix transparents'],
+    frictions: ['Seulement 5 temoignages dont 2 Heat Me', 'Pas de cas SaaS dans le portfolio', 'Impression solo', 'Pas de telephone'],
+    ceQuiFeraitBasculer: '', exp: 8, conf: 7, clarte: 9,
+  },
+  {
+    id: 5, name: 'Antoine', age: 37, emoji: '\u{1F4CA}',
+    situation: 'Head of Ops scale-up fintech, 60 personnes',
+    canal: 'Bouche-a-oreille', device: 'Desktop', decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: "15 outils a consolider. Le cas Coddy (9 pays, 100% automatise) prouve que Sebastien sait gerer la complexite.",
+    localisation: 'Bruxelles', maturite: 'Decision',
+    contexte: "15 outils fragmentes a unifier. Recommande par un ami via Coddy.",
+    impression: "'Outils internes sur-mesure' dans les 3 piliers = exactement son besoin. Design pro.",
+    parcours: [['Outils internes', 'Consolider, dashboards, automatiser \u2014 chaque mot colle'], ['Prix 15k+', 'Dans sa fourchette budgetaire'], ['Portfolio Coddy', '9 pays automatises = la vraie reference'], ['Manifeste', 'Ton authentique, coherent avec la recommandation'], ['Contact', 'Remplit le formulaire, mentionne son ami']],
+    questionCle: "Peuvent-ils consolider 15 outils en une plateforme coherente ?",
+    reponse: 'Partiellement', commentReponse: "La promesse est claire, mais le '15k+' est vague pour son scope. Validera pendant l'audit.",
+    impactVitesse: "Rapide et fluide, minimum attendu pour un SaaS user", impactConfiance: "OG bien configure, le lien rend bien sur Slack",
+    positifs: ['Recommandation personnelle forte', 'Cas Coddy = preuve complexite multi-pays', 'Vision ecosysteme integree', 'Audit gratuit 30 min', 'Manifeste authentique'],
+    frictions: ['15k+ trop vague pour un gros projet', 'Pas de cas outil interne detaille', 'Impression solo', 'Pas de SLA mentionne'],
+    ceQuiFeraitBasculer: '', exp: 8, conf: 8, clarte: 7,
+  },
+  {
+    id: 7, name: 'Pieter', age: 52, emoji: '\u{1F527}',
+    situation: 'Gerant PME chauffage/clim, 20 personnes',
+    canal: 'IA (ChatGPT)', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: "Le cas Heat Me (+20% leads) l'a convaincu \u2014 c'est exactement son secteur. Reserve malgre l'absence de neerlandais.",
+    localisation: 'Anvers', maturite: 'Comparaison',
+    contexte: "ChatGPT lui a recommande Numinam. Il connait Heat Me, meme secteur.",
+    impression: "Site en francais, cherche le switch langue. Trouve l'anglais. Heat Me dans le portfolio = bingo.",
+    parcours: [['Accueil FR', 'Switch vers EN immediatement'], ['Portfolio Heat Me', '+20% leads, 2 temoignages \u2014 preuve directe'], ['Sites performants', 'PageSpeed 95+, prix 5k-18k acceptables'], ['FAQ', 'Taille PME 5-100 = pile dans la cible'], ['Contact', 'Reserve audit via Calendly']],
+    questionCle: "Ils ont fait Heat Me, peuvent-ils faire pareil pour moi ?",
+    reponse: 'Oui', commentReponse: "Heat Me est la preuve sectorielle directe. Deux temoignages internes confirment.",
+    impactVitesse: "LCP 1.9s mobile, pas de frustration", impactConfiance: "Schema.org ProfessionalService + areaServed Belgium = c'est pour ca que ChatGPT l'a recommande",
+    positifs: ['Cas Heat Me = preuve sectorielle 1:1', 'Deux temoignages Heat Me', 'Site bilingue FR/EN', 'Prix transparents', 'Audit gratuit'],
+    frictions: ['Pas de neerlandais', 'Pas de telephone', 'Impression solo', '+20% leads sans detail (baseline, volume)'],
+    ceQuiFeraitBasculer: '', exp: 6, conf: 9, clarte: 8,
+  },
+  {
+    id: 11, name: 'Nicolas', age: 43, emoji: '\u{1F4BC}',
+    situation: 'Directeur commercial PME tech B2B, 25 personnes',
+    canal: 'Bouche-a-oreille', device: 'Desktop', decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: "Son CEO a parle de Numinam au board. La vision ecosysteme (site + automation + CRM) colle a son pipeline qui fuit.",
+    localisation: 'Bruxelles', maturite: 'Decision',
+    contexte: "Pipeline fuite, leads non qualifies, process manuels. Le CEO a mentionne Numinam.",
+    impression: "'Partenaire digital' pas 'agence web' \u2014 ca lui parle. Design pro.",
+    parcours: [['Approche', 'Methode 4 etapes, audit gratuit \u2014 rassure'], ['Automatisation IA', 'Workflows, qualification leads = ses douleurs exactes'], ['Portfolio', 'Coddy + Heat Me credibles, mais pas de B2B tech'], ['Contact', 'Reserve audit, mentionne la recommandation']],
+    questionCle: "Comment l'ecosysteme site + automation + CRM fonctionne en pratique ?",
+    reponse: 'Partiellement', commentReponse: "La promesse est articulee, mais les case studies manquent de detail funnel.",
+    impactVitesse: "Quasi instantane, aucune frustration", impactConfiance: "Recommandation CEO + site coherent = double validation",
+    positifs: ['Positionnement ecosysteme (pas de silos)', 'Prix calibrables pour le board', 'Audit gratuit = zero friction', 'Credibilite Coddy'],
+    frictions: ['Case studies trop courts pour un comite de direction', 'Impression solo', 'Pas de ref B2B tech pure'],
+    ceQuiFeraitBasculer: '', exp: 8, conf: 7, clarte: 8,
+  },
+  {
+    id: 13, name: 'Romain', age: 31, emoji: '\u{1F3AF}',
+    situation: 'Growth marketer startup healthtech, Paris',
+    canal: 'IA (Claude)', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: "Seule agence francophone qui parle de GEO avec un site qui prouve la competence technique. Reserve l'audit.",
+    localisation: 'Paris', maturite: 'Comparaison',
+    contexte: "Veut etre visible dans les AI Overviews de Google. Claude a recommande Numinam.",
+    impression: "Chargement rapide = proof of work. 'SEO & GEO' dans la nav = il est au bon endroit.",
+    parcours: [['Sites performants', 'PageSpeed 95+, GEO mentionne explicitement \u2014 rare'], ['Portfolio', 'Heat Me +20% leads, pas de metriques GEO'], ['robots.txt', 'Bots IA autorises \u2014 coherent avec le positionnement GEO'], ['Contact', 'Reserve audit pour valider l\'expertise GEO']],
+    questionCle: "Ont-ils des resultats concrets en GEO ou c'est un buzzword ?",
+    reponse: 'Partiellement', commentReponse: "Le mot GEO est la, la stack technique est coherente, mais pas de metriques GEO dans le portfolio.",
+    impactVitesse: "LCP 1.9s mobile = credibilite immediate pour un growth marketer", impactConfiance: "robots.txt autorise bots IA + Schema.org complet = signaux forts",
+    positifs: ['Mention explicite GEO (rare en francophone)', 'PageSpeed 98 = preuve de competence', 'Audit gratuit pour valider', 'Prix transparents', 'Stack Astro = modernite'],
+    frictions: ['Pas de metriques GEO dans le portfolio', 'Pas de cas healthtech/SaaS', 'Distance Paris-Bruxelles (mineur)'],
+    ceQuiFeraitBasculer: '', exp: 8, conf: 7, clarte: 8,
+  },
+  {
+    id: 17, name: 'Aurelie', age: 36, emoji: '\u{1F4C8}',
+    situation: 'COO startup edtech, 15 personnes, levee recente',
+    canal: 'Bouche-a-oreille', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: "Recommandee par le CEO de Coddy. Besoin urgent d'automatisation onboarding. Reserve un audit en 2 minutes.",
+    localisation: 'Bruxelles', maturite: 'Decision',
+    contexte: "Besoin urgent d'automatiser l'onboarding utilisateurs. Le CEO de Coddy lui a dit d'appeler Sebastien.",
+    impression: "'Automatisation IA' dans le hero = au bon endroit. Confiance deja elevee via recommandation.",
+    parcours: [['Automatisation IA', 'Quick wins a 800\u20AC, complet 25k\u20AC/an \u2014 dans le budget'], ['Approche', 'Methode 4 etapes + audit gratuit 30 min'], ['Portfolio Coddy', 'Confirme la recommandation'], ['Contact', 'Reserve Calendly pour le lendemain']],
+    questionCle: "Peuvent-ils commencer cette semaine ?",
+    reponse: 'Partiellement', commentReponse: "Pas de delai de demarrage affiche, mais l'audit gratuit + recommandation neutralisent le doute.",
+    impactVitesse: "Instantane sur mobile entre deux meetings", impactConfiance: "Recommandation Coddy = confiance maximale",
+    positifs: ['Cas Coddy = preuve irrefutable', 'Prix transparents', 'Audit gratuit 0 friction', 'Ton startup adapte', 'Methode structuree'],
+    frictions: ['Impression solo pour 15 utilisateurs', 'Pas de delai de demarrage affiche', 'Pas de mentions legales'],
+    ceQuiFeraitBasculer: '', exp: 9, conf: 10, clarte: 9,
+  },
+  {
+    id: 20, name: 'Olivier', age: 50, emoji: '\u{2696}\u{FE0F}',
+    situation: 'Avocat associe, cabinet 10 personnes',
+    canal: 'Google Search', device: 'Desktop', decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: "WordPress pirate 2 fois. 'Site statique, zero maintenance' repond directement a sa douleur. Adresse a 10 min de son cabinet.",
+    localisation: 'Bruxelles (Etterbeek)', maturite: 'Comparaison',
+    contexte: "Site WordPress pirate 2 fois. Veut changer de techno, zero maintenance.",
+    impression: "Design sobre et pro = ce qu'il veut pour son cabinet. 'Sites performants' l'attire.",
+    parcours: [['Sites performants', "'Maintenance minimale', 'pas de plugins' = exactement sa douleur"], ['FAQ', 'Prix 5k-18k justifiables vs cout cumule WordPress'], ['Portfolio', 'Pas de ref juridique mais qualite visible'], ['Contact', 'Adresse a Auderghem (10 min), reserve audit']],
+    questionCle: "Un site Astro est-il vraiment impossible a pirater ?",
+    reponse: 'Partiellement', commentReponse: "'Statique', 'pas de plugins', 'maintenance minimale' \u2014 il comprend l'implication sans la technique.",
+    impactVitesse: "Rapide sur desktop, plus rapide que 95% des sites qu'il visite", impactConfiance: "Adresse physique locale = il peut serrer la main",
+    positifs: ['"Zero maintenance" repond a sa douleur #1', 'Site statique = pas piratable', 'Le design du site est la preuve vivante', 'Adresse a 10 min', 'Audit gratuit', 'Prix transparents'],
+    frictions: ['Pas de ref juridique/cabinet', 'Pas de telephone', 'Impression solo', 'Pas de mentions legales (ironie pour un avocat)'],
+    ceQuiFeraitBasculer: '', exp: 8, conf: 8, clarte: 8,
+  },
+  {
+    id: 2, name: 'Catherine', age: 48, emoji: '\u{1F3E2}',
+    situation: 'DG PME logistique, 45 personnes',
+    canal: 'LinkedIn', device: 'Desktop', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: "Le post LinkedIn sur l'automatisation l'a amenee. Le contenu resonne mais le vocabulaire 'startup' la met a distance.",
+    localisation: 'Wavre', maturite: 'Decouverte',
+    contexte: "Equipe admin perd trop de temps en reporting manuel. A vu un post de Sebastien sur LinkedIn.",
+    impression: "Joli mais 'partenaire digital' sonne corporate. Cherche 'automatisation' immediatement.",
+    parcours: [['Automatisation IA', '"Reporting automatise" resonne, mais "IA, workflows, API" la decrochent'], ['Prix 800-25k', 'Fourchette trop large, impossible de se projeter'], ['Temoignages', 'Que des startups/tech, pas de PME logistique'], ['Contact', 'Hesite sur l\'audit gratuit']],
+    questionCle: "Combien ca coute concretement pour automatiser le reporting de 45 personnes ?",
+    reponse: 'Partiellement', commentReponse: "La page automation parle de gains de temps mais manque d'exemples 'PME logistique'.",
+    impactVitesse: "Aucun probleme, elle ne remarque rien", impactConfiance: "Pas de telephone, pas de mentions legales",
+    positifs: ['Post LinkedIn coherent avec le site', 'Methode 4 etapes rassurante', 'Audit gratuit 30 min', 'Parcours Coddy credible'],
+    frictions: ['Vocabulaire startup/tech', 'Pas de ref logistique/industrie', 'Fourchette prix trop large', 'Impression que la cible = startups bruxelloises', 'Pas de telephone'],
+    ceQuiFeraitBasculer: "Un cas client PME/operations avec ROI chiffre (heures recuperees, couts reduits)", exp: 6, conf: 5, clarte: 5,
+  },
+  {
+    id: 6, name: 'Julie', age: 32, emoji: '\u{1F3A8}',
+    situation: 'Designer UX freelance, cherche a collaborer',
+    canal: 'LinkedIn', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: "Impressionnee par le portfolio mais realise que Numinam fait deja le design en interne. Aucun signal de collaboration externe.",
+    localisation: 'Liege', maturite: 'Decouverte',
+    contexte: "A vu le portfolio sur LinkedIn. Cherche une agence dev avec qui proposer des projets.",
+    impression: "Design irremprochable. Mais 'UX & UI Design' dans les services = concurrent, pas partenaire.",
+    parcours: [['Portfolio', 'Qualite graphique confirmee'], ['UX/UI Design', 'Ils font deja exactement son metier'], ['Manifeste', 'Ton authentique mais rien sur la collaboration'], ['Contact', 'Hesite, pas de CTA pour partenaires']],
+    questionCle: "Collaborent-ils avec des designers externes ?",
+    reponse: 'Non', commentReponse: "Aucune mention de partenariat, reseau freelance ou collaboration externe.",
+    impactVitesse: "Chargement instantane, bonne premiere impression", impactConfiance: "Design du site = preuve de competence",
+    positifs: ['Design du site irreprochable', 'Portfolio solide', 'Manifeste authentique', 'Experience mobile fluide'],
+    frictions: ['Page UX/UI = ils font deja son metier', 'Aucun signal de collaboration externe', 'Impression solo', 'Pas de page partenaires'],
+    ceQuiFeraitBasculer: "Une page 'Partenaires' ou une mention 'on collabore avec des freelances specialises'", exp: 8, conf: 7, clarte: 7,
+  },
+  {
+    id: 9, name: 'Marc', age: 45, emoji: '\u{1F3D7}\u{FE0F}',
+    situation: 'Gerant entreprise construction, 30 personnes',
+    canal: 'Google Search', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: "Cherche un outil de suivi de chantier. Les outils internes sur-mesure pourraient convenir mais 15k+ sans ref construction = trop risque.",
+    localisation: 'Charleroi', maturite: 'Decouverte',
+    contexte: "Perd du temps avec Excel pour le suivi de chantier.",
+    impression: "'Automatisation IA' = high-tech. Mais comprennent-ils la construction ?",
+    parcours: [['Automatisation IA', 'Jargon marketing/sales, rien sur chantiers/interventions'], ['Outils internes', 'Dashboards, portails = ca se rapproche. Mais 15k+ minimum'], ['Portfolio', 'Zero ref construction/BTP'], ['FAQ', 'PME 5-100 = il est dedans. Mais le contexte est commercial']],
+    questionCle: "Peuvent-ils construire un outil de suivi de chantier a 15k+ ?",
+    reponse: 'Partiellement', commentReponse: "La capacite technique semble la, mais aucune preuve sectorielle.",
+    impactVitesse: "Rapide sur mobile, pas de frustration", impactConfiance: "Pas de telephone, pas de ref construction",
+    positifs: ['Page outils internes existe', 'Methode rassurante', 'Audit gratuit', 'Prix transparents'],
+    frictions: ['Zero ref construction/BTP', '15k+ sans garantie ROI sectoriel', 'Vocabulaire startup/tech', 'Pas de telephone', 'Concurrence SaaS a 50\u20AC/mois'],
+    ceQuiFeraitBasculer: "Un cas client BTP ou industrie terrain avec ROI mesurable", exp: 5, conf: 5, clarte: 6,
+  },
+  {
+    id: 14, name: 'Koen', age: 39, emoji: '\u{1F1E7}\u{1F1EA}',
+    situation: 'CEO PME industrielle, 80 personnes, Flandre',
+    canal: 'Google Search', device: 'Desktop', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: "Switch FR vers EN fonctionne, mais pas de neerlandais et zero ref industrielle. Laisse l'onglet ouvert, poursuit sa recherche.",
+    localisation: 'Gent', maturite: 'Comparaison',
+    contexte: "Transformation digitale imposee par le board. Cherche un partenaire strategique.",
+    impression: "Titre en francais dans Google = premier frein. Switch EN sauve la visite.",
+    parcours: [['Accueil FR', 'Switch vers EN immediat'], ['Portfolio', 'Zero ref industrielle, aucune entreprise 50+'], ['Approche', '4-6 semaines semble court pour transformation digitale'], ['FAQ', 'PME 5-100, mais le ton est startup'], ['Contact', 'Hesite, laisse l\'onglet ouvert']],
+    questionCle: "Peuvent-ils gerer une transformation digitale pour 80 personnes ?",
+    reponse: 'Partiellement', commentReponse: "La capacite est possible mais rien ne le prouve a l'echelle industrielle.",
+    impactVitesse: "Rapide, navigation fluide", impactConfiance: "Hreflang FR/EN OK, mais pas de NL = signal que la Flandre n'est pas prioritaire",
+    positifs: ['Version anglaise fonctionnelle', 'Prix transparents', 'Manifeste authentique', 'Methode structuree'],
+    frictions: ['Pas de neerlandais', 'Zero ref industrielle', 'Impression solo vs besoin enterprise', '"4-6 semaines" trop court pour son scope', 'Pas de mentions legales/BCE'],
+    ceQuiFeraitBasculer: "Une version neerlandaise et un cas client PME industrielle 50+ personnes", exp: 5, conf: 5, clarte: 7,
+  },
+  {
+    id: 18, name: 'David', age: 42, emoji: '\u{1F512}',
+    situation: 'CTO scale-up data, 40 personnes, obsede securite',
+    canal: 'Google Search', device: 'Desktop', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: "Temoignage Zetes credible, mais FAQ GDPR trop superficielle. Envoie le lien a son DPO avant de decider.",
+    localisation: 'Bruxelles', maturite: 'Comparaison',
+    contexte: "Veut automatiser mais inquiet pour la conformite donnees. Cherche GDPR compliant.",
+    impression: "'Bruxelles' = juridiction EU, bon signal. Cherche immediatement les garanties GDPR.",
+    parcours: [['Automatisation IA', 'Cherche mentions securite, trouve peu'], ['FAQ securite', 'GDPR mentionne mais generique : pas de DPA, pas de serveurs, pas de sous-traitants'], ['Footer', 'Pas de mentions legales, pas de politique confidentialite'], ['Contact', 'Hesite, envoie le lien a son DPO']],
+    questionCle: "Quel est leur niveau de conformite GDPR en pratique ?",
+    reponse: 'Partiellement', commentReponse: "FAQ mentionne GDPR et serveurs EU, mais sans DPA, sans detail technique, sans mentions legales.",
+    impactVitesse: "Rapide, aucun probleme", impactConfiance: "Observatory B (CSP manquant), signal faible pour un CTO securite. Pas de mentions legales = comble pour un prestataire GDPR.",
+    positifs: ['Adresse physique belge = juridiction EU', 'Temoignage Zetes (entreprise serieuse)', 'Prix transparents', 'Cas Coddy credible'],
+    frictions: ['FAQ GDPR superficielle', 'Pas de mentions legales / politique confidentialite', 'Pas de page securite dediee', 'Impression solo', 'Pas de ref data/securite'],
+    ceQuiFeraitBasculer: "Une page /securite avec DPA telechargeable, liste des sous-traitants, localisation serveurs", exp: 7, conf: 6, clarte: 7,
+  },
+  {
+    id: 19, name: 'Charlotte', age: 33, emoji: '\u{1F331}',
+    situation: 'Fondatrice mode durable, 2 personnes',
+    canal: 'Instagram', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: "Design magnifique sur Instagram confirme. Mais 5 000\u20AC = tout son budget annuel. Met en favori, comparera d'abord ailleurs.",
+    localisation: 'Bruxelles', maturite: 'Decouverte',
+    contexte: "Son site Wix ne convainc pas les acheteurs B2B. A vu une story design Numinam.",
+    impression: "Design exactement ce qu'elle veut. Mais 'partenaire digital' sonne corporate.",
+    parcours: [['Accueil', 'Design confirme, PME & startups = partiellement elle'], ['Sites performants', 'PageSpeed 95+, conversion-first. Prix 5k-18k : estomac noue'], ['FAQ', 'Pas de formule allegee ni paiement echelonne'], ['Portfolio', 'Pas de ref mode/creatif/TPE']],
+    questionCle: "Ca vaut 5 000\u20AC quand on est que 2 ?",
+    reponse: 'Non', commentReponse: "Pas de formule TPE, pas de paiement echelonne, pas de ref micro-structure.",
+    impactVitesse: "Instantane sur mobile, experience agreable", impactConfiance: "Design du site tient la promesse de la story Instagram",
+    positifs: ['Design magnifique', 'Chargement instantane', 'Prix transparents', 'Methode rassurant', 'Audit gratuit'],
+    frictions: ['5k minimum = tout son budget annuel', 'Pas de formule TPE/entry-level', 'Pas de ref mode/creatif', 'Temoignages PME/startup tech', 'Ton "partenaire strategique" la distance'],
+    ceQuiFeraitBasculer: "Un pack 'site essentiel' a 2 500-3 500\u20AC ou un paiement en 3 fois", exp: 8, conf: 7, clarte: 7,
+  },
+  {
+    id: 3, name: 'Thomas', age: 29, emoji: '\u{1F4BB}',
+    situation: 'Dev freelance Astro, cherche partenaire',
+    canal: 'Google Search', device: 'Mobile', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: "Qualite technique irreprochable mais Numinam est un concurrent direct, pas un partenaire. Aucune porte de collaboration.",
+    localisation: 'Gand', maturite: 'Comparaison',
+    contexte: "Client demande un site Astro complexe, il ne maitrise pas seul. Cherche un partenaire dev.",
+    impression: "Stack identique a la sienne. Design pro. Mais 'je fais tout seul' = concurrent, pas partenaire.",
+    parcours: [['Sites performants', 'Astro, Tailwind, PageSpeed 98 = validation tech'], ['Portfolio', 'Bon niveau, comparable ou superieur'], ['Manifeste', '"Je fais tout seul" = pas de place pour lui'], ['Source code', 'Inspect devtools, code propre. Note CSP manquant.']],
+    questionCle: "Peut-on collaborer ou est-ce un concurrent ?",
+    reponse: 'Non', commentReponse: "Aucune mention de partenariat, sous-traitance ou white-label.",
+    impactVitesse: "LCP 1.9s mobile, CLS 0 = validation de competence", impactConfiance: "CSP manquant note par le dev = incoherence legere",
+    positifs: ['Stack identique = validation de ses propres choix', 'Portfolio de bonne qualite', 'Code source propre', 'Experience mobile fluide'],
+    frictions: ['Concurrent direct sur le meme positionnement', 'Aucun programme partenaire', 'CSP manquant', 'Manifeste ferme la porte collaboration'],
+    ceQuiFeraitBasculer: "Un programme partenaire ou une offre white-label pour freelances", exp: 7, conf: 7, clarte: 8,
+  },
+  {
+    id: 4, name: 'Sophie', age: 41, emoji: '\u{1F3E5}',
+    situation: 'Directrice cabinet medical, 5 personnes',
+    canal: 'Google Search', device: 'Mobile', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: "Budget 1 500-2 000\u20AC, prix plancher 5 000\u20AC. Quitte en 90 secondes sans frustration \u2014 filtrage correct.",
+    localisation: 'Namur', maturite: 'Decouverte',
+    contexte: "Site obsolete, patients ne trouvent pas le cabinet. Budget tres limite.",
+    impression: "'Partenaire digital', 'IA', 'outils internes' = pas pour un petit cabinet.",
+    parcours: [['Accueil', "'PME et startups' repete, pas 'professions liberales'"], ['Sites performants', "'A partir de 5 000\u20AC' = 2.5x son budget"], ['FAQ', 'Pas de tarif associatif ou petit budget'], ['Quitte', 'Retour Google en 90 secondes']],
+    questionCle: "Peuvent-ils faire un site pour mon cabinet a moins de 2 000\u20AC ?",
+    reponse: 'Non', commentReponse: "Prix plancher 5 000\u20AC, aucune offre simplifiee ou petit budget.",
+    impactVitesse: "Rapide, fluide, agreable malgre le mismatch prix", impactConfiance: "Site beau et pro = paradoxalement renforce le 'c'est trop cher pour moi'",
+    positifs: ['Prix affiche clairement = pas de perte de temps', 'Site rapide et clair', 'FAQ utile'],
+    frictions: ['5k minimum = hors budget', 'Vocabulaire tech/startup', 'Zero ref sante/medical', 'Pas de formule entry-level', 'Pas de telephone'],
+    ceQuiFeraitBasculer: "Rien \u2014 Sophie n'est pas la cible. Mais un 'vous cherchez un site plus simple ?' avec recommandation laisserait une bonne impression.", exp: 4, conf: 6, clarte: 4,
+  },
+  {
+    id: 8, name: 'Amina', age: 27, emoji: '\u{1F4F1}',
+    situation: 'Community manager agence digitale, veille',
+    canal: 'LinkedIn', device: 'Mobile', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: "Venue par curiosite pour le manifeste. Repart avec une bonne impression mais zero intention d'action. Pure veille.",
+    localisation: 'Bruxelles', maturite: 'Decouverte',
+    contexte: "Veille concurrentielle, a vu le manifeste partage sur LinkedIn.",
+    impression: "Design clean, dark mode elegant. Ca a l'air premium.",
+    parcours: [['Manifeste', 'Ton direct, anti-corporate, screenshots pour son equipe'], ['Portfolio', '5 projets, bon niveau, petit acteur'], ['Accueil', 'Scan rapide des temoignages et chiffres'], ['Quitte', 'Mission accomplie, veille terminee']],
+    questionCle: "Qu'est-ce qui les differencie de notre agence ?",
+    reponse: 'Partiellement', commentReponse: "Le manifeste est differenciateur, le positionnement ecosysteme est clair. Mais c'est un solo vs une agence.",
+    impactVitesse: "Page manifeste chargee instantanement depuis LinkedIn", impactConfiance: "OG complet = belle preview dans le post LinkedIn",
+    positifs: ['Manifeste memorable et partageable', 'Design premium', 'Ton authentique', 'Portfolio Coddy original'],
+    frictions: ['Aucune friction significative \u2014 pas un prospect'],
+    ceQuiFeraitBasculer: "Rien \u2014 Amina n'est pas un prospect et ne le sera jamais.", exp: 8, conf: 7, clarte: 7,
+  },
+  {
+    id: 10, name: 'Elise', age: 38, emoji: '\u{1F6D2}',
+    situation: 'Fondatrice e-commerce cosmetiques bio',
+    canal: 'IA (Perplexity)', device: 'Desktop', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: "Zero mention e-commerce, zero ref boutique en ligne. Ctrl+F 'commerce' = 0 resultat. Quitte en 5 minutes.",
+    localisation: 'Luxembourg', maturite: 'Comparaison',
+    contexte: "Shopify trop cher en commissions, veut migrer vers du headless commerce.",
+    impression: "Design pro, mais ou est le e-commerce ? Pas dans les services, pas dans le portfolio, pas dans la FAQ.",
+    parcours: [['Accueil', '3 piliers = sites, automation, outils. Pas de e-commerce'], ['Sites performants', "'Sites marketing' pas 'sites transactionnels'"], ['Portfolio', 'Zero boutique en ligne'], ['Ctrl+F "commerce"', 'Zero resultat'], ['Quitte', 'Retourne sur Perplexity']],
+    questionCle: "Font-ils du e-commerce ou juste du vitrine ?",
+    reponse: 'Non', commentReponse: "Le mot 'e-commerce' n'apparait nulle part. Incompatibilite d'offre.",
+    impactVitesse: "Correcte sur desktop, pas de friction", impactConfiance: "SEO 100/100 l'a amene mais le contenu ne matche pas la requete",
+    positifs: ['Design professionnel', 'Prix transparents', 'Stack Astro moderne'],
+    frictions: ['Zero mention e-commerce', 'Aucune ref boutique en ligne', 'Pas de mention paiement/checkout', '"Sites marketing" pas "transactionnels"'],
+    ceQuiFeraitBasculer: "Soit ajouter une offre e-commerce (Astro + Snipcart), soit clarifier 'nous ne faisons pas de e-commerce' dans la FAQ.", exp: 7, conf: 7, clarte: 8,
+  },
+  {
+    id: 12, name: 'Isabelle', age: 55, emoji: '\u{1F4DA}',
+    situation: 'Directrice centre formation adultes (ASBL)',
+    canal: 'Google Search', device: 'Desktop', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: "Budget ASBL 1 500\u20AC/an. Prix 5 000\u20AC minimum. Zero ref associatif. Quitte sans amertume en 1 min 45.",
+    localisation: 'Bruxelles', maturite: 'Decouverte',
+    contexte: "Site WordPress vieillissant, maintenance penible. Budget limite.",
+    impression: "'PME et startups' repete, pas 'associations' ni 'ASBL'. Pas pour elle.",
+    parcours: [['Accueil', "'PME et startups' = pas son monde"], ['Sites performants', "'A partir de 5 000\u20AC' = 3x son budget annuel web"], ['FAQ', 'Pas de question ASBL, tarif associatif ou secteur non-marchand'], ['Quitte', 'Retour Google, sans amertume']],
+    questionCle: "Y a-t-il un tarif adapte pour les ASBL ?",
+    reponse: 'Non', commentReponse: "Aucune mention ASBL, non-profit ou tarif associatif. Filtrage correct.",
+    impactVitesse: "Aucun probleme technique", impactConfiance: "Site beau et pro, renforce le 'c'est pour les grosses boites'",
+    positifs: ['Prix clairs = elle sait vite', 'Site rapide', 'FAQ utile'],
+    frictions: ['5k minimum hors budget', 'Vocabulaire exclusivement commercial', 'Zero ref associatif', 'Ton startup eloigne'],
+    ceQuiFeraitBasculer: "Rien \u2014 hors cible. Sauf si Numinam cree une offre ASBL.", exp: 4, conf: 6, clarte: 7,
+  },
+  {
+    id: 15, name: 'Laura', age: 26, emoji: '\u{1F393}',
+    situation: 'Etudiante dev web, cherche stage Astro/IA',
+    canal: 'LinkedIn', device: 'Mobile', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: "Stack technique impressionnante mais zero signal de recrutement. Solo confirme. Repart en 2 minutes.",
+    localisation: 'Bruxelles', maturite: 'Decouverte',
+    contexte: "Profil Sebastien mentionne Astro et IA. Cherche un stage.",
+    impression: "Clean, tech, moderne. Mais 'c'est une boite ou un freelance ?'",
+    parcours: [['Manifeste', 'Ton direct, philosophie inspirante. Mais rien sur le recrutement'], ['Portfolio', 'Coddy impressionne. Code Astro propre.'], ['Cherche "Equipe"', 'Pas de page equipe, carriere, ni "on recrute"'], ['Quitte', 'Solo confirme, pas de place pour un stagiaire']],
+    questionCle: "Prennent-ils des stagiaires ?",
+    reponse: 'Non', commentReponse: "Aucun signal de recrutement. Impression solo confirmee.",
+    impactVitesse: "Excellent sur mobile, coherent avec la promesse", impactConfiance: "Code source propre = signal pedagogique",
+    positifs: ['Stack moderne Astro + Tailwind v4', 'Manifeste inspirant', 'Code source propre', 'Performance du site = lecon en soi'],
+    frictions: ['Zero mention recrutement/stage', 'Solo confirme', 'Pas de blog technique', 'Pas de GitHub visible'],
+    ceQuiFeraitBasculer: "Un post LinkedIn 'on prend un stagiaire' suffirait.", exp: 7, conf: 7, clarte: 7,
+  },
+  {
+    id: 16, name: 'Benoit', age: 47, emoji: '\u{1F377}',
+    situation: 'Gerant restaurant gastronomique',
+    canal: 'Google Maps', device: 'Mobile', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: "Cherche sur Google Maps, Numinam n'y est pas. Ne verra jamais le site. Appelle une agence avec 4.7 etoiles et 38 avis.",
+    localisation: 'Bruxelles (Saint-Gilles)', maturite: 'Decouverte',
+    contexte: "Veut un site avec reservation en ligne. Reflexe : Google Maps.",
+    impression: "N/A \u2014 ne voit jamais le site. Numinam n'existe pas sur Maps.",
+    parcours: [['Google Maps', 'Tape "agence web bruxelles", Numinam absent'], ['Concurrent', 'Appelle une agence avec fiche GBP complete']],
+    questionCle: "Peuvent-ils faire un site restaurant avec reservation ?",
+    reponse: 'Non', commentReponse: "Question jamais posee. Numinam invisible sur le canal ou Benoit cherche.",
+    impactVitesse: "N/A", impactConfiance: "Pas de GBP = pas d'avis Google = n'existe pas localement",
+    positifs: ['Adresse physique reelle (base pour creer un GBP)'],
+    frictions: ['Pas de fiche GBP', 'Pas de telephone', 'Pas de ref restauration', 'Prix 5k+ vs 1.5-2.5k chez les concurrents locaux'],
+    ceQuiFeraitBasculer: "Creer une fiche Google Business Profile avec photos, avis et telephone", exp: 1, conf: 1, clarte: 1,
+  },
+];
+
+const techVerdicts = [
+  { label: 'Vitesse', verdict: 'Excellent', ok: true, detail: 'Votre site s\'affiche en moins de 2 secondes sur telephone' },
+  { label: 'Securite', verdict: 'B', ok: false, detail: 'Il manque un en-tete de securite (CSP) pour atteindre le A+' },
+  { label: 'SEO', verdict: 'Parfait', ok: true, detail: 'Score 100/100 sur mobile et desktop' },
+  { label: 'Donnees structurees', verdict: 'Complet', ok: true, detail: 'Google et les IA comprennent parfaitement votre activite' },
+  { label: 'Partage reseaux', verdict: 'OK', ok: true, detail: 'Bel apercu quand on partage votre lien sur LinkedIn' },
+];
+
+const tech = {
+  observatory: { grade: 'B', score: 75, testsOk: 9, testsTotal: 10 },
+  pagespdMobile: { performance: 98, accessibility: 100, bestPractices: 96, seo: 100 },
+  pagespdDesktop: { performance: 84, accessibility: 92, bestPractices: 96, seo: 100 },
+  cwv: { lcp: '1.9 s', inp: '60 ms', cls: '0' },
+  headers: [
+    { ok: true, h: 'Strict-Transport-Security (HSTS + preload)' },
+    { ok: true, h: 'X-Content-Type-Options (nosniff)' },
+    { ok: true, h: 'X-Frame-Options (DENY)' },
+    { ok: true, h: 'Referrer-Policy (strict-origin-when-cross-origin)' },
+    { ok: true, h: 'Permissions-Policy' },
+    { ok: false, h: 'Content-Security-Policy (CSP)' },
+  ],
+  schema: [
+    { item: 'JSON-LD present (3 blocs)', ok: true },
+    { item: '@type ProfessionalService', ok: true },
+    { item: 'name, url, description', ok: true },
+    { item: 'address + geo (Auderghem)', ok: true },
+    { item: 'telephone', ok: false },
+    { item: 'logo', ok: true },
+    { item: 'sameAs (LinkedIn)', ok: true },
+    { item: '@type FAQPage (6 questions)', ok: true },
+    { item: 'founder (Sebastien Balieu)', ok: true },
+    { item: 'areaServed (Belgium + Europe)', ok: true },
+  ],
+  og: [
+    { item: 'og:title', ok: true, val: 'Numinam \u2014 Automatisation IA & sites performants' },
+    { item: 'og:description', ok: true, val: '+50 projets livres, 4-6 semaines' },
+    { item: 'og:image', ok: true, val: '1200x630' },
+    { item: 'og:url', ok: true, val: 'https://www.numinam.com/fr/' },
+    { item: 'og:locale + alternate', ok: true, val: 'fr_BE + en_US' },
+    { item: 'twitter:card', ok: true, val: 'summary_large_image' },
+  ],
+  seo: [
+    { item: 'Title optimise', ok: true },
+    { item: 'Meta description', ok: true },
+    { item: 'Un seul H1 par page', ok: true },
+    { item: 'Canonical', ok: true },
+    { item: 'Hreflang (fr/en)', ok: true },
+    { item: 'robots.txt (bots IA autorises)', ok: true },
+    { item: 'sitemap.xml', ok: true },
+    { item: 'Redirection HTTP vers HTTPS', ok: true },
+  ],
+};
+
+const ameliorationsHautes = [
+  {
+    titre: "Montrer qu'il y a une equipe",
+    pourquoi: "12 visiteurs sur 20 se demandent si c'est un one-man-show. Pour des projets a 15k\u20AC+, les prospects veulent savoir qui d'autre intervient. 'Sebastien + 3-4 experts selon les projets' suffirait.",
+    action: "Ajouter une section 'L'equipe' ou 'Comment on travaille' qui mentionne les collaborateurs/specialistes, meme s'ils sont freelances.",
+    impact: '12 visiteurs sur 20',
+  },
+  {
+    titre: 'Diversifier le portfolio',
+    pourquoi: "Vos 5 projets couvrent tech, startup et evenementiel. Les gerants PME, avocats, industriels ou fondatrices ne se reconnaissent pas. Ils ont besoin de voir un cas qui ressemble au leur.",
+    action: "Ajouter 2-3 case studies hors tech avec metriques detaillees (avant/apres, ROI chiffre). Meme des projets simples donnent de la credibilite sectorielle.",
+    impact: '10 visiteurs sur 20',
+  },
+  {
+    titre: 'Ajouter un numero de telephone',
+    pourquoi: "Les gerants PME de 45+ ans et les profils corporate veulent pouvoir decrocher leur telephone. Le Calendly est parfait pour les startups, mais pas pour tout le monde.",
+    action: "Ajouter un numero belge visible dans le header et la page contact, en complement du Calendly.",
+    impact: '7 visiteurs sur 20',
+  },
+];
+
+const ameliorationsUtiles = [
+  { titre: 'Creer une fiche Google Business Profile', detail: "Votre adresse physique est deja en place (Av. des Volontaires 19). Creer un GBP gratuit avec photos, avis et horaires vous rendrait visible sur Maps et apporterait de la credibilite a tous vos visiteurs." },
+  { titre: 'Ajouter le Content-Security-Policy', detail: "C'est le seul en-tete de securite manquant. Un simple ajout dans la configuration Vercel ferait passer votre note de B a A+." },
+  { titre: 'Pages mentions legales et confidentialite', detail: "Obligatoire en Belgique (BCE). Manquantes actuellement. Renforce la confiance des CTO, DPO et acheteurs B2B structures." },
+  { titre: 'Approfondir la FAQ GDPR', detail: "La reponse actuelle est generique. Les CTO veulent savoir : ou sont les donnees, quels LLMs sont utilises, y a-t-il un DPA telechargeable, quelle politique de sous-traitance IA." },
+];
+
+const ameliorationsDiscuter = [
+  { emoji: '\u{1F1E7}\u{1F1EA}', titre: 'Ajouter le neerlandais', detail: "La Flandre represente 60% du PIB belge. L'anglais est un palliatif, pas une solution. Mais c'est un investissement en traduction et maintenance." },
+  { emoji: '\u{1F6D2}', titre: 'Clarifier la position e-commerce', detail: "Plusieurs visiteurs cherchent du e-commerce et ne trouvent rien. Soit ajouter une offre (Astro + Snipcart/Medusa), soit l'exclure explicitement dans la FAQ." },
+  { emoji: '\u{1F4B0}', titre: 'Proposer une offre entry-level', detail: "Les fondatrices TPE (2-3 personnes) adorent votre design mais 5 000\u20AC = leur budget annuel. Un pack a 2 500-3 500\u20AC capterait ce segment. Risque : diluer le positionnement premium." },
+];
+---
+
+<BaseLayout title="Echo Complet \u2014 numinam.com" description="Rapport Echo Complet : 20 visiteurs ont teste votre site. Voici ce qu'ils en pensent." noindex={true} lang="fr" frPath="/echo/numinam">
+
+<!-- 1. HERO -->
+<section class="relative w-full px-6 py-20 md:py-28 overflow-hidden" style="background: #0A0A0A;">
+  <div class="absolute top-[20%] left-[10%] w-[500px] h-[500px] rounded-full blur-[180px] pointer-events-none" style="background: #E86C47; opacity: 0.06;"></div>
+  <div class="relative mx-auto max-w-4xl z-10">
+    <div class="mb-6 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5);">
+      {formuleLabel} &middot; Rapport confidentiel
+    </div>
+    <h1 class="mb-6 text-3xl md:text-4xl font-bold text-white leading-tight tracking-tight">{verdictHero}</h1>
+    <p class="mb-10 text-sm" style="color: rgba(255,255,255,0.4);">
+      Site analyse : <a href={urlSite} target="_blank" class="underline hover:text-white transition-colors">{urlSite}</a> &middot; {kpis.nbPersonas} visiteurs simules &middot; {dateAudit}
+    </p>
+    <div class="grid grid-cols-3 gap-4">
+      <div class="rounded-xl p-5 text-center" style="background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2);">
+        <div class="text-4xl md:text-5xl font-black text-green-400 mb-1">{kpis.nbConvertissent}</div>
+        <div class="text-sm text-green-400/70">vous contactent</div>
+      </div>
+      <div class="rounded-xl p-5 text-center" style="background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2);">
+        <div class="text-4xl md:text-5xl font-black text-amber-400 mb-1">{kpis.nbHesitent}</div>
+        <div class="text-sm text-amber-400/70">hesitent</div>
+      </div>
+      <div class="rounded-xl p-5 text-center" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
+        <div class="text-4xl md:text-5xl font-black mb-1" style="color: rgba(255,255,255,0.5);">{kpis.nbRepartent}</div>
+        <div class="text-sm" style="color: rgba(255,255,255,0.3);">repartent</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. LE CONSTAT -->
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <div class="rounded-2xl p-6 md:p-8 mb-12 border-l-4" style="background: rgba(232,108,71,0.04); border-color: #E86C47;">
+    <p class="text-lg md:text-xl font-medium text-neutral-800 leading-relaxed">{constat}</p>
+  </div>
+  <h2 class="text-xl font-bold text-neutral-900 mb-2">D'ou viennent vos visiteurs</h2>
+  <p class="text-sm text-neutral-500 mb-6">Et combien vous contactent selon leur canal d'arrivee.</p>
+  <div class="space-y-4 mb-12">
+    {canalData.map(c => {
+      const color = c.rate >= 50 ? '#22c55e' : c.rate >= 25 ? '#f59e0b' : '#ef4444';
+      return (
+        <div class="flex items-center gap-4">
+          <div class="w-40 sm:w-48 text-sm text-neutral-700 shrink-0">{c.canal}</div>
+          <div class="flex-1 h-3 bg-neutral-100 rounded-full overflow-hidden">
+            <div class="h-full rounded-full transition-all" style={`width: ${c.rate}%; background: ${color}`}></div>
+          </div>
+          <div class="w-20 text-right">
+            <span class="text-sm font-bold" style={`color: ${color}`}>{c.rate}%</span>
+            <span class="text-xs text-neutral-400 ml-1">({c.convert}/{c.nb})</span>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+  <details class="group mb-4">
+    <summary class="flex items-center gap-2 cursor-pointer text-sm text-neutral-500 hover:text-neutral-700 py-2">
+      <svg class="w-4 h-4 transition-transform group-open:rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      Voir les scores detailles (experience, confiance, clarte)
+    </summary>
+    <div class="grid grid-cols-3 gap-4 mt-3">
+      {[{l:'Experience',v:kpis.experience,d:'Navigation, lisibilite, fluidite'},{l:'Confiance',v:kpis.confiance,d:'Credibilite, preuves, rassurance'},{l:'Clarte',v:kpis.clarte,d:"Comprehension de l'offre et des prix"}].map(s=>(
+        <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
+          <div class="text-2xl font-bold text-neutral-800 mb-1">{s.v}<span class="text-sm text-neutral-400">/10</span></div>
+          <div class="text-xs text-neutral-500">{s.l}</div>
+          <p class="text-[10px] text-neutral-400 mt-1">{s.d}</p>
+        </div>
+      ))}
+    </div>
+  </details>
+</section>
+
+<!-- 3. VOS VISITEURS -->
+<section class="py-16" style="background: #fafafa;">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs</h2>
+    <p class="text-neutral-600 mb-8">Voici ce qui se passe quand quelqu'un cherche vos services et tombe sur votre site.</p>
+
+    {['Convertit','Hesite','Quitte'].map(dec => {
+      const filtered = personas.filter(p => p.decision === dec);
+      const cfg = dec === 'Convertit' ? {border:'border-green-200',badge:'bg-green-600',title:'Ceux qui vous contactent',titleColor:'text-green-800',dot:'bg-green-500',count:kpis.nbConvertissent,countColor:'text-green-600'}
+        : dec === 'Hesite' ? {border:'border-amber-200',badge:'bg-amber-500',title:'Ceux qui hesitent',titleColor:'text-amber-800',dot:'bg-amber-500',count:kpis.nbHesitent,countColor:'text-amber-600'}
+        : {border:'border-neutral-200',badge:'bg-neutral-400',title:'Ceux qui repartent',titleColor:'text-neutral-600',dot:'bg-neutral-400',count:kpis.nbRepartent,countColor:'text-neutral-500'};
+      return (
+        <div class="mb-10">
+          <h3 class={`text-base font-bold ${cfg.titleColor} mb-4 flex items-center gap-2`}>
+            <span class={`w-2.5 h-2.5 rounded-full ${cfg.dot} inline-block`}></span>
+            {cfg.title}
+            <span class={`text-sm font-normal ${cfg.countColor}`}>({cfg.count})</span>
+          </h3>
+          <div class="space-y-3">
+            {filtered.map(p => (
+              <details class={`group persona-card bg-white rounded-xl overflow-hidden shadow-sm border ${cfg.border}`} data-canal={p.canal}>
+                <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                  <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1 flex-wrap">
+                      <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                      <span class={`text-[10px] ${cfg.badge} text-white px-1.5 py-0.5 rounded font-medium`}>{p.decisionLabel}</span>
+                    </div>
+                    <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                    <div class="flex flex-wrap items-center gap-1.5">
+                      <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                      <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                      <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                    </div>
+                  </div>
+                  <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                </summary>
+                <div class={`px-4 pb-5 border-t ${cfg.border}`}>
+                  <div class="grid gap-4 text-xs mt-4">
+                    <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p><p class="text-neutral-600">{p.contexte}</p></div>
+                    <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Premiere impression (5 sec)</p><p class="text-neutral-600">{p.impression}</p></div>
+                    <div>
+                      <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours sur le site</p>
+                      <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                        {p.parcours.map(([section, reaction]: [string, string]) => (<li><strong class="text-neutral-800">{section}</strong>{reaction ? ` \u2014 ${reaction}` : ''}</li>))}
+                      </ol>
+                    </div>
+                    <div class="bg-neutral-50 rounded-lg p-3">
+                      <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p>
+                      <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
+                      <p class="text-neutral-600">Le site repond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> \u2014 {p.commentReponse}</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                      <div><p class="font-semibold text-green-700 mb-1.5">{'\u2713'} Points positifs</p><ul class="space-y-1 text-neutral-600">{p.positifs.map((pt: string) => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">{'\u00B7'}</span>{pt}</li>)}</ul></div>
+                      <div><p class="font-semibold text-amber-700 mb-1.5">{'\u2717'} Frictions</p><ul class="space-y-1 text-neutral-600">{p.frictions.map((f: string) => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">{'\u00B7'}</span>{f}</li>)}</ul></div>
+                    </div>
+                    {p.ceQuiFeraitBasculer && (
+                      <div class="rounded-lg p-3" style="background: rgba(232,108,71,0.05);">
+                        <p class="font-semibold text-[10px] uppercase tracking-wider mb-1" style="color: #E86C47;">{dec === 'Hesite' ? "Ce qui le ferait passer a l'action" : "Ce qui l'aurait retenu"}</p>
+                        <p style="color: #D4572F;">{p.ceQuiFeraitBasculer}</p>
+                      </div>
+                    )}
+                    <div class="flex gap-6 pt-3 border-t border-neutral-100">
+                      {[{label:'Experience',val:p.exp},{label:'Confiance',val:p.conf},{label:'Clarte',val:p.clarte}].map(s => {
+                        const sColor = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500';
+                        return (<div class="text-center"><span class={`block text-lg font-bold ${sColor}`}>{s.val}</span><span class="text-[10px] text-neutral-400">{s.label}</span></div>);
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </details>
+            ))}
+          </div>
+          {dec === 'Hesite' && (
+            <div class="rounded-xl p-5 mt-4 bg-amber-50 border border-amber-200 flex items-start gap-3">
+              <span class="text-lg shrink-0 mt-0.5">{'\u{1F4A1}'}</span>
+              <div><p class="text-sm font-medium text-amber-900">Ces {kpis.nbHesitent} visiteurs ont besoin de vos services.</p><p class="text-xs text-amber-700 mt-1">Il leur manque un element de rassurance pour passer a l'action. C'est votre plus gros levier de croissance.</p></div>
+            </div>
+          )}
+          {dec === 'Quitte' && (
+            <div class="rounded-xl p-5 mt-4 bg-neutral-100 border border-neutral-200 flex items-start gap-3">
+              <span class="text-lg shrink-0 mt-0.5">{'\u{1F4C9}'}</span>
+              <div><p class="text-sm font-medium text-neutral-800">Chaque visiteur qui repart, c'est un client en moins.</p><p class="text-xs text-neutral-600 mt-1">Certains n'etaient pas dans votre cible — c'est normal. Mais d'autres avaient un vrai besoin et votre site ne les a pas convaincus.</p></div>
+            </div>
+          )}
+        </div>
+      );
+    })}
+  </div>
+</section>
+
+<!-- 4. CE QU'ON RECOMMANDE -->
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <h2 class="text-2xl font-bold text-neutral-900 mb-2">Ce qu'on recommande</h2>
+  <p class="text-neutral-600 mb-8">Actions concretes, classees par impact sur vos visiteurs.</p>
+  <p class="text-sm font-semibold text-red-700 mb-4">Si vous ne changez que {ameliorationsHautes.length} choses :</p>
+  <div class="space-y-4 mb-12">
+    {ameliorationsHautes.map(a => (
+      <div class="bg-white border-2 border-red-200 rounded-xl p-6 shadow-sm">
+        <div class="flex items-start justify-between gap-4 mb-3">
+          <h4 class="font-bold text-neutral-900">{a.titre}</h4>
+          <span class="text-[10px] px-2 py-1 rounded-full bg-red-100 text-red-700 font-semibold shrink-0 whitespace-nowrap">{a.impact}</span>
+        </div>
+        <p class="text-sm text-neutral-600 mb-3">{a.pourquoi}</p>
+        <div class="bg-neutral-50 rounded-lg px-4 py-3 flex items-start gap-2">
+          <svg class="w-4 h-4 text-neutral-400 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+          <p class="text-xs text-neutral-700">{a.action}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+  <h3 class="text-lg font-bold text-neutral-900 mb-2">Utile aussi</h3>
+  <div class="grid md:grid-cols-2 gap-4 mb-12">
+    {ameliorationsUtiles.map(a => (<div class="bg-white border border-neutral-200 rounded-xl p-5"><h4 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h4><p class="text-xs text-neutral-600">{a.detail}</p></div>))}
+  </div>
+  <h3 class="text-lg font-bold text-neutral-900 mb-2">A discuter</h3>
+  <p class="text-sm text-neutral-500 mb-4">Decisions business — pas de bonne ou mauvaise reponse.</p>
+  <div class="space-y-3 mb-12">
+    {ameliorationsDiscuter.map(a => (<div class="bg-neutral-50 border border-neutral-200 rounded-xl p-4 flex gap-3"><span class="text-lg shrink-0">{a.emoji}</span><div><h4 class="font-semibold text-neutral-900 text-sm mb-0.5">{a.titre}</h4><p class="text-xs text-neutral-600">{a.detail}</p></div></div>))}
+  </div>
+  <div class="rounded-2xl p-8 text-center border-2 border-dashed" style="border-color: #E86C47; background: rgba(232,108,71,0.03);">
+    <p class="text-lg font-bold text-neutral-900 mb-2">{kpis.nbPersonas} visiteurs confirment des tendances claires.</p>
+    <p class="text-sm text-neutral-600 mb-6">Avec 100 visiteurs (Echo Pro), vous obtenez une fiabilite statistique : analyse par canal, par maturite, et un appel de 30 min pour parcourir le rapport ensemble.</p>
+    <a href="/echo/" class="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-xl transition-all shadow-md hover:-translate-y-0.5" style="background: linear-gradient(135deg, #E86C47, #D4572F);">Echo Pro — 250&#8364; <span class="text-xs opacity-70 ml-1">(100 visiteurs + appel 30 min)</span></a>
+  </div>
+</section>
+
+<!-- 5. SOUS LE CAPOT -->
+<section class="py-16 border-t border-neutral-200">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-2xl font-bold text-neutral-900 mb-2">Sous le capot</h2>
+    <p class="text-neutral-600 mb-8">Pour les curieux : ce que les outils techniques disent de votre site.</p>
+    <div class="flex flex-wrap gap-3 mb-10">
+      {techVerdicts.map(v => (
+        <div class={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium ${v.ok ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
+          {v.ok ? <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> : <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}
+          <span>{v.label}</span><span class="text-xs opacity-70">{v.verdict}</span>
+        </div>
+      ))}
+    </div>
+
+    {/* PageSpeed */}
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+        <div class="flex items-center gap-3"><span class="text-base">{'\u26A1'}</span><div><h3 class="font-semibold text-neutral-900 text-sm">Vitesse du site</h3><p class="text-[11px] text-neutral-500">{techVerdicts[0].detail}</p></div></div>
+        <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 border-t border-neutral-100">
+        <p class="text-xs text-neutral-500 py-2 mb-2">Scores Google PageSpeed Insights (mobile)</p>
+        <div class="grid grid-cols-4 gap-4 py-2">
+          {['Performance', 'Accessibilite', 'Bonnes pratiques', 'SEO'].map((label, i) => {
+            const scores = [tech.pagespdMobile.performance, tech.pagespdMobile.accessibility, tech.pagespdMobile.bestPractices, tech.pagespdMobile.seo];
+            const score = scores[i]; const color = score >= 90 ? '#22c55e' : score >= 50 ? '#f59e0b' : '#ef4444';
+            return (<div class="text-center"><div class="relative w-14 h-14 mx-auto mb-2"><svg class="w-14 h-14 -rotate-90" viewBox="0 0 36 36"><path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3" /><path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={color} stroke-width="3" stroke-dasharray={`${score}, 100`} stroke-linecap="round" /></svg><span class="absolute inset-0 flex items-center justify-center text-sm font-bold" style={`color: ${color}`}>{score}</span></div><p class="text-[11px] text-neutral-600">{label}</p></div>);
+          })}
+        </div>
+      </div>
+    </details>
+
+    {/* Observatory */}
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+        <div class="flex items-center gap-3"><span class="text-base">{'\u{1F512}'}</span><div><h3 class="font-semibold text-neutral-900 text-sm">Securite</h3><p class="text-[11px] text-neutral-500">{techVerdicts[1].detail}</p></div></div>
+        <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 border-t border-neutral-100">
+        <p class="text-xs text-neutral-500 py-2">Note : {tech.observatory.grade} ({tech.observatory.testsOk}/{tech.observatory.testsTotal} tests passes)</p>
+        {tech.headers.map(h => (<div class="flex items-center gap-2 py-1">{h.ok ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> : <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}<span class={`text-xs ${h.ok ? 'text-neutral-600' : 'text-red-500'}`}>{h.h}</span></div>))}
+      </div>
+    </details>
+
+    {/* Schema.org */}
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+        <div class="flex items-center gap-3"><span class="text-base">{'\u{1F4CA}'}</span><div><h3 class="font-semibold text-neutral-900 text-sm">Donnees structurees (Schema.org)</h3><p class="text-[11px] text-neutral-500">{techVerdicts[3].detail}</p></div></div>
+        <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 border-t border-neutral-100">
+        {tech.schema.map(s => (<div class="flex items-center gap-2 py-1">{s.ok ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> : <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}<span class={`text-xs ${s.ok ? 'text-neutral-600' : 'text-red-500 font-medium'}`}>{s.item}</span></div>))}
+      </div>
+    </details>
+
+    {/* OG */}
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+        <div class="flex items-center gap-3"><span class="text-base">{'\u{1F517}'}</span><div><h3 class="font-semibold text-neutral-900 text-sm">Apercu reseaux sociaux (Open Graph)</h3><p class="text-[11px] text-neutral-500">{techVerdicts[4].detail}</p></div></div>
+        <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 border-t border-neutral-100">
+        {tech.og.map(o => (<div class="flex items-start gap-2 py-1"><svg class="w-3.5 h-3.5 text-green-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><span class="text-xs text-neutral-600">{o.item} <span class="text-neutral-400">{o.val}</span></span></div>))}
+      </div>
+    </details>
+
+    {/* SEO */}
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden bg-white">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+        <div class="flex items-center gap-3"><span class="text-base">{'\u{1F50D}'}</span><div><h3 class="font-semibold text-neutral-900 text-sm">SEO technique</h3><p class="text-[11px] text-neutral-500">{techVerdicts[2].detail}</p></div></div>
+        <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 border-t border-neutral-100">
+        {tech.seo.map(s => (<div class="flex items-center gap-2 py-1"><svg class="w-3.5 h-3.5 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg><span class="text-xs text-neutral-600">{s.item}</span></div>))}
+      </div>
+    </details>
+
+    <div class="mt-8 rounded-xl p-5 bg-white border border-neutral-200 flex items-start gap-3">
+      <span class="text-lg shrink-0 mt-0.5">{'\u{1F527}'}</span>
+      <div><p class="text-sm font-medium text-neutral-800">Votre site est deja tres bien construit techniquement.</p><p class="text-xs text-neutral-600 mt-1">Les quelques ajustements recommandes (CSP, mentions legales) sont rapides a implementer et fermeraient les dernieres portes ouvertes.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. METHODOLOGIE -->
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-neutral-200">
+  <h2 class="text-base font-bold text-neutral-900 mb-4">Comment ca marche</h2>
+  <ol class="space-y-3 text-sm text-neutral-600">
+    {['On scrape votre site \u2014 on lit chaque page comme un visiteur le ferait','On audite la technique \u2014 vitesse, securite, referencement, donnees structurees',`On cree ${kpis.nbPersonas} profils realistes \u2014 adaptes a votre secteur et votre zone geographique`,'Chaque profil visite votre site et donne son avis \u2014 premiere impression, parcours, decision','On compile les resultats \u2014 frictions recurrentes, canaux performants, recommandations'].map((t,i) => (
+      <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">{i+1}</span><span>{t}</span></li>
+    ))}
+  </ol>
+</section>
+
+<!-- 7. CTA FINAL -->
+<section class="relative w-full px-6 py-20 overflow-hidden" style="background: #0A0A0A;">
+  <div class="absolute bottom-[10%] right-[10%] w-[400px] h-[400px] rounded-full blur-[160px] pointer-events-none" style="background: #E86C47; opacity: 0.05;"></div>
+  <div class="relative mx-auto max-w-3xl z-10 text-center">
+    <h2 class="text-2xl md:text-3xl font-bold text-white mb-4 leading-tight">20 visiteurs. Imaginez ce que 100 prouveraient.</h2>
+    <p class="text-sm mb-8" style="color: rgba(255,255,255,0.5);">L'Echo Pro : 100 visiteurs pour une fiabilite statistique, analyse par canal et par maturite, et 30 minutes ensemble pour parcourir le rapport.</p>
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+      <a href="/echo/" class="inline-flex items-center gap-2 px-8 py-4 text-white font-semibold rounded-xl transition-all shadow-lg hover:-translate-y-0.5" style="background: linear-gradient(135deg, #E86C47, #D4572F); box-shadow: 0 4px 24px rgba(232, 108, 71, 0.35);">
+        Echo Pro — 250&#8364;
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      </a>
+      <a href="/contact" class="inline-flex items-center gap-2 px-8 py-4 border border-neutral-600 font-semibold rounded-xl transition-all hover:border-white/40" style="color: rgba(255,255,255,0.6);">En discuter d'abord</a>
+    </div>
+  </div>
+</section>
+
+</BaseLayout>
