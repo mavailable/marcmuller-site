@@ -6,11 +6,13 @@ interface Props {
   lang?: 'fr' | 'en';
   frPath?: string;
   enPath?: string;
+  ctaOverrideLabel?: string;
+  ctaOverrideHref?: string;
 }
 
 import { business } from '@data/business';
 
-const { lang = 'fr', frPath, enPath } = Astro.props;
+const { lang = 'fr', frPath, enPath, ctaOverrideLabel, ctaOverrideHref } = Astro.props;
 
 // Format phone for display: +33 6 88 76 66 48
 const phoneRaw = business.phone;
@@ -32,8 +34,8 @@ const nav = lang === 'en'
       { href: '/qui-suis-je', label: 'Qui suis-je', aria: 'En savoir plus sur Marc', event: 'nav-qui-suis-je' },
     ];
 
-const ctaLabel = lang === 'en' ? 'Order — €490' : 'Commander — 490€';
-const ctaHref = lang === 'en' ? '/en/contact' : '/commander';
+const ctaLabel = ctaOverrideLabel ?? (lang === 'en' ? 'Order — €490' : 'Commander — 490€');
+const ctaHref = ctaOverrideHref ?? (lang === 'en' ? '/en/contact' : '/commander');
 // Language switcher URLs
 const switchToFR = frPath ?? '/';
 const switchToEN = enPath ?? '/en/';
