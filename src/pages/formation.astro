@@ -294,6 +294,66 @@ import '../styles/global.css';
       color: #6B6B6B;
     }
 
+    /* --- Oussama expandable card --- */
+    .testi-card-featured {
+      background: white;
+      border-radius: 16px;
+      padding: 1.75rem;
+      box-shadow: 0 2px 16px rgba(0,0,0,0.06);
+      grid-column: 1 / -1;
+      border: 2px solid #E86C47;
+      position: relative;
+    }
+    .testi-card-featured .featured-badge {
+      position: absolute;
+      top: -10px;
+      right: 16px;
+      background: #E86C47;
+      color: white;
+      font-size: 0.6rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.25rem 0.75rem;
+      border-radius: 100px;
+    }
+    .testi-truncated {
+      max-height: 120px;
+      overflow: hidden;
+      position: relative;
+      transition: max-height 0.5s ease;
+    }
+    .testi-truncated.expanded {
+      max-height: 2000px;
+    }
+    .testi-truncated:not(.expanded)::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 50px;
+      background: linear-gradient(transparent, white);
+      pointer-events: none;
+    }
+    .btn-lire-plus {
+      display: inline-block;
+      margin-top: 0.75rem;
+      background: none;
+      border: 1px solid #E86C47;
+      color: #E86C47;
+      font-size: 0.75rem;
+      font-weight: 700;
+      padding: 0.35rem 1rem;
+      border-radius: 6px;
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn-lire-plus:hover {
+      background: #E86C47;
+      color: white;
+    }
+
     /* --- Pricing / CTA --- */
     .pricing {
       background: #1A1A1A;
@@ -478,6 +538,60 @@ import '../styles/global.css';
       100% { opacity: 0; transform: translateY(110vh) rotate(720deg); }
     }
 
+    /* --- Hero testimonial teaser --- */
+    .hero-testi-teaser {
+      margin-top: 3rem;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(232,108,71,0.35);
+      border-radius: 14px;
+      padding: 1.25rem 1.5rem;
+      max-width: 640px;
+      text-align: left;
+      position: relative;
+    }
+    .hero-testi-badge {
+      display: inline-block;
+      background: #E86C47;
+      color: white;
+      font-size: 0.6rem;
+      font-weight: 800;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      padding: 0.2rem 0.7rem;
+      border-radius: 100px;
+      margin-bottom: 0.75rem;
+    }
+    .hero-testi-quote {
+      font-size: 0.9rem;
+      color: #D0D0D0;
+      font-style: italic;
+      line-height: 1.6;
+      margin-bottom: 0.75rem;
+    }
+    .hero-testi-meta {
+      font-size: 0.75rem;
+      color: #6B6B6B;
+      font-weight: 700;
+      margin-bottom: 0.75rem;
+    }
+    .btn-testi-suite {
+      display: inline-block;
+      background: none;
+      border: 1px solid #E86C47;
+      color: #E86C47;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 0.3rem 0.9rem;
+      border-radius: 6px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn-testi-suite:hover {
+      background: #E86C47;
+      color: white;
+    }
+
     /* Responsive */
     @media (max-width: 640px) {
       .old-prices { flex-direction: column; align-items: center; gap: 0.25rem; }
@@ -509,6 +623,20 @@ import '../styles/global.css';
       <span>✅ <strong>2 347</strong> élèves</span>
       <span>⭐ <strong>4.97/5</strong> sur 1 800 avis</span>
       <span>🏆 <strong>#1</strong> formation vibe coding France</span>
+    </div>
+
+    <div class="hero-testi-teaser">
+      <div class="hero-testi-badge">🎤 Recommandation VIP</div>
+      <p class="hero-testi-quote">
+        "Écoute, je vais être transparent avec toi. Quand Marc m'a envoyé un DM pour me parler de sa formation, au début j'ai cru que c'était un scam. Et je m'y connais en scams, parce qu'en 2014 j'ai perdu 2,3 millions de dollars à cause d'un type que j'avais rencontré dans un rooftop bar à Singapour — mais c'est pas le sujet…"
+      </p>
+      <div class="hero-testi-meta">Oussama Haha — Serial entrepreneur, investisseur, philosophe du kebab</div>
+      <a class="btn-testi-suite" href="#temoignages" onclick="
+        event.preventDefault();
+        document.getElementById('oussama-text').classList.add('expanded');
+        document.getElementById('btn-oussama').textContent = '😮‍💨 Ok j\'ai compris, replier';
+        document.getElementById('temoignages').scrollIntoView({ behavior: 'smooth' });
+      ">📖 Lire la suite (il en a encore beaucoup)</a>
     </div>
   </section>
 
@@ -618,7 +746,7 @@ import '../styles/global.css';
   <!-- ============================
        TÉMOIGNAGES
        ============================ -->
-  <section class="testimonials">
+  <section class="testimonials" id="temoignages">
     <div class="testimonials-inner">
       <div class="overline reveal" style="text-align:center;">Ils ont transformé leur vie</div>
       <h2 class="heading reveal" style="color:#1A1A1A; text-align:center;">
@@ -626,6 +754,55 @@ import '../styles/global.css';
         <span style="color:#E86C47;">(résultats non représentatifs)</span>
       </h2>
       <div class="testimonials-grid">
+
+        <!-- OUSSAMA A. — Encart featured, trop long -->
+        <div class="testi-card-featured reveal">
+          <div class="featured-badge">🎤 Recommandation VIP</div>
+          <div class="testi-stars">★★★★★</div>
+          <div class="testi-truncated" id="oussama-text">
+            <p class="testi-text">
+              "Écoute, je vais être transparent avec toi. Quand Marc m'a envoyé un DM pour me parler de sa formation, au début j'ai cru que c'était un scam. Et je m'y connais en scams, parce qu'en 2014 j'ai perdu 2,3 millions de dollars à cause d'un type que j'avais rencontré dans un rooftop bar à Singapour — mais c'est pas le sujet.
+            </p>
+            <p class="testi-text">
+              Le sujet c'est que Marc, c'est le genre de mec qui comprend un truc fondamental que 99,7% des entrepreneurs ne comprennent pas. Et je dis 99,7% parce que j'ai fait le calcul exact un soir dans un avion entre Dubaï et São Paulo. J'étais en classe éco, parce que c'est un choix philosophique — quand t'as vendu trois boîtes tu te rends compte que le vrai luxe c'est l'inconfort, ça te maintient dans un état de tension créative. Bref.
+            </p>
+            <p class="testi-text">
+              Donc la formation. J'ai regardé le module 1 un dimanche matin en mangeant un kebab — et là, j'ai eu une épiphanie. Ça m'était pas arrivé depuis 2017, quand j'ai compris en plein milieu d'un TEDx que la blockchain allait remplacer les notaires. Bon, ça s'est pas passé exactement comme ça, mais l'intuition était bonne. Comme pour la formation de Marc.
+            </p>
+            <p class="testi-text">
+              Ce que Marc fait avec le Vibe Coding, c'est exactement ce que j'ai fait quand j'ai lancé ma première boîte à 19 ans dans le salon de ma mère à Barbès. Sauf que lui il a un terminal et moi j'avais un téléphone fixe et un annuaire. Mais l'énergie est la même. Le hustle est le même. La faim est la même. Et ça, ça ne s'apprend pas. Sauf dans cette formation, apparemment.
+            </p>
+            <p class="testi-text">
+              Donc oui, je recommande. Pas parce que Marc m'a payé — il m'a rien payé, d'ailleurs il m'a même pas offert un café, ce qui est un signe de caractère. Les meilleurs entrepreneurs que j'ai rencontrés sont tous radins. Jeff Bezos m'a fait payer un café à Seattle en 2016. Enfin c'était pas Jeff directement, c'était son assistant, mais l'énergie était la même."
+            </p>
+          </div>
+          <button class="btn-lire-plus" id="btn-oussama" onclick="
+            const el = document.getElementById('oussama-text');
+            const btn = document.getElementById('btn-oussama');
+            if (el.classList.contains('expanded')) {
+              el.classList.remove('expanded');
+              btn.textContent = '📖 Lire la suite (il en a encore beaucoup)';
+            } else {
+              el.classList.add('expanded');
+              btn.textContent = '😮‍💨 Ok j\'ai compris, replier';
+            }
+          ">📖 Lire la suite (il en a encore beaucoup)</button>
+          <div class="testi-author" style="margin-top: 1rem;">Oussama Haha — Serial entrepreneur, investisseur, philosophe du kebab</div>
+        </div>
+
+        <!-- YOMI D. — Encart court et formaté -->
+        <div class="testi-card reveal">
+          <div class="testi-stars">★★★★★</div>
+          <p class="testi-text">
+            "J'ai testé 347 formations en ligne cette année. Celle de Marc est dans mon top 2. Avec la mienne.<br /><br />
+            ROI : incalculable.<br />
+            Valeur perçue : 10x le prix.<br />
+            Taux de satisfaction : 200%.<br /><br />
+            PS : Si vous voulez aller encore plus loin, j'ai une formation à 1 997€ qui explique comment utiliser cette formation."
+          </p>
+          <div class="testi-author">Yomi D. — Formateur de formateurs, e-commerce, dropshipping, crypto, IA, et bientôt cuisine</div>
+        </div>
+
         <div class="testi-card reveal">
           <div class="testi-stars">★★★★★</div>
           <p class="testi-text">
