@@ -1,0 +1,425 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+
+const title = "J'ai vibe-codé un outil pour voir mon site avec les yeux de mes visiteurs";
+const description = "J'avais besoin d'un regard neuf sur mes propres sites — sans solliciter une faveur à chaque fois. Alors j'ai construit Echo, un outil qui simule des visites et vous dit exactement où vous perdez vos clients. Voici ce que j'ai découvert sur marcm.fr, et comment le tester sur le vôtre.";
+
+const publishDate = '2026-04-07';
+const readTime = 7;
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  ogType="article"
+  ogImage="/og-default.png"
+  lang="fr"
+  frPath="/journal/echo-outil-audit-visiteurs"
+  enPath="/en/blog/echo-website-visitor-audit-tool"
+>
+  <!-- HERO -->
+  <section class="relative w-full bg-[#0D0D0D] px-6 py-16 md:px-8 md:py-24 overflow-hidden">
+    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 40px 40px;"></div>
+
+    <div class="relative mx-auto max-w-3xl z-10">
+      <a href="/journal" class="inline-flex items-center gap-2 text-sm text-neutral-300 hover:text-white transition-colors mb-8">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" /></svg>
+        Retour au journal
+      </a>
+
+      <div class="flex flex-wrap items-center gap-3 mb-6">
+        <span class="inline-block rounded-full border border-violet-400/40 bg-violet-400/15 px-3 py-1 text-xs font-semibold text-violet-300">
+          Stratégie
+        </span>
+        <span class="text-sm text-neutral-400">7 avril 2026</span>
+        <span class="text-sm text-neutral-400">•</span>
+        <span class="text-sm text-neutral-400">{readTime} min de lecture</span>
+      </div>
+
+      <h1 class="mb-6 text-3xl font-bold leading-tight text-white md:text-5xl">
+        {title}
+      </h1>
+      <p class="text-lg text-neutral-300 md:text-xl leading-relaxed">
+        {description}
+      </p>
+    </div>
+  </section>
+
+  <!-- ARTICLE BODY -->
+  <section class="w-full bg-[var(--color-bg)] px-6 py-16 md:px-8 md:py-24">
+    <div class="mx-auto max-w-3xl">
+      <article class="rounded-xl bg-white border border-[var(--color-border)] p-8 md:p-12 shadow-sm">
+        <div class="prose max-w-none">
+
+          <!-- Table des matières -->
+          <nav class="mb-12 rounded-xl bg-[var(--color-bg-alt)] border border-[var(--color-border)] p-6 not-prose">
+            <p class="mb-4 text-xs font-bold uppercase tracking-widest text-[var(--color-text-muted)]">Au programme</p>
+            <ol class="space-y-2 text-sm">
+              <li><a href="#origine" class="text-[var(--color-accent)] hover:underline font-medium">1. Pourquoi j'ai construit cet outil</a></li>
+              <li><a href="#comment-ca-marche" class="text-[var(--color-accent)] hover:underline font-medium">2. Comment Echo fonctionne</a></li>
+              <li><a href="#rapport-marcm" class="text-[var(--color-accent)] hover:underline font-medium">3. Ce que j'ai découvert sur marcm.fr</a></li>
+              <li><a href="#formules" class="text-[var(--color-accent)] hover:underline font-medium">4. Les formules disponibles</a></li>
+              <li><a href="#tester" class="text-[var(--color-accent)] hover:underline font-medium">5. Tester sur votre site</a></li>
+            </ol>
+          </nav>
+
+          <!-- Intro -->
+          <section class="mb-12">
+            <p class="mb-4 text-lg text-[var(--color-text)]">
+              Il y a quelques semaines, je me suis posé une question simple : est-ce que mon propre site est bon ?
+            </p>
+            <p class="mb-4 text-[var(--color-text)]">
+              Pas dans le sens "est-ce que le code est propre" — ça, je sais le mesurer. Mais dans le sens : est-ce qu'un artisan qui tombe dessus depuis Google comprend immédiatement ce que je propose ? Est-ce qu'il fait confiance ? Est-ce qu'il passe à l'action ?
+            </p>
+            <p class="mb-6 text-[var(--color-text)]">
+              Je ne pouvais pas demander à tous mes contacts de "regarder mon site" à chaque itération. Alors j'ai fait ce que j'aurais probablement dû faire depuis le début : j'ai construit un outil.
+            </p>
+          </section>
+
+          <!-- Section 1 -->
+          <section id="origine" class="mb-12">
+            <h2 class="mb-6 text-2xl font-bold text-[var(--color-text)]">
+              1. Pourquoi j'ai construit cet outil
+            </h2>
+
+            <p class="mb-4 text-[var(--color-text)]">
+              Je suis développeur. Quand j'ai un problème récurrent, mon réflexe naturel, c'est de l'automatiser. Ce projet — que j'appelle Echo — est un bon exemple de vibe coding : j'avais un besoin clair, j'ai prototypé vite, j'ai itéré.
+            </p>
+            <p class="mb-4 text-[var(--color-text)]">
+              L'idée de départ était simple. Je voulais simuler des visiteurs "réalistes" sur mon site — pas des bots génériques qui regardent le HTML, mais des personas avec un profil, un canal d'arrivée, un appareil, un niveau de maturité de décision. Des visiteurs qui ont une histoire et qui réagissent comme le ferait un vrai client potentiel.
+            </p>
+            <p class="mb-6 text-[var(--color-text)]">
+              L'outil génère ces personas, simule leurs parcours, et produit un rapport structuré : qui convertit, qui hésite, qui repart — et surtout <em>pourquoi</em>.
+            </p>
+
+            <div class="rounded-xl border-l-4 border-[var(--color-accent)] bg-orange-50 pl-5 py-4 pr-4 not-prose mb-6">
+              <p class="text-sm text-[var(--color-text)] leading-relaxed">
+                <strong>En clair :</strong> Echo envoie des visiteurs IA sur votre site. Chacun a un profil précis — âge, profession, appareil, canal d'arrivée, budget — et vous rapporte ce qu'il pense, ce qui l'a convaincu, ce qui l'a bloqué.
+              </p>
+            </div>
+
+            <p class="text-[var(--color-text)]">
+              Une fois l'outil construit et testé sur mes propres sites, j'ai décidé de le proposer à d'autres. Non pas parce que c'est un produit fini et parfait — c'est encore artisanal, clairement — mais parce que les retours que j'en tire sont utiles, et que je pense que d'autres pourraient en profiter.
+            </p>
+          </section>
+
+          <!-- Screenshot Echo landing -->
+          <div class="my-10 not-prose">
+            <a href="https://marcm.fr/echo/" target="_blank" rel="noopener noreferrer">
+              <img
+                src="/images/journal/echo-landing.webp"
+                alt="Page d'accueil Echo — outil d'audit visiteurs pour sites web"
+                class="w-full rounded-xl border border-[var(--color-border)] shadow-md hover:shadow-lg transition-shadow"
+                loading="lazy"
+                width="1440"
+                height="900"
+              />
+            </a>
+            <p class="mt-3 text-center text-xs text-[var(--color-text-muted)]">
+              La page Echo sur marcm.fr — 3 formules, de gratuit à 250€ HT
+            </p>
+          </div>
+
+          <!-- Section 2 -->
+          <section id="comment-ca-marche" class="mb-12">
+            <h2 class="mb-6 text-2xl font-bold text-[var(--color-text)]">
+              2. Comment Echo fonctionne
+            </h2>
+
+            <p class="mb-6 text-[var(--color-text)]">
+              Je vous donne l'URL de votre site. L'outil génère un lot de personas et simule leurs visites. Chaque persona a un profil détaillé :
+            </p>
+
+            <div class="space-y-3 mb-8 not-prose">
+              <div class="flex items-start gap-3 rounded-xl border border-[var(--color-border)] p-4">
+                <span class="text-2xl shrink-0">👤</span>
+                <div>
+                  <p class="font-semibold text-[var(--color-text)] text-sm">Qui il est</p>
+                  <p class="text-sm text-[var(--color-text-muted)]">Âge, profession, situation, zone géographique, budget estimé</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3 rounded-xl border border-[var(--color-border)] p-4">
+                <span class="text-2xl shrink-0">📱</span>
+                <div>
+                  <p class="font-semibold text-[var(--color-text)] text-sm">Comment il arrive</p>
+                  <p class="text-sm text-[var(--color-text-muted)]">Google Search, Google Maps, bouche-à-oreille, réseaux sociaux, IA (ChatGPT…) — sur mobile, desktop ou tablette</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3 rounded-xl border border-[var(--color-border)] p-4">
+                <span class="text-2xl shrink-0">🧠</span>
+                <div>
+                  <p class="font-semibold text-[var(--color-text)] text-sm">Où il en est dans sa décision</p>
+                  <p class="text-sm text-[var(--color-text-muted)]">Découverte (curiosité), Comparaison (il évalue), Décision (il est prêt à agir)</p>
+                </div>
+              </div>
+              <div class="flex items-start gap-3 rounded-xl border border-[var(--color-border)] p-4">
+                <span class="text-2xl shrink-0">💬</span>
+                <div>
+                  <p class="font-semibold text-[var(--color-text)] text-sm">Ce qu'il retient</p>
+                  <p class="text-sm text-[var(--color-text-muted)]">Son parcours page par page, sa question clé, ce qui l'a convaincu, ce qui l'a bloqué, sa décision finale</p>
+                </div>
+              </div>
+            </div>
+
+            <p class="mb-4 text-[var(--color-text)]">
+              Le résultat est un rapport structuré : taux de conversion global, ventilation par canal et par maturité, scores sur l'expérience / la confiance / la clarté, liste des frictions identifiées, et les 3 actions prioritaires pour progresser.
+            </p>
+            <p class="text-[var(--color-text)]">
+              Le rapport est une page web dédiée, lisible sur mobile, que vous pouvez partager. Pas un PDF de 40 pages que personne ne lit jusqu'au bout.
+            </p>
+          </section>
+
+          <!-- Section 3 -->
+          <section id="rapport-marcm" class="mb-12">
+            <h2 class="mb-6 text-2xl font-bold text-[var(--color-text)]">
+              3. Ce que j'ai découvert sur marcm.fr
+            </h2>
+
+            <p class="mb-6 text-[var(--color-text)]">
+              J'ai lancé la version Pro (100 visiteurs) sur mon propre site. Voilà ce que ça a donné.
+            </p>
+
+            <!-- Screenshot rapport -->
+            <div class="my-8 not-prose">
+              <a href="https://marcm.fr/echo/marcm/" target="_blank" rel="noopener noreferrer">
+                <img
+                  src="/images/journal/echo-rapport-marcm.webp"
+                  alt="Rapport Echo Pro de marcm.fr — résultats de simulation de 100 visiteurs"
+                  class="w-full rounded-xl border border-[var(--color-border)] shadow-md hover:shadow-lg transition-shadow"
+                  loading="lazy"
+                  width="1440"
+                  height="900"
+                />
+              </a>
+              <p class="mt-3 text-center text-xs text-[var(--color-text-muted)]">
+                Rapport Echo Pro de marcm.fr — <a href="https://marcm.fr/echo/marcm/" target="_blank" rel="noopener noreferrer" class="text-[var(--color-accent)] hover:underline">voir le rapport complet</a>
+              </p>
+            </div>
+
+            <!-- KPIs -->
+            <div class="grid grid-cols-3 gap-3 mb-8 not-prose">
+              <div class="rounded-xl border border-[var(--color-border)] bg-emerald-50 p-4 text-center">
+                <p class="text-3xl font-bold text-emerald-600">58</p>
+                <p class="text-xs text-emerald-700 mt-1">contactent</p>
+              </div>
+              <div class="rounded-xl border border-[var(--color-border)] bg-amber-50 p-4 text-center">
+                <p class="text-3xl font-bold text-amber-600">22</p>
+                <p class="text-xs text-amber-700 mt-1">hésitent</p>
+              </div>
+              <div class="rounded-xl border border-[var(--color-border)] bg-red-50 p-4 text-center">
+                <p class="text-3xl font-bold text-red-600">20</p>
+                <p class="text-xs text-red-700 mt-1">repartent</p>
+              </div>
+            </div>
+
+            <p class="mb-4 text-[var(--color-text)]">
+              58 visiteurs sur 100 contactent — ce qui est plutôt bien. Mais l'outil m'a surtout permis de comprendre <em>pourquoi</em> les 42 autres partent ou hésitent.
+            </p>
+
+            <h3 class="mb-3 text-lg font-semibold text-[var(--color-text)]">Les canaux d'acquisition ne se valent pas tous</h3>
+
+            <div class="mb-6 overflow-x-auto rounded-xl border border-[var(--color-border)] not-prose">
+              <table class="w-full border-collapse text-sm text-[var(--color-text)]">
+                <thead>
+                  <tr class="bg-[var(--color-bg-alt)]">
+                    <th class="border-b border-[var(--color-border)] p-3 text-left font-bold">Canal</th>
+                    <th class="border-b border-[var(--color-border)] p-3 text-right font-bold">Taux de contact</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr>
+                    <td class="border-b border-[var(--color-border)] p-3">Bouche-à-oreille</td>
+                    <td class="border-b border-[var(--color-border)] p-3 text-right font-semibold text-emerald-600">90 %</td>
+                  </tr>
+                  <tr class="bg-[var(--color-bg-alt)]/50">
+                    <td class="border-b border-[var(--color-border)] p-3">Google Maps / GBP</td>
+                    <td class="border-b border-[var(--color-border)] p-3 text-right font-semibold text-emerald-600">80 %</td>
+                  </tr>
+                  <tr>
+                    <td class="border-b border-[var(--color-border)] p-3">IA (ChatGPT, Claude…)</td>
+                    <td class="border-b border-[var(--color-border)] p-3 text-right font-semibold text-amber-600">67 %</td>
+                  </tr>
+                  <tr class="bg-[var(--color-bg-alt)]/50">
+                    <td class="border-b border-[var(--color-border)] p-3">Google Search</td>
+                    <td class="border-b border-[var(--color-border)] p-3 text-right font-semibold text-amber-600">62 %</td>
+                  </tr>
+                  <tr>
+                    <td class="p-3">Réseaux sociaux</td>
+                    <td class="p-3 text-right font-semibold text-red-600">25 %</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+
+            <p class="mb-4 text-[var(--color-text)]">
+              Le réseau social à 25 % m'a sauté aux yeux. Les gens qui arrivent depuis Instagram ou LinkedIn arrivent sans contexte, sans intention précise — et le site ne les "chauffe" pas assez vite. C'est une friction que je n'aurais pas identifiée seul.
+            </p>
+
+            <h3 class="mb-3 text-lg font-semibold text-[var(--color-text)]">La friction principale : le portfolio pas assez sectoriel</h3>
+            <p class="mb-4 text-[var(--color-text)]">
+              35 % des visiteurs se demandent s'ils sont dans ma cible. Le portfolio couvre bien les artisans BTP et les commerçants, mais pas les professions libérales, les métiers de santé ou les créateurs avec besoin de réservation. Ces visiteurs hésitent ou repartent parce qu'ils ne voient pas leur reflet dans mes réalisations.
+            </p>
+            <p class="mb-6 text-[var(--color-text)]">
+              Ce n'est pas une critique que j'aurais devinée intuitivement. C'est le type d'insight qui ne sort que quand vous regardez votre site depuis l'extérieur.
+            </p>
+
+            <!-- Scores -->
+            <div class="grid grid-cols-3 gap-3 not-prose mb-6">
+              <div class="rounded-xl border border-[var(--color-border)] p-4 text-center">
+                <p class="text-2xl font-bold text-[var(--color-text)]">6,7<span class="text-base font-normal text-[var(--color-text-muted)]">/10</span></p>
+                <p class="text-xs text-[var(--color-text-muted)] mt-1">Expérience</p>
+              </div>
+              <div class="rounded-xl border border-[var(--color-border)] p-4 text-center">
+                <p class="text-2xl font-bold text-[var(--color-text)]">7,0<span class="text-base font-normal text-[var(--color-text-muted)]">/10</span></p>
+                <p class="text-xs text-[var(--color-text-muted)] mt-1">Confiance</p>
+              </div>
+              <div class="rounded-xl border border-[var(--color-border)] p-4 text-center">
+                <p class="text-2xl font-bold text-[var(--color-text)]">7,1<span class="text-base font-normal text-[var(--color-text-muted)]">/10</span></p>
+                <p class="text-xs text-[var(--color-text-muted)] mt-1">Clarté</p>
+              </div>
+            </div>
+
+            <p class="text-[var(--color-text)]">
+              Scores corrects, mais pas excellents. De la marge de progression — et maintenant je sais exactement où agir.
+            </p>
+          </section>
+
+          <!-- Section 4 -->
+          <section id="formules" class="mb-12">
+            <h2 class="mb-6 text-2xl font-bold text-[var(--color-text)]">
+              4. Les formules disponibles
+            </h2>
+
+            <div class="space-y-4 not-prose">
+              <div class="rounded-xl border border-[var(--color-border)] p-5">
+                <div class="flex items-start justify-between gap-4 mb-3">
+                  <div>
+                    <p class="font-bold text-[var(--color-text)]">Découverte</p>
+                    <p class="text-sm text-[var(--color-text-muted)]">5 visiteurs simulés</p>
+                  </div>
+                  <span class="shrink-0 rounded-full bg-emerald-100 px-3 py-1 text-sm font-bold text-emerald-700">Gratuit</span>
+                </div>
+                <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">Un aperçu rapide — la recommandation prioritaire qui changerait le plus votre taux de conversion. Idéal pour tester l'outil avant d'aller plus loin.</p>
+              </div>
+
+              <div class="rounded-xl border border-[var(--color-border)] p-5">
+                <div class="flex items-start justify-between gap-4 mb-3">
+                  <div>
+                    <p class="font-bold text-[var(--color-text)]">Complet</p>
+                    <p class="text-sm text-[var(--color-text-muted)]">20 visiteurs simulés + audit technique</p>
+                  </div>
+                  <span class="shrink-0 rounded-full bg-[var(--color-accent)]/10 px-3 py-1 text-sm font-bold text-[var(--color-accent)]">90 € HT</span>
+                </div>
+                <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">Rapport interactif avec analyse par canal, par appareil, par profil. Frictions identifiées, actions classées par impact.</p>
+              </div>
+
+              <div class="rounded-xl border-2 border-[var(--color-accent)]/30 bg-[var(--color-accent)]/5 p-5">
+                <div class="flex items-start justify-between gap-4 mb-3">
+                  <div>
+                    <p class="font-bold text-[var(--color-text)]">Pro</p>
+                    <p class="text-sm text-[var(--color-text-muted)]">100 visiteurs simulés + consultation 30 min</p>
+                  </div>
+                  <span class="shrink-0 rounded-full bg-[var(--color-accent)]/10 px-3 py-1 text-sm font-bold text-[var(--color-accent)]">250 € HT</span>
+                </div>
+                <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">La version que j'ai utilisée sur mon propre site. Analyse complète : canaux, maturité de décision, matrice croisée, analyses avancées. Et un appel pour débriefer ensemble.</p>
+              </div>
+            </div>
+          </section>
+
+          <!-- Section 5 -->
+          <section id="tester" class="mb-12">
+            <h2 class="mb-6 text-2xl font-bold text-[var(--color-text)]">
+              5. Tester sur votre site
+            </h2>
+
+            <p class="mb-4 text-[var(--color-text)]">
+              Echo est encore jeune. Je le considère comme un outil en version bêta améliorée — fonctionnel, utile, mais j'apprends encore ce qui le rend le plus précieux selon les types de sites.
+            </p>
+            <p class="mb-6 text-[var(--color-text)]">
+              Ce que je cherche maintenant, ce sont des retours d'expérience concrets : est-ce que les frictions identifiées correspondent à votre ressenti ? Est-ce que les personas sont réalistes pour votre secteur ? Est-ce que le rapport est lisible et actionnable ?
+            </p>
+            <p class="mb-6 text-[var(--color-text)]">
+              Si vous avez un site — vitrine, portfolio, boutique, landing page — et que vous voulez un regard extérieur structuré, la formule Découverte est gratuite. Aucun engagement, résultats sous 48h.
+            </p>
+
+            <div class="rounded-xl bg-[var(--color-bg-alt)] border border-[var(--color-border)] p-6 not-prose">
+              <p class="font-semibold text-[var(--color-text)] mb-2">Ce que vous obtenez avec la formule Découverte (gratuite) :</p>
+              <ul class="space-y-2 text-sm text-[var(--color-text-muted)]">
+                <li class="flex items-start gap-2"><span class="text-emerald-500 shrink-0 mt-0.5">✓</span> 5 visiteurs simulés sur votre site</li>
+                <li class="flex items-start gap-2"><span class="text-emerald-500 shrink-0 mt-0.5">✓</span> Taux de conversion estimé</li>
+                <li class="flex items-start gap-2"><span class="text-emerald-500 shrink-0 mt-0.5">✓</span> La recommandation #1 pour progresser</li>
+                <li class="flex items-start gap-2"><span class="text-emerald-500 shrink-0 mt-0.5">✓</span> Rapport livré sous 48h</li>
+              </ul>
+            </div>
+          </section>
+
+          <!-- Bio auteur -->
+          <div class="my-10 flex items-center gap-5 rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-alt)] p-6 not-prose">
+            <img
+              src="/images/marc-muller.webp"
+              alt="Marc Muller — développeur web freelance"
+              class="w-16 h-16 rounded-full object-cover shrink-0 border-2 border-white shadow-sm"
+            />
+            <div>
+              <p class="font-bold text-[var(--color-text)] mb-1">Marc Muller</p>
+              <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
+                Développeur web freelance. Je crée des sites ultra-rapides pour artisans et commerçants du Grand Est,
+                livrés en 5–10 jours, sans WordPress ni maintenance lourde.
+              </p>
+            </div>
+          </div>
+
+          <!-- Pour aller plus loin -->
+          <div class="mt-12 mb-4 not-prose">
+            <p class="text-xs font-bold uppercase tracking-widest text-[var(--color-text-muted)] mb-4">Pour aller plus loin</p>
+            <div class="grid gap-4 sm:grid-cols-2">
+              <a href="/journal/5-erreurs-site-web-artisan" class="group block rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-alt)] p-5 hover:border-[var(--color-accent)]/40 transition-all hover:shadow-sm">
+                <span class="inline-block rounded-full bg-sky-100 px-2 py-0.5 text-xs font-semibold text-sky-700 mb-3">Conseils</span>
+                <p class="font-semibold text-[var(--color-text)] text-sm leading-snug group-hover:text-[var(--color-accent)] transition-colors">Les 5 erreurs qui font fuir les clients de votre site web</p>
+              </a>
+              <a href="/journal/pourquoi-votre-site-est-lent" class="group block rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-alt)] p-5 hover:border-[var(--color-accent)]/40 transition-all hover:shadow-sm">
+                <span class="inline-block rounded-full bg-rose-100 px-2 py-0.5 text-xs font-semibold text-rose-700 mb-3">Performance</span>
+                <p class="font-semibold text-[var(--color-text)] text-sm leading-snug group-hover:text-[var(--color-accent)] transition-colors">Pourquoi votre site WordPress est lent — et ce que ça vous coûte</p>
+              </a>
+            </div>
+          </div>
+
+          <!-- CTA -->
+          <section class="rounded-xl bg-[var(--color-accent)] p-8 text-center text-white not-prose mt-8">
+            <h2 class="mb-4 text-2xl font-bold">Tester Echo sur votre site</h2>
+            <p class="mb-3 text-lg opacity-95">La formule Découverte est gratuite — 5 visiteurs simulés, la recommandation prioritaire, résultats sous 48h.</p>
+            <p class="mb-8 opacity-80 text-sm">Je cherche des retours d'expérience : dites-moi si le rapport correspond à votre ressenti.</p>
+            <a
+              href="/echo"
+              class="inline-block rounded-xl bg-white px-8 py-3 font-semibold text-[var(--color-accent)] transition-all hover:bg-neutral-100 hover:shadow-lg"
+            >
+              Voir Echo — formule Découverte gratuite
+            </a>
+            <p class="mt-4">
+              <a href="/contact" class="text-sm text-white/90 underline underline-offset-4 hover:text-white transition-colors">
+                Une question ? Me contacter directement →
+              </a>
+            </p>
+          </section>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Article",
+      "headline": "J'ai vibe-codé un outil pour voir mon site avec les yeux de mes visiteurs",
+      "description": "J'avais besoin d'un regard neuf sur mes propres sites. Alors j'ai construit Echo, un outil qui simule des visites et vous dit exactement où vous perdez vos clients.",
+      "image": "https://marcm.fr/og-default.png",
+      "datePublished": "2026-04-07",
+      "dateModified": "2026-04-07",
+      "author": { "@type": "Person", "name": "Marc Muller", "url": "https://marcm.fr/qui-suis-je" },
+      "publisher": { "@type": "Person", "name": "Marc Muller", "url": "https://marcm.fr" },
+      "mainEntityOfPage": { "@type": "WebPage", "@id": "https://marcm.fr/journal/echo-outil-audit-visiteurs" },
+      "articleSection": "Stratégie",
+      "inLanguage": "fr-FR"
+    }
+  </script>
+</BaseLayout>
