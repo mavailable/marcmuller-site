@@ -201,6 +201,37 @@ const ameliorationsHautes = [
 const ameliorationsUtiles: { titre: string; detail: string }[] = [];
 const ameliorationsDiscuter: { emoji: string; titre: string; detail: string }[] = [];
 
+const alertes = [
+  {
+    type: 'critique' as const,
+    titre: 'Page galerie cassee (erreur 404)',
+    detail: '4 visiteurs sur 5 ont clique sur "References en photos" — et sont tombes sur une page d\'erreur. C\'est le seul endroit ou vos visiteurs cherchent a voir votre travail.',
+    chiffre: '4/5',
+    chiffreLabel: 'visiteurs bloques',
+  },
+  {
+    type: 'critique' as const,
+    titre: 'Securite : grade F (0/100)',
+    detail: 'Votre site n\'a aucune protection de securite active. PHP 7.1 (abandonne depuis 2019) est expose dans les headers. Les navigateurs modernes peuvent afficher un avertissement a vos visiteurs.',
+    chiffre: 'F',
+    chiffreLabel: 'grade securite',
+  },
+  {
+    type: 'important' as const,
+    titre: 'Site non adapte aux telephones',
+    detail: 'Texte trop petit, mise en page rigide, navigation penible sur mobile. 70% de vos visiteurs arrivent sur telephone — ils voient un site casse.',
+    chiffre: '70%',
+    chiffreLabel: 'du trafic est mobile',
+  },
+  {
+    type: 'important' as const,
+    titre: 'Invisible sur Google (0 donnees structurees)',
+    detail: 'Aucun Schema.org, aucun Open Graph. Google ne peut pas afficher vos coordonnees, horaires ou avis dans les resultats de recherche. Vos concurrents avec ces donnees apparaissent devant vous.',
+    chiffre: '0/8',
+    chiffreLabel: 'donnees structurees',
+  },
+];
+
 const techVerdicts = [
   { label: 'Vitesse', verdict: 'Mauvais', ok: false, detail: 'Serveur lent (~2.5s), PHP 7.1 EOL, pas de cache navigateur' },
   { label: 'Securite', verdict: 'F (0/100)', ok: false, detail: '6 headers de securite manquants, PHP version exposee, HTTP sans redirect' },
@@ -352,6 +383,43 @@ const tech = {
   </details>
 
 </section>
+
+<!-- 2b. ALERTES -->
+{alertes.length > 0 && (
+<section class="py-12 border-t border-neutral-200" style="background: #fefce8;">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center gap-3 mb-8">
+      <div class="w-10 h-10 rounded-full bg-red-100 flex items-center justify-center shrink-0">
+        <svg class="w-5 h-5 text-red-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+      </div>
+      <div>
+        <h2 class="text-xl font-bold text-neutral-900">Problemes detectes</h2>
+        <p class="text-sm text-neutral-500">{alertes.filter(a => a.type === 'critique').length} critique{alertes.filter(a => a.type === 'critique').length > 1 ? 's' : ''} · {alertes.filter(a => a.type === 'important').length} important{alertes.filter(a => a.type === 'important').length > 1 ? 's' : ''}</p>
+      </div>
+    </div>
+
+    <div class="space-y-4">
+      {alertes.map(a => (
+        <div class={`rounded-xl p-5 flex gap-4 items-start ${a.type === 'critique' ? 'bg-white border-2 border-red-300 shadow-sm' : 'bg-white border border-amber-200'}`}>
+          <div class={`w-16 h-16 rounded-xl flex flex-col items-center justify-center shrink-0 ${a.type === 'critique' ? 'bg-red-600' : 'bg-amber-500'}`}>
+            <span class="text-xl font-black text-white leading-none">{a.chiffre}</span>
+            <span class="text-[8px] text-white/80 uppercase tracking-wider mt-0.5 text-center leading-tight">{a.chiffreLabel}</span>
+          </div>
+          <div class="flex-1 min-w-0">
+            <div class="flex items-center gap-2 mb-1">
+              <span class={`text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded ${a.type === 'critique' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>
+                {a.type === 'critique' ? 'Critique' : 'Important'}
+              </span>
+            </div>
+            <h3 class="font-bold text-neutral-900 text-base mb-1">{a.titre}</h3>
+            <p class="text-sm text-neutral-600 leading-relaxed">{a.detail}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </div>
+</section>
+)}
 
 <!-- 3. VOS VISITEURS -->
 <section class="py-16" style="background: #fafafa;">
@@ -669,10 +737,10 @@ const tech = {
       Avec 20 visiteurs (Echo Complet), ces frictions deviennent des certitudes. Avec 100 (Echo Pro), vous savez exactement quel canal investir.
     </p>
     <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
-      <a href="/echo/" class="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-xl transition-all shadow-md hover:-translate-y-0.5" style="background: linear-gradient(135deg, #E86C47, #D4572F);">
+      <a href="/echo/" data-umami-event="echo-report-upsell-complet" class="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-xl transition-all shadow-md hover:-translate-y-0.5" style="background: linear-gradient(135deg, #E86C47, #D4572F);">
         Echo Complet — 90€ <span class="text-xs opacity-70 ml-1">(20 visiteurs)</span>
       </a>
-      <a href="/echo/" class="inline-flex items-center gap-2 px-6 py-3 border border-neutral-300 text-neutral-700 font-semibold rounded-xl transition-all hover:border-[#E86C47] hover:text-[#E86C47]">
+      <a href="/echo/" data-umami-event="echo-report-upsell-pro" class="inline-flex items-center gap-2 px-6 py-3 border border-neutral-300 text-neutral-700 font-semibold rounded-xl transition-all hover:border-[#E86C47] hover:text-[#E86C47]">
         Echo Pro — 250€ <span class="text-xs opacity-70 ml-1">(100 visiteurs)</span>
       </a>
     </div>
@@ -687,15 +755,17 @@ const tech = {
     <h2 class="text-2xl font-bold text-neutral-900 mb-2">Sous le capot</h2>
     <p class="text-neutral-600 mb-8">Pour les curieux : ce que les outils techniques disent de votre site.</p>
 
-    <div class="flex flex-wrap gap-3 mb-10">
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-5 gap-3 mb-10">
       {techVerdicts.map(v => (
-        <div class={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium ${v.ok ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
-          {v.ok
-            ? <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-            : <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
-          }
-          <span>{v.label}</span>
-          <span class="text-xs opacity-70">{v.verdict}</span>
+        <div class={`rounded-xl p-4 text-center ${v.ok ? 'bg-green-50 border border-green-200' : 'bg-red-50 border-2 border-red-200'}`}>
+          <div class={`mb-1.5 ${v.ok ? 'text-green-600' : 'text-red-600'}`}>
+            {v.ok
+              ? <svg class="w-7 h-7 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              : <svg class="w-7 h-7 mx-auto" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            }
+          </div>
+          <div class={`text-xs font-bold mb-0.5 ${v.ok ? 'text-green-800' : 'text-red-800'}`}>{v.label}</div>
+          <div class={`text-[10px] ${v.ok ? 'text-green-600' : 'text-red-600'}`}>{v.verdict}</div>
         </div>
       ))}
     </div>
@@ -878,11 +948,11 @@ const tech = {
       L'Echo Complet analyse 20 profils avec audit technique et recommandations priorisees. L'Echo Pro : 100 visiteurs, analyse par canal, et un appel pour en discuter.
     </p>
     <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-      <a href="/echo/" class="inline-flex items-center gap-2 px-8 py-4 text-white font-semibold rounded-xl transition-all shadow-lg hover:-translate-y-0.5" style="background: linear-gradient(135deg, #E86C47, #D4572F); box-shadow: 0 4px 24px rgba(232, 108, 71, 0.35);">
+      <a href="/echo/" data-umami-event="echo-report-final-complet" class="inline-flex items-center gap-2 px-8 py-4 text-white font-semibold rounded-xl transition-all shadow-lg hover:-translate-y-0.5" style="background: linear-gradient(135deg, #E86C47, #D4572F); box-shadow: 0 4px 24px rgba(232, 108, 71, 0.35);">
         Echo Complet — 90€
         <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
       </a>
-      <a href="/contact" class="inline-flex items-center gap-2 px-8 py-4 border border-neutral-600 font-semibold rounded-xl transition-all hover:border-white/40" style="color: rgba(255,255,255,0.6);">
+      <a href="/contact" data-umami-event="echo-report-final-contact" class="inline-flex items-center gap-2 px-8 py-4 border border-neutral-600 font-semibold rounded-xl transition-all hover:border-white/40" style="color: rgba(255,255,255,0.6);">
         En discuter d'abord
       </a>
     </div>
