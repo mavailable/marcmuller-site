@@ -47,6 +47,8 @@ export interface Project {
   };
   /** Projet exemple (pas un vrai client) */
   sample?: boolean;
+  /** Site multilingue (FR/EN ou autre) — affiché en priorité sur /en/portfolio */
+  multilingual?: boolean;
   /** Dans quels carousels/pages ce projet apparaît */
   carousels: string[];
 }
@@ -704,22 +706,29 @@ export const projects: Project[] = [
   {
     id: 'yoga-sarah',
     title: 'Yoga Sarah',
+    titleEn: 'Yoga Sarah',
     sector: 'Bien-être',
+    sectorEn: 'Wellness',
     sectorColor: 'border-teal-400/30 bg-teal-400/10 text-teal-400',
     type: 'Site vitrine',
+    typeEn: 'Portfolio site',
     offer: 'Site Vitrine',
     description: 'Yoga bilingue FR/EN à Strasbourg. Planning, retraites, i18n complet.',
+    descriptionEn: 'Bilingual yoga studio (FR/EN) in Strasbourg. Retreat schedule, class planning, full i18n routing.',
     url: '/exemples/yoga-sarah/',
     gradient: 'from-[#0A2B2B] to-[#1A1A1A]',
     gradientFrom: '#0A2B2B',
     gradientTo: '#1A1A1A',
     screenshot: '/exemples/yoga-sarah/images/01-hero-yoga-au-lever-du-soleil-avec-vue-sur-strasbou.webp',
     features: ['Bilingue FR/EN', 'Planning retraites', 'i18n complet'],
+    featuresEn: ['FR/EN bilingual', 'Retreat schedule', 'Full i18n routing'],
     highlights: [{ label: 'Vitesse', value: '100' }],
+    highlightsEn: [{ label: 'Speed', value: '100' }],
     stack: ['Astro', 'Tailwind', 'Cloudflare'],
     sample: true,
     wip: false,
-    carousels: ['realisations'],
+    multilingual: true,
+    carousels: ['realisations', 'portfolio'],
   },
 
   // ── Plomberie Alsace ───────────────────────────────────────────────────
@@ -874,6 +883,69 @@ export const projects: Project[] = [
     sample: true,
     wip: false,
     carousels: ['realisations'],
+  },
+
+  // ── Kidnapping en Direct (Éditions Caldier) ───────────────────────────────
+  {
+    id: 'kidnapping-en-direct',
+    title: 'Kidnapping en Direct',
+    titleEn: 'Kidnapping en Direct',
+    wip: true,
+    sector: 'Culture & Édition',
+    sectorEn: 'Culture & Publishing',
+    sectorColor: 'border-yellow-400/30 bg-yellow-400/10 text-yellow-400',
+    type: 'Site auteur avec boutique',
+    typeEn: 'Author site with shop',
+    offer: 'Projet Sur Mesure',
+    description: "Site de Manu El Gitano, auteur et personnalité médiatique. Boutique de vente directe du livre, blog actualités (podcasts, TV, radio), design noir et jaune inspiré des scènes de crime.",
+    descriptionEn: "Site for Manu El Gitano, author and media personality. Direct book sales shop, news blog (podcasts, TV, radio), black and yellow crime scene-inspired design.",
+    url: 'https://kidnapping-en-direct.fr',
+    gradient: 'from-[#0d0d0d] to-[#1a1200]',
+    gradientFrom: '#0d0d0d',
+    gradientTo: '#1a1200',
+    screenshot: '/images/projects/kidnapping-en-direct.webp',
+    features: ['Boutique vente directe', 'Blog actualités', 'Keystatic CMS', 'SEO auteur', 'Schema.org Person+Book', 'Bilingue FR/EN'],
+    featuresEn: ['Direct sales shop', 'News blog', 'Keystatic CMS', 'Author SEO', 'Schema.org Person+Book', 'FR/EN bilingual'],
+    highlights: [
+      { label: 'Livré en', value: '10 jours' },
+    ],
+    highlightsEn: [
+      { label: 'Delivered in', value: '10 days' },
+    ],
+    stack: ['Astro', 'Tailwind', 'Cloudflare', 'Keystatic'],
+    multilingual: true,
+    carousels: ['realisations', 'portfolio'],
+  },
+
+  // ── Plume de Lapin ────────────────────────────────────────────────────────
+  {
+    id: 'plume-lapin',
+    title: 'Plume de Lapin',
+    titleEn: 'Plume de Lapin',
+    wip: true,
+    sector: 'Agriculture & Élevage',
+    sectorEn: 'Farming & Livestock',
+    sectorColor: 'border-lime-400/30 bg-lime-400/10 text-lime-400',
+    type: 'Site vitrine élevage fermier',
+    typeEn: 'Farm showcase site',
+    offer: 'Site Vitrine',
+    description: "Élevage fermier en Meurthe-et-Moselle (Sandra & Gaylord). Œufs, volailles de chair et lapins en vente directe à la ferme. Design naturel vert prairie et terracotta, ancré dans le terroir lorrain.",
+    descriptionEn: "Family farm in Meurthe-et-Moselle (Sandra & Gaylord). Eggs, poultry and rabbits for direct farm sales. Natural green and terracotta design, rooted in Lorraine terroir.",
+    url: 'https://plumedelapin.fr',
+    gradient: 'from-[#1b3a20] to-[#3d5c2a]',
+    gradientFrom: '#1b3a20',
+    gradientTo: '#3d5c2a',
+    screenshot: '/images/projects/plume-lapin.webp',
+    features: ['Vente directe à la ferme', 'Horaires & contact', 'SEO local', 'Schema.org Farm', 'Design terroir'],
+    featuresEn: ['Direct farm sales', 'Hours & contact', 'Local SEO', 'Schema.org Farm', 'Terroir design'],
+    highlights: [
+      { label: 'Livré en', value: '7 jours' },
+    ],
+    highlightsEn: [
+      { label: 'Delivered in', value: '7 days' },
+    ],
+    stack: ['Astro', 'Tailwind', 'Cloudflare', 'Keystatic'],
+    carousels: ['realisations', 'portfolio'],
   },
 ];
 
