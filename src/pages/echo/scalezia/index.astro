@@ -1,0 +1,783 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const slug = 'scalezia';
+const formule: 'decouverte' | 'complet' | 'pro' = 'complet';
+const formuleLabel = 'Echo Complet';
+const nomProspect = 'Scalezia';
+const urlSite = 'https://www.scalezia.co/';
+const dateAudit = '30 mars 2026';
+const showUpsell = true;
+
+const kpis = {
+  nbPersonas: 20,
+  nbConvertissent: 3,
+  nbHesitent: 11,
+  nbRepartent: 6,
+  conversion: 15,
+  experience: 5.2,
+  confiance: 5.9,
+  clarte: 3.8,
+};
+
+const verdictHero = "3 visiteurs sur 20 vous contactent. Les 17 autres hesitent ou repartent \u2014 et on sait exactement pourquoi.";
+
+const constat = "Votre site convertit parfaitement les gens qui arrivent avec une recommandation. Mais pour les 85% qui vous decouvrent seuls via Google, LinkedIn ou une IA, il manque une chose fondamentale : la transparence sur vos prix et une reponse claire a la question 'est-ce que c'est fait pour moi ?'.";
+
+const canalData = [
+  { canal: 'Bouche-a-oreille', nb: 4, convert: 2, rate: 50 },
+  { canal: 'Google Search', nb: 8, convert: 1, rate: 12 },
+  { canal: 'IA (ChatGPT, Perplexity, Claude)', nb: 3, convert: 0, rate: 0 },
+  { canal: 'LinkedIn', nb: 2, convert: 0, rate: 0 },
+  { canal: 'Reseaux sociaux (Instagram, TikTok, YouTube)', nb: 3, convert: 0, rate: 0 },
+];
+
+const personas = [
+  {
+    id: 1, name: 'Thomas', age: 34, emoji: '\u{1F4BC}',
+    situation: 'Fondateur agence SEO, 6 salaries, 180k\u20AC/an en stagnation',
+    canal: 'Bouche-a-oreille', device: 'Desktop', decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: "La recommandation directe absorbe toutes les frictions. Remplit le Typeform malgre l'absence de prix \u2014 mais avec frustration residentielle.",
+    localisation: 'Lyon, 69', maturite: 'Decision',
+    contexte: "Un ami vient de x3 son CA avec Scalezia. Thomas stagne depuis 18 mois, il vient verifier.",
+    impression: "H1 rassurant, chiffres credibles. Cherche immediatement le prix — ne le trouve pas.",
+    parcours: [['Hero', 'Positif, chiffres captent l\'attention'], ['Offres', '4 noms sans comparaison ni prix — frustration'], ['Cas clients', 'Cherche "agence SEO" — pas de filtre possible'], ['Typeform', 'Remplit grace a la recommandation']],
+    questionCle: "Est-ce que ca marche pour une agence SEO et combien ca coute ?",
+    reponse: 'Partiellement', commentReponse: "La promesse B2B services couvre son secteur mais aucun cas agence SEO explicite et zero prix affiches.",
+    impactVitesse: "Desktop — chargement acceptable, pas bloquant", impactConfiance: "Recommandation externe absorbe le doute sur les headers manquants",
+    positifs: ['Preuves sociales chiffrees credibles (5.3M\u20AC, 650+ entreprises)', 'Ton direct correspond a sa culture agence', '60+ cas clients publics = transparence rare'],
+    frictions: ['Zero prix — doit reserver un call sans qualifier le budget', '4 offres sans comparaison claire', 'Pas de filtre agence ou prestataire B2B dans les cas clients'],
+    ceQuiFeraitBasculer: '', exp: 6, conf: 8, clarte: 4,
+  },
+  {
+    id: 2, name: 'Camille', age: 28, emoji: '\u{1F680}',
+    situation: 'Consultante RH freelance, 3-4k\u20AC/mois, instable',
+    canal: 'LinkedIn', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: "S'inscrit a La Missive mais ne prend pas de RDV. 'Entreprise de services B2B' l'exclut psychologiquement des le H1.",
+    localisation: 'Bordeaux, 33', maturite: 'Decouverte',
+    contexte: "Post viral de Benoit sur LinkedIn. Son dernier client vient de partir — elle cherche a stabiliser.",
+    impression: "Le H1 l'interpelle mais 'entreprise' ne correspond pas a son statut de freelance.",
+    parcours: [['Hero', '"Entreprise de services B2B" — se sent potentiellement hors-cible'], ['Offres', '"StarterPack 0-10k\u20AC/mois" — est-elle dans la cible ? Pas de reponse'], ['Blog', 'Qualite reconnue — change d\'avis sur la credibilite'], ['Newsletter', '110k abonnes la convainquent — s\'inscrit']],
+    questionCle: "C'est fait pour les freelances debutants ou uniquement les grosses boites ?",
+    reponse: 'Non', commentReponse: "Le mot 'freelance' n'apparait pas dans le message principal. Aucun cas client solo visible.",
+    impactVitesse: "Saccades au scroll sur mobile 4G — augmente le taux d'abandon naturel", impactConfiance: "Typeform s'ouvre hors de la page sur mobile = rupture d'experience",
+    positifs: ['Blog rellement utile et accessible', 'Newsletter 110k = preuve sociale puissante', 'Design propre malgre les lenteurs'],
+    frictions: ['"Entreprise de services B2B" exclut psychologiquement le freelance', 'Aucun cas client solo ou independant', 'CTA consultation trop premature pour decouverte', 'Vocabulaire growth (outbound, OS, Sprint) cree distance psychologique'],
+    ceQuiFeraitBasculer: "Mentionner explicitement les consultants independants dans la cible, ou ajouter un cas client freelance", exp: 5, conf: 6, clarte: 3,
+  },
+  {
+    id: 3, name: 'Marc-Antoine', age: 42, emoji: '\u{1F3D7}',
+    situation: 'Dirigeant BTP (renovation), 8 salaries, 600k\u20AC/CA',
+    canal: 'Google Search', device: 'Mobile', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: "Vocabulaire startup opaque + zero cas BTP + chargement mobile lent = abandon en 3 minutes. Retourne chercher sur Google.",
+    localisation: 'Strasbourg, 67', maturite: 'Decouverte',
+    contexte: "Tape 'agence croissance B2B France' sur Google. Un appel d'offres majeur vient d'etre perdu.",
+    impression: "'Entreprise de services B2B' le bloque immediatement — il ne maitrise pas ce vocabulaire.",
+    parcours: [['Hero', 'Vocabulaire incomprehensible, cherche des exemples concrets. Rien.'], ['Cas clients', 'Logos SaaS, agences digitales. Aucun artisan ni PME batiment.'], ['Blog', 'Jargon incomprehensible. Repart.'], ['Footer', 'Cherche un telephone. Rien. Abandonne.']],
+    questionCle: "Est-ce que ca marche pour une entreprise physique pas uniquement digitale ?",
+    reponse: 'Non', commentReponse: "Toute la semantique est construite autour du digital. Aucun point d'ancrage pour un dirigeant BTP.",
+    impactVitesse: "4-6 secondes de chargement estime sur mobile mid-range — redhibitoire entre deux reunions", impactConfiance: "Pas de telephone = frein majeur pour un profil qui fonctionne au contact humain direct",
+    positifs: ['"650 entreprises accompagnees" parle transversalement', 'Design serieux ne genere pas de mefiance active'],
+    frictions: ['Vocabulaire B2B/growth/outbound totalement opaque pour un corps de metier', 'Aucun cas client secteur traditionnel ou PME physique', 'Pas de numero de telephone', 'Chargement mobile lent = abandon precipite', '"StarterPack 0-10k\u20AC/mois" : ambiguite prix vs cible CA'],
+    ceQuiFeraitBasculer: "Quelques cas clients PME traditionnelles et un telephone visible dans le header", exp: 3, conf: 4, clarte: 2,
+  },
+  {
+    id: 4, name: 'Yasmine', age: 31, emoji: '\u{1F4CA}',
+    situation: 'Co-fondatrice SaaS RH, 8k\u20AC MRR, levee de fonds dans 3 mois',
+    canal: 'IA (ChatGPT)', device: 'Desktop', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: "Dans son top 3 mais pas qualifie definitvement. L'angle 'pre-levee' est absent du site \u2014 elle comparera avec 2 autres agences avant de decider.",
+    localisation: 'Paris, 75', maturite: 'Comparaison',
+    contexte: "ChatGPT cite Scalezia dans les 3 meilleures agences growth B2B France. Board meeting dans 6 semaines.",
+    impression: "Scan rapide des preuves sociales. Positif. Cherche immediatement : ont-ils accompagne des SaaS pre-levee ?",
+    parcours: [['Hero + chiffres', 'Scan positif, preuves quantifiees'], ['Offres', 'Cherche une grille comparative. Neant. Frustration methodique.'], ['Cas clients', 'Trouve quelques SaaS. Resultats qualitatifs, pas assez chiffres pour elle.'], ['Blog', 'Dense, bien source. Monte son niveau de confiance.'], ['Typeform', 'Remplit avec contexte precis dans les commentaires']],
+    questionCle: "Avez-vous deja accelere des SaaS en pre-levee et en combien de temps ?",
+    reponse: 'Partiellement', commentReponse: "Des cas SaaS existent mais sans timeline pre-levee. L'angle 'pre-levee' est totalement absent du site — un segment premium non adresse.",
+    impactVitesse: "Desktop fibre — aucun impact. Chargement fluide.", impactConfiance: "Absence de garanties contractuelles visibles laisse un doute pour sa due diligence pre-levee",
+    positifs: ['60+ cas clients = transparence forte', 'Blog credibilise l\'expertise reelle', 'Taille equipe (18 + 70 experts) suggere capacite de delivery serieuse', 'Typeform permet d\'ajouter du contexte'],
+    frictions: ['Pas de grille comparative des offres', 'Cas clients insuffisamment chiffres pour profil data-driven', 'Angle "pre-levee" absent du site alors que c\'est un segment premium', 'Pas de SLA ni cadre contractuel public'],
+    ceQuiFeraitBasculer: "Un seul cas client SaaS pre-levee avec timeline precise (ex : '8k a 30k MRR en 10 semaines')", exp: 7, conf: 7, clarte: 5,
+  },
+  {
+    id: 5, name: 'Kevin', age: 26, emoji: '\u{1F3AF}',
+    situation: 'Coach productivite auto-entrepreneur, 1200\u20AC/mois',
+    canal: 'Google Search', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: "Newsletter souscrite, 2 articles lus, 1 podcast ecoute. Pas de RDV. Se sent sous le seuil de la cible — reviendra dans 12 mois ou jamais.",
+    localisation: 'Toulouse, 31', maturite: 'Comparaison',
+    contexte: "A entendu Scalezia dans un podcast. Cherche des avis independants avant de s'engager.",
+    impression: "Cherche les ressources gratuites. Pas d'acces direct depuis le hero.",
+    parcours: [['Navigation mobile', 'Cherche "Ressources", "Blog". Trouve le blog mais entree pas mise en avant.'], ['Blog', 'Lit un article sur la prospection LinkedIn. Qualite elevee. 8 minutes.'], ['Newsletter', '110k abonnes \u2014 s\'inscrit immediatement'], ['Offres', '"StarterPack 0-10k\u20AC/mois" \u2014 a 1200\u20AC/mois, se sent sous-qualifie']],
+    questionCle: "Puis-je acceder a des ressources gratuites avant de m'engager ?",
+    reponse: 'Oui — mais c\'est mal mis en avant', commentReponse: "Blog, podcast, newsletter existent et sont qualitatifs. Mais pas presentes comme porte d'entree naturelle.",
+    impactVitesse: "JS-heavy sur mobile variable. Articles 3-4 secondes. Un profil moins motive aurait abandonne.", impactConfiance: "Absence d'email direct renforce l'impression de ne 'pas avoir le droit' de contacter",
+    positifs: ['Contenu gratuit de qualite professionnelle reelle', 'Newsletter 110k = validation sociale massive', 'Ton des articles accessible et applicable'],
+    frictions: ['Ressources gratuites enfouies dans la navigation', 'Aucun cas client solo/coach/formateur', 'Cible percue trop haute (1200\u20AC/mois = sous le seuil)','Pas de progression guidee "si tu demarre \u2192 par ici"'],
+    ceQuiFeraitBasculer: "Un CTA secondaire 'Commencer par les ressources gratuites' visible dans le hero", exp: 6, conf: 7, clarte: 4,
+  },
+  {
+    id: 6, name: 'Sophie', age: 39, emoji: '\u{1F48E}',
+    situation: 'Directrice associee cabinet conseil transformation digitale, 12 personnes, 1.2M\u20AC/CA',
+    canal: 'Bouche-a-oreille', device: 'Desktop', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: "Remplit le Typeform avec reticence. Aurait prefere envoyer un brief ecrit. La question 'formation ou execution ?' reste sans reponse.",
+    localisation: 'Paris, 75', maturite: 'Decision',
+    contexte: "Un client commun avec Scalezia la recommande directement en meeting. 3 clients historiques ont reduit leurs budgets.",
+    impression: "Le 'tu' cree une legere dissonance pour une directrice associee. Cherche d'emblee une navigation claire vers les offres.",
+    parcours: [['Hero', 'Cherche "a qui ca s\'adresse exactement"'], ['Offres', '2-3 minutes a essayer de comprendre les differences entre 4 offres. Sans succes.'], ['Cas clients', 'Quelques cabinets conseil. Majoritairement solo/startups.'], ['Blog', 'Positivement surprise par la qualite editoriale.'], ['Typeform', 'Long, prefererait un email direct pour un brief structure']],
+    questionCle: "Pouvez-vous executer pour nous ou uniquement nous former ?",
+    reponse: 'Partiellement', commentReponse: "La distinction formation/execution n'est jamais rendue explicite. AKIRO suggere une dimension operationnelle mais sans le dire clairement.",
+    impactVitesse: "Micro-latences perceptibles mais non bloquantes sur desktop", impactConfiance: "Absence d'email direct = frein fort pour une acheteuse B2B habituee a envoyer un brief ecrit avant tout appel",
+    positifs: ['Preuves sociales chiffrees credibles', 'Qualite redactionnelle du blog', '60+ cas clients = transparence inhabituelle dans le secteur', '18 membres donne image d\'organisation serieuse'],
+    frictions: ['Pas de grille comparative entre les offres', 'Vocabulaire opaque (StarterPack, OS, Sprint) pour quelqu\'un hors ecosysteme Scalezia', 'Aucun prix ni fourchette indicative', 'Le "tu" cree dissonance avec positionnement B2B corporate', 'Typeform comme entonnoir, pas comme dialogue'],
+    ceQuiFeraitBasculer: "Un email de contact direct et une page qui distingue clairement 'ce que Scalezia fait' vs 'ce que vous faites avec Scalezia'", exp: 6, conf: 7, clarte: 4,
+  },
+  {
+    id: 7, name: 'Antoine', age: 33, emoji: '\u{1F4F1}',
+    situation: 'Fondateur agence social media, 3 personnes, 15k\u20AC/mois',
+    canal: 'Reseaux sociaux (Instagram)', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: "Sauvegarde le lien pour 'y revenir sur desktop' \u2014 statistiquement jamais. L'experience mobile degrade tue la dynamique du repost Instagram.",
+    localisation: 'Nantes, 44', maturite: 'Comparaison',
+    contexte: "Un repost Instagram 'de 0 a 800k\u20AC/an'. Il a essaye le cold email seul, 0 reponse en 3 mois.",
+    impression: "OK je connais le game. Montrez-moi ce qui vous differencie.",
+    parcours: [['Hero mobile', 'CTA partiellement masque, doit scroller pour voir l\'offre'], ['Offres', 'Ouvre StarterPack puis Sprint. La distinction LinkedIn outbound/AKIRO reste floue.'], ['Blog', 'Qualite reconnue mais "je ne sais toujours pas si leur approche est differente"'], ['Typeform', 'Commence, abandonne. Trop long sur mobile, clavier couvre 60% de l\'ecran.']],
+    questionCle: "Votre methode LinkedIn est-elle differente du cold DM classique ?",
+    reponse: 'Non', commentReponse: "Nulle part la methode LinkedIn n'est explicitee comme distinctive. Absence de differenciation = redhibitoire pour quelqu'un qui compare.",
+    impactVitesse: "LCP probable > 3s sur mobile 4G. Saccades au scroll. Fraction de lui envisage de partir des la 4e seconde.", impactConfiance: "Formulaire long sur mobile = impression que son message ne sera pas lu serieusement",
+    positifs: ['Preuves sociales impressionnantes meme pour un expert', 'Reconnait des noms dans les references', 'Positionnement B2B services coherent avec son projet'],
+    frictions: ['Experience mobile sous-optimale : chargement lent, CTA masque, formulaire difficile', 'Pas de differenciation methodologique LinkedIn visible', 'Cas clients non filtrables par secteur (cherche "agence social media")'],
+    ceQuiFeraitBasculer: "Une section 'Notre approche LinkedIn' avec screenshot ou exemple concret qui prouve la difference", exp: 4, conf: 6, clarte: 4,
+  },
+  {
+    id: 8, name: 'Nadia', age: 45, emoji: '\u{1F3E5}',
+    situation: 'Fondatrice cabinet conseil sante au travail, 8k\u20AC/mois irregulier',
+    canal: 'IA (Perplexity)', device: 'Tablette', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: "La qualite du blog l'a interessee intellectuellement mais elle ne se projette pas dans les cas clients. Repart sans remplir le Typeform.",
+    localisation: 'Marseille, 13', maturite: 'Decouverte',
+    contexte: "Perplexity lui suggere Scalezia sur 'comment trouver des clients B2B conseil sante'. Un appel d'offres annule l'a fragilisee.",
+    impression: "'Debloque la croissance' — vocabulaire tres startup. 'Entreprise de services B2B' la rassure partiellement mais le ton informal met en garde.",
+    parcours: [['Hero', 'Lit le H1 deux fois. "Est-ce que c\'est serieux pour mon secteur ?"'], ['Cas clients', 'Cherche cabinets conseil, professions liberales, sante. Majoritairement tech/digital.'], ['Blog', 'Lit un article en entier. Absorbe. Change d\'avis sur la credibilite.'], ['Typeform', "N'ose pas remplir. Peur d'etre hors-cible."]],
+    questionCle: "Est-ce que ca marche pour un secteur serieux comme la sante ?",
+    reponse: 'Non', commentReponse: "Aucun cas client sante/medico-social. Le vocabulaire growth peut meme renforcer l'impression que c'est pour les digital natives.",
+    impactVitesse: "Tablette — placeholders visibles pendant 1 seconde. Nuit a la perception de professionnalisme.", impactConfiance: "Absence Schema.org et OG = site mal represente si retourne sur Perplexity. Pas de politique donnees claire = signal negatif secteur sante.",
+    positifs: ['Qualite redactionnelle du blog convaincante', '50+ articles = profondeur et anciennete serieuses', 'Newsletter 110k = legitimite dans l\'ecosysteme'],
+    frictions: ['Zero reference sectorielle sante/medico-social', 'Vocabulaire growth/startup = repoussoir pour son positionnement professionnel', 'Pas de garantie ni d\'engagement visible', 'Typeform trop engageant pour une phase decouverte'],
+    ceQuiFeraitBasculer: "Un seul cas client dans un secteur 'serieux' (sante, juridique, comptabilite) changerait completement sa perception", exp: 5, conf: 4, clarte: 3,
+  },
+  {
+    id: 9, name: 'Florian', age: 29, emoji: '\u{26A1}',
+    situation: 'Growth manager licencie, veut lancer activite conseil, 0\u20AC de CA',
+    canal: 'LinkedIn', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: "Newsletter souscrite, blog consomme. Pas de RDV. Revient dans 6-12 mois ou jamais. Conversion partielle seulement.",
+    localisation: 'Paris, 75', maturite: 'Decouverte',
+    contexte: "Post LinkedIn de Scalezia partage dans un groupe Growth. 3 mois d'indemnites, veut lancer vite.",
+    impression: "'Debloque la croissance' l'excite. Mais 'services B2B' — lui n'a pas encore de CA.",
+    parcours: [['Hero', 'Enthousiaste. Cherche si "0" dans StarterPack le signifie vraiment inclus.'], ['StarterPack', '"Structurer une machine de vente" — trop abstrait pour son stade'], ['Newsletter', 'S\'inscrit. Seule action concrete.'], ['Typeform', 'Commence, voit la question CA actuel. Met 0. Abandonne par peur d\'etre "rejete".']],
+    questionCle: "Est-ce que ca vaut le coup de s'inscrire si je n'ai pas encore de CA ?",
+    reponse: 'Non', commentReponse: "Le '0\u20AC/mois' du StarterPack est ambigu. Aucun temoignage 'j'ai demarre de zero'. Aucun message d'onboarding pour pre-lancement.",
+    impactVitesse: "JS-heavy sur 4G mobile mid-range. 3-4 moments de scroll bloque. Erode l'enthousiasme initial.", impactConfiance: "Typeform sans alternative = position de faiblesse pour quelqu'un sans CA a afficher",
+    positifs: ['Vocabulaire et positionnement growth parfaitement son monde', 'Newsletter = conversion facile et grande valeur', 'Blog = ressource reelle utilisee activement', 'Preuves sociales massives rassurent sur la legitimite'],
+    frictions: ['Aucun parcours "je lance mon activite" visible', 'Zero tarif = impossibilite de qualifier l\'accessibilite', 'Typeform genere anxiete sociale pour quelqu\'un sans CA', 'Navigation mobile degradee erode l\'enthousiasme'],
+    ceQuiFeraitBasculer: "Un message clair : 'Le StarterPack commence vraiment a 0\u20AC de CA \u2014 c\'est meme pour ca qu\'on l\'a appele ainsi'", exp: 5, conf: 5, clarte: 3,
+  },
+  {
+    id: 10, name: 'Laurent', age: 51, emoji: '\u{1F3E2}',
+    situation: 'DG PME industrielle, 45 personnes, 3M\u20AC/CA, veut lancer offre conseil',
+    canal: 'Google Search', device: 'Desktop', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: "Sa question cle sans reponse + pas de telephone = abandon. Occasion manquee d'un profil a fort potentiel CA.",
+    localisation: 'Grenoble, 38', maturite: 'Comparaison',
+    contexte: "Tape 'comment vendre des services B2B quand on est expert metier'. Essaie de proposer du conseil en interne depuis 6 mois.",
+    impression: "Design lui semble jeune, Paris digital. Cherche : est-ce que ces gens comprennent l'industrie ?",
+    parcours: [['Hero', 'Continue, mefiant mais curieux'], ['Cas clients', 'Cherche references industrielles, manufacturing, lean. Rien a 90% digital/marketing.'], ['Equipe', 'Cherche experience industrielle. Profils growth/marketing. Doutes confirmes.'], ['Footer', 'Cherche telephone. Rien. Dealbreaker.']],
+    questionCle: "Avez-vous des methodes eprouvees pour des entreprises industrielles ?",
+    reponse: 'Non', commentReponse: "Aucune mention du secteur industriel. Aucun cas manufacturing/lean. Disqualification nette.",
+    impactVitesse: "Desktop correct. Pas le facteur decisif pour lui.", impactConfiance: "Absence de telephone = signal negatif fort pour DG 51 ans. Dans son monde, les partenaires serieux ont un numero.",
+    positifs: ['60+ cas clients publics objectivement impressionnant', 'Newsletter 110k valide la notoriete', 'Structure organisee (18 + 70 experts)'],
+    frictions: ['Zero reference sectorielle industrielle', 'Profils equipe sans experience industrie/lean', 'Absence de prix = comparaison avec concurrents impossible', 'Pas de numero de telephone — dealbreaker pour son profil generationnel', 'Typeform = outil de qualification commerciale, pas service client'],
+    ceQuiFeraitBasculer: "Un telephone visible + 1 cas client PME industrielle dans les references", exp: 4, conf: 4, clarte: 3,
+  },
+  {
+    id: 11, name: 'Clara', age: 24, emoji: '\u{1F3A8}',
+    situation: 'Designer UX freelance, 2k\u20AC/mois, veut creer une agence avec 2 amis',
+    canal: 'Reseaux sociaux (TikTok)', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: "S'inscrit a La Missive. Bookmarke pour 'quand elle aura lance'. Scalezia l'a capturee dans son funnel newsletter mais rate la conversion vers une offre.",
+    localisation: 'Lille, 59', maturite: 'Decouverte',
+    contexte: "Video TikTok 'erreur #1 des freelances qui veulent plus de clients'. Son dernier contrat vient de se terminer.",
+    impression: "Animation lourde sur mobile. H1 tardif. 'Entreprise de services B2B' — elle n'a pas encore 'd'entreprise'.",
+    parcours: [['Hero', '"Entreprise de services B2B... c\'est moi ?" Scrolle sans cliquer.'], ['StarterPack', '"0" lui donne espoir. Mais "structurer une machine de vente" trop abstrait.'], ['Blog', 'Contenu dense, utile, gratuit. Valeur enfin materialisee.'], ['Newsletter', 'S\'inscrit. Premier acte de conversion.'], ['Prix', 'Cherche. Rien. Abandonne la lecture des offres.']],
+    questionCle: "C'est adapte pour quelqu'un qui debute vraiment ?",
+    reponse: 'Non', commentReponse: "StarterPack mentionne '0' mais sans s'adresser aux profils pre-revenus. La newsletter et le blog sont la seule porte reelle mais rien ne le lui dit.",
+    impactVitesse: "3-4 secondes sur mobile. Habituee a la vitesse TikTok — ce delai la fait douter avant meme de lire.", impactConfiance: "Pour une designer UX, l'absence de soins sur les details (mentions legales visibles, SSL badge) est un signal faible perceptible",
+    positifs: ['Ton "tu" informel et accessible', 'Newsletter gratuite = porte d\'entree sans engagement', 'Blog = preuve immediate de competence et generosite', '110k abonnes = preuve sociale forte'],
+    frictions: ['Aucun message pour profils pre-lancement ou freelance solo', 'Vocabulaire (outbound, machine de vente, pipeline) non defini', 'Absence de prix', 'Pas de guide "par ou commencer"'],
+    ceQuiFeraitBasculer: "Un message dans le hero ou la nav : 'Tu demarre ? Commence par la Missive \u2192'", exp: 5, conf: 6, clarte: 4,
+  },
+  {
+    id: 12, name: 'Romain', age: 36, emoji: '\u{1F527}',
+    situation: 'Fondateur agence web, 7 personnes, 25k\u20AC/mois, commercial vient de partir',
+    canal: 'Google Search', device: 'Desktop', decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: "Convertit a cause de son urgence, pas grace au site. La question 'formation vs execution' non resolue — tout repose sur le call.",
+    localisation: 'Lyon, 69', maturite: 'Decision',
+    contexte: "Cherche une solution 'plug and play' pour sa prospection. Son commercial est parti il y a 3 semaines.",
+    impression: "Les chiffres captent. Cherche immediatement 'outbound' ou 'prospection externalisee'.",
+    parcours: [['Hero', 'Cherche "outbound" ou "prospection externalisee" — pas trouve immediatement'], ['Navigation', 'Cherche "Outbound". Trouve AKIRO, clique.'], ['AKIRO', '"On le fait pour vous" vs "on vous apprend" reste flou'], ['Typeform', 'Remplit car besoin urgent (commercial parti depuis 3 semaines)']],
+    questionCle: "Pouvez-vous prospecter pour moi ou uniquement m'apprendre a prospecter ?",
+    reponse: 'Partiellement', commentReponse: "AKIRO suggere dimension operationnelle mais ne tranche pas entre prestation externalisee et accompagnement. Ambiguite serieuse pour un decideur.",
+    impactVitesse: "Desktop fluide. Aucun impact negatif.", impactConfiance: "60+ cas clients = signal fort. Absence de prix cree suspicion 'tarifs sur devis = tarifs eleves'.",
+    positifs: ['AKIRO = offre differenciante bien nommee', 'Preuves sociales credibles et precises', 'Ton direct correspond a sa culture', 'Consultation gratuite = bon filtre'],
+    frictions: ['Ambiguite doing vs coaching sur page AKIRO', 'Impossible comparer les offres entre elles', 'Aucun prix', 'Pas de contact direct pour question rapide pre-Typeform'],
+    ceQuiFeraitBasculer: '', exp: 6, conf: 7, clarte: 5,
+  },
+  {
+    id: 13, name: 'Isabelle', age: 48, emoji: '\u{1F4DA}',
+    situation: 'Dirigeante organisme de formation professionnelle, 20 personnes, 800k\u20AC/CA',
+    canal: 'Bouche-a-oreille (BNI)', device: 'Tablette', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: "Va probablement rappeler son contact BNI pour confirmer avant de remplir le Typeform. Conversion possible mais via reassurance humaine externe.",
+    localisation: 'Bordeaux, 33', maturite: 'Decision',
+    contexte: "Recommandation BNI directe. Qualiopi renouvele, veut maintenant attaquer les grands comptes.",
+    impression: "Le 'tu' inspire une legere reserve. Cherche une confirmation de serieux pour son secteur formation.",
+    parcours: [['Hero', 'H1 parle moderement. Cherche "a qui ca s\'adresse exactement"'], ['Cas clients', 'Cherche "formation professionnelle" ou "OPCO". Rien.'], ['Offres', '"Personnalise" la rassure theoriquement mais sans preuve sectorielle = sceptique'], ['Typeform', 'Hesite longuement. Prefererait un premier contact humain.']],
+    questionCle: "Avez-vous accompagne des organismes de formation comme le notre ?",
+    reponse: 'Non', commentReponse: "Ni cas clients, ni offres, ni blog ne citent le secteur de la formation professionnelle. 'Personnalise' ne compense pas l'absence de preuve sectorielle.",
+    impactVitesse: "Tablette — animations parfois saccadees. Renforce impression d'outil taille pour jeune/tech.", impactConfiance: "Pas d'adresse physique visible, de SIRET en footer, de page 'A propos' substantielle — besoin de savoir qui est derriere la marque",
+    positifs: ['Recommandation BNI prequalifie la visite', '60+ cas clients = gage de transparence', 'Offre d\'accompagnement personnalise adaptable en theorie'],
+    frictions: ['Aucun cas client formation/education/institutionnel', '"Tu" trop decontracte pour son profil de dirigeante 48 ans', 'Pas de contact humain direct avant Typeform', 'Pas de garantie = risque percu eleve pour 800k\u20AC CA'],
+    ceQuiFeraitBasculer: "Un email de contact et 1 cas client secteur formation ou conseil traditionnel visible", exp: 5, conf: 5, clarte: 4,
+  },
+  {
+    id: 14, name: 'Dylan', age: 22, emoji: '\u{1F4BB}',
+    situation: 'Etudiant alternance marketing digital, veut creer une agence dans 6 mois, 0\u20AC CA',
+    canal: 'IA (Claude)', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: "Newsletter + podcast captures. Reviendra dans 12-18 mois avec intention de payer. Scalezia l'a bien capture comme futur client.",
+    localisation: 'Paris, 75', maturite: 'Decouverte',
+    contexte: "Claude lui suggere La Missive comme ressource pour lancer son agence. Cherche a se former avant le lancement.",
+    impression: "Biais positif (Claude recommande). H1 l'accroche a moitie — pas encore 'son entreprise'.",
+    parcours: [['StarterPack', '"0\u20AC/mois" — ca m\'inclut peut-etre ?'], ['Newsletter', 'S\'inscrit en 30 secondes. 110k abonnes = validation sociale forte'], ['Blog', 'Consomme 2-3 articles. Contenu dense et gratuit.'], ['Podcast', 'Ajoute a sa liste d\'ecoute.'], ['Offres', 'Pas de prix. "Je n\'ai pas le budget de toute facon."']],
+    questionCle: "Puis-je beneficier de votre contenu meme si je n'ai pas encore lance ?",
+    reponse: 'Partiellement', commentReponse: "Oui pour le contenu gratuit (newsletter, blog, podcast) — substantiel. Non pour les offres. Pas de page 'si vous demarrez, voici votre parcours chez Scalezia'.",
+    impactVitesse: "JS-heavy sur mobile. Ironique pour une agence qui conseille sur la croissance — il sait reconnaitre un site mal optimise. Diminue legerement la credibilite technique.", impactConfiance: "110k abonnes + volume contenu gratuit = legitimite massive pour un profil natif digital",
+    positifs: ['Contenu gratuit exceptionnel en volume et qualite', 'Metriques sociales tres parlantes pour son profil', 'StarterPack "0" l\'inclut mentalement meme si c\'est flou'],
+    frictions: ['Pas de parcours explicite pour profils pre-lancement', 'Archives membres : acces peu clair \u2014 frustrant', 'Vitesse mobile insuffisante (ironie notee par un etudiant marketing)', 'Aucun CTA adapte ("commencez par la newsletter si vous demarrez")'],
+    ceQuiFeraitBasculer: "Rien pour l'instant \u2014 il n'est pas encore client. Mais la newsletter bien nurtured peut le convertir dans 18 mois.", exp: 6, conf: 7, clarte: 5,
+  },
+  {
+    id: 15, name: 'Jerome', age: 44, emoji: '\u{1F4B0}',
+    situation: 'Conseiller gestion de patrimoine independant, 12k\u20AC/mois',
+    canal: 'Google Search \u2192 Blog', device: 'Mobile', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: "La question reglementaire est bloquante. Ne peut pas risquer une violation ACPR. Repart sans reponse.",
+    localisation: 'Nice, 06', maturite: 'Comparaison',
+    contexte: "Un article de blog Scalezia sur la generation de leads B2B l'amene sur le site. Son reseau bancaire historique s'epuise.",
+    impression: "A lu l'article en entier. 'Ces gens savent de quoi ils parlent.' Explore maintenant l'offre.",
+    parcours: [['Article de blog', 'Qualite percue haute. Explore les offres.'], ['Cas clients', 'Cherche "finance", "patrimoine", "CGP". Aucun resultat evident.'], ['AKIRO', 'Se demande si la prospection outbound est legale dans son secteur (ACPR, MIF II)'], ['Typeform', 'Commence. Abandonne sur "decrivez votre activite" — ne sait pas comment formuler ses contraintes reglementaires']],
+    questionCle: "Votre methode est-elle applicable dans un secteur reglemente comme la finance ?",
+    reponse: 'Non', commentReponse: "Le demarchage financier est strictement encadre en France (ACPR, directive MIF II). Le site ne mentionne jamais les secteurs reglementes. Risque professionnel concret non adresse.",
+    impactVitesse: "Micro-lags entre sections sur mobile. Nuit a la lecture lineaire en comparaison active.", impactConfiance: "Absence OG = si partage l'article a un collegue CGP, lien sans apercu visuel. Signal de manque de professionnalisme dans un secteur ou l'image est tout.",
+    positifs: ['Qualite blog = premier signal de competence tres fort', 'Preuves sociales rassurantes sur le volume', 'Ton serieux sans exces de hype correspond a sa culture pro'],
+    frictions: ['Aucune reference secteur reglemente dans tout le site', 'Pas de cas clients finance/assurance/patrimoine/juridique', 'Pas de contact direct pour poser une question precise avant de s\'engager', 'Typeform generique ne permet pas d\'exprimer des contraintes legales specifiques'],
+    ceQuiFeraitBasculer: "Un seul cas client CGP ou avocat + une FAQ 'secteurs reglementes' qui repond a la question ACPR", exp: 5, conf: 5, clarte: 3,
+  },
+  {
+    id: 16, name: 'Mehdi', age: 30, emoji: '\u{1F310}',
+    situation: 'Co-fondateur agence traduction B2B, 4 personnes, 18k\u20AC/mois',
+    canal: 'Google Search', device: 'Desktop', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: "Interesse mais pas assez rassure sur la pertinence pour sa niche. Gardera l'onglet ouvert — potentiellement se convertira si le call repond a sa question niche.",
+    localisation: 'Lille, 59', maturite: 'Comparaison',
+    contexte: "Article de blog Scalezia sur 'sortir du bouche-a-oreille' l'amene sur le site. 2 clients historiques viennent de reduire leurs budgets.",
+    impression: "H1 direct et pertinent. Ton confiant. 'OK, ca a l'air serieux, voyons si c'est pour moi.'",
+    parcours: [['Hero', 'Positif, se sent dans la bonne cible'], ['Cas clients', '"Quels secteurs ? Pas que des SaaS j\'espere." Cherche traduction ou niche comparable. Rien.'], ['Blog', 'Lit un article, trouve de la valeur. Competence confirmee.'], ['CTA', 'Hesite. Cherchait "comment ca marche selon mon profil" avant de s\'engager.']],
+    questionCle: "Est-ce que ca marche pour une agence tres specialisee dans une niche precise ?",
+    reponse: 'Partiellement', commentReponse: "Diversite sectorielle dans les cas clients mais sans filtre. Mehdi doit inferer par analogie et ne peut pas repondre seul a sa question.",
+    impactVitesse: "Desktop acceptable. JS-heavy ne l'affecte pas ici.", impactConfiance: "Elevee. Design professionnel, pas de fautes, coherence visuelle.",
+    positifs: ['Social proof immediate et chiffree (3 metriques claires)', 'Ton direct et non-corporatif', 'Blog credibilise la methode', 'Volume cas clients rassurant'],
+    frictions: ['Tunnel de decision bloque sans appeler', 'Cas clients non filtrables par secteur', 'Noms des offres necessitent apprentissage', 'Absence de prix : veut savoir si le budget est dans sa zone avant 45 min de call'],
+    ceQuiFeraitBasculer: "Un filtre 'agences de services specialisees' dans les cas clients, ou une phrase du type 'nous avons accompagne des agences dans 12 secteurs differents'", exp: 6, conf: 7, clarte: 5,
+  },
+  {
+    id: 17, name: 'Patricia', age: 55, emoji: '\u{1F33F}',
+    situation: 'Sophrologue/coach bien-etre, veut developper un volet B2B entreprises',
+    canal: 'Google Search', device: 'Mobile', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: "Ne se reconnait pas. Vocabulaire startup trop eloigne de son univers. Repart chercher quelque chose de plus adapte a son niveau de maturite.",
+    localisation: 'Strasbourg, 67', maturite: 'Decouverte',
+    contexte: "Un DRH ami lui dit 'le bien-etre au travail explose, va chercher les entreprises'. Google la mene a Scalezia.",
+    impression: "Hero charge lentement. 'Entreprise de services B2B' — marque une pause. 'C'est surement pour les vraies entreprises, pas pour une sophrologue.'",
+    parcours: [['Hero', '"Croissance" et "services B2B" abstractement positifs mais pas concrets pour elle'], ['Cas clients', 'Essaie de trouver sophrologue, coach bien-etre, sante. Absent.'], ['Blog', 'Contenu dense, oriente outbound/acquisition. Se sent hors-sujet.'], ['Quitte', 'Retourne sur Google apres 2 minutes']],
+    questionCle: "C'est vraiment pour tout le monde ou juste pour les boites tech ?",
+    reponse: 'Non', commentReponse: "Rien ne lui dit qu'elle est bienvenue. Le vocabulaire est celui du monde startup. Aucune section 'nos clients ressemblent a...' avec des profils varies.",
+    impactVitesse: "Problematique sur mobile. Scroll hache sur connexion 4G.", impactConfiance: "Le design 'corporatif startup' cree une distance pour son profil plutot qu'il ne rassure",
+    positifs: ['Volume social proof objectivement rassurant si on comprend les chiffres', 'Pas de ton agressif ni popups intrusifs'],
+    frictions: ['Vocabulaire exclusivement startup/tech, aucune passerelle vers profils non-numeriques', 'Zero cas client bien-etre, coaching, solopreneurs', 'Typeform intimidant pour quelqu\'un en decouverte', 'Aucun ton rassurant pour les "petits profils"'],
+    ceQuiFeraitBasculer: "Rien \u2014 elle n'est pas la cible cliente ideale. Mais une phrase 'pas sur que ce soit pour vous ?' avec redirection vers La Missive gratuite laisserait une bonne impression.", exp: 3, conf: 4, clarte: 2,
+  },
+  {
+    id: 18, name: 'Hugo', age: 27, emoji: '\u{1F3AE}',
+    situation: 'Fondateur agence production video gaming/esport, 7k\u20AC/mois en plateau',
+    canal: 'Reseaux sociaux (YouTube)', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: "Plus proche de convertir parmi les hesitatifs. Contexte YouTube = confiance de depart elevee. Remplira probablement le Typeform en posant la question gaming explicitement.",
+    localisation: 'Montpellier, 34', maturite: 'Comparaison',
+    contexte: "Une video YouTube Scalezia 'comment scaler son agence'. Il a essaye la prospection seul, 0 reponse en 3 mois.",
+    impression: "Biais positif (reconnait l'univers graphique de la video). Mais chargement lent casse l'elan.",
+    parcours: [['Hero', 'Reconnait la marque. Positif.'], ['Cas clients', 'Cherche "gaming", "esport", "crea". Rien.'], ['StarterPack', '0-10k\u20AC/mois \u2192 lui correspond exactement. Mais pas de prix.'], ['Blog', 'Pertinent mais pas specifique a sa niche.'], ['Typeform', 'Resiste. Cherche FAQ, chat, email. Rien.']],
+    questionCle: "Votre methode marche pour une agence dans un secteur tres niche comme le gaming ?",
+    reponse: 'Non', commentReponse: "Affirme la polyvalence B2B mais sans preuve sectorielle creatif/culturel. Hugo a besoin d'un cas analogue (agence crea, studio, production).",
+    impactVitesse: "Mauvaise sur mobile. Contexte post-YouTube = attention courte. La lenteur tue la dynamique creee par la video.", impactConfiance: "Bonne grace au contexte YouTube prealable. La marque est deja installee dans son esprit.",
+    positifs: ['Pont YouTube \u2192 site coherent graphiquement et tonalement', 'StarterPack correspond exactement a son profil CA', 'Blog renforce la credibilite methodologique'],
+    frictions: ['Aucun cas client secteur creatif/culturel/gaming', 'Prix absents (7k\u20AC/mois = budget serre)', 'Mobile lent brise l\'elan post-YouTube', 'Pas de FAQ "est-ce fait pour moi ?" ni de quiz d\'auto-positionnement'],
+    ceQuiFeraitBasculer: "Un cas client agence creative ou media, et une fourchette de prix pour qu'il sache si c'est dans ses moyens a 7k\u20AC/mois", exp: 5, conf: 7, clarte: 5,
+  },
+  {
+    id: 19, name: 'Sandrine', age: 37, emoji: '\u{1F4E3}',
+    situation: 'Responsable marketing startup SaaS RH, 50 personnes',
+    canal: 'Bouche-a-oreille', device: 'Desktop', decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: "La recommandation a fait 80% du travail. Remplit le Typeform aujourd'hui avec question precise sur les timelines et les cas SaaS RH.",
+    localisation: 'Paris, 75', maturite: 'Decision',
+    contexte: "La CEO d'une startup consoeur lui dit 'on a booste notre outbound avec Scalezia'. Objectifs Q2 non atteints.",
+    impression: "Mode validation, pas decouverte. Premiere impression : professionnel, rassurant, chiffres coherents avec son niveau.",
+    parcours: [['Hero', 'Valide l\'adequation SaaS = services B2B. Scrolle rapidement.'], ['Cas clients', 'Trouve des SaaS interessants. Cherche les timelines \u2014 pas chiffrees.'], ['Blog', 'Lit un article outbound. Confiance renforcee.'], ['Typeform', 'Remplit avec question precise sur timelines et cas SaaS RH']],
+    questionCle: "Combien de temps pour avoir des premiers resultats ?",
+    reponse: 'Partiellement', commentReponse: "StarterPack mentionne 10 semaines mais elle est au-dessus de ce niveau. Aucun benchmark de delai pour mid-stage. Doit poser la question en call.",
+    impactVitesse: "Desktop bonne. Aucun probleme.", impactConfiance: "Tres elevee. Recommandation + design pro + volume cas = confiance maximale.",
+    positifs: ['Coherence totale entre la recommandation recue et le positionnement visible', 'Cas clients convaincants et nombreux', 'Ton startup-compatible', 'Typeform clair et non-intimidant pour ce profil'],
+    frictions: ['Absence totale de pricing = inhabituelle pour une RM B2B habituee aux SaaS', 'Aucune timeline chiffree par offre', 'Pas de comparaison structuree des offres', 'Pas d\'OG : si partage le lien en interne, apercu degrade \u2014 signal negatif dans un environnement startup'],
+    ceQuiFeraitBasculer: '', exp: 7, conf: 9, clarte: 6,
+  },
+  {
+    id: 20, name: 'Damien', age: 52, emoji: '\u{1F69C}',
+    situation: 'Viticulteur/agriculteur, veut vendre en direct aux restaurants (B2B)',
+    canal: 'Google Search', device: 'Mobile', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: "Hors-cible par definition. Repart avec l'impression confuse d'avoir visite 'un truc pour les startups parisiens' qui n'a rien a voir avec sa realite.",
+    localisation: 'Alsace, 68', maturite: 'Decouverte',
+    contexte: "Tape 'trouver des clients restaurants pour mon exploitation'. Un article de blog l'amene sur Scalezia.",
+    impression: "'Services B2B' = mur immediat. 'Ton entreprise' sonne comme un demarchage. Mefiance et confusion simultanees.",
+    parcours: [['Hero', 'Lit H1 sans le comprendre vraiment. Scrolle par curiosite.'], ['Offres', '"StarterPack", "AKIRO", "Sprint" \u2014 aucun ne parle. Cherche ce qu\'ils vendent concrètement.'], ['Cas clients', 'Cherche agriculteurs, artisans, producteurs. Absent.'], ['Footer', 'Cherche telephone ou email. Rien. Repart.']],
+    questionCle: "Qui etes-vous et a quoi ca sert ?",
+    reponse: 'Non', commentReponse: "Aucun effort pedagogique pour profils hors-cible. Pas de phrase simple 'nous aidons les entreprises B2B a trouver plus de clients'. Tout est ecrit pour gens qui savent ce qu'est le growth B2B.",
+    impactVitesse: "Catastrophique sur reseau rural (3G/4G faible). JS-heavy = temps d'attente inacceptables.", impactConfiance: "Quasi-nulle. Pas de numero visible, pas d'adresse facilement accessible, pas de contact humain.",
+    positifs: ['Volume de chiffres donne vague impression de serieux', 'Pas de demande de CB ni de creation de compte'],
+    frictions: ['Aucune phrase d\'accroche traduisant la valeur en langage universel', 'Vocabulaire 100% startup, 0% accessible aux profils traditionnels', 'Pas de contact humain visible', 'Chargement mobile catastrophique sur reseau degrade'],
+    ceQuiFeraitBasculer: "Rien \u2014 hors cible. Sauf une page 'pour qui ce n\'est pas fait' qui l'orienterait vers une meilleure ressource.", exp: 1, conf: 2, clarte: 1,
+  },
+];
+
+const techVerdicts = [
+  { label: 'Vitesse', verdict: 'Lent', ok: false, detail: 'Votre site met probablement 4 a 6 secondes a s\'afficher sur telephone' },
+  { label: 'Securite', verdict: 'C probable', ok: false, detail: 'Plusieurs en-tetes de securite probablement absents (Webflow par defaut)' },
+  { label: 'SEO', verdict: 'Correct', ok: true, detail: 'Blog actif, robots.txt + sitemap OK, 268 URLs indexees' },
+  { label: 'Donnees structurees', verdict: 'Absent', ok: false, detail: 'Aucun Schema.org detecte — les IA ne comprennent pas votre activite' },
+  { label: 'Partage reseaux', verdict: 'Incertain', ok: false, detail: 'Open Graph non detecte — vos partages LinkedIn/Twitter sont generiques' },
+];
+
+const tech = {
+  observatory: { grade: 'C (estime)', score: 45, testsOk: 4, testsTotal: 10 },
+  pagespdMobile: null,
+  pagespdDesktop: null,
+  cwv: { lcp: '> 4s (estime)', inp: '> 200ms (estime)', cls: '< 0.1 (estime)' },
+  headers: [
+    { ok: true, h: 'HTTPS confirme (redirection HTTP vers HTTPS)' },
+    { ok: true, h: 'Strict-Transport-Security (probablement present via Webflow)' },
+    { ok: false, h: 'Content-Security-Policy (CSP) \u2014 absent par defaut Webflow' },
+    { ok: false, h: 'X-Frame-Options \u2014 probable absent' },
+    { ok: false, h: 'X-Content-Type-Options \u2014 probable absent' },
+    { ok: false, h: 'Permissions-Policy \u2014 probable absent' },
+  ],
+  schema: [
+    { item: 'JSON-LD present', ok: false },
+    { item: '@type coherent avec l\'activite', ok: false },
+    { item: 'name, url, description', ok: false },
+    { item: 'address + geo (Paris, France)', ok: false },
+    { item: 'telephone', ok: false },
+    { item: 'logo', ok: false },
+    { item: 'sameAs (reseaux sociaux)', ok: false },
+    { item: '@type FAQPage', ok: false },
+  ],
+  og: [
+    { item: 'og:title', ok: false, val: 'Non detecte (rendu JS)' },
+    { item: 'og:description', ok: false, val: 'Non detecte' },
+    { item: 'og:image', ok: false, val: 'Non detecte' },
+    { item: 'og:url', ok: false, val: 'Non detecte' },
+    { item: 'twitter:card', ok: false, val: 'Non detecte' },
+  ],
+  seo: [
+    { item: 'H1 unique : "On debloque la croissance de ton entreprise de services B2B"', ok: true },
+    { item: 'robots.txt accessible et bien configure (21 chemins bloques)', ok: true },
+    { item: 'sitemap.xml accessible (268 URLs)', ok: true },
+    { item: 'Redirection HTTP vers HTTPS', ok: true },
+    { item: 'Meta description (non detectable statiquement \u2014 rendu JS)', ok: false },
+    { item: 'Canonical (non detecte statiquement)', ok: false },
+    { item: 'Schema.org / donnees structurees', ok: false },
+    { item: 'Open Graph pour partage reseaux sociaux', ok: false },
+  ],
+};
+
+const ameliorationsHautes = [
+  {
+    titre: 'Afficher une fourchette de prix pour chaque offre',
+    pourquoi: "16 visiteurs sur 20 ne peuvent pas qualifier leur budget avant de reserver un call de 45 minutes. Ceux qui ont un budget serre partent. Ceux qui comparent vont chez un concurrent plus transparent. Meme une fourchette large ('a partir de X\u20AC' ou 'entre X\u20AC et Y\u20AC') reduit massivement l'anxiete pre-call.",
+    action: "Ajouter sur chaque page offre (StarterPack, OS, Sprint, AKIRO) une ligne 'Investissement : a partir de X\u20AC' ou '10 semaines / X\u20AC'. Ne pas forcement fixer un prix unique — une fourchette suffit a permettre l'auto-qualification.",
+    impact: '16 visiteurs sur 20',
+  },
+  {
+    titre: 'Creer un comparateur visuel entre les offres',
+    pourquoi: "4 offres (StarterPack, OS, Sprint, AKIRO) sans tableau comparatif, c'est 14 visiteurs qui repartent sans savoir laquelle leur correspond. La question 'laquelle est faite pour moi ?' doit trouver reponse en 30 secondes, pas en 4 pages de lecture.",
+    action: "Ajouter un tableau comparatif sur la page d'accueil ou une page 'Nos offres' : colonnes = profil cible / format (formation/coaching/execution) / duree / prix / resultat attendu. Bonus : un quiz de 3 questions 'Quel est ton CA actuel ? Qu'est-ce que tu cherches ? Combien de temps as-tu ?' qui oriente vers la bonne offre.",
+    impact: '14 visiteurs sur 20',
+  },
+  {
+    titre: 'Ameliorer les performances mobile (Core Web Vitals)',
+    pourquoi: "12 visiteurs sur 20 arrivent sur mobile. Le site est JS-heavy (GTM, Hotjar, Memberstack, Facebook Pixel charges simultanement) — probablement 4-6 secondes d'affichage sur 4G. Marc-Antoine quitte a cause de ca. Antoine abandonne son Typeform a cause de ca. C'est votre canal le plus important et le plus defaillant.",
+    action: "Auditer et reduire le poids des trackers JS (charger GTM/Hotjar/Memberstack en diff\u00E9r\u00E9 plutot qu'en bloquant). Optimiser les images (format WebP). Objectif : LCP < 2.5s sur mobile 4G. Passer de ~50/100 a 75+/100 sur Lighthouse mobile.",
+    impact: '12 visiteurs sur 20',
+  },
+  {
+    titre: 'Creer un hub "Ressources gratuites" visible depuis le hero',
+    pourquoi: "8 visiteurs en phase Decouverte arrivent sur le site sans etre prets a reserver un call. La newsletter, le blog et le podcast existent mais sont enfouis dans la navigation. Ces 8 profils (dont beaucoup reviendront dans 12 mois comme clients) repartent sans conversion meme partielle.",
+    action: "Ajouter un CTA secondaire dans le hero ('Ou commencer par les ressources gratuites') ou une section visible au-dessus du fold. Creer une page 'Apprendre gratuitement' qui agrege blog + newsletter + podcast. Ajouter : 'Tu demarre ? Commence par La Missive \u2192'",
+    impact: '8 visiteurs sur 20',
+  },
+  {
+    titre: 'Ajouter des filtres sectoriels sur la page cas clients',
+    pourquoi: "7 visiteurs cherchent un cas client dans leur secteur pour se projeter. Sans le trouver, ils concluent 'ce n'est pas pour moi' — meme quand la methode serait applicable. La page cas clients a 60+ references mais elles sont non filtrables.",
+    action: "Ajouter des filtres par secteur (agences / SaaS / conseil / industrie / freelance / autres) sur la page /use-cases. A court terme, identifier 3-5 cas clients dans des secteurs non-tech (formation, industrie, finance, sante) et les mettre en avant. A moyen terme, developper des cas dans les secteurs sous-representes.",
+    impact: '7 visiteurs sur 20',
+  },
+];
+
+const ameliorationsUtiles = [
+  { titre: 'Clarifier "formation" vs "execution" par offre', detail: "Sophie, Romain, Sandrine et Hugo cherchent tous la meme reponse : 'Est-ce que vous faites ou vous apprenez a faire ?' AKIRO semble etre l'offre execution mais le copywriting ne le dit pas clairement. Ajouter sur chaque page offre : 'Ce que Scalezia fait pour vous / Ce que vous faites avec notre support'." },
+  { titre: 'Ajouter un email ou chat en complement du Typeform', detail: "7 profils (Sophie, Laurent, Isabelle, Jerome, Mehdi...) veulent envoyer une question precise avant de s'engager dans un call de 45 minutes. Un email contact@scalezia.co visible dans le footer et sur les pages offres, ou un chat Intercom, reduirait significativement la friction pre-call pour les profils corporate ou reglementes." },
+  { titre: 'Implementer Schema.org Organisation et optimiser les Open Graph', detail: "Scalezia est cite par les IA (ChatGPT, Perplexity, Claude) — c'est deja votre 3eme canal d'acquisition. Sans Schema.org, les LLMs indexent moins bien votre offre. Sans OG, les partages LinkedIn arrivent sans image. Deux corrections techniques rapides pour un impact significatif sur deux de vos canaux cles." },
+  { titre: 'Ajouter une page ou section "Pour qui ce n\'est pas fait"', detail: "Marc-Antoine, Damien, Patricia auraient beneficie d'un signal clair qu'ils ne sont pas la cible — avec une redirection vers La Missive ou vers d'autres ressources. Ca reduirait les taux de rebond 'frustres' et laisserait une impression positive. Une FAQ question 'Etes-vous fait pour moi ?' suffirait." },
+];
+
+const ameliorationsDiscuter = [
+  { emoji: '\u{1F4E6}', titre: 'Creer un produit d\'entree a achat direct (sans call de vente)', detail: "Kevin, Florian, Clara, Dylan sont prets a payer pour de la valeur immediate mais pas pour une consultation commerciale. Un acces a 1-3 modules des archives membres (9-29\u20AC) ou un 'kit de demarrage' permettrait de les convertir financierement maintenant. Risque : diluer la strategie de vente consultative actuelle." },
+  { emoji: '\u{1F3E5}', titre: 'Developper des cas clients dans les secteurs reglementes', detail: "Finance, sante, juridique, industrie representent un segment premium avec des besoins reels. Un seul cas client CGP ou organisme de formation changerait la perception de Scalezia pour 5-6 profils similaires. Investissement editorial a prioriser si expansion sectorielle souhaitee." },
+  { emoji: '\u{1F4DD}', titre: 'Landing page "grands comptes" en vouvoiement', detail: "Sophie (1.2M\u20AC/CA), Isabelle (800k\u20AC) et Laurent (3M\u20AC) sont legerement freines par le tutoiement omniprésent. Une page /grandes-entreprises en 'vous' pourrait adresser ce segment sans alterer le positionnement principal. Risque : dilution de l'identite de marque construite autour de la proximite." },
+];
+---
+
+<BaseLayout title="Echo Complet \u2014 scalezia.co" description="Rapport Echo Complet : 20 visiteurs ont teste votre site. Voici ce qu'ils en pensent." noindex={true} lang="fr" frPath="/echo/scalezia" ogImage="/og-echo.png">
+
+<!-- 1. HERO -->
+<section class="relative w-full px-6 py-20 md:py-28 overflow-hidden" style="background: #0A0A0A;">
+  <div class="absolute top-[20%] left-[10%] w-[500px] h-[500px] rounded-full blur-[180px] pointer-events-none" style="background: #E86C47; opacity: 0.06;"></div>
+  <div class="relative mx-auto max-w-4xl z-10">
+    <div class="mb-6 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5);">
+      {formuleLabel} &middot; Rapport confidentiel
+    </div>
+    <h1 class="mb-6 text-3xl md:text-4xl font-bold text-white leading-tight tracking-tight">{verdictHero}</h1>
+    <p class="mb-10 text-sm" style="color: rgba(255,255,255,0.4);">
+      Site analyse : <a href={urlSite} target="_blank" class="underline hover:text-white transition-colors">{urlSite}</a> &middot; {kpis.nbPersonas} visiteurs simules &middot; {dateAudit}
+    </p>
+    <div class="grid grid-cols-3 gap-4">
+      <div class="rounded-xl p-5 text-center" style="background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2);">
+        <div class="text-4xl md:text-5xl font-black text-green-400 mb-1">{kpis.nbConvertissent}</div>
+        <div class="text-sm text-green-400/70">vous contactent</div>
+      </div>
+      <div class="rounded-xl p-5 text-center" style="background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2);">
+        <div class="text-4xl md:text-5xl font-black text-amber-400 mb-1">{kpis.nbHesitent}</div>
+        <div class="text-sm text-amber-400/70">hesitent</div>
+      </div>
+      <div class="rounded-xl p-5 text-center" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
+        <div class="text-4xl md:text-5xl font-black mb-1" style="color: rgba(255,255,255,0.5);">{kpis.nbRepartent}</div>
+        <div class="text-sm" style="color: rgba(255,255,255,0.3);">repartent</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. LE CONSTAT -->
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <div class="rounded-2xl p-6 md:p-8 mb-12 border-l-4" style="background: rgba(232,108,71,0.04); border-color: #E86C47;">
+    <p class="text-lg md:text-xl font-medium text-neutral-800 leading-relaxed">{constat}</p>
+  </div>
+  <h2 class="text-xl font-bold text-neutral-900 mb-2">D'ou viennent vos visiteurs</h2>
+  <p class="text-sm text-neutral-500 mb-6">Et combien vous contactent selon leur canal d'arrivee.</p>
+  <div class="space-y-4 mb-12">
+    {canalData.map(c => {
+      const color = c.rate >= 50 ? '#22c55e' : c.rate >= 25 ? '#f59e0b' : '#ef4444';
+      return (
+        <div class="flex items-center gap-4">
+          <div class="w-40 sm:w-48 text-sm text-neutral-700 shrink-0">{c.canal}</div>
+          <div class="flex-1 h-3 bg-neutral-100 rounded-full overflow-hidden">
+            <div class="h-full rounded-full transition-all" style={`width: ${c.rate}%; background: ${color}`}></div>
+          </div>
+          <div class="w-20 text-right">
+            <span class="text-sm font-bold" style={`color: ${color}`}>{c.rate}%</span>
+            <span class="text-xs text-neutral-400 ml-1">({c.convert}/{c.nb})</span>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+  <details class="group mb-4">
+    <summary class="flex items-center gap-2 cursor-pointer text-sm text-neutral-500 hover:text-neutral-700 py-2">
+      <svg class="w-4 h-4 transition-transform group-open:rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      Voir les scores detailles (experience, confiance, clarte)
+    </summary>
+    <div class="grid grid-cols-3 gap-4 mt-3">
+      {[{l:'Experience',v:kpis.experience,d:'Navigation, lisibilite, fluidite'},{l:'Confiance',v:kpis.confiance,d:'Credibilite, preuves, rassurance'},{l:'Clarte',v:kpis.clarte,d:"Comprehension de l'offre et des prix"}].map(s=>(
+        <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
+          <div class="text-2xl font-bold text-neutral-800 mb-1">{s.v}<span class="text-sm text-neutral-400">/10</span></div>
+          <div class="text-xs text-neutral-500">{s.l}</div>
+          <p class="text-[10px] text-neutral-400 mt-1">{s.d}</p>
+        </div>
+      ))}
+    </div>
+  </details>
+</section>
+
+<!-- 3. VOS VISITEURS -->
+<section class="py-16" style="background: #fafafa;">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs</h2>
+    <p class="text-neutral-600 mb-8">Voici ce qui se passe quand quelqu'un cherche vos services et tombe sur votre site.</p>
+
+    {['Convertit','Hesite','Quitte'].map(dec => {
+      const filtered = personas.filter(p => p.decision === dec);
+      const cfg = dec === 'Convertit' ? {border:'border-green-200',badge:'bg-green-600',title:'Ceux qui vous contactent',titleColor:'text-green-800',dot:'bg-green-500',count:kpis.nbConvertissent,countColor:'text-green-600'}
+        : dec === 'Hesite' ? {border:'border-amber-200',badge:'bg-amber-500',title:'Ceux qui hesitent',titleColor:'text-amber-800',dot:'bg-amber-500',count:kpis.nbHesitent,countColor:'text-amber-600'}
+        : {border:'border-neutral-200',badge:'bg-neutral-400',title:'Ceux qui repartent',titleColor:'text-neutral-600',dot:'bg-neutral-400',count:kpis.nbRepartent,countColor:'text-neutral-500'};
+      return (
+        <div class="mb-10">
+          <h3 class={`text-base font-bold ${cfg.titleColor} mb-4 flex items-center gap-2`}>
+            <span class={`w-2.5 h-2.5 rounded-full ${cfg.dot} inline-block`}></span>
+            {cfg.title}
+            <span class={`text-sm font-normal ${cfg.countColor}`}>({cfg.count})</span>
+          </h3>
+          <div class="space-y-3">
+            {filtered.map(p => (
+              <details class={`group persona-card bg-white rounded-xl overflow-hidden shadow-sm border ${cfg.border}`} data-canal={p.canal}>
+                <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                  <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1 flex-wrap">
+                      <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                      <span class={`text-[10px] ${cfg.badge} text-white px-1.5 py-0.5 rounded font-medium`}>{p.decisionLabel}</span>
+                    </div>
+                    <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                    <div class="flex flex-wrap items-center gap-1.5">
+                      <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                      <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                      <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                    </div>
+                  </div>
+                  <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                </summary>
+                <div class={`px-4 pb-5 border-t ${cfg.border}`}>
+                  <div class="grid gap-4 text-xs mt-4">
+                    <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p><p class="text-neutral-600">{p.contexte}</p></div>
+                    <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Premiere impression (5 sec)</p><p class="text-neutral-600">{p.impression}</p></div>
+                    <div>
+                      <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours sur le site</p>
+                      <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                        {p.parcours.map(([section, reaction]: [string, string]) => (<li><strong class="text-neutral-800">{section}</strong>{reaction ? ` \u2014 ${reaction}` : ''}</li>))}
+                      </ol>
+                    </div>
+                    <div class="bg-neutral-50 rounded-lg p-3">
+                      <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p>
+                      <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
+                      <p class="text-neutral-600">Le site repond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> &mdash; {p.commentReponse}</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                      <div><p class="font-semibold text-green-700 mb-1.5">&#x2713; Points positifs</p><ul class="space-y-1 text-neutral-600">{p.positifs.map((pt: string) => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">&middot;</span>{pt}</li>)}</ul></div>
+                      <div><p class="font-semibold text-amber-700 mb-1.5">&#x2717; Frictions</p><ul class="space-y-1 text-neutral-600">{p.frictions.map((f: string) => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">&middot;</span>{f}</li>)}</ul></div>
+                    </div>
+                    {p.ceQuiFeraitBasculer && (
+                      <div class="rounded-lg p-3" style="background: rgba(232,108,71,0.05);">
+                        <p class="font-semibold text-[10px] uppercase tracking-wider mb-1" style="color: #E86C47;">{dec === 'Hesite' ? "Ce qui le ferait passer a l'action" : "Ce qui l'aurait retenu"}</p>
+                        <p style="color: #D4572F;">{p.ceQuiFeraitBasculer}</p>
+                      </div>
+                    )}
+                    <div class="flex gap-6 pt-3 border-t border-neutral-100">
+                      {[{label:'Experience',val:p.exp},{label:'Confiance',val:p.conf},{label:'Clarte',val:p.clarte}].map(s => {
+                        const sColor = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500';
+                        return (<div class="text-center"><span class={`block text-lg font-bold ${sColor}`}>{s.val}</span><span class="text-[10px] text-neutral-400">{s.label}</span></div>);
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </details>
+            ))}
+          </div>
+          {dec === 'Hesite' && (
+            <div class="rounded-xl p-5 mt-4 bg-amber-50 border border-amber-200 flex items-start gap-3">
+              <span class="text-lg shrink-0 mt-0.5">&#x1F4A1;</span>
+              <div><p class="text-sm font-medium text-amber-900">Ces {kpis.nbHesitent} visiteurs ont besoin de vos services.</p><p class="text-xs text-amber-700 mt-1">Il leur manque un element de rassurance pour passer a l'action. C'est votre plus gros levier de croissance.</p></div>
+            </div>
+          )}
+          {dec === 'Quitte' && (
+            <div class="rounded-xl p-5 mt-4 bg-neutral-100 border border-neutral-200 flex items-start gap-3">
+              <span class="text-lg shrink-0 mt-0.5">&#x1F4C9;</span>
+              <div><p class="text-sm font-medium text-neutral-800">Chaque visiteur qui repart, c'est un client en moins.</p><p class="text-xs text-neutral-600 mt-1">Certains n'etaient pas dans votre cible — c'est normal. Mais d'autres avaient un vrai besoin et votre site ne les a pas convaincus.</p></div>
+            </div>
+          )}
+        </div>
+      );
+    })}
+  </div>
+</section>
+
+<!-- 4. CE QU'ON RECOMMANDE -->
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <h2 class="text-2xl font-bold text-neutral-900 mb-2">Ce qu'on recommande</h2>
+  <p class="text-neutral-600 mb-8">Actions concretes, classees par impact sur vos visiteurs.</p>
+  <p class="text-sm font-semibold text-red-700 mb-4">Si vous ne changez que {ameliorationsHautes.length} choses :</p>
+  <div class="space-y-4 mb-12">
+    {ameliorationsHautes.map(a => (
+      <div class="bg-white border-2 border-red-200 rounded-xl p-6 shadow-sm">
+        <div class="flex items-start justify-between gap-4 mb-3">
+          <h4 class="font-bold text-neutral-900">{a.titre}</h4>
+          <span class="text-[10px] px-2 py-1 rounded-full bg-red-100 text-red-700 font-semibold shrink-0 whitespace-nowrap">{a.impact}</span>
+        </div>
+        <p class="text-sm text-neutral-600 mb-3">{a.pourquoi}</p>
+        <div class="bg-neutral-50 rounded-lg px-4 py-3 flex items-start gap-2">
+          <svg class="w-4 h-4 text-neutral-400 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+          <p class="text-xs text-neutral-700">{a.action}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+  <h3 class="text-lg font-bold text-neutral-900 mb-2">Utile aussi</h3>
+  <div class="grid md:grid-cols-2 gap-4 mb-12">
+    {ameliorationsUtiles.map(a => (<div class="bg-white border border-neutral-200 rounded-xl p-5"><h4 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h4><p class="text-xs text-neutral-600">{a.detail}</p></div>))}
+  </div>
+  <h3 class="text-lg font-bold text-neutral-900 mb-2">A discuter</h3>
+  <p class="text-sm text-neutral-500 mb-4">Decisions business — pas de bonne ou mauvaise reponse.</p>
+  <div class="space-y-3 mb-12">
+    {ameliorationsDiscuter.map(a => (<div class="bg-neutral-50 border border-neutral-200 rounded-xl p-4 flex gap-3"><span class="text-lg shrink-0">{a.emoji}</span><div><h4 class="font-semibold text-neutral-900 text-sm mb-0.5">{a.titre}</h4><p class="text-xs text-neutral-600">{a.detail}</p></div></div>))}
+  </div>
+  <div class="rounded-2xl p-8 text-center border-2 border-dashed" style="border-color: #E86C47; background: rgba(232,108,71,0.03);">
+    <p class="text-lg font-bold text-neutral-900 mb-2">{kpis.nbPersonas} visiteurs confirment des tendances claires.</p>
+    <p class="text-sm text-neutral-600 mb-6">Avec 100 visiteurs (Echo Pro), vous obtenez une fiabilite statistique : analyse par canal, par maturite, et un appel de 30 min pour parcourir le rapport ensemble.</p>
+    <a href="/echo/" class="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-xl transition-all shadow-md hover:-translate-y-0.5" style="background: linear-gradient(135deg, #E86C47, #D4572F);">Echo Pro &mdash; 250&#8364; <span class="text-xs opacity-70 ml-1">(100 visiteurs + appel 30 min)</span></a>
+  </div>
+</section>
+
+<!-- 5. SOUS LE CAPOT -->
+<section class="py-16 border-t border-neutral-200">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-2xl font-bold text-neutral-900 mb-2">Sous le capot</h2>
+    <p class="text-neutral-600 mb-8">Pour les curieux : ce que les outils techniques disent de votre site.</p>
+    <div class="flex flex-wrap gap-3 mb-10">
+      {techVerdicts.map(v => (
+        <div class={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium ${v.ok ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
+          {v.ok ? <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> : <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}
+          <span>{v.label}</span><span class="text-xs opacity-70">{v.verdict}</span>
+        </div>
+      ))}
+    </div>
+
+    <!-- PageSpeed -->
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+        <div class="flex items-center gap-3"><span class="text-base">&#x26A1;</span><div><h3 class="font-semibold text-neutral-900 text-sm">Vitesse du site</h3><p class="text-[11px] text-neutral-500">{techVerdicts[0].detail}</p></div></div>
+        <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 border-t border-neutral-100">
+        <div class="py-4">
+          <p class="text-sm text-neutral-600 mb-3">L'API PageSpeed etait rate-limitee au moment de l'audit. Donnees non disponibles en temps reel.</p>
+          <div class="bg-amber-50 rounded-lg p-3 mb-3">
+            <p class="text-xs font-semibold text-amber-800 mb-1">Estimation basee sur l'analyse du code source :</p>
+            <ul class="text-xs text-amber-700 space-y-1">
+              <li>• GTM + Facebook Pixel + Hotjar + Memberstack charges simultanement = LCP probable > 4s sur mobile</li>
+              <li>• Site Webflow JS-heavy sans optimisation visible</li>
+              <li>• Score Lighthouse mobile estime : ~50/100 (orange)</li>
+            </ul>
+          </div>
+          <div class="grid grid-cols-3 gap-3 text-center">
+            <div><div class="text-sm font-bold text-amber-500">~50/100</div><div class="text-[10px] text-neutral-500">Perf. mobile (est.)</div></div>
+            <div><div class="text-sm font-bold text-amber-500">&gt; 4s</div><div class="text-[10px] text-neutral-500">LCP mobile (est.)</div></div>
+            <div><div class="text-sm font-bold text-green-500">&lt; 0.1</div><div class="text-[10px] text-neutral-500">CLS (est.)</div></div>
+          </div>
+          <a href={`https://pagespeed.web.dev/report?url=${urlSite}`} target="_blank" class="text-sm text-blue-600 underline hover:text-blue-800 mt-3 inline-block">Tester vous-meme sur PageSpeed &#x2192;</a>
+        </div>
+      </div>
+    </details>
+
+    <!-- Observatory -->
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+        <div class="flex items-center gap-3"><span class="text-base">&#x1F512;</span><div><h3 class="font-semibold text-neutral-900 text-sm">Securite</h3><p class="text-[11px] text-neutral-500">{techVerdicts[1].detail}</p></div></div>
+        <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 border-t border-neutral-100">
+        <p class="text-xs text-neutral-500 py-2">Note estimee : {tech.observatory.grade} (basee sur les headers detectes)</p>
+        {tech.headers.map(h => (<div class="flex items-center gap-2 py-1">{h.ok ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> : <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}<span class={`text-xs ${h.ok ? 'text-neutral-600' : 'text-red-500'}`}>{h.h}</span></div>))}
+      </div>
+    </details>
+
+    <!-- Schema.org -->
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+        <div class="flex items-center gap-3"><span class="text-base">&#x1F4CA;</span><div><h3 class="font-semibold text-neutral-900 text-sm">Donnees structurees (Schema.org)</h3><p class="text-[11px] text-neutral-500">{techVerdicts[3].detail}</p></div></div>
+        <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 border-t border-neutral-100">
+        {tech.schema.map(s => (<div class="flex items-center gap-2 py-1">{s.ok ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> : <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}<span class={`text-xs ${s.ok ? 'text-neutral-600' : 'text-red-500 font-medium'}`}>{s.item}</span></div>))}
+        <p class="text-xs text-amber-700 mt-3 bg-amber-50 rounded p-2">Note importante : Scalezia est cite par ChatGPT, Perplexity et Claude comme ressource growth B2B. Sans Schema.org, les LLMs indexent votre offre de facon moins precise — c'est un canal que vous avez deja mais que vous n'optimisez pas.</p>
+      </div>
+    </details>
+
+    <!-- Open Graph -->
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+        <div class="flex items-center gap-3"><span class="text-base">&#x1F517;</span><div><h3 class="font-semibold text-neutral-900 text-sm">Apercu reseaux sociaux (Open Graph)</h3><p class="text-[11px] text-neutral-500">{techVerdicts[4].detail}</p></div></div>
+        <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 border-t border-neutral-100">
+        {tech.og.map(o => (<div class="flex items-start gap-2 py-1"><svg class="w-3.5 h-3.5 text-red-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg><span class="text-xs text-red-500">{o.item} <span class="text-neutral-400">{o.val}</span></span></div>))}
+        <p class="text-xs text-neutral-500 mt-2">Note : le site est JS-heavy — les balises OG peuvent etre presentes mais injectees dynamiquement, non visibles par les crawlers statiques. A verifier avec l'outil de debug LinkedIn/Facebook.</p>
+      </div>
+    </details>
+
+    <!-- SEO -->
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden bg-white">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+        <div class="flex items-center gap-3"><span class="text-base">&#x1F50D;</span><div><h3 class="font-semibold text-neutral-900 text-sm">SEO technique</h3><p class="text-[11px] text-neutral-500">{techVerdicts[2].detail}</p></div></div>
+        <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 border-t border-neutral-100">
+        {tech.seo.map(s => (<div class="flex items-center gap-2 py-1">{s.ok ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> : <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}<span class={`text-xs ${s.ok ? 'text-neutral-600' : 'text-red-500'}`}>{s.item}</span></div>))}
+      </div>
+    </details>
+
+    <div class="mt-8 rounded-xl p-5 bg-white border border-neutral-200 flex items-start gap-3">
+      <span class="text-lg shrink-0 mt-0.5">&#x1F527;</span>
+      <div><p class="text-sm font-medium text-neutral-800">Tout ca est corrigeable.</p><p class="text-xs text-neutral-600 mt-1">La performance mobile et les donnees structurees sont les deux corrections a fort impact. Un site bien construit obtient 90+ sur tous les indicateurs techniques — c'est ce que je livre a mes clients.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. METHODOLOGIE -->
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-neutral-200">
+  <h2 class="text-base font-bold text-neutral-900 mb-4">Comment ca marche</h2>
+  <ol class="space-y-3 text-sm text-neutral-600">
+    {['On scrape votre site \u2014 on lit chaque page comme un visiteur le ferait','On audite la technique \u2014 vitesse, securite, referencement, donnees structurees',`On cree ${kpis.nbPersonas} profils realistes \u2014 adaptes a votre secteur et votre zone geographique`,'Chaque profil visite votre site et donne son avis \u2014 premiere impression, parcours, decision','On compile les resultats \u2014 frictions recurrentes, canaux performants, recommandations'].map((t,i) => (
+      <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">{i+1}</span><span>{t}</span></li>
+    ))}
+  </ol>
+  <div class="mt-6 p-4 rounded-lg bg-neutral-50 text-xs text-neutral-500">
+    <strong>Note :</strong> 20 visiteurs donnent des tendances claires et confirmees. 100 (Echo Pro) donnent une fiabilite statistique et permettent de savoir exactement quel canal investir.
+  </div>
+</section>
+
+<!-- 7. CTA FINAL -->
+<section class="relative w-full px-6 py-20 overflow-hidden" style="background: #0A0A0A;">
+  <div class="absolute bottom-[10%] right-[10%] w-[400px] h-[400px] rounded-full blur-[160px] pointer-events-none" style="background: #E86C47; opacity: 0.05;"></div>
+  <div class="relative mx-auto max-w-3xl z-10 text-center">
+    <h2 class="text-2xl md:text-3xl font-bold text-white mb-4 leading-tight">
+      20 visiteurs. Imaginez ce que 100 prouveraient.
+    </h2>
+    <p class="text-sm mb-8" style="color: rgba(255,255,255,0.5);">
+      L'Echo Pro : 100 visiteurs pour une fiabilite statistique, analyse par canal et par maturite, et 30 minutes ensemble pour parcourir le rapport.
+    </p>
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+      <a href="/echo/" class="inline-flex items-center gap-2 px-8 py-4 text-white font-semibold rounded-xl transition-all shadow-lg hover:-translate-y-0.5" style="background: linear-gradient(135deg, #E86C47, #D4572F); box-shadow: 0 4px 24px rgba(232, 108, 71, 0.35);">
+        Echo Pro &mdash; 250&#8364;
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      </a>
+      <a href="/contact" class="inline-flex items-center gap-2 px-8 py-4 border border-neutral-600 font-semibold rounded-xl transition-all hover:border-white/40" style="color: rgba(255,255,255,0.6);">
+        En discuter d'abord
+      </a>
+    </div>
+  </div>
+</section>
+
+</BaseLayout>
