@@ -1,0 +1,892 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const slug = 'zompa';
+const formule: 'decouverte' | 'complet' | 'pro' = 'decouverte';
+const formuleLabel = 'Echo Decouverte';
+const nomProspect = 'Zompa Design';
+const urlSite = 'https://www.zompa.fr/';
+const dateAudit = '30 mars 2026';
+const showUpsell = true;
+
+const kpis = {
+  nbPersonas: 5,
+  nbConvertissent: 2,
+  nbHesitent: 2,
+  nbRepartent: 1,
+  conversion: 40,
+  experience: 7.4,
+  confiance: 6.6,
+  clarte: 6.0,
+};
+
+const verdictHero = 'Sur 5 visiteurs, 2 vous contactent. 2 hesitent. 1 repart sans rien faire.';
+
+const constat = 'Votre site est visuellement exceptionnel et votre specialisation escape game est immediatement claire. Mais il convainc surtout ceux qui vous connaissent deja. Ceux qui comparent repartent faute d\'informations concretes sur vos tarifs.';
+
+const canalData = [
+  { canal: 'Bouche-a-oreille', nb: 1, convert: 1, rate: 100 },
+  { canal: 'Google Search', nb: 2, convert: 1, rate: 50 },
+  { canal: 'LinkedIn', nb: 1, convert: 0, rate: 0 },
+  { canal: 'Instagram', nb: 1, convert: 0, rate: 0 },
+];
+
+const personas = [
+  {
+    id: 1,
+    name: 'Julien',
+    age: 34,
+    emoji: '🔐',
+    situation: 'Co-fondateur d\'un escape game (3 salles) a Lyon',
+    canal: 'Google Search',
+    device: 'Desktop',
+    decision: 'Convertit' as const,
+    decisionLabel: 'Contacte',
+    histoire: 'La qualite du portfolio l\'emporte sur l\'absence de prix — il envoie le formulaire malgre l\'impossibilite de comparer avec ses 2 autres devis.',
+    localisation: 'Lyon (69)',
+    maturite: 'Comparaison',
+    contexte: 'Il ouvre sa 4e salle sur le theme espionnage guerre froide. Il a deja 2 devis de graphistes generalistes et cherche un specialiste.',
+    impression: 'L\'univers visuel est clair en 3 secondes. La baseline "Je cree du faux qui fait vrai" le fait sourire — elle parle son langage.',
+    parcours: [
+      ['Hero', 'Accroche forte, logos Ubisoft/Warner rassurent immediatement'],
+      ['Services', 'Documents de jeu + Accessoires correspondent a son besoin. Mais aucun prix.'],
+      ['Portfolio', '4-5 minutes. Qualite nettement au-dessus de ses autres devis.'],
+      ['FAQ', 'Cherche les prix : "sur-mesure". Frustrant mais delai 2-3 mois compatible.'],
+      ['Contact', 'Formulaire simple. Aurait prefere un telephone.'],
+    ] as [string, string][],
+    questionCle: 'Est-ce que la qualite justifie un budget potentiellement superieur a mes autres devis ?',
+    reponse: 'Partiellement' as const,
+    commentReponse: 'Le portfolio prouve la qualite mais sans prix, impossible d\'evaluer le ratio.',
+    impactVitesse: 'Desktop, aucun probleme perceptible.',
+    impactConfiance: 'Absence de banniere cookies le laisse indifferent.',
+    positifs: ['Specialisation ultra-claire', 'Portfolio de tres haute qualite', 'Logos clients prestigieux', 'FAQ qui repond aux questions pratiques'],
+    frictions: ['Aucune fourchette tarifaire', 'Pas de temoignages textuels', 'Formulaire sans champ telephone'],
+    ceQuiFeraitBasculer: 'Une fourchette de prix indicative aurait accelere sa decision de 48h.',
+    exp: 8, conf: 7, clarte: 7,
+  },
+  {
+    id: 2,
+    name: 'Sophie',
+    age: 28,
+    emoji: '📱',
+    situation: 'Community manager d\'un parc de loisirs indoor a Lille',
+    canal: 'LinkedIn',
+    device: 'Mobile',
+    decision: 'Hesite' as const,
+    decisionLabel: 'Hesite',
+    histoire: 'Convaincue par la qualite mais ne peut pas monter de dossier interne sans fourchette budgetaire. Bookmarke le site et risque d\'oublier.',
+    localisation: 'Lille (59)',
+    maturite: 'Decouverte',
+    contexte: 'Sa direction l\'a mandatee pour trouver un prestataire graphisme pour une nouvelle attraction. Elle a vu un post LinkedIn de Laurie.',
+    impression: 'Design soigne, palette violet/or premium. Mais elle cherche le projet Batman Escape vu sur LinkedIn.',
+    parcours: [
+      ['Hero (mobile)', 'Bonne premiere impression, design pro'],
+      ['References', 'Logo Batman Escape/Warner confirme le bon site'],
+      ['Portfolio', '24+ projets sur 4 pages en mobile : penible sans filtre'],
+      ['Services', 'Categories claires mais pas de prix. "Ma directrice va demander combien."'],
+      ['A propos', 'Laurie est seule. Inquietude : gros volume = possible ?'],
+      ['Contact', 'Ne remplit pas. Le formulaire semble trop engageant pour une decouverte.'],
+    ] as [string, string][],
+    questionCle: 'Combien ca coute, pour monter un dossier de validation en interne ?',
+    reponse: 'Non' as const,
+    commentReponse: 'Aucune fourchette budgetaire. Impossible de justifier le choix aupres de la direction.',
+    impactVitesse: 'Navigation portfolio laborieuse sur mobile (4 pages sans filtre).',
+    impactConfiance: 'Pas de localisation : incertitude sur la logistique et la proximite.',
+    positifs: ['References impressionnantes (Warner, Ubisoft)', 'Specialisation facile a pitcher en interne', 'Page A propos humanisante'],
+    frictions: ['Aucune indication tarifaire', 'Pas de telephone ni email visible', 'Pas de localisation', 'Portfolio non filtrable'],
+    ceQuiFeraitBasculer: 'Une grille tarifaire indicative + un email de contact direct + une mention de localisation.',
+    exp: 6, conf: 6, clarte: 5,
+  },
+  {
+    id: 3,
+    name: 'Thomas',
+    age: 41,
+    emoji: '🎲',
+    situation: 'Editeur de jeux d\'enquete par abonnement a Paris',
+    canal: 'Bouche-a-oreille',
+    device: 'Desktop',
+    decision: 'Convertit' as const,
+    decisionLabel: 'Contacte',
+    histoire: 'Recommande par un confrere, il vient confirmer et contacter. Portfolio valide, formulaire envoye en 2 minutes.',
+    localisation: 'Paris (75)',
+    maturite: 'Decision',
+    contexte: 'Un confrere editeur lui a dit "va voir Zompa, elle est top pour les faux documents." Il tape directement zompa.fr.',
+    impression: 'Le site confirme la recommandation. Pro, specialise, coherent. Il cherche le bouton Contact.',
+    parcours: [
+      ['Hero', 'Confirme la recommandation. Logos clients connus.'],
+      ['Portfolio', '2 minutes max. La qualite est la. Un projet de faux documents correspond a son besoin.'],
+      ['Contact', 'Formulaire simple. Il decrit ses coffrets d\'enquete mensuels. Envoye.'],
+    ] as [string, string][],
+    questionCle: 'Comment je la contacte et est-ce que le portfolio confirme la recommandation ?',
+    reponse: 'Oui' as const,
+    commentReponse: 'Formulaire accessible en 2 clics, portfolio qui confirme tout.',
+    impactVitesse: 'Desktop, chargement rapide.',
+    impactConfiance: 'La recommandation personnelle pese plus que tout signal technique.',
+    positifs: ['Site confirme la recommandation recue', 'Formulaire simple et rapide', 'Navigation directe vers Contact', 'Portfolio qui prouve la competence'],
+    frictions: ['Formulaire sans upload de fichiers', 'Pas de champ telephone', 'Pas de confirmation de delai de reponse'],
+    ceQuiFeraitBasculer: '',
+    exp: 9, conf: 9, clarte: 8,
+  },
+  {
+    id: 4,
+    name: 'Camille',
+    age: 25,
+    emoji: '🎨',
+    situation: 'Etudiante design graphique en derniere annee a Bordeaux',
+    canal: 'Instagram',
+    device: 'Mobile',
+    decision: 'Quitte' as const,
+    decisionLabel: 'Repart',
+    histoire: 'Cherche de l\'inspiration et peut-etre un stage. Le site est 100% oriente client B2B — pas de section recrutement, pas d\'email direct.',
+    localisation: 'Bordeaux (33)',
+    maturite: 'Decouverte',
+    contexte: 'Elle a decouvert le compte @zompa_design via un hashtag #escaperoom. Les visuels l\'ont impressionnee.',
+    impression: 'Visuellement magnifique. "Waouh, c\'est le metier de reve." Mais elle cherche des elements qui n\'existent pas.',
+    parcours: [
+      ['Portfolio', '8-10 minutes. Screenshot plusieurs projets. Pas de description du processus creatif.'],
+      ['A propos', 'Parcours partiellement raconte mais oriente "vente de services", pas "partage d\'experience."'],
+      ['Blog', 'Peu de contenu. Pas de "behind the scenes" ni "making of."'],
+      ['Contact', 'Formulaire inadapte. Pas d\'email pour une candidature spontanee.'],
+    ] as [string, string][],
+    questionCle: 'Comment elle en est arrivee la et est-ce qu\'elle prend des stagiaires ?',
+    reponse: 'Non' as const,
+    commentReponse: 'Aucune info recrutement, collaborations ou parcours detaille. Site oriente client B2B.',
+    impactVitesse: 'Mobile, chargement correct.',
+    impactConfiance: 'Non pertinent — elle ne va pas acheter.',
+    positifs: ['Portfolio visuellement exceptionnel', 'Design mobile soigne', 'Specialisation fascinante a decouvrir'],
+    frictions: ['Aucune section recrutement/stage', 'Pas d\'email direct', 'Blog sous-exploite', 'Portfolio sans processus creatif'],
+    ceQuiFeraitBasculer: 'Une mention "ouvert aux collaborations/stages" + un email de contact direct.',
+    exp: 7, conf: 5, clarte: 4,
+  },
+  {
+    id: 5,
+    name: 'Marc-Antoine',
+    age: 38,
+    emoji: '🏢',
+    situation: 'DA chez un studio d\'experience immersive a Nantes, budget 50-80k/an',
+    canal: 'Google Search',
+    device: 'Mobile',
+    decision: 'Hesite' as const,
+    decisionLabel: 'Hesite',
+    histoire: 'Qualite indeniable mais structure solo + delai 2-3 mois incompatible avec son flux regulier. Garde le site en signet pour du ponctuel.',
+    localisation: 'Nantes (44)',
+    maturite: 'Comparaison',
+    contexte: 'Cherche un partenaire graphique recurrent, pas un one-shot. Compare 3 prestataires.',
+    impression: 'Coherence graphique maitrisee. "Elle sait ce qu\'elle fait." Mais cherche des signaux de capacite.',
+    parcours: [
+      ['Hero (mobile)', 'Bonne impression. Logos Ubisoft/Warner = filtre des grandes structures passe.'],
+      ['Portfolio', 'Diversite et qualite constante. Mais 4 pages sans filtre en mobile, laborieux.'],
+      ['Services', '5 categories claires. Mais aucune indication de capacite ou d\'equipe.'],
+      ['A propos', 'Laurie travaille seule. Signal d\'alarme : besoin de 3-4 sets/mois.'],
+      ['FAQ', 'Delai 2-3 mois. Confirme l\'inquietude.'],
+      ['Contact', 'Ne remplit pas. Met en signet.'],
+    ] as [string, string][],
+    questionCle: 'Est-ce qu\'elle peut gerer un flux regulier de projets ou est-ce une freelance debordee ?',
+    reponse: 'Non' as const,
+    commentReponse: 'Delai 2-3 mois et structure solo. Aucune mention de collaborateurs ou capacite a scaler.',
+    impactVitesse: 'Navigation entre 4 pages de portfolio un peu lente sur mobile.',
+    impactConfiance: 'Remarque l\'absence de Schema.org — "site un peu artisanal cote technique."',
+    positifs: ['Qualite visuelle exceptionnelle et constante', 'References clients majeures', 'Specialisation niche rare', 'Coherence graphique du site'],
+    frictions: ['Structure solo + delai 2-3 mois', 'Pas de temoignages textuels', 'Pas de localisation', 'Portfolio non filtrable', 'Aucune mention de capacite'],
+    ceQuiFeraitBasculer: 'Mentionner un reseau de collaborateurs + temoignages de clients recurrents + filtre portfolio.',
+    exp: 7, conf: 6, clarte: 6,
+  },
+];
+
+const ameliorationsHautes = [
+  {
+    titre: 'Ajouter des fourchettes tarifaires indicatives',
+    pourquoi: 'Sans indication de prix, vos visiteurs ne peuvent ni comparer avec d\'autres devis ni monter un dossier de validation en interne. 3 visiteurs sur 5 bloquent sur ce point.',
+    action: 'Ajouter en bas de chaque categorie sur la page Services une fourchette indicative (ex. "Set de documents de jeu : a partir de 1 500 euros"). Mentionner que chaque projet est sur-mesure.',
+    impact: '3 visiteurs sur 5',
+  },
+];
+
+const ameliorationsUtiles: { titre: string; detail: string }[] = [];
+const ameliorationsDiscuter: { emoji: string; titre: string; detail: string }[] = [];
+
+const techVerdicts = [
+  { label: 'Vitesse', verdict: 'Non mesure', ok: true, detail: 'Heberge sur Webflow + Cloudflare CDN, images WebP' },
+  { label: 'Securite', verdict: 'C-', ok: false, detail: 'Headers de securite manquants (4 sur 10 echoues)' },
+  { label: 'SEO', verdict: 'A ameliorer', ok: false, detail: 'Pas de sitemap, pas de robots.txt, quelques alt vides' },
+  { label: 'Donnees structurees', verdict: 'Absent', ok: false, detail: 'Aucun Schema.org JSON-LD detecte' },
+  { label: 'Partage reseaux', verdict: 'OK', ok: true, detail: 'Open Graph et Twitter Cards bien configures' },
+];
+
+const tech = {
+  observatory: { grade: 'C-', score: 45, testsOk: 6, testsTotal: 10 },
+  pagespdMobile: null as { performance: number; accessibility: number; bestPractices: number; seo: number } | null,
+  pagespdDesktop: null as { performance: number; accessibility: number; bestPractices: number; seo: number } | null,
+  cwv: { lcp: 'Non disponible', inp: 'Non disponible', cls: 'Non disponible' },
+  headers: [
+    { ok: true, h: 'Strict-Transport-Security (HSTS)' },
+    { ok: false, h: 'X-Content-Type-Options (absent)' },
+    { ok: false, h: 'X-Frame-Options (absent — risque clickjacking)' },
+    { ok: false, h: 'Content-Security-Policy (absent)' },
+    { ok: false, h: 'Permissions-Policy (absent)' },
+    { ok: true, h: 'HTTPS force via Cloudflare' },
+  ],
+  schema: [
+    { item: 'JSON-LD present', ok: false },
+    { item: '@type coherent avec l\'activite', ok: false },
+    { item: 'name, url, description', ok: false },
+    { item: 'address + geo (localisation)', ok: false },
+    { item: 'telephone', ok: false },
+    { item: 'image / logo', ok: false },
+    { item: 'sameAs (reseaux sociaux)', ok: false },
+  ],
+  og: [
+    { item: 'og:title', ok: true, val: 'Zompa Design — Graphiste specialisee escape games' },
+    { item: 'og:description', ok: true, val: 'Present et pertinent' },
+    { item: 'og:image', ok: true, val: 'diplome-mockup.png' },
+    { item: 'og:type', ok: true, val: 'website' },
+    { item: 'og:url', ok: false, val: 'Absent' },
+    { item: 'twitter:card', ok: true, val: 'summary_large_image' },
+    { item: 'canonical', ok: false, val: 'Absent' },
+  ],
+  seo: [
+    { item: 'Un seul H1 par page', ok: true },
+    { item: 'Hierarchie coherente (H1 > H2 > H3)', ok: true },
+    { item: 'Meta description', ok: true },
+    { item: 'Images avec alt text', ok: false },
+    { item: 'robots.txt accessible', ok: false },
+    { item: 'sitemap.xml accessible', ok: false },
+    { item: 'Redirection HTTP vers HTTPS', ok: true },
+    { item: 'Polices locales (RGPD)', ok: false },
+  ],
+};
+---
+
+<BaseLayout
+  title={`${formuleLabel} — ${nomProspect}`}
+  description={`Rapport Echo Decouverte pour ${nomProspect}. ${kpis.nbPersonas} visiteurs simules, audit technique, recommandation prioritaire.`}
+  noindex={true}
+  frPath={`/echo/${slug}`}
+>
+
+<!-- 1. HERO — Verdict immediat -->
+<section class="relative w-full px-6 py-20 md:py-28 overflow-hidden" style="background: #0A0A0A;">
+  <div class="absolute top-[20%] left-[10%] w-[500px] h-[500px] rounded-full blur-[180px] pointer-events-none" style="background: #E86C47; opacity: 0.06;"></div>
+  <div class="relative mx-auto max-w-4xl z-10">
+
+    <div class="mb-6 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5);">
+      {formuleLabel} · Rapport confidentiel
+    </div>
+
+    <h1 class="mb-6 text-3xl md:text-4xl font-bold text-white leading-tight tracking-tight">
+      {verdictHero}
+    </h1>
+
+    <p class="mb-10 text-sm" style="color: rgba(255,255,255,0.4);">
+      Site analyse : <a href={urlSite} target="_blank" class="underline hover:text-white transition-colors">{urlSite}</a> · {kpis.nbPersonas} visiteurs simules · {dateAudit}
+    </p>
+
+    <div class="grid grid-cols-3 gap-4">
+      <div class="rounded-xl p-5 text-center" style="background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2);">
+        <div class="text-4xl md:text-5xl font-black text-green-400 mb-1">{kpis.nbConvertissent}</div>
+        <div class="text-sm text-green-400/70">vous contactent</div>
+      </div>
+      <div class="rounded-xl p-5 text-center" style="background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2);">
+        <div class="text-4xl md:text-5xl font-black text-amber-400 mb-1">{kpis.nbHesitent}</div>
+        <div class="text-sm text-amber-400/70">hesitent</div>
+      </div>
+      <div class="rounded-xl p-5 text-center" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
+        <div class="text-4xl md:text-5xl font-black mb-1" style="color: rgba(255,255,255,0.5);">{kpis.nbRepartent}</div>
+        <div class="text-sm" style="color: rgba(255,255,255,0.3);">repartent</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- 2. LE CONSTAT -->
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+
+  <div class="rounded-2xl p-6 md:p-8 mb-12 border-l-4" style="background: rgba(232,108,71,0.04); border-color: #E86C47;">
+    <p class="text-lg md:text-xl font-medium text-neutral-800 leading-relaxed">{constat}</p>
+  </div>
+
+  <h2 class="text-xl font-bold text-neutral-900 mb-2">D'ou viennent vos visiteurs</h2>
+  <p class="text-sm text-neutral-500 mb-6">Et combien vous contactent selon leur canal d'arrivee.</p>
+
+  <div class="space-y-4 mb-12">
+    {canalData.map(c => {
+      const color = c.rate >= 50 ? '#22c55e' : c.rate >= 25 ? '#f59e0b' : '#ef4444';
+      return (
+        <div class="flex items-center gap-4">
+          <div class="w-40 sm:w-48 text-sm text-neutral-700 shrink-0">{c.canal}</div>
+          <div class="flex-1 h-3 bg-neutral-100 rounded-full overflow-hidden">
+            <div class="h-full rounded-full transition-all" style={`width: ${c.rate}%; background: ${color}`}></div>
+          </div>
+          <div class="w-20 text-right">
+            <span class="text-sm font-bold" style={`color: ${color}`}>{c.rate}%</span>
+            <span class="text-xs text-neutral-400 ml-1">({c.convert}/{c.nb})</span>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+
+  <details class="group mb-4">
+    <summary class="flex items-center gap-2 cursor-pointer text-sm text-neutral-500 hover:text-neutral-700 py-2">
+      <svg class="w-4 h-4 transition-transform group-open:rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      Voir les scores detailles (experience, confiance, clarte)
+    </summary>
+    <div class="grid grid-cols-3 gap-4 mt-3">
+      <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
+        <div class="text-2xl font-bold text-neutral-800 mb-1">{kpis.experience}<span class="text-sm text-neutral-400">/10</span></div>
+        <div class="text-xs text-neutral-500">Experience</div>
+        <p class="text-[10px] text-neutral-400 mt-1">Navigation, lisibilite, fluidite</p>
+      </div>
+      <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
+        <div class="text-2xl font-bold text-neutral-800 mb-1">{kpis.confiance}<span class="text-sm text-neutral-400">/10</span></div>
+        <div class="text-xs text-neutral-500">Confiance</div>
+        <p class="text-[10px] text-neutral-400 mt-1">Credibilite, preuves, rassurance</p>
+      </div>
+      <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
+        <div class="text-2xl font-bold text-neutral-800 mb-1">{kpis.clarte}<span class="text-sm text-neutral-400">/10</span></div>
+        <div class="text-xs text-neutral-500">Clarte</div>
+        <p class="text-[10px] text-neutral-400 mt-1">Comprehension de l'offre et des prix</p>
+      </div>
+    </div>
+  </details>
+
+</section>
+
+<!-- 3. VOS VISITEURS -->
+<section class="py-16" style="background: #fafafa;">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <h2 class="text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs</h2>
+    <p class="text-neutral-600 mb-8">Voici ce qui se passe quand quelqu'un cherche vos services et tombe sur votre site.</p>
+
+    <!-- Ceux qui contactent -->
+    <div class="mb-10">
+      <h3 class="text-base font-bold text-green-800 mb-4 flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-green-500 inline-block"></span>
+        Ceux qui vous contactent
+        <span class="text-sm font-normal text-green-600">({kpis.nbConvertissent})</span>
+      </h3>
+      <div class="space-y-3">
+        {personas.filter(p => p.decision === 'Convertit').map(p => (
+          <details class="group persona-card bg-white rounded-xl overflow-hidden shadow-sm border border-green-200" data-canal={p.canal}>
+            <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+              <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1 flex-wrap">
+                  <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                  <span class="text-[10px] bg-green-600 text-white px-1.5 py-0.5 rounded font-medium">{p.decisionLabel}</span>
+                </div>
+                <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                  <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                  <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                </div>
+              </div>
+              <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <div class="px-4 pb-5 border-t border-green-200">
+              <div class="grid gap-4 text-xs mt-4">
+                <div>
+                  <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p>
+                  <p class="text-neutral-600">{p.contexte}</p>
+                </div>
+                <div>
+                  <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Premiere impression (5 sec)</p>
+                  <p class="text-neutral-600">{p.impression}</p>
+                </div>
+                <div>
+                  <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours sur le site</p>
+                  <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                    {p.parcours.map(([section, reaction]: [string, string]) => (
+                      <li><strong class="text-neutral-800">{section}</strong>{reaction ? ` — ${reaction}` : ''}</li>
+                    ))}
+                  </ol>
+                </div>
+                <div class="bg-neutral-50 rounded-lg p-3">
+                  <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p>
+                  <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
+                  <p class="text-neutral-600">Le site repond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> — {p.commentReponse}</p>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <p class="font-semibold text-green-700 mb-1.5">Points positifs</p>
+                    <ul class="space-y-1 text-neutral-600">{p.positifs.map(pt => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">·</span>{pt}</li>)}</ul>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-amber-700 mb-1.5">Frictions</p>
+                    <ul class="space-y-1 text-neutral-600">{p.frictions.map(f => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">·</span>{f}</li>)}</ul>
+                  </div>
+                </div>
+                <div class="flex gap-6 pt-3 border-t border-neutral-100">
+                  {[
+                    { label: 'Experience', val: p.exp },
+                    { label: 'Confiance', val: p.conf },
+                    { label: 'Clarte', val: p.clarte },
+                  ].map(s => {
+                    const sColor = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500';
+                    return (
+                      <div class="text-center">
+                        <span class={`block text-lg font-bold ${sColor}`}>{s.val}</span>
+                        <span class="text-[10px] text-neutral-400">{s.label}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+
+    <!-- Ceux qui hesitent -->
+    <div class="mb-4">
+      <h3 class="text-base font-bold text-amber-800 mb-4 flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span>
+        Ceux qui hesitent
+        <span class="text-sm font-normal text-amber-600">({kpis.nbHesitent})</span>
+      </h3>
+      <div class="space-y-3">
+        {personas.filter(p => p.decision === 'Hesite').map(p => (
+          <details class="group persona-card bg-white rounded-xl overflow-hidden shadow-sm border border-amber-200" data-canal={p.canal}>
+            <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+              <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1 flex-wrap">
+                  <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                  <span class="text-[10px] bg-amber-500 text-white px-1.5 py-0.5 rounded font-medium">{p.decisionLabel}</span>
+                </div>
+                <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                  <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                  <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                </div>
+              </div>
+              <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <div class="px-4 pb-5 border-t border-amber-200">
+              <div class="grid gap-4 text-xs mt-4">
+                <div>
+                  <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p>
+                  <p class="text-neutral-600">{p.contexte}</p>
+                </div>
+                <div>
+                  <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Premiere impression (5 sec)</p>
+                  <p class="text-neutral-600">{p.impression}</p>
+                </div>
+                <div>
+                  <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours sur le site</p>
+                  <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                    {p.parcours.map(([section, reaction]: [string, string]) => (
+                      <li><strong class="text-neutral-800">{section}</strong>{reaction ? ` — ${reaction}` : ''}</li>
+                    ))}
+                  </ol>
+                </div>
+                <div class="bg-neutral-50 rounded-lg p-3">
+                  <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p>
+                  <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
+                  <p class="text-neutral-600">Le site repond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> — {p.commentReponse}</p>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <p class="font-semibold text-green-700 mb-1.5">Points positifs</p>
+                    <ul class="space-y-1 text-neutral-600">{p.positifs.map(pt => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">·</span>{pt}</li>)}</ul>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-amber-700 mb-1.5">Frictions</p>
+                    <ul class="space-y-1 text-neutral-600">{p.frictions.map(f => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">·</span>{f}</li>)}</ul>
+                  </div>
+                </div>
+                <div class="bg-primary-50 rounded-lg p-3">
+                  <p class="font-semibold text-primary-700 text-[10px] uppercase tracking-wider mb-1">
+                    Ce qui le ferait passer a l'action
+                  </p>
+                  <p class="text-primary-800">{p.ceQuiFeraitBasculer}</p>
+                </div>
+                <div class="flex gap-6 pt-3 border-t border-neutral-100">
+                  {[
+                    { label: 'Experience', val: p.exp },
+                    { label: 'Confiance', val: p.conf },
+                    { label: 'Clarte', val: p.clarte },
+                  ].map(s => {
+                    const sColor = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500';
+                    return (
+                      <div class="text-center">
+                        <span class={`block text-lg font-bold ${sColor}`}>{s.val}</span>
+                        <span class="text-[10px] text-neutral-400">{s.label}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+
+    <!-- Micro-CTA hesitants -->
+    <div class="rounded-xl p-5 mb-10 bg-amber-50 border border-amber-200 flex items-start gap-3">
+      <span class="text-lg shrink-0 mt-0.5">💡</span>
+      <div>
+        <p class="text-sm font-medium text-amber-900">Ces {kpis.nbHesitent} visiteurs ont besoin de vos services.</p>
+        <p class="text-xs text-amber-700 mt-1">Il leur manque un element de rassurance pour passer a l'action. C'est votre plus gros levier de croissance.</p>
+      </div>
+    </div>
+
+    <!-- Ceux qui repartent -->
+    <div class="mb-4">
+      <h3 class="text-base font-bold text-neutral-600 mb-4 flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-neutral-400 inline-block"></span>
+        Ceux qui repartent
+        <span class="text-sm font-normal text-neutral-500">({kpis.nbRepartent})</span>
+      </h3>
+      <div class="space-y-3">
+        {personas.filter(p => p.decision === 'Quitte').map(p => (
+          <details class="group persona-card bg-white rounded-xl overflow-hidden shadow-sm border border-neutral-200" data-canal={p.canal}>
+            <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+              <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1 flex-wrap">
+                  <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                  <span class="text-[10px] bg-neutral-400 text-white px-1.5 py-0.5 rounded font-medium">{p.decisionLabel}</span>
+                </div>
+                <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                  <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                  <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                </div>
+              </div>
+              <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <div class="px-4 pb-5 border-t border-neutral-200">
+              <div class="grid gap-4 text-xs mt-4">
+                <div>
+                  <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p>
+                  <p class="text-neutral-600">{p.contexte}</p>
+                </div>
+                <div>
+                  <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Premiere impression (5 sec)</p>
+                  <p class="text-neutral-600">{p.impression}</p>
+                </div>
+                <div>
+                  <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours sur le site</p>
+                  <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                    {p.parcours.map(([section, reaction]: [string, string]) => (
+                      <li><strong class="text-neutral-800">{section}</strong>{reaction ? ` — ${reaction}` : ''}</li>
+                    ))}
+                  </ol>
+                </div>
+                <div class="bg-neutral-50 rounded-lg p-3">
+                  <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p>
+                  <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
+                  <p class="text-neutral-600">Le site repond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> — {p.commentReponse}</p>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <p class="font-semibold text-green-700 mb-1.5">Points positifs</p>
+                    <ul class="space-y-1 text-neutral-600">{p.positifs.map(pt => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">·</span>{pt}</li>)}</ul>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-amber-700 mb-1.5">Frictions</p>
+                    <ul class="space-y-1 text-neutral-600">{p.frictions.map(f => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">·</span>{f}</li>)}</ul>
+                  </div>
+                </div>
+                <div class="bg-primary-50 rounded-lg p-3">
+                  <p class="font-semibold text-primary-700 text-[10px] uppercase tracking-wider mb-1">
+                    Ce qui l'aurait retenu
+                  </p>
+                  <p class="text-primary-800">{p.ceQuiFeraitBasculer}</p>
+                </div>
+                <div class="flex gap-6 pt-3 border-t border-neutral-100">
+                  {[
+                    { label: 'Experience', val: p.exp },
+                    { label: 'Confiance', val: p.conf },
+                    { label: 'Clarte', val: p.clarte },
+                  ].map(s => {
+                    const sColor = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500';
+                    return (
+                      <div class="text-center">
+                        <span class={`block text-lg font-bold ${sColor}`}>{s.val}</span>
+                        <span class="text-[10px] text-neutral-400">{s.label}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+
+    <!-- Micro-CTA repartent -->
+    <div class="rounded-xl p-5 bg-neutral-100 border border-neutral-200 flex items-start gap-3">
+      <span class="text-lg shrink-0 mt-0.5">📉</span>
+      <div>
+        <p class="text-sm font-medium text-neutral-800">Chaque visiteur qui repart, c'est un client en moins.</p>
+        <p class="text-xs text-neutral-600 mt-1">Certains n'etaient pas dans votre cible — c'est normal. Mais d'autres avaient un vrai besoin et votre site ne les a pas convaincus.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- 4. CE QU'ON RECOMMANDE -->
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+
+  <h2 class="text-2xl font-bold text-neutral-900 mb-2">Ce qu'on recommande</h2>
+  <p class="text-neutral-600 mb-8">La priorite numero 1 identifiee sur vos 5 visiteurs.</p>
+
+  <p class="text-sm font-semibold text-red-700 mb-4">Si vous ne changez qu'une chose, changez ca :</p>
+
+  <div class="space-y-4 mb-12">
+    {ameliorationsHautes.map(a => (
+      <div class="bg-white border-2 border-red-200 rounded-xl p-6 shadow-sm">
+        <div class="flex items-start justify-between gap-4 mb-3">
+          <h4 class="font-bold text-neutral-900">{a.titre}</h4>
+          <span class="text-[10px] px-2 py-1 rounded-full bg-red-100 text-red-700 font-semibold shrink-0 whitespace-nowrap">{a.impact}</span>
+        </div>
+        <p class="text-sm text-neutral-600 mb-3">{a.pourquoi}</p>
+        <div class="bg-neutral-50 rounded-lg px-4 py-3 flex items-start gap-2">
+          <svg class="w-4 h-4 text-neutral-400 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+          <p class="text-xs text-neutral-700">{a.action}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <!-- UPSELL contextuel -->
+  <div class="rounded-2xl p-8 text-center border-2 border-dashed" style="border-color: #E86C47; background: rgba(232,108,71,0.03);">
+    <p class="text-lg font-bold text-neutral-900 mb-2">
+      {kpis.nbPersonas} visiteurs, c'est une tendance.
+    </p>
+    <p class="text-sm text-neutral-600 mb-6">
+      Avec 20 visiteurs (Echo Complet), ces frictions deviennent des certitudes. Avec 100 (Echo Pro), vous savez exactement quel canal investir.
+    </p>
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+      <a href="/echo/" class="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-xl transition-all shadow-md hover:-translate-y-0.5" style="background: linear-gradient(135deg, #E86C47, #D4572F);">
+        Echo Complet — 90€ <span class="text-xs opacity-70 ml-1">(20 visiteurs)</span>
+      </a>
+      <a href="/echo/" class="inline-flex items-center gap-2 px-6 py-3 border border-neutral-300 text-neutral-700 font-semibold rounded-xl transition-all hover:border-[#E86C47] hover:text-[#E86C47]">
+        Echo Pro — 250€ <span class="text-xs opacity-70 ml-1">(100 visiteurs)</span>
+      </a>
+    </div>
+  </div>
+
+</section>
+
+<!-- 5. SOUS LE CAPOT -->
+<section class="py-16 border-t border-neutral-200">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <h2 class="text-2xl font-bold text-neutral-900 mb-2">Sous le capot</h2>
+    <p class="text-neutral-600 mb-8">Pour les curieux : ce que les outils techniques disent de votre site.</p>
+
+    <div class="flex flex-wrap gap-3 mb-10">
+      {techVerdicts.map(v => (
+        <div class={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium ${v.ok ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
+          {v.ok
+            ? <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            : <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+          }
+          <span>{v.label}</span>
+          <span class="text-xs opacity-70">{v.verdict}</span>
+        </div>
+      ))}
+    </div>
+
+    <!-- PageSpeed -->
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+        <div class="flex items-center gap-3">
+          <span class="text-base">⚡</span>
+          <div>
+            <h3 class="font-semibold text-neutral-900 text-sm">Vitesse du site</h3>
+            <p class="text-[11px] text-neutral-500">{techVerdicts[0].detail}</p>
+          </div>
+        </div>
+        <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 border-t border-neutral-100">
+        <div class="py-4">
+          <p class="text-sm text-neutral-600">Donnees non disponibles lors de l'audit (quota API epuise).</p>
+          <p class="text-xs text-neutral-500 mt-2">Observations : images en WebP, lazy loading, CDN Cloudflare. jQuery et Elfsight (widget externe) charges en supplement.</p>
+          <a href={`https://pagespeed.web.dev/report?url=${urlSite}`} target="_blank" class="text-sm text-primary-600 underline hover:text-primary-800 mt-2 inline-block">Tester sur PageSpeed →</a>
+        </div>
+      </div>
+    </details>
+
+    <!-- Observatory -->
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+        <div class="flex items-center gap-3">
+          <span class="text-base">🔒</span>
+          <div>
+            <h3 class="font-semibold text-neutral-900 text-sm">Securite</h3>
+            <p class="text-[11px] text-neutral-500">{techVerdicts[1].detail}</p>
+          </div>
+        </div>
+        <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 border-t border-neutral-100">
+        <p class="text-xs text-neutral-500 py-2">Note : {tech.observatory.grade} ({tech.observatory.testsOk}/{tech.observatory.testsTotal} tests passes)</p>
+        {tech.headers.map(h => (
+          <div class="flex items-center gap-2 py-1">
+            {h.ok
+              ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              : <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            }
+            <span class={`text-xs ${h.ok ? 'text-neutral-600' : 'text-red-500'}`}>{h.h}</span>
+          </div>
+        ))}
+      </div>
+    </details>
+
+    <!-- Schema.org -->
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+        <div class="flex items-center gap-3">
+          <span class="text-base">📊</span>
+          <div>
+            <h3 class="font-semibold text-neutral-900 text-sm">Donnees structurees (Schema.org)</h3>
+            <p class="text-[11px] text-neutral-500">{techVerdicts[3].detail}</p>
+          </div>
+        </div>
+        <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 border-t border-neutral-100">
+        {tech.schema.map(s => (
+          <div class="flex items-center gap-2 py-1">
+            {s.ok
+              ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              : <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            }
+            <span class={`text-xs ${s.ok ? 'text-neutral-600' : 'text-red-500 font-medium'}`}>{s.item}</span>
+          </div>
+        ))}
+      </div>
+    </details>
+
+    <!-- Open Graph -->
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+        <div class="flex items-center gap-3">
+          <span class="text-base">🔗</span>
+          <div>
+            <h3 class="font-semibold text-neutral-900 text-sm">Apercu reseaux sociaux (Open Graph)</h3>
+            <p class="text-[11px] text-neutral-500">{techVerdicts[4].detail}</p>
+          </div>
+        </div>
+        <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 border-t border-neutral-100">
+        {tech.og.map(o => (
+          <div class="flex items-start gap-2 py-1">
+            {o.ok
+              ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              : <svg class="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+            }
+            <span class={`text-xs ${o.ok ? 'text-neutral-600' : 'text-neutral-500'}`}>{o.item} <span class="text-neutral-400">{o.val}</span></span>
+          </div>
+        ))}
+      </div>
+    </details>
+
+    <!-- SEO -->
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden bg-white">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+        <div class="flex items-center gap-3">
+          <span class="text-base">🔍</span>
+          <div>
+            <h3 class="font-semibold text-neutral-900 text-sm">SEO technique</h3>
+            <p class="text-[11px] text-neutral-500">{techVerdicts[2].detail}</p>
+          </div>
+        </div>
+        <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 border-t border-neutral-100">
+        {tech.seo.map(s => (
+          <div class="flex items-center gap-2 py-1">
+            {s.ok
+              ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              : <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            }
+            <span class={`text-xs ${s.ok ? 'text-neutral-600' : 'text-red-500'}`}>{s.item}</span>
+          </div>
+        ))}
+      </div>
+    </details>
+
+    <!-- Micro-CTA technique -->
+    <div class="mt-8 rounded-xl p-5 bg-white border border-neutral-200 flex items-start gap-3">
+      <span class="text-lg shrink-0 mt-0.5">🔧</span>
+      <div>
+        <p class="text-sm font-medium text-neutral-800">Tout ca est corrigeable.</p>
+        <p class="text-xs text-neutral-600 mt-1">Un site bien construit obtient 90+ sur tous les indicateurs. C'est ce que je livre a mes clients.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- 6. METHODOLOGIE -->
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-neutral-200">
+  <h2 class="text-base font-bold text-neutral-900 mb-4">Comment ca marche</h2>
+  <ol class="space-y-3 text-sm text-neutral-600">
+    <li class="flex gap-3">
+      <span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">1</span>
+      <span>On scrape votre site — on lit chaque page comme un visiteur le ferait</span>
+    </li>
+    <li class="flex gap-3">
+      <span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">2</span>
+      <span>On audite la technique — vitesse, securite, referencement, donnees structurees</span>
+    </li>
+    <li class="flex gap-3">
+      <span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">3</span>
+      <span>On cree {kpis.nbPersonas} profils realistes — adaptes a votre secteur et votre zone geographique</span>
+    </li>
+    <li class="flex gap-3">
+      <span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">4</span>
+      <span>Chaque profil visite votre site et donne son avis — premiere impression, parcours, decision</span>
+    </li>
+    <li class="flex gap-3">
+      <span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">5</span>
+      <span>On compile les resultats — frictions recurrentes, canaux performants, recommandations</span>
+    </li>
+  </ol>
+
+  <div class="mt-6 p-4 rounded-lg bg-neutral-50 text-xs text-neutral-500">
+    <strong>Note :</strong> 5 visiteurs donnent une tendance. 20 (Echo Complet) la confirment. 100 (Echo Pro) la prouvent statistiquement.
+  </div>
+</section>
+
+<!-- 7. CTA FINAL -->
+<section class="relative w-full px-6 py-20 overflow-hidden" style="background: #0A0A0A;">
+  <div class="absolute bottom-[10%] right-[10%] w-[400px] h-[400px] rounded-full blur-[160px] pointer-events-none" style="background: #E86C47; opacity: 0.05;"></div>
+  <div class="relative mx-auto max-w-3xl z-10 text-center">
+
+    <h2 class="text-2xl md:text-3xl font-bold text-white mb-4 leading-tight">
+      5 visiteurs. Imaginez ce que 20 reveleraient.
+    </h2>
+    <p class="text-sm mb-8" style="color: rgba(255,255,255,0.5);">
+      L'Echo Complet analyse 20 profils avec audit technique et recommandations priorisees. L'Echo Pro : 100 visiteurs, analyse par canal, et un appel pour en discuter.
+    </p>
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+      <a href="/echo/" class="inline-flex items-center gap-2 px-8 py-4 text-white font-semibold rounded-xl transition-all shadow-lg hover:-translate-y-0.5" style="background: linear-gradient(135deg, #E86C47, #D4572F); box-shadow: 0 4px 24px rgba(232, 108, 71, 0.35);">
+        Echo Complet — 90€
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      </a>
+      <a href="/contact" class="inline-flex items-center gap-2 px-8 py-4 border border-neutral-600 font-semibold rounded-xl transition-all hover:border-white/40" style="color: rgba(255,255,255,0.6);">
+        En discuter d'abord
+      </a>
+    </div>
+
+  </div>
+</section>
+
+</BaseLayout>
