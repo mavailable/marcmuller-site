@@ -1,0 +1,766 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const slug = 'team-factory-escape';
+const formule: 'decouverte' | 'complet' | 'pro' = 'complet';
+const formuleLabel = 'Echo Complet';
+const nomProspect = 'Team Factory';
+const urlSite = 'https://teamfactoryescape.com/';
+const dateAudit = '30 mars 2026';
+const showUpsell = true;
+
+const kpis = {
+  nbPersonas: 20,
+  nbConvertissent: 2,
+  nbHesitent: 12,
+  nbRepartent: 6,
+  conversion: 10,
+  experience: 4.2,
+  confiance: 4.4,
+  clarte: 4.6,
+};
+
+const verdictHero = "2 visiteurs sur 20 vous contactent. Les 18 autres hesitent ou repartent \u2014 et on sait exactement pourquoi.";
+
+const constat = "Votre site a du contenu riche et des descriptions de salles immersives. Mais il met 17 secondes a s'afficher sur telephone, ne propose aucune formule packag\u00e9e (anniversaire, EVJF, team building), et les visiteurs qui ne cherchent pas un escape game classique ne trouvent pas ce qu'ils veulent.";
+
+const canalData = [
+  { canal: 'Reseaux sociaux', nb: 3, convert: 1, rate: 33 },
+  { canal: 'Google Search', nb: 5, convert: 1, rate: 20 },
+  { canal: 'Google Maps / GBP', nb: 3, convert: 0, rate: 0 },
+  { canal: 'IA (ChatGPT, Claude, Perplexity)', nb: 3, convert: 0, rate: 0 },
+  { canal: 'Bouche-a-oreille', nb: 3, convert: 0, rate: 0 },
+  { canal: 'Autres (TikTok, presse)', nb: 3, convert: 0, rate: 0 },
+];
+
+const personas = [
+  {
+    id: 1, name: 'Celine', age: 34, emoji: '\u{1F382}',
+    situation: 'Assistante RH, cherche escape pour l\'anniversaire de son fils',
+    canal: 'Google Maps / GBP', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: "Tarifs clairs mais pas de formule anniversaire enfant \u2014 doit calculer elle-meme le prix pour 8 gamins",
+    localisation: 'Mulhouse', maturite: 'Comparaison',
+    contexte: "Anniversaire de son fils dans 3 semaines",
+    impression: "Le site repond bien a l'age minimum mais pas de forfait dedie. Le chargement mobile l'a fait hesiter.",
+    parcours: [['Fiche Google Business', 'Bonne premiere approche, avis positifs'], ['Accueil', 'Chargement long, elements qui sautent (CLS)'], ['Engrenages', 'Description immersive, tarifs clairs, max 6 joueurs'], ['FAQ', 'Age minimum 9 ans trouve'], ['Bar a jeux', 'Gratuit avec escape, top pour le gouter'], ['Tarifs', 'Calcul complexe pour 8 enfants']],
+    questionCle: "La salle Engrenages est-elle adaptee pour des enfants de 10 ans ?",
+    reponse: 'Partiellement', commentReponse: "Age minimum trouve dans la FAQ mais pas de formule anniversaire dediee",
+    impactVitesse: "LCP 17.4s, a failli quitter", impactConfiance: "Pas de mentions legales, inquietant pour un anniversaire enfant",
+    positifs: ['Tarifs degressifs clairs', 'FAQ complete sur age minimum', 'Bar gratuit avec escape', 'Parking gratuit'],
+    frictions: ['Pas de formule anniversaire', 'Max 6 joueurs = 2 sessions pour 8 enfants', 'Chargement mobile 17s', 'Reservation bar par tel uniquement'],
+    ceQuiFeraitBasculer: "Une page anniversaire avec forfait tout compris 8-10 enfants", exp: 5, conf: 6, clarte: 5,
+  },
+  {
+    id: 2, name: 'Julien', age: 27, emoji: '\u{1F4BC}',
+    situation: 'Chef de projet com, organise un team building pour 12 collegues',
+    canal: 'Google Search', device: 'Desktop', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: "Page privatisation bien structuree mais zero tarif, zero reference entreprise \u2014 ne peut pas presenter ca a son manager",
+    localisation: 'Strasbourg', maturite: 'Comparaison',
+    contexte: "Manager lui demande d'organiser un team building",
+    impression: "Content, descriptions immersives, options traiteur. Mais pas de prix, pas de ref entreprise, pas de mentions legales.",
+    parcours: [['Accueil', 'Ambiance pro, repere vite Privatisation'], ['Privatisation', '3 formules structurees mais aucun prix'], ['Salles', 'Descriptions immersives, 2 salles en parallele possible'], ['Contact', 'Formulaire segmente mais pas de devis rapide'], ['FAQ', 'Pas de facturation entreprise mentionnee']],
+    questionCle: "Privatiser pour 12 personnes avec espace detente apres ?",
+    reponse: 'Partiellement', commentReponse: "Privatisation possible mais pas de tarif ni scenario 12 personnes",
+    impactVitesse: "Desktop correct mais CLS agacant", impactConfiance: "Absence mentions legales = red flag pour achat pro",
+    positifs: ['Page Privatisation dediee', 'Options traiteur variees', 'Escape mobile = differenciateur', 'Formulaire segmente'],
+    frictions: ['Aucun tarif privatisation', 'Pas de references entreprise', 'Pas de page equipe', 'Pas de facturation pro mentionnee'],
+    ceQuiFeraitBasculer: "Un devis indicatif en ligne et des temoignages d'entreprises", exp: 6, conf: 5, clarte: 6,
+  },
+  {
+    id: 3, name: 'Manon', age: 22, emoji: '\u{1F393}',
+    situation: 'Etudiante marketing, cherche un plan samedi soir entre colocs',
+    canal: 'Reseaux sociaux', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: "Prix bar abordable et ambiance cool sur Insta \u2014 envoie un message Messenger malgre la carte boissons vide",
+    localisation: 'Mulhouse', maturite: 'Decouverte',
+    contexte: "Story Instagram d'une amie, plan samedi soir",
+    impression: "Site lent mais l'ambiance Instagram l'avait deja convaincue. Le tarif bar a 3\u20AC/joueur est dans son budget.",
+    parcours: [['Instagram (story amie)', 'Ambiance cool, donne envie'], ['Accueil', 'Long a charger, scrolle vite'], ['Bar a jeux', '400 jeux, 3\u20AC/joueur \u2014 parfait'], ['Horaires', 'Sam 14h-01h, ideal']],
+    questionCle: "Combien pour une soiree au bar a jeux le samedi ?",
+    reponse: 'Partiellement', commentReponse: "Tarif bar clair (3\u20AC+boisson) mais carte boissons vide",
+    impactVitesse: "17s de chargement sur 4G, a failli quitter", impactConfiance: "Pas d'impact, l'amie a valide",
+    positifs: ['Prix tres accessible (3\u20AC)', 'Gratuit avec escape', '400 jeux', 'Horaires samedi larges'],
+    frictions: ['Carte boissons vide', 'Reservation par tel/Messenger uniquement', 'Site tres lent sur mobile', 'Pas de photos ambiance bar'],
+    ceQuiFeraitBasculer: '', exp: 4, conf: 5, clarte: 4,
+  },
+  {
+    id: 4, name: 'Thomas', age: 41, emoji: '\u{1F1E8}\u{1F1ED}',
+    situation: 'Ingenieur suisse depuis Bale, cherche activite familiale un week-end de pluie',
+    canal: 'Google Search', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: "Parking gratuit trouve, salles en anglais, prix corrects \u2014 reserve malgre la lenteur du site",
+    localisation: 'Bale (Suisse)', maturite: 'Comparaison',
+    contexte: "Week-end pluvieux en famille",
+    impression: "Bon contenu, parking confirme, disponible en anglais. Le chargement mobile est penible mais il persevere.",
+    parcours: [['Accueil', 'Long a charger mais concept clair'], ['Engrenages', 'Adapte enfants, disponible en anglais'], ['Tarifs', 'Prix corrects vs offre baloise'], ['FAQ', 'Parking gratuit confirme'], ['Reservation', 'Widget iframe fonctionnel']],
+    questionCle: "Facile d'acces depuis Bale avec parking ?",
+    reponse: 'Oui', commentReponse: "Adresse, parking gratuit et acces trouves",
+    impactVitesse: "Lent mais acceptable vu la qualite du contenu", impactConfiance: "CGV presentes, rassure un Suisse",
+    positifs: ['Parking gratuit', 'Disponible en anglais', 'Tarifs clairs', 'FAQ complete'],
+    frictions: ['Pas de version allemande', 'Chargement lent', 'Pas d\'itineraire depuis Bale'],
+    ceQuiFeraitBasculer: '', exp: 5, conf: 6, clarte: 6,
+  },
+  {
+    id: 5, name: 'Aurelie', age: 30, emoji: '\u{1F48D}',
+    situation: 'Infirmiere, organise son EVJF avec escape + bar',
+    canal: 'Reseaux sociaux', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: "Concept top mais pas de formule EVJF \u2014 doit bricoler elle-meme entre escape et privatisation",
+    localisation: 'Colmar', maturite: 'Decision',
+    contexte: "Organise son EVJF, temoin a partage le lien",
+    impression: "Le concept escape + bar est parfait pour un EVJF mais aucune offre packag\u00e9e.",
+    parcours: [['Lien Facebook', 'Recommandation rassurante'], ['Accueil', 'Tres lent sur mobile, ambiance adulte cool'], ['Privatisation', 'Options interessantes mais pas de formule EVJF'], ['Tarifs', 'Pas clair pour un groupe mixte escape+bar'], ['Contact', 'Formulaire ok mais pas d\'option EVJF']],
+    questionCle: "Formule EVJF escape + soiree bar ?",
+    reponse: 'Non', commentReponse: "Aucune formule EVJF dediee, il faut assembler soi-meme",
+    impactVitesse: "17s sur mobile, tres agacant", impactConfiance: "Pas de temoignages EVJF",
+    positifs: ['Concept escape+bar ideal pour EVJF', 'Cadre friche DMC original', 'Privatisation possible'],
+    frictions: ['Aucune formule EVJF', 'Pas de temoignages EVJF', 'Ambiance trop geek, pas assez festive', 'Chargement mobile'],
+    ceQuiFeraitBasculer: "Un pack EVJF avec escape + privatisation bar + tarif groupe", exp: 4, conf: 4, clarte: 3,
+  },
+  {
+    id: 6, name: 'Marc-Antoine', age: 19, emoji: '\u{1F3AE}',
+    situation: 'Etudiant info, veut jouer regulierement au bar le mercredi',
+    canal: 'Bouche-a-oreille', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: "Tarif bar attractif mais confusion horaires bar vs escape et carte boissons vide",
+    localisation: 'Mulhouse', maturite: 'Decouverte',
+    contexte: "Ami de fac recommande le bar a jeux",
+    impression: "Prix accessibles mais zones d'ombre sur horaires et budget boissons.",
+    parcours: [['Accueil', 'Hero oriente escape, pas bar a jeux'], ['Bar a jeux', '400 jeux, 3\u20AC/joueur \u2014 abordable'], ['Horaires', 'Confusion : bar 17h vs escape 14h le mercredi'], ['Carte boissons', 'Page vide']],
+    questionCle: "Combien de jeux et peut-on rester toute l'apres-midi ?",
+    reponse: 'Partiellement', commentReponse: "Nombre de jeux clair mais horaires bar confus et carte boissons vide",
+    impactVitesse: "17s sur mobile = amateur pour un etudiant info", impactConfiance: "Carte boissons vide = site pas maintenu",
+    positifs: ['Tarif tres accessible (3\u20AC)', '400 jeux', 'Gratuit avec escape'],
+    frictions: ['Confusion horaires bar/escape', 'Carte boissons vide', 'Pas de tarif etudiant', 'Reservation par tel uniquement'],
+    ceQuiFeraitBasculer: "Des horaires clairs, un tarif etudiant, et la carte boissons", exp: 4, conf: 5, clarte: 4,
+  },
+  {
+    id: 7, name: 'Nathalie', age: 52, emoji: '\u{1F3E2}',
+    situation: 'Directrice admin, team building 40 salaries',
+    canal: 'Google Search', device: 'Desktop', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: "Budget seminaire consequent mais zero tarif, zero reference, zero mention legale \u2014 ne peut pas pre-qualifier l'option",
+    localisation: 'Wittenheim', maturite: 'Decision',
+    contexte: "CE demande activite originale pour seminaire",
+    impression: "Le concept est seduisant mais impossible a vendre a sa direction sans prix ni references.",
+    parcours: [['Navigation', 'Cherche Team Building, trouve Privatisation'], ['Privatisation', 'Salles max 6 joueurs, impossible pour 40'], ['Enquetes Sherlock', 'Format interessant mais capacite inconnue'], ['Contact', 'Formulaire generique, pas adapte B2B']],
+    questionCle: "Accueillir 40 personnes pour team building demi-journee ?",
+    reponse: 'Non', commentReponse: "Aucun scenario 40 personnes, aucun tarif, aucune reference entreprise",
+    impactVitesse: "Desktop correct mais CLS agacant", impactConfiance: "Pas de mentions legales = eliminatoire pour un achat pro",
+    positifs: ['Concept friche DMC vendeur', 'Triple activite potentielle', 'Proximite Wittenheim'],
+    frictions: ['Aucun tarif entreprise', 'Capacite limitee (max 6/salle)', 'Pas de references entreprise', 'Pas de mentions legales', 'Formulaire non adapte B2B'],
+    ceQuiFeraitBasculer: "Une page entreprise avec scenarios 20-50 personnes, tarifs et references", exp: 3, conf: 2, clarte: 2,
+  },
+  {
+    id: 8, name: 'Lucas', age: 16, emoji: '\u{1F6AB}',
+    situation: 'Lyceen TikTok, veut impressionner ses potes',
+    canal: 'Autres (TikTok, presse)', device: 'Mobile', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: "Deconseille -16 ans ambigu, pas de CB pour reserver, et le site met une eternite a charger",
+    localisation: 'Mulhouse', maturite: 'Decouverte',
+    contexte: "Video TikTok escape game flippant",
+    impression: "Persona negative : mineur sans CB, le site ne le cible pas.",
+    parcours: [['Accueil', 'Attente interminable sur mobile'], ['Freak Show', 'Deconseille -16 ans \u2014 frustration'], ['Tarifs', 'Pas de CB pour reserver']],
+    questionCle: "Peut-on venir a 5 ados de 16 ans sans adulte ?",
+    reponse: 'Partiellement', commentReponse: "Freak Show interdit -16 ans mais Engrenages possible avec adulte",
+    impactVitesse: "17s = une eternite pour un ado TikTok", impactConfiance: "Aucun impact, il ne regarde pas ca",
+    positifs: ['Concept cool a raconter'],
+    frictions: ['Restriction age Freak Show', 'Pas de CB', 'Chargement catastrophique', 'Politique mineurs floue'],
+    ceQuiFeraitBasculer: "Une page dediee ados/mineurs avec conditions claires", exp: 3, conf: 3, clarte: 3,
+  },
+  {
+    id: 9, name: 'Francoise', age: 67, emoji: '\u{1F3B2}',
+    situation: 'Retraitee, club de bridge, cherche activite pour 8 seniors',
+    canal: 'Bouche-a-oreille', device: 'Tablette', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: "Ambiance trop sombre, zoom desactive, pas de categorisation des jeux pour seniors",
+    localisation: 'Mulhouse', maturite: 'Decouverte',
+    contexte: "Article journal L'Alsace sur la friche DMC",
+    impression: "Le site n'est pas concu pour un public senior.",
+    parcours: [['Accueil', 'Ambiance sombre, themes adultes'], ['Bar a jeux', '400 jeux mais pas categories par type'], ['FAQ', 'PMR mentionne pour Engrenages'], ['Horaires', 'Corrects mais pas de creneau senior']],
+    questionCle: "PMR accessible et jeux adaptes seniors ?",
+    reponse: 'Partiellement', commentReponse: "PMR mentionnee mais pas detaillee, jeux pas categories",
+    impactVitesse: "Tablette correcte", impactConfiance: "Ambiance sombre pas rassurante",
+    positifs: ['PMR mentionnee', 'Bar a jeux convivial', 'Parking gratuit'],
+    frictions: ['Ambiance trop sombre/jeune', 'Zoom desactive', 'Jeux non categories', 'Pas de creneau senior'],
+    ceQuiFeraitBasculer: "Une section seniors/clubs avec jeux recommandes et photos lumineuses", exp: 3, conf: 3, clarte: 3,
+  },
+  {
+    id: 10, name: 'Karim', age: 38, emoji: '\u{1F3AF}',
+    situation: 'Commercial, surprise anniversaire mariage en couple',
+    canal: 'Google Maps / GBP', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: "Escape a deux possible mais tarif eleve (39\u20AC/pers) et pas de formule couple romantique",
+    localisation: 'Pfastatt', maturite: 'Comparaison',
+    contexte: "Anniversaire de mariage, baby-sitter reservee",
+    impression: "Le combo escape+bar gratuit est seduisant mais pas de formule couple.",
+    parcours: [['GBP', 'Bon avis, photos ambiance'], ['Accueil', 'Chargement long'], ['Engrenages', 'Possible a 2, 39\u20AC/joueur'], ['Bar a jeux', 'Gratuit avec escape, cocktails'], ['Carte boissons', 'Vide']],
+    questionCle: "Escape a deux + bar pour la soiree ?",
+    reponse: 'Partiellement', commentReponse: "Possible a 2 sur Engrenages mais prix eleve et pas de formule couple",
+    impactVitesse: "Lent sur mobile en voiture", impactConfiance: "Pas de mentions legales",
+    positifs: ['Escape possible a 2', 'Bar gratuit le meme jour', 'Cadre original friche DMC', 'Cocktails sans alcool'],
+    frictions: ['39\u20AC/pers pour 2 joueurs = cher', 'Pas de formule couple', 'Carte boissons vide', 'Ambiance pas romantique'],
+    ceQuiFeraitBasculer: "Un forfait couple escape+2 cocktails a prix reduit", exp: 5, conf: 4, clarte: 4,
+  },
+  {
+    id: 11, name: 'Sophie', age: 29, emoji: '\u{1F50D}',
+    situation: 'UX designer, a fait tous les escape d\'Alsace',
+    canal: 'IA (ChatGPT, Claude, Perplexity)', device: 'Desktop', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: "Triple activite unique mais pas de storytelling humain, pas d'avis visibles, theme Divi reconnaissable",
+    localisation: 'Mulhouse', maturite: 'Comparaison',
+    contexte: "ChatGPT recommande Team Factory",
+    impression: "Offre riche mais presentation template et manque de contenu humain.",
+    parcours: [['Accueil', 'Layout Divi reconnaissable, un peu date'], ['Le Concept', 'Activites presentees mais pas l\'equipe'], ['Engrenages', 'Mode Expert interessant, difficulte detaillee'], ['Freak Show', 'Difficulte 90%, manipulation 100% \u2014 intrigant'], ['Enquetes', 'Differenciateur reel mais pas mis en avant'], ['FAQ', 'Complete'], ['Avis', 'AJAX, pas toujours visibles']],
+    questionCle: "Qu'est-ce qui rend vos salles differentes ?",
+    reponse: 'Partiellement', commentReponse: "Metriques de difficulte detaillees mais pas de storytelling ni de taux de reussite",
+    impactVitesse: "Desktop correct, CLS agacant pour une UX designer", impactConfiance: "26+ CSS, 40+ JS, theme template = impression d'amateurisme technique",
+    positifs: ['Triple activite unique', 'Mode Expert', 'Metriques de difficulte', 'Enquetes urbaines'],
+    frictions: ['CLS 0.498 desktop', 'Pas de page equipe/histoire', 'Avis AJAX', 'Alt images = noms fichiers', 'Theme Divi template'],
+    ceQuiFeraitBasculer: "Du contenu humain (equipe, histoire, photos coulisses) et des avis visibles", exp: 5, conf: 5, clarte: 7,
+  },
+  {
+    id: 12, name: 'Guillaume', age: 45, emoji: '\u{1F5FA}\u{FE0F}',
+    situation: 'Prof histoire-geo, sortie scolaire classe de premiere',
+    canal: 'Google Search', device: 'Mobile', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: "Enquete urbaine interessante mais zero offre scolaire, tarifs absents, theme serial killer incompatible",
+    localisation: 'Mulhouse', maturite: 'Decision',
+    contexte: "Cherche sortie scolaire originale",
+    impression: "Le concept d'enquete urbaine a du potentiel pedagogique mais le site ne s'adresse pas aux ecoles.",
+    parcours: [['Accueil', 'Chargement catastrophique sur mobile'], ['Enquetes', 'Concept interessant mais oriente loisir'], ['Privatisation', 'Pas de mention scolaire'], ['FAQ', 'Rien sur les sorties scolaires'], ['Contact', 'Pas d\'option sortie scolaire']],
+    questionCle: "Enquetes liees a l'histoire de Mulhouse et adaptation scolaire ?",
+    reponse: 'Non', commentReponse: "Parcours dans les rues de Mulhouse mais theme serial killer, aucune mention pedagogique",
+    impactVitesse: "17.4s LCP sur mobile en salle des profs = abandon probable", impactConfiance: "Pas de mentions legales = impossible pour un fonctionnaire",
+    positifs: ['Enquete urbaine concept unique', 'Format 2h30 compatible demi-journee', 'Travail d\'equipe 90%'],
+    frictions: ['Aucune offre scolaire', 'Tarifs enquetes absents', 'Theme serial killer', 'Pas de page equipe/BAFA', 'Chargement catastrophique'],
+    ceQuiFeraitBasculer: "Une page Education/Scolaire avec tarifs groupe et contenu pedagogique", exp: 2, conf: 3, clarte: 3,
+  },
+  {
+    id: 13, name: 'Emilie', age: 33, emoji: '\u{1F381}',
+    situation: 'Comptable, carte cadeau derniere minute le 22 decembre',
+    canal: 'Google Search', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: "Cartes cadeaux trouvees mais processus WooCommerce lent sur mobile et livraison email pas confirmee",
+    localisation: 'Illzach', maturite: 'Decision',
+    contexte: "Noel dans 2 jours, cadeau pour son frere",
+    impression: "Les cartes sont la mais la friction technique risque de faire echouer l'achat.",
+    parcours: [['Google', 'Resultat pertinent'], ['Accueil', 'Tres lent a charger'], ['Boutique cartes cadeaux', 'Trouvees, tarifs clairs 39-150\u20AC'], ['Panier WooCommerce', 'Processus standard mais lent']],
+    questionCle: "Carte cadeau en ligne reception immediate par email ?",
+    reponse: 'Partiellement', commentReponse: "Achat en ligne possible mais reception immediate par email non confirmee explicitement",
+    impactVitesse: "LCP 17.4s = frustration maximale pour un achat urgent", impactConfiance: "WooCommerce standard, moyennement rassurant",
+    positifs: ['Cartes cadeaux en ligne', 'Gamme de prix variee', 'Validite 18 mois'],
+    frictions: ['Chargement tres lent pour un achat urgent', 'Livraison email pas explicite', 'Processus WooCommerce standard, pas premium'],
+    ceQuiFeraitBasculer: "Un bouton prominent 'E-carte cadeau instantanee' avec confirmation de reception par email", exp: 4, conf: 5, clarte: 5,
+  },
+  {
+    id: 14, name: 'Romain', age: 25, emoji: '\u{1F3D9}\u{FE0F}',
+    situation: 'Dev web, nouvel arrivant a Mulhouse, cherche a se faire des amis',
+    canal: 'IA (ChatGPT, Claude, Perplexity)', device: 'Desktop', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: "Bar a jeux seduisant mais pas d'indication qu'on peut venir seul ni de calendrier d'events",
+    localisation: 'Mulhouse', maturite: 'Comparaison',
+    contexte: "Perplexity recommande Team Factory comme lieu de socialisation",
+    impression: "Le concept bar a jeux est ideal pour socialiser mais le site ne s'adresse qu'aux groupes constitues.",
+    parcours: [['Accueil', 'Oriente escape, pas socialisation'], ['Bar a jeux', '400 jeux, ambiance cool'], ['Evenements', 'Soirees quiz, loup-garous mentionnees mais pas de calendrier'], ['Reseaux sociaux', 'Cherche un Discord ou communaute']],
+    questionCle: "Peut-on venir seul au bar a jeux et rejoindre une table ?",
+    reponse: 'Non', commentReponse: "Le site ne mentionne jamais la possibilite de venir seul",
+    impactVitesse: "Desktop correct", impactConfiance: "Pas d'impact direct",
+    positifs: ['400 jeux', 'Soirees thematiques existent', 'Ambiance communautaire possible'],
+    frictions: ['Pas d\'accueil pour les solo', 'Pas de calendrier d\'events', 'Pas de Discord/communaute', 'Reservation par tel uniquement'],
+    ceQuiFeraitBasculer: "Un calendrier d'events visible + mention 'venez meme seul'", exp: 5, conf: 4, clarte: 4,
+  },
+  {
+    id: 15, name: 'Sandrine', age: 48, emoji: '\u{1F6CD}\u{FE0F}',
+    situation: 'Mere 4 enfants, boutique jeux de societe pour Noel',
+    canal: 'Google Maps / GBP', device: 'Tablette', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: "Boutique WooCommerce fonctionnelle mais pas de lien avec le bar pour tester avant d'acheter",
+    localisation: 'Kingersheim', maturite: 'Comparaison',
+    contexte: "Cherche jeu de Noel, veut tester avant",
+    impression: "Click & collect ok mais synergie bar+boutique pas exploitee.",
+    parcours: [['GBP', 'Boutique jeux mentionnee'], ['Boutique', 'WooCommerce standard, quelques produits'], ['Bar a jeux', '400 jeux a tester'], ['Click & collect', 'Option disponible']],
+    questionCle: "Tester un jeu au bar avant de l'acheter en boutique ?",
+    reponse: 'Non', commentReponse: "Le site ne mentionne jamais cette possibilite tester\u2192acheter",
+    impactVitesse: "Tablette ok", impactConfiance: "WooCommerce standard",
+    positifs: ['Click & collect disponible', '400 jeux testables au bar', '-10% asso/CE'],
+    frictions: ['Pas de lien bar\u2192boutique', 'Catalogue boutique peu fourni en ligne', 'Pas de recommandations par age/type'],
+    ceQuiFeraitBasculer: "Un message 'Testez au bar, achetez en boutique' et des recommandations par age", exp: 5, conf: 5, clarte: 4,
+  },
+  {
+    id: 16, name: 'Arnaud', age: 36, emoji: '\u{1F50E}',
+    situation: 'Journaliste DNA, article friche DMC',
+    canal: 'Autres (TikTok, presse)', device: 'Desktop', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: "Zero matiere editoriale \u2014 pas d'histoire, pas d'equipe, pas de lien friche DMC mentionne",
+    localisation: 'Strasbourg', maturite: 'Decouverte',
+    contexte: "Dossier reconversion friche DMC",
+    impression: "Persona negative : journaliste, pas client direct.",
+    parcours: [['Accueil', 'Ambiance industrielle coherente'], ['Le Concept', 'Activites mais pas d\'histoire du lieu'], ['Navigation', 'Pas de page A propos ni equipe'], ['Contact', 'Pas de contact presse']],
+    questionCle: "Histoire Team Factory et lien friche DMC ?",
+    reponse: 'Non', commentReponse: "Aucune page A propos, aucune mention explicite de la friche DMC",
+    impactVitesse: "Desktop correct", impactConfiance: "Pas de mentions legales",
+    positifs: ['Ambiance visuelle coherente avec la friche', 'Adresse trouvable'],
+    frictions: ['Pas de page A propos/histoire', 'Pas de contact presse', 'Pas de photos equipe', 'Aucune mention friche DMC'],
+    ceQuiFeraitBasculer: "Une page A propos avec l'histoire du lieu et un contact presse", exp: 4, conf: 5, clarte: 5,
+  },
+  {
+    id: 17, name: 'Claire', age: 31, emoji: '\u{1F9E9}',
+    situation: 'Enseignante allemande, fan d\'escape games depuis Freiburg',
+    canal: 'IA (ChatGPT, Claude, Perplexity)', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: "Difficultes detaillees et Freak Show seduisant mais chargement mobile catastrophique et detail langue insuffisant",
+    localisation: 'Freiburg (Allemagne)', maturite: 'Decision',
+    contexte: "Claude recommande Team Factory",
+    impression: "Contenu de qualite mais friction technique et linguistique.",
+    parcours: [['Accueil', 'Chargement penible, a failli quitter'], ['Engrenages', 'Disponible en anglais, difficulte detaillee'], ['Freak Show', 'Difficulte 90%, manipulation 100% \u2014 exactement ce qu\'elle cherche'], ['Tarifs', 'Dans la norme vs Freiburg'], ['Reservation', 'Iframe mobile difficile']],
+    questionCle: "Niveau de difficulte et faut-il maitriser le francais ?",
+    reponse: 'Partiellement', commentReponse: "Difficulte tres bien presentee mais detail langue minimal (juste 'Disponible en anglais')",
+    impactVitesse: "LCP 17.4s catastrophique", impactConfiance: "Contenu pro mais site lent = doute",
+    positifs: ['Jauges de difficulte detaillees', 'Disponible en anglais', 'Mode Expert', 'Photos de qualite'],
+    frictions: ['17.4s chargement mobile', 'Zoom desactive', 'Pas de detail sur deroulement en anglais', 'Pas de version allemande', 'Iframe reservation mobile'],
+    ceQuiFeraitBasculer: "Des details precis sur le deroulement en anglais et un site plus rapide", exp: 5, conf: 6, clarte: 6,
+  },
+  {
+    id: 18, name: 'Patrick', age: 58, emoji: '\u{1F3D7}\u{FE0F}',
+    situation: 'Artisan plombier, remercie ses 3 salaries',
+    canal: 'Bouche-a-oreille', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: "Prix trouves pour 4 joueurs mais duree totale inconnue et carte boissons vide \u2014 va probablement appeler",
+    localisation: 'Altkirch', maturite: 'Decision',
+    contexte: "Client recommande Team Factory",
+    impression: "Information basique trouvee mais friction mobile et manque de details pratiques.",
+    parcours: [['Google', 'Tape le nom directement'], ['Accueil', 'Attente interminable, agace'], ['Engrenages', 'Tarif 4 joueurs : 27\u20AC/pers, 108\u20AC total'], ['Bar a jeux', 'Gratuit avec escape'], ['Carte boissons', 'Vide']],
+    questionCle: "Combien pour 4 personnes et duree totale ?",
+    reponse: 'Partiellement', commentReponse: "Prix 4 joueurs clair (27\u20AC/pers) mais duree totale avec accueil+briefing+debriefing inconnue",
+    impactVitesse: "17s = il pense que son telephone a un probleme", impactConfiance: "Pas d'impact, recommandation d'un client",
+    positifs: ['Tarifs clairs pour 4 joueurs', 'Bar gratuit le meme jour', 'Parking gratuit', 'Concept original pour remercier l\'equipe'],
+    frictions: ['Chargement interminable', 'Duree totale inconnue', 'Carte boissons vide', 'Pas de formule PME simple'],
+    ceQuiFeraitBasculer: "Un forfait 'Sortie equipe' avec duree totale et boissons incluses", exp: 4, conf: 5, clarte: 5,
+  },
+  {
+    id: 19, name: 'Marine', age: 26, emoji: '\u{1F4CD}',
+    situation: 'Parisienne en visite, cherche quoi faire ce week-end',
+    canal: 'Reseaux sociaux', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: "Concept seduisant sur le post Facebook mais site trop lent \u2014 va deleguer la reservation a son amie mulhousienne",
+    localisation: 'Mulhouse (en visite)', maturite: 'Comparaison',
+    contexte: "Post Facebook de son amie",
+    impression: "Bonne premiere impression via Facebook mais friction mobile.",
+    parcours: [['Post Facebook', 'Photos cool, concept original'], ['Accueil', 'Tres lent sur mobile'], ['Salles', 'Engrenages interessant'], ['Reservation', 'Iframe mobile penible']],
+    questionCle: "Creneaux disponibles ce week-end ?",
+    reponse: 'Partiellement', commentReponse: "Widget reservation mais slow et pas clair si dispo visible",
+    impactVitesse: "17s sur 4G parisienne = inacceptable", impactConfiance: "Pas d'impact, recommandation amie",
+    positifs: ['Concept original', 'Cadre friche DMC', 'Disponibilite en anglais'],
+    frictions: ['Site extremement lent', 'Iframe reservation mobile', 'Pas de Quick View disponibilite'],
+    ceQuiFeraitBasculer: "Un site rapide avec disponibilites visibles en un clic", exp: 4, conf: 5, clarte: 5,
+  },
+  {
+    id: 20, name: 'David', age: 40, emoji: '\u{1F697}',
+    situation: 'Cadre parisien, cherche escape a Paris, tombe par erreur',
+    canal: 'Google Search', device: 'Desktop', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: "Rebond immediat \u2014 decouvre que c'est a Mulhouse en 5 secondes, quitte le site",
+    localisation: 'Cergy-Pontoise', maturite: 'Decouverte',
+    contexte: "Confusion nom 'escape game factory' vs Team Factory Escape",
+    impression: "Persona negative : hors zone geographique.",
+    parcours: [['Accueil', 'Lit Mulhouse, quitte immediatement']],
+    questionCle: "C'est ou exactement ?",
+    reponse: 'Oui', commentReponse: "Mulhouse clairement affiche, David comprend vite que ce n'est pas pour lui",
+    impactVitesse: "Aucun impact, visite trop courte", impactConfiance: "Aucun",
+    positifs: ['Localisation clairement affichee'],
+    frictions: ['Pas de Schema.org LocalBusiness pour filtrer en amont dans Google'],
+    ceQuiFeraitBasculer: "Un Schema.org LocalBusiness aurait empeche Google de montrer ce resultat", exp: 3, conf: 3, clarte: 7,
+  },
+];
+
+const techVerdicts = [
+  { label: 'Vitesse', verdict: 'Lent', ok: false, detail: 'Votre site met 17 secondes a s\'afficher sur telephone' },
+  { label: 'Securite', verdict: 'D-', ok: false, detail: 'Aucun en-tete de securite configure' },
+  { label: 'SEO', verdict: 'Bon', ok: true, detail: 'Score SEO correct (92/100) mais donnees structurees manquantes' },
+  { label: 'Donnees structurees', verdict: 'Incomplet', ok: false, detail: 'Pas de LocalBusiness, pas d\'adresse ni d\'horaires pour Google' },
+  { label: 'Partage reseaux', verdict: 'Image unique', ok: false, detail: 'La meme image sur toutes les pages quand on partage un lien' },
+];
+
+const tech = {
+  observatory: { grade: 'D-', score: 25, testsOk: 5, testsTotal: 10 },
+  pagespdMobile: { performance: 54, accessibility: 67, bestPractices: 77, seo: 92 },
+  pagespdDesktop: { performance: 63, accessibility: 67, bestPractices: 77, seo: 92 },
+  cwv: { lcp: '17.4 s', inp: '140 ms', cls: '0.498' },
+  headers: [
+    { ok: false, h: 'Content-Security-Policy (protection contre les injections)' },
+    { ok: false, h: 'Strict-Transport-Security (forcer HTTPS)' },
+    { ok: false, h: 'X-Content-Type-Options (protection MIME)' },
+    { ok: false, h: 'X-Frame-Options (protection clickjacking)' },
+    { ok: false, h: 'Referrer-Policy (controle des referrers)' },
+    { ok: false, h: 'Permissions-Policy (restrictions fonctionnalites)' },
+    { ok: true, h: 'HTTPS actif' },
+    { ok: true, h: 'Cloudflare CDN' },
+  ],
+  schema: [
+    { item: 'Organization (basique)', ok: true },
+    { item: 'WebSite avec SearchAction', ok: true },
+    { item: 'BreadcrumbList', ok: true },
+    { item: 'LocalBusiness ou EntertainmentBusiness', ok: false },
+    { item: 'Adresse structuree (address)', ok: false },
+    { item: 'Telephone', ok: false },
+    { item: 'Horaires (openingHours)', ok: false },
+    { item: 'Coordonnees GPS (geo)', ok: false },
+    { item: 'Avis agreges (aggregateRating)', ok: false },
+    { item: 'Produits/offres (Product/Offer)', ok: false },
+    { item: 'FAQ structuree (FAQPage)', ok: false },
+  ],
+  og: [
+    { item: 'og:title', ok: true, val: 'Accueil - Team Factory - Mulhouse' },
+    { item: 'og:description', ok: true, val: 'Au coeur de notre Escape Game...' },
+    { item: 'og:image', ok: true, val: 'Image presente (1920x1200)' },
+    { item: 'og:url', ok: true, val: '' },
+    { item: 'twitter:card', ok: true, val: 'summary_large_image' },
+    { item: 'Image unique pour toutes les pages', ok: false, val: 'Meme image OG partout' },
+    { item: 'Meta description unique par page', ok: false, val: '7/15 pages partagent la meme' },
+  ],
+  seo: [
+    { item: 'Un seul H1 par page', ok: true },
+    { item: 'Hierarchie titres coherente', ok: false },
+    { item: 'Images avec attribut alt descriptif', ok: false },
+    { item: 'Sitemap XML present (Yoast)', ok: true },
+    { item: 'Redirection HTTP \u2192 HTTPS', ok: true },
+    { item: 'Robots.txt present', ok: true },
+    { item: 'Zoom autorise sur mobile', ok: false },
+    { item: 'Sitemap Attracta obsolete dans robots.txt', ok: false },
+    { item: 'Bots IA bloques (ClaudeBot, GPTBot)', ok: true },
+  ],
+};
+
+const ameliorationsHautes = [
+  {
+    titre: 'Accelerer le site sur telephone',
+    pourquoi: 'Votre site met 17 secondes a s\'afficher sur mobile. 12 visiteurs sur 20 sont sur telephone \u2014 la moitie a failli quitter avant de voir quoi que ce soit. C\'est votre premiere perte de clients.',
+    action: 'Supprimer 465 Ko de JavaScript inutilise (Divi, WooCommerce) et 170 Ko de CSS, convertir les images en WebP, activer le cache navigateur. Objectif : passer sous 3 secondes.',
+    impact: '12 visiteurs sur 20',
+  },
+  {
+    titre: 'Creer des formules packag\u00e9es (anniversaire, EVJF, team building)',
+    pourquoi: '5 visiteurs sur 20 cherchaient une formule specifique (anniversaire enfant, EVJF, seminaire entreprise) et aucun n\'a trouve de reponse claire. Ils doivent assembler l\'information eux-memes.',
+    action: 'Creer 3 pages dediees avec tarifs all-in, photos de l\'event, temoignages, et un bouton de reservation directe. Exemple : "Anniversaire 8 enfants : 2 sessions + gouter au bar = 250\u20AC".',
+    impact: '5 visiteurs sur 20',
+  },
+  {
+    titre: 'Ajouter les en-tetes de securite',
+    pourquoi: 'Votre site obtient un D- en securite (25/100). Pour un site qui accepte des paiements en ligne (WooCommerce), c\'est un risque reel. Les professionnels qui veulent passer commande s\'en meifent.',
+    action: 'Configurer CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy et Permissions-Policy dans Cloudflare ou le serveur. Peut etre fait en 1 heure.',
+    impact: '3 visiteurs sur 20',
+  },
+  {
+    titre: 'Remplir la carte des boissons et clarifier les horaires',
+    pourquoi: 'La page carte des boissons est vide. 6 visiteurs ont cherche les prix des boissons et sont repartis sans pouvoir budgetiser leur soiree. Les horaires bar vs escape sont confus (14h ou 17h le mercredi ?).',
+    action: 'Publier la carte des boissons avec les prix. Clarifier les horaires par activite (escape, bar, boutique) sur chaque page concernee.',
+    impact: '6 visiteurs sur 20',
+  },
+];
+
+const ameliorationsUtiles = [
+  { titre: 'Creer une page "A propos / L\'equipe"', detail: 'Aucun visiteur ne sait qui se cache derriere Team Factory. Pas de visage, pas d\'histoire, pas de lien avec la friche DMC. Une page avec l\'equipe et l\'histoire du lieu renforcerait la confiance et la personnalite du site.' },
+  { titre: 'Ajouter des donnees structurees LocalBusiness', detail: 'Google ne sait pas que vous etes un escape game local avec adresse et horaires. Un balisage LocalBusiness/EntertainmentBusiness ameliorerait votre visibilite sur Google Maps et les recherches locales.' },
+  { titre: 'Rendre la reservation bar accessible en ligne', detail: '3 visiteurs voulaient reserver le bar mais ne telephone pas (etudiants, jeunes). Un formulaire de reservation en ligne simple convertirait ces profils.' },
+  { titre: 'Corriger les meta descriptions dupliquees', detail: '7 pages sur 15 partagent la meme meta description par defaut. Chaque page devrait avoir sa propre description unique pour mieux apparaitre dans les resultats Google.' },
+];
+
+const ameliorationsDiscuter = [
+  { emoji: '\u{1F30D}', titre: 'Version allemande du site', detail: 'Vos salles sont disponibles en anglais mais le site est uniquement en francais. Bale et Freiburg sont a moins d\'1h. Une version allemande elargirait votre zone de chalandise.' },
+  { emoji: '\u{1F393}', titre: 'Offre scolaire pour les enquetes urbaines', detail: 'Les enquetes Sherlock Holmes ont un potentiel pedagogique inexploite. Un prof d\'histoire-geo a quitte le site faute d\'offre scolaire. Decision business : faut-il cibler les ecoles ?' },
+  { emoji: '\u{1F464}', titre: 'Accueil des visiteurs solo au bar', detail: 'Un nouvel arrivant a Mulhouse cherchait un lieu pour se faire des amis. Le site ne mentionne jamais la possibilite de venir seul. Un calendrier d\'evenements visible attirerait cette audience.' },
+];
+---
+
+<BaseLayout title="Echo Complet \u2014 teamfactoryescape.com" description="Rapport Echo Complet : 20 visiteurs ont teste votre site. Voici ce qu'ils en pensent." noindex={true} lang="fr" frPath="/echo/team-factory-escape" ogImage="/og-echo.png">
+
+<!-- 1. HERO -->
+<section class="relative w-full px-6 py-20 md:py-28 overflow-hidden" style="background: #0A0A0A;">
+  <div class="absolute top-[20%] left-[10%] w-[500px] h-[500px] rounded-full blur-[180px] pointer-events-none" style="background: #E86C47; opacity: 0.06;"></div>
+  <div class="relative mx-auto max-w-4xl z-10">
+    <div class="mb-6 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5);">
+      {formuleLabel} &middot; Rapport confidentiel
+    </div>
+    <h1 class="mb-6 text-3xl md:text-4xl font-bold text-white leading-tight tracking-tight">{verdictHero}</h1>
+    <p class="mb-10 text-sm" style="color: rgba(255,255,255,0.4);">
+      Site analyse : <a href={urlSite} target="_blank" class="underline hover:text-white transition-colors">{urlSite}</a> &middot; {kpis.nbPersonas} visiteurs simules &middot; {dateAudit}
+    </p>
+    <div class="grid grid-cols-3 gap-4">
+      <div class="rounded-xl p-5 text-center" style="background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2);">
+        <div class="text-4xl md:text-5xl font-black text-green-400 mb-1">{kpis.nbConvertissent}</div>
+        <div class="text-sm text-green-400/70">vous contactent</div>
+      </div>
+      <div class="rounded-xl p-5 text-center" style="background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2);">
+        <div class="text-4xl md:text-5xl font-black text-amber-400 mb-1">{kpis.nbHesitent}</div>
+        <div class="text-sm text-amber-400/70">hesitent</div>
+      </div>
+      <div class="rounded-xl p-5 text-center" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
+        <div class="text-4xl md:text-5xl font-black mb-1" style="color: rgba(255,255,255,0.5);">{kpis.nbRepartent}</div>
+        <div class="text-sm" style="color: rgba(255,255,255,0.3);">repartent</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. LE CONSTAT -->
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <div class="rounded-2xl p-6 md:p-8 mb-12 border-l-4" style="background: rgba(232,108,71,0.04); border-color: #E86C47;">
+    <p class="text-lg md:text-xl font-medium text-neutral-800 leading-relaxed">{constat}</p>
+  </div>
+  <h2 class="text-xl font-bold text-neutral-900 mb-2">D'ou viennent vos visiteurs</h2>
+  <p class="text-sm text-neutral-500 mb-6">Et combien vous contactent selon leur canal d'arrivee.</p>
+  <div class="space-y-4 mb-12">
+    {canalData.map(c => {
+      const color = c.rate >= 50 ? '#22c55e' : c.rate >= 25 ? '#f59e0b' : '#ef4444';
+      return (
+        <div class="flex items-center gap-4">
+          <div class="w-40 sm:w-48 text-sm text-neutral-700 shrink-0">{c.canal}</div>
+          <div class="flex-1 h-3 bg-neutral-100 rounded-full overflow-hidden">
+            <div class="h-full rounded-full transition-all" style={`width: ${c.rate}%; background: ${color}`}></div>
+          </div>
+          <div class="w-20 text-right">
+            <span class="text-sm font-bold" style={`color: ${color}`}>{c.rate}%</span>
+            <span class="text-xs text-neutral-400 ml-1">({c.convert}/{c.nb})</span>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+  <details class="group mb-4">
+    <summary class="flex items-center gap-2 cursor-pointer text-sm text-neutral-500 hover:text-neutral-700 py-2">
+      <svg class="w-4 h-4 transition-transform group-open:rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      Voir les scores detailles (experience, confiance, clarte)
+    </summary>
+    <div class="grid grid-cols-3 gap-4 mt-3">
+      {[{l:'Experience',v:kpis.experience,d:'Navigation, lisibilite, fluidite'},{l:'Confiance',v:kpis.confiance,d:'Credibilite, preuves, rassurance'},{l:'Clarte',v:kpis.clarte,d:"Comprehension de l'offre et des prix"}].map(s=>(
+        <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
+          <div class="text-2xl font-bold text-neutral-800 mb-1">{s.v}<span class="text-sm text-neutral-400">/10</span></div>
+          <div class="text-xs text-neutral-500">{s.l}</div>
+          <p class="text-[10px] text-neutral-400 mt-1">{s.d}</p>
+        </div>
+      ))}
+    </div>
+  </details>
+</section>
+
+<!-- 3. VOS VISITEURS -->
+<section class="py-16" style="background: #fafafa;">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs</h2>
+    <p class="text-neutral-600 mb-8">Voici ce qui se passe quand quelqu'un cherche vos services et tombe sur votre site.</p>
+
+    {['Convertit','Hesite','Quitte'].map(dec => {
+      const filtered = personas.filter(p => p.decision === dec);
+      const cfg = dec === 'Convertit' ? {border:'border-green-200',badge:'bg-green-600',title:'Ceux qui vous contactent',titleColor:'text-green-800',dot:'bg-green-500',count:kpis.nbConvertissent,countColor:'text-green-600'}
+        : dec === 'Hesite' ? {border:'border-amber-200',badge:'bg-amber-500',title:'Ceux qui hesitent',titleColor:'text-amber-800',dot:'bg-amber-500',count:kpis.nbHesitent,countColor:'text-amber-600'}
+        : {border:'border-neutral-200',badge:'bg-neutral-400',title:'Ceux qui repartent',titleColor:'text-neutral-600',dot:'bg-neutral-400',count:kpis.nbRepartent,countColor:'text-neutral-500'};
+      return (
+        <div class="mb-10">
+          <h3 class={`text-base font-bold ${cfg.titleColor} mb-4 flex items-center gap-2`}>
+            <span class={`w-2.5 h-2.5 rounded-full ${cfg.dot} inline-block`}></span>
+            {cfg.title}
+            <span class={`text-sm font-normal ${cfg.countColor}`}>({cfg.count})</span>
+          </h3>
+          <div class="space-y-3">
+            {filtered.map(p => (
+              <details class={`group persona-card bg-white rounded-xl overflow-hidden shadow-sm border ${cfg.border}`} data-canal={p.canal}>
+                <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                  <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1 flex-wrap">
+                      <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                      <span class={`text-[10px] ${cfg.badge} text-white px-1.5 py-0.5 rounded font-medium`}>{p.decisionLabel}</span>
+                    </div>
+                    <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                    <div class="flex flex-wrap items-center gap-1.5">
+                      <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                      <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                      <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                    </div>
+                  </div>
+                  <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                </summary>
+                <div class={`px-4 pb-5 border-t ${cfg.border}`}>
+                  <div class="grid gap-4 text-xs mt-4">
+                    <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p><p class="text-neutral-600">{p.contexte}</p></div>
+                    <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Premiere impression (5 sec)</p><p class="text-neutral-600">{p.impression}</p></div>
+                    <div>
+                      <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours sur le site</p>
+                      <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                        {p.parcours.map(([section, reaction]: [string, string]) => (<li><strong class="text-neutral-800">{section}</strong>{reaction ? ` \u2014 ${reaction}` : ''}</li>))}
+                      </ol>
+                    </div>
+                    <div class="bg-neutral-50 rounded-lg p-3">
+                      <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p>
+                      <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
+                      <p class="text-neutral-600">Le site repond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> \u2014 {p.commentReponse}</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                      <div><p class="font-semibold text-green-700 mb-1.5">{'\u2713'} Points positifs</p><ul class="space-y-1 text-neutral-600">{p.positifs.map((pt: string) => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">{'\u00B7'}</span>{pt}</li>)}</ul></div>
+                      <div><p class="font-semibold text-amber-700 mb-1.5">{'\u2717'} Frictions</p><ul class="space-y-1 text-neutral-600">{p.frictions.map((f: string) => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">{'\u00B7'}</span>{f}</li>)}</ul></div>
+                    </div>
+                    {p.ceQuiFeraitBasculer && (
+                      <div class="rounded-lg p-3" style="background: rgba(232,108,71,0.05);">
+                        <p class="font-semibold text-[10px] uppercase tracking-wider mb-1" style="color: #E86C47;">{dec === 'Hesite' ? "Ce qui le ferait passer a l'action" : "Ce qui l'aurait retenu"}</p>
+                        <p style="color: #D4572F;">{p.ceQuiFeraitBasculer}</p>
+                      </div>
+                    )}
+                    <div class="flex gap-6 pt-3 border-t border-neutral-100">
+                      {[{label:'Experience',val:p.exp},{label:'Confiance',val:p.conf},{label:'Clarte',val:p.clarte}].map(s => {
+                        const sColor = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500';
+                        return (<div class="text-center"><span class={`block text-lg font-bold ${sColor}`}>{s.val}</span><span class="text-[10px] text-neutral-400">{s.label}</span></div>);
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </details>
+            ))}
+          </div>
+          {dec === 'Hesite' && (
+            <div class="rounded-xl p-5 mt-4 bg-amber-50 border border-amber-200 flex items-start gap-3">
+              <span class="text-lg shrink-0 mt-0.5">{'\u{1F4A1}'}</span>
+              <div><p class="text-sm font-medium text-amber-900">Ces {kpis.nbHesitent} visiteurs ont besoin de vos services.</p><p class="text-xs text-amber-700 mt-1">Il leur manque un element de rassurance pour passer a l'action. C'est votre plus gros levier de croissance.</p></div>
+            </div>
+          )}
+          {dec === 'Quitte' && (
+            <div class="rounded-xl p-5 mt-4 bg-neutral-100 border border-neutral-200 flex items-start gap-3">
+              <span class="text-lg shrink-0 mt-0.5">{'\u{1F4C9}'}</span>
+              <div><p class="text-sm font-medium text-neutral-800">Chaque visiteur qui repart, c'est un client en moins.</p><p class="text-xs text-neutral-600 mt-1">Certains n'etaient pas dans votre cible — c'est normal. Mais d'autres avaient un vrai besoin et votre site ne les a pas convaincus.</p></div>
+            </div>
+          )}
+        </div>
+      );
+    })}
+  </div>
+</section>
+
+<!-- 4. CE QU'ON RECOMMANDE -->
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <h2 class="text-2xl font-bold text-neutral-900 mb-2">Ce qu'on recommande</h2>
+  <p class="text-neutral-600 mb-8">Actions concretes, classees par impact sur vos visiteurs.</p>
+  <p class="text-sm font-semibold text-red-700 mb-4">Si vous ne changez que {ameliorationsHautes.length} choses :</p>
+  <div class="space-y-4 mb-12">
+    {ameliorationsHautes.map(a => (
+      <div class="bg-white border-2 border-red-200 rounded-xl p-6 shadow-sm">
+        <div class="flex items-start justify-between gap-4 mb-3">
+          <h4 class="font-bold text-neutral-900">{a.titre}</h4>
+          <span class="text-[10px] px-2 py-1 rounded-full bg-red-100 text-red-700 font-semibold shrink-0 whitespace-nowrap">{a.impact}</span>
+        </div>
+        <p class="text-sm text-neutral-600 mb-3">{a.pourquoi}</p>
+        <div class="bg-neutral-50 rounded-lg px-4 py-3 flex items-start gap-2">
+          <svg class="w-4 h-4 text-neutral-400 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+          <p class="text-xs text-neutral-700">{a.action}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+  <h3 class="text-lg font-bold text-neutral-900 mb-2">Utile aussi</h3>
+  <div class="grid md:grid-cols-2 gap-4 mb-12">
+    {ameliorationsUtiles.map(a => (<div class="bg-white border border-neutral-200 rounded-xl p-5"><h4 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h4><p class="text-xs text-neutral-600">{a.detail}</p></div>))}
+  </div>
+  <h3 class="text-lg font-bold text-neutral-900 mb-2">A discuter</h3>
+  <p class="text-sm text-neutral-500 mb-4">Decisions business — pas de bonne ou mauvaise reponse.</p>
+  <div class="space-y-3 mb-12">
+    {ameliorationsDiscuter.map(a => (<div class="bg-neutral-50 border border-neutral-200 rounded-xl p-4 flex gap-3"><span class="text-lg shrink-0">{a.emoji}</span><div><h4 class="font-semibold text-neutral-900 text-sm mb-0.5">{a.titre}</h4><p class="text-xs text-neutral-600">{a.detail}</p></div></div>))}
+  </div>
+  <div class="rounded-2xl p-8 text-center border-2 border-dashed" style="border-color: #E86C47; background: rgba(232,108,71,0.03);">
+    <p class="text-lg font-bold text-neutral-900 mb-2">{kpis.nbPersonas} visiteurs confirment des tendances claires.</p>
+    <p class="text-sm text-neutral-600 mb-6">Avec 100 visiteurs (Echo Pro), vous obtenez une fiabilite statistique : analyse par canal, par maturite, et un appel de 30 min pour parcourir le rapport ensemble.</p>
+    <a href="/echo/" class="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-xl transition-all shadow-md hover:-translate-y-0.5" style="background: linear-gradient(135deg, #E86C47, #D4572F);">Echo Pro — 250&#8364; <span class="text-xs opacity-70 ml-1">(100 visiteurs + appel 30 min)</span></a>
+  </div>
+</section>
+
+<!-- 5. SOUS LE CAPOT -->
+<section class="py-16 border-t border-neutral-200">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-2xl font-bold text-neutral-900 mb-2">Sous le capot</h2>
+    <p class="text-neutral-600 mb-8">Pour les curieux : ce que les outils techniques disent de votre site.</p>
+    <div class="flex flex-wrap gap-3 mb-10">
+      {techVerdicts.map(v => (
+        <div class={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium ${v.ok ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
+          {v.ok ? <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> : <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}
+          <span>{v.label}</span><span class="text-xs opacity-70">{v.verdict}</span>
+        </div>
+      ))}
+    </div>
+
+    {/* PageSpeed */}
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+        <div class="flex items-center gap-3"><span class="text-base">{'\u26A1'}</span><div><h3 class="font-semibold text-neutral-900 text-sm">Vitesse du site</h3><p class="text-[11px] text-neutral-500">{techVerdicts[0].detail}</p></div></div>
+        <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 border-t border-neutral-100">
+        <p class="text-xs text-neutral-500 py-2 mb-2">Scores Google PageSpeed Insights (mobile)</p>
+        <div class="grid grid-cols-4 gap-4 py-2">
+          {['Performance', 'Accessibilite', 'Bonnes pratiques', 'SEO'].map((label, i) => {
+            const scores = [tech.pagespdMobile.performance, tech.pagespdMobile.accessibility, tech.pagespdMobile.bestPractices, tech.pagespdMobile.seo];
+            const score = scores[i]; const color = score >= 90 ? '#22c55e' : score >= 50 ? '#f59e0b' : '#ef4444';
+            return (<div class="text-center"><div class="relative w-14 h-14 mx-auto mb-2"><svg class="w-14 h-14 -rotate-90" viewBox="0 0 36 36"><path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3" /><path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={color} stroke-width="3" stroke-dasharray={`${score}, 100`} stroke-linecap="round" /></svg><span class="absolute inset-0 flex items-center justify-center text-sm font-bold" style={`color: ${color}`}>{score}</span></div><p class="text-[11px] text-neutral-600">{label}</p></div>);
+          })}
+        </div>
+      </div>
+    </details>
+
+    {/* Observatory */}
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+        <div class="flex items-center gap-3"><span class="text-base">{'\u{1F512}'}</span><div><h3 class="font-semibold text-neutral-900 text-sm">Securite</h3><p class="text-[11px] text-neutral-500">{techVerdicts[1].detail}</p></div></div>
+        <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 border-t border-neutral-100">
+        <p class="text-xs text-neutral-500 py-2">Note : {tech.observatory.grade} ({tech.observatory.testsOk}/{tech.observatory.testsTotal} tests passes)</p>
+        {tech.headers.map(h => (<div class="flex items-center gap-2 py-1">{h.ok ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> : <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}<span class={`text-xs ${h.ok ? 'text-neutral-600' : 'text-red-500'}`}>{h.h}</span></div>))}
+      </div>
+    </details>
+
+    {/* Schema.org */}
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+        <div class="flex items-center gap-3"><span class="text-base">{'\u{1F4CA}'}</span><div><h3 class="font-semibold text-neutral-900 text-sm">Donnees structurees (Schema.org)</h3><p class="text-[11px] text-neutral-500">{techVerdicts[3].detail}</p></div></div>
+        <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 border-t border-neutral-100">
+        {tech.schema.map(s => (<div class="flex items-center gap-2 py-1">{s.ok ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> : <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}<span class={`text-xs ${s.ok ? 'text-neutral-600' : 'text-red-500 font-medium'}`}>{s.item}</span></div>))}
+      </div>
+    </details>
+
+    {/* OG */}
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+        <div class="flex items-center gap-3"><span class="text-base">{'\u{1F517}'}</span><div><h3 class="font-semibold text-neutral-900 text-sm">Apercu reseaux sociaux (Open Graph)</h3><p class="text-[11px] text-neutral-500">{techVerdicts[4].detail}</p></div></div>
+        <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 border-t border-neutral-100">
+        {tech.og.map(o => (<div class="flex items-start gap-2 py-1">{o.ok ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> : <svg class="w-3.5 h-3.5 text-red-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}<span class={`text-xs ${o.ok ? 'text-neutral-600' : 'text-red-500'}`}>{o.item} <span class="text-neutral-400">{o.val}</span></span></div>))}
+      </div>
+    </details>
+
+    {/* SEO */}
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden bg-white">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+        <div class="flex items-center gap-3"><span class="text-base">{'\u{1F50D}'}</span><div><h3 class="font-semibold text-neutral-900 text-sm">SEO technique</h3><p class="text-[11px] text-neutral-500">{techVerdicts[2].detail}</p></div></div>
+        <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 border-t border-neutral-100">
+        {tech.seo.map(s => (<div class="flex items-center gap-2 py-1">{s.ok ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> : <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}<span class={`text-xs ${s.ok ? 'text-neutral-600' : 'text-red-500'}`}>{s.item}</span></div>))}
+      </div>
+    </details>
+
+    <div class="mt-8 rounded-xl p-5 bg-white border border-neutral-200 flex items-start gap-3">
+      <span class="text-lg shrink-0 mt-0.5">{'\u{1F527}'}</span>
+      <div><p class="text-sm font-medium text-neutral-800">Votre site a du potentiel, mais la technique le freine.</p><p class="text-xs text-neutral-600 mt-1">Un chargement 6x plus rapide, des en-tetes de securite et des donnees structurees transformeraient l'experience de vos visiteurs.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. METHODOLOGIE -->
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-neutral-200">
+  <h2 class="text-base font-bold text-neutral-900 mb-4">Comment ca marche</h2>
+  <ol class="space-y-3 text-sm text-neutral-600">
+    {['On scrape votre site \u2014 on lit chaque page comme un visiteur le ferait','On audite la technique \u2014 vitesse, securite, referencement, donnees structurees',`On cree ${kpis.nbPersonas} profils realistes \u2014 adaptes a votre secteur et votre zone geographique`,'Chaque profil visite votre site et donne son avis \u2014 premiere impression, parcours, decision','On compile les resultats \u2014 frictions recurrentes, canaux performants, recommandations'].map((t,i) => (
+      <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">{i+1}</span><span>{t}</span></li>
+    ))}
+  </ol>
+</section>
+
+<!-- 7. CTA FINAL -->
+<section class="relative w-full px-6 py-20 overflow-hidden" style="background: #0A0A0A;">
+  <div class="absolute bottom-[10%] right-[10%] w-[400px] h-[400px] rounded-full blur-[160px] pointer-events-none" style="background: #E86C47; opacity: 0.05;"></div>
+  <div class="relative mx-auto max-w-3xl z-10 text-center">
+    <h2 class="text-2xl md:text-3xl font-bold text-white mb-4 leading-tight">20 visiteurs. Imaginez ce que 100 prouveraient.</h2>
+    <p class="text-sm mb-8" style="color: rgba(255,255,255,0.5);">L'Echo Pro : 100 visiteurs pour une fiabilite statistique, analyse par canal et par maturite, et 30 minutes ensemble pour parcourir le rapport.</p>
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+      <a href="/echo/" class="inline-flex items-center gap-2 px-8 py-4 text-white font-semibold rounded-xl transition-all shadow-lg hover:-translate-y-0.5" style="background: linear-gradient(135deg, #E86C47, #D4572F); box-shadow: 0 4px 24px rgba(232, 108, 71, 0.35);">
+        Echo Pro — 250&#8364;
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      </a>
+      <a href="/contact" class="inline-flex items-center gap-2 px-8 py-4 border border-neutral-600 font-semibold rounded-xl transition-all hover:border-white/40" style="color: rgba(255,255,255,0.6);">En discuter d'abord</a>
+    </div>
+  </div>
+</section>
+
+</BaseLayout>
