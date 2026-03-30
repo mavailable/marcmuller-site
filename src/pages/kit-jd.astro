@@ -158,9 +158,9 @@ C'était ça.
 
         <!-- Visual -->
         <div class="rounded-xl bg-white border border-[var(--color-border)] p-5">
-          <p class="text-xs font-bold uppercase tracking-widest text-[var(--color-text-muted)] mb-4">Visuel 1200×627</p>
+          <p class="text-xs font-bold uppercase tracking-widest text-[var(--color-text-muted)] mb-4">Visuel 1200×1200 (carré — pas de bandes blanches)</p>
           <div class="overflow-hidden rounded-lg border border-[var(--color-border)] mb-4 w-full">
-            <canvas id="canvas-wide" width="1200" height="627" style="width: 100%; height: auto; display: block;"></canvas>
+            <canvas id="canvas-wide" width="1200" height="1200" style="width: 100%; height: auto; display: block;"></canvas>
           </div>
           <button
             onclick="downloadCanvas('canvas-wide', 'jd-zootherapeute-linkedin.png')"
@@ -274,16 +274,15 @@ function drawSquare() {
   ctx.textAlign = 'left';
 }
 
-// ─── WIDE 1200×627 ───────────────────────────────────────
-// 2 colonnes : gauche = accroche, droite = résultat
+// ─── SQUARE LINKEDIN 1200×1200 ───────────────────────────
 function drawWide() {
   const canvas = document.getElementById('canvas-wide') as HTMLCanvasElement;
   if (!canvas) return;
   const ctx = canvas.getContext('2d')!;
-  const W = 1200, H = 627;
+  const W = 1200, H = 1200;
 
   // BG
-  const grad = ctx.createLinearGradient(0, 0, W, H);
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
   grad.addColorStop(0, '#111111');
   grad.addColorStop(1, '#0A0A0A');
   ctx.fillStyle = grad;
@@ -291,87 +290,86 @@ function drawWide() {
 
   // Barre orange top
   ctx.fillStyle = '#E86C47';
-  ctx.fillRect(0, 0, W, 10);
+  ctx.fillRect(0, 0, W, 12);
 
-  // ── Colonne gauche ──
-  const lx = 70;
+  const mx = 90;
 
-  ctx.fillStyle = 'rgba(255,255,255,0.35)';
-  ctx.font = '32px system-ui, Arial, sans-serif';
+  // Accroche
+  ctx.fillStyle = 'rgba(255,255,255,0.4)';
+  ctx.font = '46px system-ui, Arial, sans-serif';
   ctx.textAlign = 'left';
-  ctx.fillText('Son site avait du trafic.', lx, 100);
+  ctx.fillText('Son site avait du trafic.', mx, 130);
 
   ctx.fillStyle = '#FFFFFF';
-  ctx.font = 'bold 72px system-ui, Arial, sans-serif';
-  ctx.fillText('Pas de clients.', lx, 195);
+  ctx.font = 'bold 110px system-ui, Arial, sans-serif';
+  ctx.fillText('Pas de clients.', mx, 270);
 
   ctx.fillStyle = 'rgba(255,255,255,0.5)';
-  ctx.font = '34px system-ui, Arial, sans-serif';
-  ctx.fillText('Refonte en 2 semaines.', lx, 270);
+  ctx.font = '44px system-ui, Arial, sans-serif';
+  ctx.fillText('Refonte en 2 semaines.', mx, 360);
 
   // Citation
-  ctx.fillStyle = 'rgba(255,255,255,0.35)';
-  ctx.font = 'italic 28px Georgia, serif';
-  ctx.fillText('"Y a un truc qui bloque."', lx, 340);
+  ctx.fillStyle = 'rgba(255,255,255,0.3)';
+  ctx.font = 'italic 38px Georgia, serif';
+  ctx.fillText('"Y a un truc qui bloque."', mx, 440);
 
-  // Pilule orange
+  // Séparateur
+  ctx.fillStyle = 'rgba(255,255,255,0.1)';
+  ctx.fillRect(mx, 490, W - mx * 2, 1);
+
+  // Pilule J+5
   ctx.fillStyle = '#E86C47';
-  roundRect(ctx, lx, 390, 420, 90, 16);
+  roundRect(ctx, mx, 520, W - mx * 2, 130, 20);
   ctx.fill();
 
   ctx.fillStyle = '#FFFFFF';
-  ctx.font = 'bold 58px system-ui, Arial, sans-serif';
+  ctx.font = 'bold 96px system-ui, Arial, sans-serif';
   ctx.textAlign = 'center';
-  ctx.fillText('J+5', lx + 120, 452);
+  ctx.fillText('J+5', W / 2 - 160, 606);
 
-  ctx.font = '28px system-ui, Arial, sans-serif';
-  ctx.fillStyle = 'rgba(255,255,255,0.9)';
-  ctx.fillText('1er contact entrant', lx + 300, 432);
-  ctx.fillText('via le site', lx + 300, 466);
+  ctx.font = '42px system-ui, Arial, sans-serif';
+  ctx.fillStyle = 'rgba(255,255,255,0.92)';
+  ctx.fillText('1er contact entrant via le site', W / 2 + 80, 596);
 
-  // ── Séparateur vertical ──
-  ctx.fillStyle = 'rgba(255,255,255,0.07)';
-  ctx.fillRect(560, 50, 1, H - 100);
+  // Séparateur
+  ctx.fillStyle = 'rgba(255,255,255,0.1)';
+  ctx.fillRect(mx, 690, W - mx * 2, 1);
 
-  // ── Colonne droite ──
-  const rx = 600;
-
-  ctx.fillStyle = 'rgba(255,255,255,0.25)';
-  ctx.font = 'bold 24px system-ui, Arial, sans-serif';
-  ctx.textAlign = 'left';
-  ctx.letterSpacing = '3px';
-  ctx.fillText('CE QUI A CHANGÉ', rx, 90);
-  ctx.letterSpacing = '0px';
-
+  // Liste — pleine largeur, 2 colonnes
   const items = [
     'One-page clair + rapide',
     'Nouveau domaine cohérent',
     'Agenda en ligne (Cal.com)',
     'Simulateur de tarif',
     'Blog + CMS autonome',
+    'Analytics RGPD',
   ];
 
+  ctx.textAlign = 'left';
   items.forEach((item, i) => {
-    const y = 150 + i * 82;
-    // Barre latérale orange fine
+    const col = i % 2;
+    const row = Math.floor(i / 2);
+    const x = col === 0 ? mx : W / 2 + 20;
+    const y = 770 + row * 110;
+    // Barre orange
     ctx.fillStyle = '#E86C47';
-    ctx.fillRect(rx, y - 28, 3, 36);
+    ctx.fillRect(x, y - 34, 4, 44);
     // Texte
-    ctx.fillStyle = 'rgba(255,255,255,0.85)';
-    ctx.font = '32px system-ui, Arial, sans-serif';
-    ctx.fillText(item, rx + 20, y);
+    ctx.fillStyle = 'rgba(255,255,255,0.82)';
+    ctx.font = '38px system-ui, Arial, sans-serif';
+    ctx.fillText(item, x + 20, y);
   });
 
   // Footer
-  ctx.fillStyle = 'rgba(255,255,255,0.15)';
-  ctx.fillRect(0, H - 56, W, 1);
+  ctx.fillStyle = 'rgba(255,255,255,0.12)';
+  ctx.fillRect(0, H - 70, W, 1);
   ctx.fillStyle = 'rgba(255,255,255,0.3)';
-  ctx.font = '24px system-ui, Arial, sans-serif';
+  ctx.font = '30px system-ui, Arial, sans-serif';
   ctx.textAlign = 'left';
-  ctx.fillText('jdzootherapeute.fr', 70, H - 18);
+  ctx.fillText('jdzootherapeute.fr', mx, H - 25);
   ctx.textAlign = 'right';
   ctx.fillStyle = '#E86C47';
-  ctx.fillText('marcm.fr', W - 70, H - 18);
+  ctx.fillText('marcm.fr', W - mx, H - 25);
   ctx.textAlign = 'left';
 }
 
