@@ -32,9 +32,9 @@ export const business = {
   },
 
   // Business
-  description: 'Création de sites web sur mesure pour artisans, commerçants et petites entreprises du Grand Est.',
+  description: 'Création de sites web sur mesure pour artisans, commerçants et petites entreprises en France.',
   priceRange: '490€+',
-  areaServed: ['Strasbourg', 'Metz', 'Nancy', 'Colmar', 'Mulhouse'],
+  areaServed: ['France', 'Strasbourg', 'Metz', 'Nancy', 'Colmar', 'Mulhouse'],
 
   // Offres (2 niveaux : produit + service)
   offers: [

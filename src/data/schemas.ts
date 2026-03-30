@@ -67,9 +67,9 @@ export function getLocalBusinessSchema() {
       "latitude": business.geo.lat,
       "longitude": business.geo.lon
     },
-    "areaServed": business.areaServed.map(city => ({
-      "@type": "City",
-      "name": city
+    "areaServed": business.areaServed.map(area => ({
+      "@type": area === 'France' ? 'Country' : 'City',
+      "name": area
     })),
     "priceRange": business.priceRange,
     "sameAs": [
