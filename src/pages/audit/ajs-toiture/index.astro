@@ -1,0 +1,670 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX — AJS Toiture Père & Fils | Marc M.';
+const description = 'Audit complet de AJS Toiture Père et Fils, Metz 57 : site hors ligne depuis novembre 2025, domaine expiré, 35 avis 4.9/5 sans vitrine. 10 personas simulés, analyse technique, recommandations actionnables.';
+
+// ─── PROSPECT ───
+const prospect = {
+  name: 'AJS Toiture Père & Fils',
+  url: 'https://www.ajstoiture.fr',
+  date: '29 mars 2026',
+  activity: 'Couvreur Zingueur Charpentier — Couverture, Charpente, Zinguerie, Velux, Dépannage',
+  location: 'Metz 57000 — Moselle, Grand Est',
+};
+
+// ─── KPIs ───
+const kpis = {
+  conversion: 0,
+  experience: 0,
+  confiance: 0,
+  clarte: 0,
+};
+
+// ─── CONSTAT ───
+const constat = "AJS Toiture Père & Fils accumule 35 avis Google à 4,9/5 — une reputation locale quasi-parfaite — mais leur site ajstoiture.fr est hors ligne depuis novembre 2025 : domaine expiré, aucun serveur actif, DNS parking. 4 mois de visibilité zéro pendant que la concurrence capte chaque client qui cherche un couvreur à Metz.";
+
+// ─── CONVERSION PAR CANAL ───
+const conversionByCanal = [
+  { canal: 'Bouche-a-oreille', taux: 75, color: 'text-green-600', bg: 'bg-green-500' },
+  { canal: 'Google Maps / GBP', taux: 45, color: 'text-green-600', bg: 'bg-green-500' },
+  { canal: 'Google Search (urgence)', taux: 0, color: 'text-red-600', bg: 'bg-red-500' },
+  { canal: 'Google Search (devis planifié)', taux: 0, color: 'text-red-600', bg: 'bg-red-500' },
+  { canal: 'Réseaux sociaux', taux: 0, color: 'text-red-600', bg: 'bg-red-500' },
+  { canal: 'IA (ChatGPT / Perplexity)', taux: 0, color: 'text-red-700', bg: 'bg-red-700' },
+];
+
+// ─── TOP FRICTIONS ───
+const topFrictions = [
+  { titre: 'Site hors ligne — domaine expiré depuis novembre 2025', count: 10, detail: 'Zéro page accessible. Toute personne qui cherche "AJS Toiture" ou "ajstoiture.fr" tombe sur une page de parking ou une erreur DNS. 4 mois de trafic organique complètement perdus au profit des concurrents.' },
+  { titre: '35 avis 4,9/5 sans vitrine pour les amplifier', count: 9, detail: 'La réputation terrain est exceptionnelle mais le seul canal actif est Google Business Profile. Aucun site ne permet de présenter ces avis, de rassurer les prospects, ni de capter les recherches Google organiques.' },
+  { titre: 'Invisibilité totale sur Google Search', count: 8, detail: 'Les URLs sont désindexées progressivement. "Couvreur Metz", "toiture Metz 57", "charpente Metz urgence" — autant de requêtes qui envoyaient des clients et qui ne mènent plus nulle part. La concurrence capte tout.' },
+  { titre: 'Zéro Schema.org prévu (état pré-fermeture)', count: 7, detail: 'L\'ancien site ne disposait probablement d\'aucun JSON-LD. Ni LocalBusiness, ni RoofingContractor, ni AggregateRating. Invisible pour les assistants IA (ChatGPT, Perplexity, Google AI Overview).' },
+  { titre: 'Aucune page de conversion 24h/7j pour les urgences', count: 6, detail: 'Les urgences toiture (fuite, tuiles après tempête, gouttière arrachée) génèrent des recherches à toute heure. Sans site, ces urgences vont directement à des concurrents qui ont une page visible et un bouton "Appel urgent".' },
+];
+
+// ─── PAGESPEED ───
+const pagespeed = {
+  mobile: { performance: 0, accessibility: 0, bestPractices: 0, seo: 0 },
+  desktop: { performance: 0, accessibility: 0, bestPractices: 0, seo: 0 },
+  unavailable: true,
+};
+const coreWebVitals = [
+  { name: 'DNS', value: 'NXDOMAIN', status: 'rouge' },
+  { name: 'Connexion TCP', value: 'ECONNREFUSED', status: 'rouge' },
+  { name: 'LCP', value: 'N/A', status: 'rouge' },
+  { name: 'CLS', value: 'N/A', status: 'rouge' },
+  { name: 'INP', value: 'N/A', status: 'rouge' },
+];
+
+// ─── OBSERVATORY ───
+const observatory = { grade: 'N/A', score: 0, testsPassed: 0, testsTotal: 10, unavailable: true };
+
+// ─── WHOIS ───
+const whois = {
+  registrar: 'Hostinger Operations UAB',
+  created: '7 juillet 2023',
+  expired: '6 novembre 2025',
+  nameservers: 'ns1.dns-parking.com / ns2.dns-parking.com',
+  status: 'Parked — aucun serveur actif',
+};
+
+// ─── CHECKLIST TECHNIQUE ───
+const techChecks = [
+  { label: 'Site accessible (DNS + serveur actif)', present: false, critical: true },
+  { label: 'HTTPS actif', present: false, critical: true },
+  { label: 'Meta title + meta description (pages indexées)', present: true, critical: false },
+  { label: 'H1 unique sur accueil', present: false, critical: true },
+  { label: 'robots.txt accessible', present: false, critical: false },
+  { label: 'Sitemap.xml accessible', present: false, critical: false },
+  { label: 'Schema.org JSON-LD (RoofingContractor)', present: false, critical: true },
+  { label: 'Open Graph (og:title, og:image, og:description)', present: false, critical: true },
+  { label: 'Balise canonical', present: false, critical: false },
+  { label: 'Security headers (HSTS, X-Frame, CSP)', present: false, critical: true },
+  { label: 'Core Web Vitals mesurables', present: false, critical: true },
+  { label: 'Bandeau cookies / consentement RGPD', present: false, critical: true },
+  { label: 'Téléphone cliquable (tel:) en header', present: false, critical: true },
+  { label: 'Galerie réalisations avec légendes', present: false, critical: false },
+];
+
+// ─── PERSONAS (Agent 1 : personas 1–5 — résidentiel, urgence, local) ───
+// ─── PERSONAS (Agent 2 : personas 6–10 — comparaison, pro, digital) ───
+const personas = [
+  // ─── AGENT 1 ───
+  {
+    id: 1,
+    name: 'Gérard',
+    age: 62,
+    emoji: '🏠',
+    canal: 'Google Search',
+    device: 'Mobile',
+    maturite: 'Urgence',
+    situation: 'Propriétaire à Metz-Sablon, fuite toiture après nuit de grêle, cherche un couvreur d\'urgence à 6h du matin',
+    contexte: 'Tape "couvreur urgence metz 57" sur son iPhone, eau dans le couloir, il veut un numéro à appeler maintenant',
+    parcours: ['Google Search', 'Résultats Google → ajstoiture.fr introuvable', 'Concurrent ArtisanCouvreur57', 'Appel concurrent'],
+    decision: 'quitte',
+    scores: { exp: 0, conf: 0, clarte: 0 },
+    premierImpression: 'Il ne voit jamais le site AJS Toiture — la page est morte, Google n\'affiche plus l\'URL. Il clique sur le premier concurrent visible et appelle directement.',
+    questionCle: 'Pouvez-vous intervenir en urgence aujourd\'hui sur Metz-Sablon ?',
+    reponse: 'Non',
+    commentReponse: 'Le site n\'existe plus — Gérard ne peut pas contacter AJS Toiture via internet. Le concurrent capte le lead d\'urgence.',
+    impactTechnique: 'DNS NXDOMAIN = le domaine ne se résout pas. Google retire progressivement les pages des résultats de recherche.',
+    pointsPositifs: ['Réputation GBP toujours active (4,9/5)', 'Numéro téléphone visible sur Google Maps'],
+    frictions: ['Site complètement hors ligne', 'Pas de page "urgence" ou CTA urgent', 'URL absente des résultats Google'],
+  },
+  {
+    id: 2,
+    name: 'Nathalie',
+    age: 48,
+    emoji: '🔍',
+    canal: 'Google Maps',
+    device: 'Mobile',
+    maturite: 'Comparaison',
+    situation: 'Propriétaire à Metz centre, mousse sur toiture visible depuis la rue, compare 3 couvreurs sur Google Maps',
+    contexte: 'Note AJS Toiture grâce aux 4,9/5 sur 35 avis, clique sur le lien site web depuis la fiche GBP',
+    parcours: ['Google Maps', 'Fiche GBP AJS Toiture', 'Lien "Site web" → page d\'erreur', 'Retour sur Maps', 'Concurrent retenu'],
+    decision: 'quitte',
+    scores: { exp: 1, conf: 2, clarte: 0 },
+    premierImpression: 'Elle voit les 4,9/5 sur Maps et clique sur le lien du site. Elle tombe sur une page de parking Hostinger vide. Déception immédiate — elle interprète ça comme une entreprise qui a fermé ou qui ne s\'investit pas.',
+    questionCle: 'L\'entreprise est-elle encore active ? Leur site est mort, c\'est bizarre...',
+    reponse: 'Non',
+    commentReponse: 'Le lien site web sur GBP redirige vers une page de parking. Confusion totale — l\'entreprise est peut-être fermée selon elle.',
+    impactTechnique: 'Lien "Site web" dans GBP pointe vers ajstoiture.fr = page parking = brise la confiance que les 35 avis avaient construite.',
+    pointsPositifs: ['Note GBP excellente (4,9/5 sur 35 avis)', 'Numéro téléphone accessible sur Maps'],
+    frictions: ['Site hors ligne visible depuis la fiche GBP', 'Impression d\'entreprise fermée', 'Pas de validation que l\'activité est toujours en cours'],
+  },
+  {
+    id: 3,
+    name: 'Patrick',
+    age: 55,
+    emoji: '🏗️',
+    canal: 'Bouche-a-oreille',
+    device: 'Desktop',
+    maturite: 'Decision',
+    situation: 'Propriétaire à Woippy, un voisin lui recommande AJS Toiture pour refaire toute sa toiture (chantier ~8000€)',
+    contexte: 'Tape "ajstoiture.fr" dans son navigateur pour voir le site avant de les appeler, cherche le portfolio et les certifications',
+    parcours: ['Recommandation voisin', 'URL directe ajstoiture.fr', 'Page d\'erreur/parking', 'Cherche sur Google "AJS Toiture Metz"', 'Trouve le GBP → appelle'],
+    decision: 'hesite',
+    scores: { exp: 2, conf: 4, clarte: 1 },
+    premierImpression: 'Il tape l\'URL, tombe sur une page vide. Surpris mais la recommandation du voisin est forte. Il cherche sur Google, trouve le GBP, voit les avis positifs, décide d\'appeler — mais avec moins de confiance qu\'il n\'en aurait eu avec un beau site.',
+    questionCle: 'Votre site est cassé, mais êtes-vous toujours en activité ? Avez-vous des références de grosses rénovations ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Il appelle grâce au bouche-à-oreille et au GBP, mais avec incertitude. Le manque de site crée une friction avant même le premier contact.',
+    impactTechnique: 'Le bouche-à-oreille sauve la mise mais le site mort fragilise la confiance sur les gros chantiers.',
+    pointsPositifs: ['Recommandation directe forte', 'GBP avec 35 avis 4,9/5 visible sur Google', 'Numéro téléphone accessible'],
+    frictions: ['Site hors ligne = pas de portfolio visible', 'Pas de certification Qualibat/RGE consultable', 'Doute sur l\'activité réelle de l\'entreprise'],
+  },
+  {
+    id: 4,
+    name: 'Julie',
+    age: 34,
+    emoji: '📱',
+    canal: 'Réseaux sociaux',
+    device: 'Mobile',
+    maturite: 'Decouverte',
+    situation: 'Jeune propriétaire à Montigny-lès-Metz, vient d\'acheter sa maison, voit un lien partagé sur un groupe Facebook local "Entraide Metz propriétaires"',
+    contexte: 'Quelqu\'un partage un lien vers ajstoiture.fr dans un groupe Facebook — elle clique pour voir',
+    parcours: ['Facebook groupe local', 'Lien vers ajstoiture.fr', 'Page d\'erreur / page parking', 'Ferme l\'onglet', 'Jamais contactée'],
+    decision: 'quitte',
+    scores: { exp: 0, conf: 0, clarte: 0 },
+    premierImpression: 'Elle clique, voit une page vide ou une erreur. Elle ne sait même pas de quelle entreprise il s\'agit. Elle oublie immédiatement. Zéro conversion possible.',
+    questionCle: 'C\'est quoi cette entreprise ? Que font-ils ?',
+    reponse: 'Non',
+    commentReponse: 'La page est morte. Aucune information n\'est transmissible. Le lien partagé devient actif contreproductif.',
+    impactTechnique: 'Partage réseaux sociaux = lien mort = image négative pour les personnes qui cliquent. Pire qu\'aucune présence.',
+    pointsPositifs: ['Présence dans les groupes locaux (preuve de recommandations terrain)'],
+    frictions: ['Lien mort depuis Facebook', 'Aucune information transmissible', 'Zéro og:image, zéro aperçu'],
+  },
+  {
+    id: 5,
+    name: 'Roger',
+    age: 71,
+    emoji: '🧓',
+    canal: 'Pages Jaunes / annuaires',
+    device: 'Tablette',
+    maturite: 'Decision',
+    situation: 'Retraité à Scy-Chazelles, gouttière arrachée, trouve le numéro AJS Toiture dans un annuaire, tape l\'URL pour "voir le sérieux" avant d\'appeler',
+    contexte: 'Tape l\'URL sur sa tablette, veut voir des photos de réalisations et confirmer que c\'est un vrai artisan local',
+    parcours: ['Annuaire imprimé', 'URL ajstoiture.fr sur tablette', 'Page d\'erreur ou parking', 'Appelle quand même'],
+    decision: 'hesite',
+    scores: { exp: 1, conf: 3, clarte: 0 },
+    premierImpression: 'La page est vide. Roger, habitué à voir des sites d\'artisans, hésite. Il appelle quand même car il a trouvé le numéro dans un annuaire physique — plus de confiance qu\'une source web. Mais il commence l\'appel avec un doute.',
+    questionCle: 'Vous existez toujours ? Votre site ne marche pas...',
+    reponse: 'Partiellement',
+    commentReponse: 'Il appelle grâce à l\'annuaire physique mais aborde l\'appel avec scepticisme. Première question au téléphone : "votre site est cassé, vous êtes bien encore en activité ?"',
+    impactTechnique: 'L\'annuaire physique sauve partiellement le contact mais la mauvaise expérience web crée une charge cognitive négative avant l\'appel.',
+    pointsPositifs: ['Présence dans les annuaires physiques', 'Numéro facilement trouvable'],
+    frictions: ['Site hors ligne = doute sur l\'activité', 'Pas de portfolio pour rassurer un client senior', 'Aucune confirmation de zone Scy-Chazelles'],
+  },
+  // ─── AGENT 2 ───
+  {
+    id: 6,
+    name: 'Thomas',
+    age: 37,
+    emoji: '🤖',
+    canal: 'IA (ChatGPT / Perplexity)',
+    device: 'Desktop',
+    maturite: 'Decouverte',
+    situation: 'Ingénieur à Metz, demande à ChatGPT "meilleurs couvreurs Metz Moselle avec bons avis"',
+    contexte: 'Utilise les IA en premier réflexe avant Google. Cherche un couvreur pour un projet de rénovation toiture complète.',
+    parcours: ['ChatGPT — AJS Toiture non cité', 'Perplexity — non cité', 'Google Search → concurrent retenu'],
+    decision: 'quitte',
+    scores: { exp: 0, conf: 0, clarte: 0 },
+    premierImpression: 'AJS Toiture n\'est cité par aucun assistant IA. Zéro Schema.org sur l\'ancien site + site mort = les LLM n\'ont aucune donnée récente à proposer. Thomas n\'a même pas conscience qu\'AJS Toiture existe.',
+    questionCle: 'Quels couvreurs à Metz avec les meilleures notes ?',
+    reponse: 'Non',
+    commentReponse: 'AJS Toiture est invisible pour tous les moteurs d\'IA. Sans site et sans Schema.org speakable, aucune citation possible dans les réponses locales.',
+    impactTechnique: 'Double invisibilité : site mort + zéro Schema.org historique = non citeable par les LLM même avec 35 avis 4,9/5.',
+    pointsPositifs: ['Note GBP potentiellement citeable si Google crawl le GBP'],
+    frictions: ['Non cité par ChatGPT, Perplexity, Claude', 'Site mort = aucune donnée fraîche pour les LLM', 'Zéro JSON-LD historique (speakable, AggregateRating)'],
+  },
+  {
+    id: 7,
+    name: 'Céline',
+    age: 41,
+    emoji: '💼',
+    canal: 'Google Search',
+    device: 'Mobile',
+    maturite: 'Comparaison',
+    situation: 'Gestionnaire de copropriété à Metz, cherche un couvreur pour contrat d\'entretien régulier sur 3 immeubles',
+    contexte: 'Cherche "couvreur entretien toiture copropriété metz contrat" — veut vérifier professionnalisme, assurances, SIRET',
+    parcours: ['Google Search', 'AJS Toiture absent des résultats', 'Concurrents pro retenus'],
+    decision: 'quitte',
+    scores: { exp: 0, conf: 0, clarte: 0 },
+    premierImpression: 'AJS Toiture n\'apparaît pas dans les résultats Google — site mort = désindexation progressive. Céline ne peut pas le trouver, ne peut pas vérifier le SIRET ni la garantie décennale en ligne.',
+    questionCle: 'SIRET, assurance décennale, expérience copropriété — tout est consultable en ligne ?',
+    reponse: 'Non',
+    commentReponse: 'Pour un contrat B2B, une gestionnaire vérifie tout en ligne avant de contacter. Sans site, pas de vérification possible = disqualification automatique.',
+    impactTechnique: 'Le segment professionnel (copropriétés, mairies, promoteurs) exige une présence web vérifiable. Le site mort bloque systématiquement ce segment.',
+    pointsPositifs: ['35 avis sur GBP montrent une activité régulière'],
+    frictions: ['Absent des résultats Google Search pour requêtes pro', 'SIRET non vérifiable en ligne', 'Aucune mention assurance décennale / Qualibat accessible'],
+  },
+  {
+    id: 8,
+    name: 'Marc',
+    age: 45,
+    emoji: '🏗️',
+    canal: 'Google Search',
+    device: 'Desktop',
+    maturite: 'Comparaison',
+    situation: 'Architecte indépendant à Metz, cherche un couvreur pour recommander à un client (rénovation complète maison ancienne)',
+    contexte: 'Cherche "couvreur certifié metz charpente rénovation" — il vérifie systématiquement les sites avant de recommander',
+    parcours: ['Google Search', 'AJS Toiture absent ou URL en erreur', 'Concurrent Lorraine Couverture 57', 'Recommandation concurrent'],
+    decision: 'quitte',
+    scores: { exp: 0, conf: 0, clarte: 0 },
+    premierImpression: 'Si AJS Toiture apparaît dans les résultats (index résiduel), Marc clique et tombe sur une page morte. Il passe immédiatement au suivant. Un architecte ne recommandera jamais une entreprise dont le site est cassé.',
+    questionCle: 'Certifications Qualibat ? Références de charpente sur maisons anciennes ? Garantie décennale ?',
+    reponse: 'Non',
+    commentReponse: 'Aucun contenu consultable. Un architecte a besoin de crédibilité professionnelle vérifiable — le site mort est rédhibitoire pour ce profil.',
+    impactTechnique: 'Les prescripteurs (architectes, maîtres d\'œuvre, agences immo) sont un canal d\'acquisition stratégique — totalement bloqué sans site.',
+    pointsPositifs: ['Réputation terrain probablement connue dans le milieu local'],
+    frictions: ['Site mort = disqualification immédiate par les prescripteurs', 'Aucune certification visible', 'Aucune référence de chantier consultable'],
+  },
+  {
+    id: 9,
+    name: 'Isabelle',
+    age: 38,
+    emoji: '⚡',
+    canal: 'Google Maps',
+    device: 'Mobile',
+    maturite: 'Decision',
+    situation: 'Propriétaire à Metz-Queuleu, Velux qui fuit après les pluies de mars, veut un devis rapide',
+    contexte: 'Cherche sur Maps, voit AJS Toiture avec 4,9/5 et clique sur le profil. Veut confirmer qu\'ils font les Velux avant d\'appeler.',
+    parcours: ['Google Maps', 'Fiche GBP AJS Toiture', 'Lien site → page morte', 'Photos GBP', 'Hésite → appelle quand même'],
+    decision: 'hesite',
+    scores: { exp: 2, conf: 5, clarte: 1 },
+    premierImpression: 'Les 4,9/5 la convainquent presque. Mais le lien site cassé crée un doute. Elle regarde les photos GBP (si disponibles), ne voit pas explicitement de Velux, appelle quand même en espérant.',
+    questionCle: 'Vous intervenez sur Velux ? Quel délai pour Metz-Queuleu ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La note GBP sauve le contact mais l\'absence de page service Velux confirmée sur un site crée une incertitude inutile.',
+    impactTechnique: 'Un site avec page /velux-metz aurait converti Isabelle en 30 secondes. Sans site, elle appelle avec scepticisme — et le taux de non-réponse téléphonique = lead perdu.',
+    pointsPositifs: ['Note GBP très forte (4,9/5)', 'Photos GBP potentiellement rassurantes'],
+    frictions: ['Lien site web cassé depuis le GBP', 'Impossible de confirmer le service Velux en autonomie', 'Doute sur l\'activité courante de l\'entreprise'],
+  },
+  {
+    id: 10,
+    name: 'Mehdi',
+    age: 29,
+    emoji: '📊',
+    canal: 'Google Search',
+    device: 'Mobile',
+    maturite: 'Decouverte',
+    situation: 'Propriétaire primo-accédant à Borny, toiture à inspecter, cherche "diagnostic toiture metz gratuit"',
+    contexte: 'Premier acheteur, veut comprendre l\'état de sa toiture. Cherche un professionnel qui propose un diagnostic avant travaux.',
+    parcours: ['Google Search', 'AJS Toiture absent', 'Page d\'un concurrent proposant diagnostic gratuit', 'Devis demandé au concurrent'],
+    decision: 'quitte',
+    scores: { exp: 0, conf: 0, clarte: 0 },
+    premierImpression: 'AJS Toiture n\'existe pas sur Google pour Mehdi. Le concurrent avec une landing page dédiée "diagnostic toiture metz gratuit" capte immédiatement ce profil. Mehdi ne saura jamais qu\'AJS Toiture pourrait le servir.',
+    questionCle: 'Qui peut faire un diagnostic gratuit de ma toiture à Metz ?',
+    reponse: 'Non',
+    commentReponse: 'Persona à fort potentiel long terme (futur client pour travaux). Totalement inaccessible sans site. L\'ancien site avait une page /toiture-metz mais elle est morte.',
+    impactTechnique: 'Le segment primo-accédants (très actif à Metz avec le marché immo post-2020) est un canal de fidélisation long terme — bloqué à 100%.',
+    pointsPositifs: ['Segment à fort potentiel si le site était actif'],
+    frictions: ['Absent à 100% du search organique', 'Pas de landing page diagnostic', 'Concurrent avec contenu optimisé capte immédiatement ce profil'],
+  },
+];
+
+// ─── AMELIORATIONS ───
+const ameliorationsCritiques = [
+  {
+    titre: 'Recréer le site immédiatement — chaque jour coûte des leads',
+    detail: 'Le site est mort depuis novembre 2025. 4 mois de trafic organique perdus = dizaines de prospects qui sont allés chez les concurrents. Chaque semaine supplémentaire aggrave la désindexation Google et renforce les positions des concurrents.',
+    action: 'Site Astro complet livré en 7 jours : accueil, services (couverture, charpente, zinguerie, Velux, dépannage), galerie, contact, mentions légales. RoofingContractor Schema.org, Core Web Vitals optimisés, Cloudflare Pages (hébergement gratuit et fiable). Investissement : 990€.',
+  },
+  {
+    titre: 'Capitaliser immédiatement sur les 35 avis 4,9/5 — capital inexploité',
+    detail: '10 personas sur 10 ne voient jamais ces avis sur un site. La note GBP est visible sur Maps mais n\'est reliée à aucune vitrine web. C\'est le meilleur argument commercial de l\'entreprise — et il est actuellement muet.',
+    action: 'Intégrer les avis en section dédiée sur l\'accueil : note globale, 5 verbatims récents, badge "4,9/5 sur Google". Schema.org AggregateRating pour que Google affiche les étoiles dans les résultats de recherche. Lien direct vers le profil GBP.',
+  },
+  {
+    titre: 'Corriger immédiatement le lien site web dans la fiche Google Business Profile',
+    detail: 'Le lien "Site web" dans GBP pointe vers un domaine mort. Tout prospect qui clique depuis Maps tombe sur une page parking. C\'est la seule friction entièrement contrôlable aujourd\'hui, sans même avoir un site actif.',
+    action: 'Supprimer ou mettre à jour le lien site web dans GBP en attendant le nouveau site. Option immédiate : utiliser le lien Google Business Profile comme URL de site temporaire, ou créer une page rapide sur une autre plateforme gratuite (Linktree, Card.co) pointant vers le téléphone.',
+  },
+];
+
+const ameliorationsUtiles = [
+  {
+    titre: 'Schema.org RoofingContractor + speakable pour les IA',
+    detail: 'Le nouveau site doit inclure JSON-LD complet : RoofingContractor, ServiceArea (Metz + communes Moselle), AggregateRating (35 avis 4,9/5), Opening Hours, speakable. Condition sine qua non pour apparaître dans ChatGPT, Perplexity, Google AI Overview.',
+  },
+  {
+    titre: 'Page urgence avec CTA téléphonique hyper-visible',
+    detail: '3 personas sur 10 cherchent une intervention rapide (fuite, après tempête). Une page dédiée "/urgence-toiture-metz" avec un bouton appel direct en rouge, disponibilité 24h/7j affichée en haut de page, génère des conversions immédiates même depuis Google Maps.',
+  },
+  {
+    titre: 'Humaniser : photo équipe père & fils + histoire',
+    detail: 'L\'identité "Père et Fils" est un différenciateur fort sur le marché des artisans où la confiance humaine est déterminante. Une section À Propos avec photo de l\'équipe, nombre d\'années d\'expérience, valeurs familiales multiplie la confiance des visiteurs indécis.',
+  },
+];
+
+function scoreColor(s: number) {
+  if (s === 0) return '#d1d5db';
+  if (s >= 90) return '#22c55e';
+  if (s >= 50) return '#f59e0b';
+  return '#ef4444';
+}
+function scoreLabel(s: number) {
+  if (s === 0) return 'text-neutral-400';
+  if (s >= 90) return 'text-green-600';
+  if (s >= 50) return 'text-amber-600';
+  return 'text-red-600';
+}
+function decisionStyle(d: string) {
+  if (d === 'convertit') return { border: 'border-green-200', bg: 'bg-green-50/40', badge: 'bg-green-100 text-green-700' };
+  if (d === 'hesite') return { border: 'border-amber-200', bg: 'bg-amber-50/40', badge: 'bg-amber-100 text-amber-700' };
+  return { border: 'border-neutral-200', bg: 'bg-neutral-50/40', badge: 'bg-red-100 text-red-700' };
+}
+function decisionLabel(d: string) {
+  if (d === 'convertit') return 'Contacte';
+  if (d === 'hesite') return 'Hésite';
+  return 'Repart';
+}
+
+const convertissent = personas.filter(p => p.decision === 'convertit').length;
+const hesitent = personas.filter(p => p.decision === 'hesite').length;
+const quittent = personas.filter(p => p.decision === 'quitte').length;
+---
+
+<BaseLayout {title} {description} noindex={true} lang="fr" frPath="/audit/ajs-toiture/">
+  <!-- HERO -->
+  <section class="bg-neutral-900 text-white py-12 px-4">
+    <div class="max-w-4xl mx-auto">
+      <span class="inline-block text-xs font-semibold tracking-widest uppercase text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full mb-4">Rapport personnalisé</span>
+      <h1 class="font-heading text-3xl md:text-4xl font-bold mb-2">{prospect.name} — ce que vos visiteurs ne voient pas</h1>
+      <p class="text-neutral-400 mb-1">{prospect.activity} — <span class="text-amber-400">{prospect.url}</span></p>
+      <p class="text-neutral-500 text-sm mb-8">{prospect.location} · Analyse du {prospect.date}</p>
+
+      <!-- Alerte critique -->
+      <div class="bg-red-900/40 border border-red-500/50 rounded-xl p-5 mb-8">
+        <div class="flex items-start gap-3">
+          <span class="text-red-400 text-xl shrink-0">⚠</span>
+          <div>
+            <p class="font-bold text-red-300 mb-1">Site hors ligne depuis novembre 2025</p>
+            <p class="text-red-200 text-sm">Le domaine ajstoiture.fr a expiré. DNS NXDOMAIN. Toutes les pages retournent une erreur. Vos 35 avis 4,9/5 n'amènent aucun visiteur sur un site.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-3 gap-4 max-w-lg">
+        <div class="text-center bg-neutral-800/60 rounded-xl p-4">
+          <span class="block text-3xl font-black text-red-400">0%</span>
+          <span class="text-xs text-neutral-400">via site web</span>
+        </div>
+        <div class="text-center bg-neutral-800/60 rounded-xl p-4">
+          <span class="block text-3xl font-black text-amber-400">4,9/5</span>
+          <span class="text-xs text-neutral-400">avis Google</span>
+        </div>
+        <div class="text-center bg-neutral-800/60 rounded-xl p-4">
+          <span class="block text-3xl font-black text-amber-400">35</span>
+          <span class="text-xs text-neutral-400">avis inexploités</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONSTAT -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Le constat</h2>
+
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-8">
+        <p class="text-amber-900 font-medium text-base">{constat}</p>
+      </div>
+
+      <!-- Conversion par canal -->
+      <h3 class="font-semibold text-neutral-700 mb-4 text-sm uppercase tracking-wide">Conversion par canal d'arrivée</h3>
+      <div class="space-y-3 mb-10">
+        {conversionByCanal.map(item => (
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-sm text-neutral-700">{item.canal}</span>
+              <span class={`text-sm font-bold ${item.color}`}>{item.taux}%</span>
+            </div>
+            <div class="h-2 bg-neutral-100 rounded-full overflow-hidden">
+              <div class={`h-full rounded-full ${item.bg}`} style={`width: ${item.taux}%`}></div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Top frictions -->
+      <h3 class="font-semibold text-neutral-700 mb-4 text-sm uppercase tracking-wide">Top 5 problèmes identifiés</h3>
+      <ol class="space-y-3">
+        {topFrictions.map((f, i) => (
+          <li class="flex gap-3 p-4 bg-neutral-50 border border-neutral-100 rounded-xl">
+            <span class="shrink-0 w-7 h-7 flex items-center justify-center bg-red-100 text-red-700 font-bold text-sm rounded-full">{i + 1}</span>
+            <div>
+              <p class="font-semibold text-neutral-900 text-sm">{f.titre} <span class="font-normal text-neutral-500">({f.count}/10 personas)</span></p>
+              <p class="text-xs text-neutral-600 mt-0.5">{f.detail}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- AUDIT TECHNIQUE -->
+  <section class="py-12 px-4 bg-neutral-50 border-y border-neutral-100">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">L'audit technique</h2>
+
+      <!-- WHOIS / Domaine -->
+      <div class="bg-red-50 border border-red-200 rounded-xl p-5 mb-6">
+        <h3 class="font-semibold text-red-800 mb-3 text-sm">Diagnostic domaine — Situation critique</h3>
+        <div class="grid sm:grid-cols-2 gap-3 text-xs">
+          {Object.entries(whois).map(([k, v]) => (
+            <div class="flex justify-between gap-2 py-1 border-b border-red-100">
+              <span class="text-red-700 font-medium capitalize">{k.replace(/_/g, ' ')}</span>
+              <span class="text-red-900 font-semibold text-right">{v}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- PageSpeed mobile — N/A -->
+      <div class="bg-white rounded-xl border border-neutral-100 p-6 mb-6">
+        <h3 class="font-semibold text-neutral-700 mb-1 text-sm">Lighthouse / PageSpeed <span class="text-neutral-400 font-normal">(non mesurable — domaine inaccessible)</span></h3>
+        <p class="text-xs text-neutral-400 mb-5">API PageSpeed : "ajstoiture.fr cannot be resolved" — aucun score disponible</p>
+        <div class="grid grid-cols-4 gap-4">
+          {[
+            { label: 'Performance', score: 0 },
+            { label: 'Accessibilite', score: 0 },
+            { label: 'Bonnes pratiques', score: 0 },
+            { label: 'SEO', score: 0 },
+          ].map(item => (
+            <div class="text-center">
+              <div class="relative w-16 h-16 mx-auto mb-2">
+                <svg class="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3"/>
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#d1d5db" stroke-width="3" stroke-dasharray="0, 100" stroke-linecap="round"/>
+                </svg>
+                <span class="absolute inset-0 flex items-center justify-center text-xs font-bold text-neutral-400">N/A</span>
+              </div>
+              <p class="text-xs text-neutral-600">{item.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Core Web Vitals + Observatory -->
+      <div class="grid md:grid-cols-2 gap-4 mb-6">
+        <div class="bg-white rounded-xl border border-neutral-100 p-5">
+          <h3 class="font-semibold text-neutral-700 mb-3 text-sm">Core Web Vitals (diagnostic DNS)</h3>
+          <div class="space-y-2">
+            {coreWebVitals.map(v => (
+              <div class="flex items-center justify-between text-sm">
+                <span class="text-neutral-600">{v.name}</span>
+                <span class={`font-semibold px-2 py-0.5 rounded text-xs ${v.status === 'vert' ? 'bg-green-100 text-green-700' : v.status === 'orange' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'}`}>{v.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl border border-neutral-100 p-5">
+          <h3 class="font-semibold text-neutral-700 mb-3 text-sm">Sécurité — Mozilla Observatory</h3>
+          <div class="flex items-center gap-4 mb-3">
+            <div class="text-4xl font-black text-neutral-400">N/A</div>
+            <div>
+              <p class="text-2xl font-bold text-neutral-800">—/100</p>
+              <p class="text-xs text-neutral-500">Scan impossible — hostname non résolu</p>
+            </div>
+          </div>
+          <p class="text-xs text-neutral-500">Résultat Observatory : "invalid-hostname-lookup: ajstoiture.fr cannot be resolved". Tous les security headers sont non mesurables.</p>
+        </div>
+      </div>
+
+      <!-- Checklist SEO + Schema -->
+      <div class="bg-white rounded-xl border border-neutral-100 p-5">
+        <h3 class="font-semibold text-neutral-700 mb-3 text-sm">Checklist Schema.org / OG / SEO / Technique</h3>
+        <div class="grid sm:grid-cols-2 gap-1.5">
+          {techChecks.map(c => (
+            <div class={`flex items-start gap-2 text-xs p-2 rounded-lg ${c.present ? 'bg-green-50' : c.critical ? 'bg-red-50' : 'bg-neutral-50'}`}>
+              <span class={`shrink-0 font-bold ${c.present ? 'text-green-600' : 'text-red-500'}`}>{c.present ? '✓' : '✗'}</span>
+              <span class={c.present ? 'text-neutral-700' : c.critical ? 'text-red-700 font-medium' : 'text-neutral-500'}>{c.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VISITEURS SIMULES -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs simulés</h2>
+      <p class="text-neutral-500 mb-6 text-sm">
+        Sur 10 visiteurs simulés :
+        <span class="font-semibold text-green-600">{convertissent} contactent</span>,
+        <span class="font-semibold text-amber-600">{hesitent} hésitent</span>,
+        <span class="font-semibold text-red-600">{quittent} repartent</span> sans jamais voir votre site.
+      </p>
+
+      <div class="space-y-3">
+        {personas.map(p => {
+          const ds = decisionStyle(p.decision);
+          const avgScore = p.scores.exp === 0 && p.scores.conf === 0 && p.scores.clarte === 0
+            ? 'N/A'
+            : String(Math.round((p.scores.exp + p.scores.conf + p.scores.clarte) / 3 * 10) / 10);
+          return (
+            <details class={`group border ${ds.border} ${ds.bg} rounded-xl overflow-hidden`}>
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                    <h3 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h3>
+                    <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    <span class={`text-[11px] px-1.5 py-0.5 rounded font-medium ${ds.badge}`}>{decisionLabel(p.decision)}</span>
+                  </div>
+                  <p class="text-xs text-neutral-500">{p.situation}</p>
+                </div>
+                <div class="text-right shrink-0">
+                  <span class="text-xs font-bold text-neutral-600">{avgScore === 'N/A' ? 'N/A' : `${avgScore}/10`}</span>
+                  <svg class="w-5 h-5 text-neutral-400 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                </div>
+              </summary>
+              <div class="px-4 pb-4 pt-3 border-t border-neutral-100 bg-white/70">
+                <div class="grid gap-3 text-xs">
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Première impression</p>
+                    <p class="text-neutral-600">{p.premierImpression}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Parcours</p>
+                    <p class="text-neutral-500">{p.parcours.join(' → ')}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Question clé</p>
+                    <p class="text-neutral-600 italic">"{p.questionCle}"</p>
+                    <p class="text-neutral-600 mt-1">Réponse du site : <strong>{p.reponse}</strong> — {p.commentReponse}</p>
+                  </div>
+                  <div class="text-xs text-neutral-500 bg-neutral-50 rounded-lg px-3 py-2">
+                    Impact technique : {p.impactTechnique}
+                  </div>
+                  <div class="grid sm:grid-cols-2 gap-3">
+                    <div>
+                      <p class="font-semibold text-green-700 mb-1">Points positifs</p>
+                      <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                        {p.pointsPositifs.map(pp => <li>{pp}</li>)}
+                      </ul>
+                    </div>
+                    <div>
+                      <p class="font-semibold text-amber-700 mb-1">Frictions</p>
+                      <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                        {p.frictions.map(fr => <li>{fr}</li>)}
+                      </ul>
+                    </div>
+                  </div>
+                  {(p.scores.exp > 0 || p.scores.conf > 0 || p.scores.clarte > 0) && (
+                    <div class="flex gap-4 text-xs">
+                      <span class="text-neutral-500">Expérience : <strong>{p.scores.exp}/10</strong></span>
+                      <span class="text-neutral-500">Confiance : <strong>{p.scores.conf}/10</strong></span>
+                      <span class="text-neutral-500">Clarté : <strong>{p.scores.clarte}/10</strong></span>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </details>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  <!-- RECOMMANDATIONS -->
+  <section class="py-12 px-4 bg-neutral-50 border-y border-neutral-100">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Nos recommandations</h2>
+
+      <h3 class="text-sm font-semibold uppercase tracking-wide text-red-600 mb-4">Le plus urgent — 3 actions critiques</h3>
+      <div class="grid gap-4 mb-10">
+        {ameliorationsCritiques.map((a, i) => (
+          <div class="bg-white border-l-4 border-red-400 rounded-r-xl p-5 shadow-sm">
+            <div class="flex items-start gap-3">
+              <span class="shrink-0 w-7 h-7 flex items-center justify-center bg-red-100 text-red-700 font-bold text-sm rounded-full">{i + 1}</span>
+              <div>
+                <h4 class="font-semibold text-neutral-900 mb-1">{a.titre}</h4>
+                <p class="text-sm text-neutral-600 mb-2">{a.detail}</p>
+                <p class="text-xs bg-red-50 text-red-800 px-3 py-2 rounded-lg"><strong>Action :</strong> {a.action}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <h3 class="text-sm font-semibold uppercase tracking-wide text-amber-600 mb-4">Utile aussi — 3 améliorations recommandées</h3>
+      <div class="grid sm:grid-cols-3 gap-4">
+        {ameliorationsUtiles.map(a => (
+          <div class="bg-white border border-amber-200 rounded-xl p-4">
+            <h4 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h4>
+            <p class="text-xs text-neutral-600">{a.detail}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="bg-neutral-900 text-white py-16 px-4">
+    <div class="max-w-3xl mx-auto text-center">
+      <h2 class="font-heading text-2xl md:text-3xl font-bold mb-4">
+        Votre réputation est là. Votre site, non.<br/>
+        <span class="text-amber-400">35 avis 4,9/5 méritent une vraie vitrine.</span>
+      </h2>
+      <p class="text-neutral-300 mb-8 max-w-xl mx-auto text-sm">
+        Votre site ajstoiture.fr est hors ligne depuis novembre 2025. Pendant ce temps, vos concurrents captent les clients qui vous cherchent.
+        Je crée votre nouveau site en 7 jours — à partir de 990 euros, hébergement inclus, domaine compris.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="/commander" class="inline-flex items-center gap-2 px-8 py-3.5 bg-[var(--color-accent)] text-white font-semibold rounded-xl hover:opacity-90 transition-all shadow-md">
+          Je veux mon site en 7 jours
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a href="/contact" class="inline-flex items-center gap-2 px-8 py-3.5 border border-neutral-600 text-neutral-300 font-semibold rounded-xl hover:border-amber-400 hover:text-amber-400 transition-all">
+          En discuter d'abord
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

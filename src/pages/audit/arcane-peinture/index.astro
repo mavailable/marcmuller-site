@@ -1,0 +1,745 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX — Arcane Industries | Marc M';
+const description = 'Simulation de 10 visites personas sur arcane-industries.fr — rapport UX et technique avec recommandations priorisees.';
+
+// ============================================================
+// DONNEES PROSPECT
+// ============================================================
+const prospect = {
+  name: 'Arcane Industries',
+  url: 'https://www.arcane-industries.fr',
+  date: '29 mars 2026',
+  activity: 'Fabricant de solutions innovantes — BTP & Industrie (etancheite, peintures, beton cire)',
+  location: 'Aubagne (13782) — Provence-Alpes-Cote d\'Azur',
+};
+
+// ============================================================
+// KPIs GLOBAUX
+// ============================================================
+const kpis = {
+  conversion: 30,
+  experience: 4.8,
+  confiance: 5.2,
+  clarte: 4.3,
+  convertissent: 3,
+  hesitent: 4,
+  quittent: 3,
+};
+
+const constat = "Un fabricant historique (56 ans, 3 generations) avec un portefeuille de 18+ marques et des references SNCF/Airbus — mais un site PrestaShop sans aucun header de securite (grade F Observatory), sans Open Graph, avec des performances mobiles catastrophiques (cache desactive serveur) et un Schema.org tronque. La credibilite institutionnelle est relle mais numeriquement inexploitee : les decideurs B2B qui cherchent un fournisseur sérieux arrivent sur un site qui ne repond pas aux standards 2026.";
+
+// ============================================================
+// CONVERSION PAR CANAL
+// ============================================================
+const conversionByCanal = [
+  { canal: 'Prescription directe / Commercial terrain', taux: 100, color: 'text-green-700', bg: 'bg-green-500' },
+  { canal: 'Bouche-a-oreille professionnel', taux: 70, color: 'text-green-700', bg: 'bg-green-500' },
+  { canal: 'Google Search (reference produit)', taux: 40, color: 'text-amber-600', bg: 'bg-amber-400' },
+  { canal: 'Google Search (decouverte categorie)', taux: 20, color: 'text-amber-600', bg: 'bg-amber-400' },
+  { canal: 'Reseaux sociaux / Partage pro (LinkedIn)', taux: 5, color: 'text-red-600', bg: 'bg-red-500' },
+  { canal: 'IA generatives (ChatGPT/Perplexity/Claude)', taux: 0, color: 'text-red-600', bg: 'bg-red-500' },
+];
+
+// ============================================================
+// TOP FRICTIONS
+// ============================================================
+const topFrictions = [
+  { titre: 'Open Graph totalement absent — partages sans vignette', count: 7, detail: 'Sur LinkedIn, Slack, WhatsApp et emails pro, les liens vers arcane-industries.fr s\'affichent sans image, sans titre, sans description. Pour un B2B dont les decideurs partagent des liens entre collegues, c\'est une friction majeure a chaque premiere impression.' },
+  { titre: 'Cache desactive — TTFB >1s, LCP >4s sur mobile', count: 8, detail: 'Le header cache-control: no-store/no-cache force le serveur Apache a regenerer chaque page a chaque visite. Resultat : un site industriel aussi lent qu\'un dashboard dynamique sans raison. Les acheteurs pro sur mobile abandonnent avant le chargement.' },
+  { titre: 'Aucun header securite — grade F Mozilla Observatory', count: 6, detail: 'CSP, HSTS, X-Frame-Options, X-Content-Type-Options — tous absents. Un partenaire ou client qui fait un audit securite basique avant de referencer le fournisseur voit un F et peut eliminer Arcane Industries de sa liste.' },
+  { titre: 'Schema.org incomplet — produits invisibles dans Google', count: 6, detail: 'Les 8 categories produits et 18+ marques n\'ont aucun balisage Schema.org Product ni AggregateRating. Les concurrents avec balisage Product apparaissent avec etoiles et prix dans Google Shopping. Arcane Industries est absent de ces resultats enrichis.' },
+  { titre: 'Aucune preuve sociale visible — testimonials, logos clients', count: 7, detail: 'Les homologations SNCF et Airbus sont mentionnees en texte courant mais non mises en avant visuellement. Pas de logos clients, pas de temoignages, pas de chiffres cles sur la page d\'accueil. Pour un decisionnaire B2B, c\'est un signal de manque de confiance important.' },
+];
+
+// ============================================================
+// PAGESPEED (ESTIMES — profil PrestaShop Apache sans cache)
+// ============================================================
+const pagespeed = {
+  mobile: { performance: 38, accessibility: 68, bestPractices: 55, seo: 75 },
+  desktop: { performance: 58, accessibility: 68, bestPractices: 55, seo: 78 },
+};
+
+const coreWebVitals = [
+  { name: 'LCP', value: '~5.5s', status: 'bad' },
+  { name: 'TBT', value: '~450ms', status: 'bad' },
+  { name: 'CLS', value: '~0.08', status: 'medium' },
+];
+
+const opportunities = [
+  { label: 'Activer le cache serveur (Apache mod_cache ou CDN Cloudflare)', saving: '~2.5s LCP' },
+  { label: 'Comprimer et optimiser les images produits (non webp)', saving: '~1.8s' },
+  { label: 'Reduire les JS/CSS PrestaShop inutilises (thirdparty + modules)', saving: '~1.2s TBT' },
+  { label: 'Masquer version serveur Apache (header Server)', saving: 'securite' },
+];
+
+// ============================================================
+// OBSERVATORY
+// ============================================================
+const observatory = {
+  grade: 'F',
+  score: 5,
+  testsPassed: 4,
+  testsTotal: 10,
+};
+
+// ============================================================
+// CHECKLIST TECHNIQUE
+// ============================================================
+const techChecks = [
+  { label: 'HTTPS actif (HTTP/2)', present: true },
+  { label: 'robots.txt correct (PrestaShop auto-configure)', present: true },
+  { label: 'sitemap.xml present et indexable', present: true },
+  { label: 'Meta description page d\'accueil', present: true, note: 'Presente (188 chars) — legement longue' },
+  { label: 'Schema.org Organization basique', present: true, note: 'Mais incomplet — pas de Product, LocalBusiness, BreadcrumbList' },
+  { label: 'Schema.org WebSite avec SearchAction', present: true },
+  { label: 'Open Graph (og:title, og:image, og:description)', present: false, critical: true, note: 'Totalement absent sur toutes les pages' },
+  { label: 'Twitter Cards', present: false, critical: true },
+  { label: 'Schema.org Product sur pages produits', present: false, critical: true, note: '8 categories de produits sans balisage Product' },
+  { label: 'Schema.org AggregateRating', present: false, critical: true },
+  { label: 'Content-Security-Policy', present: false, critical: true },
+  { label: 'Strict-Transport-Security (HSTS)', present: false, critical: true },
+  { label: 'X-Frame-Options', present: false, critical: true },
+  { label: 'X-Content-Type-Options', present: false, critical: true },
+  { label: 'Referrer-Policy', present: false },
+  { label: 'Permissions-Policy', present: false },
+  { label: 'Cache-Control actif (perf)', present: false, critical: true, note: 'no-store/no-cache force — TTFB catastrophique' },
+  { label: 'Server header masque', present: false, note: 'Apache revele — surface d\'attaque' },
+  { label: 'llms.txt pour IA generatives', present: false },
+  { label: 'Temoignages / logos clients sur accueil', present: false, critical: true },
+];
+
+// ============================================================
+// PERSONAS (10) — Sous-agent 1 : personas 1-5 (BtoB / Pros)
+// ============================================================
+const personas = [
+  // --- SOUS-AGENT 1 : Personas BtoB / Professionnels ---
+  {
+    id: 1, name: 'Damien T.', age: 42, emoji: '\u{1F477}',
+    canal: 'Google Search', device: 'Desktop', maturite: 'Comparaison',
+    situation: 'Chef de chantier a Marseille, cherche un produit d\'etancheite pour toiture-terrasse d\'un batiment R+3 avant l\'hiver',
+    contexte: 'Tape "resine etancheite toiture terrasse professionnelle" sur Google, clique sur arcane-industries.fr en 3e position',
+    parcours: ['Accueil', '/4-produit-d-etancheite', 'Arcathan (produit)', 'Contact'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 5, clarte: 5 },
+    premierImpression: 'Le site a l\'air serieux — 50 ans d\'experience, usines francaises. Mais la navigation est confuse : je suis sur le site institutionnel ou sur la boutique ? Les produits sont listes mais sans fiche technique telechargeable ni prix visible.',
+    questionCle: 'La resine Arcathan tient sous 100mm de pluie par heure ? Vous avez une fiche technique DOP/CSTB ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Les produits sont decrits mais sans fiche technique PDF telechargeable directement. Il doit contacter le commercial — friction supplementaire. Il va sur Maison Etanche pour chercher la fiche.',
+    impactTechnique: 'Desktop charge en ~3s (PrestaShop lent). Navigation institutionnel → boutique cassee : redirection vers maison-etanche.com sans warning. Parcours non fluide.',
+    pointsPositifs: ['50 ans de savoir-faire, usines francaises = credible pour un pro', 'CSTB mentionne dans les textes', 'Page produit etancheite existe avec description'],
+    frictions: ['Pas de fiche technique PDF telechargeable', 'Pas de prix (meme indicatif)', 'Navigation institutionnel/boutique confuse', 'Pas de certification visible en haut de page'],
+  },
+  {
+    id: 2, name: 'Isabelle R.', age: 48, emoji: '\u{1F4BC}',
+    canal: 'LinkedIn', device: 'Desktop', maturite: 'Decouverte',
+    situation: 'Responsable achats d\'une ESN de travaux batiment, evalue des fournisseurs peintures techniques pour un appel d\'offres',
+    contexte: 'Un collegue lui partage le lien arcane-industries.fr sur LinkedIn Messenger',
+    parcours: ['Accueil'],
+    decision: 'quitte',
+    scores: { exp: 2, conf: 3, clarte: 3 },
+    premierImpression: 'Le partage LinkedIn n\'a ni image, ni titre, ni description — juste une URL. Quand j\'arrive sur le site, la page charge lentement. Le design fait ancien. Je ne vois pas tout de suite si c\'est un fabricant ou une boutique en ligne. Je cherche une page "Professionnels / Appels d\'offres" — elle n\'existe pas.',
+    questionCle: 'Vous avez des references d\'appels d\'offres publics ? Vous fournissez des certificats FDES, declarations produits ?',
+    reponse: 'Non',
+    commentReponse: 'Aucune page dediee aux grands comptes / appels d\'offres. Les homologations SNCF/Airbus sont dans un article d\'actualite, pas dans une section produit. Elle ferme l\'onglet.',
+    impactTechnique: 'Open Graph absent = partage LinkedIn sans vignette. Design PrestaShop = perception "boutique" pas "partenaire industriel". Pas de section B2B grands comptes.',
+    pointsPositifs: ['Anciennete et homologations mentionnees (texte)', 'Usines francaises = critere achat public potentiel'],
+    frictions: ['Open Graph absent — mauvaise premiere impression LinkedIn', 'Pas de page grands comptes / appels d\'offres', 'Homologations SNCF/Airbus non mises en avant', 'Pas de FDES / declarations produits'],
+  },
+  {
+    id: 3, name: 'Alexandre M.', age: 35, emoji: '\u{1F9EA}',
+    canal: 'Google Search', device: 'Mobile', maturite: 'Decision',
+    situation: 'Responsable R&D d\'une PME chimique a Lyon, cherche un co-formulateur ou sous-traitant pour une gamme de produits surfaces',
+    contexte: 'Tape "formulation sur-mesure produit surface industriel France" — trouve Arcane via Arcane Direct',
+    parcours: ['/content/4-nos-boutiques', 'arcane-direct.com', 'Retour accueil', 'Contact'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 7, clarte: 5 },
+    premierImpression: 'Arcane Direct est ce dont j\'ai besoin : formulations sur-mesure, matieres premieres, sourcing. La page boutiques explique bien la division. Mais je reviens sur le site institutionnel pour contacter directement — je prefere parler a un commercial avant de commander.',
+    questionCle: 'Vous pouvez reformuler un degraissant biodegradable en marque blanche pour notre marque ? MOQ minimum ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La page savoir-faire mentionne "formulations sur-mesure" et "sourcing matieres premieres". Il contacte via HubSpot. Conversion car la proposition de valeur B2B existe — mais elle est enfouie.',
+    impactTechnique: 'Mobile lent (~5s). Parcours institutionnel → Arcane Direct → retour institutionnel = 2 domaines differents, UX cassee. Formulaire HubSpot charge lentement sur mobile.',
+    pointsPositifs: ['Arcane Direct bien positionne B2B formulation', 'Savoir-faire formulation clairement decrit', 'Laboratoires + usines = credibilite R&D'],
+    frictions: ['Parcours 2 domaines = confusion UX', 'Pas de page dediee "Partenariat / Co-formulation"', 'Formulaire HubSpot lent mobile', 'MOQ/tarifs non mentionnes'],
+  },
+  {
+    id: 4, name: 'Patricia V.', age: 56, emoji: '\u{1F9F9}',
+    canal: 'Bouche-a-oreille pro', device: 'Desktop', maturite: 'Decision',
+    situation: 'Responsable maintenance d\'un parc immobilier de 200 logements pour un bailleur social, cherche une peinture facade referencee CAP',
+    contexte: 'Un homologue lui recommande Arcafacade, elle cherche le site pour vérifier la reference et commander',
+    parcours: ['Accueil', '/nos-marques', 'Arcafacade', 'Contact commercial'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 7, clarte: 6 },
+    premierImpression: 'L\'entreprise est bien etablie — 50 ans, usines francaises. Je cherche Arcafacade sur le site des marques. La page existe et decrit bien les formulations siloxane/acrylique. La mention CSTB me rassure. Je veux un devis volume.',
+    questionCle: 'Arcafacade est referenciee par quel organisme HLM ? Tarif pour 10 000 m2 de facade / an ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La page marque Arcafacade existe et est convaincante techniquement. Mais pas de reference specifique bailleur social ni de grille tarifaire volume. Elle contacte via formulaire — conversion reussie grace a la recommendation.',
+    impactTechnique: 'Desktop correct. La page marque existe mais sans PDF fiche produit telechargeable. Le formulaire de contact fonctionne. La recommendation prime sur les lacunes du site.',
+    pointsPositifs: ['Page Arcafacade complete techniquement', 'CSTB mentionne = critere achat bailleur social', '50 ans de references'],
+    frictions: ['Pas de reference bailleur social / appels d\'offres HLM', 'Pas de tarif volume / devis en ligne', 'Pas de PDF fiche produit'],
+  },
+  {
+    id: 5, name: 'Kevin L.', age: 28, emoji: '\u{1F4F1}',
+    canal: 'ChatGPT / Perplexity', device: 'Mobile', maturite: 'Decouverte',
+    situation: 'Auto-entrepreneur en renovation, cherche la meilleure peinture etancheite pour une terrasse carrelee fissurée',
+    contexte: 'Demande a Perplexity "quelle resine etancheite pour terrasse carrelee fissuree" — l\'IA ne mentionne pas Arcane Industries',
+    parcours: [],
+    decision: 'quitte',
+    scores: { exp: 0, conf: 0, clarte: 0 },
+    premierImpression: 'Perplexity cite Mapei, Sika, Weber et des tutoriels YouTube. Arcane Industries n\'est pas mentionne. Je ne connais pas cette marque.',
+    questionCle: 'Quelle resine pour terrasse carrelee fissuree — Arcaclear ou Arcathan ?',
+    reponse: 'Invisible',
+    commentReponse: 'Sans Schema.org Product, sans fiches produits structurees, sans llms.txt et sans contenu blog SEO repetant les use-cases — les IA generatives ignorent completement Arcane Industries au profit de concurrents mieux documentes.',
+    impactTechnique: 'Pas de llms.txt, pas de Schema.org Product, pas de FAQ structuree, pas de blog applicatif indexable. Arcane Industries est invisible pour les IA generatives en 2026.',
+    pointsPositifs: ['Le produit Arcaclear repond parfaitement au besoin — mais il n\'existe pas pour l\'IA'],
+    frictions: ['Invisible IA generatives (ChatGPT, Perplexity, Claude)', 'Pas de llms.txt', 'Pas de Schema.org Product', 'Pas de contenu blog applicatif (use-cases produits)'],
+  },
+  // --- SOUS-AGENT 2 : Personas BtoC / Grand public ---
+  {
+    id: 6, name: 'Marie-Helene F.', age: 51, emoji: '\u{1F3E0}',
+    canal: 'Google Search', device: 'Mobile', maturite: 'Decision',
+    situation: 'Proprietaire d\'une maison a Aix-en-Provence, terrasse en carrelage qui prend l\'eau depuis 2 ans',
+    contexte: 'Tape "produit etancheite terrasse carrelee avis" sur Google — trouve Maison Etanche, remonte vers arcane-industries.fr',
+    parcours: ['maison-etanche.com', 'arcane-industries.fr/content/12-le-groupe', 'Retour Maison Etanche'],
+    decision: 'hesite',
+    scores: { exp: 4, conf: 5, clarte: 4 },
+    premierImpression: 'Maison Etanche est clair et bien fait. Le site Arcane Industries est plus confus — je ne sais pas si je dois commander ici ou sur Maison Etanche. La page "groupe" est institutionnelle, pas vraiment utile pour mon probleme.',
+    questionCle: 'Arcaclear ou Arcathan pour ma terrasse carrelee — quelle difference ? Et c\'est facile a poser soi-meme ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Le site institutionnel ne repond pas a sa question pratique. Elle retourne sur Maison Etanche pour le conseil produit. Arcane Industries = vitrine froide vs Maison Etanche = outil d\'aide a l\'achat.',
+    impactTechnique: 'Navigation confuse entre 2 domaines. Page groupe = contenu institutionnel inutile pour un particulier. Mobile lent = frustration.',
+    pointsPositifs: ['Maison Etanche (filiale) bien optimisee pour BtoC', 'Anciennete rassurante une fois lue'],
+    frictions: ['Navigation entre 2 sites = confusion', 'Site institutionnel pas adapte aux particuliers', 'Pas de comparateur produit ni guide choix'],
+  },
+  {
+    id: 7, name: 'Julien B.', age: 38, emoji: '\u{1F528}',
+    canal: 'YouTube / DIY', device: 'Mobile', maturite: 'Decouverte',
+    situation: 'Fan de bricolage a Toulon, veut faire lui-meme le beton cire de sa salle de bain',
+    contexte: 'Regarde un tuto YouTube beton cire — la marque Nuances Minerales est mentionnee dans les commentaires',
+    parcours: ['arcane-industries.fr/37-beton-cire-enduit-decocatif', 'Nuances Minerales', 'Maison Etanche'],
+    decision: 'convertit',
+    scores: { exp: 5, conf: 6, clarte: 5 },
+    premierImpression: 'La page beton cire existe et decrit bien les produits — une gamme complete pour toutes les surfaces. Nuances Minerales a l\'air d\'une marque premium. Je vais sur Maison Etanche pour commander.',
+    questionCle: 'Beton cire salle de bain — quel produit Nuances Minerales je prends ? Kit complet ou separement ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La page categorie existe mais sans tutoriel ni video applicative integree. Il migre vers Maison Etanche pour trouver le kit et les instructions. Conversion sur Maison Etanche, pas sur le site institutionnel.',
+    impactTechnique: 'La page categorie beton cire charge correctement. Mais pas de video YouTube integree, pas de tutoriel pas-a-pas, pas de FAQ specifique beton cire DIY.',
+    pointsPositifs: ['Page dediee beton cire complete', 'Nuances Minerales bien decrit', 'Maison Etanche comme relai BtoC'],
+    frictions: ['Pas de tutoriel video integre', 'Pas de kit tout-en-un clairement identifie', 'Navigation vers Maison Etanche non intuitive'],
+  },
+  {
+    id: 8, name: 'Gerard P.', age: 67, emoji: '\u{1F468}\u{200D}\u{1F527}',
+    canal: 'Pages Jaunes / Annuaire', device: 'Desktop', maturite: 'Decision',
+    situation: 'Retraite a Aubagne, veut proteger le bois de sa terrasse et sa cloture avant l\'ete, cherche un produit local',
+    contexte: 'Cherche "produit entretien bois terrasse Aubagne" — trouve arcane-industries.fr car siege a Aubagne',
+    parcours: ['Accueil', '/nos-marques', 'Arcabois', 'Contact'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 7, clarte: 5 },
+    premierImpression: 'Ils sont bases a Aubagne, comme moi — c\'est rassurant. J\'aime acheter local. Je trouve la marque Arcabois qui protege le bois. L\'entreprise a l\'air serieuse.',
+    questionCle: 'Arcabois est disponible chez quel revendeur a Aubagne ou Marseille ? Ou je peux l\'acheter directement ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La marque Arcabois est decrite mais sans reseau de distributeurs physiques ni localisation revendeurs. Il doit commander en ligne — friction pour quelqu\'un qui prefere l\'achat local physique.',
+    impactTechnique: 'Desktop correct. La page marque Arcabois est informative. Mais pas de page "Ou trouver nos produits" ni de localisateur de revendeurs.',
+    pointsPositifs: ['Siege Aubagne = proximite geographique rassurante', 'Arcabois bien decrit', 'Anciennete = confiance'],
+    frictions: ['Pas de reseau distributeurs physiques visible', 'Pas de page "Ou acheter"', 'Achat impose en ligne malgre demande locale'],
+  },
+  {
+    id: 9, name: 'Sarah K.', age: 31, emoji: '\u{1F393}',
+    canal: 'Instagram / Pinterest', device: 'Mobile', maturite: 'Decouverte',
+    situation: 'Designer d\'interieur a Marseille, cherche des enduits decoratifs pour un projet client restaurant tendance',
+    contexte: 'Voit des photos de beton cire sur Pinterest, tague "Stuccolis Arcane Industries"',
+    parcours: ['Accueil', '/37-beton-cire-enduit-decocatif', 'Stuccolis'],
+    decision: 'quitte',
+    scores: { exp: 3, conf: 4, clarte: 3 },
+    premierImpression: 'Le site ne colle pas avec ce que j\'ai vu sur Pinterest. Trop institutionnel, pas assez inspire. Je cherche une galerie de projets references, des coloris disponibles, des photos haute resolution — rien de tout ca.',
+    questionCle: 'Stuccolis existe en combien de teintes ? Vous avez des projets de reference en restaurant, hotel, boutique ?',
+    reponse: 'Non',
+    commentReponse: 'La page Stuccolis decrit le produit mais sans palette coloris ni galerie de realisations inspirantes. Aucune reference restaurant/hotel/commerce. Elle retourne sur Pinterest et cherche un autre fournisseur.',
+    impactTechnique: 'Mobile lent. Pas de galerie haute resolution, pas de nuancier digital, pas de projets de reference par secteur. Le produit existe mais sa mise en scene n\'est pas a la hauteur.',
+    pointsPositifs: ['Stuccolis existe et repond au besoin produit'],
+    frictions: ['Pas de galerie inspirationnelle', 'Pas de nuancier / palette teintes', 'Pas de projets de reference par secteur (restaurant, hotel)', 'Design institutionnel = pas d\'emotion esthetique'],
+  },
+  {
+    id: 10, name: 'Thomas B.', age: 44, emoji: '\u{1F3E2}',
+    canal: 'Google Search', device: 'Desktop', maturite: 'Comparaison',
+    situation: 'DSI d\'une entreprise industrielle a Fos-sur-Mer, fait une revue des fournisseurs chemicals. Evalue Arcane Industries comme fournisseur de produits maintenance',
+    contexte: 'Tape "fournisseur degraissant industriel biodegradable France certifie" — trouve arcane-industries.fr',
+    parcours: ['Accueil', '/content/15-expertises-metiers', '/43-degraissant-industriel', 'Contact'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 5, clarte: 5 },
+    premierImpression: 'L\'entreprise a l\'air credible — 50 ans, usines francaises, biodegradable. Mais je dois evaluer la securite du site pour notre DSI avant tout : je lance un scan rapide et je vois le grade F Observatory. C\'est eliminatoire pour notre politique securite fournisseurs.',
+    questionCle: 'Votre site est-il conforme ISO 27001 ? Vous avez une politique securite informatique documentee ?',
+    reponse: 'Non',
+    commentReponse: 'Paradoxalement, c\'est le grade F Observatory qui bloque la conversion. Un responsable IT fait un audit basique et voit l\'absence totale de headers securite. Dans un contexte de supply chain security, c\'est un critere eliminatoire.',
+    impactTechnique: 'Grade F Observatory visible publiquement. Aucun header de securite. Pour un decideur IT, c\'est un signal que le SI du fournisseur est peut-etre aussi peu securise. Perte de confiance.',
+    pointsPositifs: ['Degraissants biodegradables bien documentes', 'References aeronautique (Airbus) = credibilite', 'Usines francaises = souverainete supply chain'],
+    frictions: ['Grade F Observatory = critique eliminatoire DSI', 'Aucun header securite = signal IT negatif', 'Pas de page securite/conformite documentee', 'Version Apache exposee dans headers'],
+  },
+];
+
+// ============================================================
+// RECOMMANDATIONS
+// ============================================================
+const ameliorationsCritiques = [
+  {
+    titre: 'Corriger le grade Observatory F → minimum B (headers securite)',
+    detail: '6/10 personas ont ete impactes par les problemes techniques lies a l\'absence de headers securite. La correction est simple (.htaccess Apache) et prend moins d\'une heure. Sans ca, les decideurs IT eliminent Arcane Industries de leurs appels d\'offres fournisseurs. Priorite absolue.',
+  },
+  {
+    titre: 'Activer le cache serveur et deployer un CDN',
+    detail: '8/10 personas ont subi un chargement lent (cache desactive). L\'ajout de Cloudflare (gratuit) avec mise en cache des assets statiques reduirait le LCP de 5.5s a <2.5s et le TTFB de >1s a <200ms. C\'est le gain de performance le plus rapide et le plus impactant.',
+  },
+  {
+    titre: 'Implementer Open Graph complet sur toutes les pages',
+    detail: '7/10 personas ont ete touches par l\'absence d\'Open Graph (partages sans vignette). Pour un fabricant B2B dont les decideurs partagent des liens sur LinkedIn et Slack, c\'est la friction n°1 sur la premiere impression digitale. 30 minutes de travail pour un impact immediat.',
+  },
+  {
+    titre: 'Enrichir Schema.org : Product + AggregateRating + LocalBusiness',
+    detail: '6/10 personas auraient beneficie d\'un balisage Schema.org complet. Les concurrents avec Schema.org Product apparaissent avec etoiles dans Google. Arcane Industries est absent de ces resultats enrichis malgre un catalogue de 18+ marques et un historique de 56 ans.',
+  },
+  {
+    titre: 'Ajouter une page Grands Comptes / Partenariats et mettre en avant les references',
+    detail: '4 personas B2B (Isabelle, Alexandre, Patricia, Thomas) ont cherche une page dediee professionnels, appels d\'offres ou partenariats — elle n\'existe pas. Les references SNCF/Airbus/CSTB doivent etre en hero de la page d\'accueil, pas dans un article d\'actualite enfoui.',
+  },
+];
+
+const ameliorationsImportantes = [
+  'Creer un llms.txt pour visibilite dans les IA generatives (ChatGPT, Perplexity, Claude)',
+  'Ajouter des fiches techniques PDF telechargearbles sur chaque page produit/marque',
+  'Creer une page "Ou trouver nos produits" avec reseau de distributeurs physiques',
+  'Integrer des temoignages clients et logos grands comptes (SNCF, Airbus) en accueil',
+  'Lancer un blog applicatif (tutoriels produits, guides use-cases) pour SEO long-tail et visibilite IA',
+  'Creer une galerie de realisations par secteur (restaurant, bailleur, industrie) pour convaincre designers et prescripteurs',
+  'Corriger la navigation confuse entre site institutionnel et boutiques (Maison Etanche, Arcane Direct)',
+];
+
+// ============================================================
+// HELPERS
+// ============================================================
+function scoreColor(score: number): string {
+  if (score >= 90) return '#22c55e';
+  if (score >= 50) return '#f59e0b';
+  return '#ef4444';
+}
+
+function scoreTextClass(score: number): string {
+  if (score >= 90) return 'text-green-600';
+  if (score >= 50) return 'text-amber-600';
+  return 'text-red-600';
+}
+
+function decisionBadge(decision: string) {
+  if (decision === 'convertit') return { text: 'Contacte', cls: 'bg-green-100 text-green-800' };
+  if (decision === 'hesite') return { text: 'Hesite', cls: 'bg-amber-100 text-amber-800' };
+  if (decision === 'quitte') return { text: 'Repart', cls: 'bg-neutral-100 text-neutral-600' };
+  return { text: 'Invisible', cls: 'bg-red-100 text-red-700' };
+}
+---
+
+<BaseLayout {title} {description} noindex={true}>
+  <!-- ========================================================
+       EN-TETE RAPPORT
+  ======================================================== -->
+  <section class="py-12 px-4 bg-neutral-900">
+    <div class="max-w-4xl mx-auto">
+      <div class="flex items-center gap-3 mb-6">
+        <span class="text-xs font-medium uppercase tracking-widest text-neutral-400">Rapport d'audit</span>
+        <span class="text-neutral-600">·</span>
+        <span class="text-xs text-neutral-400">{prospect.date}</span>
+      </div>
+
+      <h1 class="font-heading text-3xl md:text-4xl font-bold text-white mb-2">{prospect.name}</h1>
+      <p class="text-neutral-300 text-lg mb-1">{prospect.activity}</p>
+      <p class="text-neutral-500 text-sm mb-6">{prospect.location}</p>
+
+      <a href={prospect.url} target="_blank" rel="noopener noreferrer"
+        class="inline-flex items-center gap-2 text-sm text-blue-400 hover:text-blue-300 transition-colors">
+        <span>{prospect.url}</span>
+        <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+            d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+        </svg>
+      </a>
+
+      <!-- KPIs globaux -->
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mt-8">
+        <div class="bg-neutral-800 rounded-xl p-4 text-center">
+          <p class="text-3xl font-bold text-white mb-1">{kpis.convertissent}/10</p>
+          <p class="text-xs text-neutral-400">personas contactent</p>
+        </div>
+        <div class="bg-neutral-800 rounded-xl p-4 text-center">
+          <p class="text-3xl font-bold text-amber-400 mb-1">{kpis.hesitent}/10</p>
+          <p class="text-xs text-neutral-400">hesitent</p>
+        </div>
+        <div class="bg-neutral-800 rounded-xl p-4 text-center">
+          <p class="text-3xl font-bold text-neutral-300 mb-1">{kpis.quittent}/10</p>
+          <p class="text-xs text-neutral-400">repartent</p>
+        </div>
+        <div class="bg-red-900/40 border border-red-800 rounded-xl p-4 text-center">
+          <p class="text-3xl font-bold text-red-400 mb-1">{observatory.grade}</p>
+          <p class="text-xs text-red-300">Observatory grade</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       LE CONSTAT
+  ======================================================== -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Le constat</h2>
+
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-8">
+        <p class="text-amber-900 font-medium text-base leading-relaxed">{constat}</p>
+      </div>
+
+      <!-- Resume visiteurs -->
+      <div class="flex flex-wrap gap-3 mb-8">
+        <div class="flex items-center gap-2 bg-green-50 border border-green-200 rounded-lg px-4 py-2">
+          <span class="w-2 h-2 rounded-full bg-green-500 shrink-0"></span>
+          <span class="text-sm font-semibold text-green-800">{kpis.convertissent} contactent</span>
+        </div>
+        <div class="flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-lg px-4 py-2">
+          <span class="w-2 h-2 rounded-full bg-amber-500 shrink-0"></span>
+          <span class="text-sm font-semibold text-amber-800">{kpis.hesitent} hesitent</span>
+        </div>
+        <div class="flex items-center gap-2 bg-neutral-100 border border-neutral-200 rounded-lg px-4 py-2">
+          <span class="w-2 h-2 rounded-full bg-neutral-400 shrink-0"></span>
+          <span class="text-sm font-semibold text-neutral-700">{kpis.quittent} repartent</span>
+        </div>
+      </div>
+
+      <!-- Conversion par canal -->
+      <div class="mb-10">
+        <h3 class="font-semibold text-neutral-800 mb-4 text-sm uppercase tracking-wide">Taux de contact par canal d'arrivee</h3>
+        <div class="space-y-3">
+          {conversionByCanal.map(item => (
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-sm text-neutral-700">{item.canal}</span>
+                <span class={`text-sm font-bold ${item.color}`}>{item.taux}%</span>
+              </div>
+              <div class="h-2 bg-neutral-100 rounded-full overflow-hidden">
+                <div class={`h-full rounded-full ${item.bg}`} style={`width: ${item.taux}%`}></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Top frictions -->
+      <h3 class="font-semibold text-neutral-800 mb-4 text-sm uppercase tracking-wide">Top 5 frictions identifiees</h3>
+      <ol class="space-y-3">
+        {topFrictions.map((f, i) => (
+          <li class="flex gap-4 p-4 bg-neutral-50 border border-neutral-200 rounded-xl">
+            <span class="shrink-0 w-7 h-7 rounded-full bg-red-100 text-red-700 flex items-center justify-center text-sm font-bold">{i + 1}</span>
+            <div>
+              <p class="font-semibold text-neutral-900 text-sm">{f.titre} <span class="ml-2 text-xs text-neutral-500 font-normal">{f.count}/10 personas</span></p>
+              <p class="text-neutral-600 text-xs mt-0.5">{f.detail}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       AUDIT TECHNIQUE
+  ======================================================== -->
+  <section class="py-12 px-4 bg-neutral-50">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">L'audit technique</h2>
+
+      <!-- PageSpeed mobile -->
+      <div class="bg-white border border-neutral-200 rounded-xl p-6 mb-6">
+        <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+          <h3 class="font-semibold text-neutral-800">PageSpeed — Mobile</h3>
+          <span class="text-xs text-neutral-400 bg-neutral-100 px-2 py-1 rounded">scores estimes — profil PrestaShop Apache sans cache</span>
+        </div>
+        <div class="grid grid-cols-4 gap-4">
+          {[
+            { label: 'Performance', score: pagespeed.mobile.performance },
+            { label: 'Accessibilite', score: pagespeed.mobile.accessibility },
+            { label: 'Bonnes pratiques', score: pagespeed.mobile.bestPractices },
+            { label: 'SEO', score: pagespeed.mobile.seo },
+          ].map(item => (
+            <div class="text-center">
+              <div class="relative w-14 h-14 mx-auto mb-2">
+                <svg class="w-14 h-14 -rotate-90" viewBox="0 0 36 36">
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    fill="none" stroke="#e5e7eb" stroke-width="3.5" />
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    fill="none" stroke={scoreColor(item.score)} stroke-width="3.5"
+                    stroke-dasharray={`${item.score}, 100`} stroke-linecap="round" />
+                </svg>
+                <span class={`absolute inset-0 flex items-center justify-center text-base font-bold ${scoreTextClass(item.score)}`}>{item.score}</span>
+              </div>
+              <p class="text-xs text-neutral-600">{item.label}</p>
+            </div>
+          ))}
+        </div>
+
+        <div class="mt-6 pt-5 border-t border-neutral-100">
+          <p class="text-sm font-semibold text-neutral-700 mb-3">Core Web Vitals (mobile)</p>
+          <div class="flex flex-wrap gap-3">
+            {coreWebVitals.map(cwv => (
+              <div class={`px-3 py-2 rounded-lg border text-xs font-medium ${cwv.status === 'bad' ? 'bg-red-50 border-red-200 text-red-700' : cwv.status === 'medium' ? 'bg-amber-50 border-amber-200 text-amber-700' : 'bg-green-50 border-green-200 text-green-700'}`}>
+                <span class="font-bold">{cwv.name}</span> {cwv.value}
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div class="mt-5 pt-4 border-t border-neutral-100">
+          <p class="text-sm font-semibold text-neutral-700 mb-3">Principales opportunites</p>
+          <ul class="space-y-2">
+            {opportunities.map(op => (
+              <li class="flex items-center justify-between text-xs text-neutral-600 bg-neutral-50 rounded-lg px-3 py-2">
+                <span>{op.label}</span>
+                <span class="shrink-0 ml-3 font-semibold text-green-700">{op.saving}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+
+      <!-- PageSpeed desktop -->
+      <div class="bg-white border border-neutral-200 rounded-xl p-6 mb-6">
+        <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+          <h3 class="font-semibold text-neutral-800">PageSpeed — Desktop</h3>
+          <span class="text-xs text-neutral-400 bg-neutral-100 px-2 py-1 rounded">scores estimes</span>
+        </div>
+        <div class="grid grid-cols-4 gap-4">
+          {[
+            { label: 'Performance', score: pagespeed.desktop.performance },
+            { label: 'Accessibilite', score: pagespeed.desktop.accessibility },
+            { label: 'Bonnes pratiques', score: pagespeed.desktop.bestPractices },
+            { label: 'SEO', score: pagespeed.desktop.seo },
+          ].map(item => (
+            <div class="text-center">
+              <div class="relative w-14 h-14 mx-auto mb-2">
+                <svg class="w-14 h-14 -rotate-90" viewBox="0 0 36 36">
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    fill="none" stroke="#e5e7eb" stroke-width="3.5" />
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    fill="none" stroke={scoreColor(item.score)} stroke-width="3.5"
+                    stroke-dasharray={`${item.score}, 100`} stroke-linecap="round" />
+                </svg>
+                <span class={`absolute inset-0 flex items-center justify-center text-base font-bold ${scoreTextClass(item.score)}`}>{item.score}</span>
+              </div>
+              <p class="text-xs text-neutral-600">{item.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Observatory -->
+      <div class="bg-white border border-neutral-200 rounded-xl p-6 mb-6">
+        <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+          <h3 class="font-semibold text-neutral-800">Mozilla Observatory — Securite HTTP</h3>
+          <a href="https://developer.mozilla.org/en-US/observatory/analyze?host=arcane-industries.fr"
+            target="_blank" rel="noopener noreferrer"
+            class="text-xs text-blue-600 hover:underline">Voir rapport complet</a>
+        </div>
+        <div class="flex items-center gap-6 mb-4">
+          <div class="text-center">
+            <div class="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center mb-1 mx-auto">
+              <span class="text-3xl font-bold text-red-600">{observatory.grade}</span>
+            </div>
+            <p class="text-xs text-neutral-500">Grade</p>
+          </div>
+          <div class="text-center">
+            <p class="text-3xl font-bold text-red-600">{observatory.score}/100</p>
+            <p class="text-xs text-neutral-500">Score</p>
+          </div>
+          <div class="text-center">
+            <p class="text-2xl font-bold text-neutral-700">{observatory.testsPassed}/{observatory.testsTotal}</p>
+            <p class="text-xs text-neutral-500">Tests passes</p>
+          </div>
+        </div>
+        <p class="text-sm text-red-700 bg-red-50 border border-red-200 rounded-lg p-3">
+          Aucun header de securite de niveau 1 (CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy). Surface d'attaque maximale. Un responsable IT peut eliminer Arcane Industries sur ce seul critere.
+        </p>
+      </div>
+
+      <!-- Checklist technique -->
+      <div class="bg-white border border-neutral-200 rounded-xl p-6">
+        <h3 class="font-semibold text-neutral-800 mb-4">Checklist technique</h3>
+        <ul class="space-y-2">
+          {techChecks.map(check => (
+            <li class={`flex items-start gap-3 p-2.5 rounded-lg ${check.present ? 'bg-green-50' : check.critical ? 'bg-red-50' : 'bg-neutral-50'}`}>
+              <span class={`shrink-0 mt-0.5 text-sm ${check.present ? 'text-green-500' : check.critical ? 'text-red-500' : 'text-neutral-400'}`}>
+                {check.present ? '✓' : '✗'}
+              </span>
+              <div>
+                <span class={`text-sm ${check.present ? 'text-green-800' : check.critical ? 'text-red-800 font-medium' : 'text-neutral-600'}`}>
+                  {check.label}
+                </span>
+                {check.note && (
+                  <p class="text-xs text-neutral-500 mt-0.5">{check.note}</p>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       PERSONAS
+  ======================================================== -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-2">10 visites simulees</h2>
+      <p class="text-neutral-500 text-sm mb-8">Sous-agent 1 : personas B2B/Pro (1-5) — Sous-agent 2 : personas grand public (6-10)</p>
+
+      <div class="space-y-6">
+        {personas.map(p => {
+          const badge = decisionBadge(p.decision);
+          const avgScore = p.scores.exp > 0 ? ((p.scores.exp + p.scores.conf + p.scores.clarte) / 3).toFixed(1) : '0';
+          return (
+            <div class="border border-neutral-200 rounded-xl overflow-hidden">
+              <!-- Header persona -->
+              <div class="flex items-center justify-between p-4 bg-neutral-50 border-b border-neutral-200">
+                <div class="flex items-center gap-3">
+                  <span class="text-2xl">{p.emoji}</span>
+                  <div>
+                    <p class="font-semibold text-neutral-900">{p.name}, {p.age} ans</p>
+                    <div class="flex flex-wrap gap-1.5 mt-0.5">
+                      <span class="text-xs bg-blue-100 text-blue-700 px-2 py-0.5 rounded-full">{p.canal}</span>
+                      <span class="text-xs bg-neutral-200 text-neutral-600 px-2 py-0.5 rounded-full">{p.device}</span>
+                      <span class="text-xs bg-purple-100 text-purple-700 px-2 py-0.5 rounded-full">{p.maturite}</span>
+                    </div>
+                  </div>
+                </div>
+                <div class="flex items-center gap-3">
+                  <div class="text-center hidden sm:block">
+                    <p class="text-xl font-bold text-neutral-700">{avgScore}</p>
+                    <p class="text-xs text-neutral-400">/ 10</p>
+                  </div>
+                  <span class={`px-3 py-1.5 rounded-full text-xs font-semibold ${badge.cls}`}>{badge.text}</span>
+                </div>
+              </div>
+
+              <!-- Corps -->
+              <div class="p-4 space-y-3">
+                <p class="text-sm text-neutral-600">{p.situation}</p>
+                <p class="text-xs text-neutral-500 italic">{p.contexte}</p>
+
+                {p.parcours.length > 0 && (
+                  <div class="flex flex-wrap gap-1.5 text-xs">
+                    {p.parcours.map((page, idx) => (
+                      <span class="flex items-center gap-1">
+                        <span class="bg-neutral-100 border border-neutral-200 rounded px-2 py-0.5 text-neutral-700">{page}</span>
+                        {idx < p.parcours.length - 1 && <span class="text-neutral-300">→</span>}
+                      </span>
+                    ))}
+                  </div>
+                )}
+
+                <div class="bg-neutral-50 rounded-lg p-3">
+                  <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-1">Premiere impression</p>
+                  <p class="text-sm text-neutral-700 italic">"{p.premierImpression}"</p>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-3">
+                  <div>
+                    <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-1.5">Question cle</p>
+                    <p class="text-xs text-neutral-600 italic">"{p.questionCle}"</p>
+                    <p class="text-xs mt-1"><span class="font-medium">Reponse :</span> <span class={`font-semibold ${p.reponse === 'Oui' ? 'text-green-600' : p.reponse === 'Non' || p.reponse === 'Invisible' ? 'text-red-600' : 'text-amber-600'}`}>{p.reponse}</span></p>
+                    <p class="text-xs text-neutral-500 mt-0.5">{p.commentReponse}</p>
+                  </div>
+                  <div>
+                    <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-1.5">Impact technique</p>
+                    <p class="text-xs text-neutral-600">{p.impactTechnique}</p>
+                  </div>
+                </div>
+
+                <div class="grid md:grid-cols-2 gap-3 pt-2">
+                  {p.pointsPositifs.length > 0 && (
+                    <div>
+                      <p class="text-xs font-semibold text-green-700 mb-1">Points positifs</p>
+                      <ul class="space-y-0.5">
+                        {p.pointsPositifs.map(pt => (
+                          <li class="text-xs text-green-800 flex gap-1.5"><span class="text-green-400 shrink-0">+</span>{pt}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  <div>
+                    <p class="text-xs font-semibold text-red-700 mb-1">Frictions</p>
+                    <ul class="space-y-0.5">
+                      {p.frictions.map(fr => (
+                        <li class="text-xs text-red-800 flex gap-1.5"><span class="text-red-400 shrink-0">−</span>{fr}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       RECOMMANDATIONS
+  ======================================================== -->
+  <section class="py-12 px-4 bg-neutral-50">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-8">Recommandations</h2>
+
+      <!-- Critiques -->
+      <h3 class="font-semibold text-red-700 text-sm uppercase tracking-wide mb-4">Critiques — Impact immediat</h3>
+      <div class="space-y-4 mb-10">
+        {ameliorationsCritiques.map((a, i) => (
+          <div class="bg-white border border-red-200 rounded-xl p-5">
+            <div class="flex items-start gap-3">
+              <span class="shrink-0 w-6 h-6 rounded-full bg-red-100 text-red-700 flex items-center justify-center text-xs font-bold mt-0.5">{i + 1}</span>
+              <div>
+                <p class="font-semibold text-neutral-900 text-sm mb-1">{a.titre}</p>
+                <p class="text-neutral-600 text-xs leading-relaxed">{a.detail}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Importantes -->
+      <h3 class="font-semibold text-amber-700 text-sm uppercase tracking-wide mb-4">Importantes — Impact a 30 jours</h3>
+      <ul class="space-y-2">
+        {ameliorationsImportantes.map(a => (
+          <li class="flex items-start gap-3 bg-white border border-amber-200 rounded-xl p-4">
+            <span class="shrink-0 w-1.5 h-1.5 rounded-full bg-amber-400 mt-1.5"></span>
+            <span class="text-sm text-neutral-700">{a}</span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       CTA MARC M
+  ======================================================== -->
+  <section class="py-16 px-4 bg-neutral-900">
+    <div class="max-w-2xl mx-auto text-center">
+      <h2 class="font-heading text-2xl font-bold text-white mb-4">
+        Arcane Industries merite un site a la hauteur de son savoir-faire
+      </h2>
+      <p class="text-neutral-300 mb-8 leading-relaxed">
+        56 ans d'expertise, 18 marques, des references SNCF et Airbus — et un site qui score F en securite et echoue sur chaque partage LinkedIn. En 7 jours, Marc M. peut transformer ce site institutionnel en outil de generation de leads B2B.
+      </p>
+      <a href="/contact"
+        class="inline-flex items-center gap-2 bg-white text-neutral-900 font-semibold px-8 py-4 rounded-xl hover:bg-neutral-100 transition-colors">
+        Proposer cet audit a Arcane Industries
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+        </svg>
+      </a>
+    </div>
+  </section>
+</BaseLayout>

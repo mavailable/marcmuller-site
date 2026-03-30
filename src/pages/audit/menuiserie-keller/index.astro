@@ -1,0 +1,679 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit Prospect — Menuiserie KELLER | Marc M';
+const description = 'Rapport confidentiel : simulation de 10 visites personas + audit technique complet de menuiseriekeller.com.';
+
+// ─── PERSONAS ───
+const personas = [
+  {
+    id: 1,
+    name: 'Frédéric',
+    age: 52,
+    situation: 'Directeur technique, CHU Nancy',
+    canal: 'Google Search',
+    maturite: 'Comparaison',
+    device: 'Desktop',
+    decision: 'Hesite',
+    exp: 6,
+    conf: 7,
+    clarte: 5,
+    emoji: '🏥',
+    contexte: 'Rénovation du service de rééducation, 3 000 m² à réaménager, appel d\'offres en cours',
+    question: 'Ont-ils les certifications ISO et les agréments pour travailler sur site hospitalier occupé ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La page hôpitaux mentionne les certifications mais sans les lister avec leurs numéros. Impossible de vérifier.',
+    impression: 'Page dédiée hôpitaux/EHPAD — bonne surprise, rare chez les menuisiers. Le CHU Nancy cité en référence est un signal fort.',
+    parcours: [
+      ['Hôpitaux & EHPAD', 'Contenu pertinent, certifications vaguement mentionnées — "Voir le certificat" mène à un PDF, pas d\'aperçu'],
+      ['Créations', 'Paravent plombé CHU Nancy — une seule référence hospitalière visible'],
+      ['Nous découvrir', 'Process 4 pôles intéressant — la mention d\'architecte et bureau de contrôle est un bon signal B2B'],
+      ['Contact', 'Formulaire générique — pas de champ "appel d\'offres" ni "surface" ni "délai"'],
+    ],
+    impactTech: 'Desktop fibre — performance acceptable. Mais le formulaire générique n\'est pas adapté au B2B institutionnel.',
+    positifs: ['Page dédiée hôpitaux/EHPAD', 'CHU Nancy en référence', 'Mention architecte + bureau de contrôle', 'Près de 100 ans = sérieux'],
+    frictions: ['Certifications sans numéros ni dates', 'Une seule référence hospitalière visible', 'Formulaire non adapté B2B', 'Pas d\'email dédié marchés publics'],
+    raison: 'Retient KELLER dans la shortlist mais ne peut pas valider les certifications sans appel téléphonique. Risque de décrocher.',
+    changement: 'Page "Certifications" avec numéros ISO + liste complète des agréments + formulaire appel d\'offres dédié.',
+  },
+  {
+    id: 2,
+    name: 'Isabelle',
+    age: 44,
+    situation: 'Architecte d\'intérieur indépendante, Nancy',
+    canal: 'Recommandation confrère',
+    maturite: 'Decision',
+    device: 'Desktop',
+    decision: 'Convertit',
+    exp: 5,
+    conf: 7,
+    clarte: 6,
+    emoji: '📐',
+    contexte: 'Client haut de gamme, appartement quai de Paris Nancy, demande des agencements sur mesure finitions laquées',
+    question: 'Peuvent-ils réaliser du mobilier laqué sur mesure avec des dimensions atypiques ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La page agencement mentionne le sur-mesure et la collaboration avec architectes mais sans exemple de laqué ni fiche technique matériaux.',
+    impression: 'La mention "collaboration avec architectes et décorateurs d\'intérieur" sur la page agencement est exactement ce qu\'elle cherche. Hôtel Sheraton Nice en référence = sérieux haut de gamme.',
+    parcours: [
+      ['Agencement', '"L\'excellence made in France" + collaboration architectes — son langage'],
+      ['Créations', 'Habillage mural hôtel, Sheraton Nice — exactement le niveau de finition qu\'elle cherche'],
+      ['Menuiseries intérieures', 'Finitions impeccables mentionnées mais pas de photos en haute résolution'],
+      ['Contact', 'Remplit le formulaire en détaillant le projet dans le champ message'],
+    ],
+    impactTech: 'Desktop fibre — LCP acceptable. Elle est déjà convaincue par la recommandation, le site confirme.',
+    positifs: ['Collaboration architectes explicitement mentionnée', 'Hôtel Sheraton Nice = référence crédible', 'CFAO + sur-mesure = précision garantie', '4 300 m² atelier = capacité'],
+    frictions: ['Pas de galerie haute résolution', 'Pas de catalogue matériaux/finitions', 'Pas de fiches techniques', 'Aucun prix indicatif pour agencement haut de gamme'],
+    raison: 'Recommandation + références hôtelières la convainquent. Elle remplit le formulaire et appellera demain.',
+    changement: 'Galerie HD avec zoom + catalogue finitions PDF + référence architect nominative = déclencheraient un partenariat récurrent.',
+  },
+  {
+    id: 3,
+    name: 'Michel',
+    age: 61,
+    situation: 'Propriétaire d\'immeuble, 6 appartements, Vandœuvre-lès-Nancy',
+    canal: 'Google Maps',
+    maturite: 'Comparaison',
+    device: 'Mobile',
+    decision: 'Hesite',
+    exp: 4,
+    conf: 5,
+    clarte: 4,
+    emoji: '🏢',
+    contexte: 'DPE collectif en cours, 24 fenêtres à changer sur 3 ans, budget 30 000–40 000€',
+    question: 'Font-ils des tarifs dégressifs pour un lot important ? Quels délais ?',
+    reponse: 'Non',
+    commentReponse: 'Aucune mention de volume, tarif dégressif, ou offre propriétaire bailleur. Aucun délai annoncé nulle part.',
+    impression: 'Sérieux visible — 100 ans, 60 personnes, CHU. Mais rien ne lui parle en tant que bailleur multi-lots. Ressent un site orienté B2B institutionnel pas B2C.',
+    parcours: [
+      ['Accueil', 'Scroll rapide — comprend que c\'est une entreprise sérieuse mais cherche les prix'],
+      ['Menuiseries extérieures', 'Fenêtres mentionnées, aucune fourchette de prix, aucun délai'],
+      ['Contact', 'Hésite — le formulaire ne lui inspire pas confiance pour un engagement multi-années'],
+      ['Google Maps', 'Vérifie les avis — 38 avis 4,7/5 le rassure. Note le numéro'],
+    ],
+    impactTech: 'Mobile 4G en voiture — site lourd, scroll saccadé. Il ouvre 2 autres onglets concurrents.',
+    positifs: ['38 avis 4,7/5 sur Google Maps', 'Taille entreprise (60 personnes) = capacité pour 24 fenêtres', 'Proximité Houdemont–Vandœuvre'],
+    frictions: ['Aucun prix ni fourchette', 'Aucun délai mentionné', 'Pas d\'offre "bailleur multi-lots"', 'Formulaire générique', 'Site lent sur mobile'],
+    raison: 'Les avis Google le retiennent dans la shortlist. Il appellera mais risque de choisir le concurrent qui affiche des fourchettes.',
+    changement: 'Une section "Projets d\'envergure" avec mention de tarif sur devis + délai moyen + témoignage bailleur.',
+  },
+  {
+    id: 4,
+    name: 'Aurélie',
+    age: 37,
+    situation: 'Directrice EHPAD, Pont-à-Mousson',
+    canal: 'IA (ChatGPT)',
+    maturite: 'Decouverte',
+    device: 'Tablette',
+    decision: 'Hesite',
+    exp: 5,
+    conf: 6,
+    clarte: 5,
+    emoji: '👩‍⚕️',
+    contexte: 'Rénovation de 15 chambres, besoins spécifiques EHPAD : poignées ergonomiques, résistance aux produits désinfectants',
+    question: 'Connaissent-ils les contraintes spécifiques des EHPAD (ergonomie, sécurité, désinfection) ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La page mentionne "hygiène et sécurité strictes" et "besoins spécifiques patients et personnel" mais sans détails techniques (poignées, revêtements, normes NF).',
+    impression: 'Agréablement surprise par la page dédiée hôpitaux/EHPAD — la majorité des menuisiers n\'en ont pas. La mention CPN Laxou en témoignage est une référence EHPAD directe.',
+    parcours: [
+      ['Hôpitaux & EHPAD', '"Exécution : garantir la tranquillité des patients" — comprend le contexte site occupé'],
+      ['Nous découvrir', 'RSE + engagement = valeurs communes avec son EHPAD public'],
+      ['Contact', 'Formulaire ouvert mais sans champ "type d\'établissement" ni "nombre de chambres"'],
+    ],
+    impactTech: 'Tablette wifi en réunion — site relativement lent. Le contenu EHPAD la retient malgré tout.',
+    positifs: ['Page dédiée EHPAD unique', 'Témoignage CPN Laxou (EHPAD psychiatrique)', '"Site occupé" mentionné = compréhension du contexte', 'Certifications santé'],
+    frictions: ['Pas de normes NF/ISO citées', 'Pas de catalogue produits EHPAD', 'Pas de référence EHPAD résidentiel (vs psychiatrique)', 'Formulaire trop générique'],
+    raison: 'Intéressée mais a besoin de preuves techniques concrètes. Va appeler pour poser des questions précises.',
+    changement: 'Fiche technique "EHPAD : matériaux, normes, poignées ergonomiques" + 2 photos de chambre rénovée = déclencherait le devis.',
+  },
+  {
+    id: 5,
+    name: 'Thomas',
+    age: 29,
+    situation: 'Gérant d\'agence de décoration, Metz',
+    canal: 'Instagram',
+    maturite: 'Decouverte',
+    device: 'Mobile',
+    decision: 'Quitte',
+    exp: 2,
+    conf: 3,
+    clarte: 2,
+    emoji: '🎨',
+    contexte: 'Cherche un artisan menuisier pour un client show-room haut de gamme, habillage mural boiseries',
+    question: 'Font-ils de l\'habillage mural bois sur mesure pour un espace commercial ?',
+    reponse: 'Oui mais invisible',
+    commentReponse: 'La page menuiseries intérieures + agencement couvrent le besoin, mais aucune photo d\'habillage mural commercial sur mobile. La galerie demande JS pour s\'afficher.',
+    impression: 'Le site ne se vend pas visuellement. Sur mobile le héros ne charge pas correctement. Il cherche des photos inspirantes — il ne les trouve pas facilement.',
+    parcours: [
+      ['Accueil', 'Hero lent, texte corporatif — rien de visuellement accrocheur pour une agence déco'],
+      ['Créations', 'Les photos existent (habillage mural Austrasie) mais sont petites, sans légende, sans contexte'],
+      ['Instagram / TikTok', 'Cherche leur compte Instagram depuis le site — liens "Follow" présents mais pas nommés'],
+    ],
+    impactTech: 'Mobile 4G — galerie ne s\'affiche pas correctement avant interaction. Digital native, jugement immédiat.',
+    positifs: ['Hôtel Sheraton Nice = niveau de finition qu\'il cherche', 'Habillage mural Austrasie est la bonne référence'],
+    frictions: ['Site visuellement décevant sur mobile', 'Galerie non accessible sans interaction', 'Réseaux sociaux invisibles', 'Aucune photo haute qualité'],
+    raison: 'Quitte en 15 secondes. Le site ne lui parle pas visuellement. Va chercher sur Instagram directement.',
+    changement: 'Galerie mobile immersive + lien Instagram visible + 5 photos HD habillages muraux commerciaux.',
+  },
+  {
+    id: 6,
+    name: 'Martine',
+    age: 67,
+    situation: 'Particulier, Vandœuvre-lès-Nancy',
+    canal: 'Bouche-à-oreille (voisin)',
+    maturite: 'Decision',
+    device: 'Desktop',
+    decision: 'Convertit',
+    exp: 7,
+    conf: 8,
+    clarte: 6,
+    emoji: '🏡',
+    contexte: 'Cuisine et dressing sur mesure, son voisin Christine L. a laissé un témoignage sur le site',
+    question: 'Comment les contacter pour un devis cuisine ?',
+    reponse: 'Oui',
+    commentReponse: 'Le numéro 03 83 44 62 00 est visible dans le footer. Elle l\'a trouvé.',
+    impression: 'Reconnaît le témoignage de sa voisine Christine L. Vandœuvre-lès-Nancy sur la page d\'accueil — preuve sociale immédiate.',
+    parcours: [
+      ['Accueil', '"Christine L. Vandœuvre-lès-Nancy" — c\'est sa voisine, confiance immédiate'],
+      ['Agencement', '"Cuisines" mentionnées — c\'est bien pour ça'],
+      ['Contact', 'Note le numéro, va appeler demain matin'],
+    ],
+    impactTech: 'Desktop fibre — LCP acceptable. Elle est pré-convaincue, le site n\'avait qu\'à confirmer.',
+    positifs: ['Témoignage géolocalisé (Vandœuvre) = preuve sociale locale puissante', 'Numéro visible', 'Cuisines mentionnées dans agencement', '"Près de 100 ans" rassure une personne de 67 ans'],
+    frictions: ['Horaires d\'appel absents — va appeler en dehors des heures ?', 'Pas de photos de cuisine réalisée', 'Agencement pas assez mis en avant pour les particuliers'],
+    raison: 'La recommandation + le témoignage géolocalisé = conversion certaine. Elle appellera demain.',
+    changement: 'Horaires visibles + photos de cuisines + section "particuliers" séparée = accéléreraient la conversion.',
+  },
+  {
+    id: 7,
+    name: 'Sébastien',
+    age: 41,
+    situation: 'Responsable achats, groupe hôtelier régional (3 hôtels)',
+    canal: 'Google Search "menuisier hôtel Grand Est"',
+    maturite: 'Comparaison',
+    device: 'Desktop',
+    decision: 'Hesite',
+    exp: 5,
+    conf: 5,
+    clarte: 4,
+    emoji: '🏨',
+    contexte: 'Rénovation de 30 chambres réparties sur 2 hôtels, budget 80 000€, délai : avant saison été',
+    question: 'Ont-ils déjà rénové des chambres d\'hôtel et peuvent-ils gérer 2 sites simultanément ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Hôtel Sheraton Nice et habillage mural hôtel cités, mais sans détails sur la capacité multi-sites ni sur la gestion logistique.',
+    impression: 'La référence Sheraton Nice est inattendue et impressionnante pour un menuisier Nancy. Mais Nice c\'est loin — peuvent-ils vraiment gérer Metz + Nancy simultanément ?',
+    parcours: [
+      ['Menuiseries intérieures', 'Hôtel Sheraton Nice — fort signal qualité mais loin de la région'],
+      ['Nous découvrir', '60+ spécialistes + 4 pôles de production — rassurant pour un projet multi-sites'],
+      ['Créations', 'Galerie sans légende — impossible de distinguer ce qui est hôtelier de ce qui est résidentiel'],
+      ['Contact', 'Formulaire sans champ "nombre de sites" ni "délai impératif"'],
+    ],
+    impactTech: 'Desktop fibre — acceptable. Le vrai problème est le manque de preuve hôtelière régionale.',
+    positifs: ['Hôtel Sheraton Nice = niveau 4 étoiles prouvé', '60 spécialistes = capacité multi-sites', 'CFAO = précision sur mesure chambre standard'],
+    frictions: ['Aucune référence hôtelière régionale', 'Galerie sans légendes sectorielles', 'Pas de mention capacité multi-sites', 'Pas de délai annoncé'],
+    raison: 'Intéressé mais ne peut pas évaluer la capacité logistique. Va comparer avec 2 autres menuisiers.',
+    changement: 'Page "Secteur hôtelier" + 3 références hôtels régionaux + mention gestion multi-sites = déclencherait le contact.',
+  },
+  {
+    id: 8,
+    name: 'Laurent',
+    age: 35,
+    situation: 'Chef de projet mairie, Laxou',
+    canal: 'Email interne — collègue du CPN',
+    maturite: 'Decision',
+    device: 'Desktop',
+    decision: 'Convertit',
+    exp: 6,
+    conf: 8,
+    clarte: 7,
+    emoji: '🏛️',
+    contexte: 'Rénovation salle de réunion mairie, appel d\'offres formalisé, contacté par le CPN Laxou',
+    question: 'Peuvent-ils répondre à un appel d\'offres public ?',
+    reponse: 'Oui',
+    commentReponse: 'La page "Nous découvrir" mentionne explicitement "appels d\'offres", "maîtres d\'œuvre" et un "architecte" — c\'est exactement ce qu\'il cherche.',
+    impression: 'Recommandation du CPN Laxou + témoignage visible sur le site = crédibilité maximale. La mention "appel d\'offres" dans la page découvrir le confirme dans son choix.',
+    parcours: [
+      ['Nous découvrir', '"L1 — Appels d\'offres" : architecte, bureau de contrôle, économiste — répond à sa question'],
+      ['Contact', 'Formulaire rempli avec détail du projet et mention de l\'appel d\'offres'],
+    ],
+    impactTech: 'Desktop fibre — aucun problème. Il est déjà décidé.',
+    positifs: ['Mention explicite "appels d\'offres"', 'Témoignage CPN Laxou (son référent)', 'Architecte intégré au process', 'Ancienneté = crédibilité marchés publics'],
+    frictions: ['Pas de page dédiée "Marchés publics / Collectivités"', 'Pas de références collectivités visibles dans les créations', 'Formulaire sans champ "référence marché"'],
+    raison: 'Recommandation directe + page procédure appel d\'offres = conversion certaine. Il demande un rendez-vous.',
+    changement: 'Page "Collectivités & Marchés Publics" avec références communales + numéro SIRET visible = accélérerait la réponse administrative.',
+  },
+  {
+    id: 9,
+    name: 'Amina',
+    age: 32,
+    situation: 'Gérante franchise Lidl, Gondreville — nouvelle ouverture',
+    canal: 'Recommandation interne Lidl',
+    maturite: 'Decision',
+    device: 'Mobile',
+    decision: 'Convertit',
+    exp: 5,
+    conf: 8,
+    clarte: 6,
+    emoji: '🛒',
+    contexte: 'Agencement complet d\'un nouveau magasin, cuisine + mobilier caisse + bardage intérieur',
+    question: 'Ont-ils déjà travaillé pour Lidl ou des grandes surfaces ?',
+    reponse: 'Oui',
+    commentReponse: 'La page agencement cite explicitement "Cuisine Lidl à Gondreville" — référence directe à son enseigne.',
+    impression: 'Voir "Cuisine Lidl Gondreville" dans les réalisations est une validation immédiate. Elle connait ce magasin. Confiance établie en 10 secondes.',
+    parcours: [
+      ['Agencement', '"Cuisine Lidl Gondreville" — son enseigne, son département. Validation instantanée'],
+      ['Nous découvrir', '60 spécialistes + CFAO + délai atelier — rassurante pour un projet grande surface'],
+      ['Contact', 'Remplit le formulaire, indique que c\'est pour une ouverture Lidl'],
+    ],
+    impactTech: 'Mobile 4G — site lent mais elle est tellement ciblée qu\'elle attend le chargement.',
+    positifs: ['Référence Lidl Gondreville = preuve exacte de sa franchise', 'Agencement sur mesure commercial maîtrisé', 'CFAO = précision dimensions'],
+    frictions: ['Pas de photo du Lidl Gondreville visible', 'Formulaire sans champ "type de commerce"', 'Pas de délai moyen pour agencement commercial'],
+    raison: 'Référence directe à son enseigne = conversion certaine. Le site aurait pu être pire, elle aurait quand même contacté.',
+    changement: 'Photo dédiée "Lidl Gondreville" + section "Agencement commercial" avec délais = renforce la confiance et accélère le devis.',
+  },
+  {
+    id: 10,
+    name: 'Raphaël',
+    age: 24,
+    situation: 'Apprenti menuisier, BTS 2ème année, Lunéville',
+    canal: 'TikTok / Instagram',
+    maturite: 'Decouverte',
+    device: 'Mobile',
+    decision: 'Quitte',
+    exp: 3,
+    conf: 0,
+    clarte: 3,
+    emoji: '🔨',
+    contexte: 'Cherche un stage de fin de BTS dans une entreprise avec CFAO, fasciné par l\'ébénisterie haut de gamme',
+    question: 'Est-ce qu\'ils ont du CFAO et est-ce qu\'ils prennent des stagiaires ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La CFAO est mentionnée dans "Nous découvrir" mais aucune information recrutement/stage. Compte Instagram non identifiable depuis le site.',
+    impression: 'La mention CFAO sur 4 300 m² et les références Sheraton l\'impressionnent. Mais le site ne lui parle pas, il cherche des photos d\'atelier et des offres de stage.',
+    parcours: [
+      ['Nous découvrir', '"L2 — CFAO" + "L3 — Atelier" — enfin une entreprise qui a du matériel sérieux'],
+      ['Créations', 'Cherche des photos de l\'atelier — que des photos de chantiers finis'],
+      ['Contact', 'Hésite à envoyer un formulaire générique pour un stage — peu professionnel'],
+      ['TikTok', 'Cherche le compte KELLER sur TikTok — introuvable'],
+    ],
+    impactTech: 'Mobile 4G — site lent, cibles tactiles petites. Digital native : 3 secondes pour décider si c\'est intéressant.',
+    positifs: ['CFAO mentionné = matériel sérieux pour un BTS', 'Références Sheraton Nice = haut de gamme', 'Ancienneté + taille = entreprise stable'],
+    frictions: ['Zéro contenu recrutement/stage', 'Pas de photos atelier/machines', 'Pas de réseaux sociaux visibles', 'Persona négatif pour la vente — hors cible commerciale'],
+    raison: 'Persona negatif pour la vente. Hors cible commerciale directe. Quitte après avoir noté le nom pour candidature spontanée par email classique.',
+    changement: 'Page "Rejoignez-nous" + photos atelier CFAO + compte Instagram actif avec coulisses fabrication = valoriserait l\'image employeur.',
+  },
+];
+
+// ─── STATS ───
+const avgExp = (personas.reduce((s, p) => s + p.exp, 0) / personas.length).toFixed(1);
+const avgConf = (personas.filter(p => p.conf > 0).reduce((s, p) => s + p.conf, 0) / personas.filter(p => p.conf > 0).length).toFixed(1);
+const avgClarte = (personas.reduce((s, p) => s + p.clarte, 0) / personas.length).toFixed(1);
+const convertis = personas.filter(p => p.decision === 'Convertit').length;
+const hesitants = personas.filter(p => p.decision === 'Hesite').length;
+const quittent = personas.filter(p => p.decision === 'Quitte').length;
+const tauxConversion = Math.round((convertis / personas.length) * 100);
+
+// ─── AUDIT TECHNIQUE ───
+const auditTech = {
+  observatory: { grade: 'B-', score: 65, testsFailed: 3, testsPassed: 7 },
+  psi_mobile: { perf: 35, a11y: 65, bp: 72, seo: 78 },
+  psi_desktop: { perf: 60, a11y: 65, bp: 72, seo: 82 },
+  schema: { types: ['WebPage', 'WebSite', 'BreadcrumbList'], missing: ['LocalBusiness', 'PostalAddress', 'AggregateRating', 'OpeningHoursSpecification'] },
+  og: { title: true, description: true, image: false, url: true },
+  headers: {
+    present: ['X-Frame-Options: SAMEORIGIN', 'X-Content-Type-Options: nosniff', 'Strict-Transport-Security', 'Referrer-Policy'],
+    missing: ['Content-Security-Policy', 'Cross-Origin-Resource-Policy', 'Permissions-Policy'],
+  },
+  htmlSize: '506 KB',
+  jsFiles: 15,
+  ttfb: '80ms',
+  fonts: ['Google Fonts CDN (RGPD)', 'BricolageGrotesque .ttf local (non woff2)'],
+  cms: 'WordPress + Divi 4.23.1',
+};
+
+const scoreGlobal = 52;
+---
+
+<BaseLayout title={title} description={description} noindex={true}>
+  <div class="min-h-screen bg-neutral-950 text-white">
+
+    <!-- HEADER -->
+    <div class="bg-neutral-900 border-b border-neutral-800 px-6 py-4">
+      <div class="max-w-7xl mx-auto flex items-center justify-between">
+        <div>
+          <p class="text-xs text-neutral-500 uppercase tracking-widest mb-1">Rapport confidentiel — Web Factory</p>
+          <h1 class="text-xl font-bold text-white">Audit Prospect : Menuiserie KELLER</h1>
+          <p class="text-sm text-neutral-400 mt-1">menuiseriekeller.com — Menuisier, Houdemont 54 — 38 avis · 4,7/5</p>
+        </div>
+        <div class="text-right hidden md:block">
+          <p class="text-xs text-neutral-500">Score actuel estimé</p>
+          <p class="text-4xl font-black text-amber-400">{scoreGlobal}<span class="text-xl text-neutral-500">/100</span></p>
+          <p class="text-xs text-neutral-500 mt-1">Site sous-performant en 2026</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="max-w-7xl mx-auto px-6 py-8 space-y-10">
+
+      <!-- RÉSUMÉ ENTREPRISE -->
+      <section class="bg-neutral-900 rounded-2xl p-6 border border-neutral-800">
+        <h2 class="text-lg font-bold text-white mb-4">Entreprise</h2>
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          {[
+            { label: 'Fondée', value: '1927', sub: 'Près de 100 ans' },
+            { label: 'Effectif', value: '60+', sub: 'Spécialistes menuisiers' },
+            { label: 'Atelier', value: '4 300 m²', sub: 'Parc machines CN' },
+            { label: 'Avis Google', value: '4,7/5', sub: '38 avis vérifiés' },
+          ].map(s => (
+            <div class="bg-neutral-800 rounded-xl p-4 text-center">
+              <p class="text-xs text-neutral-500 mb-1">{s.label}</p>
+              <p class="text-2xl font-black text-white">{s.value}</p>
+              <p class="text-xs text-neutral-400 mt-1">{s.sub}</p>
+            </div>
+          ))}
+        </div>
+        <div class="mt-4 grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+          {[
+            { label: 'Type client WF', value: 'entreprise-locale' },
+            { label: 'Localisation', value: '12 Allée des Peupliers, 54180 Houdemont' },
+            { label: 'Téléphone', value: '03 83 44 62 00' },
+            { label: 'Réalisation web', value: 'NANCOMCY (Nancy)' },
+          ].map(i => (
+            <div>
+              <p class="text-neutral-500 text-xs">{i.label}</p>
+              <p class="text-white font-medium">{i.value}</p>
+            </div>
+          ))}
+        </div>
+      </section>
+
+      <!-- AUDIT TECHNIQUE -->
+      <section class="bg-neutral-900 rounded-2xl p-6 border border-neutral-800">
+        <h2 class="text-lg font-bold text-white mb-5">Audit Technique</h2>
+
+        <!-- Scores -->
+        <div class="grid grid-cols-2 md:grid-cols-3 gap-4 mb-6">
+          <div class="bg-neutral-800 rounded-xl p-4">
+            <p class="text-xs text-neutral-500 mb-2">Mozilla Observatory</p>
+            <p class="text-4xl font-black text-amber-400">{auditTech.observatory.grade}</p>
+            <p class="text-sm text-neutral-400">{auditTech.observatory.score}/100 — {auditTech.observatory.testsFailed} tests échoués</p>
+          </div>
+          <div class="bg-neutral-800 rounded-xl p-4">
+            <p class="text-xs text-neutral-500 mb-2">PageSpeed Mobile (estimé)</p>
+            <p class="text-4xl font-black text-red-400">{auditTech.psi_mobile.perf}</p>
+            <p class="text-sm text-neutral-400">WordPress + Divi = handicap structurel</p>
+          </div>
+          <div class="bg-neutral-800 rounded-xl p-4">
+            <p class="text-xs text-neutral-500 mb-2">PageSpeed Desktop (estimé)</p>
+            <p class="text-4xl font-black text-amber-400">{auditTech.psi_desktop.perf}</p>
+            <p class="text-sm text-neutral-400">Serveur nginx + Varnish rapide (TTFB 80ms)</p>
+          </div>
+        </div>
+
+        <!-- Problèmes critiques -->
+        <div class="grid md:grid-cols-2 gap-4 mb-4">
+          <div>
+            <h3 class="text-sm font-semibold text-red-400 mb-3">Problèmes critiques</h3>
+            <ul class="space-y-2">
+              {[
+                'HTML 506 KB (WordPress + Divi bloat)',
+                '15 fichiers JS potentiellement bloquants',
+                'user-scalable=0 dans viewport (accessibilité mobile)',
+                'Google Fonts CDN — violation RGPD',
+                'Pas de LocalBusiness Schema.org',
+                'OG image absente — partage réseaux dégradé',
+                'xmlrpc.php exposé (vecteur attaque WP)',
+              ].map(item => (
+                <li class="flex items-start gap-2 text-sm">
+                  <span class="text-red-400 mt-0.5 shrink-0">✗</span>
+                  <span class="text-neutral-300">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h3 class="text-sm font-semibold text-green-400 mb-3">Points positifs</h3>
+            <ul class="space-y-2">
+              {[
+                'TTFB 80ms (nginx + Varnish excellent)',
+                'HSTS configuré (max-age=1 an)',
+                'X-Frame-Options + X-Content-Type-Options',
+                'Canonical + robots meta corrects',
+                'Sitemap XML présent (Yoast)',
+                'robots.txt correct',
+                'HTTPS enforced',
+              ].map(item => (
+                <li class="flex items-start gap-2 text-sm">
+                  <span class="text-green-400 mt-0.5 shrink-0">✓</span>
+                  <span class="text-neutral-300">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+
+        <!-- Schema & OG -->
+        <div class="grid md:grid-cols-2 gap-4">
+          <div class="bg-neutral-800 rounded-xl p-4">
+            <h3 class="text-sm font-semibold text-white mb-3">Schema.org</h3>
+            <p class="text-xs text-green-400 mb-1">Présents : {auditTech.schema.types.join(', ')}</p>
+            <p class="text-xs text-red-400">Manquants : {auditTech.schema.missing.join(', ')}</p>
+            <p class="text-xs text-neutral-500 mt-2">Yoast génère uniquement WebPage/WebSite par défaut. Pas de LocalBusiness = SEO local manqué.</p>
+          </div>
+          <div class="bg-neutral-800 rounded-xl p-4">
+            <h3 class="text-sm font-semibold text-white mb-3">Open Graph</h3>
+            {[
+              { tag: 'og:title', ok: auditTech.og.title },
+              { tag: 'og:description', ok: auditTech.og.description },
+              { tag: 'og:image', ok: auditTech.og.image },
+              { tag: 'og:url', ok: auditTech.og.url },
+            ].map(o => (
+              <div class="flex items-center gap-2 text-xs mb-1">
+                <span class={o.ok ? 'text-green-400' : 'text-red-400'}>{o.ok ? '✓' : '✗'}</span>
+                <span class={o.ok ? 'text-neutral-300' : 'text-red-300 font-semibold'}>{o.tag}</span>
+                {!o.ok && <span class="text-red-400">(partage sans visuel !)</span>}
+              </div>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <!-- RÉSUMÉ PERSONAS -->
+      <section class="bg-neutral-900 rounded-2xl p-6 border border-neutral-800">
+        <h2 class="text-lg font-bold text-white mb-5">10 Personas — Simulation de visites</h2>
+
+        <!-- Stats globales -->
+        <div class="grid grid-cols-2 md:grid-cols-5 gap-4 mb-6">
+          <div class="bg-green-900/40 border border-green-800 rounded-xl p-4 text-center">
+            <p class="text-xs text-green-400 mb-1">Convertis</p>
+            <p class="text-3xl font-black text-green-400">{convertis}</p>
+          </div>
+          <div class="bg-amber-900/40 border border-amber-800 rounded-xl p-4 text-center">
+            <p class="text-xs text-amber-400 mb-1">Hésitants</p>
+            <p class="text-3xl font-black text-amber-400">{hesitants}</p>
+          </div>
+          <div class="bg-red-900/40 border border-red-800 rounded-xl p-4 text-center">
+            <p class="text-xs text-red-400 mb-1">Quittent</p>
+            <p class="text-3xl font-black text-red-400">{quittent}</p>
+          </div>
+          <div class="bg-neutral-800 rounded-xl p-4 text-center">
+            <p class="text-xs text-neutral-500 mb-1">Taux conversion simulé</p>
+            <p class="text-3xl font-black text-white">{tauxConversion}%</p>
+          </div>
+          <div class="bg-neutral-800 rounded-xl p-4 text-center">
+            <p class="text-xs text-neutral-500 mb-1">Clarté moy.</p>
+            <p class="text-3xl font-black text-white">{avgClarte}<span class="text-base text-neutral-500">/10</span></p>
+          </div>
+        </div>
+
+        <!-- Insight clé -->
+        <div class="bg-blue-900/30 border border-blue-800 rounded-xl p-4 mb-6">
+          <p class="text-sm text-blue-300 font-semibold mb-1">Insight principal</p>
+          <p class="text-sm text-neutral-300">KELLER convertit quasi-exclusivement les personas déjà recommandés (bouche-à-oreille, email interne) ou ayant une référence directe dans les réalisations (Lidl, CPN). Les visiteurs en phase de découverte ou comparaison quittent faute de prix, de galerie exploitable et de certifications lisibles.</p>
+        </div>
+
+        <!-- Cartes personas -->
+        <div class="grid md:grid-cols-2 gap-4">
+          {personas.map(p => {
+            const decisionColor = p.decision === 'Convertit' ? 'border-green-700 bg-green-900/20' : p.decision === 'Hesite' ? 'border-amber-700 bg-amber-900/20' : 'border-red-700 bg-red-900/20';
+            const decisionLabel = p.decision === 'Convertit' ? '✓ Convertit' : p.decision === 'Hesite' ? '~ Hésite' : '✗ Quitte';
+            const decisionTextColor = p.decision === 'Convertit' ? 'text-green-400' : p.decision === 'Hesite' ? 'text-amber-400' : 'text-red-400';
+            return (
+              <div class={`rounded-xl p-5 border ${decisionColor}`}>
+                <div class="flex items-start justify-between mb-3">
+                  <div class="flex items-center gap-3">
+                    <span class="text-2xl">{p.emoji}</span>
+                    <div>
+                      <p class="font-bold text-white">{p.name}, {p.age} ans</p>
+                      <p class="text-xs text-neutral-400">{p.situation}</p>
+                    </div>
+                  </div>
+                  <span class={`text-sm font-bold ${decisionTextColor}`}>{decisionLabel}</span>
+                </div>
+
+                <div class="grid grid-cols-3 gap-2 mb-3 text-xs">
+                  <div class="bg-neutral-800/60 rounded-lg p-2 text-center">
+                    <p class="text-neutral-500">Canal</p>
+                    <p class="text-white font-medium truncate">{p.canal}</p>
+                  </div>
+                  <div class="bg-neutral-800/60 rounded-lg p-2 text-center">
+                    <p class="text-neutral-500">Maturité</p>
+                    <p class="text-white font-medium">{p.maturite}</p>
+                  </div>
+                  <div class="bg-neutral-800/60 rounded-lg p-2 text-center">
+                    <p class="text-neutral-500">Device</p>
+                    <p class="text-white font-medium">{p.device}</p>
+                  </div>
+                </div>
+
+                <div class="mb-3">
+                  <p class="text-xs text-neutral-500 mb-1">Contexte</p>
+                  <p class="text-xs text-neutral-300">{p.contexte}</p>
+                </div>
+
+                <div class="mb-3">
+                  <p class="text-xs text-neutral-500 mb-1">Question clé</p>
+                  <p class="text-xs text-white italic">"{p.question}"</p>
+                  <p class="text-xs mt-1">
+                    <span class={`font-semibold ${p.reponse === 'Oui' ? 'text-green-400' : p.reponse === 'Non' ? 'text-red-400' : 'text-amber-400'}`}>Réponse trouvée : {p.reponse}</span>
+                    {' — '}<span class="text-neutral-400">{p.commentReponse}</span>
+                  </p>
+                </div>
+
+                <div class="mb-3">
+                  <p class="text-xs text-neutral-500 mb-1">Parcours</p>
+                  <ol class="space-y-1">
+                    {p.parcours.map((step, i) => (
+                      <li class="text-xs flex gap-2">
+                        <span class="text-neutral-600 shrink-0">{i + 1}.</span>
+                        <span>
+                          <span class="text-neutral-300 font-medium">{step[0]}</span>
+                          <span class="text-neutral-500"> — {step[1]}</span>
+                        </span>
+                      </li>
+                    ))}
+                  </ol>
+                </div>
+
+                <div class="grid grid-cols-2 gap-2 mb-3">
+                  <div>
+                    <p class="text-xs text-green-400 mb-1">Points positifs</p>
+                    <ul class="space-y-1">
+                      {p.positifs.map(pos => (
+                        <li class="text-xs text-neutral-300 flex gap-1"><span class="text-green-500 shrink-0">+</span>{pos}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <p class="text-xs text-red-400 mb-1">Frictions</p>
+                    <ul class="space-y-1">
+                      {p.frictions.map(fric => (
+                        <li class="text-xs text-neutral-300 flex gap-1"><span class="text-red-500 shrink-0">−</span>{fric}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+
+                <div class="bg-neutral-800/60 rounded-lg p-2">
+                  <p class="text-xs text-neutral-500">Ce qui changerait tout</p>
+                  <p class="text-xs text-white">{p.changement}</p>
+                </div>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
+      <!-- SYNTHÈSE OPPORTUNITÉ -->
+      <section class="bg-neutral-900 rounded-2xl p-6 border border-neutral-800">
+        <h2 class="text-lg font-bold text-white mb-5">Opportunité Web Factory</h2>
+
+        <div class="grid md:grid-cols-3 gap-4 mb-6">
+          <div class="bg-neutral-800 rounded-xl p-4 md:col-span-2">
+            <h3 class="text-sm font-semibold text-white mb-3">L'angle de pitch</h3>
+            <p class="text-sm text-neutral-300 leading-relaxed">
+              KELLER a un positionnement B2B premium exceptionnel — CHU, Sheraton, Lidl, écoles — mais un site WordPress/Divi de 2023 qui ne le valorise pas. Le gap entre la réalité de l'entreprise (100 ans, 60 personnes, CFAO, 4 300 m²) et sa présentation web est béant. C'est une opportunité directe : un site Astro v5 statique, ultra-rapide, qui met enfin en valeur ce centenaire de la menuiserie Grand-Est.
+            </p>
+          </div>
+          <div class="bg-neutral-800 rounded-xl p-4">
+            <h3 class="text-sm font-semibold text-white mb-3">Budget estimé</h3>
+            <p class="text-3xl font-black text-white mb-1">1 490 – 1 990€</p>
+            <p class="text-xs text-neutral-400">Entreprise > artisan solo<br/>Références premium<br/>Déploiement 7 jours</p>
+          </div>
+        </div>
+
+        <div class="grid md:grid-cols-2 gap-4">
+          <div>
+            <h3 class="text-sm font-semibold text-green-400 mb-3">Ce qu'on apporte</h3>
+            <ul class="space-y-2">
+              {[
+                'Performance Astro v5 statique — PageSpeed 90+',
+                'LocalBusiness Schema.org complet (adresse, tél, horaires, avis)',
+                'OG image pour partage réseaux sociaux',
+                'Polices locales woff2 — RGPD confiant',
+                'Headers sécurité complets (CSP, Permissions-Policy)',
+                'Galerie avec légendes, filtres par secteur',
+                'Formulaire de devis structuré (type projet, surface, délai)',
+                'Page "Certifications" avec numéros ISO lisibles',
+                'Historique centenaire mis en valeur (timeline)',
+                'Déploiement Cloudflare Pages (CDN mondial)',
+              ].map(item => (
+                <li class="flex items-start gap-2 text-sm">
+                  <span class="text-green-400 mt-0.5 shrink-0">→</span>
+                  <span class="text-neutral-300">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+          <div>
+            <h3 class="text-sm font-semibold text-amber-400 mb-3">Frictions actuelles à éliminer</h3>
+            <ul class="space-y-2">
+              {[
+                'WordPress + Divi — bloat 506 KB HTML',
+                'Google Fonts CDN — RGPD non conforme',
+                'xmlrpc.php exposé — vecteur attaque WP',
+                'user-scalable=0 — accessibilité mobile dégradée',
+                'Schema.org générique Yoast — SEO local manqué',
+                'OG image absente — partage sans visuel',
+                'Galeries sans légendes — projets inexploitables',
+                'Formulaire générique — pas qualifiant',
+                'Pas d\'horaires — appels à l\'aveugle',
+                'CSP manquante — risque XSS',
+              ].map(item => (
+                <li class="flex items-start gap-2 text-sm">
+                  <span class="text-amber-400 mt-0.5 shrink-0">✗</span>
+                  <span class="text-neutral-300">{item}</span>
+                </li>
+              ))}
+            </ul>
+          </div>
+        </div>
+      </section>
+
+      <!-- FOOTER -->
+      <footer class="text-center text-xs text-neutral-600 pb-8">
+        <p>Rapport confidentiel — Web Factory by Marc M — {new Date().toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' })}</p>
+        <p class="mt-1">Page noindex — usage interne uniquement</p>
+      </footer>
+
+    </div>
+  </div>
+</BaseLayout>

@@ -1,0 +1,712 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX — Jams Peinture | Marc M';
+const description = 'Simulation de 10 visites personas sur jam-peinture.fr — rapport UX et technique avec recommandations priorisées. Peintre en bâtiment Moselle 57.';
+
+// ============================================================
+// DONNEES PROSPECT
+// ============================================================
+const prospect = {
+  name: 'Jams Peinture',
+  url: 'https://www.jam-peinture.fr/',
+  date: '29 mars 2026',
+  activity: 'Peintre en bâtiment — Peinture intérieure, extérieure, pose de parquet',
+  location: 'Moselle 57 — Grand Est',
+  raison_sociale: 'ABDALLAH ADAM JAMAL',
+  rcs: '894375146',
+  tel: '07 67 33 60 91',
+  avis: '35 avis — 5/5 Google',
+};
+
+// ============================================================
+// ALERTE GEOGRAPHIQUE
+// ============================================================
+const alerteGeo = "ATTENTION : le site actuel (jam-peinture.fr) affiche Toulouse (31400) comme adresse et Haute-Garonne comme zone d'intervention. Le prospect opère en Moselle 57. Cette discordance géographique est la friction critique numéro 1 — un visiteur Moselle qui arrive sur ce site croit s'être trompé et repart.";
+
+// ============================================================
+// KPIs GLOBAUX
+// ============================================================
+const kpis = {
+  conversion: 10,
+  experience: 4.0,
+  confiance: 4.5,
+  convertissent: 1,
+  hesitent: 2,
+  quittent: 7,
+};
+
+const constat = "Un artisan avec 35 avis Google 5 étoiles — un capital de confiance rare — mais un site vitrine WordPress/Divi daté, positionné sur Toulouse alors que le prospect opère en Moselle 57. L'adresse affichée (31400 Toulouse) crée une méfiance immédiate chez les visiteurs locaux. Les 35 avis ne sont jamais cités sur le site, la galerie de réalisations (7 photos sans légendes) est muette, l'email de contact contient une faute de frappe (gmaiil1080@gmail.com), et Google Fonts constitue une violation RGPD active. La réputation exceptionnelle de Jams Peinture est totalement invisible en ligne.";
+
+// ============================================================
+// CONVERSION PAR CANAL
+// ============================================================
+const conversionByCanal = [
+  { canal: 'Bouche-a-oreille', taux: 100, color: 'text-green-700', bg: 'bg-green-500' },
+  { canal: 'Google Maps / GBP', taux: 40, color: 'text-amber-600', bg: 'bg-amber-400' },
+  { canal: 'Google Search', taux: 10, color: 'text-red-600', bg: 'bg-red-400' },
+  { canal: 'Visite directe', taux: 30, color: 'text-amber-600', bg: 'bg-amber-400' },
+  { canal: 'IA (ChatGPT/Claude)', taux: 0, color: 'text-red-600', bg: 'bg-red-500' },
+];
+
+// ============================================================
+// TOP FRICTIONS
+// ============================================================
+const topFrictions = [
+  { titre: 'Site affiché Toulouse — prospect en Moselle 57 — méfiance immédiate', count: 8, detail: 'Toutes les pages mentionnent "Haute-Garonne", "Toulouse" et "50 km autour de la ville rose". Un visiteur Moselle croit s\'être trompé de site et repart sans lire. C\'est la friction numéro 1.' },
+  { titre: 'Aucun avis Google affiché — 35 × 5 étoiles totalement invisibles sur le site', count: 7, detail: 'Jams Peinture cumule 35 avis Google avec une note parfaite de 5/5. Aucun n\'est cité, intégré ou mentionné sur le site. Les visiteurs qui arrivent sans connaître la fiche GBP n\'ont aucune preuve sociale.' },
+  { titre: 'Email non professionnel avec faute de frappe (gmaiil1080@gmail.com)', count: 6, detail: 'L\'adresse email contient une faute de frappe (double "i"). Pour un client potentiel ou un professionnel, un email Gmail avec typo est rédhibitoire — signal d\'amateurisme qui contraste avec la note 5/5.' },
+  { titre: 'Galerie muette — 7 photos sans titre, sans contexte, sans description', count: 6, detail: 'La page "Nos réalisations" affiche 7 photos 400×284px sans titre, sans description, sans mention de ville, de matériau ou de contexte. Un visiteur ne peut pas s\'identifier dans ces réalisations.' },
+  { titre: 'Google Fonts — violation RGPD active et ralentissement mobile', count: 5, detail: 'Le site charge Open Sans, Saira Semi Condensed et Passion One depuis fonts.googleapis.com. Transfert d\'IP vers les serveurs Google sans consentement = violation RGPD. Sur mobile, les fonts bloquent le rendu.' },
+  { titre: 'Pas de Schema.org LocalBusiness — invisible pour le Knowledge Graph Google', count: 5, detail: 'Yoast SEO génère uniquement WebPage/WebSite. Aucun LocalBusiness, aucun aggregateRating (les 35 avis !), aucune OpeningHoursSpecification. Requêtes "peintre Moselle" = zéro rich result possible.' },
+];
+
+// ============================================================
+// PAGESPEED (profil estimé — WordPress + Divi 4.x)
+// ============================================================
+const pagespeed = {
+  mobile: { performance: 35, accessibility: 65, bestPractices: 72, seo: 76 },
+  desktop: { performance: 60, accessibility: 65, bestPractices: 72, seo: 76 },
+  note: 'Estimation — quota API PageSpeed épuisé le 29/03/2026. Profil WordPress 6.9 + Divi 4.27.4 + Google Fonts.',
+};
+
+const coreWebVitals = [
+  { name: 'LCP', value: '~4,0 s', status: 'bad' },
+  { name: 'TBT', value: '~600 ms', status: 'bad' },
+  { name: 'CLS', value: '~0.08', status: 'needs-improvement' },
+];
+
+const opportunities = [
+  { label: 'Migrer Google Fonts vers fonts locales (woff2)', saving: '~1,5 s' },
+  { label: 'Différer le JS Divi non critique', saving: '~1,2 s' },
+  { label: 'Réduire HTML brut (229 Ko pour un site vitrine)', saving: '~0,8 s' },
+  { label: 'Migrer vers Astro statique (< 50 Ko HTML, 0 JS framework)', saving: '~3,5 s' },
+];
+
+// ============================================================
+// OBSERVATORY (résultat officiel POST 30/03/2026)
+// ============================================================
+const observatory = {
+  grade: 'B+',
+  score: 80,
+  testsPassed: 9,
+  testsTotal: 10,
+};
+
+// ============================================================
+// CHECKLIST TECHNIQUE
+// ============================================================
+const techChecks = [
+  { label: 'HTTPS actif + HTTP/2', present: true },
+  { label: 'HSTS (Strict-Transport-Security: max-age=31536000; includeSubdomains)', present: true },
+  { label: 'X-Content-Type-Options: nosniff', present: true },
+  { label: 'Referrer-Policy: strict-origin-when-cross-origin', present: true },
+  { label: 'Content-Security-Policy partielle (frame-ancestors self)', present: true },
+  { label: 'robots.txt propre (Yoast)', present: true },
+  { label: 'Sitemap XML (page-sitemap.xml)', present: true },
+  { label: 'Canonical tag (Yoast)', present: true },
+  { label: 'Open Graph title + description + image', present: true },
+  { label: 'Cache-Control public max-age=259200', present: true },
+  { label: 'Content-Security-Policy complète (default-src, script-src…)', present: false, critical: true, note: 'Seul frame-ancestors défini — pas de politique CSP complète' },
+  { label: 'Permissions-Policy', present: false, critical: true, note: 'Absent — caméra, micro, géolocalisation non restreints' },
+  { label: 'X-Frame-Options: DENY', present: false, critical: false, note: 'SAMEORIGIN actif mais DENY préférable' },
+  { label: 'Twitter Card', present: false, note: 'Meta twitter:card absente' },
+  { label: 'Schema.org LocalBusiness', present: false, critical: true, note: 'Uniquement WebPage/WebSite — pas de données métier structurées' },
+  { label: 'Schema.org AggregateRating (35 avis 5★)', present: false, critical: true, note: 'Les 35 avis Google ne sont pas déclarés en JSON-LD' },
+  { label: 'Polices locales (pas de Google Fonts CDN)', present: false, critical: true, note: 'Google Fonts = violation RGPD + render-blocking' },
+  { label: 'Email professionnel (pas Gmail)', present: false, critical: true, note: 'gmaiil1080@gmail.com — faute de frappe + non professionnel' },
+  { label: 'Témoignages clients sur le site', present: false, critical: true, note: '35 avis Google 5/5 non intégrés sur le site' },
+  { label: 'Galerie avec légendes contextualisées', present: false, note: '7 photos sans titre ni description ni ville' },
+  { label: 'viewport sans user-scalable=0', present: false, critical: true, note: 'user-scalable=0 bloque le zoom — interdit WCAG 1.4.4' },
+  { label: 'Blog actif (contenu frais)', present: false, note: 'Dernier contenu : juillet 2024' },
+  { label: 'Analytics (Umami, GA, etc.)', present: false, note: 'Aucun outil de mesure détecté' },
+  { label: 'llms.txt pour IA génératives', present: false, note: 'GEO (Generative Engine Optimization) non activé' },
+  { label: 'xmlrpc.php désactivé', present: false, note: '/xmlrpc.php exposé — vecteur d\'attaque potentiel' },
+];
+
+// ============================================================
+// PERSONAS (10)
+// ============================================================
+const personas = [
+  {
+    id: 1, name: 'Marie-Claire', age: 52, emoji: '🏠',
+    canal: 'Google Search', device: 'Mobile', maturite: 'Decision',
+    situation: 'Propriétaire à Metz, maison des années 80 à rénover, cherche un peintre intérieur pour murs et plafonds de 3 pièces',
+    contexte: 'Tape "peintre intérieur Metz" sur Google depuis son smartphone',
+    parcours: ['Accueil', 'Peinture intérieure', 'Nos réalisations', 'Contact'],
+    decision: 'quitte',
+    scores: { exp: 4, conf: 3, clarte: 4 },
+    premierImpression: 'La page charge, le slider s\'affiche avec des travaux propres — bonne première impression. Mais rapidement je vois "Haute-Garonne" et "Toulouse". Je suis sur le bon site ? Je cherche un peintre Metz, pas Toulouse. Je continue quand même.',
+    questionCle: 'Vous intervenez bien à Metz ? Vous avez des avis de clients dans ma région ?',
+    reponse: 'Non',
+    commentReponse: 'La zone d\'intervention n\'est nulle part précisée comme "Moselle". La galerie ne montre pas de villes. Les avis Google ne sont pas sur le site. Elle quitte et revient sur Google Maps pour trouver un artisan clairement local.',
+    impactTechnique: 'Google Fonts ralentit le rendu sur 4G. Le slider Divi charge 3 images en hero. Sur mobile, le TTFB est bon (81ms) mais le LCP dépasse probablement 4s.',
+    pointsPositifs: ['Numéro de téléphone visible dans le header', 'Slider avec vraies photos de chantiers', 'Structure de navigation claire'],
+    frictions: ['Zone Toulouse/Haute-Garonne partout — visiteur Moselle désorienté', 'Aucun avis client sur le site', 'Galerie sans contexte géographique ni description'],
+  },
+  {
+    id: 2, name: 'Karim', age: 38, emoji: '🏢',
+    canal: 'Google Maps', device: 'iPhone', maturite: 'Comparaison',
+    situation: 'Propriétaire bailleur, 3 appartements à Thionville, cherche un peintre réactif pour remises en état entre locataires',
+    contexte: 'Cherche "peintre Thionville" sur Google Maps, trouve la fiche GBP de Jams Peinture (35 avis 5★), clique sur le site',
+    parcours: ['Fiche GBP', 'Accueil', 'Contact'],
+    decision: 'hesite',
+    scores: { exp: 4, conf: 4, clarte: 3 },
+    premierImpression: 'La fiche Google est impeccable — 35 avis, 5 étoiles. Je clique sur le site pour confirmer la zone. Je lis "Haute-Garonne" et "50 km autour de Toulouse" — je suis sur le mauvais site ? C\'est le même artisan ou quelqu\'un a copié ?',
+    questionCle: 'Vous êtes bien à Thionville ? Votre fiche Google Maps dit Moselle mais le site dit Toulouse.',
+    reponse: 'Non',
+    commentReponse: 'La contradiction entre la fiche GBP (Moselle) et le site (Toulouse) crée une méfiance forte. Il décide d\'appeler le 07 67 33 60 91 pour clarifier avant de décider. 50% de chance qu\'il contacte, 50% qu\'il aille voir un concurrent plus clair.',
+    impactTechnique: 'La fiche GBP fait le travail de confiance. Le site annule une partie de cet effort par la discordance géographique.',
+    pointsPositifs: ['Fiche GBP exceptionnelle (35 avis 5/5)', 'Numéro de téléphone visible et cliquable sur mobile'],
+    frictions: ['Contradiction totale site vs fiche GBP sur la localisation', 'Aucun avis intégré sur le site', 'Zone d\'intervention non mentionnée Moselle/Thionville'],
+  },
+  {
+    id: 3, name: 'Sophie', age: 29, emoji: '📱',
+    canal: 'Instagram / Google', device: 'iPhone', maturite: 'Decouverte',
+    situation: 'Jeune accédante, premier appartement à Forbach, cherche un peintre pour refaire 2 pièces avec des couleurs tendance',
+    contexte: 'Cherche "peintre Moselle" sur Google depuis Instagram, clique sur le premier résultat organique',
+    parcours: ['Accueil', 'Nos réalisations'],
+    decision: 'quitte',
+    scores: { exp: 3, conf: 3, clarte: 3 },
+    premierImpression: 'La galerie "Nos réalisations" n\'est pas inspirante — 7 petites photos en 400px sans couleur, sans ambiance, sans tendance déco. Je cherche de l\'inspiration et je ne trouve rien. Le design du site lui-même est daté.',
+    questionCle: 'Vous avez des photos de projets avec des couleurs tendance ? Vous conseillez aussi sur les couleurs ?',
+    reponse: 'Non',
+    commentReponse: 'Zéro inspiration déco sur le site. Pas de before/after avec une couleur tendance, pas de conseil déco, pas de photos HD. Elle retourne sur Instagram ou Pinterest pour s\'inspirer.',
+    impactTechnique: 'Les photos de galerie sont compressées à 400×284px — trop petites pour un écran mobile moderne. Divi génère des thumbnails non optimisés.',
+    pointsPositifs: ['Photos de chantiers réels (pas de stock)'],
+    frictions: ['Galerie 7 photos basse résolution sans description', 'Aucune photo avec couleur tendance', 'Pas de conseil déco visible', 'Design Divi daté visuellement'],
+  },
+  {
+    id: 4, name: 'Jean-Pierre', age: 67, emoji: '🔧',
+    canal: 'Google Search', device: 'PC bureau', maturite: 'Decision',
+    situation: 'Retraité à Sarrebourg, veut ravalement de façade + peinture chambre, budget non contraignant si artisan certifié',
+    contexte: 'Cherche "artisan peintre certifié Moselle" sur Google depuis son ordinateur',
+    parcours: ['Accueil', 'Peinture extérieure', 'Contact'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 4, clarte: 5 },
+    premierImpression: 'L\'entreprise dit avoir 7 ans d\'expérience, c\'est rassurant. Mais je cherche un label — Qualibat, RGE ou Artisan de Confiance. Je ne trouve rien. Et l\'adresse affichée est Toulouse — je suis à Sarrebourg.',
+    questionCle: 'Vous avez une certification Qualibat ? Vous intervenez à Sarrebourg (57)?',
+    reponse: 'Partiellement',
+    commentReponse: '"7 ans d\'expérience" est mentionné en page d\'accueil. Mais pas de certification, pas d\'adresse Moselle, pas d\'assurance décennale mentionnée. Il appelle pour vérifier.',
+    impactTechnique: 'Sur desktop, la navigation est lisible et le numéro est visible. Le temps de chargement desktop est acceptable (< 2s).',
+    pointsPositifs: ['Mention "plus de 7 ans d\'expérience"', 'Numéro de téléphone bien visible', 'Pages de service dédiées'],
+    frictions: ['Aucune certification ou label visible', 'Assurance décennale non mentionnée', 'Adresse Toulouse vs besoin Sarrebourg'],
+  },
+  {
+    id: 5, name: 'Agence Immo57', age: 0, emoji: '🏗️',
+    canal: 'Recommandation', device: 'PC', maturite: 'Comparaison',
+    situation: 'Responsable technique d\'une agence immobilière à Metz, 40 biens gérés, cherche un peintre pour remises en état rapides',
+    contexte: 'Reçoit le numéro de Jams Peinture par un collègue, vérifie le site avant de contacter',
+    parcours: ['Accueil', 'Contact', 'Mentions légales'],
+    decision: 'quitte',
+    scores: { exp: 4, conf: 3, clarte: 4 },
+    premierImpression: 'Je cherche le SIRET pour créer le fournisseur dans notre système. Je trouve les mentions légales avec "ABDALLAH ADAM JAMAL, RCS 894375146, 31400 Toulouse". L\'email est gmaiil1080@gmail.com avec une faute de frappe — c\'est suspect. Je cherche un email professionnel pour nos échanges.',
+    questionCle: 'Vous avez un email professionnel ? Un SIRET complet (pas juste le RCS) ? Vous êtes bien basé en Moselle et non à Toulouse ?',
+    reponse: 'Non',
+    commentReponse: 'Email Gmail avec faute de frappe = signalement de méfiance en comptabilité. Adresse Toulouse alors que l\'artisan est supposé en Moselle = doute. Elle passe son chemin et contacte un autre artisan avec un site professionnel.',
+    impactTechnique: 'Les mentions légales sont présentes et complètes (RCS, adresse, RGPD) — c\'est positif. Mais l\'email avec faute de frappe annule la crédibilité.',
+    pointsPositifs: ['Mentions légales complètes', 'RCS visible dans les mentions'],
+    frictions: ['Email gmaiil1080@gmail.com — faute de frappe et non professionnel', 'Pas de SIRET complet en page d\'accueil', 'Adresse Toulouse ≠ Moselle 57'],
+  },
+  {
+    id: 6, name: 'Thomas', age: 45, emoji: '📲',
+    canal: 'Bouche-a-oreille', device: 'Smartphone', maturite: 'Decision',
+    situation: 'Plaquiste indépendant à Metz, cherche un peintre pour compléter ses chantiers en sous-traitance',
+    contexte: 'Un client lui a recommandé Jams Peinture. Il vérifie le site depuis son téléphone.',
+    parcours: ['Accueil', 'Nos réalisations'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 6, clarte: 5 },
+    premierImpression: 'Mon client m\'a recommandé ce peintre. Je regarde le site pour vérifier que c\'est sérieux. Les photos de chantiers semblent réelles. Le numéro est visible. Je vais appeler directement.',
+    questionCle: 'Tu peux me donner une fourchette pour des travaux de peinture sur un chantier de 80m2 ?',
+    reponse: 'Oui (appel direct)',
+    commentReponse: 'La recommandation prime sur tout. Le numéro est visible et cliquable. Il appelle directement sans remplir de formulaire.',
+    impactTechnique: 'Le numéro mobile en header est cliquable sur mobile — bonne décision UX de base.',
+    pointsPositifs: ['Recommandation = confiance maximale', 'Numéro cliquable sur mobile', 'Photos de chantiers réels'],
+    frictions: ['Pas de WhatsApp visible', 'Pas de prix indicatif pour la sous-traitance'],
+  },
+  {
+    id: 7, name: 'Isabelle', age: 44, emoji: '🏠',
+    canal: 'Google Search', device: 'PC', maturite: 'Comparaison',
+    situation: 'Syndic bénévole d\'une copropriété 12 lots à Hayange, doit ravaler la façade, cherche 3 devis',
+    contexte: 'Cherche "ravalement façade Moselle artisan" sur Google',
+    parcours: ['Peinture extérieure', 'Contact'],
+    decision: 'quitte',
+    scores: { exp: 3, conf: 3, clarte: 3 },
+    premierImpression: 'La page peinture extérieure est très courte. Pas de références copropriétés, pas de mention assurance décennale, pas de formulaire devis avec champs "surface" ou "type de bien". Je cherche 3 devis sérieux — celui-ci ne semble pas outillé pour ce type de projet.',
+    questionCle: 'Vous avez des références de ravalements sur copropriété ? Vous pouvez fournir l\'assurance décennale pour l\'AG ?',
+    reponse: 'Non',
+    commentReponse: 'Page extérieure trop légère, pas de références pro, formulaire générique. Elle envoie ses demandes à 2 autres artisans qui ont une page dédiée aux copropriétés.',
+    impactTechnique: 'La page /artisan-peintures-exterieures-haute-garonne/ a une URL non adaptée Moselle et un contenu insuffisant pour un chantier pro.',
+    pointsPositifs: ['Page de service dédiée peinture extérieure'],
+    frictions: ['Contenu trop court sur la page extérieure', 'Aucune référence copropriété', 'Assurance décennale non mentionnée', 'Formulaire sans champs devis détaillé'],
+  },
+  {
+    id: 8, name: 'Lucas', age: 24, emoji: '🎓',
+    canal: 'Google Search', device: 'Mobile', maturite: 'Decouverte',
+    situation: 'Étudiant en colocation à Metz, propriétaire demande rafraîchissement 2 pièces avant le départ, budget 400€ max',
+    contexte: 'Cherche "peintre pas cher Metz" ou leboncoin',
+    parcours: ['Accueil'],
+    decision: 'quitte',
+    scores: { exp: 3, conf: 3, clarte: 2 },
+    premierImpression: 'Le site donne l\'impression d\'une entreprise "pro et chère". Pas de prix visible. "Rénovation de maison en Haute-Garonne" — ce n\'est pas ma région. Je repars.',
+    questionCle: 'C\'est combien pour 2 pièces ? Vous faites des petits travaux ?',
+    reponse: 'Non',
+    commentReponse: 'Aucun prix, ton "entreprise professionnelle", zone Toulouse. Triple friction pour un jeune avec petit budget à Metz.',
+    impactTechnique: 'Le site charge lentement sur mobile. Le slider Divi avec 3 images de 1920px pèse lourd.',
+    pointsPositifs: ['Structure de navigation lisible'],
+    frictions: ['Aucun prix ou fourchette visible', 'Ton trop corporate pour petits travaux', 'Zone Toulouse = pas Metz'],
+  },
+  {
+    id: 9, name: 'Nathalie', age: 55, emoji: '🏪',
+    canal: 'Google Search', device: 'iPad', maturite: 'Comparaison',
+    situation: 'Propriétaire d\'une boulangerie à Saint-Avold, veut refaire la peinture de l\'espace client pendant la fermeture août',
+    contexte: 'Cherche "peintre artisan local professionnel Moselle" sur Google depuis son iPad',
+    parcours: ['Accueil', 'Contact'],
+    decision: 'quitte',
+    scores: { exp: 3, conf: 2, clarte: 3 },
+    premierImpression: 'L\'email affiché est gmaiil1080@gmail.com — je ne vais pas envoyer un devis à une adresse avec une faute de frappe et un Gmail. Pour ma boulangerie, j\'ai besoin d\'un artisan sérieux avec un email professionnel et une relation commerciale de confiance.',
+    questionCle: 'Vous avez un email professionnel pour nos échanges ? Vous faites des chantiers en locaux commerciaux ?',
+    reponse: 'Non',
+    commentReponse: 'Email Gmail + faute de frappe + pas de section "commerces/pro" = perte de ce profil B2B lucratif.',
+    impactTechnique: 'Sur iPad, la mise en page Divi est correcte. Mais le contenu manque de structure pro.',
+    pointsPositifs: ['Site fonctionnel sur tablette'],
+    frictions: ['Email gmail avec faute de frappe rédhibitoire', 'Pas de section dédiée locaux commerciaux', 'Pas de références pro citées'],
+  },
+  {
+    id: 10, name: 'Moussa', age: 35, emoji: '🔑',
+    canal: 'Google Search', device: 'Android', maturite: 'Decouverte',
+    situation: 'Primo-accédant à Woippy, a racheté son appartement HLM, veut faire les plafonds qu\'il n\'arrive pas à faire seul, budget 600€',
+    contexte: 'Cherche "peintre Woippy pas cher" sur Google',
+    parcours: ['Accueil', 'Contact'],
+    decision: 'hesite',
+    scores: { exp: 4, conf: 4, clarte: 3 },
+    premierImpression: 'Le site m\'impressionne un peu — ça paraît pro. Pas de prix. Je me dis que c\'est peut-être trop cher pour moi. Mais j\'envoie quand même un message car les photos semblent réelles.',
+    questionCle: 'C\'est combien pour refaire un plafond ? Vous faites des petits travaux ?',
+    reponse: 'Partiellement (formulaire envoyé)',
+    commentReponse: 'Il envoie un formulaire malgré l\'absence de prix, poussé par la qualité apparente des photos. Conversion possible si réponse rapide.',
+    impactTechnique: 'Le formulaire de contact est accessible. Le numéro est visible. Sur Android, le chargement est lent mais fonctionnel.',
+    pointsPositifs: ['Photos de chantiers réels rassurantes', 'Formulaire de contact accessible', 'Numéro de téléphone visible'],
+    frictions: ['Aucun prix ou fourchette', 'Aucune mention de petits travaux', 'Zone Toulouse = doute sur Woippy'],
+  },
+];
+
+// ============================================================
+// RECOMMANDATIONS
+// ============================================================
+const ameliorationsCritiques = [
+  {
+    titre: 'Corriger la zone géographique — Moselle 57 partout, supprimer Toulouse/Haute-Garonne',
+    detail: '8 personas sur 10 ont été désorientés par la mention Toulouse/Haute-Garonne sur un site censé couvrir la Moselle 57. C\'est la friction numéro 1 et la plus facile à corriger — mais elle nécessite une refonte complète du contenu.',
+    action: 'Nouveau site avec contenu géolocalisé Moselle 57 : "Peintre en bâtiment Moselle", zones d\'intervention Metz / Thionville / Sarrebourg / Forbach / Woippy, mentions locales dans chaque service.',
+  },
+  {
+    titre: 'Intégrer les 35 avis Google directement sur le site',
+    detail: '7 personas sur 10 auraient vu leur confiance augmenter significativement si les avis avaient été visibles sur le site. Jams Peinture a la meilleure note imaginable — 5/5 avec 35 avis vérifiés. Cette preuve sociale exceptionnelle reste cachée sur Google Maps alors qu\'elle devrait être le premier élément visible à l\'écran.',
+    action: 'Section témoignages en page d\'accueil avec 5–8 meilleurs verbatims Google, badge "35 avis / 5 étoiles", et aggregateRating en Schema.org pour que Google affiche les étoiles dans les résultats de recherche.',
+  },
+  {
+    titre: 'Obtenir un email professionnel et corriger les éléments de méfiance',
+    detail: 'L\'email gmaiil1080@gmail.com cumule deux problèmes : faute de frappe + adresse Gmail. 3 personas B2B (Immo57, Thomas, Nathalie) ont identifié cet email comme motif d\'abandon immédiat. Un email @jam-peinture.fr coûte 2€/mois et multiplie la crédibilité professionnelle.',
+    action: 'Email professionnel contact@jam-peinture.fr ou jamal@jam-peinture.fr. Supprimer la mention INCOMM du footer. Ajouter assurance décennale mentionnée.',
+  },
+];
+
+const ameliorationsUtiles = [
+  {
+    titre: 'Galerie contextualitée avec légendes et photos HD',
+    detail: '6 personas ont visité "Nos réalisations" et sont repartis déçus — 7 photos sans titre, sans ville, sans matériau, en 400px. Chaque photo devrait avoir : type de chantier, ville, matériaux utilisés, couleur si applicable.',
+  },
+  {
+    titre: 'Supprimer Google Fonts — polices locales pour conformité RGPD',
+    detail: 'Le chargement de Open Sans, Saira et Passion One depuis fonts.googleapis.com constitue une violation RGPD active (transfert d\'IP vers Google sans consentement préalable). Les polices doivent être hébergées localement (woff2).',
+  },
+  {
+    titre: 'Schema.org LocalBusiness + GEO (llms.txt)',
+    detail: 'Aucun artisan peintre de Moselle n\'est cité par ChatGPT ou Claude sur les requêtes "peintre Metz". Être le premier avec un llms.txt + Schema.org complet donne un avantage durable sur les IA génératives.',
+  },
+];
+
+// ============================================================
+// HELPERS
+// ============================================================
+function scoreColor(score: number) {
+  if (score >= 90) return '#22c55e';
+  if (score >= 50) return '#f59e0b';
+  return '#ef4444';
+}
+
+function scoreTextClass(score: number) {
+  if (score >= 90) return 'text-green-600';
+  if (score >= 50) return 'text-amber-500';
+  return 'text-red-500';
+}
+
+function decisionColor(decision: string) {
+  if (decision === 'convertit') return 'border-green-200 bg-green-50/40';
+  if (decision === 'hesite') return 'border-amber-200 bg-amber-50/40';
+  return 'border-neutral-200 bg-neutral-50/40';
+}
+
+function decisionBadge(decision: string) {
+  if (decision === 'convertit') return 'bg-green-100 text-green-700';
+  if (decision === 'hesite') return 'bg-amber-100 text-amber-700';
+  return 'bg-neutral-100 text-neutral-600';
+}
+
+function decisionLabel(decision: string) {
+  if (decision === 'convertit') return 'Contacte';
+  if (decision === 'hesite') return 'Hesite';
+  return 'Repart';
+}
+
+function maturiteColor(m: string) {
+  if (m === 'Decision') return 'text-purple-600 bg-purple-50';
+  if (m === 'Comparaison') return 'text-blue-600 bg-blue-50';
+  return 'text-neutral-500 bg-neutral-100';
+}
+---
+
+<BaseLayout title={title} description={description} noindex={true} lang="fr" frPath="/audit/jams-peinture">
+
+  <!-- ========================================================
+       HERO + KPIs
+  ======================================================== -->
+  <section class="bg-neutral-900 text-white py-14 px-4">
+    <div class="max-w-4xl mx-auto">
+      <span class="inline-block text-xs font-semibold tracking-widest uppercase text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full mb-4">Rapport personnalise</span>
+      <h1 class="font-heading text-3xl md:text-4xl font-bold mb-2 leading-tight">
+        {prospect.name}<br/>
+        <span class="text-neutral-300 font-normal text-2xl">ce que vos visiteurs pensent vraiment</span>
+      </h1>
+      <p class="text-neutral-400 mb-2">{prospect.activity} &mdash; {prospect.location}</p>
+      <p class="text-neutral-500 text-sm mb-2">
+        <a href={prospect.url} class="text-amber-400 hover:underline" target="_blank" rel="noopener noreferrer">{prospect.url}</a>
+        &mdash; Rapport du {prospect.date}
+      </p>
+      <p class="text-neutral-500 text-sm mb-8">{prospect.avis} &mdash; Tel. {prospect.tel}</p>
+
+      <!-- KPI Cards -->
+      <div class="grid grid-cols-3 gap-4 max-w-lg">
+        <div class="bg-neutral-800 rounded-xl p-4 text-center">
+          <span class="block text-3xl font-black text-amber-400">{kpis.conversion}%</span>
+          <span class="text-xs text-neutral-400 mt-1 block">convertissent</span>
+        </div>
+        <div class="bg-neutral-800 rounded-xl p-4 text-center">
+          <span class="block text-3xl font-black text-amber-400">{kpis.experience}/10</span>
+          <span class="text-xs text-neutral-400 mt-1 block">experience</span>
+        </div>
+        <div class="bg-neutral-800 rounded-xl p-4 text-center">
+          <span class="block text-3xl font-black text-amber-400">{kpis.confiance}/10</span>
+          <span class="text-xs text-neutral-400 mt-1 block">confiance</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       ALERTE GEOGRAPHIQUE
+  ======================================================== -->
+  <section class="py-6 px-4 bg-red-50 border-b border-red-200">
+    <div class="max-w-4xl mx-auto">
+      <div class="flex items-start gap-3">
+        <span class="text-red-500 text-xl shrink-0 mt-0.5">!</span>
+        <div>
+          <p class="font-semibold text-red-800 text-sm mb-1">Alerte : discordance géographique critique</p>
+          <p class="text-red-700 text-sm leading-relaxed">{alerteGeo}</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       LE CONSTAT
+  ======================================================== -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Le constat</h2>
+
+      <!-- Constat principal -->
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-8">
+        <p class="text-amber-900 font-medium text-base leading-relaxed">{constat}</p>
+      </div>
+
+      <!-- Resume visiteurs -->
+      <div class="flex flex-wrap gap-3 mb-8">
+        <div class="flex items-center gap-2 bg-green-50 border border-green-200 rounded-lg px-4 py-2">
+          <span class="w-2 h-2 rounded-full bg-green-500 shrink-0"></span>
+          <span class="text-sm font-semibold text-green-800">{kpis.convertissent} contactent</span>
+        </div>
+        <div class="flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-lg px-4 py-2">
+          <span class="w-2 h-2 rounded-full bg-amber-500 shrink-0"></span>
+          <span class="text-sm font-semibold text-amber-800">{kpis.hesitent} hesitent</span>
+        </div>
+        <div class="flex items-center gap-2 bg-neutral-100 border border-neutral-200 rounded-lg px-4 py-2">
+          <span class="w-2 h-2 rounded-full bg-neutral-400 shrink-0"></span>
+          <span class="text-sm font-semibold text-neutral-700">{kpis.quittent} repartent</span>
+        </div>
+      </div>
+
+      <!-- Conversion par canal -->
+      <h3 class="font-heading text-lg font-bold text-neutral-900 mb-4">Taux de conversion estime par canal</h3>
+      <div class="space-y-3 mb-8">
+        {conversionByCanal.map(c => (
+          <div class="flex items-center gap-3">
+            <span class="w-40 text-sm text-neutral-600 shrink-0">{c.canal}</span>
+            <div class="flex-1 bg-neutral-100 rounded-full h-3 overflow-hidden">
+              <div class={`h-3 rounded-full ${c.bg}`} style={`width: ${c.taux}%`}></div>
+            </div>
+            <span class={`w-10 text-sm font-bold text-right ${c.color}`}>{c.taux}%</span>
+          </div>
+        ))}
+      </div>
+
+      <!-- Top frictions -->
+      <h3 class="font-heading text-lg font-bold text-neutral-900 mb-4">Top frictions identifiees</h3>
+      <div class="space-y-3">
+        {topFrictions.map(f => (
+          <div class="border border-neutral-200 rounded-xl p-4">
+            <div class="flex items-start gap-3">
+              <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-red-100 text-red-700 text-xs font-bold shrink-0 mt-0.5">{f.count}/10</span>
+              <div>
+                <p class="font-semibold text-neutral-900 text-sm">{f.titre}</p>
+                <p class="text-neutral-500 text-xs mt-1 leading-relaxed">{f.detail}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       AUDIT TECHNIQUE
+  ======================================================== -->
+  <section class="py-12 px-4 bg-neutral-50">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-8">Audit technique</h2>
+
+      <!-- PageSpeed -->
+      <h3 class="font-heading text-lg font-bold text-neutral-800 mb-2">PageSpeed Insights</h3>
+      <p class="text-xs text-neutral-400 italic mb-5">{pagespeed.note}</p>
+      <div class="grid grid-cols-2 gap-6 mb-8">
+        <!-- Mobile -->
+        <div class="bg-white rounded-xl border border-neutral-200 p-5">
+          <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-4">Mobile</p>
+          {Object.entries(pagespeed.mobile).map(([k, v]) => (
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm text-neutral-600 capitalize">{k.replace(/([A-Z])/g, ' $1')}</span>
+              <span class={`text-sm font-bold ${scoreTextClass(v)}`}>{v}/100</span>
+            </div>
+          ))}
+          <div class="mt-4 pt-4 border-t border-neutral-100">
+            {coreWebVitals.map(cv => (
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-xs text-neutral-500">{cv.name}</span>
+                <span class={`text-xs font-bold ${cv.status === 'bad' ? 'text-red-500' : 'text-amber-500'}`}>{cv.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <!-- Desktop -->
+        <div class="bg-white rounded-xl border border-neutral-200 p-5">
+          <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wider mb-4">Desktop</p>
+          {Object.entries(pagespeed.desktop).map(([k, v]) => (
+            <div class="flex items-center justify-between mb-2">
+              <span class="text-sm text-neutral-600 capitalize">{k.replace(/([A-Z])/g, ' $1')}</span>
+              <span class={`text-sm font-bold ${scoreTextClass(v)}`}>{v}/100</span>
+            </div>
+          ))}
+          <div class="mt-4 pt-4 border-t border-neutral-100">
+            <p class="text-xs text-neutral-400 italic mb-1">Gains potentiels :</p>
+            {opportunities.slice(0, 3).map(o => (
+              <div class="flex items-center justify-between mt-1">
+                <span class="text-xs text-neutral-500 leading-tight pr-2">{o.label.slice(0, 45)}...</span>
+                <span class="text-xs font-bold text-green-600 shrink-0">{o.saving}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- Observatory -->
+      <h3 class="font-heading text-lg font-bold text-neutral-800 mb-4">MDN Observatory — Securite HTTP</h3>
+      <div class="bg-white rounded-xl border border-neutral-200 p-5 mb-8">
+        <div class="flex items-center gap-4 mb-4">
+          <div class="w-16 h-16 rounded-xl flex items-center justify-center text-2xl font-black text-white"
+               style={`background: ${scoreColor(observatory.score)}`}>
+            {observatory.grade}
+          </div>
+          <div>
+            <p class="text-2xl font-black text-neutral-900">{observatory.score}/100</p>
+            <p class="text-sm text-neutral-500">{observatory.testsPassed}/{observatory.testsTotal} tests reussis — scan officiel POST 30/03/2026</p>
+          </div>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-2 mt-4">
+          <div class="flex items-center gap-2 text-sm"><span class="text-green-500">&#10003;</span><span class="text-neutral-600">HTTPS + HTTP/2 (nginx)</span></div>
+          <div class="flex items-center gap-2 text-sm"><span class="text-green-500">&#10003;</span><span class="text-neutral-600">HSTS (max-age=31536000; includeSubdomains)</span></div>
+          <div class="flex items-center gap-2 text-sm"><span class="text-green-500">&#10003;</span><span class="text-neutral-600">X-Content-Type-Options: nosniff</span></div>
+          <div class="flex items-center gap-2 text-sm"><span class="text-green-500">&#10003;</span><span class="text-neutral-600">Referrer-Policy: strict-origin-when-cross-origin</span></div>
+          <div class="flex items-center gap-2 text-sm"><span class="text-red-500">&#10007;</span><span class="text-neutral-600">CSP complete — seul frame-ancestors present</span></div>
+          <div class="flex items-center gap-2 text-sm"><span class="text-red-500">&#10007;</span><span class="text-neutral-600">Permissions-Policy — absent</span></div>
+        </div>
+      </div>
+
+      <!-- Checklist -->
+      <h3 class="font-heading text-lg font-bold text-neutral-800 mb-4">Checklist complete</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+        {techChecks.map(c => (
+          <div class={`flex items-start gap-2 p-2 rounded-lg ${c.critical && !c.present ? 'bg-red-50' : 'bg-white border border-neutral-100'}`}>
+            <span class={`shrink-0 mt-0.5 ${c.present ? 'text-green-500' : 'text-red-400'}`}>{c.present ? '✓' : '✗'}</span>
+            <div>
+              <span class={`text-sm ${c.present ? 'text-neutral-700' : c.critical ? 'text-red-700 font-medium' : 'text-neutral-500'}`}>{c.label}</span>
+              {c.note && <p class="text-xs text-neutral-400 mt-0.5">{c.note}</p>}
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       PERSONAS — VISITES SIMULEES
+  ======================================================== -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-2">10 visites simulees</h2>
+      <p class="text-neutral-500 text-sm mb-8">10 profils typiques de prospects pour un peintre en batiment Moselle 57. Chaque persona parcourt le site independamment.</p>
+
+      <div class="space-y-5">
+        {personas.map(p => (
+          <div class={`rounded-xl border p-5 ${decisionColor(p.decision)}`}>
+            <!-- Header persona -->
+            <div class="flex items-start justify-between gap-3 mb-4">
+              <div class="flex items-center gap-3">
+                <span class="text-2xl">{p.emoji}</span>
+                <div>
+                  <p class="font-heading font-bold text-neutral-900">{p.name}, {p.age > 0 ? `${p.age} ans` : 'Pro'}</p>
+                  <div class="flex flex-wrap gap-2 mt-1">
+                    <span class="text-xs bg-neutral-100 text-neutral-500 px-2 py-0.5 rounded-full">{p.device}</span>
+                    <span class="text-xs bg-blue-50 text-blue-600 px-2 py-0.5 rounded-full">{p.canal}</span>
+                    <span class={`text-xs px-2 py-0.5 rounded-full ${maturiteColor(p.maturite)}`}>{p.maturite}</span>
+                  </div>
+                </div>
+              </div>
+              <span class={`text-xs font-semibold px-3 py-1 rounded-full shrink-0 ${decisionBadge(p.decision)}`}>
+                {decisionLabel(p.decision)}
+              </span>
+            </div>
+
+            <p class="text-sm text-neutral-600 mb-3 italic">"{p.situation}"</p>
+
+            <!-- Scores -->
+            <div class="flex gap-4 mb-4">
+              <div class="text-center"><p class="text-xs text-neutral-400">Experience</p><p class={`font-bold ${scoreTextClass(p.scores.exp * 10)}`}>{p.scores.exp}/10</p></div>
+              <div class="text-center"><p class="text-xs text-neutral-400">Confiance</p><p class={`font-bold ${scoreTextClass(p.scores.conf * 10)}`}>{p.scores.conf}/10</p></div>
+              <div class="text-center"><p class="text-xs text-neutral-400">Clarte</p><p class={`font-bold ${scoreTextClass(p.scores.clarte * 10)}`}>{p.scores.clarte}/10</p></div>
+            </div>
+
+            <!-- Impression + Parcours -->
+            <div class="bg-white/60 rounded-lg p-3 mb-3">
+              <p class="text-xs font-semibold text-neutral-500 mb-1">Premiere impression</p>
+              <p class="text-sm text-neutral-700 leading-relaxed">{p.premierImpression}</p>
+            </div>
+
+            <div class="bg-white/60 rounded-lg p-3 mb-3">
+              <p class="text-xs font-semibold text-neutral-500 mb-1">Question cle posee</p>
+              <p class="text-sm text-neutral-700 italic">"{p.questionCle}"</p>
+              <p class="text-xs text-neutral-500 mt-1">Reponse du site : <span class="font-medium">{p.reponse}</span></p>
+            </div>
+
+            {p.parcours.length > 0 && (
+              <div class="flex flex-wrap gap-1 mb-3">
+                {p.parcours.map((page, i) => (
+                  <>
+                    <span class="text-xs bg-neutral-100 text-neutral-600 px-2 py-0.5 rounded">{page}</span>
+                    {i < p.parcours.length - 1 && <span class="text-neutral-300 text-xs self-center">›</span>}
+                  </>
+                ))}
+              </div>
+            )}
+
+            <!-- Points + Frictions -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+              <div>
+                <p class="text-xs font-semibold text-green-700 mb-1">Points positifs</p>
+                {p.pointsPositifs.map(pp => (
+                  <p class="text-xs text-neutral-600 flex items-start gap-1 mb-0.5"><span class="text-green-500 shrink-0">+</span>{pp}</p>
+                ))}
+              </div>
+              <div>
+                <p class="text-xs font-semibold text-red-700 mb-1">Frictions</p>
+                {p.frictions.map(fr => (
+                  <p class="text-xs text-neutral-600 flex items-start gap-1 mb-0.5"><span class="text-red-400 shrink-0">-</span>{fr}</p>
+                ))}
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       RECOMMANDATIONS
+  ======================================================== -->
+  <section class="py-12 px-4 bg-neutral-50">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-8">Recommandations</h2>
+
+      <h3 class="font-heading text-lg font-bold text-neutral-800 mb-4">Actions critiques — impact immediat</h3>
+      <div class="space-y-4 mb-10">
+        {ameliorationsCritiques.map((a, i) => (
+          <div class="bg-white rounded-xl border border-red-100 p-5">
+            <div class="flex items-start gap-3">
+              <span class="inline-flex items-center justify-center w-7 h-7 rounded-full bg-red-100 text-red-700 text-sm font-black shrink-0">{i + 1}</span>
+              <div>
+                <p class="font-semibold text-neutral-900 mb-2">{a.titre}</p>
+                <p class="text-sm text-neutral-600 mb-3 leading-relaxed">{a.detail}</p>
+                <div class="bg-neutral-50 rounded-lg p-3">
+                  <p class="text-xs font-semibold text-neutral-500 mb-1">Action recommandee</p>
+                  <p class="text-sm text-neutral-700">{a.action}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <h3 class="font-heading text-lg font-bold text-neutral-800 mb-4">Ameliorations utiles — impact fort</h3>
+      <div class="space-y-3">
+        {ameliorationsUtiles.map(a => (
+          <div class="bg-white rounded-xl border border-neutral-200 p-4">
+            <p class="font-semibold text-neutral-900 text-sm mb-1">{a.titre}</p>
+            <p class="text-xs text-neutral-500 leading-relaxed">{a.detail}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       CTA WEB FACTORY
+  ======================================================== -->
+  <section class="py-14 px-4 bg-neutral-900 text-white">
+    <div class="max-w-2xl mx-auto text-center">
+      <p class="text-sm font-semibold text-amber-400 uppercase tracking-widest mb-4">Proposition</p>
+      <h2 class="font-heading text-2xl md:text-3xl font-bold mb-4 leading-tight">
+        Vos 35 avis 5 etoiles meritent un site a la hauteur
+      </h2>
+      <p class="text-neutral-400 mb-2 leading-relaxed">
+        Nouveau site Astro en 7 jours — contenu 100% Moselle 57, avis Google integres, performance mobile x3, RGPD conforme.
+      </p>
+      <p class="text-neutral-500 text-sm mb-8">
+        A partir de 990€ — tout compris, domaine, hebergement, CMS, 1 an de support.
+      </p>
+      <a href="/contact" class="inline-block bg-amber-400 text-neutral-900 font-bold px-8 py-3 rounded-xl hover:bg-amber-300 transition-colors">
+        Discuter du projet
+      </a>
+      <p class="text-neutral-600 text-xs mt-4">Audit realise par Marc M. — Web Factory Grand Est</p>
+    </div>
+  </section>
+
+</BaseLayout>

@@ -1,0 +1,600 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX — Lo Renov Confort | Marc M.';
+const description = 'Audit complet du site lorenov-confort.fr : 10 personas simules, WordPress/Elementor lent, securite F/20, aucun avis integre, recommandations actionnables pour installateur poeles Moselle.';
+
+// ─── PROSPECT ───
+const prospect = {
+  name: 'Lo Renov Confort',
+  url: 'https://lorenov-confort.fr/',
+  date: '29 mars 2026',
+  activity: 'Vente, installation et entretien de poeles a buches et a granules — Certification RGE Qualibois',
+  location: 'Sainte-Marie-aux-Chenes / Valleroy (57) — Moselle & Meurthe-et-Moselle, Grand Est',
+};
+
+// ─── KPIs ───
+const kpis = {
+  conversion: 35,
+  experience: 5.5,
+  confiance: 5.8,
+  clarte: 5.4,
+};
+
+// ─── CONSTAT ───
+const constat = "Le site dispose d'une base solide (RGE, showroom, duo humain Olivier + Sandra) mais ne convertit pas les visiteurs en ligne : pas de temoignages, catalogue incomplet avec message d'excuse, formulaire de contact en 404, securite F/20, et 40 avis Google 4.7/5 totalement inexploites.";
+
+// ─── CONVERSION PAR CANAL ───
+const conversionByCanal = [
+  { canal: 'Bouche-a-oreille', taux: 100, color: 'text-green-600', bg: 'bg-green-500' },
+  { canal: 'Google Maps / GBP', taux: 55, color: 'text-green-600', bg: 'bg-green-500' },
+  { canal: 'Google Search', taux: 25, color: 'text-amber-600', bg: 'bg-amber-500' },
+  { canal: 'Reseaux sociaux', taux: 10, color: 'text-amber-600', bg: 'bg-amber-500' },
+  { canal: 'IA (ChatGPT / Perplexity)', taux: 0, color: 'text-red-700', bg: 'bg-red-700' },
+  { canal: 'Autre (direct)', taux: 60, color: 'text-green-600', bg: 'bg-green-500' },
+];
+
+// ─── TOP FRICTIONS ───
+const topFrictions = [
+  { titre: '40 avis Google 4.7/5 non integres', count: 9, detail: '40 avis excellents sur Google Business Profile et aucun n\'apparait sur le site. Les visiteurs en comparaison partent sans trouver la preuve sociale pourtant disponible.' },
+  { titre: 'Formulaire de contact en erreur 404', count: 9, detail: 'La page /contact/ retourne une erreur 404. Les visiteurs qui preferent ecrire plutot qu\'appeler (jeunes, comparateurs) abandonnent immediatement.' },
+  { titre: 'Catalogue "en cours d\'actualisation"', count: 8, detail: 'Un message d\'excuse visible dit que le catalogue n\'est pas complet. Ca cree un doute sur le professionnalisme et sur la disponibilite des produits.' },
+  { titre: 'Horaires d\'ouverture showroom absents', count: 7, detail: 'Aucune page du site n\'affiche les horaires du showroom. Les visiteurs qui veulent planifier une visite physique ne savent pas quand venir.' },
+  { titre: 'Pas de banniere cookies malgre Google Analytics actif', count: 7, detail: 'GA Universal Analytics UA-122605654-1 est charge sans consentement. Non-conformite RGPD averce. De plus GA3 est arrete depuis 2023 — aucune donnee collectee.' },
+];
+
+// ─── PAGESPEED ───
+const pagespeed = {
+  mobile: { performance: 48, accessibility: 72, bestPractices: 71, seo: 84 },
+  desktop: { performance: 67, accessibility: 72, bestPractices: 71, seo: 84 },
+};
+const coreWebVitals = [
+  { name: 'LCP mobile', value: '~3,8 s', status: 'rouge' },
+  { name: 'INP', value: '~190 ms', status: 'orange' },
+  { name: 'CLS', value: '~0,10', status: 'orange' },
+  { name: 'FCP', value: '~2,4 s', status: 'orange' },
+  { name: 'TTFB', value: '~0,7 s', status: 'orange' },
+];
+
+// ─── OBSERVATORY ───
+const observatory = { grade: 'F', score: 20, testsPassed: 4, testsTotal: 10 };
+
+// ─── CHECKLIST TECHNIQUE ───
+const techChecks = [
+  { label: 'HTTPS + HTTP/2 actif', present: true, critical: false },
+  { label: 'Meta title + description (AIOSEO)', present: true, critical: false },
+  { label: 'Redirection HTTP → HTTPS', present: true, critical: false },
+  { label: 'Politique de confidentialite presente', present: true, critical: false },
+  { label: 'Mentions legales completes (SIRET, hebergeur)', present: true, critical: false },
+  { label: 'Conditions Generales Entretien presentes', present: true, critical: false },
+  { label: 'Schema.org type LocalBusiness avec adresse + geo', present: false, critical: true },
+  { label: 'Schema.org aggregateRating (40 avis 4.7/5)', present: false, critical: true },
+  { label: 'Open Graph image 1200x630 (actuellement logo 250px)', present: false, critical: false },
+  { label: 'og:type = website sur homepage (actuellement "article")', present: false, critical: false },
+  { label: 'og:site_name correct (actuellement ancien domaine .com)', present: false, critical: false },
+  { label: 'Sitemap.xml a jour (actuellement 2018, ancien domaine)', present: false, critical: true },
+  { label: 'HSTS (Strict-Transport-Security)', present: false, critical: true },
+  { label: 'X-Content-Type-Options', present: false, critical: true },
+  { label: 'Content-Security-Policy', present: false, critical: true },
+  { label: 'X-Frame-Options', present: false, critical: false },
+  { label: 'Banniere cookies / consentement RGPD', present: false, critical: true },
+  { label: 'Google Analytics actif (GA4 ou Umami)', present: false, critical: true },
+  { label: 'Horaires d\'ouverture visibles', present: false, critical: true },
+  { label: 'Formulaire de contact fonctionnel', present: false, critical: true },
+];
+
+// ─── PERSONAS ───
+const personas = [
+  {
+    id: 1,
+    name: 'Jean-Pierre',
+    age: 58,
+    emoji: '\u{1F3E0}',
+    canal: 'Google Search',
+    device: 'Mobile',
+    maturite: 'Decision',
+    situation: 'Retraite EDF a Briey, maison de 1985 avec vieille cheminee ouverte, veut un insert performant',
+    contexte: 'Cherche "poele a granules installateur Briey RGE" sur Google',
+    parcours: ['Google', '/qualification-rge-qualibois/', '/presentation-lo-renov/', '/nous-contacter/ → 404'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 5.5, clarte: 5 },
+    premierImpression: 'La certification RGE est bien expliquee. L\'adresse de Sainte-Marie est dans sa zone. Mais pas de tarif, pas de formulaire, il doit appeler.',
+    questionCle: 'Suis-je eligible a MaPrimeRenov\' et quel est le cout installe d\'un insert ?',
+    reponse: 'Partiellement',
+    commentReponse: 'MaPrimeRenov\' et CEE mentionnes mais pas de simulateur ni de fourchette de prix',
+    impactTechnique: 'Elementor + WooCommerce chargent lentement sur mobile 4G. Il patiente car motive.',
+    pointsPositifs: ['RGE Qualibois clairement explique', 'Zone Briey confirmee', 'Numero fixe et mobile visibles'],
+    frictions: ['Pas de tarif ni fourchette de prix', 'Formulaire contact en 404', 'Pas de simulateur aides MaPrimeRenov\'', 'Aucun temoignage client'],
+  },
+  {
+    id: 2,
+    name: 'Isabelle',
+    age: 44,
+    emoji: '\u{1F469}',
+    canal: 'Pinterest',
+    device: 'Mobile',
+    maturite: 'Decouverte',
+    situation: 'Cadre Arcelor a Hagondange, maison neuve en construction, veut un poele design comme element central du salon',
+    contexte: 'Vient de Pinterest apres avoir sauvegarde des photos de poeles Romotop',
+    parcours: ['Pinterest', '/417-2/ (catalogue)', '/nous-situer/', 'Planifie visite showroom'],
+    decision: 'hesite',
+    scores: { exp: 5.5, conf: 6, clarte: 5 },
+    premierImpression: 'Les marques Romotop et Oranier sont mentionnees — elle les connait de Pinterest. L\'idee de voir les poeles en vrai au showroom est excellente.',
+    questionCle: 'Puis-je voir le Romotop Polar Neo Vantage W+ en fonctionnement dans votre showroom ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Le showroom est mentionne mais sans horaires, sans liste exhaustive des modeles exposes, sans photos HD',
+    impactTechnique: 'L\'absence de photos HD des poeles en situation reelle dans de vraies maisons est un echec pour ce canal visual.',
+    pointsPositifs: ['Marques premium mentionnees (Romotop, Oranier)', 'Showroom avec demo mentionne', 'Adresse claire'],
+    frictions: ['Catalogue "en cours d\'actualisation"', 'Pas d\'horaires showroom', 'Pas de galerie de realisations dans de vraies maisons', 'Photos produits absentes ou trop petites'],
+  },
+  {
+    id: 3,
+    name: 'Marc',
+    age: 35,
+    emoji: '\u{1F6E0}',
+    canal: 'Bouche-a-oreille',
+    device: 'Desktop',
+    maturite: 'Decision',
+    situation: 'Technicien local a Sainte-Marie-aux-Chenes, chauffage electrique trop cher, veut passer aux granules',
+    contexte: 'Son voisin lui parle de Lo Renov, tape directement l\'URL',
+    parcours: ['URL directe', 'Accueil', '/presentation-lo-renov/', 'Appel direct'],
+    decision: 'convertit',
+    scores: { exp: 7, conf: 7, clarte: 6.5 },
+    premierImpression: '"Olivier et Sandra sont a votre ecoute" — le cote humain le rassure. Le Nobis A10 en demo lui permet de voir avant d\'acheter.',
+    questionCle: 'Le Nobis A10 C Light 2020 est-il en demonstration allumee au showroom ?',
+    reponse: 'Oui',
+    commentReponse: 'La page d\'accueil mentionne explicitement la demonstration du Nobis A10 C Light allume par Sandra.',
+    impactTechnique: 'Proximite + recommandation = intention forte. Le site confirme le serieux, ca suffit a le faire appeler.',
+    pointsPositifs: ['Showroom a 200m', 'Demo Nobis A10 mentionnee', 'Duo Olivier + Sandra identifie', 'Numero visible'],
+    frictions: ['Pas de prix indicatif Nobis A10', 'Pas d\'info consommation annuelle granules', 'Pas de FAQ poele a granules'],
+  },
+  {
+    id: 4,
+    name: 'Christine',
+    age: 62,
+    emoji: '\u{1F69C}',
+    canal: 'Annuaire artisans',
+    device: 'Desktop',
+    maturite: 'Decision',
+    situation: 'Agricultrice semi-retraitee a Jarny, grande maison 180m2, poele a buches en panne, stock de bois disponible',
+    contexte: 'Trouve Lo Renov sur un annuaire d\'artisans, verifie le site',
+    parcours: ['Annuaire', '/presentation-lo-renov/', '/lo-renov-conditions-generales-dentretien/', '/nous-contacter/ → 404'],
+    decision: 'hesite',
+    scores: { exp: 5.5, conf: 6, clarte: 5.5 },
+    premierImpression: '15 ans d\'expertise et SIRET visible rassurent. La zone Jarny est confirmee. Mais elle veut aussi un contrat entretien annuel et ne trouve pas les tarifs.',
+    questionCle: 'Faites-vous l\'entretien annuel des poeles a buches avec certificat de ramonage, et a quel tarif ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Les CGE sont tres detaillees sur les prestations incluses mais aucun tarif n\'est mentionne',
+    impactTechnique: 'Formulaire de contact en 404 — elle doit appeler. Pour quelqu\'un de discret, c\'est une friction reelle.',
+    pointsPositifs: ['15 ans d\'experience', 'Zone Jarny confirmee', 'CGE detaillees et professionnelles', 'SIRET visible'],
+    frictions: ['Tarif entretien annuel absent', 'Formulaire contact en 404', 'Pas de photos de chantiers reels', 'CGE austere sans CTA'],
+  },
+  {
+    id: 5,
+    name: 'Thomas',
+    age: 29,
+    emoji: '\u{1F4F1}',
+    canal: 'Google Search',
+    device: 'Mobile',
+    maturite: 'Comparaison',
+    situation: 'Ingenieur a Mondelange, ecologiste convaincu, cherche le poele a granules avec le meilleur bilan carbone et granules ENplus A1',
+    contexte: 'Cherche "poele granules RGE 57 bilan carbone Ecodesign" sur Google',
+    parcours: ['Google', '/', '/qualification-rge-qualibois/', 'Quitte — va chez un concurrent plus technique'],
+    decision: 'quitte',
+    scores: { exp: 4, conf: 4.5, clarte: 4 },
+    premierImpression: 'Le RGE est present mais le site ne repond pas a ses criteres techniques : pas de rendement des appareils, pas de certification FlammVert, pas d\'info ENplus.',
+    questionCle: 'Le Nobis A10 est-il certifie Ecodesign 2022 et quelle est sa consommation en kg/h de granules ENplus A1 ?',
+    reponse: 'Non',
+    commentReponse: 'Aucune donnee technique sur les appareils : rendement, classe energetique, certification FlammVert ou Ecodesign 2022',
+    impactTechnique: 'Site techniquement opaque pour un profil d\'ingenieur comparateur. Il trouvera ces infos chez un concurrent avec fiches techniques.',
+    pointsPositifs: ['RGE Qualibois mentionne', 'Granules = ressource renouvelable evoque'],
+    frictions: ['Pas de fiche technique avec rendement', 'Pas de certification Ecodesign 2022', 'Pas d\'info granules ENplus A1', 'Pas d\'argument bilan carbone vs fioul/gaz'],
+  },
+  {
+    id: 6,
+    name: 'Sylvie',
+    age: 50,
+    emoji: '\u{1F4BC}',
+    canal: 'Conseiller bancaire',
+    device: 'Desktop',
+    maturite: 'Decision',
+    situation: 'Gerante TPE a Etain, maison au fioul, veut basculer vers poele a granules pour ameliorer son DPE avant revente dans 5 ans',
+    contexte: 'Son conseiller lui a parle de MaPrimeRenov\'. Cherche "artisan RGE Moselle chauffage bois" sur Google.',
+    parcours: ['Google', '/qualification-rge-qualibois/', '/presentation-lo-renov/', 'Appel pour RDV estimation'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 6.5, clarte: 6 },
+    premierImpression: 'Le RGE = condition obligatoire pour son dossier. "De l\'etude de faisabilite a l\'installation" la rassure sur l\'accompagnement.',
+    questionCle: 'Puis-je avoir un RDV pour une etude et un devis pour l\'installation d\'un poele a granules a Etain ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Etain mentionnee dans la zone d\'intervention mais pas de formulaire de devis en ligne — appel obligatoire',
+    impactTechnique: 'Desktop + intention forte. La lenteur du site est toleree. Elle appelle malgre l\'absence de formulaire.',
+    pointsPositifs: ['RGE = case cochee pour financement', 'Etain dans la zone', 'Accompagnement "de A a Z" mentionne'],
+    frictions: ['Pas de formulaire devis en ligne', 'Pas de simulateur aides MaPrimeRenov\' / CEE', 'Pas d\'argument valorisation DPE', 'Site vieillissant vs concurrents modernes'],
+  },
+  {
+    id: 7,
+    name: 'Robert',
+    age: 70,
+    emoji: '\u{1F4DE}',
+    canal: 'Assurance',
+    device: 'Desktop',
+    maturite: 'Decision',
+    situation: 'Retraite siderurgiste a Hayange, vieux poele Godin, son assurance exige un certificat de ramonage annuel',
+    contexte: 'Cherche "entretien ramonage poele bois certifie Hayange" sur Google',
+    parcours: ['Google', '/lo-renov-conditions-generales-dentretien/', 'Cherche le tel → appelle'],
+    decision: 'convertit',
+    scores: { exp: 6.5, conf: 7, clarte: 6 },
+    premierImpression: 'Les CGE sont tres rassurantes : liste exacte des prestations incluses, certificat de ramonage remis. C\'est exactement ce qu\'il cherche.',
+    questionCle: 'Vous delivrez bien un certificat de ramonage valide pour mon assurance habitation ?',
+    reponse: 'Oui',
+    commentReponse: '"Remise d\'un certificat de ramonage / compte-rendu d\'entretien" explicitement mentionne dans les CGE',
+    impactTechnique: 'Senior sur desktop. Il cherche le numero de telephone sur une page sans CTA clair. Il finit par le trouver en bas de page.',
+    pointsPositifs: ['CGE tres completes', 'Certificat ramonage mentionne', 'Hayange dans la zone', 'Entreprise locale depuis 2006'],
+    frictions: ['Pas de CTA "Prendre RDV entretien" sur la page CGE', 'Tarif entretien absent', 'Navigation difficile pour un senior', 'Numero pas en header'],
+  },
+  {
+    id: 8,
+    name: 'Nathalie',
+    age: 38,
+    emoji: '\u{1F3E5}',
+    canal: 'Google Search (urgence)',
+    device: 'Mobile',
+    maturite: 'Urgence',
+    situation: 'Infirmiere a Audun-le-Roman, poele a granules Nobis en panne a 20h avec enfants a la maison',
+    contexte: 'Cherche "depannage poele granules urgence Moselle" sur Google depuis son telephone',
+    parcours: ['Google', '/', 'Cherche le mobile → appel direct'],
+    decision: 'hesite',
+    scores: { exp: 4.5, conf: 5, clarte: 4.5 },
+    premierImpression: 'Le site met 4-5 secondes a s\'afficher sur 4G. Elle trouve finalement le numero mobile 07 84 56 23 80. Si Olivier ne decroche pas, elle va chez un concurrent.',
+    questionCle: 'Pouvez-vous intervenir ce soir en urgence sur un poele Nobis a Audun-le-Roman ?',
+    reponse: 'Non',
+    commentReponse: 'Aucune mention de depannage d\'urgence, pas de plage horaire, pas de mention "prise en charge rapide"',
+    impactTechnique: 'Chargement mobile lent = torture en situation d\'urgence. Audun-le-Roman n\'est pas mentionne dans la zone (a ~32km).',
+    pointsPositifs: ['Numero mobile visible', 'Artisan local identifiable'],
+    frictions: ['Site lent sur mobile — critique en urgence', 'Pas de page depannage urgence', 'Audun-le-Roman hors zone declaree', 'Aucune info delai d\'intervention'],
+  },
+  {
+    id: 9,
+    name: 'Patrick',
+    age: 47,
+    emoji: '\u{1F9F1}',
+    canal: 'Direct (voisin du siege)',
+    device: 'Desktop',
+    maturite: 'Decision',
+    situation: 'Artisan macon de Valleroy, construit sa propre maison, cherche un poele a buches haut de gamme Romotop pour son futur salon',
+    contexte: 'Connait Le Renov de reputation locale. Visite le site pour confirmer les modeles avant de passer au showroom.',
+    parcours: ['URL directe', '/417-2/ (catalogue)', '/nous-situer/', 'Visite showroom'],
+    decision: 'convertit',
+    scores: { exp: 7, conf: 7.5, clarte: 6.5 },
+    premierImpression: 'Romotop et Oranier sont mentionnes. Il connait ces marques. La visite showroom s\'impose pour voir la qualite de construction.',
+    questionCle: 'Avez-vous le Romotop Cara C en demonstration au showroom et quels sont vos horaires ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Le Cara C est mentionne mais pas les horaires du showroom — information bloquante pour planifier sa visite',
+    impactTechnique: 'Professionnel exigeant. Il note l\'absence de fiches techniques telechargeable. Il veut les specs avant de venir.',
+    pointsPositifs: ['Romotop + Oranier identifies', 'Siege social a Valleroy (son quartier)', 'Entreprise serieuse depuis 2006'],
+    frictions: ['Horaires showroom absents', 'Pas de fiche technique Romotop PDF', 'Pas de galerie realisations dans belles maisons', 'Catalogue partiel'],
+  },
+  {
+    id: 10,
+    name: 'Emilie',
+    age: 32,
+    emoji: '\u{1F491}',
+    canal: 'Facebook / Instagram',
+    device: 'Mobile',
+    maturite: 'Comparaison',
+    situation: 'Jeune couple a Briey, achete maison ancienne avec cheminee decorative, premier achat poele, budget serre 1800-2800€',
+    contexte: 'Voit un post Facebook de Lo Renov, clique par curiosite',
+    parcours: ['Facebook', '/', 'Scrute l\'accueil', 'Cherche avis → n\'en trouve pas sur le site', 'Quitte'],
+    decision: 'quitte',
+    scores: { exp: 3.5, conf: 3.5, clarte: 4 },
+    premierImpression: 'Le site semble professionnel mais vieillissant. Pas d\'avis clients, pas de photos de vraies maisons, pas de prix "a partir de". Elle est partie en 2 minutes.',
+    questionCle: 'D\'autres clients comme moi ont-ils fait le bon choix avec Lo Renov ? Y a-t-il des photos de realisations chez des particuliers ?',
+    reponse: 'Non',
+    commentReponse: '40 avis Google 4.7/5 existent mais ne sont pas integres au site. Aucune galerie de realisations visible.',
+    impactTechnique: 'Pas d\'og:image engageante pour le partage Facebook. Le site parait plus vieux que les concurrents sur Instagram.',
+    pointsPositifs: ['Duo Olivier + Sandra rassure sur le conseil'],
+    frictions: ['40 avis 4.7/5 absents du site', 'Pas de galerie realisations', 'Pas de prix "a partir de X€ pose"', 'Formulaire contact en 404', 'Design vieillissant vs concurrents'],
+  },
+];
+
+// ─── AMELIORATIONS ───
+const ameliorationsCritiques = [
+  {
+    titre: 'Integrer les 40 avis Google 4.7/5 sur l\'accueil',
+    detail: '9 personas sur 10 cherchent des preuves sociales. 40 avis excellents existent sur GBP et n\'apparaissent nulle part sur le site. C\'est la friction la plus couteuse en conversions perdues.',
+    action: 'Widget Google Reviews ou 5-8 verbatims selectionnes sur l\'accueil + Schema.org aggregateRating. Ajouter les noms de villes des auteurs (Briey, Jarny, Metz...) pour la resonance locale.',
+  },
+  {
+    titre: 'Reparer le formulaire de contact (actuellement en 404)',
+    detail: 'La page /contact/ retourne une erreur 404. Les visiteurs qui preferent ecrire plutot qu\'appeler abandonnent. C\'est particulierement penalisant pour les jeunes et les comparateurs.',
+    action: 'Corriger ou recreer la page /nous-contacter/ avec un formulaire simple : nom, email, tel, message, case RGPD. Ajouter un CTA "Devis gratuit" distinct du formulaire general.',
+  },
+  {
+    titre: 'Afficher les horaires du showroom sur toutes les pages de contact',
+    detail: '7 personas sur 10 souhaitent potentiellement visiter le showroom. Aucune page n\'affiche les horaires. C\'est un frein direct a la visite physique.',
+    action: 'Ajouter les horaires dans le header, sur /nous-situer/, et dans le footer. Les integrer aussi dans le Schema.org openingHours.',
+  },
+  {
+    titre: 'Creer une page "Entretien annuel" avec tarifs',
+    detail: 'L\'entretien est un service recurrent et tres recherche (Robert, Christine, Nathalie). Les CGE sont detaillees mais cachees et sans tarif ni CTA. C\'est une manne de clients perdus.',
+    action: 'Page /entretien-poele/ avec : prestations incluses, frequence recommandee, tarif (ou "a partir de"), CTA "Prendre RDV entretien", FAQ sur le ramonage obligatoire.',
+  },
+  {
+    titre: 'Remplacer Google Analytics Universal (UA-) par Umami + banniere cookies',
+    detail: 'GA3 est arrete depuis juillet 2023. Aucune donnee n\'est collectee. De plus, charger GA sans banniere de consentement est une non-conformite RGPD.',
+    action: 'Installer Umami Cloud (vie privee par defaut, sans cookie, conforme RGPD) + supprimer le code GA UA-122605654-1.',
+  },
+];
+
+const ameliorationsImportantes = [
+  {
+    titre: 'Corriger le Schema.org : Organization → LocalBusiness + adresse + avis',
+    detail: 'Le Schema.org actuel est un type Organization generique sans adresse physique, sans horaires, sans coordonnees GPS, sans avis integres. Les moteurs de recherche et IA ne peuvent pas afficher les rich snippets.',
+    action: 'Schema.org type LocalBusiness (ou HVACBusiness / HomeAndConstructionBusiness) avec : address, geo, openingHours, aggregateRating (40 avis 4.7), telephone, areaServed.',
+  },
+  {
+    titre: 'Corriger les balises Open Graph (og:type, og:site_name, og:image)',
+    detail: 'og:type = "article" sur la homepage (devrait etre "website"). og:site_name = "lorenov-confort.com" (ancien domaine). og:image = logo 250px (devrait etre 1200x630).',
+    action: 'Corriger dans AIOSEO : og:type → website, og:site_name → lorenov-confort.fr, og:image → photo showroom ou hero 1200x630.',
+  },
+  {
+    titre: 'Mettre a jour le sitemap.xml (actuellement 2018, ancien domaine HTTP)',
+    detail: 'Le sitemap pointe vers http://lorenov-confort.com/ avec une date de 2018. Google indexe potentiellement l\'ancien domaine au lieu du nouveau.',
+    action: 'Generer un nouveau sitemap AIOSEO avec toutes les pages actuelles en https://lorenov-confort.fr/. Soumettre dans Google Search Console.',
+  },
+  {
+    titre: 'Ajouter les 5 headers de securite manquants (Observatory F → A)',
+    detail: 'Score securite F/20. Manquent : CSP (-25pts), HSTS (-20pts), X-Frame-Options (-20pts), X-Content-Type-Options (-5pts), Referrer-Policy stricte (-5pts).',
+    action: 'Ajouter un fichier .htaccess ou plugin WordPress (Headers & Footers) avec les 5 headers. Passer de F/20 a A/100 en 30 minutes.',
+  },
+];
+
+const ameliorationsOptionnelles = [
+  { titre: 'Galerie de realisations (photos de vrais salons clients)', detail: 'Isabelle, Emilie et Patrick sont bloques par l\'absence de photos d\'ambiance. Une galerie de 8-10 photos de realisations chez de vrais clients serait decisive.' },
+  { titre: 'Fourchette de prix indicatifs', detail: 'Jean-Pierre, Thomas et Emilie ont tous cherche un budget indicatif. Meme une fourchette large "pose et fourniture de 2500 a 7000€ selon modele" oterait un frein majeur.' },
+  { titre: 'Page FAQ poeles a granules vs a buches', detail: 'Thomas (ingenieur) et Marc (technicien) cherchent des reponses techniques. Une FAQ de 8-10 questions augmenterait l\'autorite et la visibilite SEO.' },
+  { titre: 'Completude catalogue + prix produits', detail: 'Le message "catalogue en cours d\'actualisation" nuit au professionnalisme. Completer avec tous les modeles disponibles et leurs prix ou fourchettes.' },
+];
+
+const score = 35;
+const scoreColor = score >= 60 ? 'text-green-600' : score >= 40 ? 'text-amber-600' : 'text-red-600';
+
+// KPI helpers
+const kpiColor = (v: number) => v >= 7 ? 'text-green-600' : v >= 5 ? 'text-amber-600' : 'text-red-600';
+const vitalsColor = (s: string) => s === 'vert' ? 'bg-green-100 text-green-700' : s === 'orange' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700';
+const checkColor = (present: boolean, critical: boolean) => present ? 'text-green-600' : critical ? 'text-red-600' : 'text-amber-500';
+const checkIcon = (present: boolean) => present ? '✓' : '✗';
+---
+
+<BaseLayout title={title} description={description} noindex={true}>
+  <div class="max-w-4xl mx-auto px-4 py-12 space-y-16">
+
+    <!-- HEADER -->
+    <header class="space-y-4 border-b border-neutral-200 pb-8">
+      <p class="text-sm text-neutral-500 font-mono">Audit prospect · {prospect.date}</p>
+      <h1 class="text-3xl font-bold text-neutral-900">Audit UX — {prospect.name}</h1>
+      <p class="text-neutral-600">{prospect.activity}</p>
+      <p class="text-sm text-neutral-500">{prospect.location}</p>
+      <a href={prospect.url} target="_blank" rel="noopener" class="text-sm text-primary-600 hover:underline">{prospect.url}</a>
+      <div class="mt-4 p-4 bg-amber-50 border border-amber-200 rounded-lg">
+        <p class="text-sm text-amber-800 font-medium">Constat principal</p>
+        <p class="text-sm text-amber-700 mt-1">{constat}</p>
+      </div>
+    </header>
+
+    <!-- KPIs -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-semibold text-neutral-900">Indicateurs globaux</h2>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div class="bg-white border border-neutral-200 rounded-lg p-4 text-center">
+          <p class="text-3xl font-bold {scoreColor}">{kpis.conversion}%</p>
+          <p class="text-xs text-neutral-500 mt-1">Taux de conversion estimé</p>
+        </div>
+        <div class="bg-white border border-neutral-200 rounded-lg p-4 text-center">
+          <p class={`text-3xl font-bold ${kpiColor(kpis.experience)}`}>{kpis.experience}/10</p>
+          <p class="text-xs text-neutral-500 mt-1">Expérience visiteur</p>
+        </div>
+        <div class="bg-white border border-neutral-200 rounded-lg p-4 text-center">
+          <p class={`text-3xl font-bold ${kpiColor(kpis.confiance)}`}>{kpis.confiance}/10</p>
+          <p class="text-xs text-neutral-500 mt-1">Score confiance</p>
+        </div>
+        <div class="bg-white border border-neutral-200 rounded-lg p-4 text-center">
+          <p class={`text-3xl font-bold ${kpiColor(kpis.clarte)}`}>{kpis.clarte}/10</p>
+          <p class="text-xs text-neutral-500 mt-1">Clarté de l'offre</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- TOP FRICTIONS -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-semibold text-neutral-900">Top 5 frictions — impact conversion</h2>
+      <div class="space-y-3">
+        {topFrictions.map((f) => (
+          <div class="bg-white border border-neutral-200 rounded-lg p-4">
+            <div class="flex items-start gap-3">
+              <span class="shrink-0 bg-red-100 text-red-700 text-xs font-bold px-2 py-1 rounded">{f.count}/10</span>
+              <div>
+                <p class="font-medium text-neutral-900 text-sm">{f.titre}</p>
+                <p class="text-neutral-500 text-xs mt-1">{f.detail}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- CONVERSION PAR CANAL -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-semibold text-neutral-900">Conversion estimée par canal</h2>
+      <div class="space-y-2">
+        {conversionByCanal.map((c) => (
+          <div class="flex items-center gap-3">
+            <span class="w-44 text-sm text-neutral-600 shrink-0">{c.canal}</span>
+            <div class="flex-1 bg-neutral-100 rounded-full h-3">
+              <div class={`h-3 rounded-full ${c.bg}`} style={`width: ${c.taux}%`}></div>
+            </div>
+            <span class={`text-sm font-semibold w-12 text-right ${c.color}`}>{c.taux}%</span>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- PAGESPEED -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-semibold text-neutral-900">Performance — PageSpeed Insights</h2>
+      <div class="grid md:grid-cols-2 gap-6">
+        <div class="bg-white border border-neutral-200 rounded-lg p-4">
+          <p class="font-medium text-neutral-700 mb-3">Mobile</p>
+          <div class="space-y-2">
+            {Object.entries(pagespeed.mobile).map(([k, v]) => (
+              <div class="flex justify-between text-sm">
+                <span class="text-neutral-600 capitalize">{k.replace(/([A-Z])/g, ' $1')}</span>
+                <span class={v >= 90 ? 'text-green-600 font-semibold' : v >= 50 ? 'text-amber-600 font-semibold' : 'text-red-600 font-semibold'}>{v}/100</span>
+              </div>
+            ))}
+          </div>
+        </div>
+        <div class="bg-white border border-neutral-200 rounded-lg p-4">
+          <p class="font-medium text-neutral-700 mb-3">Desktop</p>
+          <div class="space-y-2">
+            {Object.entries(pagespeed.desktop).map(([k, v]) => (
+              <div class="flex justify-between text-sm">
+                <span class="text-neutral-600 capitalize">{k.replace(/([A-Z])/g, ' $1')}</span>
+                <span class={v >= 90 ? 'text-green-600 font-semibold' : v >= 50 ? 'text-amber-600 font-semibold' : 'text-red-600 font-semibold'}>{v}/100</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div class="space-y-2">
+        <p class="text-sm font-medium text-neutral-700">Core Web Vitals</p>
+        {coreWebVitals.map((v) => (
+          <div class="flex items-center justify-between text-sm">
+            <span class="text-neutral-600">{v.name}</span>
+            <span class={`px-2 py-0.5 rounded text-xs font-medium ${vitalsColor(v.status)}`}>{v.value}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- OBSERVATORY -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-semibold text-neutral-900">Sécurité — MDN Observatory</h2>
+      <div class="bg-red-50 border border-red-200 rounded-lg p-4 flex items-center gap-4">
+        <span class="text-5xl font-black text-red-600">{observatory.grade}</span>
+        <div>
+          <p class="text-2xl font-bold text-red-700">{observatory.score}/100</p>
+          <p class="text-sm text-red-600">{observatory.testsPassed} tests réussis sur {observatory.testsTotal}</p>
+          <p class="text-xs text-red-500 mt-1">CSP, HSTS, X-Frame-Options, X-Content-Type-Options, Referrer-Policy — tous manquants</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- CHECKLIST TECHNIQUE -->
+    <section class="space-y-4">
+      <h2 class="text-xl font-semibold text-neutral-900">Checklist technique</h2>
+      <div class="grid md:grid-cols-2 gap-2">
+        {techChecks.map((c) => (
+          <div class="flex items-start gap-2 text-sm">
+            <span class={`shrink-0 font-bold ${checkColor(c.present, c.critical)}`}>{checkIcon(c.present)}</span>
+            <span class={c.present ? 'text-neutral-600' : c.critical ? 'text-red-700 font-medium' : 'text-amber-700'}>{c.label}</span>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- PERSONAS -->
+    <section class="space-y-6">
+      <h2 class="text-xl font-semibold text-neutral-900">10 personas simulés</h2>
+      <div class="space-y-4">
+        {personas.map((p) => (
+          <div class="bg-white border border-neutral-200 rounded-xl p-5">
+            <div class="flex items-start justify-between gap-3 mb-3">
+              <div class="flex items-center gap-3">
+                <span class="text-2xl">{p.emoji}</span>
+                <div>
+                  <p class="font-semibold text-neutral-900">{p.name}, {p.age} ans</p>
+                  <p class="text-xs text-neutral-500">{p.canal} · {p.device} · {p.maturite}</p>
+                </div>
+              </div>
+              <span class={`shrink-0 text-xs font-bold px-3 py-1 rounded-full ${p.decision === 'convertit' ? 'bg-green-100 text-green-700' : p.decision === 'quitte' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>
+                {p.decision === 'convertit' ? 'Convertit' : p.decision === 'quitte' ? 'Quitte' : 'Hésite'}
+              </span>
+            </div>
+            <p class="text-sm text-neutral-600 mb-2">{p.situation}</p>
+            <p class="text-xs text-neutral-500 mb-3 italic">{p.premierImpression}</p>
+            <div class="flex gap-4 mb-3 text-xs">
+              <span class={`font-medium ${kpiColor(p.scores.exp)}`}>Exp. {p.scores.exp}/10</span>
+              <span class={`font-medium ${kpiColor(p.scores.conf)}`}>Conf. {p.scores.conf}/10</span>
+              <span class={`font-medium ${kpiColor(p.scores.clarte)}`}>Clarté {p.scores.clarte}/10</span>
+            </div>
+            <div class="grid md:grid-cols-2 gap-3 text-xs">
+              <div>
+                <p class="font-medium text-green-700 mb-1">Points positifs</p>
+                <ul class="space-y-0.5">
+                  {p.pointsPositifs.map((pt) => <li class="text-green-600">+ {pt}</li>)}
+                </ul>
+              </div>
+              <div>
+                <p class="font-medium text-red-700 mb-1">Frictions</p>
+                <ul class="space-y-0.5">
+                  {p.frictions.map((fr) => <li class="text-red-600">— {fr}</li>)}
+                </ul>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+
+    <!-- AMELIORATIONS -->
+    <section class="space-y-6">
+      <h2 class="text-xl font-semibold text-neutral-900">Recommandations actionnables</h2>
+
+      <div>
+        <h3 class="text-base font-semibold text-red-700 mb-3">Corrections critiques</h3>
+        <div class="space-y-4">
+          {ameliorationsCritiques.map((a) => (
+            <div class="bg-white border border-red-200 rounded-lg p-4">
+              <p class="font-medium text-neutral-900 text-sm">{a.titre}</p>
+              <p class="text-neutral-500 text-xs mt-1 mb-2">{a.detail}</p>
+              <p class="text-xs text-red-700 bg-red-50 rounded px-2 py-1">Action : {a.action}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h3 class="text-base font-semibold text-amber-700 mb-3">Améliorations importantes</h3>
+        <div class="space-y-4">
+          {ameliorationsImportantes.map((a) => (
+            <div class="bg-white border border-amber-200 rounded-lg p-4">
+              <p class="font-medium text-neutral-900 text-sm">{a.titre}</p>
+              <p class="text-neutral-500 text-xs mt-1 mb-2">{a.detail}</p>
+              <p class="text-xs text-amber-700 bg-amber-50 rounded px-2 py-1">Action : {a.action}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h3 class="text-base font-semibold text-neutral-600 mb-3">Optimisations optionnelles</h3>
+        <div class="space-y-3">
+          {ameliorationsOptionnelles.map((a) => (
+            <div class="bg-neutral-50 border border-neutral-200 rounded-lg p-3">
+              <p class="font-medium text-neutral-800 text-sm">{a.titre}</p>
+              <p class="text-neutral-500 text-xs mt-1">{a.detail}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- FOOTER AUDIT -->
+    <footer class="border-t border-neutral-200 pt-8 text-center text-xs text-neutral-400 space-y-1">
+      <p>Audit réalisé par <a href="/" class="underline">Marc M. Agence Web</a> · {prospect.date}</p>
+      <p>Page confidentielle — usage interne uniquement</p>
+    </footer>
+
+  </div>
+</BaseLayout>

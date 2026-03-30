@@ -1,0 +1,632 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX — T.A. Toiture Metz 57 | Marc M.';
+const description = 'Audit complet du site ta-toiture.fr : 10 personas simules, 27 avis 4.9/5 inexploites, zero Schema.org, Google Fonts RGPD non conforme, recommandations actionnables pour couvreur Metz Moselle.';
+
+// ─── PROSPECT ───
+const prospect = {
+  name: 'T.A. Toiture',
+  url: 'https://ta-toiture.fr/',
+  date: '29 mars 2026',
+  activity: 'Couvreur / Charpentier — Couverture, Charpente, Facade, Isolation, Desamiantage, Zinguerie',
+  location: 'Metz 57000 — Moselle, Grand Est',
+};
+
+// ─── KPIs ───
+const kpis = {
+  conversion: 30,
+  experience: 4.8,
+  confiance: 5.2,
+  clarte: 5.1,
+};
+
+// ─── CONSTAT ───
+const constat = "T.A. Toiture a 27 avis Google a 4,9/5 — la meilleure note du secteur a Metz — et une specialite rare : le desamiantage. Mais le site ne montre ni les avis, ni le gerant, ni aucun Schema.org. Un artisan exceptional rendu invisible par un WordPress Divi lent, des polices Google Fonts illegales RGPD, et zero preuve sociale en ligne.";
+
+// ─── CONVERSION PAR CANAL ───
+const conversionByCanal = [
+  { canal: 'Bouche-a-oreille', taux: 80, color: 'text-green-600', bg: 'bg-green-500' },
+  { canal: 'Google Maps / GBP (4.9/5)', taux: 55, color: 'text-green-600', bg: 'bg-green-500' },
+  { canal: 'Google Search (urgence)', taux: 35, color: 'text-amber-600', bg: 'bg-amber-500' },
+  { canal: 'Google Search (devis planifie)', taux: 12, color: 'text-amber-600', bg: 'bg-amber-500' },
+  { canal: 'Reseaux sociaux', taux: 0, color: 'text-red-600', bg: 'bg-red-500' },
+  { canal: 'IA (ChatGPT / Perplexity / Claude)', taux: 0, color: 'text-red-700', bg: 'bg-red-700' },
+];
+
+// ─── TOP FRICTIONS ───
+const topFrictions = [
+  { titre: '27 avis 4,9/5 : capital inexploite sur le site', count: 8, detail: 'La meilleure note du secteur couvreur a Metz n\'est visible nulle part sur ta-toiture.fr. Les visiteurs qui ne passent pas par Google Maps partent sans savoir que cet artisan est le mieux note de Moselle. Aucun temoignage, aucun avis cite, aucun lien GBP.' },
+  { titre: 'Zero Schema.org : invisible pour Google Local Pack et les IA', count: 7, detail: 'Aucun JSON-LD sur le site. Google ne peut pas identifier le type RoofingContractor, la zone Moselle, les services, les avis. ChatGPT, Claude et Perplexity ne citent pas T.A. Toiture dans leurs reponses "couvreur Metz" car il n\'y a aucune donnee structuree a extraire.' },
+  { titre: 'Polices Google Fonts CDN : violation RGPD active', count: 6, detail: '4 polices chargees depuis fonts.googleapis.com sans consentement (Open Sans, Alef, Rubik, Playfair Display). Chaque chargement transfère l\'IP visiteur vers Google = infraction CNIL depuis janv. 2022 (amende potentielle). En plus, c\'est un frein de performance (2 requetes DNS externes supplementaires).' },
+  { titre: 'Telephone absent du header : chercher le numero en urgence', count: 7, detail: 'Le 06 61 29 52 55 est present dans une section info et dans le footer, mais pas dans un header sticky accessible au premier coup d\'oeil. Un proprietaire avec une fuite a 6h du matin sur mobile doit scroller pour trouver le numero — friction critique pour un metier ou l\'urgence est un vecteur majeur.' },
+  { titre: 'Site anonyme : pas de visage, pas de nom en evidence', count: 6, detail: 'Anthony TOURBIN est nomme dans le texte "A propos" mais sans photo. Pas de section equipe. L\'artisan qui fait la difference sur le terrain est invisible en ligne. La confiance en artisanat se construit sur l\'humain — un gerant nomme et photographie convertit bien mieux qu\'une page generique.' },
+];
+
+// ─── PAGESPEED ───
+const pagespeed = {
+  mobile: { performance: 40, accessibility: 58, bestPractices: 65, seo: 72 },
+  desktop: { performance: 60, accessibility: 60, bestPractices: 65, seo: 74 },
+};
+const coreWebVitals = [
+  { name: 'TTFB', value: '~200-400 ms', status: 'orange' },
+  { name: 'FCP mobile (estime)', value: '~2,5-3,5 s', status: 'rouge' },
+  { name: 'LCP mobile (estime)', value: '~4,0-5,5 s', status: 'rouge' },
+  { name: 'TBT / INP (estime)', value: '~300-500 ms', status: 'rouge' },
+  { name: 'CLS (estime)', value: '~0,05-0,15', status: 'orange' },
+  { name: 'Taille HTML homepage', value: '134,8 KB', status: 'orange' },
+];
+
+// ─── OBSERVATORY ───
+const observatory = { grade: 'D-', score: 25, testsPassed: 5, testsTotal: 10 };
+
+// ─── CHECKLIST TECHNIQUE ───
+const techChecks = [
+  { label: 'HTTPS actif + redirection HTTP', present: true, critical: false },
+  { label: 'Meta title present (44 car.)', present: true, critical: false },
+  { label: 'Meta description', present: false, critical: true },
+  { label: 'Balise canonical presente', present: true, critical: false },
+  { label: 'robots.txt accessible', present: true, critical: false },
+  { label: 'Sitemap.xml accessible', present: true, critical: false },
+  { label: 'Schema.org JSON-LD (RoofingContractor)', present: false, critical: true },
+  { label: 'Open Graph (og:title, og:image, og:description)', present: false, critical: true },
+  { label: 'HSTS + X-Frame-Options + X-Content-Type', present: false, critical: true },
+  { label: 'Bandeau cookies / consentement RGPD', present: false, critical: true },
+  { label: 'Polices locales (sans CDN Google Fonts RGPD)', present: false, critical: true },
+  { label: 'Viewport sans user-scalable=0 (WCAG 1.4.4)', present: false, critical: true },
+  { label: 'Images WebP + lazy loading', present: false, critical: false },
+  { label: 'Mixed content HTTP resolu (logo + photos)', present: false, critical: false },
+  { label: 'Telephone cliquable (tel:) en header sticky', present: false, critical: true },
+  { label: 'AggregateRating Schema (27 avis 4,9/5)', present: false, critical: true },
+];
+
+// ─── PERSONAS (Agent 1 : personas 1-5) ───
+const personas = [
+  // ─── AGENT 1 ───
+  {
+    id: 1,
+    name: 'Martine',
+    age: 61,
+    emoji: '\u{1F3E0}',
+    canal: 'Google Maps',
+    device: 'Mobile',
+    maturite: 'Decision',
+    situation: 'Proprietaire a Metz-Sablon, tuiles cassees apres grele, compare 3 couvreurs sur Maps — retient T.A. Toiture pour sa note 4,9/5',
+    contexte: 'Ouvre le site depuis la fiche Google Maps a 9h du matin, cherche a confirmer la reputation et trouver un numero',
+    parcours: ['Google Maps', 'Accueil', 'Couverture', 'Footer → cherche tel', 'Appel'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 6, clarte: 5 },
+    premierImpression: 'Elle arrive avec confiance grace aux 4,9/5. Mais le site ne confirme pas — aucun avis visible, pas de photo d\'artisan. Elle est un peu deçue mais appelle quand meme car Maps etait tres rassurant.',
+    questionCle: 'Votre note Maps est excellente — mais qui etes-vous vraiment ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Le nom Anthony Tourbin est mentionne dans un paragraphe mais sans photo. Les 27 avis 4,9/5 ne sont nulle part sur le site.',
+    impactTechnique: 'Site lent sur 4G (Divi + jQuery), mais elle patiente car la note Maps l\'a convaincue',
+    pointsPositifs: ['Garantie decennale affichee accueil', 'Zone Metz confirmee', 'Horaires samedi matin presents'],
+    frictions: ['Aucun avis Google visible sur le site', 'Telephone pas en header — doit scroller', 'Pas de photo du gerant', 'Chargement lent mobile'],
+  },
+  {
+    id: 2,
+    name: 'Pascal',
+    age: 48,
+    emoji: '\u{1F477}',
+    canal: 'Google Search',
+    device: 'Mobile',
+    maturite: 'Urgence',
+    situation: 'Proprietaire a Thionville, fuite toiture suite pluie nocturne, cherche "couvreur urgence moselle" a 7h30',
+    contexte: 'Smartphone, eau dans le grenier, veut un numero de portable qui repond maintenant',
+    parcours: ['Google Search', 'Accueil', 'Cherche tel dans header (introuvable)', 'Scrolle jusqu\'au footer', 'Appel 06'],
+    decision: 'convertit',
+    scores: { exp: 4, conf: 5, clarte: 4 },
+    premierImpression: 'Le site met 4 secondes a charger sur 4G. Il cherche immediatement un bouton "appeler" — il n\'y en a pas en header. Doit scroller jusqu\'au footer. Convertit quand meme car il n\'a pas le temps de chercher ailleurs.',
+    questionCle: 'Pouvez-vous intervenir aujourd\'hui a Thionville pour une fuite urgente ?',
+    reponse: 'Partiellement',
+    commentReponse: '"Intervention rapide" est mentionne mais pas de SLA, pas de "disponible aujourd\'hui", pas de zone Thionville confirmee en premiere ligne',
+    impactTechnique: 'Temps de chargement 4-5s sur 4G = 30% de rebond supplementaire — il resiste car il n\'a pas d\'alternative sous la main',
+    pointsPositifs: ['Numero mobile 06 present (urgence)', '"Intervention rapide" mentionne', 'Devis gratuit affiche'],
+    frictions: ['Pas de bouton appel en header sticky', 'Site tres lent mobile (jQuery + Divi)', 'Zone Thionville non confirmee en accueil', 'Pas de mention "intervention jour J"'],
+  },
+  {
+    id: 3,
+    name: 'Sylvain',
+    age: 35,
+    emoji: '\u{1F4BB}',
+    canal: 'IA (ChatGPT)',
+    device: 'Desktop',
+    maturite: 'Decouverte',
+    situation: 'Cadre a Metz, cherche un couvreur pour refection complete — demande a ChatGPT "meilleurs couvreurs Metz Moselle 2026 avec avis"',
+    contexte: 'ChatGPT cite plusieurs concurrents mais pas T.A. Toiture — zero Schema.org = invisible aux LLM',
+    parcours: ['ChatGPT → non cite', 'Google Search "ta-toiture metz"', 'Accueil', 'Couverture', 'Contact → quitte'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 4, clarte: 5 },
+    premierImpression: 'Arrive via Google car l\'IA ne l\'a pas cite. Site propre mais generique — rien ne justifie de choisir T.A. Toiture plutot que Weinrich Couverture ou Lorraine Couverture qui ont des sites plus modernes.',
+    questionCle: 'Pourquoi vous plutot qu\'un autre ? Quelles preuves concretes de votre qualite ?',
+    reponse: 'Non',
+    commentReponse: 'Sans Schema.org ni AggregateRating, les IA ne peuvent pas citer T.A. Toiture. Sur le site, la note 4,9/5 et les 27 avis sont absents — aucun differenciateur visible.',
+    impactTechnique: 'RoofingContractor JSON-LD absent = non indexable par les LLM. Desamiantage non mis en avant alors que c\'est un argument rare et fort.',
+    pointsPositifs: ['7 pages service bien organisees', 'Garantie decennale presente', 'Specialite desamiantage (mentionne mais en retrait)'],
+    frictions: ['Non cite par ChatGPT / Perplexity / Claude', 'Zero Schema.org (LocalBusiness, AggregateRating)', '27 avis 4,9/5 absents du site', 'Desamiantage sous-valorise'],
+  },
+  {
+    id: 4,
+    name: 'Nadia',
+    age: 42,
+    emoji: '\u{1F4F1}',
+    canal: 'Reseaux sociaux',
+    device: 'Mobile',
+    maturite: 'Decouverte',
+    situation: 'Proprietaire Woippy, voit un partage du site T.A. Toiture sur un groupe Facebook "Entraide Moselle"',
+    contexte: 'Clique sur le lien partage — arrive sans vignette (pas d\'og:image) — premiere impression negative',
+    parcours: ['Facebook (lien sans vignette)', 'Accueil', 'Isolation', 'Quitte sans contacter'],
+    decision: 'quitte',
+    scores: { exp: 3, conf: 3, clarte: 4 },
+    premierImpression: 'Le partage Facebook affiche un lien texte brut sans photo ni description (pas d\'og:image). Sur le site, l\'accueil est lourd, pas de section "qui sommes-nous" visible rapidement. Elle cherche a mettre un visage sur l\'entreprise — impossible.',
+    questionCle: 'Qui etes-vous ? Votre equipe, votre histoire, vos chantiers en Moselle ?',
+    reponse: 'Non',
+    commentReponse: 'Pas d\'og:image → partage sans visuel. Pas de page equipe/a propos visible. Anthony Tourbin nomme dans un paragraphe interne mais sans photo. Aucun temoignage client.',
+    impactTechnique: 'og:image absent = vignette vide = -80% taux de clic depuis Facebook/WhatsApp/LinkedIn. Site lent sur mobile = rebond supplementaire.',
+    pointsPositifs: ['Page isolation informative (materiaux detailles)', 'Desamiantage = service rare bien positionne'],
+    frictions: ['Partage Facebook sans vignette (og:image absent)', 'Aucune photo equipe / gerant', 'Page A propos inexistante (lien nav "A Propos" introuvable)', 'Site lent mobile'],
+  },
+  {
+    id: 5,
+    name: 'Gerard',
+    age: 68,
+    emoji: '\u{1F9D3}',
+    canal: 'Bouche-a-oreille',
+    device: 'Tablette',
+    maturite: 'Decision',
+    situation: 'Retraite a Scy-Chazelles, voisin a recommande T.A. Toiture pour une refection de toiture en ardoise — verifie le site avant de rappeler',
+    contexte: 'Tape l\'URL depuis sa tablette, veut voir les realisations et le serieux de l\'entreprise',
+    parcours: ['URL directe', 'Accueil', 'Couverture', 'Charpente', 'Mentions legales (SIRET)', 'Appel'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 7, clarte: 6 },
+    premierImpression: 'Le site est propre et bien organise par metier. Il cherche le SIRET et la garantie decennale — les deux sont accessibles. Le nom Anthony Tourbin est present. Il est rassure et appelle.',
+    questionCle: 'L\'entreprise est-elle en regle (SIRET, garantie decennale) pour un chantier d\'ardoise ?',
+    reponse: 'Oui',
+    commentReponse: 'SIRET 79333705600022 dans les mentions legales, garantie decennale affichee en accueil, creation 2021 mentionnee',
+    impactTechnique: 'Sur tablette WiFi le site est acceptable — Divi s\'affiche correctement, chargement ~3s tolerable',
+    pointsPositifs: ['SIRET accessible mentions legales', 'Garantie decennale affichee', 'Pages service detaillees par metier', 'Horaires clairs'],
+    frictions: ['Pas de galerie realisations (pas de page /realisations/)', 'Pas de photos de chantiers ardoise specifiquement', 'Aucun avis client visible'],
+  },
+  // ─── AGENT 2 ───
+  {
+    id: 6,
+    name: 'Amandine',
+    age: 38,
+    emoji: '\u{1F3E1}',
+    canal: 'Google Search',
+    device: 'Mobile',
+    maturite: 'Comparaison',
+    situation: 'Proprietaire a Amneville, amiante suspecte dans la toiture de sa maison des annees 70 — cherche "desamiantage toiture metz"',
+    contexte: 'T.A. Toiture est l\'un des rares couvreurs a afficher une page desamiantage — elle clique depuis Google',
+    parcours: ['Google Search', 'Page Desamiantage', 'Accueil', 'Contact → formulaire'],
+    decision: 'convertit',
+    scores: { exp: 7, conf: 7, clarte: 7 },
+    premierImpression: 'La page Desamiantage confirme le service. C\'est rare : peu de couvreurs osent afficher ce service. Elle est rassure par la specialisation et remplit le formulaire pour un devis.',
+    questionCle: 'Intervenez-vous sur les diagnostics et retraits d\'amiante pour une maison de 1975 en Moselle ?',
+    reponse: 'Oui',
+    commentReponse: 'Page /desamiantage/ presente et visible — service confirme. Zone Moselle mentionnee. C\'est le seul couvreur du panel Maps a avoir une page dediee desamiantage.',
+    impactTechnique: 'Formulaire CF7 fonctionnel mais generique (pas de champ "type d\'amiante", "surface", "annee construction")',
+    pointsPositifs: ['Page desamiantage dediee = differenciateur majeur', 'Zone Moselle confirmee', 'Formulaire contact accessible'],
+    frictions: ['Formulaire non specialise desamiantage', 'Pas de certification specifique amiante affichee', 'Pas de tarif indicatif ni duree d\'intervention', 'Aucun avis client sur ce service rare'],
+  },
+  {
+    id: 7,
+    name: 'Bruno',
+    age: 53,
+    emoji: '\u{1F3D7}',
+    canal: 'Google Search',
+    device: 'Desktop',
+    maturite: 'Comparaison',
+    situation: 'Gestionnaire de biens Metz, cherche un couvreur pour un portefeuille de 5 appartements — veut tester la serieux avant de nouer une relation commerciale',
+    contexte: 'Cherche "couvreur professionnel moselle partenaire gestion immobiliere" — visite 3 sites',
+    parcours: ['Google', 'Accueil', 'Charpente', 'Couverture', 'Mentions legales', 'Quitte'],
+    decision: 'quitte',
+    scores: { exp: 4, conf: 4, clarte: 4 },
+    premierImpression: 'Le site est celui d\'un artisan solo bien organise mais pas calibre pour un gestionnaire pro. Pas de section "professionnels / syndics", pas de reference chantier multiple, email contact@ta-toiture.fr (pas de nom direct).',
+    questionCle: 'Pouvez-vous intervenir sur plusieurs biens en gestion locative avec facturation mensuelle ?',
+    reponse: 'Non',
+    commentReponse: 'Aucune section B2B/pro, pas de page tarifs, pas de certifications Qualibat ou RGE visibles malgre la specialite isolation',
+    impactTechnique: 'Sur desktop le site se charge en ~2s (acceptable) mais le contenu ne repond pas aux attentes d\'un pro',
+    pointsPositifs: ['Gamme de services complete (7 metiers)', 'SIRET present', 'Garantie decennale affichee'],
+    frictions: ['Aucune section gestionnaires/syndics/pro', 'Pas de certifications visibles (RGE, Qualibat)', 'Pas de reference chantier nominatif', 'Formulaire generique non adapte B2B'],
+  },
+  {
+    id: 8,
+    name: 'Clara',
+    age: 29,
+    emoji: '\u{1F4B0}',
+    canal: 'Google Search',
+    device: 'Mobile',
+    maturite: 'Comparaison',
+    situation: 'Jeune proprietaire a Metz-Queuleu, budget serre, veut isoler ses combles pour reduire la facture de chauffage — cherche "isolation combles Metz aide MaPrimeRenov"',
+    contexte: 'Clique sur T.A. Toiture depuis Google pour comparer les offres isolation + aides energetiques',
+    parcours: ['Google', 'Page Isolation', 'Accueil', 'Quitte'],
+    decision: 'quitte',
+    scores: { exp: 4, conf: 4, clarte: 4 },
+    premierImpression: 'La page Isolation detaille les materiaux (laine de verre, roche, ouate) mais ne mentionne ni MaPrimeRenov, ni CEE, ni eco-PTZ. Elle veut savoir si l\'artisan peut l\'aider a financer le chantier — zero info a ce sujet.',
+    questionCle: 'Etes-vous RGE certifie ? Puis-je obtenir MaPrimeRenov avec vous pour l\'isolation combles ?',
+    reponse: 'Non',
+    commentReponse: 'Aucune mention RGE, MaPrimeRenov, CEE ou aides energetiques sur la page isolation. Sans certification RGE affichee, impossible pour elle de s\'engager.',
+    impactTechnique: 'Page isolation charge 2 appels Google Fonts supplementaires — ralentissement perceptible sur mobile',
+    pointsPositifs: ['3 materiaux d\'isolation detailles', 'Avantages energetiques mentionnes (generiques)'],
+    frictions: ['Zero mention RGE / MaPrimeRenov / CEE', 'Pas de fourchette de prix pour l\'isolation', 'Certification RGE absente du site', 'Aucun temoignage isolation'],
+  },
+  {
+    id: 9,
+    name: 'Jean-Pierre',
+    age: 57,
+    emoji: '\u{1F4CB}',
+    canal: 'Google Search',
+    device: 'Desktop',
+    maturite: 'Decision',
+    situation: 'Proprietaire a Sarreguemines, ravalement de facade prevu au printemps — compare 3 artisans en Moselle',
+    contexte: 'Cherche "artisan facade Moselle devis gratuit" — retient T.A. Toiture pour sa gamme complete',
+    parcours: ['Google', 'Page Facade', 'Accueil', 'Contact → formulaire'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 6, clarte: 6 },
+    premierImpression: 'La page Facade est suffisamment informative. Il apprécie que l\'entreprise couvre Sarreguemines (mentionne dans le texte general "toute la Moselle"). Il remplit le formulaire pour un devis.',
+    questionCle: 'Intervenez-vous a Sarreguemines pour un ravalement de facade de maison individuelle ?',
+    reponse: 'Oui',
+    commentReponse: '"Toute la Moselle" mentionne incluant Sarreguemines — il accepte l\'approximation et contacte',
+    impactTechnique: 'Sur desktop fibre le site est acceptable malgre la lourdeur Divi',
+    pointsPositifs: ['Page facade presente', '"Toute la Moselle" confirme la zone', 'Devis gratuit mis en avant', 'Formulaire accessible'],
+    frictions: ['Pas de prix indicatif ravalement', 'Aucun avant/apres facade visible', 'Formulaire generique (pas de "surface de facade")', 'Aucun avis specifique facade'],
+  },
+  {
+    id: 10,
+    name: 'Laetitia',
+    age: 44,
+    emoji: '\u{1F4F1}',
+    canal: 'Google Maps',
+    device: 'Mobile',
+    maturite: 'Decision',
+    situation: 'Proprietaire Montigny-les-Metz, gouttiere percee visible, compare sur Maps et retient T.A. Toiture (4,9/5)',
+    contexte: 'Clique depuis Maps sur le site pour verifier le service zinguerie avant d\'appeler',
+    parcours: ['Google Maps', 'Accueil', 'Page Zinguerie', 'Contact → appel'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 6, clarte: 6 },
+    premierImpression: 'La note 4,9/5 sur Maps l\'a convaincue avant meme d\'ouvrir le site. La page Zinguerie confirme le service gouttiere. Elle appelle directement.',
+    questionCle: 'Vous reparez les gouttières/chenaux percés a Montigny-les-Metz ? Quel delai ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Service zinguerie confirme, zone Metz/Moselle confirmee — mais delai non precise et Montigny-les-Metz non listee explicitement',
+    impactTechnique: 'Site lent au premier chargement (3-4s) mais elle persiste grace a la confiance Maps',
+    pointsPositifs: ['Page zinguerie claire', 'Zone Moselle confirmee', 'Telephone present (meme si pas en header)'],
+    frictions: ['Telephone pas en header sticky', 'Delai d\'intervention non indique', 'Aucun avis zinguerie', 'Pas de tarif indicatif gouttiere'],
+  },
+];
+
+// ─── AMELIORATIONS ───
+const ameliorationsCritiques = [
+  {
+    titre: 'Mettre en avant les 27 avis 4,9/5 — meilleure note couvreur Metz',
+    detail: '8 personas cherchent des preuves sociales. T.A. Toiture a la meilleure note du secteur — et personne ne le sait en arrivant sur le site. Les visiteurs qui passent par Google plutot que Maps ne voient jamais ce score exceptionnel.',
+    action: 'Bandeau avis Google en accueil : note 4,9/5, 27 avis, 5 verbatims recents avec prenom + commune. Schema.org AggregateRating. Lien direct vers le profil GBP. Gain confiance immediat pour tous les canaux hors Maps.',
+  },
+  {
+    titre: 'Schema.org RoofingContractor + telephone en header : 2 actions, double impact',
+    detail: '7 personas impactes par l\'absence de Schema.org (invisible ChatGPT/Perplexity/Claude + Google Local Pack degrade). 7 personas cherchent le telephone sans le trouver en header. Ces 2 corrections sont les plus rentables.',
+    action: 'JSON-LD : RoofingContractor + AggregateRating(27 avis, 4.9/5) + ServiceArea(Moselle, Metz, Thionville, Sarreguemines) + 7 Service. Bouton tel:06 61 29 52 55 cliquable dans header sticky. Gain SEO local + GEO immediat.',
+  },
+  {
+    titre: 'Polices locales + og:image : conformite RGPD et partage reseaux',
+    detail: '4 polices Google Fonts CDN = violation RGPD active depuis 2022 (amende CNIL). Aucun og:image = partages reseaux sans vignette = -80% de clics. Ces 2 corrections sont critiques et rapides a implementer.',
+    action: 'Telecharger les 2 polices utiles en woff2 locaux. Ajouter og:title, og:description, og:image (photo chantier + logo) sur toutes les pages. Supprimer les appels Google Fonts. Conformite RGPD immediate.',
+  },
+];
+
+const ameliorationsUtiles = [
+  {
+    titre: 'Valoriser le desamiantage comme differenciateur #1',
+    detail: 'Seul couvreur du panel Metz avec une page desamiantage dediee. C\'est une specialite rare, a forte marge, avec une demande croissante (batiments pre-1997). La page existe mais est au meme niveau que les autres services — il faut la pousser en priorite sur l\'accueil et le SEO.',
+  },
+  {
+    titre: 'Mentions RGE + MaPrimeRenov sur la page isolation',
+    detail: 'Clara (29 ans, budget serre) est repartie car aucune mention des aides energetiques. 3 personas hesitent faute d\'info budget. Ajouter fourchettes de prix indicatives et certifications (RGE si existante) ou mention "nous vous aidons a monter votre dossier CEE" multiplierait les contacts isolation.',
+  },
+  {
+    titre: 'Humaniser : Anthony Tourbin avec photo + galerie realisations legendee',
+    detail: '6 personas repartent ou hesitent par manque d\'humanite. Une photo du gerant + "fond de Lorraine, expert couverture depuis X ans" fait plus que n\'importe quel texte marketing. Ajouter une galerie realisations avec type de chantier, commune, annee — meme 10 photos bien legendees.',
+  },
+];
+
+function scoreColor(s: number) {
+  if (s >= 90) return '#22c55e';
+  if (s >= 50) return '#f59e0b';
+  return '#ef4444';
+}
+function scoreLabel(s: number) {
+  if (s >= 90) return 'text-green-600';
+  if (s >= 50) return 'text-amber-600';
+  return 'text-red-600';
+}
+function decisionStyle(d: string) {
+  if (d === 'convertit') return { border: 'border-green-200', bg: 'bg-green-50/40', badge: 'bg-green-100 text-green-700' };
+  if (d === 'hesite') return { border: 'border-amber-200', bg: 'bg-amber-50/40', badge: 'bg-amber-100 text-amber-700' };
+  return { border: 'border-neutral-200', bg: 'bg-neutral-50/40', badge: 'bg-red-100 text-red-700' };
+}
+function decisionLabel(d: string) {
+  if (d === 'convertit') return 'Contacte';
+  if (d === 'hesite') return 'Hesite';
+  return 'Repart';
+}
+
+const convertissent = personas.filter(p => p.decision === 'convertit').length;
+const hesitent = personas.filter(p => p.decision === 'hesite').length;
+const quittent = personas.filter(p => p.decision === 'quitte').length;
+---
+
+<BaseLayout {title} {description} noindex={true} lang="fr" frPath="/audit/ta-toiture/">
+  <!-- HERO -->
+  <section class="bg-neutral-900 text-white py-12 px-4">
+    <div class="max-w-4xl mx-auto">
+      <span class="inline-block text-xs font-semibold tracking-widest uppercase text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full mb-4">Rapport personnalise</span>
+      <h1 class="font-heading text-3xl md:text-4xl font-bold mb-2">{prospect.name} — ce que vos visiteurs pensent vraiment</h1>
+      <p class="text-neutral-400 mb-1">{prospect.activity} — <a href={prospect.url} class="text-amber-400 hover:underline" target="_blank" rel="noopener noreferrer">{prospect.url}</a></p>
+      <p class="text-neutral-500 text-sm mb-8">{prospect.location} · Analyse du {prospect.date}</p>
+      <div class="grid grid-cols-3 gap-4 max-w-lg">
+        <div class="text-center bg-neutral-800/60 rounded-xl p-4">
+          <span class="block text-3xl font-black text-amber-400">{kpis.conversion}%</span>
+          <span class="text-xs text-neutral-400">convertissent</span>
+        </div>
+        <div class="text-center bg-neutral-800/60 rounded-xl p-4">
+          <span class="block text-3xl font-black text-amber-400">{kpis.experience}/10</span>
+          <span class="text-xs text-neutral-400">experience</span>
+        </div>
+        <div class="text-center bg-neutral-800/60 rounded-xl p-4">
+          <span class="block text-3xl font-black text-amber-400">{kpis.confiance}/10</span>
+          <span class="text-xs text-neutral-400">confiance</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONSTAT -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Le constat</h2>
+
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-8">
+        <p class="text-amber-900 font-medium text-base">{constat}</p>
+      </div>
+
+      <!-- Conversion par canal -->
+      <h3 class="font-semibold text-neutral-700 mb-4 text-sm uppercase tracking-wide">Conversion par canal d'arrivee</h3>
+      <div class="space-y-3 mb-10">
+        {conversionByCanal.map(item => (
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-sm text-neutral-700">{item.canal}</span>
+              <span class={`text-sm font-bold ${item.color}`}>{item.taux}%</span>
+            </div>
+            <div class="h-2 bg-neutral-100 rounded-full overflow-hidden">
+              <div class={`h-full rounded-full ${item.bg}`} style={`width: ${item.taux}%`}></div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Top frictions -->
+      <h3 class="font-semibold text-neutral-700 mb-4 text-sm uppercase tracking-wide">Top 5 frictions identifiees</h3>
+      <ol class="space-y-3">
+        {topFrictions.map((f, i) => (
+          <li class="flex gap-3 p-4 bg-neutral-50 border border-neutral-100 rounded-xl">
+            <span class="shrink-0 w-7 h-7 flex items-center justify-center bg-red-100 text-red-700 font-bold text-sm rounded-full">{i + 1}</span>
+            <div>
+              <p class="font-semibold text-neutral-900 text-sm">{f.titre} <span class="font-normal text-neutral-500">({f.count}/10 personas)</span></p>
+              <p class="text-xs text-neutral-600 mt-0.5">{f.detail}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- AUDIT TECHNIQUE -->
+  <section class="py-12 px-4 bg-neutral-50 border-y border-neutral-100">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">L'audit technique</h2>
+
+      <!-- PageSpeed mobile -->
+      <div class="bg-white rounded-xl border border-neutral-100 p-6 mb-6">
+        <h3 class="font-semibold text-neutral-700 mb-1 text-sm">Lighthouse Mobile <span class="text-neutral-400 font-normal">(scores estimes — 13 JS + 12 CSS, jQuery, Divi, 4 polices Google Fonts, OVH nginx)</span></h3>
+        <p class="text-xs text-neutral-400 mb-5">WordPress Divi + OVH mutualisé — LCP degrade par les 13 fichiers JS bloquants et 2 appels Google Fonts CDN. HTML 134,8 KB.</p>
+        <div class="grid grid-cols-4 gap-4">
+          {[
+            { label: 'Performance', score: pagespeed.mobile.performance },
+            { label: 'Accessibilite', score: pagespeed.mobile.accessibility },
+            { label: 'Bonnes pratiques', score: pagespeed.mobile.bestPractices },
+            { label: 'SEO', score: pagespeed.mobile.seo },
+          ].map(item => (
+            <div class="text-center">
+              <div class="relative w-16 h-16 mx-auto mb-2">
+                <svg class="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3"/>
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={scoreColor(item.score)} stroke-width="3" stroke-dasharray={`${item.score}, 100`} stroke-linecap="round"/>
+                </svg>
+                <span class={`absolute inset-0 flex items-center justify-center text-sm font-bold ${scoreLabel(item.score)}`}>{item.score}</span>
+              </div>
+              <p class="text-xs text-neutral-600">{item.label}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Core Web Vitals + Observatory -->
+      <div class="grid md:grid-cols-2 gap-4 mb-6">
+        <div class="bg-white rounded-xl border border-neutral-100 p-5">
+          <h3 class="font-semibold text-neutral-700 mb-3 text-sm">Core Web Vitals (mobile)</h3>
+          <div class="space-y-2">
+            {coreWebVitals.map(v => (
+              <div class="flex items-center justify-between text-sm">
+                <span class="text-neutral-600">{v.name}</span>
+                <span class={`font-semibold px-2 py-0.5 rounded text-xs ${v.status === 'vert' ? 'bg-green-100 text-green-700' : v.status === 'orange' ? 'bg-amber-100 text-amber-700' : 'bg-red-100 text-red-700'}`}>{v.value}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <div class="bg-white rounded-xl border border-neutral-100 p-5">
+          <h3 class="font-semibold text-neutral-700 mb-3 text-sm">Securite — Mozilla Observatory</h3>
+          <div class="flex items-center gap-4 mb-3">
+            <div class="text-4xl font-black text-red-500">{observatory.grade}</div>
+            <div>
+              <p class="text-2xl font-bold text-neutral-800">{observatory.score}/100</p>
+              <p class="text-xs text-neutral-500">{observatory.testsPassed}/{observatory.testsTotal} tests de securite passes</p>
+            </div>
+          </div>
+          <p class="text-xs text-neutral-500">Headers de securite manquants : HSTS, X-Frame-Options, X-Content-Type-Options, CSP, Permissions-Policy. Header CORS dangereux : Access-Control-Allow-Origin: * avec Allow-Credentials: true.</p>
+        </div>
+      </div>
+
+      <!-- Checklist SEO + Schema -->
+      <div class="bg-white rounded-xl border border-neutral-100 p-5">
+        <h3 class="font-semibold text-neutral-700 mb-3 text-sm">Checklist Schema.org / OG / SEO / RGPD</h3>
+        <div class="grid sm:grid-cols-2 gap-1.5">
+          {techChecks.map(c => (
+            <div class={`flex items-start gap-2 text-xs p-2 rounded-lg ${c.present ? 'bg-green-50' : c.critical ? 'bg-red-50' : 'bg-neutral-50'}`}>
+              <span class={`shrink-0 font-bold ${c.present ? 'text-green-600' : 'text-red-500'}`}>{c.present ? '\u2713' : '\u2717'}</span>
+              <span class={c.present ? 'text-neutral-700' : c.critical ? 'text-red-700 font-medium' : 'text-neutral-500'}>{c.label}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- VISITEURS SIMULES -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs simules</h2>
+      <p class="text-neutral-500 mb-6 text-sm">
+        Sur 10 visiteurs simules :
+        <span class="font-semibold text-green-600">{convertissent} contactent</span>,
+        <span class="font-semibold text-amber-600">{hesitent} hesitent</span>,
+        <span class="font-semibold text-neutral-600">{quittent} repartent</span> sans agir.
+      </p>
+
+      <div class="space-y-3">
+        {personas.map(p => {
+          const ds = decisionStyle(p.decision);
+          const avgScore = Math.round((p.scores.exp + p.scores.conf + p.scores.clarte) / 3 * 10) / 10;
+          return (
+            <details class={`group border ${ds.border} ${ds.bg} rounded-xl overflow-hidden`}>
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                    <h3 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h3>
+                    <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    <span class={`text-[11px] px-1.5 py-0.5 rounded font-medium ${ds.badge}`}>{decisionLabel(p.decision)}</span>
+                  </div>
+                  <p class="text-xs text-neutral-500">{p.situation}</p>
+                </div>
+                <div class="text-right shrink-0">
+                  <span class="text-xs font-bold text-neutral-600">{avgScore}/10</span>
+                  <svg class="w-5 h-5 text-neutral-400 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                </div>
+              </summary>
+              <div class="px-4 pb-4 pt-3 border-t border-neutral-100 bg-white/70">
+                <div class="grid gap-3 text-xs">
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Premiere impression</p>
+                    <p class="text-neutral-600">{p.premierImpression}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Parcours</p>
+                    <p class="text-neutral-500">{p.parcours.join(' \u2192 ')}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-700 mb-1">Question cle</p>
+                    <p class="text-neutral-600 italic">"{p.questionCle}"</p>
+                    <p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong> — {p.commentReponse}</p>
+                  </div>
+                  <div class="text-xs text-neutral-500 bg-neutral-50 rounded-lg px-3 py-2">
+                    Impact technique : {p.impactTechnique}
+                  </div>
+                  <div class="grid sm:grid-cols-2 gap-3">
+                    <div>
+                      <p class="font-semibold text-green-700 mb-1">Points positifs</p>
+                      <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                        {p.pointsPositifs.map(pp => <li>{pp}</li>)}
+                      </ul>
+                    </div>
+                    <div>
+                      <p class="font-semibold text-amber-700 mb-1">Frictions</p>
+                      <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                        {p.frictions.map(fr => <li>{fr}</li>)}
+                      </ul>
+                    </div>
+                  </div>
+                  <div class="flex gap-4 text-xs">
+                    <span class="text-neutral-500">Experience : <strong>{p.scores.exp}/10</strong></span>
+                    <span class="text-neutral-500">Confiance : <strong>{p.scores.conf}/10</strong></span>
+                    <span class="text-neutral-500">Clarte : <strong>{p.scores.clarte}/10</strong></span>
+                  </div>
+                </div>
+              </div>
+            </details>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  <!-- RECOMMANDATIONS -->
+  <section class="py-12 px-4 bg-neutral-50 border-y border-neutral-100">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Nos recommandations</h2>
+
+      <h3 class="text-sm font-semibold uppercase tracking-wide text-red-600 mb-4">Le plus important — 3 actions critiques</h3>
+      <div class="grid gap-4 mb-10">
+        {ameliorationsCritiques.map((a, i) => (
+          <div class="bg-white border-l-4 border-red-400 rounded-r-xl p-5 shadow-sm">
+            <div class="flex items-start gap-3">
+              <span class="shrink-0 w-7 h-7 flex items-center justify-center bg-red-100 text-red-700 font-bold text-sm rounded-full">{i + 1}</span>
+              <div>
+                <h4 class="font-semibold text-neutral-900 mb-1">{a.titre}</h4>
+                <p class="text-sm text-neutral-600 mb-2">{a.detail}</p>
+                <p class="text-xs bg-red-50 text-red-800 px-3 py-2 rounded-lg"><strong>Action :</strong> {a.action}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <h3 class="text-sm font-semibold uppercase tracking-wide text-amber-600 mb-4">Utile aussi — 3 ameliorations recommandees</h3>
+      <div class="grid sm:grid-cols-3 gap-4">
+        {ameliorationsUtiles.map(a => (
+          <div class="bg-white border border-amber-200 rounded-xl p-4">
+            <h4 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h4>
+            <p class="text-xs text-neutral-600">{a.detail}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="bg-neutral-900 text-white py-16 px-4">
+    <div class="max-w-3xl mx-auto text-center">
+      <h2 class="font-heading text-2xl md:text-3xl font-bold mb-4">
+        {kpis.conversion}% de vos visiteurs vous contactent.<br/>
+        <span class="text-amber-400">Vos 27 avis 4,9/5 meritent mieux.</span>
+      </h2>
+      <p class="text-neutral-300 mb-8 max-w-xl mx-auto text-sm">
+        Vous etes le couvreur le mieux note de Metz. Votre site ne le montre pas.
+        Je construis des sites d'artisans qui mettent en avant vos vrais atouts — a partir de 990 euros,
+        livre en 7 jours.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="/commander" class="inline-flex items-center gap-2 px-8 py-3.5 bg-[var(--color-accent)] text-white font-semibold rounded-xl hover:opacity-90 transition-all shadow-md">
+          Je veux un site qui convertit
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        </a>
+        <a href="/contact" class="inline-flex items-center gap-2 px-8 py-3.5 border border-neutral-600 text-neutral-300 font-semibold rounded-xl hover:border-amber-400 hover:text-amber-400 transition-all">
+          En discuter d'abord
+        </a>
+      </div>
+    </div>
+  </section>
+</BaseLayout>

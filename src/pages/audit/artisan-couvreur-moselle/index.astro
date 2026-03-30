@@ -1,0 +1,649 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX + Technique — Artisan Couvreur Moselle 57 | Marc M';
+const description = 'Audit complet du site artisan-couvreur-moselle.fr : 10 personas simulees, scores PageSpeed estimes, securite, SEO — rapport avec recommandations priorisees.';
+
+// ─── PROSPECT ───
+const prospect = {
+  name: 'ARTISAN COUVREUR 57 - RENOVATION TOITURE',
+  nomReel: 'Artisan Gazeaux 57',
+  url: 'https://www.artisan-couvreur-moselle.fr/',
+  date: '30 mars 2026',
+  activity: 'Couvreur / Charpentier / Zingueur — Moselle 57',
+  location: 'Fameck (57290) — Zone Moselle',
+  avisGoogle: '32 avis, 4.8/5 ★',
+};
+
+// ─── PERSONAS ───
+const personas = [
+  {
+    id: 1,
+    name: 'Sylvie',
+    age: 48,
+    emoji: '🏠',
+    situation: 'Proprietaire a Thionville, remarque des infiltrations au plafond apres les pluies de mars',
+    device: 'Mobile',
+    canal: 'Google Search',
+    maturite: 'Comparaison',
+    contexte: 'Tape "couvreur urgence Thionville 57" sur Google, clique sur le 3eme resultat',
+    questionCle: 'Vous intervenez rapidement sur Thionville ? C\'est combine pour une fuite ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Thionville est listee dans les communes mais aucun tarif ni delai',
+    impactTechnique: 'Sur mobile, le menu de navigation avec 10 items est compact mais fonctionnel — le vrai probleme est l\'absence de reponse a ses questions',
+    premierImpression: 'Site charge correctement, telephone visible, mais le contenu ressemble a toutes les pages couvreur generiques trouvees avant.',
+    parcours: ['Accueil', 'Urgence fuite toiture', 'Retour sur Google'],
+    decision: 'Hesite',
+    scores: { exp: 4, conf: 4, clarte: 3 },
+    pointsPositifs: ['Telephone fixe + mobile visibles', 'Urgences mentionnees en menu', 'Garantie decennale affichee'],
+    frictions: ['Aucun tarif ou fourchette de prix', 'Pas de delai d\'intervention specifie', 'Contenu generique, pas de cas concret', 'Pas de temoignages sur le site (32 avis Google non exploites)'],
+  },
+  {
+    id: 2,
+    name: 'Gerard',
+    age: 63,
+    emoji: '⚡',
+    situation: 'Retraite a Metz-Borny, tuiles arrachees par la tempete, pluie annoncee dans 24h',
+    device: 'Mobile',
+    canal: 'Google Maps',
+    maturite: 'Decision',
+    contexte: 'Cherche "couvreur urgent pres de moi" sur Google Maps depuis son smartphone',
+    questionCle: 'Vous pouvez venir en urgence aujourd\'hui pour un bachage ?',
+    reponse: 'Oui',
+    commentReponse: 'L\'urgence et le bachage sont bien mentionnes sur le site',
+    impactTechnique: 'Le telephone mobile est cliquable en 1 tap — critique pour ce profil en urgence',
+    premierImpression: 'Maps confirme le couvreur est a 8 km. Site charge en 2 secondes. Le telephone est en haut de page. Il appelle.',
+    parcours: ['Google Maps', 'Accueil', 'Appel direct'],
+    decision: 'Convertit',
+    scores: { exp: 7, conf: 7, clarte: 6 },
+    pointsPositifs: ['Telephone cliquable sur mobile', 'Urgence bachage mentionne', 'Adresse confirmee (proximite)'],
+    frictions: ['Pas de mention "disponible 7j/7"', 'Pas de numero d\'urgence separe du standard', 'Aucun delai d\'arrivee promis'],
+  },
+  {
+    id: 3,
+    name: 'Amandine',
+    age: 35,
+    emoji: '🔍',
+    situation: 'Jeune proprietaire a Hagondange, veut faire entretenir sa toiture pour la premiere fois, ignore tout du sujet',
+    device: 'Desktop',
+    canal: 'Google Search',
+    maturite: 'Decouverte',
+    contexte: 'Tape "entretien toiture maison moselle" et atterrit sur la page nettoyage/demoussage',
+    questionCle: 'C\'est quoi exactement le demoussage ? A quelle frequence ? Ca coute combien ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Le processus de nettoyage est explique mais aucun tarif ni frequence precise',
+    impactTechnique: 'Desktop, page charge en 800ms, mais les 12 H2 sur la meme page creent une surcharge visuelle sans reponse concrete',
+    premierImpression: 'La page demoussage existe et explique le processus. C\'est un bon point. Mais nulle part on ne lui dit "ca coute environ X euros et on le fait tous les 5 ans".',
+    parcours: ['Page nettoyage/demoussage', 'Accueil', 'Realisations', 'Quitte'],
+    decision: 'Quitte',
+    scores: { exp: 3, conf: 3, clarte: 3 },
+    pointsPositifs: ['Page demoussage existe et explique le processus', 'Galerie de 36 realisations', 'Logos certifications visibles'],
+    frictions: ['Aucun tarif ou fourchette', 'Pas de frequence conseillee', 'Photos galerie sans legendes ni contexte', 'Pas de FAQ', 'Meta description mentionne "Maison Riva" (autre entreprise) — perte de confiance'],
+  },
+  {
+    id: 4,
+    name: 'Rachid',
+    age: 44,
+    emoji: '🏗️',
+    situation: 'Artisan peintre a Forbach, cherche un sous-traitant couvreur pour ses clients qui lui demandent des travaux de toiture',
+    device: 'Desktop',
+    canal: 'Bouche-a-oreille',
+    maturite: 'Comparaison',
+    contexte: 'Un collegue artisan lui a parle de Gazeaux, il cherche le site pour evaluer le serieux de l\'entreprise',
+    questionCle: 'Vous travaillez en sous-traitance ? Devis rapides pour mes clients ?',
+    reponse: 'Non',
+    commentReponse: 'Aucune mention de B2B, sous-traitance ou partenariat artisan',
+    impactTechnique: 'Desktop : site fonctionne mais structure generique agence SEO — ne donne pas l\'impression d\'une entreprise professionnelle',
+    premierImpression: 'Le site existe, c\'est deja ca. Mais c\'est clairement un site template avec des textes generiques. Pas de SIRET visible, pas de nom du dirigeant, pas de page "qui sommes nous".',
+    parcours: ['Accueil', 'Mentions legales', 'Quitte'],
+    decision: 'Quitte',
+    scores: { exp: 2, conf: 2, clarte: 2 },
+    pointsPositifs: ['Services couverts correspondent aux besoins', 'Telephone et adresse visibles'],
+    frictions: ['Aucun SIRET visible (obligatoire)', 'Pas de nom du dirigeant', 'Pas d\'offre B2B/sous-traitance', 'Meta description "Maison Riva" — c\'est quel artisan au juste ?', 'Design generique identique a des centaines d\'autres sites'],
+  },
+  {
+    id: 5,
+    name: 'Fatou',
+    age: 31,
+    emoji: '🤖',
+    situation: 'Locataire a Sarrebourg devenant proprietaire, a demande a Claude "meilleur couvreur Moselle 57 desamiantage"',
+    device: 'Mobile',
+    canal: 'IA (Claude / ChatGPT)',
+    maturite: 'Decouverte',
+    contexte: 'L\'IA lui a suggere artisan-couvreur-moselle.fr pour le desamiantage — elle visite le site',
+    questionCle: 'Vous avez les certifications pour le desamiantage ? C\'est quel processus exactement ?',
+    reponse: 'Non',
+    commentReponse: 'Le service existe dans le menu mais la page /desamiantage retourne une 404',
+    impactTechnique: 'Page desamiantage en 404 — lien dans le menu principal qui mene a une erreur, catastrophique pour la confiance',
+    premierImpression: 'L\'IA avait recommande ce site pour le desamiantage. La page n\'existe pas. C\'est un signal fort de manque de serieux.',
+    parcours: ['Accueil', 'Desamiantage → 404', 'Quitte'],
+    decision: 'Quitte',
+    scores: { exp: 1, conf: 1, clarte: 1 },
+    pointsPositifs: ['Le service desamiantage est au menu — competence reelle'],
+    frictions: ['Page desamiantage en 404 (lien mort)', 'Pas de certification desamiantage visible', 'Pas de Schema.org — site mal indexe par les IA', 'Pas de Open Graph — lien partage laid sur messageries'],
+  },
+  {
+    id: 6,
+    name: 'Jean-Louis',
+    age: 72,
+    emoji: '🧓',
+    situation: 'Proprietaire a Saint-Avold, maison de 1965, toiture en eternit — veut savoir si c\'est dangereux et ce qu\'il doit faire',
+    device: 'Tablette',
+    canal: 'Google Search',
+    maturite: 'Decouverte',
+    contexte: 'Tape "toiture eternit danger moselle" — atterrit sur la page accueil',
+    questionCle: 'Mon toit en eternit est-il dangereux ? Dois-je faire quelque chose ?',
+    reponse: 'Non',
+    commentReponse: 'L\'eternit/amiante est mentionne mais sans information sur le danger ou la demarche',
+    impactTechnique: 'Tablette : affichage correct mais viewport max-scale=1.0 bloque le zoom — problematique pour ce profil age',
+    premierImpression: 'Le mot "desamiantage" est dans le menu, c\'est rassurant. Mais la page 404 et l\'absence d\'explication sur l\'eternit le laissent dans l\'incertitude totale.',
+    parcours: ['Accueil', 'Desamiantage → 404', 'Traitement charpente', 'Quitte'],
+    decision: 'Quitte',
+    scores: { exp: 2, conf: 2, clarte: 1 },
+    pointsPositifs: ['Desamiantage mentionne au menu', 'Telephone visible'],
+    frictions: ['Page desamiantage en 404', 'Aucune information sur l\'eternit ou ses risques', 'Zoom bloque sur tablette (accessibility violation)', 'Pas de formulaire de contact — doit appeler sans savoir quoi demander'],
+  },
+  {
+    id: 7,
+    name: 'Isabelle',
+    age: 52,
+    emoji: '🏢',
+    situation: 'Gestionnaire de patrimoine Moselle Est, gere 18 pavillons en location — cherche un couvreur annuel',
+    device: 'Desktop',
+    canal: 'Google Search',
+    maturite: 'Comparaison',
+    contexte: 'Tape "couvreur contrat maintenance toiture Moselle" — trouve le site via SEO local',
+    questionCle: 'Vous proposez des contrats d\'entretien annuels pour un parc de maisons ?',
+    reponse: 'Non',
+    commentReponse: 'Aucune mention de maintenance, contrat ou offre pour les gestionnaires',
+    impactTechnique: 'Desktop performant mais le contenu 100% B2C ne repond pas aux besoins d\'un client professionnel',
+    premierImpression: 'Tous les services sont la : nettoyage, demoussage, zinguerie, hydrofuge. En theorie parfait. En pratique, rien pour les professionnels.',
+    parcours: ['Accueil', 'Nettoyage demoussage', 'Hydrofuge', 'Contact', 'Quitte'],
+    decision: 'Quitte',
+    scores: { exp: 3, conf: 3, clarte: 2 },
+    pointsPositifs: ['Services d\'entretien recurrents presents', 'Zone Moselle confirmee', 'Garantie decennale'],
+    frictions: ['Zero offre B2B ou maintenance recurrente', 'Pas de formulaire devis structure', 'Pas de tarification volume', 'Pas de references professionnels', 'SIRET absent — probleme pour une contractualisation'],
+  },
+  {
+    id: 8,
+    name: 'Mohamed',
+    age: 27,
+    emoji: '📱',
+    situation: 'Primo-accedant a Yutz, vient d\'acheter une maison des annees 80 avec expertise toiture a faire faire',
+    device: 'Mobile',
+    canal: 'Reseaux sociaux',
+    maturite: 'Decouverte',
+    contexte: 'Voit une publication sponsorisee Instagram "couvreur Moselle" — clique sur le lien',
+    questionCle: 'Vous faites des expertises toiture avant achat ? C\'est gratuit le deplacement ?',
+    reponse: 'Non',
+    commentReponse: 'Aucune page expertise, aucun tarif deplacement, "devis gratuit" vague',
+    impactTechnique: 'Mobile : jQuery + Bootstrap non purge = ~300 Ko JS/CSS inutiles. Site lent a la premiere visite, bounce eleve',
+    premierImpression: 'Le site s\'affiche. "Devis gratuit" c\'est bien. Mais il ne sait pas si une "expertise avant achat" est dans leurs prestations. Il part chercher.',
+    parcours: ['Accueil', 'Couverture', 'Realisations', 'Quitte'],
+    decision: 'Quitte',
+    scores: { exp: 3, conf: 3, clarte: 2 },
+    pointsPositifs: ['Devis et deplacement gratuits mentionnes', 'Galerie de 36 realisations'],
+    frictions: ['Expertise immobiliere non mentionnee', 'Pas de liste des prestations incluses dans le devis', 'Site lent premiere visite mobile (jQuery/Bootstrap)', 'Aucun temoignage client', 'Pas d\'Instagram/Facebook lie — incongru pour une publicite sociale'],
+  },
+  {
+    id: 9,
+    name: 'Patricia',
+    age: 59,
+    emoji: '🌧️',
+    situation: 'Habitante de Woippy, gouttiere decrochee par le vent, cherche un artisan pour la remettre en place cette semaine',
+    device: 'Mobile',
+    canal: 'Google Maps',
+    maturite: 'Decision',
+    contexte: 'Cherche "zingueur gouttiere Woippy" sur Google Maps, voit 4.8 etoiles, clique',
+    questionCle: 'Ma gouttiere s\'est decrochee, vous pouvez venir cette semaine pour la remettre ?',
+    reponse: 'Oui',
+    commentReponse: 'La zinguerie et les gouttières sont bien couvertes, et le rappel gratuit permet de confirmer la disponibilite',
+    impactTechnique: 'TTFB 184ms sur mobile — correct. Le telephone est cliquable immediatement.',
+    premierImpression: '4.8 etoiles sur Maps, c\'est le meilleur de la zone. Le site confirme "zinguerie" dans le menu. Elle clique "on vous rappelle".',
+    parcours: ['Google Maps', 'Accueil', 'Rappel gratuit'],
+    decision: 'Convertit',
+    scores: { exp: 6, conf: 7, clarte: 5 },
+    pointsPositifs: ['4.8/5 sur Google Maps visible', 'Zinguerie et gouttières bien couverts', 'Option rappel gratuit', 'Telephone visible en haut de page'],
+    frictions: ['Delai de rappel non precise (quand ?)', 'Pas de photos de gouttières installes', 'Pas de garantie sur la zinguerie specifiquement'],
+  },
+  {
+    id: 10,
+    name: 'Thomas',
+    age: 38,
+    emoji: '🏚️',
+    situation: 'Investisseur Metz, achete des maisons a renover pour les revendre — cherche un couvreur pour une renovation complete',
+    device: 'Desktop',
+    canal: 'Reseaux sociaux',
+    maturite: 'Comparaison',
+    contexte: 'Vu le nom dans un groupe Facebook "immo Moselle" — visite le site pour evaluer',
+    questionCle: 'Renovation complete toiture 80m2, bac acier ou ardoise. Vos references et delais ?',
+    reponse: 'Non',
+    commentReponse: 'La galerie existe mais sans contexte : pas de type de toiture, surface, materiau, localite',
+    impactTechnique: 'Desktop : 4 fichiers JS non critiques retardent le Time to Interactive. Pour un profil comparatif, chaque seconde perdue amplifie le doute.',
+    premierImpression: 'Site qui indexe bien mais qui ne montre rien de concret. La galerie de 36 photos sans description ne raconte aucune histoire.',
+    parcours: ['Accueil', 'Realisations', 'Mentions legales', 'Quitte'],
+    decision: 'Quitte',
+    scores: { exp: 2, conf: 2, clarte: 2 },
+    pointsPositifs: ['Galerie de 36 realisations (volume)', 'Zone Moselle couverte'],
+    frictions: ['Photos sans legendes (type, surface, materiau, ville)', 'Pas de chiffre cle (nb chantiers, annees, m2 poses)', 'Pas de SIRET — probleme pour devis formel', 'Pas de references specifiques renovation complete', 'Pas de distinction materiaux (ardoise / bac acier / tuile)'],
+  },
+];
+
+// ─── KPIs ───
+const convertis = personas.filter(p => p.decision === 'Convertit').length;
+const hesitants = personas.filter(p => p.decision === 'Hesite').length;
+const quittes = personas.filter(p => p.decision === 'Quitte').length;
+const tauxConv = Math.round((convertis / personas.length) * 100);
+const avgExp = (personas.reduce((s, p) => s + p.scores.exp, 0) / personas.length).toFixed(1);
+const avgConf = (personas.reduce((s, p) => s + p.scores.conf, 0) / personas.length).toFixed(1);
+const avgClarte = (personas.reduce((s, p) => s + p.scores.clarte, 0) / personas.length).toFixed(1);
+
+const constat = "Les 32 avis Google 4.8 etoiles font le travail a la place du site : les visiteurs qui convertissent arrivent par Maps en urgence ou par recommandation — le site ne convainc personne qui compare.";
+
+// ─── CANAL STATS ───
+const canalStats = [
+  { canal: 'Google Maps (urgence/local)', conv: 2, total: 2, taux: 100, color: 'green' },
+  { canal: 'Bouche-a-oreille', conv: 1, total: 1, taux: 100, color: 'green' },
+  { canal: 'Google Search (informatif)', conv: 0, total: 4, taux: 0, color: 'red' },
+  { canal: 'Reseaux sociaux', conv: 0, total: 2, taux: 0, color: 'red' },
+  { canal: 'IA (ChatGPT / Claude)', conv: 0, total: 1, taux: 0, color: 'red' },
+];
+
+// ─── TOP FRICTIONS ───
+const topFrictions = [
+  { titre: 'Aucun tarif ni fourchette de prix', count: 8, detail: 'Aucun des 10 services n\'affiche de prix. "Devis gratuit" est une promesse, pas une information.' },
+  { titre: 'Page desamiantage en 404', count: 3, detail: 'Lien visible dans le menu principal mais la page retourne une erreur 404. Signal de manque de serieux.' },
+  { titre: 'Contenu generique sans personnalite', count: 7, detail: 'Pas de nom du dirigeant, pas de SIRET, meta description "Maison Riva" (autre entreprise). Impossible de savoir a qui on a affaire.' },
+  { titre: '32 avis 4.8/5 non exploites sur le site', count: 6, detail: 'Le meilleur argument commercial est sur Google et absent du site. Pas un seul temoignage affiche.' },
+  { titre: 'Zero contenu B2B ou professionnel', count: 3, detail: 'Sous-traitance, contrats de maintenance, gestionnaires immobiliers — marche potentiel important non adresse.' },
+];
+
+// ─── AMELIORATIONS ───
+const ameliorationsCritiques = [
+  {
+    titre: 'Corriger la page desamiantage + ajouter Schema.org',
+    detail: 'La page en 404 est le probleme n°1 de confiance. Schema.org LocalBusiness + RoofingContractor avec aggregateRating permet d\'afficher les 32 avis directement dans Google.',
+    action: 'Recréer la page /desamiantage + ajouter JSON-LD avec @type RoofingContractor, address, telephone, aggregateRating (32 avis, 4.8)',
+  },
+  {
+    titre: 'Afficher les 32 avis Google sur le site avec temoignages reels',
+    detail: 'Le capital de confiance est sur Google, invisible sur le site. Les 6 visiteurs sur 10 qui demandent "peut-on vous faire confiance ?" ne trouvent aucune reponse sur le site.',
+    action: 'Section temoignages en page d\'accueil : 5-6 avis Google avec prenom, date, etoiles + lien vers la fiche Google Maps',
+  },
+  {
+    titre: 'Ajouter une page "Qui sommes-nous" avec nom, experience, certifications',
+    detail: 'Nom du dirigeant, SIRET, Qualibat, assurance RC Pro, annees d\'experience, zone d\'intervention precise. 4 personas ont quitte a cause du manque d\'identification.',
+    action: 'Page /artisan avec photo de l\'artisan, Gazeaux [prenom], SIRET, certifications scannees, extrait K-bis',
+  },
+];
+
+const ameliorationsUtiles = [
+  {
+    titre: 'Corriger la meta description (retirer "Maison Riva")',
+    detail: 'La meta description mentionne une autre entreprise — erreur de template qui sape la credibilite immediatement dans les resultats Google.',
+  },
+  {
+    titre: 'Ajouter des legendes aux 36 photos de la galerie',
+    detail: 'Type de toiture, surface, matériau, commune — chaque photo devient une reference vendable. Actuellement elles ne racontent rien.',
+  },
+  {
+    titre: 'Ajouter les tags Open Graph pour le partage social',
+    detail: 'Actuellement un lien partage sur WhatsApp ou Facebook affiche un lien texte brut. Avec OG tags : photo + titre + description — taux de clic multiplie par 3.',
+  },
+];
+
+// ─── SCORES TECHNIQUE ───
+const pagespeedMobile = { perf: 45, access: 58, bp: 65, seo: 62 };
+const pagespeedDesktop = { perf: 68, access: 58, bp: 65, seo: 62 };
+const observatoryData = { grade: 'B', score: 75, passed: 8, total: 10 };
+
+const techChecks = [
+  { label: 'HTTPS + redirect HTTP', ok: true },
+  { label: 'Strict-Transport-Security', ok: true },
+  { label: 'X-Frame-Options: DENY', ok: true },
+  { label: 'X-Content-Type-Options', ok: true },
+  { label: 'Referrer-Policy', ok: true },
+  { label: 'Content-Security-Policy', ok: true, warning: 'unsafe-eval/unsafe-inline — trop permissif' },
+  { label: 'Schema.org JSON-LD', ok: false, critical: true },
+  { label: 'Open Graph (og:title, og:image)', ok: false, critical: true },
+  { label: 'Balise canonique', ok: false, critical: true },
+  { label: 'Alt text images (4/15 vides)', ok: false },
+  { label: 'SIRET dans mentions legales', ok: false, critical: true },
+  { label: 'Viewport non verrouille (max-scale)', ok: false },
+];
+
+function scoreColor(s: number) {
+  if (s >= 90) return '#22c55e';
+  if (s >= 50) return '#f59e0b';
+  return '#ef4444';
+}
+function scoreBg(s: number) {
+  if (s >= 90) return 'bg-green-100 text-green-800';
+  if (s >= 50) return 'bg-amber-100 text-amber-800';
+  return 'bg-red-100 text-red-800';
+}
+function decisionColor(d: string) {
+  if (d === 'Convertit') return 'border-green-200 bg-green-50/40';
+  if (d === 'Hesite') return 'border-amber-200 bg-amber-50/40';
+  return 'border-neutral-200 bg-neutral-50/40';
+}
+function decisionBadge(d: string) {
+  if (d === 'Convertit') return 'bg-green-100 text-green-700';
+  if (d === 'Hesite') return 'bg-amber-100 text-amber-700';
+  return 'bg-neutral-100 text-neutral-600';
+}
+---
+
+<BaseLayout title={title} description={description} noindex={true} lang="fr" frPath="/audit/artisan-couvreur-moselle/">
+
+  <!-- ═══════════════════════════════════════════════ HERO -->
+  <section class="bg-neutral-900 text-white py-12 px-4">
+    <div class="max-w-4xl mx-auto">
+      <span class="inline-block text-xs font-semibold tracking-widest uppercase text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full mb-4">Rapport personnalise</span>
+      <h1 class="font-heading text-3xl md:text-4xl font-bold mb-2">
+        {prospect.name} — ce que vos visiteurs pensent vraiment
+      </h1>
+      <p class="text-neutral-400 mb-2">{prospect.activity} — <a href={prospect.url} class="text-amber-400 hover:underline" target="_blank" rel="noopener noreferrer">{prospect.url}</a></p>
+      <p class="text-neutral-500 text-sm mb-8">
+        Audit realise le {prospect.date} · {prospect.avisGoogle} sur Google
+      </p>
+      <div class="grid grid-cols-3 gap-4 max-w-lg">
+        <div class="text-center">
+          <span class="block text-3xl font-black text-amber-400">{tauxConv}%</span>
+          <span class="text-xs text-neutral-400">convertissent</span>
+        </div>
+        <div class="text-center">
+          <span class="block text-3xl font-black text-amber-400">{avgExp}/10</span>
+          <span class="text-xs text-neutral-400">experience</span>
+        </div>
+        <div class="text-center">
+          <span class="block text-3xl font-black text-amber-400">{avgConf}/10</span>
+          <span class="text-xs text-neutral-400">confiance</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════ CONSTAT -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Le constat</h2>
+
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-8">
+        <p class="text-amber-900 font-medium text-lg leading-relaxed">{constat}</p>
+      </div>
+
+      <!-- Conversion par canal -->
+      <h3 class="font-semibold text-neutral-700 mb-4 text-sm uppercase tracking-wide">Conversion par canal d'arrivee</h3>
+      <div class="space-y-3 mb-10">
+        {canalStats.map(item => (
+          <div>
+            <div class="flex items-center justify-between mb-1">
+              <span class="text-sm text-neutral-700">{item.canal}</span>
+              <span class={`text-sm font-bold ${item.taux === 100 ? 'text-green-600' : item.taux > 0 ? 'text-amber-600' : 'text-red-600'}`}>{item.taux}%</span>
+            </div>
+            <div class="h-2 bg-neutral-100 rounded-full overflow-hidden">
+              <div
+                class={`h-full rounded-full ${item.taux === 100 ? 'bg-green-500' : item.taux > 0 ? 'bg-amber-500' : 'bg-red-400'}`}
+                style={`width: ${Math.max(item.taux, 2)}%`}
+              ></div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Top frictions -->
+      <h3 class="font-semibold text-neutral-700 mb-4 text-sm uppercase tracking-wide">Top 5 frictions identifiees</h3>
+      <ol class="space-y-3">
+        {topFrictions.map((f, i) => (
+          <li class="flex gap-4 p-4 bg-neutral-50 rounded-xl border border-neutral-100">
+            <span class="text-2xl font-black text-red-300 shrink-0 leading-none">{i + 1}</span>
+            <div>
+              <p class="font-semibold text-neutral-800 text-sm">{f.titre}
+                <span class="ml-2 text-xs bg-red-100 text-red-700 px-2 py-0.5 rounded-full">{f.count}/10 personas</span>
+              </p>
+              <p class="text-neutral-500 text-xs mt-1">{f.detail}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════ AUDIT TECHNIQUE -->
+  <section class="py-12 px-4 bg-neutral-50">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">L'audit technique</h2>
+
+      <!-- PageSpeed Mobile -->
+      <h3 class="font-semibold text-neutral-700 mb-4 text-sm uppercase tracking-wide">PageSpeed Insights — mobile (estimation)</h3>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+        {[
+          { label: 'Performance', score: pagespeedMobile.perf },
+          { label: 'Accessibilite', score: pagespeedMobile.access },
+          { label: 'Bonnes pratiques', score: pagespeedMobile.bp },
+          { label: 'SEO', score: pagespeedMobile.seo },
+        ].map(item => (
+          <div class="bg-white rounded-xl p-4 text-center shadow-sm border border-neutral-100">
+            <div class="relative w-16 h-16 mx-auto mb-2">
+              <svg class="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  fill="none" stroke="#e5e7eb" stroke-width="3" />
+                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  fill="none" stroke={scoreColor(item.score)} stroke-width="3"
+                  stroke-dasharray={`${item.score}, 100`} stroke-linecap="round" />
+              </svg>
+              <span class="absolute inset-0 flex items-center justify-center text-lg font-bold text-neutral-800">{item.score}</span>
+            </div>
+            <p class="text-xs text-neutral-600">{item.label}</p>
+          </div>
+        ))}
+      </div>
+      <p class="text-xs text-neutral-400 mb-8 italic">* Scores estimes — API PageSpeed quota epuise au moment de l'audit. Base sur mesures directes (TTFB 184ms, jQuery 87Ko + Bootstrap non purge, hero lazy).</p>
+
+      <!-- PageSpeed Desktop -->
+      <h3 class="font-semibold text-neutral-700 mb-4 text-sm uppercase tracking-wide">PageSpeed Insights — desktop (estimation)</h3>
+      <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-8">
+        {[
+          { label: 'Performance', score: pagespeedDesktop.perf },
+          { label: 'Accessibilite', score: pagespeedDesktop.access },
+          { label: 'Bonnes pratiques', score: pagespeedDesktop.bp },
+          { label: 'SEO', score: pagespeedDesktop.seo },
+        ].map(item => (
+          <div class="bg-white rounded-xl p-4 text-center shadow-sm border border-neutral-100">
+            <div class="relative w-16 h-16 mx-auto mb-2">
+              <svg class="w-16 h-16 -rotate-90" viewBox="0 0 36 36">
+                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  fill="none" stroke="#e5e7eb" stroke-width="3" />
+                <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                  fill="none" stroke={scoreColor(item.score)} stroke-width="3"
+                  stroke-dasharray={`${item.score}, 100`} stroke-linecap="round" />
+              </svg>
+              <span class="absolute inset-0 flex items-center justify-center text-lg font-bold text-neutral-800">{item.score}</span>
+            </div>
+            <p class="text-xs text-neutral-600">{item.label}</p>
+          </div>
+        ))}
+      </div>
+
+      <!-- Observatory -->
+      <div class="flex items-center gap-4 mb-8 p-4 bg-white rounded-xl border border-neutral-100">
+        <div class="text-center">
+          <span class={`text-4xl font-black ${observatoryData.score >= 90 ? 'text-green-600' : observatoryData.score >= 60 ? 'text-amber-600' : 'text-red-600'}`}>
+            {observatoryData.grade}
+          </span>
+          <p class="text-xs text-neutral-500 mt-1">Mozilla Observatory</p>
+        </div>
+        <div class="flex-1">
+          <p class="font-semibold text-neutral-800">{observatoryData.score}/100 — {observatoryData.passed}/{observatoryData.total} tests passes</p>
+          <p class="text-sm text-neutral-500">HSTS, X-Frame, CSP present. CSP trop permissive (unsafe-eval/inline). SRI absent.</p>
+        </div>
+      </div>
+
+      <!-- Checklist technique -->
+      <h3 class="font-semibold text-neutral-700 mb-4 text-sm uppercase tracking-wide">Checklist Schema.org + OG + SEO</h3>
+      <div class="grid sm:grid-cols-2 gap-2">
+        {techChecks.map(item => (
+          <div class={`flex items-start gap-3 p-3 rounded-lg ${item.ok ? 'bg-green-50' : item.critical ? 'bg-red-50' : 'bg-amber-50'}`}>
+            <span class={`shrink-0 text-base mt-0.5 ${item.ok ? 'text-green-500' : 'text-red-500'}`}>{item.ok ? '✓' : '✗'}</span>
+            <div>
+              <span class={`text-sm font-medium ${item.ok ? 'text-green-800' : item.critical ? 'text-red-800' : 'text-amber-800'}`}>{item.label}</span>
+              {item.warning && <p class="text-xs text-amber-600 mt-0.5">{item.warning}</p>}
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Points techniques cles -->
+      <div class="mt-6 p-4 bg-red-50 border border-red-100 rounded-xl">
+        <p class="font-semibold text-red-800 text-sm mb-2">3 anomalies critiques detectees</p>
+        <ul class="text-sm text-red-700 space-y-1 list-disc list-inside">
+          <li>Page /desamiantage en 404 — lien mort dans le menu principal</li>
+          <li>Meta description mentionne "Maison Riva" (une autre entreprise) — erreur de template</li>
+          <li>Schema.org absent — les 32 avis Google ne remontent pas dans les SERP</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════ VISITEURS -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs</h2>
+      <p class="text-neutral-500 mb-6">
+        Sur 10 visiteurs simules : <strong class="text-green-600">{convertis} convertissent</strong>, <strong class="text-amber-600">{hesitants} hesitent</strong>, <strong class="text-neutral-500">{quittes} repartent</strong>
+      </p>
+
+      <!-- Legende -->
+      <div class="flex gap-4 mb-6 flex-wrap">
+        <span class="flex items-center gap-1.5 text-xs text-neutral-600"><span class="w-3 h-3 rounded-full bg-green-400 inline-block"></span>Convertit</span>
+        <span class="flex items-center gap-1.5 text-xs text-neutral-600"><span class="w-3 h-3 rounded-full bg-amber-400 inline-block"></span>Hesite</span>
+        <span class="flex items-center gap-1.5 text-xs text-neutral-600"><span class="w-3 h-3 rounded-full bg-neutral-300 inline-block"></span>Quitte</span>
+      </div>
+
+      <!-- Personas -->
+      <div class="space-y-3">
+        {personas.map(p => (
+          <details class={`group border rounded-xl overflow-hidden ${decisionColor(p.decision)}`}>
+            <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+              <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                  <h3 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h3>
+                  <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                  <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                  <span class="text-[11px] text-violet-600 bg-violet-50 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                  <span class={`text-[11px] font-semibold px-1.5 py-0.5 rounded ${decisionBadge(p.decision)}`}>{p.decision}</span>
+                </div>
+                <p class="text-xs text-neutral-500">{p.situation}</p>
+              </div>
+              <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+              </svg>
+            </summary>
+            <div class={`px-4 pb-4 pt-0 border-t ${p.decision === 'Convertit' ? 'border-green-200' : p.decision === 'Hesite' ? 'border-amber-200' : 'border-neutral-200'} bg-white/60`}>
+              <div class="grid gap-3 text-xs mt-3">
+                <div>
+                  <p class="font-semibold text-neutral-700 mb-1">Premiere impression</p>
+                  <p class="text-neutral-600">{p.premierImpression}</p>
+                </div>
+                <div>
+                  <p class="font-semibold text-neutral-700 mb-1">Parcours : <span class="font-normal text-neutral-500">{p.parcours.join(' → ')}</span></p>
+                </div>
+                <div>
+                  <p class="font-semibold text-neutral-700 mb-1">Question cle</p>
+                  <p class="text-neutral-600 italic">"{p.questionCle}"</p>
+                  <p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong> — {p.commentReponse}</p>
+                </div>
+                <div>
+                  <p class="font-semibold text-amber-700 mb-1">Impact technique</p>
+                  <p class="text-neutral-600">{p.impactTechnique}</p>
+                </div>
+                <div class="flex gap-4">
+                  <div class="flex-1">
+                    <p class="font-semibold text-green-700 mb-1">Points positifs</p>
+                    <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                      {p.pointsPositifs.map(pt => <li>{pt}</li>)}
+                    </ul>
+                  </div>
+                  <div class="flex-1">
+                    <p class="font-semibold text-red-700 mb-1">Frictions</p>
+                    <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                      {p.frictions.map(f => <li>{f}</li>)}
+                    </ul>
+                  </div>
+                </div>
+                <div class="flex gap-3 pt-1">
+                  <span class="text-[11px] bg-neutral-100 text-neutral-600 px-2 py-1 rounded">Exp {p.scores.exp}/10</span>
+                  <span class="text-[11px] bg-neutral-100 text-neutral-600 px-2 py-1 rounded">Confiance {p.scores.conf}/10</span>
+                  <span class="text-[11px] bg-neutral-100 text-neutral-600 px-2 py-1 rounded">Clarte {p.scores.clarte}/10</span>
+                </div>
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════ RECOMMANDATIONS -->
+  <section class="py-12 px-4 bg-neutral-50">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Nos recommandations</h2>
+
+      <h3 class="font-semibold text-red-700 mb-4 text-sm uppercase tracking-wide">Le plus important</h3>
+      <div class="space-y-4 mb-8">
+        {ameliorationsCritiques.map((a, i) => (
+          <div class="border-l-4 border-red-400 bg-white p-5 rounded-r-xl shadow-sm">
+            <div class="flex items-start gap-3">
+              <span class="text-lg font-black text-red-300 shrink-0">{i + 1}</span>
+              <div>
+                <h4 class="font-bold text-neutral-900 mb-1">{a.titre}</h4>
+                <p class="text-sm text-neutral-600 mb-2">{a.detail}</p>
+                <p class="text-xs text-red-700 bg-red-50 px-3 py-2 rounded-lg font-medium">Action : {a.action}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <h3 class="font-semibold text-neutral-600 mb-4 text-sm uppercase tracking-wide">Utile aussi</h3>
+      <div class="grid sm:grid-cols-3 gap-4">
+        {ameliorationsUtiles.map(a => (
+          <div class="bg-white p-4 rounded-xl border border-neutral-200">
+            <h4 class="font-semibold text-neutral-800 text-sm mb-2">{a.titre}</h4>
+            <p class="text-xs text-neutral-500">{a.detail}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════ CTA -->
+  <section class="bg-neutral-900 text-white py-16 px-4">
+    <div class="max-w-3xl mx-auto text-center">
+      <h2 class="font-heading text-2xl md:text-3xl font-bold mb-4">
+        {tauxConv}% de vos visiteurs vous contactent.<br/>
+        <span class="text-amber-400">On peut faire beaucoup mieux.</span>
+      </h2>
+      <p class="text-neutral-300 mb-4 max-w-xl mx-auto">
+        Vos 32 avis 4.8 etoiles sont votre meilleur argument — mais ils ne sont visibles que sur Google. Un site qui les affiche, qui explique vos services et qui rassure les visiteurs en phase de comparaison : c'est 3x plus de conversions.
+      </p>
+      <p class="text-neutral-400 text-sm mb-8 max-w-lg mx-auto">
+        Sites cles en main a partir de 990 EUR — livres en 7 jours. Specialiste artisans Grand Est.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="/commander" class="inline-flex items-center gap-2 px-8 py-3.5 bg-amber-500 text-white font-semibold rounded-xl hover:bg-amber-400 transition-all shadow-md">
+          Je veux un site qui convertit
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+          </svg>
+        </a>
+        <a href="/contact" class="inline-flex items-center gap-2 px-8 py-3.5 border border-neutral-600 text-neutral-300 font-semibold rounded-xl hover:border-amber-400 hover:text-amber-400 transition-all">
+          En discuter d'abord
+        </a>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>

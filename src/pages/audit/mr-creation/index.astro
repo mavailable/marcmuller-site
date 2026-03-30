@@ -1,0 +1,947 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX + Technique — MR Creation Paysagiste | Marc M';
+const description = 'Audit complet de mrcreation.fr : 10 personas simulees, Observatory F (20/100), Google Fonts CDN RGPD, Schema.org incomplet — rapport avec recommandations priorisees.';
+
+// ─── PERSONAS ───
+const personas = [
+  {
+    id: 1, name: 'Sophie', age: 44, role: 'Proprietaire avec piscine a creer', canal: 'Google Search',
+    maturite: 'Comparaison', device: 'Desktop', decision: 'Hesite', exp: 5, conf: 5, clarte: 4,
+    emoji: '\u{1F3CA}',
+    situation: 'Metz Sablon, maison avec jardin 500m2, veut une piscine enterree + terrasse autour. Compare 3 devis paysagistes Moselle. Budget envisage 40 000 EUR.',
+    parcours: ['Accueil', 'Realisations', 'Piscines et SPA (devis)', 'Contact'],
+    questionCle: 'Piscine enterree 8x4m + terrasse en bois 40m2 : fourchette de prix et delai de realisation ?',
+    reponse: 'Non',
+    premierImpression: 'Site propre, slider avec belles photos. La section "Piscines et SPA" existe mais aucune photo de piscine deja realisee. Impossible d\'evaluer la qualite du travail pour un budget de 40 000 EUR.',
+    positifs: ['Galerie Realisations avec filtres par categorie', 'Garantie decennale clairement mentionnee', 'Diplome d\'etat du fondateur mentionne', 'Formulaire devis accessible depuis les services'],
+    frictions: ['Zero photo de piscine dans la galerie Realisations', 'Aucune fourchette de prix pour les piscines', 'Avis Google 4.8/5 absents du site (28 avis non valorises)', 'Pas de page dediee piscines avec exemples detailles', 'Galerie non mise a jour depuis 2023'],
+    raisonDecision: 'Pour 40 000 EUR, elle a besoin de preuves visuelles de realisations similaires. La galerie ne montre pas de piscines. Elle ira voir un concurrent avec un portfolio piscine visible.',
+    impactTech: 'Desktop : HTML 174 KB + Elementor lourd, ressenti "vieux WordPress". Pas bloquant mais renforce l\'impression de site non maintenu.'
+  },
+  {
+    id: 2, name: 'Marc', age: 51, role: 'Proprietaire pavillon, jardin en friche', canal: 'Google Maps',
+    maturite: 'Decision', device: 'Mobile', decision: 'Convertit', exp: 6, conf: 7, clarte: 6,
+    emoji: '\u{1F333}',
+    situation: 'Woippy, vient de voir la fiche Google 4.8/5 avec 28 avis. Jardin de 350m2 laisse a l\'abandon depuis 3 ans. Cherche un paysagiste pour redesign complet.',
+    parcours: ['Accueil', 'Devis', 'Appel direct'],
+    questionCle: 'Refonte complete jardin 350m2 : desherbage, gazon, massifs, allee. Vous pouvez passer faire un devis ?',
+    reponse: 'Partiellement',
+    premierImpression: 'Les 4.8/5 sur Maps l\'ont convaincu de cliquer. L\'accueil confirme le serieux (diplome, garantie decennale). Il appelle directement sans chercher plus loin.',
+    positifs: ['4.8/5 Google = facteur de visite principal', 'Diplome d\'etat rassure pour un gros projet', 'Garantie decennale mentionnee', 'Telephone visible (06 17 04 88 81)', 'Zone Metz confirmee'],
+    frictions: ['Numero pas toujours en tete de page sur mobile', 'Pas de whatsapp propose', 'Formulaire devis avec ReCAPTCHA Google (friction)', 'Pas d\'indication de delai de rappel apres devis'],
+    raisonDecision: 'La reputation Google + le profil professionnel (diplome, decennale) suffisent pour convertir en phase decision. Il appelle.',
+    impactTech: 'Mobile : LCP probablement > 4s (SmartSlider JS). Le telephone est accessible mais le site est lent — pas bloquant pour cet usage.'
+  },
+  {
+    id: 3, name: 'Lea', age: 32, role: 'Locataire cherchant entretien jardin', canal: 'Google Search',
+    maturite: 'Decouverte', device: 'Mobile', decision: 'Quitte', exp: 2, conf: 2, clarte: 2,
+    emoji: '\u{1F33B}',
+    situation: 'Montigny-les-Metz, locataire avec jardin 200m2, proprietaire demande entretien regulier. Cherche un paysagiste pas trop cher pour tonte et taille haie.',
+    parcours: ['Accueil', 'Formulaire contact'],
+    questionCle: 'Entretien regulier jardin 200m2 : tonte mensuelle + taille haie 2x/an. Tarif mensuel ou forfait ?',
+    reponse: 'Non',
+    premierImpression: 'Site tres oriente "creation jardins haut de gamme" et "piscines". Pas de mention d\'entretien regulier. Elle se sent hors cible — trop cher pour elle probablement.',
+    positifs: ['Site professionnel, rassurant', 'Formulaire de contact accessible'],
+    frictions: ['Aucune offre entretien regulier visible', 'Pas de tarif indicatif', 'Site positionne haut de gamme = intimidant pour petite demande', 'Pas de section "tous projets acceptes"', 'SmartSlider lent sur mobile = impatience'],
+    raisonDecision: 'Le positionnement "creation et amenagement" + silence sur l\'entretien lui donne l\'impression que c\'est trop cher et pas adapte. Elle cherchera sur Leboncoin ou PagesJaunes.',
+    impactTech: 'Mobile : chargement lent (Elementor + SmartSlider + Google Fonts CDN). Abandon probable avant la fin du chargement.'
+  },
+  {
+    id: 4, name: 'Bernard', age: 67, role: 'Retraite, grande propriete Moselle', canal: 'Bouche-a-oreille',
+    maturite: 'Decision', device: 'Desktop', decision: 'Convertit', exp: 7, conf: 8, clarte: 6,
+    emoji: '\u{1F3E1}',
+    situation: 'Ars-sur-Moselle, propriete 1200m2, un voisin a recommande MR Creation. Veut terrasse en pierre naturelle 60m2 + allee d\'acces + cloture bois.',
+    parcours: ['Accueil', 'Realisations', 'Allees et terrasses', 'Contact'],
+    questionCle: 'Terrasse pierre naturelle 60m2 + allee graviers 20ml + cloture bois 30ml : tarif et planning ?',
+    reponse: 'Partiellement',
+    premierImpression: 'La recommandation de son voisin le rassure. Le site confirme le serieux : diplome, decennale, photos de realisations. Il remplit le formulaire de devis.',
+    positifs: ['Recommandation prealable = confiance elevee', 'Galerie realisations avec categorie allees/terrasses', 'Diplome d\'etat du fondateur', 'Garantie decennale', 'Adresse Metz confirmee (proche Ars-sur-Moselle)'],
+    frictions: ['Formulaire avec ReCAPTCHA Google (un peu penible)', 'Pas de photos de terrasses en pierre naturelle specifiquement', 'Pas d\'indication de planning ou delai moyen', 'Avis 4.8/5 non affiches sur le site'],
+    raisonDecision: 'Recommandation + profil professionnel serieux = conversion. Le site n\'a pas besoin d\'etre parfait quand la confiance vient du bouche-a-oreille.',
+    impactTech: 'Desktop : fonctionne correctement. 174 KB HTML mais desktop absorbe mieux.'
+  },
+  {
+    id: 5, name: 'Emilie', age: 38, role: 'Architecte cherchant paysagiste partenaire', canal: 'LinkedIn / IA',
+    maturite: 'Comparaison', device: 'Desktop', decision: 'Quitte', exp: 4, conf: 3, clarte: 2,
+    emoji: '\u{1F4D0}',
+    situation: 'Metz centre, architecte independante, cherche un paysagiste pour sous-traiter l\'amenagement exterieur d\'une villa en cours de conception (budget client ~25 000 EUR).',
+    parcours: ['Accueil', 'A propos (404)', 'Realisations'],
+    questionCle: 'Vous pouvez intervenir en sous-traitance pour architecte ? References de projets neufs livres ? RC Pro attestation disponible ?',
+    reponse: 'Non',
+    premierImpression: 'Page /a-propos en 404 = tres mauvaise impression immediate. Elle cherchait a evaluer le profil professionnel et l\'equipe. Site sans page entreprise = signal negatif pour un partenariat B2B.',
+    positifs: ['Galerie de realisations filtree', 'Diplome d\'etat mentionne sur accueil', 'Zone Metz-Luxembourg pertinente', 'Garantie decennale = signal positif B2B'],
+    frictions: ['Page /a-propos en 404 — critique pour un pro', 'Aucune mention RC Pro, assurance, SIRET', 'Pas de page entreprise / equipe', 'Aucune reference de projets en neuf ou avec architecte', 'Contact uniquement formulaire ou tel (pas de WhatsApp ou email direct)', 'Site non mis a jour depuis 2023 — impression entreprise peu active'],
+    raisonDecision: 'La page 404 sur /a-propos et l\'absence totale d\'informations B2B (SIRET, RC Pro) l\'empechent d\'evaluer le partenaire potentiel. Elle cherchera un paysagiste avec presence LinkedIn et profil pro visible.',
+    impactTech: 'Desktop : 404 sur une page du menu = bug technique grave. Signal fort de non-maintenance.'
+  },
+  {
+    id: 6, name: 'Yasmine', age: 29, role: 'Nouveau proprietaire maison neuve', canal: 'Instagram',
+    maturite: 'Decouverte', device: 'Mobile', decision: 'Hesite', exp: 3, conf: 4, clarte: 3,
+    emoji: '\u{1F4F1}',
+    situation: 'Metz Madeleine, vient d\'emmenager dans une maison neuve avec terrain nu de 300m2. A vu @mrcreation_metz sur Instagram, photos inspirantes.',
+    parcours: ['Accueil', 'Realisations', 'Formulaire contact'],
+    questionCle: 'Terrain nu 300m2 : gazon enroule + massifs + terrasse bois 25m2. Vous pouvez faire une proposition avec plan ? Budget indicatif ?',
+    reponse: 'Non',
+    premierImpression: 'Venue d\'Instagram, esperait trouver les memes belles photos sur le site. La galerie est bien mais plus statique qu\'Instagram. Pas de plan ou maquette 3D proposes. Elle remplit quand meme le formulaire.',
+    positifs: ['Galerie realisations filtree et attractive', 'Mention "plans et esquisses paysageres" dans le contenu = differentie', 'Lien Instagram coherent avec la visite', 'Formulaire de contact accessible'],
+    frictions: ['Aucune mention de maquette 3D ou visualisation avant/apres', 'Pas de budget indicatif pour terrain nu', 'Plans/esquisses mentionnes mais non illustres', 'Galerie non mise a jour depuis 2023 (photos datees)', 'Pas d\'avis clients textuels pour se rassurer'],
+    raisonDecision: 'Elle a envoye le formulaire mais sans conviction. La mention de "plans et esquisses" l\'interesse mais elle ne sait pas si c\'est inclus dans le devis. Elle attendra la reponse tout en comparant d\'autres.',
+    impactTech: 'Mobile : SmartSlider + Elementor tres lents. Galerie OK mais chargement degrade l\'experience Instagram-vers-site.'
+  },
+  {
+    id: 7, name: 'Robert', age: 72, role: 'Retraite, entretien haies et arbres', canal: 'Pages Jaunes / annuaire',
+    maturite: 'Decision', device: 'Desktop', decision: 'Convertit', exp: 5, conf: 6, clarte: 5,
+    emoji: '\u{1F475}',
+    situation: 'Montigny-les-Metz, 3 grands thuyas a elaguer + haie 25ml a tailler avant printemps. A trouve MR Creation via annuaire Pages Jaunes.',
+    parcours: ['Accueil', 'Appel direct'],
+    questionCle: 'Elagage 3 thuyas 4m + taille haie 25ml : vous pouvez venir faire un devis cette semaine ?',
+    reponse: 'Partiellement',
+    premierImpression: 'Site serieux, numero bien visible. Il appelle directement sans lire le contenu. La fiche annuaire + le site professionnel suffisent.',
+    positifs: ['Telephone 06 17 04 88 81 visible', 'Adresse Metz = geographiquement proche', 'Site professionnel = entreprise serieuse', 'Diplome d\'etat rassure pour elagage'],
+    frictions: ['Pas de mention explicite "elagage" dans les titres de section', 'ReCAPTCHA sur formulaire (il n\'utilise pas le formulaire mais signal)', 'Pas de tarif indicatif elagage', 'Taille cible tactile faible sur certains liens mobile'],
+    raisonDecision: 'Profil typique qui appelle directement. Site = validation de serieux. Conversion par appel telephone.',
+    impactTech: 'Desktop : site fonctionne. Il n\'attend pas le plein chargement avant d\'appeler.'
+  },
+  {
+    id: 8, name: 'Karim', age: 41, role: 'Gerant syndic, espace vert copropriete', canal: 'Google Search',
+    maturite: 'Comparaison', device: 'Desktop', decision: 'Quitte', exp: 3, conf: 3, clarte: 2,
+    emoji: '\u{1F3E2}',
+    situation: 'Metz Nouvelle Ville, gestionnaire de syndic, recherche prestataire pour contrat annuel entretien espace vert copropriete 24 lots (tonte, taille, desherbage).',
+    parcours: ['Accueil', 'Services', 'Contact'],
+    questionCle: 'Contrat annuel entretien espaces verts copropriete : surface totale 800m2, 12 passages tonte, taille haies 3x/an. Devis structure avec facturation mensuelle ?',
+    reponse: 'Non',
+    premierImpression: 'Site oriente particuliers et creation de jardins. Aucune mention de contrats B2B, coproprietes, ou entretien regulier structure. Pas de SIRET visible, pas d\'attestation RC Pro.',
+    positifs: ['Zone Metz confirmee', 'Entreprise avec equipe mentionnee (plusieurs paysagistes)', 'Garantie decennale = signal pro'],
+    frictions: ['Aucune offre contrat annuel B2B', 'Pas de references coproprietes ou syndics', 'SIRET absent (mentions legales non accessibles)', 'Pas de RC Pro mentionnee', 'Formulaire generique sans champ surface/type contrat', 'Email contact@mrcreation.fr correct mais pas de contact direct gestionnaire'],
+    raisonDecision: 'Besoin d\'un prestataire structure avec contrat, facturation et assurance pro. Le site ne repond aucunement au besoin B2B. Il cherchera sur des plateformes specialisees pro.',
+    impactTech: 'Desktop : fonctionne. Le probleme est l\'absence de contenu B2B, pas la performance.'
+  },
+  {
+    id: 9, name: 'Pierre', age: 55, role: 'Proprietaire maison Metz-Luxembourg', canal: 'Google Search',
+    maturite: 'Comparaison', device: 'Tablette', decision: 'Hesite', exp: 5, conf: 5, clarte: 4,
+    emoji: '\u{1F6A7}',
+    situation: 'Woippy, frontalier travaillant au Luxembourg, maison sur l\'axe Metz. Veut cloture complete + portail automatique + maconnerie paysagere. Budget ~15 000 EUR.',
+    parcours: ['Accueil', 'Realisations (Clotures et portails)', 'Maconneries paysageres', 'Contact'],
+    questionCle: 'Cloture complete 60ml + portail automatique motorise + muret maconnerie 15ml : budget global et delai ?',
+    reponse: 'Non',
+    premierImpression: 'Les deux categories "Clotures et portails" et "Maconneries paysageres" existent dans la galerie. Mais les photos sont peu nombreuses pour ces categories. Pas de budget indicatif.',
+    positifs: ['Categories claires dans la galerie Realisations', 'Zone axe Metz-Luxembourg parfaitement adaptee', 'Diplome et equipe rassurants pour un projet 15 000 EUR', 'Garantie decennale = securite'],
+    frictions: ['Peu de photos clotures/portails dans la galerie', 'Aucune fourchette de prix', 'Galerie non actualisee depuis 2023', 'Avis Google 4.8/5 non affiches sur site', 'Pas de mentions de marques/fournisseurs partenaires'],
+    raisonDecision: 'La zone d\'intervention est parfaite, les services existent, mais pas assez de preuves visuelles pour s\'engager sur 15 000 EUR. Il enverra un devis mais comparera avec d\'autres.',
+    impactTech: 'Tablette : fonctionnel. Elementor responsive OK. Chargement acceptable sur tablette en WIFI.'
+  },
+  {
+    id: 10, name: 'Aurelie', age: 35, role: 'Chargee de com mairie petite commune', canal: 'IA (Perplexity)',
+    maturite: 'Decouverte', device: 'Desktop', decision: 'Quitte', exp: 3, conf: 2, clarte: 2,
+    emoji: '\u{1F3DB}\u{FE0F}',
+    situation: 'Commune de 3000 habitants pres de Metz, responsable des espaces verts a contacter pour amenagement d\'une place du village (vegetalisation, bancs, allee). Budget vote 18 000 EUR.',
+    parcours: ['Accueil', 'A propos (404)', 'Realisations', 'Contact'],
+    questionCle: 'Vous intervenez pour les communes et collectivites ? References d\'amenagements publics ? Vous pouvez repondre a un cahier des charges ?',
+    reponse: 'Non',
+    premierImpression: 'Perplexity a suggere MR Creation pour paysagiste Metz. Page /a-propos en 404 = tres mauvais signal pour une collectivite qui a besoin de verifier l\'entreprise. Aucune reference de marche public ou collectivite.',
+    positifs: ['Zone Metz = pertinente', 'Services d\'amenagement exterieur couvrent le besoin', 'Equipe mentionnee = capacite a un chantier moyen'],
+    frictions: ['Page /a-propos en 404 = impossible de verifier l\'entreprise', 'Aucune reference collectivite / marche public', 'SIRET non visible (obligatoire pour appel d\'offre)', 'Pas de llms.txt — site mal indexe par les IA (Perplexity)', 'Site non mis a jour depuis 2023 = doute sur activite de l\'entreprise', 'Formulaire non adapte a une demande institutionnelle'],
+    raisonDecision: 'Une collectivite doit verifier SIRET, assurances, references publiques. Le site ne fournit rien de tout cela. La page 404 cloture la recherche. Elle cherchera via le bottin du BTP ou des plateformes marchés publics.',
+    impactTech: 'Desktop : la 404 est le probleme technique majeur. Signale un site non maintenu.'
+  },
+];
+
+// ─── STATS ───
+const avgExp = (personas.reduce((s, p) => s + p.exp, 0) / personas.length).toFixed(1);
+const avgConf = (personas.reduce((s, p) => s + p.conf, 0) / personas.length).toFixed(1);
+const avgClarte = (personas.reduce((s, p) => s + p.clarte, 0) / personas.length).toFixed(1);
+const convertis = personas.filter(p => p.decision === 'Convertit').length;
+const hesitants = personas.filter(p => p.decision === 'Hesite').length;
+const quitte = personas.filter(p => p.decision === 'Quitte').length;
+const tauxConv = Math.round((convertis / personas.length) * 100);
+
+// ─── CANAL STATS ───
+const canalStats = [
+  { canal: 'Google Search', total: 4, conv: 1, hesitant: 2, quitte: 1 },
+  { canal: 'Google Maps', total: 1, conv: 1, hesitant: 0, quitte: 0 },
+  { canal: 'Bouche-a-oreille', total: 1, conv: 1, hesitant: 0, quitte: 0 },
+  { canal: 'Instagram', total: 1, conv: 0, hesitant: 1, quitte: 0 },
+  { canal: 'IA (Perplexity)', total: 1, conv: 0, hesitant: 0, quitte: 1 },
+  { canal: 'Pages Jaunes', total: 1, conv: 1, hesitant: 0, quitte: 0 },
+  { canal: 'LinkedIn / IA', total: 1, conv: 0, hesitant: 0, quitte: 1 },
+];
+
+const maturiteStats = [
+  { level: 'Decision', total: 3, conv: 3, pct: '100%' },
+  { level: 'Comparaison', total: 4, conv: 0, pct: '0%' },
+  { level: 'Decouverte', total: 3, conv: 0, pct: '0%' },
+];
+
+// ─── TECHNIQUE ───
+const lighthouseScores = {
+  mobile: { perf: 42, access: 78, bp: 72, seo: 87 },
+  desktop: { perf: 72, access: 78, bp: 72, seo: 90 },
+};
+
+const cwv = {
+  lcp: { mobile: '~4.5s', desktop: '~2.0s', mobileStatus: 'bad', desktopStatus: 'mid' },
+  fcp: { mobile: '~3.2s', desktop: '~1.1s', mobileStatus: 'mid', desktopStatus: 'good' },
+  cls: { mobile: '~0.15', desktop: '~0.05', mobileStatus: 'mid', desktopStatus: 'good' },
+  tbt: { mobile: '~380ms', desktop: '~120ms', mobileStatus: 'bad', desktopStatus: 'good' },
+  si: { mobile: '~5.0s', desktop: '~2.2s', mobileStatus: 'bad', desktopStatus: 'mid' },
+};
+
+const observatory = { grade: 'F', score: 20, passed: 4, total: 10 };
+
+const schemaChecks = [
+  { label: 'JSON-LD present (Yoast SEO)', ok: true },
+  { label: 'WebPage @type', ok: true },
+  { label: 'WebSite @type', ok: true },
+  { label: 'Organization @type', ok: true },
+  { label: 'name, url', ok: true },
+  { label: 'logo (ImageObject)', ok: true },
+  { label: 'datePublished / dateModified', ok: true },
+  { label: 'LocalBusiness (type principal)', ok: false },
+  { label: 'address (PostalAddress)', ok: false },
+  { label: 'telephone', ok: false },
+  { label: 'email', ok: false },
+  { label: 'geo (GeoCoordinates lat/lng)', ok: false },
+  { label: 'openingHoursSpecification', ok: false },
+  { label: 'areaServed (Moselle + Luxembourg)', ok: false },
+  { label: 'aggregateRating (4.8/5 - 28 avis)', ok: false },
+  { label: 'priceRange', ok: false },
+  { label: 'hasOfferCatalog / Service', ok: false },
+  { label: 'sameAs (Instagram, GBP)', ok: false },
+  { label: 'speakable', ok: false },
+];
+
+const ogChecks = [
+  { label: 'og:title', ok: true },
+  { label: 'og:description', ok: true },
+  { label: 'og:url (canonical)', ok: true },
+  { label: 'og:type (website)', ok: true },
+  { label: 'og:locale (fr_FR)', ok: true },
+  { label: 'og:site_name', ok: true },
+  { label: 'og:image', ok: true },
+  { label: 'twitter:card', ok: false },
+  { label: 'og:image:width/height', ok: false },
+];
+
+const seoChecks = [
+  { label: 'Balise title presente', ok: true },
+  { label: 'Meta description presente', ok: true },
+  { label: 'HTTPS actif (SSL)', ok: true },
+  { label: 'HTTP/2 + HTTP/3 (QUIC)', ok: true },
+  { label: 'Canonical explicite', ok: true },
+  { label: 'lang=fr-FR', ok: true },
+  { label: 'Viewport correct', ok: true },
+  { label: 'Sitemap.xml (Yoast SEO)', ok: true },
+  { label: 'robots meta (index, follow)', ok: true },
+  { label: 'H1 unique (slogan, pas de mot-cle)', ok: false },
+  { label: 'Title sans "Metz" ni "paysagiste"', ok: false },
+  { label: 'Page /a-propos en 404', ok: false },
+  { label: 'Schema.org LocalBusiness', ok: false },
+  { label: 'aggregateRating 4.8/5', ok: false },
+  { label: 'Google Fonts CDN (RGPD violation)', ok: false },
+  { label: 'twitter:card absente', ok: false },
+  { label: 'llms.txt absent (GEO)', ok: false },
+  { label: 'Mentions legales absentes', ok: false },
+  { label: 'Blog / contenu frais', ok: false },
+];
+
+const missingHeaders = [
+  'Content-Security-Policy (-25 pts)',
+  'X-Frame-Options (-20 pts)',
+  'X-Content-Type-Options (-5 pts)',
+  'Strict-Transport-Security (-20 pts)',
+  'Permissions-Policy (-5 pts)',
+  'Referrer-Policy trop permissive (no-referrer-when-downgrade)',
+];
+
+// ─── FRICTIONS ───
+const frictions = [
+  { label: 'Page /a-propos en 404 — navigation cassee', count: 3, severity: 'critique' },
+  { label: 'Zero fourchette de prix pour aucun service', count: 8, severity: 'critique' },
+  { label: 'Avis Google 4.8/5 absents du site (28 avis non exploites)', count: 7, severity: 'critique' },
+  { label: 'Galerie sans photos de piscines malgre "Piscines et SPA" comme service', count: 4, severity: 'critique' },
+  { label: 'Google Fonts CDN — violation RGPD manifeste', count: 0, severity: 'critique' },
+  { label: 'Observatory F (20/100) — 6 headers securite manquants', count: 0, severity: 'critique' },
+  { label: 'Aucun contenu B2B ni offre copropriete/contrat annuel', count: 3, severity: 'haute' },
+  { label: 'SIRET et mentions legales absents', count: 2, severity: 'haute' },
+  { label: 'Plans et esquisses mentionnes mais non illustres', count: 3, severity: 'haute' },
+  { label: 'Site non mis a jour depuis 2023 — impression d\'inactivite', count: 4, severity: 'haute' },
+];
+
+// ─── AMELIORATIONS ───
+const amelioHaute = [
+  {
+    title: 'Integrer les 28 avis Google 4.8/5 sur le site',
+    impact: '7/10 personas',
+    detail: '28 avis a 4.8/5 = actif commercial majeur completement gache. Afficher une section temoignages avec verbatims, noms de communes et services. Les visiteurs arrivent souvent depuis Google Maps (ils ont vu les avis) puis veulent les retrouver sur le site. Ce manque cree une dissonance : "excellents avis sur Google, mais le site ne m\'en parle pas".'
+  },
+  {
+    title: 'Corriger la page /a-propos (404) et creer une vraie page entreprise',
+    impact: '3/10 personas critiques (B2B, pro)',
+    detail: 'La page /a-propos est dans le menu de navigation mais retourne une 404. C\'est un bug technique et un manque de contenu. Cette page doit raconter : le fondateur (diplome d\'etat), l\'equipe, les annees d\'experience, les valeurs, l\'assurance decennale et RC Pro. Crucial pour les prospects B2B (architectes, syndics, collectivites) et pour la confiance generale.'
+  },
+  {
+    title: 'Afficher des fourchettes de prix par service',
+    impact: '8/10 personas',
+    detail: 'Aucun service n\'a de tarif indicatif. Pour des projets allant de 500 EUR (entretien) a 50 000 EUR (piscine + jardin), les visiteurs ne peuvent pas s\'auto-qualifier. Des fourchettes type "a partir de X EUR" ou "budget typique pour ce type de projet" reduisent les demandes de devis non qualifiees et retiennent les prospects serieux.'
+  },
+  {
+    title: 'Galerie realisations : alimenter avec photos recentes + piscines',
+    impact: '5/10 personas',
+    detail: 'La galerie propose une categorie "Piscines et SPA" mais aucune photo de piscine n\'y figure (ou tres peu). Pour un service a 30 000-60 000 EUR, l\'absence de preuves visuelles est redhibitoire. Alimenter la galerie avec des photos recentes datees (2024-2025) donnerait aussi un signal de site actif pour le SEO.'
+  },
+];
+
+const amelioMoyenne = [
+  {
+    title: 'Remplacer Google Fonts CDN par des polices locales',
+    impact: 'RGPD + performance',
+    detail: 'Trois familles de polices (Roboto, Roboto Slab, Mukta Mahee) sont chargees depuis fonts.googleapis.com sans consentement prealable. C\'est une violation RGPD confirmee (transfert d\'IP vers Google). Remplacer par des fichiers woff2 en local : gain RGPD + elimination de 2-3 requetes bloquantes = gain ~400ms sur LCP mobile.'
+  },
+  {
+    title: 'Completer le Schema.org LocalBusiness',
+    impact: 'SEO + Knowledge Panel',
+    detail: 'Le JSON-LD actuel (Yoast SEO) ne declare que WebPage + Organization. Ajouter : LocalBusiness (ou LandscapingBusiness), address, telephone, email, geo (lat/lng Metz), openingHours, areaServed (Moselle + Luxembourg), aggregateRating (4.8/5 - 28 reviews), sameAs (Instagram, GBP). Potentiel : Knowledge Panel Google + rich snippets notations.'
+  },
+  {
+    title: 'Securiser les headers HTTP (Observatory F → C minimum)',
+    impact: 'Securite + credibilite',
+    detail: 'Score Observatory 20/100 — Grade F avec 6 tests echoues. Ajouter via configuration serveur LiteSpeed : X-Frame-Options, X-Content-Type-Options, Strict-Transport-Security, Content-Security-Policy de base, Permissions-Policy. Correction possible en <1h par le webmaster. Potentiel : passer de F a C/B.'
+  },
+  {
+    title: 'Corriger H1 et title pour inclure mots-cles locaux',
+    impact: 'SEO local',
+    detail: 'H1 actuel : "Embellissons vos exterieurs" — aucun mot-cle. Title actuel : "Conception et amenagement de jardins et piscines" — sans "Metz" ni "paysagiste". Cibles SEO a inclure : "paysagiste Metz", "amenagement jardin Metz 57", "piscine Moselle". Ces corrections simples amelioreraient le positionnement sur les requetes locales prioritaires.'
+  },
+  {
+    title: 'Creer des mentions legales et une page /contact',
+    impact: 'Legal + confiance',
+    detail: 'Les mentions legales sont absentes (obligation legale Art. 6 LCEN). La politique de confidentialite est un boilerplate WordPress qui ne couvre pas CF7 ni ReCAPTCHA. Creer : /mentions-legales (SIRET, responsable, hebergeur), /politique-de-confidentialite complete, page /contact (plutot que formulaire inline).'
+  },
+  {
+    title: 'Illustrer les plans et esquisses paysageres',
+    impact: '3/10 personas (projets neufs)',
+    detail: 'Le site mentionne "plans et esquisses paysageres vous permettant de vous projeter dans vos futurs amenagements" — c\'est un differenciateur fort. Mais aucune illustration de ces plans n\'est presente. Un exemple de croquis ou plan 2D/3D avec le rendu final montrerait la valeur ajoutee de cette etape et justifierait le budget.'
+  },
+];
+
+const amelioDiscuter = [
+  { emoji: '\u{1F4CD}', title: 'Carte zone intervention Metz-Luxembourg', detail: 'L\'axe Metz-Luxembourg est un atout distinctif (clientele franco-luxembourgeoise aisee). Une carte visuelle des communes couvertes (Moselle + frontaliers) rassurerait les prospects hors Metz-centre et valoriserait la double clientele.' },
+  { emoji: '\u{1F4F8}', title: 'Intégration Instagram sur le site', detail: '@mrcreation_metz est actif et attire des prospects (persona Yasmine). Afficher un flux Instagram sur la page d\'accueil ou realisations donnerait du contenu frais automatique et relirait les deux canaux.' },
+  { emoji: '\u{1F4CB}', title: 'Formulaire devis structure par type de projet', detail: 'Le formulaire CF7 actuel est generique. Un wizard simple (type de projet → surface → commune → budget approx → coordonnees) qualifierait mieux les leads et accelererait le premier contact.' },
+];
+
+// ─── HELPERS ───
+function scoreColor(s: number) {
+  if (s >= 90) return '#22c55e';
+  if (s >= 50) return '#f59e0b';
+  return '#ef4444';
+}
+
+function scoreTextColor(s: number) {
+  if (s >= 90) return 'text-green-600';
+  if (s >= 50) return 'text-amber-600';
+  return 'text-red-600';
+}
+
+function decisionColor(d: string) {
+  if (d === 'Convertit') return 'bg-emerald-100 text-emerald-800';
+  if (d === 'Hesite') return 'bg-amber-100 text-amber-800';
+  return 'bg-red-100 text-red-800';
+}
+
+function decisionBorder(d: string) {
+  if (d === 'Convertit') return 'border-green-200 bg-green-50/40';
+  if (d === 'Hesite') return 'border-amber-200 bg-amber-50/40';
+  return 'border-neutral-200 bg-neutral-50/40';
+}
+
+function severityColor(s: string) {
+  if (s === 'critique') return 'bg-red-100 text-red-800';
+  if (s === 'haute') return 'bg-orange-100 text-orange-800';
+  return 'bg-blue-100 text-blue-800';
+}
+
+function cwvBg(status: string) {
+  if (status === 'good') return 'bg-green-50';
+  if (status === 'mid') return 'bg-amber-50';
+  return 'bg-red-50';
+}
+
+function cwvText(status: string) {
+  if (status === 'good') return 'text-green-700';
+  if (status === 'mid') return 'text-amber-700';
+  return 'text-red-700';
+}
+
+function cwvBadge(status: string) {
+  if (status === 'good') return 'bg-green-100 text-green-800';
+  if (status === 'mid') return 'bg-amber-100 text-amber-800';
+  return 'bg-red-100 text-red-800';
+}
+
+function cwvLabel(status: string) {
+  if (status === 'good') return 'Bon';
+  if (status === 'mid') return 'Moyen';
+  return 'Mauvais';
+}
+
+function scoreBar(val: number) {
+  return `${val * 10}%`;
+}
+
+function gradeColor(g: string) {
+  if (g.startsWith('A')) return { border: 'border-green-300', bg: 'bg-green-50', text: 'text-green-700' };
+  if (g.startsWith('B')) return { border: 'border-amber-300', bg: 'bg-amber-50', text: 'text-amber-700' };
+  return { border: 'border-red-300', bg: 'bg-red-50', text: 'text-red-700' };
+}
+
+const gc = gradeColor(observatory.grade);
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  noindex={true}
+  lang="fr"
+  frPath="/audit/mr-creation"
+>
+
+  <!-- ═══════════════════ HERO ═══════════════════ -->
+  <section class="w-full relative px-6 py-16 md:px-8 md:py-24 overflow-hidden" style="background-color: #0D1F0D;">
+    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 40px 40px;"></div>
+    <div class="absolute top-20 -left-32 w-96 h-96 rounded-full opacity-15 blur-3xl" style="background: #3A6B3A;"></div>
+    <div class="absolute bottom-10 right-10 w-64 h-64 rounded-full opacity-10 blur-3xl" style="background: #6B9B3A;"></div>
+
+    <div class="mx-auto max-w-4xl relative z-10">
+      <div class="mb-4 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-green-500/40">
+        <span class="w-2 h-2 rounded-full bg-green-500"></span>
+        <span class="text-sm font-semibold text-white/90">Rapport confidentiel</span>
+      </div>
+
+      <h1 class="mb-4 text-3xl font-bold leading-tight text-white md:text-4xl lg:text-5xl">
+        Audit UX + Technique — <span class="bg-gradient-to-r from-green-400 to-emerald-300 bg-clip-text text-transparent">MR Creation Paysagiste</span>
+      </h1>
+
+      <p class="text-lg text-neutral-300 md:text-xl max-w-2xl mb-8">
+        Analyse complete de <strong class="text-white">mrcreation.fr</strong> — audit technique (securite, SEO, Schema.org) + simulation de 10 visites personas avec feedback detaille.
+      </p>
+
+      <div class="flex flex-wrap gap-3">
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">10 personas testes</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">7 canaux d'arrivee</span>
+        <span class="px-4 py-2 rounded-lg bg-red-900/60 text-red-300 text-sm font-medium">Observatory F · 20/100</span>
+        <span class="px-4 py-2 rounded-lg bg-red-900/60 text-red-300 text-sm font-medium">Google Fonts CDN = RGPD</span>
+        <span class="px-4 py-2 rounded-lg bg-red-900/60 text-red-300 text-sm font-medium">/a-propos en 404</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">30 mars 2026</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ TAB BAR ═══════════════════ -->
+  <nav class="sticky top-16 md:top-20 z-40 bg-white/95 backdrop-blur border-b border-neutral-200" id="tab-bar">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-2 h-12 text-sm overflow-x-auto">
+      <button data-tab="0" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-green-700 bg-green-50">Synthese</button>
+      <button data-tab="1" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">Technique</button>
+      <button data-tab="2" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">
+        Visiteurs <span class="ml-1 text-xs text-neutral-400">10</span>
+      </button>
+      <button data-tab="3" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">
+        Ameliorations <span class="ml-1 text-xs text-neutral-400">{amelioHaute.length + amelioMoyenne.length + amelioDiscuter.length}</span>
+      </button>
+    </div>
+  </nav>
+
+  <div id="panels" class="flex overflow-x-auto snap-x snap-mandatory" style="-webkit-overflow-scrolling: touch; scrollbar-width: none;">
+
+    <!-- ═══════════════════ PANEL 1 : SYNTHESE ═══════════════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+
+      <!-- KPI Cards -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class={`text-3xl md:text-4xl font-bold ${tauxConv < 20 ? 'text-red-600' : tauxConv < 40 ? 'text-amber-600' : 'text-emerald-600'}`}>{tauxConv}%</p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Taux de conversion</p>
+              <p class="mt-2 text-xs text-[var(--color-text-muted)]">{convertis} convertis · {hesitants} hesitants · {quitte} partis</p>
+            </div>
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class="text-3xl md:text-4xl font-bold text-amber-600">{avgExp}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Experience</p>
+              <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden">
+                <div class="h-full rounded-full bg-amber-500" style={`width: ${scoreBar(Number(avgExp))}`}></div>
+              </div>
+            </div>
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class="text-3xl md:text-4xl font-bold text-blue-600">{avgConf}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Confiance</p>
+              <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden">
+                <div class="h-full rounded-full bg-blue-500" style={`width: ${scoreBar(Number(avgConf))}`}></div>
+              </div>
+            </div>
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class="text-3xl md:text-4xl font-bold text-orange-600">{avgClarte}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Clarte</p>
+              <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden">
+                <div class="h-full rounded-full bg-orange-500" style={`width: ${scoreBar(Number(avgClarte))}`}></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info prospect -->
+      <div class="w-full px-6 pb-8 md:px-8">
+        <div class="mx-auto max-w-5xl">
+          <div class="rounded-xl border border-green-200 bg-green-50 p-6 mb-8">
+            <h2 class="text-lg font-bold text-green-900 mb-3">MR Creation — Paysagiste Metz (57)</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-green-800">
+              <div>
+                <p><strong>Activite :</strong> Paysagiste — Conception et amenagement de jardins et piscines</p>
+                <p><strong>Zone :</strong> Axe Metz-Luxembourg, Moselle et departements limitrophes</p>
+                <p><strong>Adresse :</strong> 26, avenue Foch, 57000 METZ</p>
+                <p><strong>Tel :</strong> 06 17 04 88 81</p>
+              </div>
+              <div>
+                <p><strong>Avis Google :</strong> <span class="font-bold text-green-700">4.8/5 sur 28 avis</span> (excellent)</p>
+                <p><strong>Email :</strong> contact@mrcreation.fr (professionnel)</p>
+                <p><strong>Garantie :</strong> Decennale sur toutes les prestations</p>
+                <p><strong>Site :</strong> WordPress 6.1.5 + Elementor 3.35.5 — LiteSpeed N0C</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Bug critique -->
+          <div class="rounded-xl border border-red-200 bg-red-50 p-5 mb-8">
+            <h3 class="font-semibold text-red-900 mb-2">Bug critique detecte : page /a-propos en 404</h3>
+            <p class="text-sm text-red-700">La page <strong>/a-propos</strong> est listee dans le menu de navigation principal mais retourne une erreur 404. Ce bug casse la navigation et disqualifie le site pour les visiteurs B2B (architectes, syndics, collectivites) qui cherchent a verifier l'entreprise.</p>
+          </div>
+
+          <!-- Maturite x Conversion -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+              <h3 class="font-semibold text-[var(--color-text)] mb-4">Conversion par maturite</h3>
+              <div class="space-y-3">
+                {maturiteStats.map(m => (
+                  <div class="flex items-center gap-3">
+                    <span class="w-28 text-sm text-[var(--color-text-muted)] shrink-0">{m.level}</span>
+                    <div class="flex-1 h-2 rounded-full bg-neutral-100 overflow-hidden">
+                      <div class="h-full rounded-full bg-emerald-500" style={`width: ${m.pct}`}></div>
+                    </div>
+                    <span class="w-8 text-right text-sm font-medium text-[var(--color-text)]">{m.pct}</span>
+                    <span class="text-xs text-neutral-400">({m.total})</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+              <h3 class="font-semibold text-[var(--color-text)] mb-4">Canaux d'arrivee</h3>
+              <div class="space-y-2">
+                {canalStats.map(c => (
+                  <div class="flex items-center justify-between text-sm">
+                    <span class="text-[var(--color-text-muted)]">{c.canal}</span>
+                    <div class="flex items-center gap-2">
+                      {c.conv > 0 && <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-xs">{c.conv} conv.</span>}
+                      {c.hesitant > 0 && <span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-xs">{c.hesitant} hesit.</span>}
+                      {c.quitte > 0 && <span class="px-2 py-0.5 rounded-full bg-red-100 text-red-700 text-xs">{c.quitte} parti</span>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <!-- Frictions -->
+          <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+            <h3 class="font-semibold text-[var(--color-text)] mb-4">Frictions identifiees par les personas</h3>
+            <div class="space-y-2">
+              {frictions.map(f => (
+                <div class="flex items-start gap-3">
+                  <span class={`shrink-0 px-2 py-0.5 rounded-full text-xs font-medium ${severityColor(f.severity)}`}>{f.severity}</span>
+                  <span class="text-sm text-[var(--color-text)]">{f.label}</span>
+                  {f.count > 0 && <span class="ml-auto shrink-0 text-xs text-neutral-400">{f.count}/10</span>}
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════ PANEL 2 : TECHNIQUE ═══════════════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl space-y-8">
+
+          <!-- Scores -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {(['mobile', 'desktop'] as const).map(device => (
+              <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+                <h3 class="font-semibold text-[var(--color-text)] mb-4 capitalize">{device} — Lighthouse (estimation stack)</h3>
+                <div class="space-y-3">
+                  {Object.entries(lighthouseScores[device]).map(([key, val]) => (
+                    <div class="flex items-center gap-3">
+                      <span class="w-28 text-sm text-[var(--color-text-muted)] capitalize">{key === 'perf' ? 'Performance' : key === 'access' ? 'Accessibilite' : key === 'bp' ? 'Bonnes pratiques' : 'SEO'}</span>
+                      <div class="flex-1 h-3 rounded-full bg-neutral-100 overflow-hidden">
+                        <div class="h-full rounded-full transition-all" style={`width: ${val}%; background-color: ${scoreColor(val)}`}></div>
+                      </div>
+                      <span class={`w-10 text-right text-sm font-bold ${scoreTextColor(val)}`}>{val}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <!-- Stack details -->
+          <div class="rounded-xl border border-amber-200 bg-amber-50 p-6">
+            <h3 class="font-semibold text-amber-900 mb-3">Stack technique identifiee — facteurs de degradation performance</h3>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-amber-800">
+              <div>
+                <p class="font-medium mb-2">Charge JS excessive :</p>
+                <ul class="space-y-1 text-xs">
+                  <li>• Elementor 3.35.5 : webpack.runtime + frontend-modules</li>
+                  <li>• SmartSlider3 : 3 fichiers JS (n2.min.js, smartslider-frontend.min.js, ss-simple.min.js)</li>
+                  <li>• jQuery 3.7.1 + jQuery Migrate 3.4.1 (2 fichiers legacy)</li>
+                  <li>• Contact Form 7 (CF7) charge globalement</li>
+                  <li>• Hu-Manity (cookies) via CDN externe</li>
+                </ul>
+              </div>
+              <div>
+                <p class="font-medium mb-2">Autres problemes :</p>
+                <ul class="space-y-1 text-xs">
+                  <li>• HTML brut : 174,8 KB (tres lourd pour 4 sections)</li>
+                  <li>• Google Fonts CDN : 3 familles Roboto/Roboto Slab/Mukta Mahee</li>
+                  <li>• Pas de preload hints ni fetchpriority sur hero</li>
+                  <li>• Cache HTTP 1h seulement (devrait etre 1 an assets)</li>
+                  <li>• AutoOptimize : concaténation partielle insuffisante</li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <!-- CWV -->
+          <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+            <h3 class="font-semibold text-[var(--color-text)] mb-4">Core Web Vitals (estimation WordPress+Elementor+SmartSlider3)</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="border-b border-neutral-100">
+                    <th class="text-left py-2 pr-4 text-[var(--color-text-muted)] font-medium">Metrique</th>
+                    <th class="text-center py-2 px-2 text-[var(--color-text-muted)] font-medium">Mobile</th>
+                    <th class="text-center py-2 px-2 text-[var(--color-text-muted)] font-medium">Status</th>
+                    <th class="text-center py-2 px-2 text-[var(--color-text-muted)] font-medium">Desktop</th>
+                    <th class="text-center py-2 pl-2 text-[var(--color-text-muted)] font-medium">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.entries(cwv).map(([key, val]) => (
+                    <tr class="border-b border-neutral-50">
+                      <td class="py-2 pr-4 font-medium text-[var(--color-text)] uppercase text-xs">{key}</td>
+                      <td class={`py-2 px-2 text-center font-mono ${cwvText(val.mobileStatus)}`}>{val.mobile}</td>
+                      <td class="py-2 px-2 text-center">
+                        <span class={`px-2 py-0.5 rounded-full text-xs font-medium ${cwvBadge(val.mobileStatus)}`}>{cwvLabel(val.mobileStatus)}</span>
+                      </td>
+                      <td class={`py-2 px-2 text-center font-mono ${cwvText(val.desktopStatus)}`}>{val.desktop}</td>
+                      <td class="py-2 pl-2 text-center">
+                        <span class={`px-2 py-0.5 rounded-full text-xs font-medium ${cwvBadge(val.desktopStatus)}`}>{cwvLabel(val.desktopStatus)}</span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Observatory + Schema + OG + SEO -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <!-- Observatory -->
+            <div class={`rounded-xl border p-6 ${gc.border} ${gc.bg}`}>
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="font-semibold text-[var(--color-text)]">Observatory MDN</h3>
+                <span class={`text-4xl font-black ${gc.text}`}>{observatory.grade}</span>
+              </div>
+              <p class={`text-2xl font-bold ${gc.text} mb-1`}>{observatory.score}<span class="text-base font-normal text-neutral-400">/100</span></p>
+              <p class="text-sm text-neutral-500 mb-4">{observatory.passed}/{observatory.total} tests reussis</p>
+              <div class="space-y-1 text-xs">
+                {missingHeaders.map(h => (
+                  <div class="flex items-start gap-2">
+                    <span class="text-red-500 mt-0.5">x</span>
+                    <span class="text-neutral-600">{h}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <!-- Schema.org -->
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+              <h3 class="font-semibold text-[var(--color-text)] mb-4">Schema.org JSON-LD</h3>
+              <div class="space-y-1.5 max-h-72 overflow-y-auto">
+                {schemaChecks.map(c => (
+                  <div class="flex items-center gap-2 text-sm">
+                    <span class={c.ok ? 'text-emerald-500' : 'text-red-500'}>{c.ok ? '✓' : '✗'}</span>
+                    <span class={c.ok ? 'text-neutral-700' : 'text-neutral-500'}>{c.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <!-- OG -->
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+              <h3 class="font-semibold text-[var(--color-text)] mb-4">Open Graph</h3>
+              <div class="space-y-1.5">
+                {ogChecks.map(c => (
+                  <div class="flex items-center gap-2 text-sm">
+                    <span class={c.ok ? 'text-emerald-500' : 'text-red-500'}>{c.ok ? '✓' : '✗'}</span>
+                    <span class={c.ok ? 'text-neutral-700' : 'text-neutral-500'}>{c.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <!-- SEO -->
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+              <h3 class="font-semibold text-[var(--color-text)] mb-4">SEO Technique</h3>
+              <div class="space-y-1.5 max-h-72 overflow-y-auto">
+                {seoChecks.map(c => (
+                  <div class="flex items-center gap-2 text-sm">
+                    <span class={c.ok ? 'text-emerald-500' : 'text-red-500'}>{c.ok ? '✓' : '✗'}</span>
+                    <span class={c.ok ? 'text-neutral-700' : 'text-neutral-500'}>{c.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <!-- RGPD alert -->
+          <div class="rounded-xl border border-red-200 bg-red-50 p-6">
+            <h3 class="font-semibold text-red-900 mb-2">Violation RGPD confirmee : Google Fonts charge sans consentement</h3>
+            <p class="text-sm text-red-700 mb-3">Le site charge 3 familles de polices depuis <code class="bg-red-100 px-1 rounded">fonts.googleapis.com</code> (Roboto, Roboto Slab, Mukta Mahee) sans recueil de consentement prealable. Cette pratique transfère l'adresse IP des visiteurs vers Google avant tout consentement — violation directe du RGPD. La CNIL a confirme cette position en 2022.</p>
+            <p class="text-sm text-red-700">Solution : remplacer par des fichiers woff2 heberges localement (gain RGPD + gain ~400ms LCP mobile).</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════ PANEL 3 : VISITEURS ═══════════════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl space-y-6">
+          {personas.map(p => (
+            <div class={`rounded-xl border p-6 ${decisionBorder(p.decision)}`}>
+              <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
+                <div class="flex items-center gap-3">
+                  <span class="text-3xl">{p.emoji}</span>
+                  <div>
+                    <h3 class="font-bold text-[var(--color-text)]">#{p.id} {p.name}, {p.age} ans — {p.role}</h3>
+                    <p class="text-sm text-[var(--color-text-muted)]">{p.canal} · {p.device} · <span class="font-medium">{p.maturite}</span></p>
+                  </div>
+                </div>
+                <span class={`px-3 py-1 rounded-full text-sm font-semibold ${decisionColor(p.decision)}`}>{p.decision}</span>
+              </div>
+
+              <p class="text-sm text-[var(--color-text-muted)] mb-3 italic">"{p.situation}"</p>
+
+              <div class="grid grid-cols-3 gap-3 mb-4">
+                <div class="rounded-lg bg-white/60 p-3 text-center">
+                  <p class={`text-xl font-bold ${scoreTextColor(p.exp)}`}>{p.exp}<span class="text-sm text-neutral-400">/10</span></p>
+                  <p class="text-xs text-neutral-500">Experience</p>
+                </div>
+                <div class="rounded-lg bg-white/60 p-3 text-center">
+                  <p class={`text-xl font-bold ${scoreTextColor(p.conf)}`}>{p.conf}<span class="text-sm text-neutral-400">/10</span></p>
+                  <p class="text-xs text-neutral-500">Confiance</p>
+                </div>
+                <div class="rounded-lg bg-white/60 p-3 text-center">
+                  <p class={`text-xl font-bold ${scoreTextColor(p.clarte)}`}>{p.clarte}<span class="text-sm text-neutral-400">/10</span></p>
+                  <p class="text-xs text-neutral-500">Clarte</p>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-1">Parcours</p>
+                <div class="flex flex-wrap gap-1">
+                  {p.parcours.map((page, i) => (
+                    <span class="flex items-center gap-1">
+                      <span class="px-2 py-0.5 rounded bg-white/70 text-xs text-neutral-600 border border-neutral-200">{page}</span>
+                      {i < p.parcours.length - 1 && <span class="text-neutral-300 text-xs">→</span>}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-1">Question cle</p>
+                <p class="text-sm text-[var(--color-text)] bg-white/60 rounded-lg p-3 italic">"{p.questionCle}"</p>
+                <p class="text-xs text-neutral-500 mt-1">Reponse obtenue : <span class={`font-medium ${p.reponse === 'Oui' ? 'text-emerald-600' : p.reponse === 'Partiellement' ? 'text-amber-600' : 'text-red-600'}`}>{p.reponse}</span></p>
+              </div>
+
+              <div class="mb-3">
+                <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-1">Premiere impression</p>
+                <p class="text-sm text-[var(--color-text)]">{p.premierImpression}</p>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+                <div>
+                  <p class="text-xs font-semibold text-emerald-600 uppercase tracking-wide mb-1">Points positifs</p>
+                  <ul class="space-y-0.5">
+                    {p.positifs.map(pos => (
+                      <li class="flex items-start gap-1.5 text-xs text-neutral-600">
+                        <span class="text-emerald-500 mt-0.5 shrink-0">+</span>{pos}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <p class="text-xs font-semibold text-red-600 uppercase tracking-wide mb-1">Frictions</p>
+                  <ul class="space-y-0.5">
+                    {p.frictions.map(fric => (
+                      <li class="flex items-start gap-1.5 text-xs text-neutral-600">
+                        <span class="text-red-400 mt-0.5 shrink-0">–</span>{fric}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              <div class="border-t border-white/60 pt-3 mt-3">
+                <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-1">Raison de la decision</p>
+                <p class="text-sm text-[var(--color-text)]">{p.raisonDecision}</p>
+                <p class="text-xs text-neutral-400 mt-1 italic">{p.impactTech}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════ PANEL 4 : AMELIORATIONS ═══════════════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl space-y-10">
+
+          <!-- Impact fort -->
+          <div>
+            <h2 class="text-xl font-bold text-[var(--color-text)] mb-2">Impact fort — A faire en priorite</h2>
+            <p class="text-sm text-[var(--color-text-muted)] mb-5">Ces ameliorations auraient le plus grand impact sur la conversion et la credibilite.</p>
+            <div class="space-y-4">
+              {amelioHaute.map((a, i) => (
+                <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+                  <div class="flex items-start justify-between gap-4 mb-2">
+                    <h3 class="font-bold text-[var(--color-text)]">{i + 1}. {a.title}</h3>
+                    <span class="shrink-0 px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs font-medium">{a.impact}</span>
+                  </div>
+                  <p class="text-sm text-[var(--color-text-muted)]">{a.detail}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <!-- Impact moyen -->
+          <div>
+            <h2 class="text-xl font-bold text-[var(--color-text)] mb-2">Impact moyen — A inclure dans la refonte</h2>
+            <div class="space-y-4">
+              {amelioMoyenne.map((a, i) => (
+                <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+                  <div class="flex items-start justify-between gap-4 mb-2">
+                    <h3 class="font-bold text-[var(--color-text)]">{amelioHaute.length + i + 1}. {a.title}</h3>
+                    <span class="shrink-0 px-3 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-medium">Moyen</span>
+                  </div>
+                  <p class="text-sm text-[var(--color-text-muted)]">{a.detail}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <!-- A discuter -->
+          <div>
+            <h2 class="text-xl font-bold text-[var(--color-text)] mb-2">A discuter avec le client</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {amelioDiscuter.map(a => (
+                <div class="rounded-xl border border-[var(--color-border)] bg-white p-5">
+                  <div class="text-2xl mb-3">{a.emoji}</div>
+                  <h3 class="font-semibold text-[var(--color-text)] mb-2">{a.title}</h3>
+                  <p class="text-sm text-[var(--color-text-muted)]">{a.detail}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <!-- Opportunite WF -->
+          <div class="rounded-xl border border-green-300 bg-green-50 p-8">
+            <h2 class="text-xl font-bold text-green-900 mb-4">Opportunite Web Factory</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+              <div class="text-center">
+                <p class="text-4xl font-black text-green-700">8/10</p>
+                <p class="text-sm text-green-600 mt-1">Score d'opportunite</p>
+              </div>
+              <div class="text-center">
+                <p class="text-4xl font-black text-green-700">1490€</p>
+                <p class="text-sm text-green-600 mt-1">Forfait Standard recommande</p>
+              </div>
+              <div class="text-center">
+                <p class="text-4xl font-black text-green-700">4.8/5</p>
+                <p class="text-sm text-green-600 mt-1">28 avis Google a valoriser</p>
+              </div>
+            </div>
+            <div class="space-y-2 text-sm text-green-800">
+              <p><strong>Levier 1 :</strong> 4.8/5 sur 28 avis Google = capital confiance completement absent du site actuel — gain immediat</p>
+              <p><strong>Levier 2 :</strong> Axe Metz-Luxembourg = clientele franco-luxembourgeoise aisee, projets a fort budget (piscines, terrasses)</p>
+              <p><strong>Levier 3 :</strong> Diplome d'etat du fondateur + garantie decennale = differenciateurs forts a mieux valoriser</p>
+              <p><strong>Levier 4 :</strong> Page /a-propos en 404 + Google Fonts RGPD = arguments migration evidentes et concrets</p>
+              <p><strong>Levier 5 :</strong> Observatory F (20/100) sur un metier de confiance = argument securite simple a comprendre</p>
+              <p><strong>Levier 6 :</strong> Instagram actif (@mrcreation_metz) = contenu visuel present mais non synchronise avec le site</p>
+              <p class="mt-3 text-green-700 font-medium">Contact recommande : appel direct au 06 17 04 88 81 ou email contact@mrcreation.fr avec rapport en accroche</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /panels -->
+
+</BaseLayout>
+
+<script>
+const tabs = document.querySelectorAll<HTMLButtonElement>('.tab-btn');
+const panels = document.getElementById('panels');
+
+function activateTab(idx: number) {
+  tabs.forEach((t, i) => {
+    if (i === idx) {
+      t.classList.remove('text-neutral-500', 'hover:text-neutral-700');
+      t.classList.add('text-green-700', 'bg-green-50');
+    } else {
+      t.classList.remove('text-green-700', 'bg-green-50');
+      t.classList.add('text-neutral-500', 'hover:text-neutral-700');
+    }
+  });
+  if (panels) {
+    panels.scrollTo({ left: idx * panels.offsetWidth, behavior: 'smooth' });
+  }
+}
+
+tabs.forEach((btn, i) => {
+  btn.addEventListener('click', () => activateTab(i));
+});
+
+if (panels) {
+  panels.addEventListener('scroll', () => {
+    const idx = Math.round(panels.scrollLeft / panels.offsetWidth);
+    tabs.forEach((t, i) => {
+      if (i === idx) {
+        t.classList.remove('text-neutral-500', 'hover:text-neutral-700');
+        t.classList.add('text-green-700', 'bg-green-50');
+      } else {
+        t.classList.remove('text-green-700', 'bg-green-50');
+        t.classList.add('text-neutral-500', 'hover:text-neutral-700');
+      }
+    });
+  });
+}
+</script>

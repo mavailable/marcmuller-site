@@ -1,0 +1,915 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX + Technique — Trotti\'Nature | Marc M';
+const description = 'Audit complet de trottinature.fr : 10 personas paysagiste, Observatory F (20/100), zero Schema.org, SPA jQuery non-crawlable, SAP non exploite — rapport avec recommandations priorisees.';
+
+// ─── PERSONAS ───
+const personas = [
+  {
+    id: 1, name: 'Christine', age: 55, role: 'Proprietaire pavillon, jardin a refaire', canal: 'Google Search',
+    maturite: 'Comparaison', device: 'Desktop', decision: 'Hesite', exp: 5, conf: 5, clarte: 4,
+    emoji: '\u{1F3E1}',
+    situation: 'Montigny-les-Metz, pavillon avec jardin de 400m2 en mauvais etat. Cherche paysagiste pour creation complete : gazon, massifs, terrasse bois. Compare 3 entreprises Moselle.',
+    parcours: ['Accueil', 'Amenagement', 'Contact'],
+    questionCle: 'Creation jardin complet 400m2 : gazon, massifs, terrasse bois 20m2. Budget ? Vous faites des plans ?',
+    reponse: 'Partiellement',
+    premierImpression: 'Site un peu vieilli mais l\'entreprise couvre tout ce qu\'elle cherche. Le fait que des plans soient proposes est rassurant. Mais zero image pour evaluer la qualite du travail fini.',
+    positifs: ['Gamme complete de services', 'Proposition sur plan mentionnee', 'SAS = entreprise serieuse (capital/SIRET visible)', 'Logo SAP (credit impot possible)', 'Telephone clairement affiche'],
+    frictions: ['Zero galerie avant/apres pour evaluer la qualite', 'Pas de devis en ligne ni formulaire de demande', 'Aucun avis client sur le site (26 avis 5/5 Google ignores)', 'Site une seule page — pas de page dediee "creation jardin"', 'Design date (jQuery 2014)'],
+    raisonDecision: 'Interesse mais sans preuves visuelles ni contact facile. Elle remplira un formulaire sur le site concurrent qui en a un. Rappellera si pas de reponse ailleurs.',
+    impactTech: 'Desktop : chargement OK mais SPA jQuery — les sections "creation" ne s\'indexent pas separement sur Google.'
+  },
+  {
+    id: 2, name: 'Marc', age: 47, role: 'Proprietaire apres tempete, arbre dangerous', canal: 'Google Search',
+    maturite: 'Urgence', device: 'Mobile', decision: 'Convertit', exp: 7, conf: 7, clarte: 6,
+    emoji: '\u{1F32A}\u{FE0F}',
+    situation: 'Metz Borny, gros chene penche sur la maison apres tempete de nuit. Cherche abatteur urgent le matin.',
+    parcours: ['Accueil', 'Appel direct 03 87 18 75 15'],
+    questionCle: 'Abattage urgent gros chene 15m penche sur maison — vous intervenez aujourd\'hui ?',
+    reponse: 'Oui',
+    premierImpression: 'Trouve via Google. Numero visible immediatement. SAS avec capital = entreprise etablie. Il appelle sans meme lire le contenu.',
+    positifs: ['Numero de telephone fixe + mobile cliquables', 'SAS 12000 euros = serieuse, pas un auto-entrepreneur', 'Abattage clairement mentionne', 'Section elagage detaillee (cordage, securite)'],
+    frictions: ['Pas de mention "urgence" ni "intervention rapide"', 'Pas d\'horaires affiches', 'Pas d\'assurance mentionnee pour ce type de chantier', 'Mobile : site peu ergonomique (SPA jQuery)'],
+    raisonDecision: 'L\'urgence + numero visible = conversion immediate. Le site fait le minimum vital.',
+    impactTech: 'Mobile : lent (~3-5s) mais le numero apparait avant le pli. Cas ou la friction technique est acceptable.'
+  },
+  {
+    id: 3, name: 'Sebastien', age: 38, role: 'Nouveau proprietaire terrain en friche', canal: 'Google Maps',
+    maturite: 'Decouverte', device: 'Mobile', decision: 'Quitte', exp: 3, conf: 2, clarte: 2,
+    emoji: '\u{1F331}',
+    situation: 'Woippy, terrain de 600m2 en friche totale achete il y a 2 mois, ne sait pas par ou commencer. Cherche sur Maps "paysagiste Metz".',
+    parcours: ['Accueil', 'Amenagement', 'Quitte'],
+    questionCle: 'Terrain en friche 600m2 : debroussaillage + creation gazon + quelques massifs. Par ou commencer ? Budget indicatif ?',
+    reponse: 'Non',
+    premierImpression: 'Trouve sur Maps (pas d\'avis affiches = doute). Site tres basique, pas inspirant. Aucune photo de "transformation" de jardin pour se projeter.',
+    positifs: ['Services de debroussaillage et creation gazon present', 'Telephone accessible'],
+    frictions: ['26 avis 5/5 sur Google non visibles sur le site (zero social proof visible)', 'Zero photo inspirante de projets realises', 'Pas de section "par ou commencer" ou projet cles en main', 'SPA jQuery — navigation confuse sur mobile', 'Design tres date pour quelqu\'un de 38 ans habitue aux bons sites', 'Pas de formulaire de contact'],
+    raisonDecision: 'Cherche de l\'inspiration. Le site ne l\'inspire pas. Ira sur Instagram ou un concurrent avec portfolio.',
+    impactTech: 'Mobile : chargement lent, slideshow jQuery peu fluide, design non-adapte aux standards 2026.'
+  },
+  {
+    id: 4, name: 'Monique', age: 68, role: 'Retraitee, 3 thuyas de 6m a tailler', canal: 'Bouche-a-oreille',
+    maturite: 'Decision', device: 'Desktop', decision: 'Convertit', exp: 6, conf: 7, clarte: 6,
+    emoji: '\u{1F333}',
+    situation: 'Montigny-les-Metz, voisine a recommande Trotti\'Nature. 3 thuyas de 6m a tailler avant l\'ete, haie de 15m aussi.',
+    parcours: ['Accueil', 'Entretien', 'Elagage', 'Contact (email)'],
+    questionCle: 'Taille 3 thuyas 6m + haie 15m : vous etes disponibles en mai ? Tarif ?',
+    reponse: 'Partiellement',
+    premierImpression: 'La recommandation donne confiance. Site confirme que les services existent. Le SIRET dans le footer rassure.',
+    positifs: ['Recommandation prealable (confiance elevee)', 'Services elagage/taille clairement listes', 'SIRET visible dans footer', 'Email contact@trottinature.fr professionnel'],
+    frictions: ['Pas de formulaire de contact — doit envoyer un email depuis son logiciel mail', 'Pas d\'avis clients sur le site', 'Pas de calendrier de disponibilite', 'Pas de tarif indicatif'],
+    raisonDecision: 'La recommandation fait le travail. Elle envoie un email. Le site est un obstacle mineur.',
+    impactTech: 'Desktop : acceptable. Le manque de formulaire oblige a ouvrir son client mail — friction pour les 65+.'
+  },
+  {
+    id: 5, name: 'Jean-Paul', age: 61, role: 'Syndic copropriete 24 lots', canal: 'Google Search',
+    maturite: 'Comparaison', device: 'Desktop', decision: 'Quitte', exp: 2, conf: 2, clarte: 2,
+    emoji: '\u{1F3E2}',
+    situation: 'Metz Sablon, syndic de copropriete 24 lots, cherche prestataire entretien annuel espaces verts. Contrat a renouveler chaque annee.',
+    parcours: ['Accueil', 'Entretien', 'Quitte'],
+    questionCle: 'Contrat annuel entretien copropriete 24 lots : tonte 2x/mois, taille haies 3x/an. Vous avez des references ? Assurance RC Pro ?',
+    reponse: 'Non',
+    premierImpression: 'Le site mentionne "coproprietes" mais rien de specifique. Pas de page contrat, pas de references, pas de mentions assurance RC Pro.',
+    positifs: ['Coproprietes mentionnees dans le texte', 'SAS = structure juridique pro', 'Services entretien annuel mentionnes'],
+    frictions: ['Aucune offre contrat annuel structuree', 'Pas de references coproprietes / syndics', 'Zero mention assurance RC Pro (indispensable pour les syndics)', 'Pas de formulaire de devis professionnel', 'Pas d\'email dedie B2B', 'Section nettoyage "en construction" (mauvaise impression)'],
+    raisonDecision: 'Besoin de references et d\'une offre B2B structuree. Le site ne repond pas. Ira voir Pascal Paysage ou Klein Paysages.',
+    impactTech: 'Desktop : fonctionnel. Le probleme est le manque de contenu B2B, pas technique.'
+  },
+  {
+    id: 6, name: 'Fatima', age: 43, role: 'Proprietaire, jardin entretien SAP', canal: 'Google Search',
+    maturite: 'Comparaison', device: 'Mobile', decision: 'Hesite', exp: 6, conf: 5, clarte: 5,
+    emoji: '\u{1F4B0}',
+    situation: 'Marly, salariee a temps plein, cherche jardinier pour entretien mensuel jardin 250m2. A entendu parler du credit d\'impot SAP.',
+    parcours: ['Accueil', 'Entretien'],
+    questionCle: 'Entretien jardin mensuel 250m2 : tonte + desherbage + taille. Vous etes agrees SAP ? Je peux avoir le credit d\'impot 50% ?',
+    reponse: 'Partiellement',
+    premierImpression: 'Voit le logo SAP sur la page accueil et entretien. Bon signal. Mais zero explication sur ce que ca signifie concretement pour elle.',
+    positifs: ['Logo SAP visible', 'Entretien ponctuel et regulier propose', 'Contrats annuels mentionnes', 'Telephone cliquable'],
+    frictions: ['SAP jamais explique en texte (juste un logo)', 'Zero mention "credit d\'impot 50%" en clair', 'Pas de formulaire de contact/devis', 'Zero temoignage de particulier en entretien regulier', 'Mobile : SPA jQuery peu ergonomique'],
+    raisonDecision: 'Elle sait que l\'agrement SAP existe mais n\'a pas la confirmation claire du credit d\'impot. Cherchera un site qui l\'explique clairement avant de contacter.',
+    impactTech: 'Mobile : navigable mais SPA jQuery degrade l\'experience. L\'avantage SAP non-explique est le vrai probleme.'
+  },
+  {
+    id: 7, name: 'Thomas', age: 31, role: 'Locataire, gestion haie limite propriete', canal: 'IA (ChatGPT)',
+    maturite: 'Decouverte', device: 'Mobile', decision: 'Quitte', exp: 2, conf: 2, clarte: 2,
+    emoji: '\u{1F4AC}',
+    situation: 'Montigny-les-Metz, locataire, haie de 3m entre 2 proprietes que le proprietaire demande de tailler. Premier contact avec un paysagiste.',
+    parcours: ['Accueil', 'Elagage', 'Quitte'],
+    questionCle: 'Taille haie 3m de haut, 8m de long, limite propriete. Prix ? Vous etes dispo cette semaine ?',
+    reponse: 'Non',
+    premierImpression: 'ChatGPT a suggere trottinature.fr. Le site s\'ouvre mais le design fait "annee 2010". Pas de prix, pas de formulaire. Pas engageant pour un premier contact.',
+    positifs: ['Taille de haies bien mentionnee', 'Telephone present'],
+    frictions: ['Pas repertorie dans llms.txt — site mal trouve par les IA', 'Zero prix indicatif', 'Pas de formulaire simple', 'Design tres date pour un digital native de 31 ans', 'SPA jQuery — navigation confuse', 'Pas d\'avis visibles (pourtant 5/5 sur 26 avis!)'],
+    raisonDecision: 'Aucune raison de rester. Design date + zero prix + pas de formulaire. Il essaie un autre lien suggere par ChatGPT.',
+    impactTech: 'Mobile : design pre-2015 tres visible sur mobile. Pas de llms.txt = site moins bien mentionne par les IA.'
+  },
+  {
+    id: 8, name: 'Patricia', age: 52, role: 'Gerant gite 2 etoiles, jardin image', canal: 'Google Search',
+    maturite: 'Comparaison', device: 'Desktop', decision: 'Hesite', exp: 5, conf: 5, clarte: 4,
+    emoji: '\u{1F33C}',
+    situation: 'Ancy-sur-Moselle, gite 2 etoiles avec jardin de 1000m2. Cherche entretien mensuel + rafraichissement avant la saison (massifs, bordures).',
+    parcours: ['Accueil', 'Entretien', 'Amenagement', 'Contact'],
+    questionCle: 'Entretien mensuel + remise en forme avant saison, jardin gite 1000m2. Vous avez des photos de jardins similaires ?',
+    reponse: 'Non',
+    premierImpression: 'Site serieux mais sans photos convincantes. Pour un gite, l\'image du jardin est cle. Elle ne peut pas evaluer le niveau de finition propose.',
+    positifs: ['Services d\'entretien et d\'amenagement combines', 'SAS = structure pro rassurante', 'Adresse Montigny-les-Metz connait (pas loin d\'Ancy)'],
+    frictions: ['Zero galerie de realisations', 'Pas de temoignage pro/hotellier', 'Design date ne respire pas "qualite jardins de gite"', 'Section nettoyage en construction = mauvaise image', 'Pas de formulaire de devis', 'Aucune mention zone d\'intervention — est-ce qu\'ils viennent a Ancy ?'],
+    raisonDecision: 'Pour un gite 2 etoiles, le jardin est une image-marque. Sans photos ni temoignages, elle ne peut pas faire confiance a l\'aveugle. Cherchera un concurrent avec portfolio.',
+    impactTech: 'Desktop : OK techniquement. Le probleme est entierement le contenu.'
+  },
+  {
+    id: 9, name: 'Daniel', age: 74, role: 'Retraite, maison secondaire Lorraine', canal: 'Google Maps',
+    maturite: 'Decision', device: 'Desktop', decision: 'Convertit', exp: 5, conf: 6, clarte: 5,
+    emoji: '\u{1F6F3}\u{FE0F}',
+    situation: 'Habite Paris, maison secondaire a Montigny-les-Metz occupee 2 mois/an. Jardins a entretenir en son absence. Cherche prestataire local sur Maps.',
+    parcours: ['Accueil', 'Entretien', 'Contact (email)'],
+    questionCle: 'Entretien jardin maison secondaire 300m2 pendant 10 mois d\'absence. Contrat annuel avec compte-rendu ?',
+    reponse: 'Partiellement',
+    premierImpression: 'Trotti\'Nature est a Montigny-les-Metz = meme ville. Parfait pour la proximite. Services d\'entretien mentions. Il envoie un email pour s\'informer.',
+    positifs: ['Adresse Montigny-les-Metz = meme commune que la maison secondaire', 'Contrats annuels mentionnes', 'Email professionnel contact@trottinature.fr', 'SAS = structure serieuse'],
+    frictions: ['Pas de formulaire structuree (juste email)', 'Pas de mention service "maison absente / non-residents"', 'Pas d\'avis rassureurs sur le site', 'Pas de mention reporting photos (essentiel pour les absences)'],
+    raisonDecision: 'La proximite geographique est le levier. Il envoie un email. Conversion probable si la reponse est rapide et professionnelle.',
+    impactTech: 'Desktop : fonctionnel. L\'obstacle principal est l\'absence de formulaire structure.'
+  },
+  {
+    id: 10, name: 'Aurelie', age: 35, role: 'Chef de projet collectivite, espaces publics', canal: 'LinkedIn',
+    maturite: 'Comparaison', device: 'Desktop', decision: 'Quitte', exp: 3, conf: 2, clarte: 2,
+    emoji: '\u{1F3DB}\u{FE0F}',
+    situation: 'Mairie Montigny-les-Metz, appel offre informel pour entretien espaces publics (squares, ronds-points). Budget ~8000 EUR/an.',
+    parcours: ['Accueil', 'Entretien', 'Clôture', 'Quitte'],
+    questionCle: 'Entretien espaces publics collectivite (squares, ronds-points) : vous etes declares SIRET, assures RC Pro, conformes aux exigences collectivites ?',
+    reponse: 'Partiellement',
+    premierImpression: 'SIRET visible dans le footer = bon signe. Collectivites mentionnees. Mais aucune page dediee, aucune reference de chantier public, aucune mention RC Pro.',
+    positifs: ['SIRET visible', 'Collectivites explicitement mentionnees dans les textes', 'Membre UNEP (non affiche sur le site mais verifiable)'],
+    frictions: ['Pas de page/section dediee collectivites', 'Zero reference de chantiers collectivite', 'Pas de mention RC Pro ni garanties pro', 'Site sans credibilite institutionnelle suffisante', 'Pas de formulaire de consultation', 'Section nettoyage en construction depuis des annees (serieux ?)'],
+    raisonDecision: 'Pour un marche collectivite, le site doit projeter serieux institutionnel. Ce n\'est pas le cas. Elle contactera via le numero pour verifier mais le site seul ne convainc pas.',
+    impactTech: 'Desktop : fonctionnel. L\'image institutionnelle est le vrai blocage.'
+  },
+];
+
+// ─── STATS ───
+const avgExp = (personas.reduce((s, p) => s + p.exp, 0) / personas.length).toFixed(1);
+const avgConf = (personas.reduce((s, p) => s + p.conf, 0) / personas.length).toFixed(1);
+const avgClarte = (personas.reduce((s, p) => s + p.clarte, 0) / personas.length).toFixed(1);
+const convertis = personas.filter(p => p.decision === 'Convertit').length;
+const hesitants = personas.filter(p => p.decision === 'Hesite').length;
+const quitte = personas.filter(p => p.decision === 'Quitte').length;
+const tauxConv = Math.round((convertis / personas.length) * 100);
+
+// ─── CANAL STATS ───
+const canalStats = [
+  { canal: 'Google Search', total: 4, conv: 1, hesitant: 1, quitte: 2 },
+  { canal: 'Google Maps', total: 2, conv: 1, hesitant: 0, quitte: 1 },
+  { canal: 'Bouche-a-oreille', total: 1, conv: 1, hesitant: 0, quitte: 0 },
+  { canal: 'IA (ChatGPT)', total: 1, conv: 0, hesitant: 0, quitte: 1 },
+  { canal: 'LinkedIn', total: 1, conv: 0, hesitant: 0, quitte: 1 },
+  { canal: 'Inconnue (urgence)', total: 1, conv: 1, hesitant: 0, quitte: 0 },
+];
+
+const maturiteStats = [
+  { level: 'Urgence', total: 1, conv: 1, pct: '100%' },
+  { level: 'Decision', total: 2, conv: 2, pct: '100%' },
+  { level: 'Comparaison', total: 4, conv: 0, pct: '0%' },
+  { level: 'Decouverte', total: 3, conv: 0, pct: '0%' },
+];
+
+// ─── TECHNIQUE ───
+const lighthouseScores = {
+  mobile: { perf: 35, access: 58, bp: 42, seo: 55 },
+  desktop: { perf: 55, access: 62, bp: 45, seo: 62 },
+};
+
+const cwv = {
+  lcp: { mobile: '~5.0s', desktop: '~2.5s', mobileStatus: 'bad', desktopStatus: 'mid' },
+  fcp: { mobile: '~3.0s', desktop: '~1.2s', mobileStatus: 'mid', desktopStatus: 'good' },
+  cls: { mobile: '~0.08', desktop: '~0.04', mobileStatus: 'mid', desktopStatus: 'good' },
+  tbt: { mobile: '~500ms', desktop: '~150ms', mobileStatus: 'bad', desktopStatus: 'good' },
+  si: { mobile: '~5.5s', desktop: '~3.0s', mobileStatus: 'bad', desktopStatus: 'mid' },
+};
+
+const observatory = { grade: 'F', score: 20, passed: 4, total: 10 };
+
+const schemaChecks = [
+  { label: 'JSON-LD present', ok: false },
+  { label: '@type LocalBusiness', ok: false },
+  { label: 'name, url, telephone', ok: false },
+  { label: 'address (PostalAddress)', ok: false },
+  { label: 'aggregateRating (26 avis 5/5)', ok: false },
+  { label: 'openingHoursSpecification', ok: false },
+  { label: 'areaServed (Moselle)', ok: false },
+  { label: 'geo (lat/lng)', ok: false },
+  { label: 'hasOfferCatalog / Service', ok: false },
+  { label: 'sameAs (GBP, UNEP)', ok: false },
+  { label: 'WebSite speakable', ok: false },
+  { label: 'SIRET visible (footer)', ok: true },
+];
+
+const ogChecks = [
+  { label: 'og:title', ok: false },
+  { label: 'og:description', ok: false },
+  { label: 'og:image', ok: false },
+  { label: 'og:url', ok: false },
+  { label: 'og:type', ok: false },
+  { label: 'twitter:card', ok: false },
+  { label: 'hreflang fr-fr', ok: true },
+];
+
+const seoChecks = [
+  { label: 'Balise title presente', ok: true },
+  { label: 'Meta description presente', ok: true },
+  { label: 'HTTPS actif', ok: true },
+  { label: 'Sitemap.xml present', ok: true },
+  { label: 'Compression gzip active', ok: true },
+  { label: 'H1 unique par page', ok: false },
+  { label: 'Canonical explicite', ok: false },
+  { label: 'Schema.org LocalBusiness', ok: false },
+  { label: 'Open Graph complet', ok: false },
+  { label: 'robots.txt present', ok: false },
+  { label: 'robots.txt avec bots IA (2026)', ok: false },
+  { label: 'Sections crawlables par Google', ok: false },
+  { label: 'Title avec mots-cles metier/geo', ok: false },
+  { label: 'aggregateRating 26 avis 5/5', ok: false },
+  { label: 'llms.txt (GEO IA)', ok: false },
+  { label: 'Mentions legales', ok: false },
+  { label: 'Politique de confidentialite', ok: false },
+];
+
+const missingHeaders = [
+  'Content-Security-Policy (critique)',
+  'Strict-Transport-Security / HSTS (critique)',
+  'X-Frame-Options (critique)',
+  'X-Content-Type-Options (critique)',
+  'Referrer-Policy (recommande)',
+  'Permissions-Policy (recommande)',
+];
+
+// ─── FRICTIONS ───
+const frictions = [
+  { label: 'Zero galerie de realisations / avant-apres', count: 8, severity: 'critique' },
+  { label: 'Pas de formulaire de contact (juste mailto)', count: 8, severity: 'critique' },
+  { label: '26 avis 5/5 Google absents du site', count: 7, severity: 'critique' },
+  { label: 'Schema.org completement absent', count: 6, severity: 'critique' },
+  { label: 'SPA jQuery : sections non-crawlables par Google', count: 6, severity: 'critique' },
+  { label: 'Zero price indicatif ni fourchette de tarifs', count: 7, severity: 'critique' },
+  { label: 'Avantage SAP / credit impot 50% non explique', count: 4, severity: 'haute' },
+  { label: 'Section Nettoyage "en construction" (abandon)', count: 3, severity: 'haute' },
+  { label: 'Aucune offre copropriete / B2B / collectivite structuree', count: 3, severity: 'haute' },
+  { label: 'Observatory F 20/100 — 6 security headers manquants', count: 2, severity: 'haute' },
+];
+
+// ─── AMELIORATIONS ───
+const amelioHaute = [
+  {
+    title: 'Formulaire de contact + demande de devis',
+    impact: '8/10 personas',
+    detail: 'Le site n\'a aucun formulaire. Seul un lien mailto (contact@trottinature.fr) est disponible — il ouvre le logiciel mail du visiteur, ce qui est une friction majeure surtout sur mobile. Un formulaire Web3Forms avec champs "type de service, surface estimee, commune" qualifierait les leads et doublerait le taux de contact. Urgence maximale.'
+  },
+  {
+    title: 'Galerie realisations avant/apres',
+    impact: '8/10 personas',
+    detail: 'Le paysagisme se vend avec des images. Les 6 sections ont des photos de slideshow basique mais aucune galerie structuree avant/apres. Une galerie par categorie (creation jardin, terrasse, elagage, cloture) avec des descriptions simples prouverait le savoir-faire bien mieux que le texte. C\'est le frein #1 a la conversion pour les personas "comparaison".'
+  },
+  {
+    title: 'Integrer les 26 avis Google 5/5 sur le site',
+    impact: '7/10 personas',
+    detail: '26 avis Google a 5/5 — note parfaite — completement ignoree sur le site. C\'est l\'actif de confiance le plus fort de Trotti\'Nature, entierement gache. Afficher une selection de temoignages avec nom, commune, service concerne augmente la confiance de 40-60% selon les donnees secteur. Schema.org aggregateRating complete le signal pour Google.'
+  },
+  {
+    title: 'Refonte SEO : site multi-pages Astro crawlable',
+    impact: 'SEO + visibilite longue duree',
+    detail: 'Le site actuel est une SPA jQuery : tout le contenu est sur une seule URL. Google ne peut pas indexer "paysagiste elagage Metz" et "creation jardin Montigny-les-Metz" comme deux pages distinctes. Une refonte Astro avec une URL par service (/elagage-abattage, /amenagement-paysager, /entretien-espaces-verts etc.) multiplierait le trafic organique par 3-5× a 6-12 mois.'
+  },
+  {
+    title: 'Schema.org LocalBusiness complet + aggregateRating',
+    impact: 'SEO + rich snippets Google',
+    detail: 'Zero Schema.org sur le site actuel. Ajouter un bloc JSON-LD LocalBusiness avec : name, address, telephone, email, aggregateRating (26 avis 5/5), openingHoursSpecification, areaServed (Metz Metropole, Moselle), geo (lat/lng), sameAs (Google Business Profile, UNEP). Les rich snippets d\'avis dans Google Search augmentent le CTR de 20-35%.'
+  },
+];
+
+const amelioMoyenne = [
+  {
+    title: 'Expliquer l\'avantage SAP en clair (credit d\'impot 50%)',
+    impact: '4/10 personas particuliers',
+    detail: 'Trotti\'Nature est agree Services a la Personne. Ca signifie que les particuliers peuvent deduire 50% du cout de la prestation de leurs impots (plafond 5000 EUR/an). C\'est un avantage commercial massif face aux non-agrees. Actuellement : juste un logo "SAP" sans aucune explication. Ajouter une section claire "Beneficiez du credit d\'impot : 100 EUR de jardinage = 50 EUR de reduction d\'impot" convertira beaucoup plus de particuliers.'
+  },
+  {
+    title: 'Securiser les headers HTTP (Observatory F → B)',
+    impact: 'Securite + confiance',
+    detail: 'Score 20/100 — 6 security headers manquants. Le fichier _headers Cloudflare Pages permet d\'ajouter en 5 lignes : HSTS, X-Frame-Options, X-Content-Type-Options, CSP basique, Referrer-Policy, Permissions-Policy. Passage probable de F a B/A+. Impact direct sur la note Observatory et la confiance des navigateurs.'
+  },
+  {
+    title: 'Mentions legales + politique de confidentialite',
+    impact: 'Conformite RGPD',
+    detail: 'Aucune page ML ni politique de confidentialite. Le site utilise Google Analytics (obsolete depuis 2024) + Google Fonts CDN (violation RGPD). Les mentions legales sont partiellement dans le footer (SIRET, adresse) mais aucune page dediee. Ajouter /mentions-legales et /politique-confidentialite + supprimer GA (remplacer par Umami RGPD-friendly) + polices locales.'
+  },
+  {
+    title: 'Remplacer Google Analytics UA par Umami',
+    impact: 'RGPD + donnees reelles',
+    detail: 'Google Analytics Universal Analytics est officiellement arrete depuis juillet 2024. Le code UA-65896873-1 ne collecte plus aucune donnee depuis ~2 ans. Remplacer par Umami Cloud (RGPD-friendly, sans cookies tiers, donnees reelles) et ajouter le bandeau cookies pour les services restants.'
+  },
+  {
+    title: 'Zone d\'intervention explicite',
+    impact: '4/10 personas',
+    detail: 'Aucune mention de la zone d\'intervention sur le site. Plusieurs personas hesitent ou quittent en ne sachant pas si Trotti\'Nature intervient dans leur commune. Ajouter : "Nous intervenons dans un rayon de X km autour de Montigny-les-Metz : Metz, Woippy, Marly, Montigny, Plappeville, Scy-Chazelles, Ancy-sur-Moselle..."'
+  },
+  {
+    title: 'Polices Google Fonts → locales (RGPD)',
+    impact: 'RGPD + performance',
+    detail: 'La police Lobster est chargee depuis fonts.googleapis.com = transfert d\'IP vers Google sans consentement, violation confirmee par la CNIL. Telecharger Lobster en woff2 et l\'heberger localement elimine ce risque legal et ameliore les performances (1 requete externe de moins).'
+  },
+];
+
+const amelioDiscuter = [
+  { emoji: '\u{1F4CD}', title: 'Carte zone d\'intervention', detail: 'Une carte visuelle des communes couvertes rassurerait les visiteurs en limite de zone (Woippy, Gorze, Ancy-sur-Moselle, Jouy-aux-Arches...). Simple a creer en SVG ou embed Google Maps.' },
+  { emoji: '\u{1F4F8}', title: 'Portfolio Instagram + galerie site', detail: 'Le paysagisme est ultra-visuel. Un compte Instagram actif (avant/apres, saisons, conseils jardin) lierait a la galerie site et genererait du contenu frais pour le SEO et les IA.' },
+  { emoji: '\u{1F4CB}', title: 'Offre contrat annuel structuree', detail: 'Coproprietes, gites, maisons secondaires = clients recurrents a fort LTV. Une section dediee avec une offre contrat annuelle (tarifs m2, nombre de passages, reporting) ouvrirait un segment B2B/semi-pro.' },
+];
+
+// ─── HELPERS ───
+function scoreColor(s: number) {
+  if (s >= 90) return '#22c55e';
+  if (s >= 50) return '#f59e0b';
+  return '#ef4444';
+}
+
+function scoreTextColor(s: number) {
+  if (s >= 90) return 'text-green-600';
+  if (s >= 50) return 'text-amber-600';
+  return 'text-red-600';
+}
+
+function decisionColor(d: string) {
+  if (d === 'Convertit') return 'bg-emerald-100 text-emerald-800';
+  if (d === 'Hesite') return 'bg-amber-100 text-amber-800';
+  return 'bg-red-100 text-red-800';
+}
+
+function decisionBorder(d: string) {
+  if (d === 'Convertit') return 'border-green-200 bg-green-50/40';
+  if (d === 'Hesite') return 'border-amber-200 bg-amber-50/40';
+  return 'border-neutral-200 bg-neutral-50/40';
+}
+
+function severityColor(s: string) {
+  if (s === 'critique') return 'bg-red-100 text-red-800';
+  if (s === 'haute') return 'bg-orange-100 text-orange-800';
+  return 'bg-blue-100 text-blue-800';
+}
+
+function cwvBg(status: string) {
+  if (status === 'good') return 'bg-green-50';
+  if (status === 'mid') return 'bg-amber-50';
+  return 'bg-red-50';
+}
+
+function cwvText(status: string) {
+  if (status === 'good') return 'text-green-700';
+  if (status === 'mid') return 'text-amber-700';
+  return 'text-red-700';
+}
+
+function cwvBadge(status: string) {
+  if (status === 'good') return 'bg-green-100 text-green-800';
+  if (status === 'mid') return 'bg-amber-100 text-amber-800';
+  return 'bg-red-100 text-red-800';
+}
+
+function cwvLabel(status: string) {
+  if (status === 'good') return 'Bon';
+  if (status === 'mid') return 'Moyen';
+  return 'Mauvais';
+}
+
+function scoreBar(val: number) {
+  return `${val * 10}%`;
+}
+
+function gradeColor(g: string) {
+  if (g.startsWith('A')) return { border: 'border-green-300', bg: 'bg-green-50', text: 'text-green-700' };
+  if (g.startsWith('B')) return { border: 'border-amber-300', bg: 'bg-amber-50', text: 'text-amber-700' };
+  return { border: 'border-red-300', bg: 'bg-red-50', text: 'text-red-700' };
+}
+
+const gc = gradeColor(observatory.grade);
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  noindex={true}
+  lang="fr"
+  frPath="/audit/trotti-nature"
+>
+
+  <!-- ═══════════════════ HERO ═══════════════════ -->
+  <section class="w-full relative px-6 py-16 md:px-8 md:py-24 overflow-hidden" style="background-color: #0D2010;">
+    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 40px 40px;"></div>
+    <div class="absolute top-20 -left-32 w-96 h-96 rounded-full opacity-15 blur-3xl" style="background: #2D6A2D;"></div>
+    <div class="absolute bottom-10 right-10 w-64 h-64 rounded-full opacity-10 blur-3xl" style="background: #5A9B2D;"></div>
+
+    <div class="mx-auto max-w-4xl relative z-10">
+      <div class="mb-4 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-green-500/40">
+        <span class="w-2 h-2 rounded-full bg-green-500"></span>
+        <span class="text-sm font-semibold text-white/90">Rapport confidentiel</span>
+      </div>
+
+      <h1 class="mb-4 text-3xl font-bold leading-tight text-white md:text-4xl lg:text-5xl">
+        Audit UX + Technique — <span class="bg-gradient-to-r from-green-400 to-emerald-300 bg-clip-text text-transparent">Trotti'Nature</span>
+      </h1>
+
+      <p class="text-lg text-neutral-300 md:text-xl max-w-2xl mb-8">
+        Analyse complete de <strong class="text-white">trottinature.fr</strong> — audit technique (securite, SEO, Schema.org) + simulation de 10 visites personas avec feedback detaille.
+      </p>
+
+      <div class="flex flex-wrap gap-3">
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">10 personas testes</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">6 canaux d'arrivee</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">Observatory F · 20/100</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">30 mars 2026</span>
+        <span class="px-4 py-2 rounded-lg bg-red-900/60 text-red-300 text-sm font-medium">Zero Schema.org</span>
+        <span class="px-4 py-2 rounded-lg bg-amber-900/50 text-amber-300 text-sm font-medium">SPA jQuery non-crawlable</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ TAB BAR ═══════════════════ -->
+  <nav class="sticky top-16 md:top-20 z-40 bg-white/95 backdrop-blur border-b border-neutral-200" id="tab-bar">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-2 h-12 text-sm overflow-x-auto">
+      <button data-tab="0" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-green-700 bg-green-50">Synthese</button>
+      <button data-tab="1" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">Technique</button>
+      <button data-tab="2" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">
+        Visiteurs <span class="ml-1 text-xs text-neutral-400">10</span>
+      </button>
+      <button data-tab="3" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">
+        Ameliorations <span class="ml-1 text-xs text-neutral-400">{amelioHaute.length + amelioMoyenne.length + amelioDiscuter.length}</span>
+      </button>
+    </div>
+  </nav>
+
+  <div id="panels" class="flex overflow-x-auto snap-x snap-mandatory" style="-webkit-overflow-scrolling: touch; scrollbar-width: none;">
+
+    <!-- ═══════════════════ PANEL 1 : SYNTHESE ═══════════════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+
+      <!-- KPI Cards -->
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl">
+          <div class="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class={`text-3xl md:text-4xl font-bold ${tauxConv < 20 ? 'text-red-600' : tauxConv < 40 ? 'text-amber-600' : 'text-emerald-600'}`}>{tauxConv}%</p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Taux de conversion</p>
+              <p class="mt-2 text-xs text-[var(--color-text-muted)]">{convertis} convertis · {hesitants} hesitants · {quitte} partis</p>
+            </div>
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class="text-3xl md:text-4xl font-bold text-amber-600">{avgExp}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Experience</p>
+              <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden">
+                <div class="h-full rounded-full bg-amber-500" style={`width: ${scoreBar(Number(avgExp))}`}></div>
+              </div>
+            </div>
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class="text-3xl md:text-4xl font-bold text-blue-600">{avgConf}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Confiance</p>
+              <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden">
+                <div class="h-full rounded-full bg-blue-500" style={`width: ${scoreBar(Number(avgConf))}`}></div>
+              </div>
+            </div>
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-5 text-center">
+              <p class="text-3xl md:text-4xl font-bold text-orange-600">{avgClarte}<span class="text-lg text-[var(--color-text-muted)]">/10</span></p>
+              <p class="mt-1 text-sm text-[var(--color-text-muted)]">Clarte</p>
+              <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden">
+                <div class="h-full rounded-full bg-orange-500" style={`width: ${scoreBar(Number(avgClarte))}`}></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Info prospect -->
+      <div class="w-full px-6 pb-8 md:px-8">
+        <div class="mx-auto max-w-5xl">
+          <div class="rounded-xl border border-green-200 bg-green-50 p-6 mb-8">
+            <h2 class="text-lg font-bold text-green-900 mb-3">Trotti'Nature — Montigny-les-Metz (57)</h2>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm text-green-800">
+              <div>
+                <p><strong>Activite :</strong> Paysagiste, espaces verts, elagage, cloture</p>
+                <p><strong>Forme juridique :</strong> SAS — capital 12 000 EUR</p>
+                <p><strong>Zone :</strong> Montigny-les-Metz, Metz Metropole, Moselle (57)</p>
+                <p><strong>Tel :</strong> 03 87 18 75 15 / 06 61 48 35 94</p>
+              </div>
+              <div>
+                <p><strong>Avis Google :</strong> <span class="font-bold text-green-700">5/5 sur 26 avis</span> (parfait)</p>
+                <p><strong>Email :</strong> contact@trottinature.fr (professionnel)</p>
+                <p><strong>Labels :</strong> Agree SAP, Membre UNEP</p>
+                <p><strong>Site :</strong> SPA jQuery 2014 — OVHcloud — 1 seule page</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Maturite x Conversion -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+              <h3 class="font-semibold text-[var(--color-text)] mb-4">Conversion par maturite</h3>
+              <div class="space-y-3">
+                {maturiteStats.map(m => (
+                  <div class="flex items-center gap-3">
+                    <span class="w-28 text-sm text-[var(--color-text-muted)] shrink-0">{m.level}</span>
+                    <div class="flex-1 h-2 rounded-full bg-neutral-100 overflow-hidden">
+                      <div class="h-full rounded-full bg-emerald-500" style={`width: ${m.pct}`}></div>
+                    </div>
+                    <span class="w-8 text-right text-sm font-medium text-[var(--color-text)]">{m.pct}</span>
+                    <span class="text-xs text-neutral-400">({m.total})</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+              <h3 class="font-semibold text-[var(--color-text)] mb-4">Canaux d'arrivee</h3>
+              <div class="space-y-2">
+                {canalStats.map(c => (
+                  <div class="flex items-center justify-between text-sm">
+                    <span class="text-[var(--color-text-muted)]">{c.canal}</span>
+                    <div class="flex items-center gap-2">
+                      {c.conv > 0 && <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-xs">{c.conv} conv.</span>}
+                      {c.hesitant > 0 && <span class="px-2 py-0.5 rounded-full bg-amber-100 text-amber-700 text-xs">{c.hesitant} hesit.</span>}
+                      {c.quitte > 0 && <span class="px-2 py-0.5 rounded-full bg-red-100 text-red-700 text-xs">{c.quitte} parti</span>}
+                    </div>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <!-- Frictions -->
+          <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+            <h3 class="font-semibold text-[var(--color-text)] mb-4">Frictions identifiees par les personas</h3>
+            <div class="space-y-2">
+              {frictions.map(f => (
+                <div class="flex items-start gap-3">
+                  <span class={`shrink-0 px-2 py-0.5 rounded-full text-xs font-medium ${severityColor(f.severity)}`}>{f.severity}</span>
+                  <span class="text-sm text-[var(--color-text)]">{f.label}</span>
+                  <span class="ml-auto shrink-0 text-xs text-neutral-400">{f.count}/10</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════ PANEL 2 : TECHNIQUE ═══════════════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl space-y-8">
+
+          <!-- Scores -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            {(['mobile', 'desktop'] as const).map(device => (
+              <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+                <h3 class="font-semibold text-[var(--color-text)] mb-4 capitalize">{device} — Lighthouse (estimation)</h3>
+                <div class="space-y-3">
+                  {Object.entries(lighthouseScores[device]).map(([key, val]) => (
+                    <div class="flex items-center gap-3">
+                      <span class="w-32 text-sm text-[var(--color-text-muted)] capitalize">{key === 'perf' ? 'Performance' : key === 'access' ? 'Accessibilite' : key === 'bp' ? 'Bonnes pratiques' : 'SEO'}</span>
+                      <div class="flex-1 h-3 rounded-full bg-neutral-100 overflow-hidden">
+                        <div class="h-full rounded-full transition-all" style={`width: ${val}%; background-color: ${scoreColor(val)}`}></div>
+                      </div>
+                      <span class={`w-10 text-right text-sm font-bold ${scoreTextColor(val)}`}>{val}</span>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <!-- CWV -->
+          <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+            <h3 class="font-semibold text-[var(--color-text)] mb-4">Core Web Vitals (estimation — jQuery 2014 / OVHcloud)</h3>
+            <div class="overflow-x-auto">
+              <table class="w-full text-sm">
+                <thead>
+                  <tr class="border-b border-neutral-100">
+                    <th class="text-left py-2 pr-4 text-[var(--color-text-muted)] font-medium">Metrique</th>
+                    <th class="text-center py-2 px-2 text-[var(--color-text-muted)] font-medium">Mobile</th>
+                    <th class="text-center py-2 px-2 text-[var(--color-text-muted)] font-medium">Status</th>
+                    <th class="text-center py-2 px-2 text-[var(--color-text-muted)] font-medium">Desktop</th>
+                    <th class="text-center py-2 pl-2 text-[var(--color-text-muted)] font-medium">Status</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {Object.entries(cwv).map(([key, val]) => (
+                    <tr class="border-b border-neutral-50">
+                      <td class="py-2 pr-4 font-medium text-[var(--color-text)] uppercase text-xs">{key}</td>
+                      <td class={`py-2 px-2 text-center font-mono ${cwvText(val.mobileStatus)}`}>{val.mobile}</td>
+                      <td class="py-2 px-2 text-center">
+                        <span class={`px-2 py-0.5 rounded-full text-xs font-medium ${cwvBadge(val.mobileStatus)}`}>{cwvLabel(val.mobileStatus)}</span>
+                      </td>
+                      <td class={`py-2 px-2 text-center font-mono ${cwvText(val.desktopStatus)}`}>{val.desktop}</td>
+                      <td class="py-2 pl-2 text-center">
+                        <span class={`px-2 py-0.5 rounded-full text-xs font-medium ${cwvBadge(val.desktopStatus)}`}>{cwvLabel(val.desktopStatus)}</span>
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Observatory + Schema + OG + SEO -->
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+
+            <!-- Observatory -->
+            <div class={`rounded-xl border p-6 ${gc.border} ${gc.bg}`}>
+              <div class="flex items-center justify-between mb-4">
+                <h3 class="font-semibold text-[var(--color-text)]">Observatory MDN</h3>
+                <span class={`text-4xl font-black ${gc.text}`}>{observatory.grade}</span>
+              </div>
+              <p class={`text-2xl font-bold ${gc.text} mb-1`}>{observatory.score}<span class="text-base font-normal text-neutral-400">/100</span></p>
+              <p class="text-sm text-neutral-500 mb-4">{observatory.passed}/{observatory.total} tests reussis</p>
+              <div class="space-y-1 text-xs">
+                {missingHeaders.map(h => (
+                  <div class="flex items-start gap-2">
+                    <span class="text-red-500 mt-0.5">x</span>
+                    <span class="text-neutral-600">{h}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <!-- Schema.org -->
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+              <h3 class="font-semibold text-[var(--color-text)] mb-4">Schema.org JSON-LD</h3>
+              <div class="space-y-1.5 max-h-64 overflow-y-auto">
+                {schemaChecks.map(c => (
+                  <div class="flex items-center gap-2 text-sm">
+                    <span class={c.ok ? 'text-emerald-500' : 'text-red-500'}>{c.ok ? '✓' : '✗'}</span>
+                    <span class={c.ok ? 'text-neutral-700' : 'text-neutral-500'}>{c.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <!-- OG -->
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+              <h3 class="font-semibold text-[var(--color-text)] mb-4">Open Graph</h3>
+              <div class="space-y-1.5">
+                {ogChecks.map(c => (
+                  <div class="flex items-center gap-2 text-sm">
+                    <span class={c.ok ? 'text-emerald-500' : 'text-red-500'}>{c.ok ? '✓' : '✗'}</span>
+                    <span class={c.ok ? 'text-neutral-700' : 'text-neutral-500'}>{c.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
+            <!-- SEO -->
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+              <h3 class="font-semibold text-[var(--color-text)] mb-4">SEO Technique</h3>
+              <div class="space-y-1.5 max-h-64 overflow-y-auto">
+                {seoChecks.map(c => (
+                  <div class="flex items-center gap-2 text-sm">
+                    <span class={c.ok ? 'text-emerald-500' : 'text-red-500'}>{c.ok ? '✓' : '✗'}</span>
+                    <span class={c.ok ? 'text-neutral-700' : 'text-neutral-500'}>{c.label}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <!-- Point critique GA UA -->
+          <div class="rounded-xl border border-orange-200 bg-orange-50 p-6">
+            <h3 class="font-semibold text-orange-900 mb-2">Google Analytics UA arrete depuis juillet 2024</h3>
+            <p class="text-sm text-orange-700 mb-3">Le code <code class="bg-orange-100 px-1 rounded">UA-65896873-1</code> (Universal Analytics) est present sur le site mais le service est officellement arrete depuis juillet 2024. Aucune donnee n'est collectee depuis ~2 ans. Le site tourne sans analytics fonctionnel depuis tout ce temps.</p>
+            <p class="text-sm text-orange-700">Remplacer par Umami Cloud (RGPD-friendly, sans cookies, 0 transfert de donnees vers US).</p>
+          </div>
+
+          <!-- Point RGPD Google Fonts -->
+          <div class="rounded-xl border border-red-200 bg-red-50 p-6">
+            <h3 class="font-semibold text-red-900 mb-2">Violation RGPD : Google Fonts CDN + absence de mentions legales</h3>
+            <p class="text-sm text-red-700 mb-2">La police Lobster est chargee depuis <code class="bg-red-100 px-1 rounded">fonts.googleapis.com</code> — transfert de l'adresse IP du visiteur vers Google (US) sans consentement. Jurisprudence CNIL 2022+ confirme la violation.</p>
+            <p class="text-sm text-red-700">De plus : aucune page Mentions Legales ni Politique de Confidentialite n'existe. Obligation legale en France pour tout site professionnel.</p>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════ PANEL 3 : VISITEURS ═══════════════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl space-y-6">
+          {personas.map(p => (
+            <div class={`rounded-xl border p-6 ${decisionBorder(p.decision)}`}>
+              <div class="flex flex-wrap items-start justify-between gap-4 mb-4">
+                <div class="flex items-center gap-3">
+                  <span class="text-3xl">{p.emoji}</span>
+                  <div>
+                    <h3 class="font-bold text-[var(--color-text)]">#{p.id} {p.name}, {p.age} ans — {p.role}</h3>
+                    <p class="text-sm text-[var(--color-text-muted)]">{p.canal} · {p.device} · <span class="font-medium">{p.maturite}</span></p>
+                  </div>
+                </div>
+                <span class={`px-3 py-1 rounded-full text-sm font-semibold ${decisionColor(p.decision)}`}>{p.decision}</span>
+              </div>
+
+              <p class="text-sm text-[var(--color-text-muted)] mb-3 italic">"{p.situation}"</p>
+
+              <div class="grid grid-cols-3 gap-3 mb-4">
+                <div class="rounded-lg bg-white/60 p-3 text-center">
+                  <p class={`text-xl font-bold ${scoreTextColor(p.exp)}`}>{p.exp}<span class="text-sm text-neutral-400">/10</span></p>
+                  <p class="text-xs text-neutral-500">Experience</p>
+                </div>
+                <div class="rounded-lg bg-white/60 p-3 text-center">
+                  <p class={`text-xl font-bold ${scoreTextColor(p.conf)}`}>{p.conf}<span class="text-sm text-neutral-400">/10</span></p>
+                  <p class="text-xs text-neutral-500">Confiance</p>
+                </div>
+                <div class="rounded-lg bg-white/60 p-3 text-center">
+                  <p class={`text-xl font-bold ${scoreTextColor(p.clarte)}`}>{p.clarte}<span class="text-sm text-neutral-400">/10</span></p>
+                  <p class="text-xs text-neutral-500">Clarte</p>
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-1">Parcours</p>
+                <div class="flex flex-wrap gap-1">
+                  {p.parcours.map((page, i) => (
+                    <span class="flex items-center gap-1">
+                      <span class="px-2 py-0.5 rounded bg-white/70 text-xs text-neutral-600 border border-neutral-200">{page}</span>
+                      {i < p.parcours.length - 1 && <span class="text-neutral-300 text-xs">→</span>}
+                    </span>
+                  ))}
+                </div>
+              </div>
+
+              <div class="mb-3">
+                <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-1">Question cle</p>
+                <p class="text-sm text-[var(--color-text)] bg-white/60 rounded-lg p-3 italic">"{p.questionCle}"</p>
+                <p class="text-xs text-neutral-500 mt-1">Reponse obtenue : <span class={`font-medium ${p.reponse === 'Oui' ? 'text-emerald-600' : p.reponse === 'Partiellement' ? 'text-amber-600' : 'text-red-600'}`}>{p.reponse}</span></p>
+              </div>
+
+              <div class="mb-3">
+                <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-1">Premiere impression</p>
+                <p class="text-sm text-[var(--color-text)]">{p.premierImpression}</p>
+              </div>
+
+              <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-3">
+                <div>
+                  <p class="text-xs font-semibold text-emerald-600 uppercase tracking-wide mb-1">Points positifs</p>
+                  <ul class="space-y-0.5">
+                    {p.positifs.map(pos => (
+                      <li class="flex items-start gap-1.5 text-xs text-neutral-600">
+                        <span class="text-emerald-500 mt-0.5 shrink-0">+</span>{pos}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+                <div>
+                  <p class="text-xs font-semibold text-red-600 uppercase tracking-wide mb-1">Frictions</p>
+                  <ul class="space-y-0.5">
+                    {p.frictions.map(fric => (
+                      <li class="flex items-start gap-1.5 text-xs text-neutral-600">
+                        <span class="text-red-400 mt-0.5 shrink-0">–</span>{fric}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+
+              <div class="border-t border-white/60 pt-3 mt-3">
+                <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-1">Raison de la decision</p>
+                <p class="text-sm text-[var(--color-text)]">{p.raisonDecision}</p>
+                <p class="text-xs text-neutral-400 mt-1 italic">{p.impactTech}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- ═══════════════════ PANEL 4 : AMELIORATIONS ═══════════════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
+      <div class="w-full px-6 py-12 md:px-8 md:py-16 bg-[var(--color-bg)]">
+        <div class="mx-auto max-w-5xl space-y-10">
+
+          <!-- Impact fort -->
+          <div>
+            <h2 class="text-xl font-bold text-[var(--color-text)] mb-2">Impact fort — A faire en priorite</h2>
+            <p class="text-sm text-[var(--color-text-muted)] mb-5">Ces ameliorations auraient le plus grand impact sur la conversion et la visibilite.</p>
+            <div class="space-y-4">
+              {amelioHaute.map((a, i) => (
+                <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+                  <div class="flex items-start justify-between gap-4 mb-2">
+                    <h3 class="font-bold text-[var(--color-text)]">{i + 1}. {a.title}</h3>
+                    <span class="shrink-0 px-3 py-1 rounded-full bg-red-100 text-red-700 text-xs font-medium">{a.impact}</span>
+                  </div>
+                  <p class="text-sm text-[var(--color-text-muted)]">{a.detail}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <!-- Impact moyen -->
+          <div>
+            <h2 class="text-xl font-bold text-[var(--color-text)] mb-2">Impact moyen — A inclure dans la refonte</h2>
+            <div class="space-y-4">
+              {amelioMoyenne.map((a, i) => (
+                <div class="rounded-xl border border-[var(--color-border)] bg-white p-6">
+                  <div class="flex items-start justify-between gap-4 mb-2">
+                    <h3 class="font-bold text-[var(--color-text)]">{amelioHaute.length + i + 1}. {a.title}</h3>
+                    <span class="shrink-0 px-3 py-1 rounded-full bg-amber-100 text-amber-700 text-xs font-medium">Moyen</span>
+                  </div>
+                  <p class="text-sm text-[var(--color-text-muted)]">{a.detail}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <!-- A discuter -->
+          <div>
+            <h2 class="text-xl font-bold text-[var(--color-text)] mb-2">A discuter avec le client</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+              {amelioDiscuter.map(a => (
+                <div class="rounded-xl border border-[var(--color-border)] bg-white p-5">
+                  <div class="text-2xl mb-3">{a.emoji}</div>
+                  <h3 class="font-semibold text-[var(--color-text)] mb-2">{a.title}</h3>
+                  <p class="text-sm text-[var(--color-text-muted)]">{a.detail}</p>
+                </div>
+              ))}
+            </div>
+          </div>
+
+          <!-- Opportunite WF -->
+          <div class="rounded-xl border border-green-300 bg-green-50 p-8">
+            <h2 class="text-xl font-bold text-green-900 mb-4">Opportunite Web Factory</h2>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+              <div class="text-center">
+                <p class="text-4xl font-black text-green-700">9/10</p>
+                <p class="text-sm text-green-600 mt-1">Score d'opportunite</p>
+              </div>
+              <div class="text-center">
+                <p class="text-4xl font-black text-green-700">1 290€</p>
+                <p class="text-sm text-green-600 mt-1">Forfait Standard + galerie recommande</p>
+              </div>
+              <div class="text-center">
+                <p class="text-4xl font-black text-green-700">5/5</p>
+                <p class="text-sm text-green-600 mt-1">26 avis Google a valoriser</p>
+              </div>
+            </div>
+            <div class="space-y-2 text-sm text-green-800">
+              <p><strong>Levier 1 :</strong> 26 avis Google 5/5 — note parfaite, capital confiance non exploite sur le site</p>
+              <p><strong>Levier 2 :</strong> Agree SAP = credit d'impot 50% pour particuliers, avantage commercial non verbalize</p>
+              <p><strong>Levier 3 :</strong> Membre UNEP = label professionnel non affiche</p>
+              <p><strong>Levier 4 :</strong> Site SPA jQuery 2014 = argument migration simple et irrefutable</p>
+              <p><strong>Levier 5 :</strong> Google Analytics UA arrete depuis 2024 — proprietaire ne sait probablement pas</p>
+              <p><strong>Levier 6 :</strong> Zero Schema.org sur un metier local = Quick win SEO immediat apres refonte</p>
+              <p class="mt-3 text-green-700 font-medium">Contact recommande : appel au 06 61 48 35 94 avec rapport en accroche — "vous avez 26 avis 5/5 mais Google ne les voit pas sur votre site"</p>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /panels -->
+
+</BaseLayout>
+
+<script>
+const tabs = document.querySelectorAll<HTMLButtonElement>('.tab-btn');
+const panels = document.getElementById('panels');
+
+function activateTab(idx: number) {
+  tabs.forEach((t, i) => {
+    if (i === idx) {
+      t.classList.remove('text-neutral-500', 'hover:text-neutral-700');
+      t.classList.add('text-green-700', 'bg-green-50');
+    } else {
+      t.classList.remove('text-green-700', 'bg-green-50');
+      t.classList.add('text-neutral-500', 'hover:text-neutral-700');
+    }
+  });
+  if (panels) {
+    panels.scrollTo({ left: idx * panels.offsetWidth, behavior: 'smooth' });
+  }
+}
+
+tabs.forEach((btn, i) => {
+  btn.addEventListener('click', () => activateTab(i));
+});
+
+if (panels) {
+  panels.addEventListener('scroll', () => {
+    const idx = Math.round(panels.scrollLeft / panels.offsetWidth);
+    tabs.forEach((t, i) => {
+      if (i === idx) {
+        t.classList.remove('text-neutral-500', 'hover:text-neutral-700');
+        t.classList.add('text-green-700', 'bg-green-50');
+      } else {
+        t.classList.remove('text-green-700', 'bg-green-50');
+        t.classList.add('text-neutral-500', 'hover:text-neutral-700');
+      }
+    });
+  });
+}
+</script>

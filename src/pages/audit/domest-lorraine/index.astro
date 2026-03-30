@@ -1,0 +1,783 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX — Domest Lorraine | Marc M';
+const description = 'Simulation de 10 visites personas sur domest.fr — rapport UX et technique avec recommandations priorisees pour ce menuisier poseur en Moselle.';
+
+// ============================================================
+// DONNEES PROSPECT
+// ============================================================
+const prospect = {
+  name: 'Domest Lorraine',
+  url: 'https://www.domest.fr',
+  date: '29 mars 2026',
+  activity: 'Menuiserie extérieure & automatismes — fenêtres, portes, portails, pergolas, motorisations',
+  location: 'Ennery (57) — Entre Metz et Thionville, Moselle',
+};
+
+// ============================================================
+// KPIs GLOBAUX
+// ============================================================
+const kpis = {
+  conversion: 30,
+  experience: 4.8,
+  confiance: 5.5,
+  clarte: 4.6,
+  convertissent: 3,
+  hesitent: 3,
+  quittent: 4,
+};
+
+const constat = "Une entreprise serieuse avec 20 ans d'experience, des equipes internes, la certification RGE QUALIBAT et 32 avis Google a 4,5/5 — mais un site CMS proprietaire lent, sans aucun Schema.org, avec un og:site_name completement casse (affiche \"Lorraine Rnovation\" au lieu de \"Domest Lorraine\"), zero analytics, et une securite HTTP notee F par Mozilla Observatory. Le savoir-faire est reel, le site ne le transmet pas.";
+
+// ============================================================
+// CONVERSION PAR CANAL
+// ============================================================
+const conversionByCanal = [
+  { canal: 'Bouche-a-oreille', taux: 100, color: 'text-green-700', bg: 'bg-green-500' },
+  { canal: 'Google Maps / GBP', taux: 50, color: 'text-amber-600', bg: 'bg-amber-400' },
+  { canal: 'Google Search', taux: 25, color: 'text-amber-600', bg: 'bg-amber-400' },
+  { canal: 'Reseaux sociaux (Facebook)', taux: 10, color: 'text-red-600', bg: 'bg-red-500' },
+  { canal: 'IA (ChatGPT/Claude)', taux: 0, color: 'text-red-600', bg: 'bg-red-500' },
+];
+
+// ============================================================
+// TOP FRICTIONS
+// ============================================================
+const topFrictions = [
+  { titre: 'Aucun Schema.org — invisible pour Google enrichi et les IA', count: 9, detail: 'Zero balisage structure sur tout le site. Google ne peut pas afficher adresse, horaires, certifications RGE ni zone d\'intervention dans les resultats. Les IA generatives ignorent completement l\'entreprise. Perte majeure pour un artisan local.' },
+  { titre: 'og:site_name casse : "Lorraine Rnovation" au lieu de "Domest Lorraine"', count: 8, detail: 'Chaque partage sur Facebook, LinkedIn ou WhatsApp affiche un nom d\'entreprise incorrect et tronque. Premier signal de negligence avant meme d\'arriver sur le site. Le prospect voit "Lorraine Rnovation" et doute de l\'entreprise.' },
+  { titre: 'Architecture technique tres lourde : 22 CSS + 26 JS + RevolutionSlider', count: 7, detail: 'Le slider RevolutionSlider seul charge 11 scripts JS supplementaires. Bootstrap 3 + FontAwesome en 7 variantes. Aucun lazy loading sur les 21 images. Performance mobile estimee a ~35/100 — 60 a 70% des visiteurs mobiles abandonnent avant la fin du chargement.' },
+  { titre: 'Aucun analytics — navigation a l\'aveugle totale', count: 6, detail: 'Zero Google Analytics, zero Umami, zero Matomo. L\'entreprise ne sait pas combien de visiteurs elle recoit, d\'ou ils viennent, quelles pages convertissent. Impossible d\'optimiser sans donnees.' },
+  { titre: 'Securite HTTP absente — note F (0/100) Mozilla Observatory', count: 5, detail: 'Cookie PHPSESSID sans flag Secure (-40pts), aucun HSTS (-20pts), aucun X-Frame-Options (-20pts), aucune CSP (-25pts). Risques reels de clickjacking et interception de session. Non conforme aux bonnes pratiques ANSSI.' },
+];
+
+// ============================================================
+// PAGESPEED (ESTIMES — profil CMS proprietaire iKube + jQuery)
+// ============================================================
+const pagespeed = {
+  mobile: { performance: 35, accessibility: 65, bestPractices: 45, seo: 62 },
+  desktop: { performance: 58, accessibility: 65, bestPractices: 45, seo: 62 },
+};
+
+const coreWebVitals = [
+  { name: 'LCP', value: '~5.2s', status: 'bad' },
+  { name: 'INP', value: '~450ms', status: 'bad' },
+  { name: 'CLS', value: '~0.18', status: 'bad' },
+];
+
+const opportunities = [
+  { label: 'Supprimer RevolutionSlider et les 11 scripts JS associes', saving: '~3.5s' },
+  { label: 'Consolider 22 CSS en 1 fichier optimise (Tailwind tree-shaking)', saving: '~2.0s' },
+  { label: 'Activer le lazy loading sur toutes les images hors hero', saving: '~1.5s' },
+];
+
+// ============================================================
+// OBSERVATORY
+// ============================================================
+const observatory = {
+  grade: 'F',
+  score: 0,
+  testsPassed: 3,
+  testsTotal: 10,
+};
+
+// ============================================================
+// CHECKLIST TECHNIQUE
+// ============================================================
+const techChecks = [
+  { label: 'HTTPS actif (redirection 301)', present: true },
+  { label: 'Meta description page d\'accueil', present: true },
+  { label: 'Canonical tag defini', present: true },
+  { label: 'Viewport correct', present: true },
+  { label: 'Sitemap.xml present', present: true },
+  { label: 'Alt text sur les images', present: true },
+  { label: 'Mentions legales completes (SIRET, RCS, hebergeur)', present: true },
+  { label: 'Bandeau cookies RGPD (ihavecookies)', present: true },
+  { label: 'Images WebP (partielles)', present: true },
+  { label: 'Schema.org LocalBusiness', present: false, critical: true, note: 'Zero balisage structure sur tout le site' },
+  { label: 'Open Graph complet (og:title, og:image, og:description)', present: false, critical: true, note: 'og:site_name present mais casse : "Lorraine Rnovation"' },
+  { label: 'HSTS (Strict-Transport-Security)', present: false, critical: true },
+  { label: 'X-Frame-Options', present: false, critical: true },
+  { label: 'Content-Security-Policy', present: false, critical: true },
+  { label: 'X-Content-Type-Options', present: false, critical: true },
+  { label: 'Cookie session avec flag Secure', present: false, critical: true, note: 'PHPSESSID sans flag Secure ni HttpOnly ni SameSite' },
+  { label: 'Analytics (Google Analytics, Umami, Matomo)', present: false, critical: true, note: 'Zero outil de mesure d\'audience' },
+  { label: 'Lazy loading sur les images', present: false, critical: true, note: '0/21 images avec loading="lazy"' },
+  { label: 'Twitter Card / Social sharing complet', present: false },
+  { label: 'llms.txt pour IA generatives', present: false },
+  { label: 'Robots.txt avec directives IA (GPTBot, etc.)', present: false },
+];
+
+// ============================================================
+// PERSONAS (10) — SEGMENT MENUISERIE/RENOVATION MOSELLE
+// Agent A — Personas 1 a 5 (particuliers proprietaires)
+// Agent B — Personas 6 a 10 (professionnels, comparateurs, IA)
+// ============================================================
+const personas = [
+  // ---- AGENT A : PARTICULIERS PROPRIETAIRES ----
+  {
+    id: 1, name: 'Nathalie', age: 44, emoji: '\u{1F3E0}',
+    canal: 'Google Search', device: 'Mobile', maturite: 'Decision',
+    situation: 'Proprietaire a Woippy, ses fenêtres PVC ont 25 ans, elle a obtenu un devis de MaPrimeRenov — cherche un artisan RGE pour lancer les travaux avant l\'ete',
+    contexte: 'Tape "remplacement fenêtres RGE Metz devis" sur Google, clique sur Domest Lorraine en 3e position',
+    parcours: ['Accueil', 'Nos valeurs', 'Contact'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 5, clarte: 4 },
+    premierImpression: 'Le site s\'ouvre lentement sur mon telephone. L\'entreprise a l\'air ancienne et serieuse — 2003, equipes internes, RGE. Mais le design est vieux et le partage que j\'avais vu affichait "Lorraine Rnovation" — j\'etais pas sure d\'etre au bon endroit.',
+    questionCle: 'Vous etes bien certifie RGE ? Je peux beneficier de MaPrimeRenov si je passe par vous ? Quel delai pour 6 fenêtres ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La certification RGE est mentionnee dans les valeurs mais pas en hero, pas de badge visible. MaPrimeRenov est evoquee dans la valeur "accompagnement" mais sans detail. Elle remplit le contact par precaution mais attend 3 autres devis.',
+    impactTechnique: 'RevolutionSlider bloque le rendu sur mobile Android. Le formulaire de contact est basique — pas de champ "aides financieres". Zero Schema.org donc Google ne peut pas confirmer la certification RGE dans les resultats.',
+    pointsPositifs: ['Certification RGE mentionnee dans les valeurs', 'Equipes internes — rassurante pour les travaux', '20 ans d\'experience'],
+    frictions: ['Chargement tres lent sur mobile', 'RGE pas visible en hero ni sur l\'accueil', 'og:site_name "Lorraine Rnovation" avant d\'arriver sur le site', 'Pas de mention MaPrimeRenov en accueil', 'Aucun temoignage lie aux aides'],
+  },
+  {
+    id: 2, name: 'Bernard', age: 62, emoji: '\u{1F468}\u{200D}\u{1F527}',
+    canal: 'Google Maps', device: 'Desktop', maturite: 'Decision',
+    situation: 'Retraite a Hagondange, sa porte de garage motorisee est en panne, cherche un depanneur/remplacant rapidement',
+    contexte: 'Cherche "depannage porte garage motorisee Thionville" sur Google Maps, clique sur Domest Lorraine',
+    parcours: ['Fiche GBP', 'Accueil', 'Portes de garage', 'Contact'],
+    decision: 'convertit',
+    scores: { exp: 6, conf: 7, clarte: 5 },
+    premierImpression: 'Sur Google Maps, la fiche est correcte — 32 avis, 4,5 etoiles, adresse visible. Sur le site, je trouve bien la page portes de garage. L\'entreprise existe depuis 2003, ca me rassure.',
+    questionCle: 'Vous faites du depannage ? Vous intervenez a Hagondange ? Quel delai pour un technicien ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Le depannage est mentionne dans la FAQ — "une des seules entreprises du secteur" — mais c\'est cache dans la FAQ et pas mis en avant. Il appelle directement le numero visible dans le footer. La recommandation GBP prime.',
+    impactTechnique: 'Desktop plus fluide que mobile. La navigation produit est complete. Mais la page FAQ n\'est pas liee depuis la page portes de garage — il faut chercher. Zero Schema.org donc Google ne peut pas afficher le numero dans les rich results.',
+    pointsPositifs: ['32 avis Google 4,5/5 visibles depuis GBP', 'Numero de telephone facilement accessible', 'Page portes de garage avec produits listes'],
+    frictions: ['Depannage non mis en avant sur l\'accueil ni les pages produit', 'FAQ depannage non liee depuis les pages produit', 'Aucun Schema FAQ meme sur la page FAQ', 'Pas de numero de portable / urgence'],
+  },
+  {
+    id: 3, name: 'Amandine', age: 36, emoji: '\u{1F4F1}',
+    canal: 'Facebook', device: 'Mobile', maturite: 'Decouverte',
+    situation: 'Locataire qui vient d\'acheter avec son compagnon a Amneville, veut remplacer toutes les ouvertures PVC datees + ajouter une pergola bioclimatique',
+    contexte: 'Son beau-frere a partage un lien Facebook vers le site Domest — elle clique',
+    parcours: ['Accueil'],
+    decision: 'quitte',
+    scores: { exp: 2, conf: 3, clarte: 2 },
+    premierImpression: 'Sur Facebook, le partage du lien affiche "Lorraine Rnovation" comme nom d\'entreprise — je me suis demandee si mon beau-frere avait envoye le bon lien. Sur le site, c\'est tres lent, le menu est compliquer et je comprends pas trop ce qu\'ils font exactement.',
+    questionCle: 'Vous faites les fenêtres ET les pergolas en meme temps ? Vous avez des photos de maisons completement renovees ? Un forfait renovation globale ?',
+    reponse: 'Non',
+    commentReponse: 'L\'offre complète existe (fenêtres + pergolas + motorisations) mais elle n\'est jamais presentee comme un package coherent. Les pages produit sont separees, sans vision globale. Le partage Facebook casse (og:site_name errone) a deja cree un doute avant la visite. Elle ferme le site.',
+    impactTechnique: 'og:site_name "Lorraine Rnovation" = confusion immediate. Site trop lent sur 4G. Pas d\'offre globale renovation. Menu a 2 niveaux difficile a parcourir sur mobile tactile.',
+    pointsPositifs: ['Gamme complete theoriquement (fenêtres + pergolas + motorisations)'],
+    frictions: ['og:site_name errone "Lorraine Rnovation" sur le partage Facebook', 'Chargement tres lent mobile', 'Pas d\'offre globale renovation maison', 'Menu complexe sur mobile', 'Aucune galerie "renovation complete" avec avant/apres'],
+  },
+  {
+    id: 4, name: 'Patrick', age: 55, emoji: '\u{1F3E1}',
+    canal: 'Bouche-a-oreille', device: 'Desktop', maturite: 'Decision',
+    situation: 'Proprietaire a Ennery (meme commune), son voisin a fait poser un portail par Domest — resultat impeccable, Patrick cherche a faire installer un portail coulissant motorise',
+    contexte: 'Son voisin lui a directement recommande Domest Lorraine. Patrick visite le site pour voir les modeles et trouver le contact.',
+    parcours: ['Accueil', 'Portails / Clotures', 'Realisations', 'Contact'],
+    decision: 'convertit',
+    scores: { exp: 7, conf: 8, clarte: 6 },
+    premierImpression: 'Le site s\'ouvre correctement sur desktop. Les portails sont dans le menu. J\'ai vu des realisations avec un portail aluminium en Moselle — ca ressemble a ce que je veux. 20 ans d\'experience, ca me convient.',
+    questionCle: 'Vous avez des modeles de portails coulissants motorises ? Quel prix pour un portail 4 metres en aluminium ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La page portails existe avec des modeles. Les realisations montrent des portails existants. Mais aucun tarif indicatif. Il contacte quand meme car la recommandation voisin est suffisante — et il est dans la commune.',
+    impactTechnique: 'Desktop correct. La galerie realisations montre des portails. Mais les realisations ne sont pas filtrees par categorie — il faut tout parcourir. Pas de Schema.org donc les realisations ne peuvent pas etre indexees comme portfolio.',
+    pointsPositifs: ['Page portails complete avec modeles', 'Realisations portails visibles', 'Numero de contact accessible', 'Proximite geographique (meme commune)'],
+    frictions: ['Pas de tarif indicatif portails', 'Realisations non filtrees par categorie', 'Pas de description technique des modeles (materiaux, securite)'],
+  },
+  {
+    id: 5, name: 'Sylvie', age: 48, emoji: '\u{1F3E0}',
+    canal: 'Google Search', device: 'Mobile', maturite: 'Comparaison',
+    situation: 'Proprietaire a Mazieres-les-Metz, veut creer une extension couverte terrasse avec pergola bioclimatique + stores — budget ~8000€, compare 3 artisans',
+    contexte: 'Tape "pergola bioclimatique Metz devis pose" sur Google, trouve Domest via la page pergolas',
+    parcours: ['Page pergolas/stores', 'Accueil', 'Realisations'],
+    decision: 'hesite',
+    scores: { exp: 4, conf: 4, clarte: 4 },
+    premierImpression: 'La page pergolas est bien fournie avec des modeles Weinor et Art Home Alu. Mais le site charge tres lentement sur mon tel et les photos des realisations pergolas sont petites. Je veux voir de vrais chantiers termines dans la region.',
+    questionCle: 'Vous installez des pergolas bioclimatiques autour de Metz ? Quel budget pour une pergola 4x5m avec stores ? Vous avez des photos de chantiers finis ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Les modeles sont presentes mais sans tarification indicative. Les realisations montrent une pergola a Marspich mais c\'est tout. Elle note le contact pour demander un devis mais continue de comparer avec 2 autres artisans qui affichent des prix indicatifs.',
+    impactTechnique: 'Mobile lent. Galerie realisations non filtree — elle cherche "pergola" parmi toutes les realisations. Schema.org absent : Google ne peut pas afficher "pergola bioclimatique Weinor Moselle" dans les resultats riches.',
+    pointsPositifs: ['Page pergolas avec modeles reconnus (Weinor)', 'Zone d\'intervention mentionnee (Metz, Amneville, Thionville)', 'Une realisation pergola visible'],
+    frictions: ['Chargement lent mobile', 'Aucun tarif indicatif pergola', 'Galerie non filtree par categorie', 'Pas de fiche technique / dimensions / certifications produits', 'Peu de photos de chantiers pergola'],
+  },
+
+  // ---- AGENT B : PROFESSIONNELS, IA, COMPARATEURS ----
+  {
+    id: 6, name: 'Laurent', age: 38, emoji: '\u{1F4BB}',
+    canal: 'ChatGPT', device: 'Desktop', maturite: 'Comparaison',
+    situation: 'Architecte independant a Metz, cherche un menuisier poseur fiable pour ses clients de renovation haut de gamme — fenêtres alu grand format et portes d\'entree Pirnar',
+    contexte: 'Demande a ChatGPT "menuisier poseur fenêtres alu Metz certifie RGE pour architecte partenaire"',
+    parcours: [],
+    decision: 'quitte',
+    scores: { exp: 0, conf: 0, clarte: 0 },
+    premierImpression: 'ChatGPT ne mentionne pas Domest Lorraine dans sa reponse. Il propose d\'autres noms. L\'entreprise est completement invisible pour les IA generatives.',
+    questionCle: 'Quel menuisier poseur de fenêtres aluminium certifie RGE recommandez-vous a Metz pour des projets haut de gamme ?',
+    reponse: 'Invisible',
+    commentReponse: 'Sans Schema.org LocalBusiness, sans llms.txt, sans meta descriptions riches — les IA generatives n\'ont aucune donnee structuree a exploiter pour Domest Lorraine. Une entreprise avec 20 ans de savoir-faire et la certification RGE reste invisible a cette audience croissante.',
+    impactTechnique: 'Zero donnees structurees JSON-LD. Pas de llms.txt. og:site_name casse. Meta descriptions trop generiques pour etre citees. Hebergement sur Apache mutualisé = crawl lent et peu frequent.',
+    pointsPositifs: [],
+    frictions: ['Invisible pour les IA generatives', 'Zero Schema.org LocalBusiness', 'Pas de llms.txt', 'og:site_name errone — signal de credibilite negatif pour le crawler', 'Meta descriptions insuffisantes pour extraction IA'],
+  },
+  {
+    id: 7, name: 'Kevin', age: 31, emoji: '\u{1F528}',
+    canal: 'Google Search', device: 'Mobile', maturite: 'Decision',
+    situation: 'Artisan peintre independant a Florange, veut remplacer la porte d\'entree blindee de son domicile — budget 2000-3000€, cherche pose incluse',
+    contexte: 'Tape "porte entree blindee Florange Moselle pose comprise" sur Google, arrive sur Domest',
+    parcours: ['Page portes', 'Accueil', 'Contact'],
+    decision: 'convertit',
+    scores: { exp: 5, conf: 6, clarte: 5 },
+    premierImpression: 'La page portes parle bien des portes blindees. Domest est dans ma zone (Florange est dans le secteur Moselle). Le temoignage M. Pitter sur la porte blindee est bien. Je contacte.',
+    questionCle: 'Vous faites des portes blindees avec pose a Florange ? Quel tarif pour une porte Pirnar blindee posee ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La page portes existe, le temoignage M. Pitter sur la porte blindee est visible. La zone Florange est dans le perimetre 50km. Mais zero tarif indicatif. Il envoie quand meme un contact car il est dans la phase decision.',
+    impactTechnique: 'Page portes presente les produits correctement. Temoignage M. Pitter = seule preuve sociale visible sur la page. Schema.org absent : Google ne peut pas afficher la note 4,5/5 dans les resultats pour "porte entree blindee Moselle".',
+    pointsPositifs: ['Page portes avec description blindees', 'Temoignage M. Pitter sur porte blindee', 'Zone d\'intervention couvre Florange'],
+    frictions: ['Zero tarif indicatif', 'Temoignages non relies aux pages produit concernees', 'Schema.org absent — pas de rich snippets avec note etoiles', 'Pas de marques referentes mentionnees (Pirnar, Dietrich...)'],
+  },
+  {
+    id: 8, name: 'Claire', age: 29, emoji: '\u{1F916}',
+    canal: 'Google Search', device: 'Mobile', maturite: 'Decouverte',
+    situation: 'Jeune proprietaire a Rombas, veut installer des volets roulants motorises sur ses 4 fenêtres — premiere maison, pas beaucoup de budget',
+    contexte: 'Tape "volets roulants motorises prix pose Moselle" sur Google, arrive sur la page volets de Domest',
+    parcours: ['Page fenêtres/volets', 'Accueil'],
+    decision: 'quitte',
+    scores: { exp: 3, conf: 3, clarte: 3 },
+    premierImpression: 'La page volets existe mais c\'est tres descriptif et il n\'y a aucun tarif. Je vois "motorisations", "volets coulissants", des noms de modeles — mais je ne sais pas si c\'est dans mon budget. Je veux au moins une fourchette de prix.',
+    questionCle: 'C\'est environ combien pour 4 volets roulants motorises poses ? Vous avez des aides pour le financement ?',
+    reponse: 'Non',
+    commentReponse: 'Zero tarif indicatif. La page financement (mentionnee dans le blog) n\'est pas liee depuis la page volets. Elle rebondit vers un concurrent qui affiche des fourchettes de prix.',
+    impactTechnique: 'Page volets presente les produits sans aucune information tarifaire ni aide financiere disponible. Pas de Schema.org Service donc Google ne peut pas enrichir les resultats pour "volets motorises prix Moselle".',
+    pointsPositifs: ['Page volets avec modeles listes', 'Blog sur financement travaux (mais pas lie depuis la page produit)'],
+    frictions: ['Zero tarif indicatif ou fourchette de prix', 'Financement non lie depuis les pages produit', 'Chargement lent — elle perd patience rapidement', 'Pas d\'indication "devis gratuit en X heures"', 'Schema.org absent'],
+  },
+  {
+    id: 9, name: 'Frederic', age: 51, emoji: '\u{1F3E2}',
+    canal: 'Google Maps', device: 'Desktop', maturite: 'Comparaison',
+    situation: 'Directeur d\'une residence senior privee a Amneville, cherche un prestataire pour le contrat de maintenance des motorisations portes + portails — 12 portes et 3 portails',
+    contexte: 'Cherche "contrat maintenance motorisation portails Moselle entreprise" sur Google Maps, compare Domest avec 2 autres entreprises',
+    parcours: ['Fiche GBP', 'Accueil', 'Services', 'Contact'],
+    decision: 'hesite',
+    scores: { exp: 5, conf: 5, clarte: 4 },
+    premierImpression: 'La page services mentionne les contrats de maintenance pour batiments commerciaux/publics — c\'est exactement ce que je cherche. Mais le site ne m\'inspire pas trop confiance : design date, pas de section dedie aux professionnels.',
+    questionCle: 'Vous proposez des contrats de maintenance annuels pour des residences ? Prix annuel pour 12 equipements ? References professionnelles (autres residences, collectivites) ?',
+    reponse: 'Partiellement',
+    commentReponse: 'La page services mentionne les contrats de maintenance pro. Mais zero reference professionnelle, zero cas client, zero tarification pro. Il envoie un contact mais met Domest en 3e position — les deux autres artisans ont des sections "professionnels" plus claires.',
+    impactTechnique: 'Page services existe mais sans section pro dediee. Schema.org absent : Google ne peut pas differencier Domest des autres pour "contrat maintenance portails entreprise Moselle". Analytics absent : Domest ne sait meme pas que des professionnels visitent le site.',
+    pointsPositifs: ['Mention contrats maintenance pro dans les services', 'Numero de telephone accessible', 'Entreprise dans la zone Amneville'],
+    frictions: ['Pas de section dediee professionnels / B2B', 'Pas de references professionnelles (residences, collectivites, immobilier)', 'Pas de tarification contrat maintenance', 'Design ne inspire pas la confiance pour un contrat commercial'],
+  },
+  {
+    id: 10, name: 'Isabelle', age: 67, emoji: '\u{1F475}',
+    canal: 'Google Search', device: 'Tablette', maturite: 'Decision',
+    situation: 'Retraitee a Clouange, fille qui habite Metz l\'a aidee a chercher sur Google un artisan pour remplacer ses moustiquaires et faire poser un volet coulissant accessible PMR',
+    contexte: 'Sa fille tape "moustiquaire volet PMR accessible Metz pose artisan" sur Google, arrive sur Domest',
+    parcours: ['Accueil', 'Page fenêtres/volets', 'Contact'],
+    decision: 'hesite',
+    scores: { exp: 4, conf: 5, clarte: 3 },
+    premierImpression: 'Le site s\'ouvre sur tablette, c\'est lisible. On voit les moustiquaires dans le menu. Mais ma maman a du mal a comprendre l\'organisation du site — trop de categories. Et elle ne trouve pas si les volets coulissants sont adaptes pour les personnes agees.',
+    questionCle: 'Vous installez des moustiquaires et des volets faciles a utiliser pour les personnes agees ? Vous venez voir a domicile ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Les moustiquaires sont listes. Les volets coulissants aussi. Mais zero mention "accessibilite", "PMR", "senior", "volet facile". La visite a domicile est dans les services mais pas mise en avant. La fille contacte par precaution mais cherche aussi d\'autres artisans.',
+    impactTechnique: 'Tablette = experience acceptable mais pas optimale. Navigation a deux niveaux difficile pour un senior. Schema.org absent : la recherche vocale ne peut pas repondre a "artisan volet accessible personnes agees Metz".',
+    pointsPositifs: ['Moustiquaires dans le catalogue', 'Visite a domicile mentionnee dans les services', 'Equipes internes = rassurantes pour un acces domicile senior'],
+    frictions: ['Zero mention accessibilite / PMR / senior sur les pages produit', 'Navigation a deux niveaux complexe', 'Schema.org absent = invisible pour recherche vocale', 'Pas de mise en avant "visite gratuite a domicile"'],
+  },
+];
+
+// ============================================================
+// RECOMMANDATIONS
+// ============================================================
+const ameliorationsCritiques = [
+  {
+    titre: 'Corriger l\'identite en ligne : og:site_name casse + Schema.org LocalBusiness complet',
+    detail: '8 personas sur 10 sont impactes par l\'og:site_name "Lorraine Rnovation" ou par l\'absence de donnees structurees. Chaque partage social affiche le mauvais nom. Google ne peut pas afficher les rich snippets (adresse, telephone, etoiles, horaires). Les IA generatives ignorent l\'entreprise. C\'est la combinaison la plus dommageable pour la reputation et la visibilite.',
+    action: 'Corriger l\'og:site_name en "Domest Lorraine". Ajouter og:title, og:description, og:image sur chaque page. Implementer Schema.org LocalBusiness avec adresse, telephone, horaires, zone, certifications RGE, aggregateRating (4.5/5, 32 avis).',
+  },
+  {
+    titre: 'Migrer vers un site performant : Astro + Tailwind CSS v4 + Cloudflare Pages',
+    detail: '7 personas sur 10 sont touches par la lenteur mobile. RevolutionSlider + 22 CSS + 26 JS = performance mobile ~35/100. Sur mobile (60% du trafic artisans), le premier visiteur qui attend plus de 3 secondes repart chez un concurrent. C\'est une fuite de prospects silencieuse que Domest ne peut meme pas mesurer faute d\'analytics.',
+    action: 'Refonte complete sur Astro v5 + Tailwind CSS v4. Eliminer RevolutionSlider. Consolidation a < 2 fichiers CSS/JS. Lazy loading images. Cloudflare Pages (CDN mondial). Objectif : PageSpeed mobile > 90, TTFB < 200ms.',
+  },
+  {
+    titre: 'Installer les headers de securite et corriger le cookie session',
+    detail: '5 personas expriment un doute sur la fiabilite du site. La note F a l\'Observatory Mozilla n\'est pas directement visible des visiteurs — mais elle l\'est de Google. Les headers absents (HSTS, X-Frame-Options, CSP) exposent les clients a des risques reels (clickjacking, interception session). Non conforme ANSSI.',
+    action: 'Fichier _headers Cloudflare Pages : HSTS max-age=31536000, X-Frame-Options DENY, X-Content-Type-Options nosniff, Referrer-Policy strict-origin-when-cross-origin, Permissions-Policy. Corriger le cookie PHPSESSID : flag Secure + HttpOnly + SameSite=Strict.',
+  },
+];
+
+const ameliorationsUtiles = [
+  {
+    titre: 'Mettre en avant RGE + MaPrimeRenov en hero et sur chaque page produit',
+    detail: '6 personas cherchent les aides financieres sans les trouver facilement. La certification RGE est le principal differenciateur de Domest face aux artisans non certifies. Un badge "RGE QUALIBAT — acces aux aides MaPrimeRenov/CEE" en accueil et sur chaque page fenêtres/volets convertirait significativement plus.',
+  },
+  {
+    titre: 'Installer Umami Cloud (analytics RGPD sans cookie)',
+    detail: 'Domest navigue a l\'aveugle : zero donnee sur les visiteurs, les sources, les pages populaires. Umami Cloud est gratuit, conforme RGPD, sans cookie. En 15 minutes il est installe. En 30 jours les premieres donnees d\'optimisation sont disponibles.',
+  },
+  {
+    titre: 'Creer une galerie filtrable par categorie avec avant/apres',
+    detail: '6 personas recherchent des exemples concrets de realisations correspondant a leur projet (fenêtres, portails, pergolas). La galerie actuelle melange tout sans filtre. Un systeme de filtres simples (Fenêtres | Portails | Pergolas | Portes) avec photos avant/apres augmenterait la confiance et le temps passe sur le site.',
+  },
+];
+
+// ============================================================
+// HELPERS
+// ============================================================
+function scoreColor(score: number) {
+  if (score >= 90) return '#22c55e';
+  if (score >= 50) return '#f59e0b';
+  return '#ef4444';
+}
+
+function scoreTextClass(score: number) {
+  if (score >= 90) return 'text-green-600';
+  if (score >= 50) return 'text-amber-500';
+  return 'text-red-500';
+}
+
+function decisionColor(decision: string) {
+  if (decision === 'convertit') return 'border-green-200 bg-green-50/40';
+  if (decision === 'hesite') return 'border-amber-200 bg-amber-50/40';
+  return 'border-neutral-200 bg-neutral-50/40';
+}
+
+function decisionBadge(decision: string) {
+  if (decision === 'convertit') return 'bg-green-100 text-green-700';
+  if (decision === 'hesite') return 'bg-amber-100 text-amber-700';
+  return 'bg-neutral-100 text-neutral-600';
+}
+
+function decisionLabel(decision: string) {
+  if (decision === 'convertit') return 'Contacte';
+  if (decision === 'hesite') return 'Hesite';
+  return 'Repart';
+}
+
+function maturiteColor(m: string) {
+  if (m === 'Decision') return 'text-purple-600 bg-purple-50';
+  if (m === 'Comparaison') return 'text-blue-600 bg-blue-50';
+  return 'text-neutral-500 bg-neutral-100';
+}
+---
+
+<BaseLayout title={title} description={description} noindex={true} lang="fr" frPath="/audit/domest-lorraine">
+
+  <!-- ========================================================
+       HERO + KPIs
+  ======================================================== -->
+  <section class="bg-neutral-900 text-white py-14 px-4">
+    <div class="max-w-4xl mx-auto">
+      <span class="inline-block text-xs font-semibold tracking-widest uppercase text-amber-400 bg-amber-400/10 px-3 py-1 rounded-full mb-4">Rapport personnalise</span>
+      <h1 class="font-heading text-3xl md:text-4xl font-bold mb-2 leading-tight">
+        {prospect.name}<br/>
+        <span class="text-neutral-300 font-normal text-2xl">ce que vos visiteurs pensent vraiment</span>
+      </h1>
+      <p class="text-neutral-400 mb-2">{prospect.activity} &mdash; {prospect.location}</p>
+      <p class="text-neutral-500 text-sm mb-8">
+        <a href={prospect.url} class="text-amber-400 hover:underline" target="_blank" rel="noopener noreferrer">{prospect.url}</a>
+        &mdash; Rapport du {prospect.date}
+      </p>
+
+      <!-- KPI Cards -->
+      <div class="grid grid-cols-3 gap-4 max-w-lg">
+        <div class="bg-neutral-800 rounded-xl p-4 text-center">
+          <span class="block text-3xl font-black text-amber-400">{kpis.conversion}%</span>
+          <span class="text-xs text-neutral-400 mt-1 block">convertissent</span>
+        </div>
+        <div class="bg-neutral-800 rounded-xl p-4 text-center">
+          <span class="block text-3xl font-black text-amber-400">{kpis.experience}/10</span>
+          <span class="text-xs text-neutral-400 mt-1 block">experience</span>
+        </div>
+        <div class="bg-neutral-800 rounded-xl p-4 text-center">
+          <span class="block text-3xl font-black text-amber-400">{kpis.confiance}/10</span>
+          <span class="text-xs text-neutral-400 mt-1 block">confiance</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       LE CONSTAT
+  ======================================================== -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Le constat</h2>
+
+      <!-- Constat principal -->
+      <div class="bg-amber-50 border border-amber-200 rounded-xl p-5 mb-8">
+        <p class="text-amber-900 font-medium text-base leading-relaxed">{constat}</p>
+      </div>
+
+      <!-- Resume visiteurs -->
+      <div class="flex flex-wrap gap-3 mb-8">
+        <div class="flex items-center gap-2 bg-green-50 border border-green-200 rounded-lg px-4 py-2">
+          <span class="w-2 h-2 rounded-full bg-green-500 shrink-0"></span>
+          <span class="text-sm font-semibold text-green-800">{kpis.convertissent} contactent</span>
+        </div>
+        <div class="flex items-center gap-2 bg-amber-50 border border-amber-200 rounded-lg px-4 py-2">
+          <span class="w-2 h-2 rounded-full bg-amber-500 shrink-0"></span>
+          <span class="text-sm font-semibold text-amber-800">{kpis.hesitent} hesitent</span>
+        </div>
+        <div class="flex items-center gap-2 bg-neutral-100 border border-neutral-200 rounded-lg px-4 py-2">
+          <span class="w-2 h-2 rounded-full bg-neutral-400 shrink-0"></span>
+          <span class="text-sm font-semibold text-neutral-700">{kpis.quittent} repartent</span>
+        </div>
+      </div>
+
+      <!-- Conversion par canal -->
+      <div class="mb-10">
+        <h3 class="font-semibold text-neutral-800 mb-4 text-sm uppercase tracking-wide">Taux de contact par canal d'arrivee</h3>
+        <div class="space-y-3">
+          {conversionByCanal.map(item => (
+            <div>
+              <div class="flex items-center justify-between mb-1">
+                <span class="text-sm text-neutral-700">{item.canal}</span>
+                <span class={`text-sm font-bold ${item.color}`}>{item.taux}%</span>
+              </div>
+              <div class="h-2 bg-neutral-100 rounded-full overflow-hidden">
+                <div class={`h-full rounded-full ${item.bg}`} style={`width: ${item.taux}%`}></div>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Top frictions -->
+      <h3 class="font-semibold text-neutral-800 mb-4 text-sm uppercase tracking-wide">Top 5 frictions identifiees</h3>
+      <ol class="space-y-3">
+        {topFrictions.map((f, i) => (
+          <li class="flex gap-4 p-4 bg-neutral-50 border border-neutral-200 rounded-xl">
+            <span class="shrink-0 w-7 h-7 rounded-full bg-red-100 text-red-700 flex items-center justify-center text-sm font-bold">{i + 1}</span>
+            <div>
+              <p class="font-semibold text-neutral-900 text-sm">{f.titre} <span class="ml-2 text-xs text-neutral-500 font-normal">{f.count}/10 personas</span></p>
+              <p class="text-neutral-600 text-xs mt-0.5">{f.detail}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       AUDIT TECHNIQUE
+  ======================================================== -->
+  <section class="py-12 px-4 bg-neutral-50">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">L'audit technique</h2>
+
+      <!-- PageSpeed mobile -->
+      <div class="bg-white border border-neutral-200 rounded-xl p-6 mb-6">
+        <div class="flex items-center justify-between mb-4 flex-wrap gap-2">
+          <h3 class="font-semibold text-neutral-800">PageSpeed — Mobile</h3>
+          <span class="text-xs text-neutral-400 bg-neutral-100 px-2 py-1 rounded">scores estimes — profil CMS proprietaire iKube + jQuery + RevolutionSlider</span>
+        </div>
+        <div class="grid grid-cols-4 gap-4">
+          {[
+            { label: 'Performance', score: pagespeed.mobile.performance },
+            { label: 'Accessibilite', score: pagespeed.mobile.accessibility },
+            { label: 'Bonnes pratiques', score: pagespeed.mobile.bestPractices },
+            { label: 'SEO', score: pagespeed.mobile.seo },
+          ].map(item => (
+            <div class="text-center">
+              <div class="relative w-14 h-14 mx-auto mb-2">
+                <svg class="w-14 h-14 -rotate-90" viewBox="0 0 36 36">
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    fill="none" stroke="#e5e7eb" stroke-width="3.5" />
+                  <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                    fill="none" stroke={scoreColor(item.score)} stroke-width="3.5"
+                    stroke-dasharray={`${item.score}, 100`} stroke-linecap="round" />
+                </svg>
+                <span class={`absolute inset-0 flex items-center justify-center text-base font-bold ${scoreTextClass(item.score)}`}>{item.score}</span>
+              </div>
+              <p class="text-xs text-neutral-600">{item.label}</p>
+            </div>
+          ))}
+        </div>
+
+        <!-- Core Web Vitals -->
+        <div class="mt-4 pt-4 border-t border-neutral-100">
+          <p class="text-xs font-semibold text-neutral-500 uppercase tracking-wide mb-2">Core Web Vitals (mobile estimes)</p>
+          <div class="flex flex-wrap gap-3">
+            {coreWebVitals.map(cwv => (
+              <div class={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-medium ${cwv.status === 'good' ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-700'}`}>
+                <span class={`w-1.5 h-1.5 rounded-full ${cwv.status === 'good' ? 'bg-green-500' : 'bg-red-500'}`}></span>
+                {cwv.name} : {cwv.value}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+
+      <!-- PageSpeed Desktop + Observatory -->
+      <div class="grid md:grid-cols-2 gap-6 mb-6">
+        <!-- Desktop -->
+        <div class="bg-white border border-neutral-200 rounded-xl p-5">
+          <h3 class="font-semibold text-neutral-800 mb-4">PageSpeed — Desktop</h3>
+          <div class="grid grid-cols-4 gap-2">
+            {[
+              { label: 'Perf.', score: pagespeed.desktop.performance },
+              { label: 'A11y', score: pagespeed.desktop.accessibility },
+              { label: 'BP', score: pagespeed.desktop.bestPractices },
+              { label: 'SEO', score: pagespeed.desktop.seo },
+            ].map(item => (
+              <div class="text-center">
+                <div class="relative w-12 h-12 mx-auto mb-1">
+                  <svg class="w-12 h-12 -rotate-90" viewBox="0 0 36 36">
+                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      fill="none" stroke="#e5e7eb" stroke-width="3.5" />
+                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"
+                      fill="none" stroke={scoreColor(item.score)} stroke-width="3.5"
+                      stroke-dasharray={`${item.score}, 100`} stroke-linecap="round" />
+                  </svg>
+                  <span class={`absolute inset-0 flex items-center justify-center text-sm font-bold ${scoreTextClass(item.score)}`}>{item.score}</span>
+                </div>
+                <p class="text-[11px] text-neutral-500">{item.label}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Observatory -->
+        <div class="bg-white border border-neutral-200 rounded-xl p-5">
+          <h3 class="font-semibold text-neutral-800 mb-3">Securite — Mozilla Observatory</h3>
+          <div class="flex items-center gap-4 mb-3">
+            <div class="text-4xl font-black text-red-500">
+              {observatory.grade}
+            </div>
+            <div>
+              <p class="text-sm font-semibold text-neutral-800">Score {observatory.score}/100</p>
+              <p class="text-xs text-neutral-500">{observatory.testsPassed}/{observatory.testsTotal} tests passes</p>
+            </div>
+          </div>
+          <p class="text-xs text-neutral-600">Note F — score 0/100. Cookie PHPSESSID sans flag Secure (-40pts), aucun HSTS (-20pts), aucun X-Frame-Options (-20pts), aucune CSP (-25pts). Redirection HTTP off-host qui bloque HSTS (-5pts). 7 tests sur 10 echoues. Non conforme ANSSI.</p>
+        </div>
+      </div>
+
+      <!-- Checklist SEO/Schema/OG -->
+      <div class="bg-white border border-neutral-200 rounded-xl p-5 mb-6">
+        <h3 class="font-semibold text-neutral-800 mb-4">Checklist technique, SEO & legal</h3>
+        <div class="grid sm:grid-cols-2 gap-2">
+          {techChecks.map(check => (
+            <div class={`flex items-start gap-2.5 p-2.5 rounded-lg ${check.present ? 'bg-green-50' : check.critical ? 'bg-red-50' : 'bg-neutral-50'}`}>
+              <span class={`shrink-0 mt-0.5 text-sm ${check.present ? 'text-green-600' : check.critical ? 'text-red-500' : 'text-neutral-400'}`}>
+                {check.present ? '\u2713' : '\u2717'}
+              </span>
+              <div>
+                <span class={`text-xs font-medium ${check.present ? 'text-green-800' : check.critical ? 'text-red-700' : 'text-neutral-600'}`}>{check.label}</span>
+                {check.note && <p class="text-[11px] text-neutral-500 mt-0.5">{check.note}</p>}
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Top opportunites -->
+      <div class="bg-white border border-neutral-200 rounded-xl p-5">
+        <h3 class="font-semibold text-neutral-800 mb-3">Top 3 opportunites de performance</h3>
+        <div class="space-y-2">
+          {opportunities.map((opp, i) => (
+            <div class="flex items-center gap-3 p-3 bg-amber-50 border border-amber-100 rounded-lg">
+              <span class="shrink-0 text-amber-600 font-bold text-sm">{i + 1}</span>
+              <div class="flex-1">
+                <span class="text-sm text-neutral-800">{opp.label}</span>
+              </div>
+              <span class="shrink-0 text-xs font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded">{opp.saving}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       VOS VISITEURS — 10 PERSONAS
+  ======================================================== -->
+  <section class="py-12 px-4 bg-white">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs</h2>
+      <p class="text-neutral-500 mb-6 text-sm">
+        Sur <strong class="text-neutral-800">10 visiteurs simules</strong>,
+        <strong class="text-green-700">{kpis.convertissent} contactent</strong>,
+        <strong class="text-amber-600">{kpis.hesitent} hesitent</strong>,
+        <strong class="text-neutral-600">{kpis.quittent} repartent</strong>.
+        Cliquez sur un visiteur pour voir son parcours complet.
+      </p>
+
+      <!-- Legende -->
+      <div class="flex flex-wrap gap-2 mb-5 text-xs">
+        <span class="flex items-center gap-1.5 bg-green-50 border border-green-200 px-2.5 py-1 rounded-full text-green-700 font-medium">
+          <span class="w-2 h-2 rounded-full bg-green-500"></span> Contacte
+        </span>
+        <span class="flex items-center gap-1.5 bg-amber-50 border border-amber-200 px-2.5 py-1 rounded-full text-amber-700 font-medium">
+          <span class="w-2 h-2 rounded-full bg-amber-500"></span> Hesite
+        </span>
+        <span class="flex items-center gap-1.5 bg-neutral-100 border border-neutral-200 px-2.5 py-1 rounded-full text-neutral-600 font-medium">
+          <span class="w-2 h-2 rounded-full bg-neutral-400"></span> Repart
+        </span>
+      </div>
+
+      <div class="space-y-2">
+        {personas.map(p => (
+          <details class={`group border ${decisionColor(p.decision)} rounded-xl overflow-hidden`}>
+            <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-white/60 transition-colors">
+              <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                  <h3 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h3>
+                  <span class={`text-[11px] px-1.5 py-0.5 rounded ${decisionBadge(p.decision)}`}>{decisionLabel(p.decision)}</span>
+                  <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                  <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                  <span class={`text-[11px] px-1.5 py-0.5 rounded ${maturiteColor(p.maturite)}`}>{p.maturite}</span>
+                </div>
+                <p class="text-xs text-neutral-500 truncate">{p.situation}</p>
+              </div>
+              <div class="shrink-0 flex items-center gap-3 ml-2">
+                <div class="hidden sm:flex gap-1.5 text-[11px]">
+                  <span class="bg-neutral-100 text-neutral-600 px-1.5 py-0.5 rounded">Exp {p.scores.exp}/10</span>
+                  <span class="bg-neutral-100 text-neutral-600 px-1.5 py-0.5 rounded">Conf {p.scores.conf}/10</span>
+                </div>
+                <svg class="w-5 h-5 text-neutral-400 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                  <path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/>
+                </svg>
+              </div>
+            </summary>
+
+            <div class="px-4 pb-4 pt-0 border-t border-current/10 bg-white/60">
+              <div class="grid gap-3 text-xs mt-3">
+
+                <!-- Parcours -->
+                <div>
+                  <p class="font-semibold text-neutral-700 mb-1">Parcours</p>
+                  <div class="flex flex-wrap gap-1 items-center">
+                    {p.parcours.length > 0 ? p.parcours.map((page, i) => (
+                      <>
+                        <span class="bg-neutral-100 text-neutral-700 px-2 py-0.5 rounded text-[11px]">{page}</span>
+                        {i < p.parcours.length - 1 && <span class="text-neutral-400 text-[10px]">&rsaquo;</span>}
+                      </>
+                    )) : <span class="text-neutral-400 italic">N'a jamais atteint le site</span>}
+                  </div>
+                </div>
+
+                <!-- Premiere impression -->
+                <div>
+                  <p class="font-semibold text-neutral-700 mb-1">Premiere impression</p>
+                  <p class="text-neutral-600 italic">"{p.premierImpression}"</p>
+                </div>
+
+                <!-- Question + reponse -->
+                <div>
+                  <p class="font-semibold text-neutral-700 mb-1">Question cle</p>
+                  <p class="text-neutral-600 italic mb-1">"{p.questionCle}"</p>
+                  <p class="text-neutral-600">
+                    Reponse du site : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' || p.reponse === 'Invisible' ? 'text-red-600' : 'text-amber-700'}>{p.reponse}</strong>
+                    {' '}&mdash; {p.commentReponse}
+                  </p>
+                </div>
+
+                <!-- Impact technique -->
+                <div class="bg-neutral-50 rounded-lg px-3 py-2">
+                  <p class="font-semibold text-neutral-700 mb-0.5">Impact technique</p>
+                  <p class="text-neutral-600">{p.impactTechnique}</p>
+                </div>
+
+                <!-- Points positifs + frictions -->
+                <div class="grid sm:grid-cols-2 gap-3">
+                  <div>
+                    <p class="font-semibold text-green-700 mb-1">Points positifs</p>
+                    <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                      {p.pointsPositifs.length > 0 ? p.pointsPositifs.map(pt => <li>{pt}</li>) : <li class="text-neutral-400 italic">Aucun identifie</li>}
+                    </ul>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-amber-700 mb-1">Frictions</p>
+                    <ul class="list-disc list-inside text-neutral-600 space-y-0.5">
+                      {p.frictions.map(f => <li>{f}</li>)}
+                    </ul>
+                  </div>
+                </div>
+
+                <!-- Scores -->
+                <div class="flex gap-3 pt-1">
+                  <span class="bg-neutral-100 text-neutral-700 px-2.5 py-1 rounded-lg text-[11px] font-medium">Experience {p.scores.exp}/10</span>
+                  <span class="bg-neutral-100 text-neutral-700 px-2.5 py-1 rounded-lg text-[11px] font-medium">Confiance {p.scores.conf}/10</span>
+                  <span class="bg-neutral-100 text-neutral-700 px-2.5 py-1 rounded-lg text-[11px] font-medium">Clarte {p.scores.clarte}/10</span>
+                </div>
+
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       RECOMMANDATIONS
+  ======================================================== -->
+  <section class="py-12 px-4 bg-neutral-50">
+    <div class="max-w-4xl mx-auto">
+      <h2 class="font-heading text-2xl font-bold text-neutral-900 mb-6">Nos recommandations</h2>
+
+      <!-- Critiques -->
+      <h3 class="font-semibold text-red-700 text-sm uppercase tracking-wide mb-3">Le plus important — a traiter en priorite</h3>
+      <div class="space-y-3 mb-8">
+        {ameliorationsCritiques.map((a, i) => (
+          <div class="border border-red-200 bg-white rounded-xl p-5">
+            <div class="flex gap-3 mb-2">
+              <span class="shrink-0 w-6 h-6 rounded-full bg-red-100 text-red-700 flex items-center justify-center text-xs font-bold">{i + 1}</span>
+              <h4 class="font-semibold text-neutral-900 text-sm">{a.titre}</h4>
+            </div>
+            <p class="text-neutral-600 text-sm mb-2 ml-9">{a.detail}</p>
+            <div class="ml-9 bg-red-50 border border-red-100 rounded-lg px-3 py-2">
+              <p class="text-xs text-red-800"><strong>Action :</strong> {a.action}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Utiles -->
+      <h3 class="font-semibold text-neutral-600 text-sm uppercase tracking-wide mb-3">Utile aussi</h3>
+      <div class="grid sm:grid-cols-3 gap-3">
+        {ameliorationsUtiles.map(a => (
+          <div class="bg-white border border-neutral-200 rounded-xl p-4">
+            <h4 class="font-semibold text-neutral-800 text-sm mb-2">{a.titre}</h4>
+            <p class="text-neutral-500 text-xs">{a.detail}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ========================================================
+       CTA FINAL
+  ======================================================== -->
+  <section class="bg-neutral-900 text-white py-16 px-4">
+    <div class="max-w-3xl mx-auto text-center">
+      <p class="text-amber-400 text-sm font-semibold uppercase tracking-widest mb-3">Ce rapport est offert</p>
+      <h2 class="font-heading text-2xl md:text-3xl font-bold mb-4 leading-snug">
+        {kpis.conversion}% de vos visiteurs vous contactent.<br/>
+        <span class="text-amber-400">20 ans d'experience meritent un site a la hauteur.</span>
+      </h2>
+      <p class="text-neutral-300 mb-3 max-w-xl mx-auto">
+        Domest Lorraine a la certification RGE, les equipes internes, 32 avis a 4,5/5 et 20 ans de savoir-faire en Moselle. Votre site actuel ne transmet pas tout ca — l'og:site_name est casse, il n'y a aucun Schema.org, et la securite HTTP est notee F. Chaque semaine, des prospects partent chez un concurrent moins bien, mais avec un site plus credible.
+      </p>
+      <p class="text-neutral-400 text-sm mb-8 max-w-xl mx-auto">
+        Je construis des sites qui convertissent vraiment &mdash; a partir de 990&euro;, livre en 7 jours, sans abonnement CMS.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a
+          href="/commander"
+          class="inline-flex items-center gap-2 px-8 py-3.5 bg-[var(--color-accent)] text-white font-semibold rounded-xl hover:bg-[var(--color-accent-hover)] transition-all shadow-md"
+        >
+          Je veux un site qui convertit
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/>
+          </svg>
+        </a>
+        <a
+          href="/contact"
+          class="inline-flex items-center gap-2 px-8 py-3.5 border border-neutral-600 text-neutral-300 font-semibold rounded-xl hover:border-amber-400 hover:text-amber-400 transition-all"
+        >
+          En discuter d'abord
+        </a>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
