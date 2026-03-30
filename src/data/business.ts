@@ -87,10 +87,10 @@ export const business = {
     },
   ],
 
-  // Vitrines Mystères — produit d'analyse UX par personas IA
+  // Écho — produit d'analyse UX par personas IA
   visiteMystere: {
-    name: 'Vitrines Mystères',
-    tagline: '20 prospects IA visitent votre site et vous disent pourquoi ils n\'appellent pas.',
+    name: 'Écho',
+    tagline: 'L\'écho de vos visiteurs — ce que votre site leur renvoie vraiment.',
     tiers: [
       { name: 'Gratuit', price: 0, personas: 5, description: '5 visiteurs simulés, résumé + 1 recommandation, par email.' },
       { name: 'Complet', price: 90, personas: 20, description: '20 visiteurs simulés, rapport interactif, audit technique, recommandations priorisées, page dédiée.' },
