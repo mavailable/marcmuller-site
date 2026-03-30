@@ -1,0 +1,705 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const slug = 'houlle-sas';
+const formule: 'decouverte' | 'complet' | 'pro' = 'decouverte';
+const formuleLabel = 'Echo Decouverte';
+const nomProspect = 'Houlle SAS';
+const urlSite = 'https://www.ets-houlle.fr';
+const dateAudit = '30 mars 2026';
+const showUpsell = true;
+
+const kpis = {
+  nbPersonas: 5,
+  nbConvertissent: 2,
+  nbHesitent: 2,
+  nbRepartent: 1,
+  conversion: 40,
+  experience: 4.6,
+  confiance: 5.4,
+  clarte: 4.8,
+};
+
+const verdictHero = 'Sur 5 visiteurs, 2 vous contactent. 2 hesitent. 1 repart — il cherchait un artisan maison, pas un industriel.';
+
+const constat = 'Houlle SAS est une entreprise serieuse : certifications RGE, Qualifelec, Professionnel du Gaz, references industrielles et contrats avec Viessmann et Grundfos. Mais le site ne le dit pas d\'emblee. La page d\'accueil affiche "Votre partenaire Genie climatique / fluides" — sans numero visible, sans photo, sans avis. Un visiteur qui arrive de Google en urgence doit scroller jusqu\'au footer pour trouver votre telephone. C\'est le probleme numero un.';
+
+const canalData = [
+  { canal: 'Google Search', nb: 2, convert: 2, rate: 100 },
+  { canal: 'Google Maps', nb: 1, convert: 0, rate: 0 },
+  { canal: 'Reseaux sociaux', nb: 1, convert: 0, rate: 0 },
+  { canal: 'Bouche-a-oreille', nb: 1, convert: 0, rate: 0 },
+];
+
+const personas = [
+  {
+    id: 1,
+    name: 'Jean-Pierre',
+    age: 58,
+    emoji: '🔥',
+    situation: 'Gerant PME industrielle a Sarreguemines, chaudiere tombee en panne le matin',
+    canal: 'Google Search',
+    device: 'Mobile',
+    decision: 'Convertit' as const,
+    decisionLabel: 'Contacte',
+    histoire: 'Panne industrielle en urgence. Il cherche "chauffagiste Sarreguemines urgence". Trouve Houlle SAS, survole la page SAV qui mentionne 5 depanneurs, cherche le numero — il est dans le footer. Il appelle.',
+    localisation: 'Sarreguemines (57200)',
+    maturite: 'Decision',
+    contexte: 'Sa chaudiere industrielle est tombee en panne a 8h. Il a des employes qui attendent. Il a besoin d\'un chauffagiste certifie et disponible dans l\'heure.',
+    impression: '"Genie climatique / fluides" — ca ressemble a de l\'industriel, c\'est bien. Mais il cherche le numero de telephone immediatement.',
+    parcours: [
+      ['Accueil mobile', 'Slogan OK — mais cherche le numero en urgence, pas trouve en hero'],
+      ['Scroll bas de page', 'Trouve 03 87 98 40 21 dans le footer — OK mais trop bas'],
+      ['Page SAV', '"1 responsable + 5 depanneurs", astreinte weekend — tres rassurant'],
+      ['Appel', 'Il appelle directement sans chercher plus loin'],
+    ] as [string, string][],
+    questionCle: 'Ils font les depannages industriels ? Ils interviennent rapidement ?',
+    reponse: 'Partiellement' as const,
+    commentReponse: 'La page SAV rassure mais l\'accueil n\'indique ni delai d\'intervention ni CTA urgent.',
+    impactVitesse: 'Sur mobile en urgence, chaque seconde de chargement augmente le risque de rappeler quelqu\'un d\'autre.',
+    impactConfiance: 'Certifications RGE/Qualifelec non visibles en hero — signal fort manque.',
+    positifs: ['Telephone trouvable malgre tout', 'Page SAV avec "5 depanneurs" cree la confiance', 'Certifications listees en pied de page'],
+    frictions: ['Numero non visible en premier ecran', 'Pas de mention delai d\'intervention', 'Pas de CTA "Urgence" ou "Depannage 24h"'],
+    ceQuiFeraitBasculer: '',
+    exp: 5, conf: 6, clarte: 5,
+  },
+  {
+    id: 2,
+    name: 'Marc',
+    age: 35,
+    emoji: '💻',
+    situation: 'Responsable technique d\'une collectivite a Forbach, cherche un contrat de maintenance annuel',
+    canal: 'Google Search',
+    device: 'Desktop',
+    decision: 'Convertit' as const,
+    decisionLabel: 'Contacte',
+    histoire: 'Il cherche "maintenance chaudiere collectivite Moselle". Trouve Houlle SAS, explore les references B2B (Viessmann, Grundfos), lit la page SAV. Envoie un email pour un devis de contrat.',
+    localisation: 'Forbach (57600)',
+    maturite: 'Comparaison',
+    contexte: 'Sa collectivite doit renouveler son contrat de maintenance annuel. Il compare 3 prestataires certifies dans un rayon de 40 km.',
+    impression: 'Site sobre. Les certifications en bas de page le rassurent. Il cherche les references pour voir si c\'est son echelle.',
+    parcours: [
+      ['Accueil', 'Certifications en footer (RGE, Qualifelec) — signal positif'],
+      ['References', 'Viessmann France, Grundfos, Eagle Industry — tres credible'],
+      ['SAV Maintenance', 'Contrats documentes, zone d\'intervention confirmee'],
+      ['Contact', 'Email professionnel trouve — envoie un email de demande de devis'],
+    ] as [string, string][],
+    questionCle: 'Ils ont l\'habitude des marches collectivites ? Ils sont certifies pour notre type d\'installation ?',
+    reponse: 'Oui' as const,
+    commentReponse: 'Les references B2B et les certifications repondent a la question, meme si eparpillees.',
+    impactVitesse: 'Acceptable sur desktop — pas bloquant.',
+    impactConfiance: 'Contrats avec Viessmann/Grundfos = signal fort de serieux pour ce profil.',
+    positifs: ['References B2B solides et credibles', 'Certifications listees (RGE, Qualifelec, Gaz)', 'Page SAV avec details operationnels'],
+    frictions: ['Certifications non visibles en hero', 'Pas de formulaire de devis en ligne', 'Pas de page A propos / historique entreprise'],
+    ceQuiFeraitBasculer: '',
+    exp: 6, conf: 7, clarte: 6,
+  },
+  {
+    id: 3,
+    name: 'Nathalie',
+    age: 43,
+    emoji: '🏠',
+    situation: 'Proprietaire a Sarralbe, chauffe-eau en panne, compare 3 entreprises sur Google Maps',
+    canal: 'Google Maps',
+    device: 'Mobile',
+    decision: 'Hesite' as const,
+    decisionLabel: 'Hesite',
+    histoire: 'Elle compare 3 chauffagistes sur Maps. Le site affiche "Genie climatique" — vocabulaire industriel. Elle cherche des avis et des photos de chantiers particuliers. Elle ne trouve rien. Elle rappelle le voisin pour un autre contact.',
+    localisation: 'Sarralbe (57430)',
+    maturite: 'Comparaison',
+    contexte: 'Son chauffe-eau est mort depuis ce matin. Elle cherche un professionnel sérieux, recommande, qui travaille aussi chez les particuliers.',
+    impression: '"Genie climatique / fluides" — elle fronce les sourcils. Ca ressemble a de l\'industrie, pas a un artisan qui vient chez les particuliers.',
+    parcours: [
+      ['Accueil', 'Vocabulaire B2B — doute sur la capacite a intervenir chez les particuliers'],
+      ['Nos metiers', '"Sanitaire / plomberie" existe — mais description ultra-technique'],
+      ['Cherche avis', 'Aucun temoignage, aucun avis integre au site'],
+      ['Contact', 'Telephone trouve — mais hesite encore'],
+    ] as [string, string][],
+    questionCle: 'Ils font les particuliers ? Ils sont fiables ? Les gens sont contents ?',
+    reponse: 'Non' as const,
+    commentReponse: 'Aucun temoignage, aucun avis client, vocabulaire B2B dominant — la confiance ne s\'etablit pas.',
+    impactVitesse: 'Lenteur mobile = frustration ajoutee sur un visiteur deja incertain.',
+    impactConfiance: 'Zero social proof — pas d\'avis, pas de photo de chantier particulier.',
+    positifs: ['Telephone accessible (meme si bas de page)', 'Secteur sanitaire bien liste dans les metiers', 'Certifications RGE rassurent si on les voit'],
+    frictions: ['Aucun avis client visible', 'Aucune photo de chantier', 'Vocabulaire B2B intimidant pour un particulier', 'Pas d\'horaires d\'ouverture'],
+    ceQuiFeraitBasculer: '3 avis clients + une phrase claire "Nous intervenons chez les particuliers a Sarreguemines et alentours".',
+    exp: 4, conf: 4, clarte: 4,
+  },
+  {
+    id: 4,
+    name: 'Sophie',
+    age: 29,
+    emoji: '📱',
+    situation: 'Assistante de direction d\'une PME a Sarreguemines, cherche un devis PAC tertiaire',
+    canal: 'Reseaux sociaux',
+    device: 'Mobile',
+    decision: 'Hesite' as const,
+    decisionLabel: 'Hesite',
+    histoire: 'Elle a vu une mention de Houlle SAS sur LinkedIn. Le site charge lentement sur mobile. Elle trouve les services mais pas de photos de PAC tertiaires. Elle note l\'email pour en parler avec son directeur avant de contacter.',
+    localisation: 'Sarreguemines (57200)',
+    maturite: 'Decouverte',
+    contexte: 'Sa direction veut installer une pompe a chaleur pour le tertiaire. Elle est chargee de trouver 3 devis de prestataires certifies.',
+    impression: 'Le site charge lentement. Le design date un peu. Elle se demande si l\'entreprise est vraiment a la pointe techniquement.',
+    parcours: [
+      ['Accueil', 'Slogan "Genie climatique" OK pour elle — mais site lent, design vieilli'],
+      ['Nos metiers', '"Climatisation, conditionnement d\'air" — correspond a sa recherche'],
+      ['References', 'Liste de chantiers sans photos — elle voudrait voir des realisations PAC'],
+      ['Contact', 'Email pro note — mais elle hesite avant de s\'engager'],
+    ] as [string, string][],
+    questionCle: 'Ils font les PAC tertiaires ? Ils ont deja fait ca pour une PME comme la notre ?',
+    reponse: 'Partiellement' as const,
+    commentReponse: 'Les services sont listes mais sans photos ni chiffres concrets sur les PAC tertiaires installees.',
+    impactVitesse: 'Lenteur mobile = premiere impression negative sur la modernite de l\'entreprise.',
+    impactConfiance: 'Pas d\'Open Graph — quand elle partage le lien avec son directeur via WhatsApp, aucun apercu ne s\'affiche. Signal negatif.',
+    positifs: ['Certifications RGE confirmees pour PAC', 'Services climatisation/PAC presents', 'Contrats avec grands industriels (credibilite)'],
+    frictions: ['Site lent sur mobile', 'Pas de photos de realisations PAC', 'Pas d\'Open Graph pour le partage', 'Design vieilli'],
+    ceQuiFeraitBasculer: '2-3 photos de PAC tertiaires + un chiffre ("X installations en Moselle depuis 20 ans").',
+    exp: 4, conf: 5, clarte: 5,
+  },
+  {
+    id: 5,
+    name: 'Thomas',
+    age: 26,
+    emoji: '🚿',
+    situation: 'Jeune proprietaire a Farebersviller, cherche un plombier pour renovation salle de bain — hors cible',
+    canal: 'Bouche-a-oreille',
+    device: 'Desktop',
+    decision: 'Quitte' as const,
+    decisionLabel: 'Repart',
+    histoire: 'Son voisin lui a donne le nom. Il tape le site. "Genie climatique / fluides" — ca ne ressemble pas a un plombier de salle de bain. Pas de photos de salles de bain, pas de portfolio artisan. Il repart chercher un artisan plus oriente particulier.',
+    localisation: 'Farebersviller (57450)',
+    maturite: 'Decouverte',
+    contexte: 'Il veut refaire sa salle de bain : douche italienne, meuble vasque, robinetterie. Budget 4 000 euros. Il cherche un artisan plombier.',
+    impression: '"Votre partenaire Genie climatique / fluides" — ca sonne industriel. Il hesite deja.',
+    parcours: [
+      ['Accueil', '"Genie climatique" — vocabulaire industriel, doute'],
+      ['Nos metiers', '"Sanitaire" liste — mais description technique, pas artisan'],
+      ['Pas de galerie', 'Aucune photo de salle de bain ou renovation — decide a partir'],
+      ['Quitte', 'Retourne sur Google pour chercher "plombier renovation salle de bain Sarreguemines"'],
+    ] as [string, string][],
+    questionCle: 'Ils font la renovation salle de bain pour les particuliers ?',
+    reponse: 'Non' as const,
+    commentReponse: 'Houlle SAS est positionne B2B/industriel — ce profil est hors cible, ce qui est normal.',
+    impactVitesse: 'Sans objet — il repart pour une raison de positionnement.',
+    impactConfiance: 'Le site est coherent avec son positionnement industriel — c\'est simplement hors cible.',
+    positifs: ['Coherence du positionnement B2B', 'Zone geographique identifiable'],
+    frictions: ['Aucun signal clair "nous travaillons / ne travaillons pas avec les particuliers"', 'Pas de page qui redirige vers le bon artisan'],
+    ceQuiFeraitBasculer: 'Hors cible — Houlle SAS est positionne B2B, ce qui est un choix strategique coherent.',
+    exp: 3, conf: 4, clarte: 4,
+  },
+];
+
+const ameliorationsHautes = [
+  {
+    titre: 'Afficher le telephone et les certifications en premier ecran',
+    pourquoi: '3 visiteurs sur 5 ont du scroller pour trouver le numero de telephone. 2 visiteurs B2B ont cherche les certifications (RGE, Qualifelec) en hero — elles n\'etaient visibles qu\'en footer. Le numero 03 87 98 40 21 est le seul CTA du site : il doit etre le premier element visible sur mobile.',
+    action: 'Restructurer le hero de la page d\'accueil : (1) titre avec mot-cle "Chauffagiste et plombier a Sarreguemines — Qualibat RGE", (2) numero de telephone en grand avec bouton "Appeler", (3) logos des certifications (RGE, Qualifelec, Professionnel du Gaz) sous le telephone. Temps de mise en oeuvre : 1 journee.',
+    impact: '3 visiteurs sur 5',
+  },
+];
+
+const ameliorationsUtiles: { titre: string; detail: string }[] = [];
+const ameliorationsDiscuter: { emoji: string; titre: string; detail: string }[] = [];
+
+const techVerdicts = [
+  { label: 'Vitesse', verdict: 'A ameliorer', ok: false, detail: 'Score estime 45-55/100 sur mobile — quota API epuise lors de l\'audit. Site CMS classique (Drupal/Joomla) sans optimisation.' },
+  { label: 'Securite', verdict: 'Insuffisante', ok: false, detail: 'Grade D estime — 6 headers de securite manquants (HSTS, CSP, X-Frame-Options...).' },
+  { label: 'SEO', verdict: 'Lacunaire', ok: false, detail: 'H1 sans mot-cle metier ("Votre partenaire"), pas de sitemap, pas de meta description.' },
+  { label: 'Donnees structurees', verdict: 'Absent', ok: false, detail: 'Schema.org LocalBusiness absent — Google ne peut pas afficher vos infos en rich snippet.' },
+  { label: 'Partage reseaux', verdict: 'Non configure', ok: false, detail: 'Balises Open Graph absentes — aucun apercu visuel quand le site est partage sur LinkedIn ou WhatsApp.' },
+];
+
+const tech = {
+  observatory: { grade: 'D', score: 25, testsOk: 2, testsTotal: 10 },
+  pagespdMobile: null as { performance: number; accessibility: number; bestPractices: number; seo: number } | null,
+  pagespdDesktop: null as { performance: number; accessibility: number; bestPractices: number; seo: number } | null,
+  cwv: { lcp: 'Estime 4-6s (seuil : <2.5s)', inp: 'Estime 300-500ms (seuil : <200ms)', cls: 'Estime 0.1-0.2 (seuil : <0.1)' },
+  headers: [
+    { ok: true, h: 'Redirection HTTP vers HTTPS' },
+    { ok: false, h: 'Strict-Transport-Security / HSTS (absent)' },
+    { ok: false, h: 'Content-Security-Policy (absent)' },
+    { ok: false, h: 'X-Frame-Options (absent — risque clickjacking)' },
+    { ok: false, h: 'X-Content-Type-Options (absent)' },
+    { ok: false, h: 'Referrer-Policy (absent)' },
+    { ok: false, h: 'Permissions-Policy (absent)' },
+  ],
+  schema: [
+    { item: 'JSON-LD / Schema.org present', ok: false },
+    { item: '@type Plumber ou LocalBusiness', ok: false },
+    { item: 'name, url, description', ok: false },
+    { item: 'address + geo (coordonnees GPS)', ok: false },
+    { item: 'telephone', ok: false },
+    { item: 'openingHours', ok: false },
+    { item: 'aggregateRating', ok: false },
+    { item: 'sameAs (reseaux sociaux)', ok: false },
+  ],
+  og: [
+    { item: 'og:title', ok: false, val: 'Absent' },
+    { item: 'og:description', ok: false, val: 'Absent' },
+    { item: 'og:image', ok: false, val: 'Absent' },
+    { item: 'og:url', ok: false, val: 'Absent' },
+    { item: 'twitter:card', ok: false, val: 'Absent' },
+  ],
+  seo: [
+    { item: 'H1 avec mot-cle metier ("chauffagiste Sarreguemines")', ok: false },
+    { item: 'Redirection HTTP vers HTTPS', ok: true },
+    { item: 'robots.txt accessible', ok: true },
+    { item: 'Schema.org presente', ok: false },
+    { item: 'Meta description optimisee', ok: false },
+    { item: 'sitemap.xml accessible', ok: false },
+    { item: 'Open Graph configure', ok: false },
+  ],
+};
+---
+
+<BaseLayout
+  title={`${formuleLabel} — ${nomProspect}`}
+  description={`Rapport Echo Decouverte pour ${nomProspect}. ${kpis.nbPersonas} visiteurs simules, audit technique, recommandation prioritaire.`}
+  noindex={true}
+  frPath={`/echo/${slug}`}
+  ogImage="/og-echo.png"
+>
+
+<!-- 1. HERO -->
+<section class="relative w-full px-6 py-20 md:py-28 overflow-hidden" style="background: #0A0A0A;">
+  <div class="absolute top-[20%] left-[10%] w-[500px] h-[500px] rounded-full blur-[180px] pointer-events-none" style="background: #E86C47; opacity: 0.06;"></div>
+  <div class="relative mx-auto max-w-4xl z-10">
+    <div class="mb-6 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5);">
+      {formuleLabel} · Rapport confidentiel
+    </div>
+    <h1 class="mb-6 text-3xl md:text-4xl font-bold text-white leading-tight tracking-tight">{verdictHero}</h1>
+    <p class="mb-10 text-sm" style="color: rgba(255,255,255,0.4);">
+      Site analyse : <a href={urlSite} target="_blank" class="underline hover:text-white transition-colors">{urlSite}</a> · {kpis.nbPersonas} visiteurs simules · {dateAudit}
+    </p>
+    <div class="grid grid-cols-3 gap-4">
+      <div class="rounded-xl p-5 text-center" style="background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2);">
+        <div class="text-4xl md:text-5xl font-black text-green-400 mb-1">{kpis.nbConvertissent}</div>
+        <div class="text-sm text-green-400/70">vous contactent</div>
+      </div>
+      <div class="rounded-xl p-5 text-center" style="background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2);">
+        <div class="text-4xl md:text-5xl font-black text-amber-400 mb-1">{kpis.nbHesitent}</div>
+        <div class="text-sm text-amber-400/70">hesitent</div>
+      </div>
+      <div class="rounded-xl p-5 text-center" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
+        <div class="text-4xl md:text-5xl font-black mb-1" style="color: rgba(255,255,255,0.5);">{kpis.nbRepartent}</div>
+        <div class="text-sm" style="color: rgba(255,255,255,0.3);">repartent</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. LE CONSTAT -->
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <div class="rounded-2xl p-6 md:p-8 mb-12 border-l-4" style="background: rgba(232,108,71,0.04); border-color: #E86C47;">
+    <p class="text-lg md:text-xl font-medium text-neutral-800 leading-relaxed">{constat}</p>
+  </div>
+  <h2 class="text-xl font-bold text-neutral-900 mb-2">D'ou viennent vos visiteurs</h2>
+  <p class="text-sm text-neutral-500 mb-6">Et combien vous contactent selon leur canal d'arrivee.</p>
+  <div class="space-y-4 mb-12">
+    {canalData.map(c => {
+      const color = c.rate >= 50 ? '#22c55e' : c.rate >= 25 ? '#f59e0b' : '#ef4444';
+      return (
+        <div class="flex items-center gap-4">
+          <div class="w-40 sm:w-48 text-sm text-neutral-700 shrink-0">{c.canal}</div>
+          <div class="flex-1 h-3 bg-neutral-100 rounded-full overflow-hidden">
+            <div class="h-full rounded-full transition-all" style={`width: ${c.rate}%; background: ${color}`}></div>
+          </div>
+          <div class="w-20 text-right">
+            <span class="text-sm font-bold" style={`color: ${color}`}>{c.rate}%</span>
+            <span class="text-xs text-neutral-400 ml-1">({c.convert}/{c.nb})</span>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+  <details class="group mb-4">
+    <summary class="flex items-center gap-2 cursor-pointer text-sm text-neutral-500 hover:text-neutral-700 py-2">
+      <svg class="w-4 h-4 transition-transform group-open:rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      Voir les scores detailles (experience, confiance, clarte)
+    </summary>
+    <div class="grid grid-cols-3 gap-4 mt-3">
+      <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
+        <div class="text-2xl font-bold text-neutral-800 mb-1">{kpis.experience}<span class="text-sm text-neutral-400">/10</span></div>
+        <div class="text-xs text-neutral-500">Experience</div>
+      </div>
+      <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
+        <div class="text-2xl font-bold text-neutral-800 mb-1">{kpis.confiance}<span class="text-sm text-neutral-400">/10</span></div>
+        <div class="text-xs text-neutral-500">Confiance</div>
+      </div>
+      <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
+        <div class="text-2xl font-bold text-neutral-800 mb-1">{kpis.clarte}<span class="text-sm text-neutral-400">/10</span></div>
+        <div class="text-xs text-neutral-500">Clarte</div>
+      </div>
+    </div>
+  </details>
+</section>
+
+<!-- 3. VOS VISITEURS -->
+<section class="py-16" style="background: #fafafa;">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs</h2>
+    <p class="text-neutral-600 mb-8">Voici ce qui se passe quand quelqu'un cherche vos services et tombe sur votre site.</p>
+
+    <div class="mb-10">
+      <h3 class="text-base font-bold text-green-800 mb-4 flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-green-500 inline-block"></span>
+        Ceux qui vous contactent <span class="text-sm font-normal text-green-600">({kpis.nbConvertissent})</span>
+      </h3>
+      <div class="space-y-3">
+        {personas.filter(p => p.decision === 'Convertit').map(p => (
+          <details class="group bg-white rounded-xl overflow-hidden shadow-sm border border-green-200">
+            <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+              <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1 flex-wrap">
+                  <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                  <span class="text-[10px] bg-green-600 text-white px-1.5 py-0.5 rounded font-medium">{p.decisionLabel}</span>
+                </div>
+                <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                  <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                  <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                </div>
+              </div>
+              <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <div class="px-4 pb-5 border-t border-green-200">
+              <div class="grid gap-4 text-xs mt-4">
+                <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p><p class="text-neutral-600">{p.contexte}</p></div>
+                <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Premiere impression (5 sec)</p><p class="text-neutral-600">{p.impression}</p></div>
+                <div>
+                  <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours sur le site</p>
+                  <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                    {p.parcours.map(([section, reaction]: [string, string]) => (
+                      <li><strong class="text-neutral-800">{section}</strong>{reaction ? ` — ${reaction}` : ''}</li>
+                    ))}
+                  </ol>
+                </div>
+                <div class="bg-neutral-50 rounded-lg p-3">
+                  <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p>
+                  <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
+                  <p class="text-neutral-600">Le site repond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> — {p.commentReponse}</p>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div><p class="font-semibold text-green-700 mb-1.5">Points positifs</p><ul class="space-y-1 text-neutral-600">{p.positifs.map(pt => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">·</span>{pt}</li>)}</ul></div>
+                  <div><p class="font-semibold text-amber-700 mb-1.5">Frictions</p><ul class="space-y-1 text-neutral-600">{p.frictions.map(f => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">·</span>{f}</li>)}</ul></div>
+                </div>
+                <div class="flex gap-6 pt-3 border-t border-neutral-100">
+                  {[{ label: 'Experience', val: p.exp }, { label: 'Confiance', val: p.conf }, { label: 'Clarte', val: p.clarte }].map(s => {
+                    const sColor = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500';
+                    return <div class="text-center"><span class={`block text-lg font-bold ${sColor}`}>{s.val}</span><span class="text-[10px] text-neutral-400">{s.label}</span></div>;
+                  })}
+                </div>
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <h3 class="text-base font-bold text-amber-800 mb-4 flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span>
+        Ceux qui hesitent <span class="text-sm font-normal text-amber-600">({kpis.nbHesitent})</span>
+      </h3>
+      <div class="space-y-3">
+        {personas.filter(p => p.decision === 'Hesite').map(p => (
+          <details class="group bg-white rounded-xl overflow-hidden shadow-sm border border-amber-200">
+            <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+              <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1 flex-wrap">
+                  <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                  <span class="text-[10px] bg-amber-500 text-white px-1.5 py-0.5 rounded font-medium">{p.decisionLabel}</span>
+                </div>
+                <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                  <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                  <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                </div>
+              </div>
+              <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <div class="px-4 pb-5 border-t border-amber-200">
+              <div class="grid gap-4 text-xs mt-4">
+                <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p><p class="text-neutral-600">{p.contexte}</p></div>
+                <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Premiere impression (5 sec)</p><p class="text-neutral-600">{p.impression}</p></div>
+                <div>
+                  <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours sur le site</p>
+                  <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                    {p.parcours.map(([section, reaction]: [string, string]) => (
+                      <li><strong class="text-neutral-800">{section}</strong>{reaction ? ` — ${reaction}` : ''}</li>
+                    ))}
+                  </ol>
+                </div>
+                <div class="bg-neutral-50 rounded-lg p-3">
+                  <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p>
+                  <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
+                  <p class="text-neutral-600">Le site repond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> — {p.commentReponse}</p>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div><p class="font-semibold text-green-700 mb-1.5">Points positifs</p><ul class="space-y-1 text-neutral-600">{p.positifs.map(pt => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">·</span>{pt}</li>)}</ul></div>
+                  <div><p class="font-semibold text-amber-700 mb-1.5">Frictions</p><ul class="space-y-1 text-neutral-600">{p.frictions.map(f => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">·</span>{f}</li>)}</ul></div>
+                </div>
+                <div class="bg-primary-50 rounded-lg p-3">
+                  <p class="font-semibold text-primary-700 text-[10px] uppercase tracking-wider mb-1">Ce qui le ferait passer a l'action</p>
+                  <p class="text-primary-800">{p.ceQuiFeraitBasculer}</p>
+                </div>
+                <div class="flex gap-6 pt-3 border-t border-neutral-100">
+                  {[{ label: 'Experience', val: p.exp }, { label: 'Confiance', val: p.conf }, { label: 'Clarte', val: p.clarte }].map(s => {
+                    const sColor = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500';
+                    return <div class="text-center"><span class={`block text-lg font-bold ${sColor}`}>{s.val}</span><span class="text-[10px] text-neutral-400">{s.label}</span></div>;
+                  })}
+                </div>
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+
+    <div class="rounded-xl p-5 mb-10 bg-amber-50 border border-amber-200 flex items-start gap-3">
+      <span class="text-lg shrink-0 mt-0.5">💡</span>
+      <div>
+        <p class="text-sm font-medium text-amber-900">Ce visiteur a besoin de vos services.</p>
+        <p class="text-xs text-amber-700 mt-1">Il lui manque un element de rassurance pour passer a l'action. C'est votre plus gros levier de croissance.</p>
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <h3 class="text-base font-bold text-neutral-600 mb-4 flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-neutral-400 inline-block"></span>
+        Ceux qui repartent <span class="text-sm font-normal text-neutral-500">({kpis.nbRepartent})</span>
+      </h3>
+      <div class="space-y-3">
+        {personas.filter(p => p.decision === 'Quitte').map(p => (
+          <details class="group bg-white rounded-xl overflow-hidden shadow-sm border border-neutral-200">
+            <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+              <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1 flex-wrap">
+                  <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                  <span class="text-[10px] bg-neutral-400 text-white px-1.5 py-0.5 rounded font-medium">{p.decisionLabel}</span>
+                </div>
+                <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                  <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                  <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                </div>
+              </div>
+              <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <div class="px-4 pb-5 border-t border-neutral-200">
+              <div class="grid gap-4 text-xs mt-4">
+                <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p><p class="text-neutral-600">{p.contexte}</p></div>
+                <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Premiere impression (5 sec)</p><p class="text-neutral-600">{p.impression}</p></div>
+                <div>
+                  <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours sur le site</p>
+                  <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                    {p.parcours.map(([section, reaction]: [string, string]) => (
+                      <li><strong class="text-neutral-800">{section}</strong>{reaction ? ` — ${reaction}` : ''}</li>
+                    ))}
+                  </ol>
+                </div>
+                <div class="bg-neutral-50 rounded-lg p-3">
+                  <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p>
+                  <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
+                  <p class="text-neutral-600">Le site repond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> — {p.commentReponse}</p>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div><p class="font-semibold text-green-700 mb-1.5">Points positifs</p><ul class="space-y-1 text-neutral-600">{p.positifs.map(pt => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">·</span>{pt}</li>)}</ul></div>
+                  <div><p class="font-semibold text-amber-700 mb-1.5">Frictions</p><ul class="space-y-1 text-neutral-600">{p.frictions.map(f => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">·</span>{f}</li>)}</ul></div>
+                </div>
+                <div class="bg-primary-50 rounded-lg p-3">
+                  <p class="font-semibold text-primary-700 text-[10px] uppercase tracking-wider mb-1">Ce qui l'aurait retenu</p>
+                  <p class="text-primary-800">{p.ceQuiFeraitBasculer}</p>
+                </div>
+                <div class="flex gap-6 pt-3 border-t border-neutral-100">
+                  {[{ label: 'Experience', val: p.exp }, { label: 'Confiance', val: p.conf }, { label: 'Clarte', val: p.clarte }].map(s => {
+                    const sColor = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500';
+                    return <div class="text-center"><span class={`block text-lg font-bold ${sColor}`}>{s.val}</span><span class="text-[10px] text-neutral-400">{s.label}</span></div>;
+                  })}
+                </div>
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+
+    <div class="rounded-xl p-5 bg-neutral-100 border border-neutral-200 flex items-start gap-3">
+      <span class="text-lg shrink-0 mt-0.5">📉</span>
+      <div>
+        <p class="text-sm font-medium text-neutral-800">Chaque visiteur qui repart, c'est un client en moins.</p>
+        <p class="text-xs text-neutral-600 mt-1">Certains n'etaient pas dans votre cible — c'est normal. Mais d'autres avaient un vrai besoin et votre site ne les a pas convaincus.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. CE QU'ON RECOMMANDE -->
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <h2 class="text-2xl font-bold text-neutral-900 mb-2">Ce qu'on recommande</h2>
+  <p class="text-neutral-600 mb-8">La priorite numero 1 identifiee sur vos 5 visiteurs.</p>
+  <p class="text-sm font-semibold text-red-700 mb-4">Si vous ne changez qu'une chose, changez ca :</p>
+  <div class="space-y-4 mb-12">
+    {ameliorationsHautes.map(a => (
+      <div class="bg-white border-2 border-red-200 rounded-xl p-6 shadow-sm">
+        <div class="flex items-start justify-between gap-4 mb-3">
+          <h4 class="font-bold text-neutral-900">{a.titre}</h4>
+          <span class="text-[10px] px-2 py-1 rounded-full bg-red-100 text-red-700 font-semibold shrink-0 whitespace-nowrap">{a.impact}</span>
+        </div>
+        <p class="text-sm text-neutral-600 mb-3">{a.pourquoi}</p>
+        <div class="bg-neutral-50 rounded-lg px-4 py-3 flex items-start gap-2">
+          <svg class="w-4 h-4 text-neutral-400 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+          <p class="text-xs text-neutral-700">{a.action}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+  {showUpsell && (
+    <div class="rounded-2xl p-8 text-center border-2 border-dashed" style="border-color: #E86C47; background: rgba(232,108,71,0.03);">
+      <p class="text-lg font-bold text-neutral-900 mb-2">{kpis.nbPersonas} visiteurs, c'est une tendance.</p>
+      <p class="text-sm text-neutral-600 mb-6">Avec 20 visiteurs (Echo Complet), ces frictions deviennent des certitudes. Avec 100 (Echo Pro), vous savez exactement quel canal investir.</p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+        <a href="/echo/" class="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-xl transition-all shadow-md hover:-translate-y-0.5" style="background: linear-gradient(135deg, #E86C47, #D4572F);">Echo Complet — 90€ <span class="text-xs opacity-70 ml-1">(20 visiteurs)</span></a>
+        <a href="/echo/" class="inline-flex items-center gap-2 px-6 py-3 border border-neutral-300 text-neutral-700 font-semibold rounded-xl transition-all hover:border-[#E86C47] hover:text-[#E86C47]">Echo Pro — 250€ <span class="text-xs opacity-70 ml-1">(100 visiteurs)</span></a>
+      </div>
+    </div>
+  )}
+</section>
+
+<!-- 5. SOUS LE CAPOT -->
+<section class="py-16 border-t border-neutral-200">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-2xl font-bold text-neutral-900 mb-2">Sous le capot</h2>
+    <p class="text-neutral-600 mb-8">Pour les curieux : ce que les outils techniques disent de votre site.</p>
+    <div class="flex flex-wrap gap-3 mb-10">
+      {techVerdicts.map(v => (
+        <div class={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium ${v.ok ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
+          {v.ok ? <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> : <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}
+          <span>{v.label}</span><span class="text-xs opacity-70">{v.verdict}</span>
+        </div>
+      ))}
+    </div>
+
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+        <div class="flex items-center gap-3"><span class="text-base">⚡</span><div><h3 class="font-semibold text-neutral-900 text-sm">Vitesse du site</h3><p class="text-[11px] text-neutral-500">{techVerdicts[0].detail}</p></div></div>
+        <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 border-t border-neutral-100">
+        <div class="py-4">
+          <p class="text-sm text-neutral-600">Donnees estimees lors de l'audit (quota API epuise). Le site utilise un CMS classique (Drupal/Joomla) sans optimisation detectee.</p>
+          <p class="text-xs text-neutral-500 mt-2">LCP estime : 4–6s sur mobile (seuil "bon" : &lt;2,5s). CLS : 0,1–0,2 (seuil : &lt;0,1). INP : 300–500ms (seuil : &lt;200ms).</p>
+          <a href={`https://pagespeed.web.dev/report?url=${urlSite}`} target="_blank" class="text-sm text-primary-600 underline hover:text-primary-800 mt-2 inline-block">Tester sur PageSpeed →</a>
+        </div>
+      </div>
+    </details>
+
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+        <div class="flex items-center gap-3"><span class="text-base">🔒</span><div><h3 class="font-semibold text-neutral-900 text-sm">Securite</h3><p class="text-[11px] text-neutral-500">{techVerdicts[1].detail}</p></div></div>
+        <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 border-t border-neutral-100">
+        <p class="text-xs text-neutral-500 py-2">Note estimee : {tech.observatory.grade} ({tech.observatory.testsOk}/{tech.observatory.testsTotal} tests passes)</p>
+        {tech.headers.map(h => (
+          <div class="flex items-center gap-2 py-1">
+            {h.ok ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> : <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}
+            <span class={`text-xs ${h.ok ? 'text-neutral-600' : 'text-red-500'}`}>{h.h}</span>
+          </div>
+        ))}
+      </div>
+    </details>
+
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+        <div class="flex items-center gap-3"><span class="text-base">📊</span><div><h3 class="font-semibold text-neutral-900 text-sm">Donnees structurees (Schema.org)</h3><p class="text-[11px] text-neutral-500">{techVerdicts[3].detail}</p></div></div>
+        <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 border-t border-neutral-100">
+        {tech.schema.map(s => (
+          <div class="flex items-center gap-2 py-1">
+            {s.ok ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> : <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}
+            <span class={`text-xs ${s.ok ? 'text-neutral-600' : 'text-red-500 font-medium'}`}>{s.item}</span>
+          </div>
+        ))}
+      </div>
+    </details>
+
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+        <div class="flex items-center gap-3"><span class="text-base">🔗</span><div><h3 class="font-semibold text-neutral-900 text-sm">Apercu reseaux sociaux (Open Graph)</h3><p class="text-[11px] text-neutral-500">{techVerdicts[4].detail}</p></div></div>
+        <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 border-t border-neutral-100">
+        {tech.og.map(o => (
+          <div class="flex items-start gap-2 py-1">
+            {o.ok ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> : <svg class="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>}
+            <span class={`text-xs ${o.ok ? 'text-neutral-600' : 'text-neutral-500'}`}>{o.item} <span class="text-neutral-400">{o.val}</span></span>
+          </div>
+        ))}
+      </div>
+    </details>
+
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden bg-white">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+        <div class="flex items-center gap-3"><span class="text-base">🔍</span><div><h3 class="font-semibold text-neutral-900 text-sm">SEO technique</h3><p class="text-[11px] text-neutral-500">{techVerdicts[2].detail}</p></div></div>
+        <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 border-t border-neutral-100">
+        {tech.seo.map(s => (
+          <div class="flex items-center gap-2 py-1">
+            {s.ok ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> : <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}
+            <span class={`text-xs ${s.ok ? 'text-neutral-600' : 'text-red-500'}`}>{s.item}</span>
+          </div>
+        ))}
+      </div>
+    </details>
+
+    <div class="mt-8 rounded-xl p-5 bg-white border border-neutral-200 flex items-start gap-3">
+      <span class="text-lg shrink-0 mt-0.5">🔧</span>
+      <div>
+        <p class="text-sm font-medium text-neutral-800">Tout ca est corrigeable.</p>
+        <p class="text-xs text-neutral-600 mt-1">Un site bien construit obtient 90+ sur tous les indicateurs. C'est ce que je livre a mes clients.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. METHODOLOGIE -->
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-neutral-200">
+  <h2 class="text-base font-bold text-neutral-900 mb-4">Comment ca marche</h2>
+  <ol class="space-y-3 text-sm text-neutral-600">
+    <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">1</span><span>On scrape votre site — on lit chaque page comme un visiteur le ferait</span></li>
+    <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">2</span><span>On audite la technique — vitesse, securite, referencement, donnees structurees</span></li>
+    <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">3</span><span>On cree {kpis.nbPersonas} profils realistes — adaptes a votre secteur et votre zone geographique</span></li>
+    <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">4</span><span>Chaque profil visite votre site et donne son avis — premiere impression, parcours, decision</span></li>
+    <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">5</span><span>On compile les resultats — frictions recurrentes, canaux performants, recommandations</span></li>
+  </ol>
+  <div class="mt-6 p-4 rounded-lg bg-neutral-50 text-xs text-neutral-500">
+    <strong>Note :</strong> 5 visiteurs donnent une tendance. 20 (Echo Complet) la confirment. 100 (Echo Pro) la prouvent statistiquement.
+  </div>
+</section>
+
+<!-- 7. CTA FINAL -->
+<section class="relative w-full px-6 py-20 overflow-hidden" style="background: #0A0A0A;">
+  <div class="absolute bottom-[10%] right-[10%] w-[400px] h-[400px] rounded-full blur-[160px] pointer-events-none" style="background: #E86C47; opacity: 0.05;"></div>
+  <div class="relative mx-auto max-w-3xl z-10 text-center">
+    <h2 class="text-2xl md:text-3xl font-bold text-white mb-4 leading-tight">5 visiteurs. Imaginez ce que 20 reveleraient.</h2>
+    <p class="text-sm mb-8" style="color: rgba(255,255,255,0.5);">L'Echo Complet analyse 20 profils avec audit technique et recommandations priorisees. L'Echo Pro : 100 visiteurs, analyse par canal, et un appel pour en discuter.</p>
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+      <a href="/echo/" class="inline-flex items-center gap-2 px-8 py-4 text-white font-semibold rounded-xl transition-all shadow-lg hover:-translate-y-0.5" style="background: linear-gradient(135deg, #E86C47, #D4572F); box-shadow: 0 4px 24px rgba(232, 108, 71, 0.35);">
+        Echo Complet — 90€
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      </a>
+      <a href="/contact" class="inline-flex items-center gap-2 px-8 py-4 border border-neutral-600 font-semibold rounded-xl transition-all hover:border-white/40" style="color: rgba(255,255,255,0.6);">En discuter d'abord</a>
+    </div>
+  </div>
+</section>
+
+</BaseLayout>
