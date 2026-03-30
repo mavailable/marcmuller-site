@@ -1,9 +1,10 @@
 ---
-interface Props {
+import type { HTMLAttributes } from 'astro/types';
+
+interface Props extends HTMLAttributes<'a'> {
   href: string;
   variant?: 'primary' | 'secondary' | 'outline' | 'ghost';
   size?: 'sm' | 'md' | 'lg' | 'xl';
-  class?: string;
   icon?: boolean;
   arrow?: boolean;
 }
@@ -15,6 +16,7 @@ const {
   class: customClass = '',
   icon = false,
   arrow = false,
+  ...rest
 } = Astro.props;
 
 const baseStyles = 'inline-flex items-center justify-center gap-2 font-medium transition-all duration-300 rounded-lg focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[var(--color-accent)]';
@@ -36,7 +38,7 @@ const sizeStyles = {
 const combinedClass = `${baseStyles} ${variantStyles[variant]} ${sizeStyles[size]} ${customClass}`;
 ---
 
-<a {href} class={combinedClass}>
+<a {href} {...rest} class={combinedClass}>
   {icon && (
     <slot name="icon" />
   )}
