@@ -84,7 +84,7 @@ const demoPersonas = [
       </p>
 
       <div class="flex flex-col sm:flex-row gap-4">
-        <a href="#formulaire" class="inline-flex items-center justify-center rounded-xl px-8 py-4 text-base font-semibold text-white transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5" style="background: linear-gradient(135deg, #E86C47, #D4572F); box-shadow: 0 4px 20px rgba(232, 108, 71, 0.3);">
+        <a href="?formule=gratuit#formulaire" class="inline-flex items-center justify-center rounded-xl px-8 py-4 text-base font-semibold text-white transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5" style="background: linear-gradient(135deg, #E86C47, #D4572F); box-shadow: 0 4px 20px rgba(232, 108, 71, 0.3);">
           Tester mon site gratuitement
         </a>
         <a href="/audit/marcm/" class="inline-flex items-center justify-center rounded-xl border px-8 py-4 text-base font-semibold transition-all duration-300 hover:bg-white/[0.07] hover:text-white" style="border-color: rgba(255,255,255,0.15); color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.03);">
@@ -316,7 +316,7 @@ const demoPersonas = [
             <li class="flex items-start gap-2.5 text-sm" style="color: var(--color-text);"><span class="text-emerald-500 shrink-0 mt-0.5">✓</span>Résultats par email</li>
           </ul>
 
-          <a href="#formulaire" class="block w-full text-center px-6 py-3.5 rounded-xl font-semibold border-2 transition-all duration-200 hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]" style="border-color: var(--color-border); color: var(--color-text);">
+          <a href="?formule=gratuit#formulaire" class="block w-full text-center px-6 py-3.5 rounded-xl font-semibold border-2 transition-all duration-200 hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]" style="border-color: var(--color-border); color: var(--color-text);">
             Tester gratuitement
           </a>
         </div>
@@ -340,7 +340,7 @@ const demoPersonas = [
             <li class="flex items-start gap-2.5 text-sm" style="color: var(--color-text);"><span class="text-emerald-500 shrink-0 mt-0.5">✓</span>Page dédiée privée sur marcm.fr</li>
           </ul>
 
-          <a href="#formulaire" class="block w-full text-center px-6 py-3.5 rounded-xl font-semibold text-white transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5" style="background: linear-gradient(135deg, #E86C47, #D4572F); box-shadow: 0 4px 20px rgba(232, 108, 71, 0.3);">
+          <a href="?formule=complet#formulaire" class="block w-full text-center px-6 py-3.5 rounded-xl font-semibold text-white transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5" style="background: linear-gradient(135deg, #E86C47, #D4572F); box-shadow: 0 4px 20px rgba(232, 108, 71, 0.3);">
             Commander — 90€ HT
           </a>
         </div>
@@ -363,7 +363,7 @@ const demoPersonas = [
             <li class="flex items-start gap-2.5 text-sm" style="color: var(--color-text);"><span class="text-emerald-500 shrink-0 mt-0.5">✓</span>Appel de 30 min pour parcourir le rapport</li>
           </ul>
 
-          <a href="#formulaire" class="block w-full text-center px-6 py-3.5 rounded-xl font-semibold border-2 transition-all duration-200 hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]" style="border-color: var(--color-border); color: var(--color-text);">
+          <a href="?formule=pro#formulaire" class="block w-full text-center px-6 py-3.5 rounded-xl font-semibold border-2 transition-all duration-200 hover:border-[var(--color-accent)] hover:text-[var(--color-accent)]" style="border-color: var(--color-border); color: var(--color-text);">
             Commander — 250€ HT
           </a>
         </div>
@@ -530,6 +530,50 @@ const demoPersonas = [
       </div>
     </div>
   </section>
+
+  <script is:inline>
+    (function () {
+      function updateRadioLabels() {
+        document.querySelectorAll('input[name="formule"]').forEach(function (radio) {
+          var label = radio.closest('label');
+          if (!label) return;
+          if (radio.checked) {
+            label.style.borderColor = '#E86C47';
+            label.style.background = 'rgba(232,108,71,0.08)';
+          } else {
+            label.style.borderColor = 'rgba(255,255,255,0.1)';
+            label.style.background = 'rgba(255,255,255,0.04)';
+          }
+        });
+      }
+
+      function init() {
+        // Pré-sélection via ?formule=gratuit|complet|pro
+        var params = new URLSearchParams(window.location.search);
+        var formule = params.get('formule');
+        if (formule) {
+          document.querySelectorAll('input[name="formule"]').forEach(function (radio) {
+            var v = radio.value.toLowerCase();
+            if (formule === 'gratuit' && v.startsWith('gratuit')) radio.checked = true;
+            else if (formule === 'complet' && v.startsWith('complet')) radio.checked = true;
+            else if (formule === 'pro' && v.startsWith('pro')) radio.checked = true;
+          });
+        }
+
+        // Initialiser le visuel + écouter les changements
+        updateRadioLabels();
+        document.querySelectorAll('input[name="formule"]').forEach(function (radio) {
+          radio.addEventListener('change', updateRadioLabels);
+        });
+      }
+
+      if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', init);
+      } else {
+        init();
+      }
+    })();
+  </script>
 
   <!-- Shimmer animation for hero accent text -->
   <style is:inline>
