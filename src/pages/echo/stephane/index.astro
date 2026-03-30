@@ -1,0 +1,1105 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const slug = 'stephane';
+const formule: 'decouverte' | 'complet' | 'pro' = 'complet';
+const formuleLabel = 'Echo Complet';
+const nomProspect = 'Stephane Berge';
+const urlSite = 'https://stephane.cc/';
+const dateAudit = '30 mars 2026';
+const showUpsell = true;
+
+const kpis = {
+  nbPersonas: 20,
+  nbConvertissent: 6,
+  nbHesitent: 6,
+  nbRepartent: 8,
+  conversion: 30,
+  experience: 4.4,
+  confiance: 5.1,
+  clarte: 4.4,
+};
+
+const verdictHero = '6 visiteurs sur 20 vous contactent. Les 14 autres ? On sait pourquoi.';
+
+const constat = "Votre site convertit les gens qui arrivent deja convaincus — par un ami ou par une IA. Pour tous les autres, il manque un tarif, un formulaire, et des preuves que vous travaillez aussi hors de la tech.";
+
+const canalData = [
+  { canal: 'IA (ChatGPT, Perplexity, Claude)', nb: 3, convert: 2, rate: 67 },
+  { canal: 'Bouche-a-oreille', nb: 4, convert: 2, rate: 50 },
+  { canal: 'LinkedIn', nb: 4, convert: 1, rate: 25 },
+  { canal: 'Google Search', nb: 6, convert: 1, rate: 17 },
+  { canal: 'Reseaux sociaux', nb: 2, convert: 0, rate: 0 },
+  { canal: 'Google Maps', nb: 1, convert: 0, rate: 0 },
+];
+
+const personas = [
+  {
+    id: 2, name: 'Sophie', age: 35, emoji: '\u{1F4BB}',
+    situation: 'CEO startup SaaS B2B, vient de recruter un SDR',
+    canal: 'LinkedIn', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: "Post LinkedIn convaincant, temoignages SaaS qui resonnent — reserve un call TidyCal sans hesiter.",
+    localisation: 'Paris', maturite: 'Decouverte',
+    contexte: "A vu un post de Stephane sur la prospection IA dans son feed LinkedIn. Vient de recruter un SDR qu'elle veut equiper rapidement.",
+    impression: "Design sombre qui lui parle (culture startup). Comprend immediatement le positionnement acquisition B2B.",
+    parcours: [['Hero', 'Message clair, resonance immediate'], ['About', '15 ans XP, code + IA = toutes ses cases cochees'], ['Temoignages', 'Paul (Hiscale), Omid (SecondBody) = ses pairs'], ['CTA TidyCal', 'Reserve 15 min sans friction']],
+    questionCle: "Est-ce qu'il connait vraiment le SaaS B2B ?",
+    reponse: 'Oui', commentReponse: "Les temoignages de CEO SaaS (Hiscale, BuddiesHR, SecondBody) repondent directement.",
+    impactVitesse: "LCP 5.4s — a failli quitter pendant le chargement", impactConfiance: "Title 'Landing Page' invisible (arrivee via LinkedIn)",
+    positifs: ['Temoignages de pairs CEO/startup', 'Double competence tech + growth', 'CTA TidyCal = friction basse'],
+    frictions: ['Chargement mobile 5.4s', 'Pas de cas client SaaS detaille', 'Pas de tarif visible'],
+    ceQuiFeraitBasculer: '', exp: 6, conf: 8, clarte: 6,
+  },
+  {
+    id: 4, name: 'Nathalie', age: 51, emoji: '\u{1F3ED}',
+    situation: 'Dirigeante cabinet RH, pipeline commercial a sec',
+    canal: 'Bouche-a-oreille', device: 'Desktop', decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: "Recommandee par un ami dirigeant — les temoignages confirment, elle reserve malgre le design 'tech'.",
+    localisation: 'Nancy', maturite: 'Decision',
+    contexte: "Son pipeline commercial est a sec depuis 3 mois. Un ami dirigeant lui a recommande Stephane.",
+    impression: "Design sombre 'tech' pas son univers. Mais fait confiance a la recommandation.",
+    parcours: [['Hero', "Comprend 'expert acquisition B2B', ca correspond"], ['Temoignages', "'Submergee par les RDV' (Pauline) = exactement son besoin"], ['About', '15 ans XP la rassure'], ['CTA TidyCal', 'Reserve malgre le format inhabituel']],
+    questionCle: "Est-ce qu'il comprend mon secteur ?",
+    reponse: 'Partiellement', commentReponse: "Aucun temoignage RH/conseil, mais resultats decrits sont transposables.",
+    impactVitesse: "Desktop correct, CLS fait sauter le hero", impactConfiance: "Title 'Landing Page' la surprend mais ne bloque pas",
+    positifs: ['Recommandation personnelle', '15 ans XP', 'Temoignages concrets avec resultats', '"Submergee par les RDV" resonne'],
+    frictions: ['Design sombre deconnecte de son univers RH', 'CLS visible', 'Pas de temoignage RH/conseil', 'Pas de mentions legales'],
+    ceQuiFeraitBasculer: '', exp: 5, conf: 7, clarte: 5,
+  },
+  {
+    id: 7, name: 'Karim', age: 38, emoji: '\u{1F916}',
+    situation: 'CTO startup IA post-levee, cherche growth partner',
+    canal: 'IA (ChatGPT)', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: "Recommande par ChatGPT, le profil tech+growth est rare — reserve un call malgre le title 'Landing Page'.",
+    localisation: 'Paris', maturite: 'Comparaison',
+    contexte: "Levee de fonds recente, besoin d'accelerer l'acquisition. A demande a ChatGPT le meilleur expert growth B2B France.",
+    impression: "Design sombre qui lui plait (culture tech). Le hero anime capte son attention.",
+    parcours: [['Hero', 'Message clair, direct'], ['Temoignages', 'Paul (Hiscale), Omid (SecondBody) le convainquent'], ['About', 'Double competence tech + growth = rare et precieux'], ['Outils', 'Contenu pertinent, bons outils'], ['CTA TidyCal', 'Format startup naturel, clique']],
+    questionCle: "Est-ce qu'il est vraiment technique ou juste marketing ?",
+    reponse: 'Oui', commentReponse: "La mention d'agents IA, code, no-code confirme la competence tech.",
+    impactVitesse: "LCP 5.4s perceptible, CLS fait perdre sa position de lecture", impactConfiance: "Title 'Landing Page' contradictoire pour un expert growth",
+    positifs: ['Pre-qualification IA', 'Design sombre = sa culture', 'Double competence tech+growth', 'Temoignages chiffres'],
+    frictions: ["Title 'Landing Page'", 'LCP 5.4s mobile', 'CLS 0.28', 'Pas de cas detaille avec metriques'],
+    ceQuiFeraitBasculer: '', exp: 6, conf: 7, clarte: 7,
+  },
+  {
+    id: 12, name: 'Francois', age: 60, emoji: '\u{1F4DA}',
+    situation: 'Consultant senior strategie, veut lancer prospection LinkedIn',
+    canal: 'Bouche-a-oreille', device: 'Desktop', decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: "Recommande par un ancien collegue — les 15 ans d'XP et les temoignages le rassurent, reserve un TidyCal.",
+    localisation: 'Paris', maturite: 'Decision',
+    contexte: "Veut lancer de la prospection LinkedIn mais ne sait pas comment. Recommande par un ancien collegue.",
+    impression: "Design 'jeune/startup' mais il cherche la substance, pas le visuel.",
+    parcours: [['Hero', "Comprend 'expert acquisition B2B'"], ['About', '15 ans = meme generation professionnelle'], ['Temoignages', 'CEO serieux, temoignages en anglais = envergure'], ['CTA TidyCal', 'Reserve 15 min']],
+    questionCle: "Est-ce qu'il peut adapter son approche a un senior ?",
+    reponse: 'Partiellement', commentReponse: "Pas de mention explicite de seniors, mais le ton et l'experience laissent penser que oui.",
+    impactVitesse: "Desktop correct, CLS leger", impactConfiance: "Title 'Landing Page' le fait tiquer mais ne bloque pas",
+    positifs: ['Recommandation personnelle decisive', '15 ans XP', 'Temoignages credibles', 'TidyCal 15 min sans engagement'],
+    frictions: ["Title 'Landing Page'", "Design 'startup'", 'Pas de mentions legales', 'Pas de tarif'],
+    ceQuiFeraitBasculer: '', exp: 6, conf: 7, clarte: 5,
+  },
+  {
+    id: 14, name: 'Romain', age: 41, emoji: '\u{1F4BC}',
+    situation: 'Co-fondateur agence recrutement tech, 15 personnes',
+    canal: 'Google Search', device: 'Desktop', decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: "Expert cold email + LinkedIn + IA = exactement ce dont ses recruteurs ont besoin. Reserve malgre l'absence de cas recrutement.",
+    localisation: 'Lyon', maturite: 'Decision',
+    contexte: "Ses recruteurs tech galèrent avec le cold outreach. Cherche un expert.",
+    impression: "Design 'expert tech' qui correspond a son univers. CLS fait sauter le texte mais il continue.",
+    parcours: [['Hero', 'Expert acquisition B2B, cold email, LinkedIn — son besoin exact'], ['About', '15 ans XP, IA + growth + code'], ['Temoignages', 'Paul (Hiscale), J.Y (BuddiesHR) = profils tech'], ['Formation', 'Programme 5 semaines transposable au recrutement'], ['CTA TidyCal', 'Reserve pour discuter adaptation']],
+    questionCle: "Est-ce qu'il peut adapter ca au recrutement tech ?",
+    reponse: 'Partiellement', commentReponse: "Pas de cas client recrutement, mais cold email B2B = meme skill quel que soit le secteur.",
+    impactVitesse: "Desktop correct, CLS notable", impactConfiance: "Title amateur pour un expert tech",
+    positifs: ['Expertise cold email + LinkedIn + IA', 'Temoignages ecosysteme tech', '15 ans XP', 'Programme formation structure'],
+    frictions: ['Aucun cas client recrutement', 'Pas de tarif', "Title 'Landing Page'", 'Pas de formulaire devis'],
+    ceQuiFeraitBasculer: '', exp: 6, conf: 7, clarte: 5,
+  },
+  {
+    id: 19, name: 'Sarah', age: 39, emoji: '\u{1F3AF}',
+    situation: 'Head of Sales startup deeptech, doit former 3 commerciaux',
+    canal: 'IA (Claude)', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: "Formation 5 semaines cadre avec son delai de 2 mois. Temoignages startup la rassurent — reserve un TidyCal.",
+    localisation: 'Paris', maturite: 'Comparaison',
+    contexte: "Doit former 3 nouveaux commerciaux en 2 mois. A demande a Claude un expert en formation B2B France.",
+    impression: "Comprend immediatement le positionnement. Les 15 ans XP la rassurent.",
+    parcours: [['Hero', 'Acquisition B2B, 15 ans XP — correspond'], ['Temoignages', 'Paul (Hiscale) = son monde'], ['About', '14 clients 2025, tech + growth'], ['Formation', '5 semaines, petits groupes, 100% pratique — cadre parfait'], ['CTA TidyCal', 'Reserve pour valider tarif et format']],
+    questionCle: "Est-ce que 5 semaines suffisent pour des commerciaux juniors ?",
+    reponse: 'Partiellement', commentReponse: "Programme detaille mais pas de mention de pre-requis ou de niveau.",
+    impactVitesse: "LCP 5.4s — a failli quitter entre deux reunions", impactConfiance: "Absence de structured data = Claude ne recommande pas en premier",
+    positifs: ['Temoignages de pairs CEO startup', 'Formation 5 sem = bon timing', 'Double competence tech/growth', 'TidyCal simple'],
+    frictions: ['LCP 5.4s mobile', 'Prix vague', 'Pas de pre-requis mentionnes', 'Navigation incoherente', 'Pas d\'OG pour partage Slack'],
+    ceQuiFeraitBasculer: '', exp: 6, conf: 7, clarte: 5,
+  },
+  {
+    id: 1, name: 'Thomas', age: 42, emoji: '\u{1F454}',
+    situation: 'DG PME industrielle, commercial senior parti',
+    canal: 'Google Search', device: 'Desktop', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: "Temoignages convaincants mais aucun tarif — impossible de presenter un budget a son DAF. Met en favori, mais risque de partir chez un concurrent.",
+    localisation: 'Strasbourg', maturite: 'Comparaison',
+    contexte: "Son commercial senior vient de partir, les juniors n'ont pas de methode. Cherche un expert pour structurer la prospection.",
+    impression: "Comprend le positionnement, mais title 'Landing Page' fait amateur. CLS fait sauter le hero.",
+    parcours: [['Hero', 'Comprend acquisition B2B, curieux grace aux chiffres'], ['Temoignages', 'Quasi tous tech/startup, aucun industriel'], ['About', '15 ans XP rassure'], ['Formation', 'Programme interessant mais tarif "plusieurs k" vague'], ['CTA', 'TidyCal/WhatsApp trop informel pour un DG']],
+    questionCle: "Combien ca coute et combien de temps avant les premiers resultats ?",
+    reponse: 'Non', commentReponse: "Aucun tarif clair, aucune timeline de resultats.",
+    impactVitesse: "Desktop OK, CLS desagreable", impactConfiance: "Title 'Landing Page' sape la credibilite",
+    positifs: ['8 temoignages concrets', '15 ans XP', 'Newsletter GrowthOutbound', 'Hero anime = impression technique'],
+    frictions: ['Aucun tarif', 'Pas de process affiche', 'Temoignages trop tech', 'CTA informels', 'Navigation incoherente', "Title 'Landing Page'"],
+    ceQuiFeraitBasculer: "Un tarif affiche et un formulaire de demande de devis", exp: 5, conf: 6, clarte: 4,
+  },
+  {
+    id: 3, name: 'Marc-Antoine', age: 28, emoji: '\u{1F3AF}',
+    situation: 'SDR scale-up, resultats stagnent',
+    canal: 'Google Search', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: "Programme parfait, mais impossible de connaitre le prix ni de mentionner un financement OPCO. Garde l'onglet, ira voir les concurrents.",
+    localisation: 'Lyon', maturite: 'Comparaison',
+    contexte: "Resultats qui stagnent, manager qui met la pression. Cherche une formation concrete.",
+    impression: "Title 'Landing Page' dans Google = pas credible face aux concurrents. LCP 5.4s long.",
+    parcours: [['Formation', 'Programme 5 semaines concret, exactement son besoin'], ['Prix', "'Plusieurs k euros' — coeur serre"], ['CTA WhatsApp', 'Devoir appeler pour le prix = frein majeur']],
+    questionCle: "C'est combien et est-ce que mon entreprise peut financer ?",
+    reponse: 'Partiellement', commentReponse: "'Plusieurs k euros' est vague. Aucune mention OPCO, CPF ou financement.",
+    impactVitesse: "5.4s LCP frustrant quand on compare 4-5 onglets", impactConfiance: "Title 'Landing Page' dans Google = perte de credibilite",
+    positifs: ['Programme bien structure', 'Approche 100% pratique', 'Outils IA modernes', 'Petits groupes'],
+    frictions: ['Pas de tarif precis', 'Pas de financement mentionne', 'LCP lent', 'Navigation incoherente', 'CTA WhatsApp trop informel'],
+    ceQuiFeraitBasculer: "Un tarif precis avec mention 'eligible OPCO / prise en charge employeur'", exp: 4, conf: 5, clarte: 5,
+  },
+  {
+    id: 9, name: 'Camille', age: 31, emoji: '\u{270D}\u{FE0F}',
+    situation: 'Copywriter freelance, veut proposer du copywriting outbound',
+    canal: 'Reseaux sociaux', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: "Convaincue de la valeur mais bloquee — pas d'email, pas de formulaire. Enverra peut-etre un DM Twitter.",
+    localisation: 'Toulouse', maturite: 'Decouverte',
+    contexte: "A vu un retweet sur la formation. Veut proposer ses services de copywriting outbound.",
+    impression: "Hero accrocheur. Son oeil de copywriter remarque que le titre pourrait etre plus percutant.",
+    parcours: [['Hero', 'Comprend le positionnement'], ['Temoignages', 'Valide l\'activite, resulats credibles'], ['Formation', 'Revele des besoins en copywriting'], ['Contact', 'Pas de formulaire, pas d\'email — bloquee']],
+    questionCle: "Puis-je proposer mes services de copywriting a Stephane ?",
+    reponse: 'Partiellement', commentReponse: "L'activite justifie la collaboration, mais aucun canal de contact adapte.",
+    impactVitesse: "CLS fait sauter le contenu pendant la lecture", impactConfiance: "Pas de mentions legales notees",
+    positifs: ['Contenu riche prouvant l\'expertise', 'Newsletter = besoin de contenu', 'Formation = besoin de copywriting'],
+    frictions: ['Aucun formulaire', 'CTA WhatsApp trop personnel', 'Pas d\'email visible', 'Melange FR/EN desorientant'],
+    ceQuiFeraitBasculer: "Un formulaire de contact ou une adresse email visible sur le site", exp: 5, conf: 6, clarte: 5,
+  },
+  {
+    id: 11, name: 'Lea', age: 29, emoji: '\u{1F3A8}',
+    situation: 'Fondatrice cosmetiques naturels, lance prospection B2B instituts',
+    canal: 'LinkedIn', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: "Le programme colle a son besoin mais zero preuve que ca marche hors tech. Va demander a la fondatrice qui l'a recommandee.",
+    localisation: 'Annecy', maturite: 'Comparaison',
+    contexte: "Lance sa prospection B2B vers les instituts et spas. Recommandee dans un groupe LinkedIn de fondatrices.",
+    impression: "Univers visuel 100% tech/startup. Se demande si elle est au bon endroit.",
+    parcours: [['Hero', 'Animations GSAP, mots tech — pas son univers'], ['About', '15 ans XP mais aucun secteur beaute mentionne'], ['Temoignages', '8 temoignages, 0 hors tech'], ['CTA TidyCal', 'Hesite a cliquer']],
+    questionCle: "Est-ce qu'il peut m'aider meme si je ne suis pas dans la tech ?",
+    reponse: 'Non', commentReponse: "Aucun temoignage, aucun exemple, aucune mention de secteurs non-tech.",
+    impactVitesse: "LCP 5.4s — a failli quitter", impactConfiance: "Absence de footer structure, pas de mentions legales",
+    positifs: ['8 temoignages credibles', 'Programme formation structure', 'Newsletter signal d\'expertise', '15 ans XP'],
+    frictions: ['Univers visuel tech/startup', 'Zero exemple hors tech', 'Tarif vague', 'CTA WhatsApp informel', 'Navigation incoherente'],
+    ceQuiFeraitBasculer: "Un temoignage d'un client hors tech ou une phrase 'j'accompagne tous les secteurs'", exp: 4, conf: 5, clarte: 4,
+  },
+  {
+    id: 16, name: 'David', age: 48, emoji: '\u{1F3D7}\u{FE0F}',
+    situation: 'Gerant BTP 30 salaries, veut marches promoteurs',
+    canal: 'Bouche-a-oreille', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: "Son ami l'a recommande mais le site renforce ses doutes — jargon IA, zero ref BTP. Va rappeler son ami pour confirmer.",
+    localisation: 'Mulhouse', maturite: 'Decision',
+    contexte: "Veut decrocher des marches avec des promoteurs immobiliers. Recommande par un ami chef d'entreprise.",
+    impression: "'Agents IA', 'growth', 'no-code' — se dit 'c'est pour les startups'.",
+    parcours: [['Hero', 'Comprend acquisition B2B mais jargon IA le refroidit'], ['Temoignages', '8 CEO startups, 0 BTP/industrie. Temoignages anglais ignores.'], ['About', '15 ans XP rassure, 14 clients en 2025 = peu pour juger'], ['CTA', 'Note le WhatsApp mais ne contacte pas']],
+    questionCle: "Ca marche aussi pour le BTP ?",
+    reponse: 'Non', commentReponse: "Aucune mention de secteurs hors tech/digital.",
+    impactVitesse: "LCP 5.4s mobile en 4G — a la limite", impactConfiance: "Pas d'impact direct, mais absence de mentions legales le generait",
+    positifs: ['Recommandation ami', '15 ans XP', 'WhatsApp = canal familier pour un gerant BTP', '100% clients satisfaits'],
+    frictions: ['Jargon omnipresent', 'Zero ref hors tech', 'Pas de tarif', 'Temoignages anglais', 'Pas de page secteurs'],
+    ceQuiFeraitBasculer: "Un temoignage d'un gerant PME hors tech avec des resultats concrets", exp: 4, conf: 5, clarte: 3,
+  },
+  {
+    id: 20, name: 'Guillaume', age: 45, emoji: '\u{1F6E1}\u{FE0F}',
+    situation: 'DSI ESN 80 personnes, verifie le site avant un RDV',
+    canal: 'Bouche-a-oreille', device: 'Desktop', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: "Ouvre les DevTools avant de lire le contenu. Zero header securite, title template — signale un doute a son directeur commercial.",
+    localisation: 'Strasbourg', maturite: 'Decision',
+    contexte: "Son directeur commercial lui a demande de 'checker le site' avant de signer un contrat de formation.",
+    impression: "Title 'Landing Page' dans l'onglet = premier signal negatif. Ouvre DevTools immediatement.",
+    parcours: [['DevTools Headers', 'CSP absent, HSTS absent, X-Frame absent — grimace'], ['DevTools Console', 'Erreurs console — ne tolere pas ca'], ['Source', 'Tailwind CDN, pas de minification optimale'], ['Contenu', 'Temoignages CEO tech credibles, 15 ans XP']],
+    questionCle: "Si son propre site n'est pas secure, peut-on lui confier notre formation digitale ?",
+    reponse: 'Non', commentReponse: "L'absence de headers, le title template et les erreurs console contredisent le positionnement 'expert tech'.",
+    impactVitesse: "CLS 0.28 visible, site qui bouge", impactConfiance: "Grade D-, 0/6 headers securite = redhibitoire pour un DSI",
+    positifs: ['HTTPS actif', 'HTTP/2 Cloudflare', 'Temoignages CEO tech', '15 ans XP'],
+    frictions: ["Title 'Landing Page'", '0/6 headers securite', 'Erreurs console', 'CLS visible', 'Tailwind CDN', 'Pas de mentions legales', 'Navigation incoherente'],
+    ceQuiFeraitBasculer: "Un site techniquement propre : headers securite, title correct, build compile, zero erreur console", exp: 4, conf: 3, clarte: 5,
+  },
+  {
+    id: 5, name: 'Julien', age: 33, emoji: '\u{1F680}',
+    situation: 'Growth marketer freelance, cherche outils gratuits',
+    canal: 'Google Search', device: 'Mobile', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: "A obtenu les 3 liens d'outils qu'il cherchait. Quitte sans laisser d'email — opportunite de lead nurturing gachee.",
+    localisation: 'Bordeaux', maturite: 'Decouverte',
+    contexte: "Veut reduire ses couts d'outils. Cherche des alternatives gratuites a HubSpot.",
+    impression: "Page outils sans pitch commercial — bonne approche. Mais 5.4s de chargement pour 3 liens.",
+    parcours: [['Outils', 'Decouvre prospection.cc, Pomelli, TotLeads — pertinent'], ['Liens externes', 'Clique sur prospection.cc pour tester'], ['Retour', 'Pas de raison de rester, quitte']],
+    questionCle: "Ces outils sont-ils vraiment gratuits et fiables ?",
+    reponse: 'Partiellement', commentReponse: "Outils listes mais pas de comparatif ni de mention explicite 'gratuit' pour chacun.",
+    impactVitesse: "5.4s pour 3 liens — disproportionne", impactConfiance: "S'en fiche, il est la pour les liens",
+    positifs: ['Pas de gated content', '3 outils pertinents', 'Prospection.cc repond a sa recherche'],
+    frictions: ['Chargement 5.4s pour 3 liens', 'Pas de description detaillee', 'Lien affilie sans mention', 'Pas de CTA newsletter', 'Aucune raison de revenir'],
+    ceQuiFeraitBasculer: "Un formulaire newsletter 'recevez un outil gratuit par semaine' sur la page outils", exp: 4, conf: 5, clarte: 6,
+  },
+  {
+    id: 6, name: 'Isabelle', age: 47, emoji: '\u{1F4CA}',
+    situation: 'Directrice commerciale ETI, 8 commerciaux a moderniser',
+    canal: 'LinkedIn', device: 'Desktop', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: "Cherche un dispositif pour 8 personnes. Pas d'offre equipe, pas de tarif, pas de SIRET — incompatible avec son processus achat.",
+    localisation: 'Lille', maturite: 'Decouverte',
+    contexte: "Veut moderniser les pratiques de son equipe de 8 commerciaux. Connait GrowthOutbound.",
+    impression: "Design 'freelance personnel', pas un prestataire capable d'accompagner une ETI.",
+    parcours: [['Hero', "'C'est une seule personne ?'"], ['Temoignages', 'Que des freelances/petites structures'], ['About', 'Confirme : freelance solo'], ['Formation', "Programme individuel, pas d'offre equipe"], ['Footer', 'Pas de mentions legales, pas de SIRET']],
+    questionCle: "Peut-il former mon equipe de 8 commerciaux ?",
+    reponse: 'Non', commentReponse: "Tout est oriente solo/freelance. Aucune offre equipe, aucun tarif entreprise.",
+    impactVitesse: "CLS 0.28 = impression d'instabilite", impactConfiance: "Pas de mentions legales = signal d'alerte pour un achat a plusieurs k euros",
+    positifs: ['15 ans XP', 'Temoignages reels', 'Newsletter qu\'elle connait'],
+    frictions: ['Aucune offre entreprise/equipe', 'Aucun tarif', 'CTA WhatsApp', 'Pas de mentions legales/SIRET', 'Temoignages solopreneurs', 'Navigation incoherente', 'Melange FR/EN'],
+    ceQuiFeraitBasculer: "Une page 'Formation equipes' avec tarif entreprise et formulaire de devis", exp: 4, conf: 3, clarte: 4,
+  },
+  {
+    id: 8, name: 'Pierre', age: 55, emoji: '\u{1F527}',
+    situation: 'Artisan plombier, veut trouver clients pro',
+    canal: 'Google Search', device: 'Mobile', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: "Arrive sur un site de 'jeu video tech'. Ne comprend rien. Quitte en 15 secondes.",
+    localisation: 'Metz', maturite: 'Decouverte',
+    contexte: "Les chantiers particuliers baissent, veut se diversifier vers le B2B. Tape 'trouver clients B2B artisan'.",
+    impression: "Ecran sombre, jargon anglais. Pense etre sur un site de jeu video ou une appli.",
+    parcours: [['Hero', "Termes incomprehensibles : 'acquisition B2B', 'growth', 'outbound'"], ['Scroll', 'Design sombre illisible en exterieur (chantier, soleil)'], ['Temoignages', 'CEO, fondateurs startup — personne ne lui ressemble'], ['Abandon', 'Retour Google en 40 secondes']],
+    questionCle: "Comment trouver plus de clients pour ma plomberie ?",
+    reponse: 'Non', commentReponse: "Le site s'adresse a un public tech/startup. Barriere culturelle et cognitive totale.",
+    impactVitesse: "5.4s sur 4G chantier — a failli quitter avant le contenu", impactConfiance: "Sans importance, n'est jamais alle assez loin",
+    positifs: [],
+    frictions: ['Jargon incomprehensible', 'Design illisible en exterieur', 'LCP 5.4s', 'Zero temoignage artisan/TPE', 'Probleme de ciblage SEO'],
+    ceQuiFeraitBasculer: "Rien — Pierre n'est pas la cible et c'est normal", exp: 2, conf: 2, clarte: 1,
+  },
+  {
+    id: 10, name: 'Antoine', age: 44, emoji: '\u{1F4F1}',
+    situation: 'Directeur commercial agence immo, cherche consultant local',
+    canal: 'Google Maps', device: 'Mobile', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: "Cherche sur Google Maps, Stephane n'y est pas. Invisible = inexistant pour lui.",
+    localisation: 'Montpellier', maturite: 'Comparaison',
+    contexte: "Besoin de former ses agents a la prospection digitale. Reflexe : Google Maps.",
+    impression: "Pas de fiche GBP. S'il atteint le site : pas d'adresse, pas de telephone, pas de zone.",
+    parcours: [['Google Maps', "Stephane n'apparait pas — aucune fiche"], ['Accueil (si atteint)', 'Pas d\'ancrage local visible'], ['Temoignages', 'Tech/startup, pas immobilier'], ['Abandon', 'Ferme et continue sur Maps']],
+    questionCle: "Est-ce un consultant fiable et accessible dans ma region ?",
+    reponse: 'Non', commentReponse: "Aucune info localisation, aucune fiche GBP, aucun telephone, aucune ref immobilier.",
+    impactVitesse: "Secondaire — le verdict est tranche par l'absence de GBP", impactConfiance: "Pas de GBP = pas d'avis Google = n'existe pas localement",
+    positifs: ['15 ans XP', 'Site visuellement travaille'],
+    frictions: ['Aucune fiche GBP', 'Aucune adresse', 'Aucun telephone', 'Aucune zone d\'intervention', 'Zero ref immobilier', 'Pas de SIRET/mentions', 'CTA inadaptes'],
+    ceQuiFeraitBasculer: "Une fiche Google Business Profile complete avec avis clients", exp: 3, conf: 2, clarte: 4,
+  },
+  {
+    id: 13, name: 'Emilie', age: 36, emoji: '\u{1F4CA}',
+    situation: 'Responsable marketing editeur logiciel B2B, budget formation',
+    canal: 'IA (Perplexity)', device: 'Mobile', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: "Budget alloue mais impossible d'obtenir un tarif ou un devis. CTA WhatsApp redhibitoire. Choisit un concurrent avec page Entreprises.",
+    localisation: 'Nantes', maturite: 'Comparaison',
+    contexte: "Budget formation alloue, doit presenter un comparatif a sa direction.",
+    impression: "LCP 5.4s, design 'freelance perso', pas 'prestataire entreprise'.",
+    parcours: [['Accueil', 'Titre flou, pas de sous-titre formation explicite'], ['Scroll', "Temoignages sans format 'cas client'"], ['Formation', "'Plusieurs k euros' — pas de grille tarifaire"], ['Contact', 'WhatsApp uniquement — redhibitoire']],
+    questionCle: "Ou est le tarif et comment obtenir un devis ?",
+    reponse: 'Non', commentReponse: "Aucun tarif precis, formulaire devis, PDF programme ou email visible.",
+    impactVitesse: "5.4s mobile = mauvaise premiere impression face aux concurrents rapides", impactConfiance: "Pas d'OG = Perplexity n'a pas affiche d'apercu riche",
+    positifs: ['Programme bien structure', 'Newsletter credible', 'Temoignages reels'],
+    frictions: ['LCP 5.4s', 'Aucun tarif', 'Pas de formulaire devis', 'CTA WhatsApp', 'Pas de page Entreprise', 'Pas de PDF programme', "Title 'Landing Page'", 'Pas de mentions legales'],
+    ceQuiFeraitBasculer: "Une page Formation avec tarif clair, PDF programme et formulaire devis", exp: 3, conf: 4, clarte: 3,
+  },
+  {
+    id: 15, name: 'Aurelie', age: 34, emoji: '\u{1F331}',
+    situation: 'Fondatrice asso environnementale, cherche outils partenariats',
+    canal: 'Reseaux sociaux', device: 'Mobile', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: "Vocabulaire 100% commercial. Univers 'machine a vendre' a l'oppose de sa culture associative. Quitte en 45 secondes.",
+    localisation: 'Grenoble', maturite: 'Decouverte',
+    contexte: "A vu un partage Instagram de la page outils. Cherche des outils pour contacter des entreprises partenaires.",
+    impression: "Design sombre, outils 'prospection', 'scraping', 'CRM' — a l'oppose de son univers associatif.",
+    parcours: [['Outils', "'Scraping', 'pipeline', 'Sales Navigator' — vocabulaire commercial"], ['Accueil', "'Acquisition B2B', 'growth', 'cold email' — machine a vendre"], ['Abandon', 'Quitte en 45 secondes']],
+    questionCle: "Ces outils marchent aussi pour du non-commercial ?",
+    reponse: 'Non', commentReponse: "Presentation exclusivement commerciale B2B. Aucune mention d'usage non-lucratif.",
+    impactVitesse: "LCP 5.4s penible", impactConfiance: "Design 'startup' ne rassure pas une fondatrice asso",
+    positifs: ['Outils effectivement gratuits', 'Page courte et facile a scanner'],
+    frictions: ['Vocabulaire 100% commercial', 'Design oppose a son univers', 'Navigation incoherente', 'Lien affilie sans mention', 'Pas de question possible'],
+    ceQuiFeraitBasculer: "Rien — Aurelie n'est pas la cible", exp: 2, conf: 3, clarte: 4,
+  },
+  {
+    id: 17, name: 'Marine', age: 26, emoji: '\u{1F4C8}',
+    situation: 'Business developer junior fintech, petit budget',
+    canal: 'LinkedIn', device: 'Mobile', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: "Formation trop chere pour son budget perso. Pas d'offre intermediaire. Continuera a lire la newsletter gratuitement.",
+    localisation: 'Paris', maturite: 'Decouverte',
+    contexte: "Suit la newsletter GrowthOutbound. Curieuse du site de l'auteur, veut se former aux meilleures pratiques.",
+    impression: "Design 'cool tech' qui lui plait, mais le positionnement 'accompagnement' semble pour des entreprises, pas des juniors.",
+    parcours: [['Hero', 'Positionnement entreprises, pas individus'], ['Temoignages', 'CEO et VP — profils senior'], ['Formation', "'Plusieurs k euros' — au-dela de son budget"], ['Outils', 'Utile mais ne remplace pas une formation']],
+    questionCle: "C'est accessible pour un junior avec un petit budget ?",
+    reponse: 'Non', commentReponse: "Formation a plusieurs k euros, pas d'offre decouverte ni de contenu de formation gratuit.",
+    impactVitesse: "LCP 5.4s acceptable, animation masque partiellement", impactConfiance: "Title 'Landing Page' la fait tiquer",
+    positifs: ['Newsletter GrowthOutbound = confiance prealable', 'Programme structure', '3 outils gratuits', 'Design esthetique'],
+    frictions: ['Prix inatteignable', "Pas d'offre intermediaire", 'Formation orientee managers', 'Navigation chaotique', 'Pas d\'OG pour partage LinkedIn'],
+    ceQuiFeraitBasculer: "Un ebook, mini-formation ou webinaire a moins de 100 euros", exp: 5, conf: 6, clarte: 4,
+  },
+  {
+    id: 18, name: 'Philippe', age: 52, emoji: '\u{1F3E5}',
+    situation: 'DG cliniques veterinaires, cherche partenariats labos',
+    canal: 'Google Search', device: 'Desktop', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: "Title 'Landing Page' dans Google, zero reference hors digital. Quitte en 25 secondes. Deconnexion totale.",
+    localisation: 'Rennes', maturite: 'Decouverte',
+    contexte: "Veut developper des partenariats avec des labos et assureurs. Tape 'prospection B2B veterinaire'.",
+    impression: "Title 'Landing Page' = pas credible. Site sombre, animations, jargon tech — pas son monde.",
+    parcours: [['Google', "Title 'Landing Page' = snippet pauvre"], ['Hero', "'Acquisition B2B', 'agents IA' — startups, pas veterinaire"], ['Temoignages', 'Que des noms tech/digital'], ['Abandon', '20-25 secondes']],
+    questionCle: "A-t-il deja travaille hors du digital ?",
+    reponse: 'Non', commentReponse: "8 temoignages exclusivement tech/startup/SaaS.",
+    impactVitesse: "CLS 0.28 visible — contenu hero se decale", impactConfiance: "Title 'Landing Page' confirme impression 'brouillon'",
+    positifs: ['15 ans XP', 'Site visuellement travaille'],
+    frictions: ["Title 'Landing Page'", 'Zero ref hors tech', 'Design startup', 'CLS visible', 'Jargon impenetrable', 'Pas de sitemap'],
+    ceQuiFeraitBasculer: "Rien — Philippe n'est pas la cible", exp: 3, conf: 3, clarte: 2,
+  },
+];
+
+const techVerdicts = [
+  { label: 'Vitesse', verdict: 'Lent sur mobile', ok: false, detail: 'Votre site met plus de 5 secondes a s\'afficher sur telephone' },
+  { label: 'Securite', verdict: 'D-', ok: false, detail: 'Aucun en-tete de securite configure' },
+  { label: 'SEO', verdict: 'A ameliorer', ok: false, detail: 'Title generique, pas de meta description, pas de sitemap' },
+  { label: 'Donnees structurees', verdict: 'Absent', ok: false, detail: 'Google et les IA ne comprennent pas votre activite' },
+  { label: 'Partage reseaux', verdict: 'Image manquante', ok: false, detail: 'Aucun apercu quand on partage votre lien sur LinkedIn' },
+];
+
+const tech = {
+  observatory: { grade: 'D-', score: 25, testsOk: 5, testsTotal: 10 },
+  pagespdMobile: { performance: 71, accessibility: 94, bestPractices: 92, seo: 92 },
+  pagespdDesktop: { performance: 82, accessibility: 92, bestPractices: 92, seo: 92 },
+  cwv: { lcp: '5.4 s', inp: '0 ms', cls: '0.28' },
+  headers: [
+    { ok: false, h: 'Content-Security-Policy' },
+    { ok: false, h: 'X-Content-Type-Options' },
+    { ok: false, h: 'X-Frame-Options' },
+    { ok: false, h: 'Strict-Transport-Security (HSTS)' },
+    { ok: false, h: 'Referrer-Policy' },
+    { ok: false, h: 'Permissions-Policy' },
+  ],
+  schema: [
+    { item: 'JSON-LD present', ok: false },
+    { item: '@type ProfessionalService', ok: false },
+    { item: 'name, url, description', ok: false },
+    { item: 'address + geo', ok: false },
+    { item: 'telephone', ok: false },
+    { item: 'image / logo', ok: false },
+    { item: 'sameAs (LinkedIn)', ok: false },
+  ],
+  og: [
+    { item: 'og:title', ok: false, val: 'absent' },
+    { item: 'og:description', ok: false, val: 'absent' },
+    { item: 'og:image', ok: false, val: 'absent' },
+    { item: 'og:url', ok: false, val: 'absent' },
+    { item: 'og:type', ok: false, val: 'absent' },
+    { item: 'twitter:card', ok: false, val: 'absent' },
+  ],
+  seo: [
+    { item: 'Un seul H1 par page', ok: true },
+    { item: 'Title optimise', ok: false },
+    { item: 'Meta description', ok: false },
+    { item: 'Images avec attribut alt', ok: false },
+    { item: 'robots.txt', ok: true },
+    { item: 'sitemap.xml', ok: false },
+    { item: 'Redirection HTTP vers HTTPS', ok: true },
+  ],
+};
+
+const ameliorationsHautes = [
+  {
+    titre: 'Afficher vos tarifs',
+    pourquoi: "14 visiteurs sur 20 cherchent un prix. Sans tarif, ils ne peuvent pas budgetiser ni presenter votre offre a leur manager. Ils partent comparer ailleurs.",
+    action: "Ajouter au minimum 'A partir de X euros HT' sur la page d'accueil, et un tarif precis + mention 'eligible OPCO' sur la page formation.",
+    impact: '14 visiteurs sur 20',
+  },
+  {
+    titre: 'Diversifier vos temoignages',
+    pourquoi: "Vos 8 temoignages sont tous de CEO tech/startup. Les dirigeants de PME, cabinets de conseil, agences ou BTP ne se reconnaissent pas — et ils representent la moitie de vos visiteurs.",
+    action: "Ajouter 2-3 temoignages de clients hors tech. Meme courts, ils prouveraient que votre methode marche dans tous les secteurs.",
+    impact: '10 visiteurs sur 20',
+  },
+  {
+    titre: 'Ajouter un formulaire de contact',
+    pourquoi: "WhatsApp et TidyCal conviennent aux startups, mais les responsables marketing, dirigeantes d'ETI et consultants seniors refusent d'envoyer un WhatsApp a un inconnu. Ils veulent un formulaire ou un email.",
+    action: "Ajouter un formulaire de contact classique (nom, email, message) en plus du TidyCal et WhatsApp. Ajouter aussi une adresse email visible.",
+    impact: '7 visiteurs sur 20',
+  },
+  {
+    titre: 'Corriger le titre de votre site',
+    pourquoi: "Votre onglet navigateur affiche 'Landing Page'. Dans les resultats Google, c'est ce titre qui apparait. Ca donne une impression de site inacheve et fait fuir les visiteurs serieux.",
+    action: "Remplacer par un titre descriptif : 'Stephane Berge — Expert acquisition B2B | Formation prospection email & LinkedIn'. Ajouter une meta description de 155 caracteres.",
+    impact: '8 visiteurs sur 20',
+  },
+];
+
+const ameliorationsUtiles = [
+  { titre: 'Accelerer le chargement mobile', detail: "Votre site met 5.4 secondes a s'afficher sur telephone. La cause : le CSS Tailwind est charge depuis un serveur externe au lieu d'etre compile. Un build optimise diviserait ce temps par 3." },
+  { titre: 'Ajouter les en-tetes de securite', detail: "Votre site obtient D- en securite (25/100). Il manque 6 en-tetes standards. Un simple fichier de configuration sur Cloudflare corrigerait ca en 5 minutes et passerait la note a A." },
+  { titre: 'Rendre votre site visible pour les IA', detail: "Ni ChatGPT, ni Claude, ni Perplexity ne trouvent facilement vos informations. Des donnees structurees (Schema.org) leur permettraient de vous recommander plus souvent." },
+  { titre: 'Unifier la navigation', detail: "Vos 3 pages ont chacune un design different. On a l'impression de visiter 3 sites differents. Un header et un style coherents rassureraient vos visiteurs." },
+];
+
+const ameliorationsDiscuter = [
+  { emoji: '\u{1F4CD}', titre: 'Creer une fiche Google Business', detail: "Un de vos visiteurs cherchait sur Google Maps et ne vous a pas trouve. Une fiche GBP gratuite vous rendrait visible localement et permettrait de collecter des avis." },
+  { emoji: '\u{1F393}', titre: 'Proposer une offre intermediaire', detail: "Plusieurs visiteurs ont un budget limite (juniors, freelances). Un ebook, un webinaire ou une mini-formation a moins de 100 euros capterait ce public qui repart aujourd'hui les mains vides." },
+  { emoji: '\u{1F30D}', titre: 'Choisir une langue', detail: "Vos temoignages melangent francais et anglais sans explication. Certains visiteurs trouvent ca international, d'autres trouvent ca confus. A clarifier selon votre positionnement." },
+];
+---
+
+<BaseLayout title="Echo Complet — stephane.cc" description="Rapport Echo Complet : 20 visiteurs ont teste votre site. Voici ce qu'ils en pensent." noindex={true} lang="fr" frPath="/echo/stephane">
+
+<!-- 1. HERO -->
+<section class="relative w-full px-6 py-20 md:py-28 overflow-hidden" style="background: #0A0A0A;">
+  <div class="absolute top-[20%] left-[10%] w-[500px] h-[500px] rounded-full blur-[180px] pointer-events-none" style="background: #E86C47; opacity: 0.06;"></div>
+  <div class="relative mx-auto max-w-4xl z-10">
+
+    <div class="mb-6 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5);">
+      {formuleLabel} &middot; Rapport confidentiel
+    </div>
+
+    <h1 class="mb-6 text-3xl md:text-4xl font-bold text-white leading-tight tracking-tight">
+      {verdictHero}
+    </h1>
+
+    <p class="mb-10 text-sm" style="color: rgba(255,255,255,0.4);">
+      Site analyse : <a href={urlSite} target="_blank" class="underline hover:text-white transition-colors">{urlSite}</a> &middot; {kpis.nbPersonas} visiteurs simules &middot; {dateAudit}
+    </p>
+
+    <div class="grid grid-cols-3 gap-4">
+      <div class="rounded-xl p-5 text-center" style="background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2);">
+        <div class="text-4xl md:text-5xl font-black text-green-400 mb-1">{kpis.nbConvertissent}</div>
+        <div class="text-sm text-green-400/70">vous contactent</div>
+      </div>
+      <div class="rounded-xl p-5 text-center" style="background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2);">
+        <div class="text-4xl md:text-5xl font-black text-amber-400 mb-1">{kpis.nbHesitent}</div>
+        <div class="text-sm text-amber-400/70">hesitent</div>
+      </div>
+      <div class="rounded-xl p-5 text-center" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
+        <div class="text-4xl md:text-5xl font-black mb-1" style="color: rgba(255,255,255,0.5);">{kpis.nbRepartent}</div>
+        <div class="text-sm" style="color: rgba(255,255,255,0.3);">repartent</div>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- 2. LE CONSTAT -->
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+
+  <div class="rounded-2xl p-6 md:p-8 mb-12 border-l-4" style="background: rgba(232,108,71,0.04); border-color: #E86C47;">
+    <p class="text-lg md:text-xl font-medium text-neutral-800 leading-relaxed">{constat}</p>
+  </div>
+
+  <h2 class="text-xl font-bold text-neutral-900 mb-2">D'ou viennent vos visiteurs</h2>
+  <p class="text-sm text-neutral-500 mb-6">Et combien vous contactent selon leur canal d'arrivee.</p>
+
+  <div class="space-y-4 mb-12">
+    {canalData.map(c => {
+      const color = c.rate >= 50 ? '#22c55e' : c.rate >= 25 ? '#f59e0b' : '#ef4444';
+      return (
+        <div class="flex items-center gap-4">
+          <div class="w-40 sm:w-48 text-sm text-neutral-700 shrink-0">{c.canal}</div>
+          <div class="flex-1 h-3 bg-neutral-100 rounded-full overflow-hidden">
+            <div class="h-full rounded-full transition-all" style={`width: ${c.rate}%; background: ${color}`}></div>
+          </div>
+          <div class="w-20 text-right">
+            <span class="text-sm font-bold" style={`color: ${color}`}>{c.rate}%</span>
+            <span class="text-xs text-neutral-400 ml-1">({c.convert}/{c.nb})</span>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+
+  <details class="group mb-4">
+    <summary class="flex items-center gap-2 cursor-pointer text-sm text-neutral-500 hover:text-neutral-700 py-2">
+      <svg class="w-4 h-4 transition-transform group-open:rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      Voir les scores detailles (experience, confiance, clarte)
+    </summary>
+    <div class="grid grid-cols-3 gap-4 mt-3">
+      <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
+        <div class="text-2xl font-bold text-neutral-800 mb-1">{kpis.experience}<span class="text-sm text-neutral-400">/10</span></div>
+        <div class="text-xs text-neutral-500">Experience</div>
+        <p class="text-[10px] text-neutral-400 mt-1">Navigation, lisibilite, fluidite</p>
+      </div>
+      <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
+        <div class="text-2xl font-bold text-neutral-800 mb-1">{kpis.confiance}<span class="text-sm text-neutral-400">/10</span></div>
+        <div class="text-xs text-neutral-500">Confiance</div>
+        <p class="text-[10px] text-neutral-400 mt-1">Credibilite, preuves, rassurance</p>
+      </div>
+      <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
+        <div class="text-2xl font-bold text-neutral-800 mb-1">{kpis.clarte}<span class="text-sm text-neutral-400">/10</span></div>
+        <div class="text-xs text-neutral-500">Clarte</div>
+        <p class="text-[10px] text-neutral-400 mt-1">Comprehension de l'offre et des prix</p>
+      </div>
+    </div>
+  </details>
+
+</section>
+
+<!-- 3. VOS VISITEURS -->
+<section class="py-16" style="background: #fafafa;">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <h2 class="text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs</h2>
+    <p class="text-neutral-600 mb-8">Voici ce qui se passe quand quelqu'un cherche vos services et tombe sur votre site.</p>
+
+    <div class="mb-10">
+      <h3 class="text-base font-bold text-green-800 mb-4 flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-green-500 inline-block"></span>
+        Ceux qui vous contactent
+        <span class="text-sm font-normal text-green-600">({kpis.nbConvertissent})</span>
+      </h3>
+      <div class="space-y-3">
+        {personas.filter(p => p.decision === 'Convertit').map(p => {
+          const borderColor = 'border-green-200';
+          const badgeBg = 'bg-green-600';
+          return (
+            <details class="group persona-card bg-white rounded-xl overflow-hidden shadow-sm border border-green-200" data-canal={p.canal}>
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-1 flex-wrap">
+                    <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                    <span class="text-[10px] bg-green-600 text-white px-1.5 py-0.5 rounded font-medium">{p.decisionLabel}</span>
+                  </div>
+                  <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                  </div>
+                </div>
+                <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </summary>
+              <div class="px-4 pb-5 border-t border-green-200">
+                <div class="grid gap-4 text-xs mt-4">
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p>
+                    <p class="text-neutral-600">{p.contexte}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Premiere impression (5 sec)</p>
+                    <p class="text-neutral-600">{p.impression}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours sur le site</p>
+                    <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                      {p.parcours.map(([section, reaction]: [string, string]) => (
+                        <li><strong class="text-neutral-800">{section}</strong>{reaction ? ` \u2014 ${reaction}` : ''}</li>
+                      ))}
+                    </ol>
+                  </div>
+                  <div class="bg-neutral-50 rounded-lg p-3">
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p>
+                    <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
+                    <p class="text-neutral-600">Le site repond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> \u2014 {p.commentReponse}</p>
+                  </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <p class="font-semibold text-green-700 mb-1.5">{'\u2713'} Points positifs</p>
+                      <ul class="space-y-1 text-neutral-600">{p.positifs.map((pt: string) => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">{'\u00B7'}</span>{pt}</li>)}</ul>
+                    </div>
+                    <div>
+                      <p class="font-semibold text-amber-700 mb-1.5">{'\u2717'} Frictions</p>
+                      <ul class="space-y-1 text-neutral-600">{p.frictions.map((f: string) => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">{'\u00B7'}</span>{f}</li>)}</ul>
+                    </div>
+                  </div>
+                  <div class="flex gap-6 pt-3 border-t border-neutral-100">
+                    {[
+                      { label: 'Experience', val: p.exp },
+                      { label: 'Confiance', val: p.conf },
+                      { label: 'Clarte', val: p.clarte },
+                    ].map(s => {
+                      const sColor = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500';
+                      return (
+                        <div class="text-center">
+                          <span class={`block text-lg font-bold ${sColor}`}>{s.val}</span>
+                          <span class="text-[10px] text-neutral-400">{s.label}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </details>
+          );
+        })}
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <h3 class="text-base font-bold text-amber-800 mb-4 flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span>
+        Ceux qui hesitent
+        <span class="text-sm font-normal text-amber-600">({kpis.nbHesitent})</span>
+      </h3>
+      <div class="space-y-3">
+        {personas.filter(p => p.decision === 'Hesite').map(p => (
+          <details class="group persona-card bg-white rounded-xl overflow-hidden shadow-sm border border-amber-200" data-canal={p.canal}>
+            <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+              <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1 flex-wrap">
+                  <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                  <span class="text-[10px] bg-amber-500 text-white px-1.5 py-0.5 rounded font-medium">{p.decisionLabel}</span>
+                </div>
+                <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                  <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                  <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                </div>
+              </div>
+              <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <div class="px-4 pb-5 border-t border-amber-200">
+              <div class="grid gap-4 text-xs mt-4">
+                <div>
+                  <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p>
+                  <p class="text-neutral-600">{p.contexte}</p>
+                </div>
+                <div>
+                  <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Premiere impression (5 sec)</p>
+                  <p class="text-neutral-600">{p.impression}</p>
+                </div>
+                <div>
+                  <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours sur le site</p>
+                  <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                    {p.parcours.map(([section, reaction]: [string, string]) => (
+                      <li><strong class="text-neutral-800">{section}</strong>{reaction ? ` \u2014 ${reaction}` : ''}</li>
+                    ))}
+                  </ol>
+                </div>
+                <div class="bg-neutral-50 rounded-lg p-3">
+                  <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p>
+                  <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
+                  <p class="text-neutral-600">Le site repond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> \u2014 {p.commentReponse}</p>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <p class="font-semibold text-green-700 mb-1.5">{'\u2713'} Points positifs</p>
+                    <ul class="space-y-1 text-neutral-600">{p.positifs.map((pt: string) => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">{'\u00B7'}</span>{pt}</li>)}</ul>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-amber-700 mb-1.5">{'\u2717'} Frictions</p>
+                    <ul class="space-y-1 text-neutral-600">{p.frictions.map((f: string) => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">{'\u00B7'}</span>{f}</li>)}</ul>
+                  </div>
+                </div>
+                {p.ceQuiFeraitBasculer && (
+                  <div class="rounded-lg p-3" style="background: rgba(232,108,71,0.05);">
+                    <p class="font-semibold text-[10px] uppercase tracking-wider mb-1" style="color: #E86C47;">Ce qui le ferait passer a l'action</p>
+                    <p style="color: #D4572F;">{p.ceQuiFeraitBasculer}</p>
+                  </div>
+                )}
+                <div class="flex gap-6 pt-3 border-t border-neutral-100">
+                  {[
+                    { label: 'Experience', val: p.exp },
+                    { label: 'Confiance', val: p.conf },
+                    { label: 'Clarte', val: p.clarte },
+                  ].map(s => {
+                    const sColor = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500';
+                    return (
+                      <div class="text-center">
+                        <span class={`block text-lg font-bold ${sColor}`}>{s.val}</span>
+                        <span class="text-[10px] text-neutral-400">{s.label}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+
+    <div class="rounded-xl p-5 mb-10 bg-amber-50 border border-amber-200 flex items-start gap-3">
+      <span class="text-lg shrink-0 mt-0.5">{'\u{1F4A1}'}</span>
+      <div>
+        <p class="text-sm font-medium text-amber-900">Ces {kpis.nbHesitent} visiteurs ont besoin de vos services.</p>
+        <p class="text-xs text-amber-700 mt-1">Il leur manque un element de rassurance pour passer a l'action. C'est votre plus gros levier de croissance.</p>
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <h3 class="text-base font-bold text-neutral-600 mb-4 flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-neutral-400 inline-block"></span>
+        Ceux qui repartent
+        <span class="text-sm font-normal text-neutral-500">({kpis.nbRepartent})</span>
+      </h3>
+      <div class="space-y-3">
+        {personas.filter(p => p.decision === 'Quitte').map(p => (
+          <details class="group persona-card bg-white rounded-xl overflow-hidden shadow-sm border border-neutral-200" data-canal={p.canal}>
+            <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+              <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1 flex-wrap">
+                  <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                  <span class="text-[10px] bg-neutral-400 text-white px-1.5 py-0.5 rounded font-medium">{p.decisionLabel}</span>
+                </div>
+                <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                  <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                  <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                </div>
+              </div>
+              <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <div class="px-4 pb-5 border-t border-neutral-200">
+              <div class="grid gap-4 text-xs mt-4">
+                <div>
+                  <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p>
+                  <p class="text-neutral-600">{p.contexte}</p>
+                </div>
+                <div>
+                  <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Premiere impression (5 sec)</p>
+                  <p class="text-neutral-600">{p.impression}</p>
+                </div>
+                <div>
+                  <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours sur le site</p>
+                  <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                    {p.parcours.map(([section, reaction]: [string, string]) => (
+                      <li><strong class="text-neutral-800">{section}</strong>{reaction ? ` \u2014 ${reaction}` : ''}</li>
+                    ))}
+                  </ol>
+                </div>
+                <div class="bg-neutral-50 rounded-lg p-3">
+                  <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p>
+                  <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
+                  <p class="text-neutral-600">Le site repond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> \u2014 {p.commentReponse}</p>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <p class="font-semibold text-green-700 mb-1.5">{'\u2713'} Points positifs</p>
+                    <ul class="space-y-1 text-neutral-600">{p.positifs.map((pt: string) => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">{'\u00B7'}</span>{pt}</li>)}</ul>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-amber-700 mb-1.5">{'\u2717'} Frictions</p>
+                    <ul class="space-y-1 text-neutral-600">{p.frictions.map((f: string) => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">{'\u00B7'}</span>{f}</li>)}</ul>
+                  </div>
+                </div>
+                {p.ceQuiFeraitBasculer && (
+                  <div class="rounded-lg p-3" style="background: rgba(232,108,71,0.05);">
+                    <p class="font-semibold text-[10px] uppercase tracking-wider mb-1" style="color: #E86C47;">Ce qui l'aurait retenu</p>
+                    <p style="color: #D4572F;">{p.ceQuiFeraitBasculer}</p>
+                  </div>
+                )}
+                <div class="flex gap-6 pt-3 border-t border-neutral-100">
+                  {[
+                    { label: 'Experience', val: p.exp },
+                    { label: 'Confiance', val: p.conf },
+                    { label: 'Clarte', val: p.clarte },
+                  ].map(s => {
+                    const sColor = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500';
+                    return (
+                      <div class="text-center">
+                        <span class={`block text-lg font-bold ${sColor}`}>{s.val}</span>
+                        <span class="text-[10px] text-neutral-400">{s.label}</span>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+
+    <div class="rounded-xl p-5 bg-neutral-100 border border-neutral-200 flex items-start gap-3">
+      <span class="text-lg shrink-0 mt-0.5">{'\u{1F4C9}'}</span>
+      <div>
+        <p class="text-sm font-medium text-neutral-800">Chaque visiteur qui repart, c'est un client en moins.</p>
+        <p class="text-xs text-neutral-600 mt-1">Certains n'etaient pas dans votre cible — c'est normal. Mais d'autres avaient un vrai besoin et votre site ne les a pas convaincus.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- 4. CE QU'ON RECOMMANDE -->
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+
+  <h2 class="text-2xl font-bold text-neutral-900 mb-2">Ce qu'on recommande</h2>
+  <p class="text-neutral-600 mb-8">Actions concretes, classees par impact sur vos visiteurs.</p>
+
+  <p class="text-sm font-semibold text-red-700 mb-4">Si vous ne changez que {ameliorationsHautes.length} choses :</p>
+
+  <div class="space-y-4 mb-12">
+    {ameliorationsHautes.map(a => (
+      <div class="bg-white border-2 border-red-200 rounded-xl p-6 shadow-sm">
+        <div class="flex items-start justify-between gap-4 mb-3">
+          <h4 class="font-bold text-neutral-900">{a.titre}</h4>
+          <span class="text-[10px] px-2 py-1 rounded-full bg-red-100 text-red-700 font-semibold shrink-0 whitespace-nowrap">{a.impact}</span>
+        </div>
+        <p class="text-sm text-neutral-600 mb-3">{a.pourquoi}</p>
+        <div class="bg-neutral-50 rounded-lg px-4 py-3 flex items-start gap-2">
+          <svg class="w-4 h-4 text-neutral-400 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+          <p class="text-xs text-neutral-700">{a.action}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <h3 class="text-lg font-bold text-neutral-900 mb-2">Utile aussi</h3>
+  <div class="grid md:grid-cols-2 gap-4 mb-12">
+    {ameliorationsUtiles.map(a => (
+      <div class="bg-white border border-neutral-200 rounded-xl p-5">
+        <h4 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h4>
+        <p class="text-xs text-neutral-600">{a.detail}</p>
+      </div>
+    ))}
+  </div>
+
+  <h3 class="text-lg font-bold text-neutral-900 mb-2">A discuter</h3>
+  <p class="text-sm text-neutral-500 mb-4">Decisions business — pas de bonne ou mauvaise reponse.</p>
+  <div class="space-y-3 mb-12">
+    {ameliorationsDiscuter.map(a => (
+      <div class="bg-neutral-50 border border-neutral-200 rounded-xl p-4 flex gap-3">
+        <span class="text-lg shrink-0">{a.emoji}</span>
+        <div>
+          <h4 class="font-semibold text-neutral-900 text-sm mb-0.5">{a.titre}</h4>
+          <p class="text-xs text-neutral-600">{a.detail}</p>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <div class="rounded-2xl p-8 text-center border-2 border-dashed" style="border-color: #E86C47; background: rgba(232,108,71,0.03);">
+    <p class="text-lg font-bold text-neutral-900 mb-2">
+      {kpis.nbPersonas} visiteurs confirment des tendances claires.
+    </p>
+    <p class="text-sm text-neutral-600 mb-6">
+      Avec 100 visiteurs (Echo Pro), vous obtenez une fiabilite statistique : analyse par canal, par maturite, et un appel de 30 min pour parcourir le rapport ensemble.
+    </p>
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+      <a href="/echo/" class="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-xl transition-all shadow-md hover:-translate-y-0.5" style="background: linear-gradient(135deg, #E86C47, #D4572F);">
+        Echo Pro — 250&#8364; <span class="text-xs opacity-70 ml-1">(100 visiteurs + appel 30 min)</span>
+      </a>
+    </div>
+  </div>
+
+</section>
+
+<!-- 5. SOUS LE CAPOT -->
+<section class="py-16 border-t border-neutral-200">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <h2 class="text-2xl font-bold text-neutral-900 mb-2">Sous le capot</h2>
+    <p class="text-neutral-600 mb-8">Pour les curieux : ce que les outils techniques disent de votre site.</p>
+
+    <div class="flex flex-wrap gap-3 mb-10">
+      {techVerdicts.map(v => (
+        <div class={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium ${v.ok ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
+          {v.ok
+            ? <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            : <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+          }
+          <span>{v.label}</span>
+          <span class="text-xs opacity-70">{v.verdict}</span>
+        </div>
+      ))}
+    </div>
+
+    <!-- PageSpeed -->
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+        <div class="flex items-center gap-3">
+          <span class="text-base">{'\u26A1'}</span>
+          <div>
+            <h3 class="font-semibold text-neutral-900 text-sm">Vitesse du site</h3>
+            <p class="text-[11px] text-neutral-500">{techVerdicts[0].detail}</p>
+          </div>
+        </div>
+        <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 border-t border-neutral-100">
+        <p class="text-xs text-neutral-500 py-2 mb-2">Scores Google PageSpeed Insights (mobile)</p>
+        <div class="grid grid-cols-4 gap-4 py-2">
+          {['Performance', 'Accessibilite', 'Bonnes pratiques', 'SEO'].map((label, i) => {
+            const scores = [tech.pagespdMobile.performance, tech.pagespdMobile.accessibility, tech.pagespdMobile.bestPractices, tech.pagespdMobile.seo];
+            const score = scores[i];
+            const color = score >= 90 ? '#22c55e' : score >= 50 ? '#f59e0b' : '#ef4444';
+            return (
+              <div class="text-center">
+                <div class="relative w-14 h-14 mx-auto mb-2">
+                  <svg class="w-14 h-14 -rotate-90" viewBox="0 0 36 36">
+                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3" />
+                    <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={color} stroke-width="3" stroke-dasharray={`${score}, 100`} stroke-linecap="round" />
+                  </svg>
+                  <span class="absolute inset-0 flex items-center justify-center text-sm font-bold" style={`color: ${color}`}>{score}</span>
+                </div>
+                <p class="text-[11px] text-neutral-600">{label}</p>
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </details>
+
+    <!-- Observatory -->
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+        <div class="flex items-center gap-3">
+          <span class="text-base">{'\u{1F512}'}</span>
+          <div>
+            <h3 class="font-semibold text-neutral-900 text-sm">Securite</h3>
+            <p class="text-[11px] text-neutral-500">{techVerdicts[1].detail}</p>
+          </div>
+        </div>
+        <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 border-t border-neutral-100">
+        <p class="text-xs text-neutral-500 py-2">Note : {tech.observatory.grade} ({tech.observatory.testsOk}/{tech.observatory.testsTotal} tests passes)</p>
+        {tech.headers.map(h => (
+          <div class="flex items-center gap-2 py-1">
+            {h.ok
+              ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              : <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            }
+            <span class={`text-xs ${h.ok ? 'text-neutral-600' : 'text-red-500'}`}>{h.h}</span>
+          </div>
+        ))}
+      </div>
+    </details>
+
+    <!-- Schema.org -->
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+        <div class="flex items-center gap-3">
+          <span class="text-base">{'\u{1F4CA}'}</span>
+          <div>
+            <h3 class="font-semibold text-neutral-900 text-sm">Donnees structurees (Schema.org)</h3>
+            <p class="text-[11px] text-neutral-500">{techVerdicts[3].detail}</p>
+          </div>
+        </div>
+        <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 border-t border-neutral-100">
+        {tech.schema.map(s => (
+          <div class="flex items-center gap-2 py-1">
+            {s.ok
+              ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              : <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            }
+            <span class={`text-xs ${s.ok ? 'text-neutral-600' : 'text-red-500 font-medium'}`}>{s.item}</span>
+          </div>
+        ))}
+      </div>
+    </details>
+
+    <!-- Open Graph -->
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+        <div class="flex items-center gap-3">
+          <span class="text-base">{'\u{1F517}'}</span>
+          <div>
+            <h3 class="font-semibold text-neutral-900 text-sm">Apercu reseaux sociaux (Open Graph)</h3>
+            <p class="text-[11px] text-neutral-500">{techVerdicts[4].detail}</p>
+          </div>
+        </div>
+        <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 border-t border-neutral-100">
+        {tech.og.map(o => (
+          <div class="flex items-start gap-2 py-1">
+            {o.ok
+              ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              : <svg class="w-3.5 h-3.5 text-amber-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+            }
+            <span class={`text-xs ${o.ok ? 'text-neutral-600' : 'text-neutral-500'}`}>{o.item} <span class="text-neutral-400">{o.val}</span></span>
+          </div>
+        ))}
+      </div>
+    </details>
+
+    <!-- SEO -->
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden bg-white">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+        <div class="flex items-center gap-3">
+          <span class="text-base">{'\u{1F50D}'}</span>
+          <div>
+            <h3 class="font-semibold text-neutral-900 text-sm">SEO technique</h3>
+            <p class="text-[11px] text-neutral-500">{techVerdicts[2].detail}</p>
+          </div>
+        </div>
+        <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 border-t border-neutral-100">
+        {tech.seo.map(s => (
+          <div class="flex items-center gap-2 py-1">
+            {s.ok
+              ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              : <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            }
+            <span class={`text-xs ${s.ok ? 'text-neutral-600' : 'text-red-500'}`}>{s.item}</span>
+          </div>
+        ))}
+      </div>
+    </details>
+
+    <div class="mt-8 rounded-xl p-5 bg-white border border-neutral-200 flex items-start gap-3">
+      <span class="text-lg shrink-0 mt-0.5">{'\u{1F527}'}</span>
+      <div>
+        <p class="text-sm font-medium text-neutral-800">Tout ca est corrigeable.</p>
+        <p class="text-xs text-neutral-600 mt-1">Un site bien construit obtient 90+ sur tous les indicateurs. C'est ce que je livre a mes clients.</p>
+      </div>
+    </div>
+
+  </div>
+</section>
+
+<!-- 6. METHODOLOGIE -->
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-neutral-200">
+  <h2 class="text-base font-bold text-neutral-900 mb-4">Comment ca marche</h2>
+  <ol class="space-y-3 text-sm text-neutral-600">
+    <li class="flex gap-3">
+      <span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">1</span>
+      <span>On scrape votre site — on lit chaque page comme un visiteur le ferait</span>
+    </li>
+    <li class="flex gap-3">
+      <span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">2</span>
+      <span>On audite la technique — vitesse, securite, referencement, donnees structurees</span>
+    </li>
+    <li class="flex gap-3">
+      <span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">3</span>
+      <span>On cree {kpis.nbPersonas} profils realistes — adaptes a votre secteur et votre zone geographique</span>
+    </li>
+    <li class="flex gap-3">
+      <span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">4</span>
+      <span>Chaque profil visite votre site et donne son avis — premiere impression, parcours, decision</span>
+    </li>
+    <li class="flex gap-3">
+      <span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">5</span>
+      <span>On compile les resultats — frictions recurrentes, canaux performants, recommandations</span>
+    </li>
+  </ol>
+</section>
+
+<!-- 7. CTA FINAL -->
+<section class="relative w-full px-6 py-20 overflow-hidden" style="background: #0A0A0A;">
+  <div class="absolute bottom-[10%] right-[10%] w-[400px] h-[400px] rounded-full blur-[160px] pointer-events-none" style="background: #E86C47; opacity: 0.05;"></div>
+  <div class="relative mx-auto max-w-3xl z-10 text-center">
+
+    <h2 class="text-2xl md:text-3xl font-bold text-white mb-4 leading-tight">
+      20 visiteurs. Imaginez ce que 100 prouveraient.
+    </h2>
+    <p class="text-sm mb-8" style="color: rgba(255,255,255,0.5);">
+      L'Echo Pro : 100 visiteurs pour une fiabilite statistique, analyse par canal et par maturite, et 30 minutes ensemble pour parcourir le rapport.
+    </p>
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+      <a href="/echo/" class="inline-flex items-center gap-2 px-8 py-4 text-white font-semibold rounded-xl transition-all shadow-lg hover:-translate-y-0.5" style="background: linear-gradient(135deg, #E86C47, #D4572F); box-shadow: 0 4px 24px rgba(232, 108, 71, 0.35);">
+        Echo Pro — 250&#8364;
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      </a>
+      <a href="/contact" class="inline-flex items-center gap-2 px-8 py-4 border border-neutral-600 font-semibold rounded-xl transition-all hover:border-white/40" style="color: rgba(255,255,255,0.6);">
+        En discuter d'abord
+      </a>
+    </div>
+
+  </div>
+</section>
+
+</BaseLayout>
