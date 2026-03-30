@@ -15,7 +15,8 @@ export default defineConfig({
         !page.includes('/designers') &&
         !page.includes('/supaire') &&
         !page.includes('/audit/') &&
-        !page.includes('/echo/'),
+        !page.includes('/echo/') &&
+        !page.includes('/formation'),
       i18n: {
         defaultLocale: 'fr',
         locales: {
