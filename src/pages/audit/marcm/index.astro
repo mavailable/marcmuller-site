@@ -1,8 +1,16 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 
-const title = 'Audit UX + Technique — Marc M | Auto-audit 120 personas';
+const title = 'Audit UX + Technique — Marc M | Auto-audit 120 personas (V4)';
 const description = 'Rapport confidentiel : simulation de 120 visites personas + audit technique complet de marcm.fr — agence web solo.';
+
+// ─── VERSION TIMELINE ───
+const showTimeline = true;
+const versionActuelle = 'v4';
+const versionsData = [
+  { version: 'v3', date: '2026-03-31 matin', formule: 'Pro 100 + Complet 20', nbPersonas: 120, tauxConversion: 32 },
+  { version: 'v4', date: '2026-03-31 après-midi', formule: 'Suivi complet 120', nbPersonas: 120, tauxConversion: 57 },
+];
 
 // ─── DETAILED PERSONAS (20 — full visit feedback) ───
 const detailedPersonas = [
@@ -168,16 +176,16 @@ const deviceStats = [
 ];
 
 const frictions = [
-  { title: 'Portfolio manque de diversite sectorielle', severity: 'critique', count: 43, detail: 'Sur 120 personas, 43 ne trouvent pas d\'exemple dans leur secteur. Friction numero 1 : restaurant, photographe, gite, association, profession liberale, commerce de bouche, BTP specialise...' },
-  { title: 'LCP mobile 4.5s', severity: 'critique', count: 12, detail: 'Tous les visiteurs mobile subissent un ecran blanc de 4-5 secondes. Risque d\'abandon eleve, surtout pour les artisans presses entre deux chantiers.' },
-  { title: 'Barriere geographique — pas de mention toute la France', severity: 'haute', count: 10, detail: '10 personas hors Grand Est ne trouvent pas de mention "100% a distance" ou "toute la France". Ils quittent en pensant que le service est local uniquement.' },
-  { title: 'Seniors 60+ — besoin de reassurance supplementaire', severity: 'haute', count: 8, detail: '8 personas de plus de 60 ans ont besoin d\'un telephone visible, d\'un langage simple et d\'une approche pas-a-pas. Le site est trop "millenial" pour eux.' },
-  { title: 'Professions reglementees sans mention conformite', severity: 'haute', count: 6, detail: '6 personas dans des professions de sante (osteo, psy, kine, infirmier) cherchent une mention de conformite deontologique. Absente du site.' },
-  { title: 'Module e-commerce/reservation flou', severity: 'haute', count: 5, detail: 'Les options e-commerce (+250) et RDV (+180) manquent de details : commande repas, reservation gite, vente de cours, stock...' },
-  { title: 'Prix trop bas = mefiance', severity: 'haute', count: 4, detail: '490 euros vs devis concurrents 1200-3500 euros cree un doute. Pas d\'explication du "comment c\'est possible".' },
-  { title: 'Pas de garantie / SLA', severity: 'moyenne', count: 4, detail: 'Aucune garantie de resultat, de satisfaction, ou d\'engagement sur les delais de reponse.' },
-  { title: 'Pas de lead magnet / nurturing', severity: 'moyenne', count: 3, detail: 'Les visiteurs en decouverte (37 personas) convertissent a 3%. Aucun mecanisme pour capter leur email et les recontacter.' },
-  { title: 'Compteur projets "0+"', severity: 'moyenne', count: 3, detail: 'L\'animation JS peut bugger et afficher 0. Meme a "11+", c\'est modeste pour rassurer.' },
+  { title: 'Portfolio manque de diversite sectorielle', severity: 'critique', count: 43, detail: 'Sur 120 personas, 43 ne trouvent pas d\'exemple dans leur secteur. Friction numero 1 : restaurant, photographe, gite, association, profession liberale, commerce de bouche, BTP specialise...', statusV4: '⚠️', detailV4: 'V4 : 14 projets (vs 11). Construction x4 aide les BTP. Manque encore : restaurant, photographe, asso culturelle, gite, kiné/ostéo. ~30 personas encore bloqués.' },
+  { title: 'LCP mobile 4.5s', severity: 'critique', count: 12, detail: 'Tous les visiteurs mobile subissent un ecran blanc de 4-5 secondes. Risque d\'abandon eleve, surtout pour les artisans presses entre deux chantiers.', statusV4: '✅', detailV4: 'V4 mesuré : LCP 2.4s (< seuil Google 2.5s), Performance 97/100. Non anticipé — cause probable : CSP middleware réduit render-blocking. Bonnes Pratiques 100→92 à investiguer.' },
+  { title: 'Barriere geographique — pas de mention toute la France', severity: 'haute', count: 10, detail: '10 personas hors Grand Est ne trouvent pas de mention "100% a distance" ou "toute la France". Ils quittent en pensant que le service est local uniquement.', statusV4: '✅', detailV4: 'V4 : badge "100% remote — All of France" dans le hero (commit 216e36a). +8 conversions estimées. Nathalie (Épinal), Catherine (Vosges), Jennifer (Lyon) débloquées.' },
+  { title: 'Seniors 60+ — besoin de reassurance supplementaire', severity: 'haute', count: 8, detail: '8 personas de plus de 60 ans ont besoin d\'un telephone visible, d\'un langage simple et d\'une approche pas-a-pas. Le site est trop "millenial" pour eux.', statusV4: '❌', detailV4: 'V4 : aucune modification pour ce profil. Téléphone toujours absent du hero. Gilbert 63 ans, Patrick 61 ans toujours bloqués.' },
+  { title: 'Professions reglementees sans mention conformite', severity: 'haute', count: 6, detail: '6 personas dans des professions de sante (osteo, psy, kine, infirmier) cherchent une mention de conformite deontologique. Absente du site.', statusV4: '❌', detailV4: 'V4 : aucune mention ajoutée. Silence total pour kinés, ostéos, infirmiers.' },
+  { title: 'Module e-commerce/reservation flou', severity: 'haute', count: 5, detail: 'Les options e-commerce (+250) et RDV (+180) manquent de details : commande repas, reservation gite, vente de cours, stock...', statusV4: '⚠️', detailV4: 'V4 : add-ons structurés sur /en/services (commit ec7ad45). Personas EN débloqués. /offre FR toujours peu détaillé. Léa (fleuriste) encore en hésitation.' },
+  { title: 'Prix trop bas = mefiance', severity: 'haute', count: 4, detail: '490 euros vs devis concurrents 1200-3500 euros cree un doute. Pas d\'explication du "comment c\'est possible".', statusV4: '⚠️', detailV4: 'V4 : compteur 33+ crédibilise le volume. Jean-Marc (expert-comptable), Romain (coach) encore sceptiques. Pas d\'explication "pourquoi 490€".' },
+  { title: 'Pas de garantie / SLA', severity: 'moyenne', count: 4, detail: 'Aucune garantie de resultat, de satisfaction, ou d\'engagement sur les delais de reponse.', statusV4: '❌', detailV4: 'V4 : aucun engagement ajouté.' },
+  { title: 'Pas de lead magnet / nurturing', severity: 'moyenne', count: 3, detail: 'Les visiteurs en decouverte (37 personas) convertissent a 3%. Aucun mecanisme pour capter leur email et les recontacter.', statusV4: '❌', detailV4: 'V4 : /formation (poisson d\'avril) ne remplace pas un vrai lead magnet. Sandrine, Lucas toujours sans capture.' },
+  { title: 'Compteur projets "0+"', severity: 'moyenne', count: 3, detail: 'L\'animation JS peut bugger et afficher 0. Meme a "11+", c\'est modeste pour rassurer.', statusV4: '✅', detailV4: 'V4 : SSR corrigé (commit 335ce68). Affiche 33+ de manière stable. Crédibilité restaurée.' },
 ];
 
 const ameliorations = {
@@ -206,12 +214,12 @@ const ameliorations = {
   ],
 };
 
-// Desktop run: perf 98 / Mobile: 79
+// V3: perf desktop 98 / mobile 79 | V4 mesuré: perf mobile 97 / LCP 2.4s
 const pagespeed = {
   desktop: { perf: 98, access: 96, bp: 100, seo: 100 },
-  mobile: { perf: 79, access: 96, bp: 100, seo: 100 },
+  mobile: { perf: 97, access: 95, bp: 92, seo: 100 },
   cwv_desktop: { lcp: '1.0s', cls: '0', tbt: '0ms', fcp: '0.3s', si: '1.2s' },
-  cwv_mobile: { lcp: '4.5s', cls: '0', tbt: '0ms', fcp: '1.1s', si: '5.8s' },
+  cwv_mobile: { lcp: '2.4s', cls: '0', tbt: '0ms', fcp: '1.2s', si: '2.6s' },
 };
 
 const observatory = { grade: 'B', score: 75, passed: 9, total: 10 };
@@ -226,7 +234,7 @@ const schemaChecks = [
   { label: 'image / logo', ok: true },
   { label: 'sameAs (LinkedIn — manque WhatsApp)', ok: true },
   { label: 'aggregateRating', ok: false },
-  { label: 'Article schema sur le journal (10 articles)', ok: false },
+  { label: 'Article schema sur le journal (11 articles)', ok: true },
   { label: 'potentialAction (SearchAction)', ok: false },
   { label: 'Person : image, email, knowsAbout', ok: false },
 ];
@@ -252,7 +260,7 @@ const securityHeaders = [
   { header: 'X-Frame-Options', ok: true },
   { header: 'Referrer-Policy', ok: true },
   { header: 'Permissions-Policy', ok: true },
-  { header: 'Content-Security-Policy (CSP)', ok: false },
+  { header: 'Content-Security-Policy (CSP)', ok: true },
 ];
 
 function decisionColor(d: string) {
@@ -327,7 +335,8 @@ function cwvColor(metric: string, val: string) {
         <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">120 personas testes</span>
         <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">6 canaux d'arrivee</span>
         <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">56 pages indexees</span>
-        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">29 mars 2026</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">31 mars 2026</span>
+        <span class="px-4 py-2 rounded-lg text-white text-sm font-semibold" style="background-color: #E86C47;">V4 — Suivi</span>
       </div>
     </div>
   </section>
@@ -353,12 +362,92 @@ function cwvColor(metric: string, val: string) {
     <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0">
       <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-10 space-y-10">
 
+        <!-- ── TIMELINE V3 → V4 ── -->
+        {showTimeline && (
+          <div class="bg-emerald-50 border border-emerald-200 rounded-xl p-6">
+            <h3 class="font-semibold text-emerald-900 mb-4 flex items-center gap-2">
+              <span>📈</span> Évolution V3 → V4 — 31 mars 2026
+            </h3>
+            <div class="flex items-center gap-4 mb-5">
+              {versionsData.map((v, i) => (
+                <div class="flex items-center gap-3">
+                  <div class={`rounded-xl border p-4 text-center min-w-[120px] ${v.version === versionActuelle ? 'bg-emerald-600 border-emerald-600 text-white' : 'bg-white border-neutral-200 text-neutral-800'}`}>
+                    <div class="text-2xl font-bold">{v.tauxConversion}%</div>
+                    <div class="text-xs mt-0.5 opacity-80">{v.version.toUpperCase()} · {v.nbPersonas} personas</div>
+                    <div class="text-xs opacity-60 mt-0.5">{v.date}</div>
+                  </div>
+                  {i < versionsData.length - 1 && (
+                    <div class="text-2xl text-emerald-600 font-bold">→</div>
+                  )}
+                </div>
+              ))}
+              <div class="ml-4 bg-emerald-100 border border-emerald-300 rounded-xl p-4 text-center min-w-[100px]">
+                <div class="text-2xl font-bold text-emerald-800">+25pp</div>
+                <div class="text-xs text-emerald-700 mt-0.5">Progression</div>
+              </div>
+            </div>
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-3 text-sm">
+              <div class="bg-white rounded-lg border border-emerald-200 p-3">
+                <div class="text-xs text-neutral-500 mb-1">Frictions résolues</div>
+                <div class="font-semibold text-emerald-700">2 complètes + 3 partielles</div>
+              </div>
+              <div class="bg-white rounded-lg border border-emerald-200 p-3">
+                <div class="text-xs text-neutral-500 mb-1">Nouvelles frictions</div>
+                <div class="font-semibold text-amber-700">1 (i18n auto-EN)</div>
+              </div>
+              <div class="bg-white rounded-lg border border-emerald-200 p-3">
+                <div class="text-xs text-neutral-500 mb-1">Commits V3→V4</div>
+                <div class="font-semibold text-neutral-800">6 commits</div>
+              </div>
+              <div class="bg-white rounded-lg border border-emerald-200 p-3">
+                <div class="text-xs text-neutral-500 mb-1">Impact #1</div>
+                <div class="font-semibold text-neutral-800">Badge 100% remote</div>
+              </div>
+            </div>
+            <!-- Tableau delta frictions -->
+            <div class="mt-5">
+              <h4 class="text-sm font-semibold text-emerald-900 mb-3">Tableau delta — 10 frictions V3</h4>
+              <div class="overflow-x-auto">
+                <table class="w-full text-xs border-collapse">
+                  <thead>
+                    <tr class="bg-emerald-100">
+                      <th class="text-left p-2 border border-emerald-200 text-emerald-800">Friction V3</th>
+                      <th class="text-center p-2 border border-emerald-200 text-emerald-800">Sév.</th>
+                      <th class="text-center p-2 border border-emerald-200 text-emerald-800">Statut V4</th>
+                      <th class="text-left p-2 border border-emerald-200 text-emerald-800">Note V4</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {frictions.map(f => (
+                      <tr class="border-b border-neutral-100">
+                        <td class="p-2 border border-neutral-200 text-neutral-700">{f.title}</td>
+                        <td class="p-2 border border-neutral-200 text-center">
+                          <span class={`px-1.5 py-0.5 rounded text-xs font-medium ${f.severity === 'critique' ? 'bg-red-100 text-red-700' : f.severity === 'haute' ? 'bg-orange-100 text-orange-700' : 'bg-yellow-100 text-yellow-700'}`}>{f.severity}</span>
+                        </td>
+                        <td class="p-2 border border-neutral-200 text-center text-base">{f.statusV4 ?? '—'}</td>
+                        <td class="p-2 border border-neutral-200 text-neutral-600">{f.detailV4 ?? '—'}</td>
+                      </tr>
+                    ))}
+                    <tr class="bg-blue-50">
+                      <td class="p-2 border border-neutral-200 text-blue-800 font-medium">🆕 i18n auto-EN</td>
+                      <td class="p-2 border border-neutral-200 text-center"><span class="px-1.5 py-0.5 rounded text-xs font-medium bg-blue-100 text-blue-700">nouvelle</span></td>
+                      <td class="p-2 border border-neutral-200 text-center text-base">🆕</td>
+                      <td class="p-2 border border-neutral-200 text-blue-700">Visiteurs FR avec navigateur EN reçoivent le site anglais. ~5–8 personas. Ajouter bandeau "Voir en français ?".</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+        )}
+
         <!-- KPI Cards -->
         <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
           <div class="bg-white rounded-xl border border-neutral-200 p-5 text-center shadow-sm">
             <div class="text-3xl font-bold text-[var(--color-accent)]">{tauxConversion}%</div>
-            <div class="text-sm text-neutral-500 mt-1">Taux de conversion</div>
+            <div class="text-sm text-neutral-500 mt-1">Taux de conversion V3</div>
             <div class="text-xs text-neutral-400">{convertis} / 120 personas</div>
+            <div class="text-xs text-emerald-600 font-medium mt-1">V4 : 57% (+25pp)</div>
           </div>
           <div class="bg-white rounded-xl border border-neutral-200 p-5 text-center shadow-sm">
             <div class="text-3xl font-bold text-neutral-800">{avgExp}</div>
@@ -381,7 +470,7 @@ function cwvColor(metric: string, val: string) {
             <div>
               <h3 class="font-semibold text-amber-900 mb-1">Le paradoxe principal</h3>
               <p class="text-amber-800 text-sm leading-relaxed">
-                <strong>Le site score 100/100 en SEO et 98/100 en performance desktop</strong> — mais en mobile (70% du trafic cible), le LCP grimpe a 4.5s. Le bouche-a-oreille convertit 73% des visiteurs, mais le portfolio sectoriel reste la friction #1 : sur 120 personas, 43 ne trouvent pas d'exemple dans leur secteur. Malgre cela, le taux de conversion global est de {tauxConversion}% grace a une offre claire et un pricing transparent.
+                <strong>V3 : LCP mobile 4.5s, perf 79/100 — V4 : LCP 2.4s, perf 97/100.</strong> Le LCP a été résolu sans optimisation image explicite (probable effet CSP middleware). Le portfolio sectoriel reste la friction #1 : sur 120 personas, ~30 ne trouvent toujours pas d'exemple dans leur secteur. Le taux de conversion V3 était de {tauxConversion}% — <strong>V4 : 57%</strong> (+25pp).
               </p>
             </div>
           </div>
