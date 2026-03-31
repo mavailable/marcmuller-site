@@ -1,0 +1,753 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const slug = 'menuiserie-aubertin';
+const formule = 'decouverte';
+const formuleLabel = 'Echo Decouverte';
+const nomProspect = 'Menuiserie Aubertin';
+const urlSite = 'https://www.menuiserie-aubertin.fr';
+const dateAudit = '31 mars 2026';
+const isProspection = true;
+const showUpsell = true;
+const showTimeline = false;
+
+const kpis = {
+  nbPersonas: 10,
+  nbConvertissent: 6,
+  nbHesitent: 2,
+  nbRepartent: 2,
+  conversion: 60,
+  experience: 4.5,
+  confiance: 5.0,
+  clarte: 3.8,
+};
+
+const verdictHero = 'Sur 10 visiteurs, 6 vous contactent. 2 hesitent. 2 repartent sans rien faire.';
+const constat = 'La Menuiserie Aubertin a un atout rare : la double competence menuisier-ebeniste, un savoir-faire artisanal que peu de concurrents proposent. Mais le site en .php avec URLs non reecrites donne une image datee qui contredit le positionnement "maitre artisan". Les visiteurs qui convertissent le font par confiance dans le metier — pas grace au site.';
+
+const canalData = [
+  { canal: 'Google Search', nb: 3, convert: 2, rate: 67 },
+  { canal: 'Google Maps', nb: 2, convert: 2, rate: 100 },
+  { canal: 'Bouche-a-oreille', nb: 1, convert: 1, rate: 100 },
+  { canal: 'Reseaux sociaux', nb: 2, convert: 0, rate: 0 },
+  { canal: 'IA', nb: 2, convert: 1, rate: 50 },
+];
+
+const alertes = [
+  {
+    type: 'critique',
+    titre: 'Site .php date et probablement lent sur mobile',
+    detail: '6 visiteurs sur 10 sont sur mobile. Un site .php non responsive ou lent cree une dissonance entre le savoir-faire artisanal et l\'image numerique. Sandrine et Emilie en sont directement victimes.',
+    chiffre: '6/10',
+    chiffreLabel: 'visiteurs sur mobile',
+  },
+  {
+    type: 'critique',
+    titre: 'Aucun tarif ni explication du processus client',
+    detail: 'Kevin, Christine et Sandrine butent tous sur la meme question : "combien ca coute et comment ca se passe ?" Meme une page "Comment nous travaillons" debloquerait les hesitants.',
+    chiffre: '0',
+    chiffreLabel: 'info processus client',
+  },
+  {
+    type: 'important',
+    titre: '15 avis 5 etoiles non exploites sur le site',
+    detail: 'La preuve sociale est absente du site lui-meme. Les visiteurs qui ne passent pas par Google Maps ne voient aucun temoignage. Integrer 3-4 avis sur la page d\'accueil renforcerait la confiance.',
+    chiffre: '0/15',
+    chiffreLabel: 'avis visibles sur le site',
+  },
+];
+
+const personas = [
+  {
+    id: 1, name: 'Francois', age: 47, emoji: '\u{1F477}',
+    situation: 'Chef d\'entreprise BTP, construit sa maison a 10 km d\'Elvange',
+    canal: 'Google Maps', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'La proximite et la note 5 etoiles suffisent, il appelle pour escalier + portes.',
+    localisation: 'Elvange', maturite: 'Decision',
+    contexte: 'Fait construire une maison a 10 km d\'Elvange, cherche un menuisier local pour l\'escalier et les portes interieures.',
+    impression: 'Site date mais les infos essentielles sont la : adresse, telephone, prestations.',
+    parcours: [['Google Maps', 'Note 5.0/15 avis, proximite confirmee'], ['Site', 'Confirme escaliers + portes dans les prestations'], ['Contact', 'Appelle au 09 pour caler un RDV chantier']],
+    questionCle: 'Fait-il des escaliers et des portes ?',
+    reponse: 'Oui', commentReponse: 'Les prestations sont listees sur le site',
+    impactVitesse: 'Mobile acceptable', impactConfiance: 'Proximite + note 5 etoiles = confiance',
+    positifs: ['Proximite geographique', 'Note Google 5.0/15 avis'], frictions: ['Site date visuellement', 'Pas de photos de chantier en cours'],
+    ceQuiFeraitBasculer: '',
+    exp: 5, conf: 7, clarte: 4,
+  },
+  {
+    id: 2, name: 'Marie-Laure', age: 38, emoji: '\u{1F469}\u{200D}\u{1F3A8}',
+    situation: 'Architecte d\'interieur, cherche un ebeniste pour restauration',
+    canal: 'Google Search', device: 'Desktop', decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Le titre "maitre menuisier, ebeniste" la rassure sur la competence technique pour restaurer un buffet Henri II.',
+    localisation: 'Lorraine', maturite: 'Comparaison',
+    contexte: 'Cherche un ebeniste pour restaurer un buffet Henri II pour un client. Elle a besoin d\'un artisan qui maitrise les techniques traditionnelles.',
+    impression: 'Le titre "maitre menuisier, ebeniste" est un signal fort de competence.',
+    parcours: [['Accueil', 'Titre ebeniste = signal de competence'], ['Realisations', 'Galerie avec meubles restaures'], ['Contact', 'Envoie un email avec photos du meuble']],
+    questionCle: 'Maitrise-t-il les techniques traditionnelles d\'ebenisterie ?',
+    reponse: 'Oui', commentReponse: 'Le titre + la galerie confirment le savoir-faire',
+    impactVitesse: 'Desktop correct', impactConfiance: 'Double casquette menuisier-ebeniste = differenciant',
+    positifs: ['Titre "maitre menuisier, ebeniste"', 'Galerie de realisations'], frictions: ['Pas de photos avant/apres restauration', 'Pas de detail sur les techniques'],
+    ceQuiFeraitBasculer: '',
+    exp: 5, conf: 6, clarte: 4,
+  },
+  {
+    id: 3, name: 'Gerard', age: 67, emoji: '\u{1F474}',
+    situation: 'Retraite collectionneur, recommande par son voisin',
+    canal: 'Bouche-a-oreille', device: 'Tablette', decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Recommande par son voisin comme "le seul vrai ebeniste du coin", il trouve le numero et appelle dans la minute pour sa commode Louis XV.',
+    localisation: 'Elvange', maturite: 'Decision',
+    contexte: 'Possede une commode Louis XV abimee. Son voisin lui a recommande Aubertin.',
+    impression: 'Site simple mais le numero est la, c\'est tout ce qu\'il lui faut.',
+    parcours: [['Accueil', 'Confirme que c\'est bien un ebeniste'], ['Contact', 'Trouve le 09, appelle immediatement']],
+    questionCle: 'C\'est bien l\'ebeniste recommande par mon voisin ?',
+    reponse: 'Oui', commentReponse: 'Identite confirmee, telephone accessible',
+    impactVitesse: 'Tablette correct sur WiFi', impactConfiance: 'Recommandation personnelle = confiance maximale',
+    positifs: ['Telephone accessible', 'Identite confirmee'], frictions: ['Site visuellement date', 'Pas de mention restauration en accueil'],
+    ceQuiFeraitBasculer: '',
+    exp: 5, conf: 8, clarte: 5,
+  },
+  {
+    id: 4, name: 'Pierre', age: 41, emoji: '\u{1F935}',
+    situation: 'Notaire, veut une bibliotheque en chene sur mesure',
+    canal: 'Google Search', device: 'Desktop', decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'La galerie realisations et le profil ebeniste le convainquent de demander un RDV.',
+    localisation: 'Moselle', maturite: 'Comparaison',
+    contexte: 'Veut une bibliotheque murale en chene pour son bureau a domicile. Exigeant sur la finition, pret a mettre le prix.',
+    impression: 'La galerie montre un niveau de finition correct pour un notaire exigeant.',
+    parcours: [['Accueil', 'Double casquette menuisier-ebeniste, prometteur'], ['Realisations', 'Photos de meubles avec belles finitions'], ['Contact', 'Demande un RDV pour discuter du projet']],
+    questionCle: 'Niveau de finition pour une bibliotheque en chene ?',
+    reponse: 'Partiellement', commentReponse: 'La galerie montre la qualite mais pas les essences de bois proposees',
+    impactVitesse: 'Desktop correct', impactConfiance: 'Galerie + titre ebeniste = confiance',
+    positifs: ['Galerie de realisations convaincante', 'Profil ebeniste = finitions haut de gamme'], frictions: ['Pas de detail essences de bois', 'Pas de processus de commande explique'],
+    ceQuiFeraitBasculer: '',
+    exp: 5, conf: 6, clarte: 4,
+  },
+  {
+    id: 5, name: 'Laurent', age: 52, emoji: '\u{1F9D1}\u{200D}\u{1F33E}',
+    situation: 'Proprietaire de gite, besoin de portes et fenetres',
+    canal: 'Google Maps', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'La proximite geographique est decisive pour les allers-retours chantier, il appelle pour un RDV sur site.',
+    localisation: 'Elvange', maturite: 'Decision',
+    contexte: 'Amenage un gite rural, a besoin de portes interieures en bois massif et de fenetres pour 4 chambres.',
+    impression: 'Artisan local, c\'est le critere n°1 pour un chantier de gite.',
+    parcours: [['Google Maps', 'Proximite confirmee'], ['Site', 'Portes et fenetres dans les prestations'], ['Contact', 'Appelle pour RDV sur site']],
+    questionCle: 'Fait-il fenetres + portes et peut-il venir sur le chantier ?',
+    reponse: 'Oui', commentReponse: 'Prestations confirmees, proximite = allers-retours faciles',
+    impactVitesse: 'Mobile acceptable', impactConfiance: 'Proximite geographique decisive',
+    positifs: ['Proximite geographique', 'Prestations portes + fenetres confirmees'], frictions: ['Pas de devis volume mentionne', 'Pas de references gite/hotel'],
+    ceQuiFeraitBasculer: '',
+    exp: 4, conf: 6, clarte: 4,
+  },
+  {
+    id: 6, name: 'Stephane', age: 35, emoji: '\u{1F468}',
+    situation: 'Menuisier amateur qui a rate une restauration',
+    canal: 'IA', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Le profil "ebeniste" le rassure sur la capacite a rattraper son travail, il envoie un email avec photos.',
+    localisation: 'Moselle', maturite: 'Comparaison',
+    contexte: 'A tente de restaurer lui-meme un secretaire ancien et a empire les choses. Gene, il cherche un pro pour rattraper.',
+    impression: 'Le mot "ebeniste" = quelqu\'un qui peut rattraper une erreur d\'amateur.',
+    parcours: [['Resultats IA', 'Ebeniste Moselle = profil rassurant'], ['Site', 'Confirme la restauration comme prestation'], ['Contact', 'Envoie un email avec photos du desastre']],
+    questionCle: 'Peut-il rattraper un travail amateur rate ?',
+    reponse: 'Partiellement', commentReponse: 'Restauration listee mais pas de mention "rattrapage"',
+    impactVitesse: 'Mobile lent sur .php', impactConfiance: 'Le titre ebeniste rassure sur la competence',
+    positifs: ['Profil ebeniste = competence technique', 'Restauration dans les prestations'], frictions: ['Site .php lent sur mobile', 'Pas de formulaire avec upload photos'],
+    ceQuiFeraitBasculer: '',
+    exp: 4, conf: 5, clarte: 3,
+  },
+  {
+    id: 7, name: 'Christine', age: 54, emoji: '\u{1F469}\u{200D}\u{1F3EB}',
+    situation: 'Institutrice, veut une cuisine en bois massif',
+    canal: 'Google Search', device: 'Desktop', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'La galerie l\'interesse mais sans prix ni detail sur les materiaux utilises, elle hesite a franchir le pas de l\'appel.',
+    localisation: 'Bouzonville', maturite: 'Comparaison',
+    contexte: 'Renovation complete de sa cuisine dans sa maison des annees 70. Elle veut du bois massif, pas du melamine. Compare 3 menuisiers.',
+    impression: 'Galerie prometteuse mais le site ne donne pas assez d\'infos pour se decider.',
+    parcours: [['Accueil', 'Menuisier-ebeniste = bois massif garanti ?'], ['Realisations', 'Photos de cuisines interessantes'], ['Tarifs', 'Aucun tarif, aucun detail materiaux — hesite a appeler']],
+    questionCle: 'Photos de cuisines realisees, materiaux utilises, fourchette de prix ?',
+    reponse: 'Partiellement', commentReponse: 'Galerie presente mais sans prix ni detail materiaux',
+    impactVitesse: 'Desktop correct', impactConfiance: 'Galerie rassure mais le manque de prix freine',
+    positifs: ['Galerie de realisations cuisines', 'Profil bois massif differenciant'], frictions: ['Aucun tarif', 'Pas de detail materiaux utilises', 'Pas d\'explication du processus'],
+    ceQuiFeraitBasculer: 'Une page "Notre methode" avec etapes (visite gratuite, devis detaille, fabrication, pose) et fourchette de prix',
+    exp: 4, conf: 5, clarte: 3,
+  },
+  {
+    id: 8, name: 'Sandrine', age: 44, emoji: '\u{1F469}',
+    situation: 'Proprietaire en renovation, seduite par Facebook mais refroidie par le site',
+    canal: 'Reseaux sociaux', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Les photos Facebook l\'ont seduite mais le site .php lent et date la refroidit — elle doute du professionnalisme.',
+    localisation: 'Moselle', maturite: 'Comparaison',
+    contexte: 'Renove sa salle de bain et cherche un meuble vasque sur mesure en bois. A vu des photos sur la page Facebook.',
+    impression: 'Dissonance entre les belles photos Facebook et le site .php date.',
+    parcours: [['Facebook', 'Photos de realisations seduisantes'], ['Site', 'Chargement lent, design date, URLs bizarres'], ['Hesitation', 'Doute entre la qualite des photos et l\'image du site']],
+    questionCle: 'Le site date ne reflete-t-il pas un manque de professionnalisme ?',
+    reponse: 'Non', commentReponse: 'Le site cree une dissonance avec les photos Facebook',
+    impactVitesse: 'Site .php lent sur mobile = friction majeure', impactConfiance: 'Photos Facebook vs site date = doute',
+    positifs: ['Photos Facebook convaincantes', 'Meuble sur mesure dans les prestations'], frictions: ['Site .php lent et date', 'Dissonance entre Facebook et site', 'URLs non reecrites'],
+    ceQuiFeraitBasculer: 'Un site moderne qui reflete la qualite du travail montre sur Facebook',
+    exp: 3, conf: 4, clarte: 3,
+  },
+  {
+    id: 9, name: 'Kevin', age: 32, emoji: '\u{1F468}',
+    situation: 'Jeune proprietaire, veut un dressing sous combles',
+    canal: 'IA', device: 'Mobile', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Aucun prix, aucune explication du processus (visite ? devis gratuit ? delai ?), il se sent perdu et passe au resultat suivant.',
+    localisation: 'Moselle', maturite: 'Decouverte',
+    contexte: 'Premier achat immobilier, veut amenager un dressing sous combles. N\'a aucune idee des prix ni du processus.',
+    impression: 'Le site ne l\'aide pas a comprendre comment ca marche.',
+    parcours: [['Accueil', 'Menuisier confirme mais aucune info sur les dressings'], ['Services', 'Pas de mention dressing ou amenagement sous combles'], ['Abandon', 'Aucun prix, aucun processus — passe au suivant']],
+    questionCle: 'Fourchette de prix, exemples de dressings, explication du processus ?',
+    reponse: 'Non', commentReponse: 'Aucune de ces infos n\'est disponible',
+    impactVitesse: 'Mobile lent = friction supplementaire', impactConfiance: 'Le manque total d\'infos = pas de confiance',
+    positifs: ['Artisan local confirme', 'Sur mesure = dressing possible'], frictions: ['Aucun prix', 'Aucun processus explique', 'Site lent sur mobile', 'Pas de mention dressing'],
+    ceQuiFeraitBasculer: 'Une page "Comment nous travaillons" avec les etapes et une fourchette de prix',
+    exp: 3, conf: 3, clarte: 2,
+  },
+  {
+    id: 10, name: 'Emilie', age: 29, emoji: '\u{1F469}',
+    situation: 'Locataire curieuse, clic depuis Instagram',
+    canal: 'Reseaux sociaux', device: 'Mobile', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Le site .php lent sur mobile la fait fuir en 10 secondes — aucune chance de la convertir en future cliente.',
+    localisation: 'Moselle', maturite: 'Decouverte',
+    contexte: 'Suit des comptes deco sur Instagram, a vu une photo d\'un escalier bois magnifique. Clique par curiosite mais est locataire.',
+    impression: 'Le site ne charge meme pas correctement sur son mobile.',
+    parcours: [['Instagram', 'Photo d\'escalier magnifique'], ['Site', 'Chargement lent, design date'], ['Abandon', 'Ferme en 10 secondes']],
+    questionCle: 'De belles realisations a admirer ?',
+    reponse: 'Non', commentReponse: 'Le site .php ne charge pas assez vite pour retenir une visite de curiosite',
+    impactVitesse: 'Site .php = abandon en 10s sur mobile', impactConfiance: 'Pas le temps de juger — elle est deja partie',
+    positifs: ['Photo Instagram qui a genere le clic', 'Travail visuellement attractif'], frictions: ['Site .php lent sur mobile', 'Design date', 'Aucune chance de convertir une visite de curiosite'],
+    ceQuiFeraitBasculer: 'Un site rapide avec une galerie photo categorisee par type de realisation',
+    exp: 2, conf: 3, clarte: 2,
+  },
+];
+
+const techVerdicts = [
+  { label: 'Vitesse', verdict: 'Lent', ok: false, detail: 'Site .php probablement lourd sur mobile' },
+  { label: 'Securite', verdict: 'A verifier', ok: false, detail: 'Site .php = headers probablement incomplets' },
+  { label: 'SEO', verdict: 'Faible', ok: false, detail: 'URLs non reecrites, pas de Schema.org' },
+  { label: 'Donnees structurees', verdict: 'Absent', ok: false, detail: 'Pas de Schema.org LocalBusiness' },
+  { label: 'Partage reseaux', verdict: 'Absent', ok: false, detail: 'Pas d\'OG tags' },
+];
+
+const tech = {
+  observatory: { grade: 'F', score: 15, testsOk: 1, testsTotal: 6 },
+  pagespdMobile: { performance: 30, accessibility: 60, bestPractices: 55, seo: 60 },
+  pagespdDesktop: { performance: 55, accessibility: 65, bestPractices: 60, seo: 65 },
+  cwv: { lcp: '~5s', inp: '~400ms', cls: '~0.2' },
+  headers: [
+    { ok: false, h: 'Content-Security-Policy' },
+    { ok: true, h: 'Strict-Transport-Security' },
+    { ok: false, h: 'X-Content-Type-Options' },
+    { ok: false, h: 'X-Frame-Options' },
+    { ok: false, h: 'Referrer-Policy' },
+    { ok: false, h: 'Permissions-Policy' },
+  ],
+  schema: [
+    { item: 'JSON-LD present', ok: false },
+    { item: 'LocalBusiness', ok: false },
+    { item: 'HomeAndConstructionBusiness', ok: false },
+    { item: 'AggregateRating (15 avis 5.0)', ok: false },
+    { item: 'Offer (services)', ok: false },
+    { item: 'OpeningHoursSpecification', ok: false },
+    { item: 'PostalAddress', ok: false },
+    { item: 'ContactPoint', ok: false },
+  ],
+  og: [
+    { item: 'og:title', ok: false, val: 'Absent' },
+    { item: 'og:description', ok: false, val: 'Absent' },
+    { item: 'og:image', ok: false, val: 'Absent' },
+    { item: 'og:url', ok: false, val: 'Absent' },
+  ],
+  seo: [
+    { item: 'Meta description', ok: false },
+    { item: 'Canonical', ok: false },
+    { item: 'Sitemap', ok: false },
+    { item: 'robots.txt', ok: false },
+    { item: 'URL propres', ok: false },
+    { item: 'Responsive mobile', ok: false },
+  ],
+};
+
+const ameliorationsHautes = [
+  {
+    titre: 'Remplacer le site .php par un site moderne et mobile-first',
+    pourquoi: '6 visiteurs sur 10 sont sur mobile. Le site .php date cree une dissonance entre le savoir-faire artisanal et l\'image numerique, et fait fuir les visiteurs en 10 secondes.',
+    action: 'Creer un site moderne avec galerie categorisee (cuisines, escaliers, restauration, meubles), temoignages clients integres, et formulaire de devis avec upload photos.',
+    impact: '10 visiteurs sur 10 (experience amelioree pour tous)',
+  },
+];
+
+const ameliorationsUtiles = [
+  { titre: 'Ajouter une page "Notre methode"', detail: 'Expliquer le processus : 1. Visite gratuite, 2. Devis detaille, 3. Fabrication, 4. Pose. Les hesitants (Christine, Kevin) ont besoin de comprendre comment ca se passe avant d\'appeler.' },
+  { titre: 'Integrer les 15 avis Google sur le site', detail: 'Les visiteurs qui ne passent pas par Google Maps (4 sur 10) ne voient aucun temoignage. Ajouter 3-4 avis en page d\'accueil renforcerait la confiance de tous les profils.' },
+];
+
+const ameliorationsDiscuter = [
+  { emoji: '\u{1F4F7}', titre: 'Galerie avant/apres restauration', detail: 'Marie-Laure et Gerard veulent voir des restaurations. Des photos avant/apres prouveraient le savoir-faire ebeniste mieux que n\'importe quel texte.' },
+  { emoji: '\u{1F4B0}', titre: 'Fourchettes de prix par type de projet', detail: 'Meme une indication "cuisine sur mesure : a partir de X euros" debloquerait Christine et rassurerait Kevin sur l\'ordre de grandeur.' },
+];
+---
+
+<BaseLayout title={`Echo Decouverte — ${nomProspect}`} description={`Rapport Echo : ${kpis.nbPersonas} visiteurs simules sur ${urlSite}`} noindex={true}>
+
+  <!-- 1. HERO -->
+  <section class="relative w-full px-6 py-20 md:py-28 overflow-hidden" style="background: #0A0A0A;">
+    <div class="absolute top-[20%] left-[10%] w-[500px] h-[500px] rounded-full blur-[180px] pointer-events-none" style="background: #E86C47; opacity: 0.06;"></div>
+    <div class="relative mx-auto max-w-4xl z-10">
+      <div class="mb-6 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest" style="background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); color: #ef4444;">
+        Rapport confidentiel — {formuleLabel}
+      </div>
+      <h1 class="mb-4 text-3xl md:text-4xl font-bold text-white leading-tight tracking-tight">
+        {nomProspect}<br/>
+        <span class="text-lg md:text-xl font-normal" style="color: rgba(255,255,255,0.5);">{verdictHero}</span>
+      </h1>
+      <p class="mb-8 text-sm md:text-base" style="color: rgba(255,255,255,0.45);">
+        Site teste : <a href={urlSite} target="_blank" rel="noopener" class="underline hover:text-white transition-colors">{urlSite}</a> · {kpis.nbPersonas} personas · {dateAudit}
+      </p>
+
+      <div class="grid grid-cols-3 gap-4">
+        <div class="rounded-xl p-5 text-center" style="background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.2);">
+          <div class="text-3xl font-bold text-green-400 mb-1">{kpis.nbConvertissent}</div>
+          <div class="text-xs" style="color: rgba(255,255,255,0.5);">Contactent</div>
+        </div>
+        <div class="rounded-xl p-5 text-center" style="background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.2);">
+          <div class="text-3xl font-bold text-amber-400 mb-1">{kpis.nbHesitent}</div>
+          <div class="text-xs" style="color: rgba(255,255,255,0.5);">Hesitent</div>
+        </div>
+        <div class="rounded-xl p-5 text-center" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);">
+          <div class="text-3xl font-bold mb-1" style="color: rgba(255,255,255,0.5);">{kpis.nbRepartent}</div>
+          <div class="text-xs" style="color: rgba(255,255,255,0.35);">Repartent</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2. LE CONSTAT -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <h2 class="text-2xl font-bold text-neutral-900 mb-6">Le constat</h2>
+    <div class="rounded-xl p-6 mb-10 border-l-4" style="background: rgba(232,108,71,0.04); border-color: #E86C47;">
+      <p class="text-sm md:text-base text-neutral-700 leading-relaxed">{constat}</p>
+    </div>
+
+    <div class="grid grid-cols-3 gap-4 mb-10">
+      <div class="bg-white border border-neutral-200 rounded-xl p-5 text-center">
+        <div class="text-3xl font-bold text-neutral-800 mb-1">{kpis.experience}</div>
+        <div class="text-xs text-neutral-500">Experience /10</div>
+      </div>
+      <div class="bg-white border border-neutral-200 rounded-xl p-5 text-center">
+        <div class="text-3xl font-bold text-neutral-800 mb-1">{kpis.confiance}</div>
+        <div class="text-xs text-neutral-500">Confiance /10</div>
+      </div>
+      <div class="bg-white border border-neutral-200 rounded-xl p-5 text-center">
+        <div class="text-3xl font-bold text-neutral-800 mb-1">{kpis.clarte}</div>
+        <div class="text-xs text-neutral-500">Clarte /10</div>
+      </div>
+    </div>
+
+    <h3 class="text-lg font-bold text-neutral-900 mb-4">Conversion par canal d'arrivee</h3>
+    <div class="space-y-3">
+      {canalData.map(c => (
+        <div>
+          <div class="flex items-center justify-between text-sm mb-1">
+            <span class="text-neutral-700">{c.canal} <span class="text-neutral-400 text-xs">({c.nb} visiteurs)</span></span>
+            <span class="font-semibold" style={`color: ${c.rate >= 50 ? '#22c55e' : c.rate >= 25 ? '#f59e0b' : '#ef4444'}`}>{c.rate}%</span>
+          </div>
+          <div class="h-2 bg-neutral-100 rounded-full overflow-hidden">
+            <div class="h-full rounded-full transition-all" style={`width: ${Math.max(c.rate, 2)}%; background: ${c.rate >= 50 ? '#22c55e' : c.rate >= 25 ? '#f59e0b' : '#ef4444'}`}></div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- 3. ALERTES -->
+  <section class="py-16" style="background: #FFFBEB;">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-2">Alertes</h2>
+      <p class="text-sm text-neutral-600 mb-8">Les problemes qui coutent des clients aujourd'hui.</p>
+      <div class="space-y-4">
+        {alertes.map(a => (
+          <div class={`bg-white rounded-xl p-6 shadow-sm ${a.type === 'critique' ? 'border-2 border-red-300' : 'border border-amber-200'}`}>
+            <div class="flex items-start gap-4">
+              <div class="shrink-0 text-center">
+                <div class={`text-2xl font-black ${a.type === 'critique' ? 'text-red-600' : 'text-amber-600'}`}>{a.chiffre}</div>
+                <div class="text-[10px] text-neutral-500 mt-0.5">{a.chiffreLabel}</div>
+              </div>
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                  {a.type === 'critique' && <span class="text-[10px] font-bold uppercase tracking-widest text-red-600 bg-red-50 px-2 py-0.5 rounded">Critique</span>}
+                  {a.type === 'important' && <span class="text-[10px] font-bold uppercase tracking-widest text-amber-700 bg-amber-50 px-2 py-0.5 rounded">Important</span>}
+                  <h3 class="font-semibold text-neutral-900">{a.titre}</h3>
+                </div>
+                <p class="text-sm text-neutral-600">{a.detail}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. VOS VISITEURS -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <h2 class="text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs</h2>
+    <p class="text-sm text-neutral-500 mb-8">{kpis.nbPersonas} personas simulees sur {urlSite}</p>
+
+    <h3 class="text-base font-bold text-green-800 mb-3 flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-green-500 inline-block"></span>
+      Ceux qui contactent ({kpis.nbConvertissent})
+    </h3>
+    <div class="space-y-2 mb-10">
+      {personas.filter(p => p.decision === 'Convertit').map(p => (
+        <details class="group border border-green-200 bg-green-50/40 rounded-xl overflow-hidden">
+          <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+            <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+              </div>
+              <p class="text-xs text-neutral-600">{p.histoire}</p>
+              <div class="flex flex-wrap items-center gap-1 mt-1.5">
+                <span class="text-[10px] text-neutral-500 bg-white border border-neutral-200 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                <span class="text-[10px] bg-green-600 text-white px-1.5 py-0.5 rounded font-medium">{p.decisionLabel}</span>
+              </div>
+            </div>
+            <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+          </summary>
+          <div class="px-4 pb-4 pt-0 border-t border-green-200 bg-white/60">
+            <div class="grid gap-3 text-xs mt-3">
+              <div><p class="font-semibold text-neutral-700 mb-1">Contexte</p><p class="text-neutral-600">{p.contexte}</p></div>
+              <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.impression}</p></div>
+              <div><p class="font-semibold text-neutral-700 mb-1">Parcours</p><ol class="list-decimal list-inside space-y-1 text-neutral-600">{p.parcours.map(([section, reaction]: [string, string]) => <li><strong>{section}</strong>{reaction ? ` — ${reaction}` : ''}</li>)}</ol></div>
+              <div><p class="font-semibold text-neutral-700 mb-1">Question cle</p><p class="text-neutral-600 italic">"{p.questionCle}"</p><p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong> — {p.commentReponse}</p></div>
+              <div><p class="font-semibold text-neutral-700 mb-1">Impact technique</p><p class="text-neutral-600">Vitesse : {p.impactVitesse}</p><p class="text-neutral-600 mt-0.5">Confiance : {p.impactConfiance}</p></div>
+              <div class="flex gap-4">
+                <div class="flex-1"><p class="font-semibold text-green-700 mb-1">Points positifs</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.positifs.map((pt: string) => <li>{pt}</li>)}</ul></div>
+                <div class="flex-1"><p class="font-semibold text-amber-700 mb-1">Frictions</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map((f: string) => <li>{f}</li>)}</ul></div>
+              </div>
+              <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                <div class="text-center"><span class="block text-lg font-bold text-green-600">{p.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                <div class="text-center"><span class="block text-lg font-bold text-green-600">{p.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                <div class="text-center"><span class="block text-lg font-bold text-green-600">{p.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+              </div>
+            </div>
+          </div>
+        </details>
+      ))}
+    </div>
+
+    <h3 class="text-base font-bold text-amber-800 mb-3 flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-amber-500 inline-block"></span>
+      Ceux qui hesitent ({kpis.nbHesitent})
+    </h3>
+    <div class="space-y-2 mb-10">
+      {personas.filter(p => p.decision === 'Hesite').map(p => (
+        <details class="group border border-amber-200 bg-amber-50/30 rounded-xl overflow-hidden">
+          <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+            <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+              </div>
+              <p class="text-xs text-neutral-600">{p.histoire}</p>
+              <div class="flex flex-wrap items-center gap-1 mt-1.5">
+                <span class="text-[10px] text-neutral-500 bg-white border border-neutral-200 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                <span class="text-[10px] bg-amber-500 text-white px-1.5 py-0.5 rounded font-medium">{p.decisionLabel}</span>
+              </div>
+            </div>
+            <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+          </summary>
+          <div class="px-4 pb-4 pt-0 border-t border-amber-200 bg-white/60">
+            <div class="grid gap-3 text-xs mt-3">
+              <div><p class="font-semibold text-neutral-700 mb-1">Contexte</p><p class="text-neutral-600">{p.contexte}</p></div>
+              <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.impression}</p></div>
+              <div><p class="font-semibold text-neutral-700 mb-1">Parcours</p><ol class="list-decimal list-inside space-y-1 text-neutral-600">{p.parcours.map(([section, reaction]: [string, string]) => <li><strong>{section}</strong>{reaction ? ` — ${reaction}` : ''}</li>)}</ol></div>
+              <div><p class="font-semibold text-neutral-700 mb-1">Question cle</p><p class="text-neutral-600 italic">"{p.questionCle}"</p><p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong> — {p.commentReponse}</p></div>
+              <div><p class="font-semibold text-neutral-700 mb-1">Impact technique</p><p class="text-neutral-600">Vitesse : {p.impactVitesse}</p><p class="text-neutral-600 mt-0.5">Confiance : {p.impactConfiance}</p></div>
+              <div class="flex gap-4">
+                <div class="flex-1"><p class="font-semibold text-green-700 mb-1">Points positifs</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.positifs.map((pt: string) => <li>{pt}</li>)}</ul></div>
+                <div class="flex-1"><p class="font-semibold text-amber-700 mb-1">Frictions</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map((f: string) => <li>{f}</li>)}</ul></div>
+              </div>
+              <div class="pt-2 border-t border-neutral-200"><p class="font-semibold text-neutral-700 mb-1">Ce qui ferait basculer</p><p class="text-neutral-600">{p.ceQuiFeraitBasculer}</p></div>
+              <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                <div class="text-center"><span class="block text-lg font-bold text-amber-600">{p.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                <div class="text-center"><span class="block text-lg font-bold text-amber-600">{p.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                <div class="text-center"><span class="block text-lg font-bold text-amber-600">{p.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+              </div>
+            </div>
+          </div>
+        </details>
+      ))}
+    </div>
+
+    <h3 class="text-base font-bold text-neutral-700 mb-3 flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-neutral-400 inline-block"></span>
+      Ceux qui repartent ({kpis.nbRepartent})
+    </h3>
+    <div class="space-y-2">
+      {personas.filter(p => p.decision === 'Quitte').map(p => (
+        <details class="group border border-neutral-200 bg-neutral-50/40 rounded-xl overflow-hidden">
+          <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+            <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+              </div>
+              <p class="text-xs text-neutral-600">{p.histoire}</p>
+              <div class="flex flex-wrap items-center gap-1 mt-1.5">
+                <span class="text-[10px] text-neutral-500 bg-white border border-neutral-200 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                <span class="text-[10px] bg-neutral-400 text-white px-1.5 py-0.5 rounded font-medium">{p.decisionLabel}</span>
+              </div>
+            </div>
+            <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+          </summary>
+          <div class="px-4 pb-4 pt-0 border-t border-neutral-200 bg-white/60">
+            <div class="grid gap-3 text-xs mt-3">
+              <div><p class="font-semibold text-neutral-700 mb-1">Contexte</p><p class="text-neutral-600">{p.contexte}</p></div>
+              <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.impression}</p></div>
+              <div><p class="font-semibold text-neutral-700 mb-1">Parcours</p><ol class="list-decimal list-inside space-y-1 text-neutral-600">{p.parcours.map(([section, reaction]: [string, string]) => <li><strong>{section}</strong>{reaction ? ` — ${reaction}` : ''}</li>)}</ol></div>
+              <div><p class="font-semibold text-neutral-700 mb-1">Question cle</p><p class="text-neutral-600 italic">"{p.questionCle}"</p><p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong> — {p.commentReponse}</p></div>
+              <div><p class="font-semibold text-neutral-700 mb-1">Impact technique</p><p class="text-neutral-600">Vitesse : {p.impactVitesse}</p><p class="text-neutral-600 mt-0.5">Confiance : {p.impactConfiance}</p></div>
+              <div class="flex gap-4">
+                <div class="flex-1"><p class="font-semibold text-green-700 mb-1">Points positifs</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.positifs.map((pt: string) => <li>{pt}</li>)}</ul></div>
+                <div class="flex-1"><p class="font-semibold text-red-700 mb-1">Ce qui a fait partir</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map((f: string) => <li>{f}</li>)}</ul></div>
+              </div>
+              <div class="pt-2 border-t border-neutral-200"><p class="font-semibold text-neutral-700 mb-1">Ce qui aurait pu retenir</p><p class="text-neutral-600">{p.ceQuiFeraitBasculer}</p></div>
+              <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                <div class="text-center"><span class="block text-lg font-bold text-neutral-500">{p.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                <div class="text-center"><span class="block text-lg font-bold text-neutral-500">{p.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                <div class="text-center"><span class="block text-lg font-bold text-neutral-500">{p.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+              </div>
+            </div>
+          </div>
+        </details>
+      ))}
+    </div>
+  </section>
+
+  <!-- 5. CE QU'ON RECOMMANDE -->
+  <section class="bg-neutral-50 py-16 border-t border-neutral-200">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-2">Ce qu'on recommande</h2>
+      <p class="text-sm text-neutral-500 mb-8">Priorise par impact sur vos visiteurs.</p>
+
+      <h3 class="text-sm font-bold uppercase tracking-widest text-red-600 mb-4">Priorite haute</h3>
+      <div class="space-y-4 mb-10">
+        {ameliorationsHautes.map(a => (
+          <div class="bg-white border-2 border-red-200 rounded-xl p-6 shadow-sm">
+            <h4 class="font-semibold text-neutral-900 text-lg mb-2">{a.titre}</h4>
+            <p class="text-sm text-neutral-600 mb-3">{a.pourquoi}</p>
+            <div class="bg-red-50 rounded-lg px-4 py-3 flex items-start gap-2">
+              <svg class="w-4 h-4 text-red-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+              <p class="text-xs text-red-800"><strong>Action :</strong> {a.action}</p>
+            </div>
+            <p class="text-xs text-neutral-500 mt-2">Impact : {a.impact}</p>
+          </div>
+        ))}
+      </div>
+
+      <h3 class="text-sm font-bold uppercase tracking-widest text-amber-700 mb-4">Utile aussi</h3>
+      <div class="grid md:grid-cols-2 gap-4 mb-10">
+        {ameliorationsUtiles.map(a => (
+          <div class="bg-white border border-neutral-200 rounded-xl p-5">
+            <h4 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h4>
+            <p class="text-xs text-neutral-600">{a.detail}</p>
+          </div>
+        ))}
+      </div>
+
+      <h3 class="text-sm font-bold uppercase tracking-widest text-neutral-500 mb-4">A discuter ensemble</h3>
+      <div class="space-y-3 mb-10">
+        {ameliorationsDiscuter.map(a => (
+          <div class="bg-white border border-neutral-200 rounded-xl p-4 flex gap-3">
+            <span class="text-lg shrink-0">{a.emoji}</span>
+            <div>
+              <h4 class="font-semibold text-neutral-900 text-sm mb-0.5">{a.titre}</h4>
+              <p class="text-xs text-neutral-600">{a.detail}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {showUpsell && (
+        <div class="rounded-xl p-6 border-2 border-dashed" style="border-color: #E86C47; background: rgba(232,108,71,0.03);">
+          <p class="text-sm font-semibold text-neutral-900 mb-2">Besoin d'un site a la hauteur de votre savoir-faire ?</p>
+          <p class="text-xs text-neutral-600 mb-3">Un site moderne, rapide, mobile-first, avec votre galerie categorisee, vos 15 avis integres et un formulaire de devis avec upload photos. A partir de 490 euros, livre en 7 jours.</p>
+          <a href="tel:+33695961220" class="inline-flex items-center gap-2 text-sm font-semibold transition-colors" style="color: #E86C47;">
+            En parler avec Marc
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- 6. SOUS LE CAPOT -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <h2 class="text-2xl font-bold text-neutral-900 mb-6">Sous le capot</h2>
+
+    <div class="flex flex-wrap gap-2 mb-8">
+      {techVerdicts.map(v => (
+        <span class={`text-xs font-medium px-3 py-1.5 rounded-full border ${v.ok ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-50 text-red-700 border-red-200'}`}>
+          {v.label} : {v.verdict}
+        </span>
+      ))}
+    </div>
+
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden bg-white">
+        <h3 class="font-semibold text-neutral-900 text-sm">PageSpeed — Mobile</h3>
+        <svg class="w-5 h-5 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 bg-white border-t border-neutral-100">
+        <div class="grid grid-cols-4 gap-3 mt-3">
+          {[
+            { label: 'Performance', score: tech.pagespdMobile.performance },
+            { label: 'Accessibilite', score: tech.pagespdMobile.accessibility },
+            { label: 'Bonnes pratiques', score: tech.pagespdMobile.bestPractices },
+            { label: 'SEO', score: tech.pagespdMobile.seo },
+          ].map(m => (
+            <div class="text-center">
+              <div class={`text-2xl font-bold mb-1 ${m.score >= 90 ? 'text-green-600' : m.score >= 50 ? 'text-amber-600' : 'text-red-600'}`}>{m.score}</div>
+              <div class="text-[10px] text-neutral-500">{m.label}</div>
+            </div>
+          ))}
+        </div>
+        <div class="mt-3 pt-3 border-t border-neutral-100">
+          <p class="text-xs text-neutral-500">Core Web Vitals : LCP {tech.cwv.lcp} · INP {tech.cwv.inp} · CLS {tech.cwv.cls}</p>
+        </div>
+      </div>
+    </details>
+
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden bg-white">
+        <h3 class="font-semibold text-neutral-900 text-sm">PageSpeed — Desktop</h3>
+        <svg class="w-5 h-5 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 bg-white border-t border-neutral-100">
+        <div class="grid grid-cols-4 gap-3 mt-3">
+          {[
+            { label: 'Performance', score: tech.pagespdDesktop.performance },
+            { label: 'Accessibilite', score: tech.pagespdDesktop.accessibility },
+            { label: 'Bonnes pratiques', score: tech.pagespdDesktop.bestPractices },
+            { label: 'SEO', score: tech.pagespdDesktop.seo },
+          ].map(m => (
+            <div class="text-center">
+              <div class={`text-2xl font-bold mb-1 ${m.score >= 90 ? 'text-green-600' : m.score >= 50 ? 'text-amber-600' : 'text-red-600'}`}>{m.score}</div>
+              <div class="text-[10px] text-neutral-500">{m.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </details>
+
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden bg-white">
+        <h3 class="font-semibold text-neutral-900 text-sm">Securite HTTP — Mozilla Observatory <span class="text-xs font-normal text-neutral-500 ml-2">Note {tech.observatory.grade} ({tech.observatory.score}/100)</span></h3>
+        <svg class="w-5 h-5 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 bg-white border-t border-neutral-100">
+        <div class="mt-3 space-y-1">
+          {tech.headers.map(h => (
+            <div class="flex items-center gap-2 py-1">
+              {h.ok ? <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> : <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}
+              <span class={`text-xs ${h.ok ? 'text-neutral-700' : 'text-red-500'}`}>{h.h}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </details>
+
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden bg-white">
+        <h3 class="font-semibold text-neutral-900 text-sm">Schema.org <span class="text-xs font-normal text-red-500 ml-2">{tech.schema.filter(s => s.ok).length}/{tech.schema.length} elements</span></h3>
+        <svg class="w-5 h-5 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 bg-white border-t border-neutral-100">
+        <div class="mt-3 space-y-1">
+          {tech.schema.map(s => (
+            <div class="flex items-center gap-2 py-1">
+              {s.ok ? <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> : <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}
+              <span class={`text-xs ${s.ok ? 'text-neutral-700' : 'text-red-500'}`}>{s.item}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </details>
+
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden bg-white">
+        <h3 class="font-semibold text-neutral-900 text-sm">Open Graph + SEO technique</h3>
+        <svg class="w-5 h-5 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 bg-white border-t border-neutral-100">
+        <p class="text-xs font-semibold text-neutral-700 mt-3 mb-2">Open Graph</p>
+        <div class="space-y-1 mb-4">
+          {tech.og.map(o => (
+            <div class="flex items-start gap-2 py-0.5">
+              {o.ok ? <svg class="w-4 h-4 text-green-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> : <svg class="w-4 h-4 text-red-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}
+              <span class="text-xs text-neutral-700">{o.item} <span class="text-neutral-400">— {o.val}</span></span>
+            </div>
+          ))}
+        </div>
+        <p class="text-xs font-semibold text-neutral-700 mb-2">SEO technique</p>
+        <div class="space-y-1">
+          {tech.seo.map(s => (
+            <div class="flex items-center gap-2 py-0.5">
+              {s.ok ? <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> : <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}
+              <span class={`text-xs ${s.ok ? 'text-neutral-700' : 'text-red-500'}`}>{s.item}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- 7. METHODOLOGIE -->
+  <section class="bg-neutral-50 py-16 border-t border-neutral-200">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-6">Methodologie</h2>
+      <div class="grid gap-4 md:grid-cols-5">
+        {[
+          { step: '1', title: 'Scraping', desc: 'Extraction du contenu, navigation, meta tags, Schema.org' },
+          { step: '2', title: 'Audit technique', desc: 'PageSpeed, Observatory, headers, donnees structurees' },
+          { step: '3', title: 'Personas', desc: `Creation de ${kpis.nbPersonas} profils visiteurs realistes et diversifies` },
+          { step: '4', title: 'Simulation', desc: `${kpis.nbPersonas} visites simulees par agents IA independants` },
+          { step: '5', title: 'Synthese', desc: 'Agregation des frictions, recommandations priorisees' },
+        ].map(s => (
+          <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
+            <div class="text-lg font-black mb-1" style="color: #E86C47;">{s.step}</div>
+            <div class="text-sm font-semibold text-neutral-900 mb-1">{s.title}</div>
+            <p class="text-[11px] text-neutral-500">{s.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 8. CTA FINAL -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
+    <h2 class="font-heading text-2xl md:text-3xl font-bold text-neutral-900 mb-4">
+      Votre savoir-faire merite un site a sa hauteur.
+    </h2>
+    <p class="text-neutral-600 mb-8 max-w-xl mx-auto">
+      Le positionnement "maitre menuisier + ebeniste" est un differenciant fort. Un site moderne, rapide et mobile-first transformerait vos 15 avis 5 etoiles en machine a prospects.
+    </p>
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+      <a href="tel:+33695961220" class="inline-flex items-center gap-2 px-8 py-3.5 text-white font-semibold rounded-xl transition-all shadow-md hover:-translate-y-0.5" style="background: linear-gradient(135deg, #22c55e, #16a34a); box-shadow: 0 4px 20px rgba(34, 197, 94, 0.3);">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+        Appeler Marc
+      </a>
+      <a href="mailto:marc@muller.im" class="inline-flex items-center gap-2 px-8 py-3.5 border border-neutral-300 text-neutral-700 font-semibold rounded-xl transition-all hover:border-neutral-400 hover:text-neutral-900">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        Envoyer un email
+      </a>
+    </div>
+  </section>
+
+</BaseLayout>
