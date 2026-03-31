@@ -1,0 +1,1213 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const slug = 'zompa';
+const formule: 'decouverte' | 'complet' | 'pro' | 'suivi' = 'complet';
+const formuleLabel = 'Echo Complet';
+const nomProspect = 'Zompa Design';
+const urlSite = 'https://www.zompa.fr';
+const dateAudit = '31 mars 2026';
+const showUpsell = true;
+const showTimeline = false;
+
+const kpis = {
+  nbPersonas: 20,
+  nbConvertissent: 5,
+  nbHesitent: 9,
+  nbRepartent: 6,
+  conversion: 25,
+  experience: 6.0,
+  confiance: 6.2,
+  clarte: 5.8,
+};
+
+const verdictHero = 'Sur 20 visiteurs, 5 vous contactent. 9 hesitent. Les 6 autres ? 4 etaient hors cible.';
+
+const constat = 'Zompa Design a un positionnement ultra-clair, un portfolio de references majeures (Netflix, Warner Bros, Ubisoft) et 19 avis 5/5. Le site impressionne. Pourtant 9 visiteurs sur 20 n\'envoient pas de message — non par manque d\'interet, mais parce qu\'ils ne savent pas si leur budget est "dans la bonne zone". Et 2 clients B2B en decision immediate sont bloques par un SIRET manquant. Trois corrections, pas une refonte.';
+
+const canalData = [
+  { canal: 'Direct / Salon / Portfolio', nb: 3, convert: 2, rate: 67 },
+  { canal: 'LinkedIn', nb: 3, convert: 1, rate: 33 },
+  { canal: 'IA (ChatGPT / Claude / Perplexity)', nb: 3, convert: 1, rate: 33 },
+  { canal: 'Google Search', nb: 5, convert: 1, rate: 20 },
+  { canal: 'Bouche-a-oreille', nb: 3, convert: 0, rate: 0 },
+  { canal: 'Instagram', nb: 3, convert: 0, rate: 0 },
+];
+
+const alertes = [
+  {
+    type: 'critique' as const,
+    titre: 'Articles de blog inaccessibles (HTTP 500)',
+    detail: 'Vos 5 articles de blog retournent une erreur 500. Tout le contenu SEO du blog est perdu — et plusieurs visiteurs qui cherchaient a comprendre votre methode de travail avant de contacter sont tombes sur une page blanche. Un blog casse signale aussi un manque de maintenance pour les profils techniques.',
+    chiffre: '5/5',
+    chiffreLabel: 'articles inaccessibles',
+  },
+  {
+    type: 'important' as const,
+    titre: 'SIRET absent des mentions legales',
+    detail: '"En cours d\'obtention" dans vos mentions legales bloque 3 clients B2B en phase de decision : Detective Box, Koezio, et un editeur de jeux. Leurs services achats ne peuvent pas referencer un prestataire sans SIRET valide. Ce sont probablement vos contrats les plus importants — et ils ne peuvent pas avancer.',
+    chiffre: '3',
+    chiffreLabel: 'clients B2B bloques',
+  },
+  {
+    type: 'important' as const,
+    titre: 'Sitemap introuvable (404)',
+    detail: 'Votre sitemap.xml retourne une 404 sur l\'environnement de preview. A verifier qu\'il est bien genere en production — sans sitemap, Google indexe votre site moins efficacement, et les articles de blog (quand ils seront repares) mettront plus de temps a apparaitre dans les resultats.',
+    chiffre: '404',
+    chiffreLabel: 'sitemap introuvable',
+  },
+];
+
+const personas = [
+  {
+    id: 1, name: 'Thomas', age: 38, emoji: '🎮',
+    situation: 'Createur solo d\'escape game a Lyon, local de 200m² dans 4 mois',
+    canal: 'Google Search', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Le portfolio l\'impressionne mais sans repere de prix il n\'ose pas envoyer le formulaire. Il bookmarke et repart.',
+    localisation: 'Lyon', maturite: 'Decision',
+    contexte: 'Doit commander decors et documents de jeu pour son premiere salle. Budget reserve. Cherche "graphiste escape game France".',
+    impression: 'Hero fort, slogan percutant, chargement instantane. "Je suis au bon endroit" en 3 secondes.',
+    parcours: [
+      ['Hero', 'Accroche visuelle reussie, scroll immediat'],
+      ['Portfolio', 'Impressionnant mais cherche des projets comparables a son 200m2. Licences l\'intimidant un peu.'],
+      ['Services', '"Decors grand format jusqu\'a 3000m2" + "Documents de jeu" — pertinent pour lui'],
+      ['FAQ', 'Lit tout. Aucune fourchette de prix. Frustration.'],
+      ['Contact', 'Hesite a remplir sans savoir si son budget est dans le bon ordre de grandeur'],
+    ],
+    questionCle: 'Cette graphiste a deja fait des salles du meme style que le mien ?',
+    reponse: 'Partiellement', commentReponse: 'Portfolio solide mais pas de case studies — il ne peut pas evaluer si son concept a deja ete traite',
+    impactVitesse: 'Excellent (98/100) — aucune friction, decisif sur mobile en deplacement',
+    impactConfiance: 'A+/120 — site techniquement irrepochable, inspire confiance',
+    positifs: ['References (Netflix, Warner) creent une legitimite immediate', '"Faire du faux qui fait vrai" parle directement au metier escape game', '19 temoignages 5/5 avec noms reels'],
+    frictions: ['Aucune fourchette de prix — il a un budget mais ne sait pas s\'il est "dans la zone"', 'Pas de case studies — ne peut pas verifier si son style de projet a deja ete traite', 'Pas de telephone pour un echange rapide'],
+    ceQuiFeraitBasculer: 'Une fourchette indicative par type de projet ("a partir de X€ pour une salle de 100m2") ou un Calendly pour un appel de 15 minutes',
+    exp: 7, conf: 8, clarte: 5,
+  },
+  {
+    id: 2, name: 'Celine', age: 32, emoji: '🎯',
+    situation: 'Chef de projet chez Detective Box, appel d\'offres pour 3 boites sous licence',
+    canal: 'LinkedIn', device: 'Desktop', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Portfolio parfait. References licences ideales. Mais SIRET "en cours" = son service achats bloque le dossier. Elle note et attend.',
+    localisation: 'Paris', maturite: 'Decision',
+    contexte: 'A vu le post sur le projet Stranger Things. Lancement de gamme prevu en septembre 2026, appel d\'offres en cours.',
+    impression: 'Arrive en mode validation professionnelle. Netflix/Warner confirme immediatement dans le portfolio.',
+    parcours: [
+      ['Hero', 'Scroll direct — elle a deja le contexte via LinkedIn'],
+      ['Portfolio', 'Netflix, Warner Bros, Ubisoft identifies. Pas de case studies sur la gestion des licences — frustration'],
+      ['FAQ', 'Cherche "NDA", "licences", "confidentialite" — repond partiellement'],
+      ['Mentions legales', 'Reflexe achat. SIRET "en cours d\'obtention". Signal d\'alarme immediat.'],
+    ],
+    questionCle: 'Elle peut travailler sous NDA avec une licence internationale ?',
+    reponse: 'Partiellement', commentReponse: 'Portfolio prouve l\'experience licences, mais pas de mention explicite NDA ni processus de confidentialite',
+    impactVitesse: 'Irrelevant pour ce profil — focalisee sur le contenu',
+    impactConfiance: 'Le SIRET "en cours" ecrase toute confiance technique. Site A+/120 mais administrativement inutilisable.',
+    positifs: ['References licenceurs majeurs (Netflix, Warner, DC Comics) : preuve directe irrefutable', 'Temoignages avec noms d\'entreprises verifiables sur LinkedIn'],
+    frictions: ['SIRET "en cours" : BLOQUANT — service achats ne peut pas referencer sans', 'Pas de case study sur projets sous licence', 'Blog 500 : signal de manque de rigueur pour un interlocuteur B2B serieux'],
+    ceQuiFeraitBasculer: 'SIRET valide dans les mentions legales — c\'est la seule condition non-negociable',
+    exp: 7, conf: 4, clarte: 6,
+  },
+  {
+    id: 3, name: 'Florian', age: 45, emoji: '🏰',
+    situation: 'Proprietaire de 2 salles escape room a Paris, agrandit avec une troisieme salle medievale',
+    canal: 'Bouche-a-oreille', device: 'Desktop', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Recommande par un confrere. References Koezio le convainquent. Mais il cherche un telephone — il n\'en trouve pas. Et toujours pas de prix.',
+    localisation: 'Paris', maturite: 'Decision',
+    contexte: 'Ouverture salle dans 6 mois, besoin de tous les documents + decors muraux. Prefere appeler plutot qu\'ecrire.',
+    impression: 'Arrive prequalifie. Voit un site visuellement impressionnant. Reaction : "ca a l\'air pro." Mais cherche immediatement : "combien ?"',
+    parcours: [
+      ['Hero', 'Positif. Connait le metier.'],
+      ['Portfolio', 'Reconnait Koezio. Cherche projets comparables (80m2).'],
+      ['Services', '"Decors grand format jusqu\'a 3000m2". Son 80m2 semble faisable.'],
+      ['FAQ', 'Cherche un prix. Rien.'],
+      ['Contact', 'Cherche un telephone. Rien. Formulaire uniquement.'],
+    ],
+    questionCle: 'Combien ca va couter pour habiller une salle de 80m2 ?',
+    reponse: 'Non', commentReponse: 'Strictement aucune indication tarifaire. La seule reponse possible : "contactez pour un devis".',
+    impactVitesse: 'Desktop rapide. Pas de friction technique.',
+    impactConfiance: 'Site solide, mais Florian est sensible aux signaux humains (telephone, adresse) plus qu\'aux grades de securite.',
+    positifs: ['Reference Koezio dans le portfolio : legitimite directe', 'Visuellement correspond a ce qu\'il cherche', '19 temoignages avec entreprises verifiables'],
+    frictions: ['Pas de telephone : friction majeure — il prefere appeler', 'Aucune fourchette de prix', 'Pas d\'adresse physique : "Elle est ou exactement ?"'],
+    ceQuiFeraitBasculer: 'Un numero de telephone ou Calendly + une fourchette indicative (meme large)',
+    exp: 6, conf: 7, clarte: 4,
+  },
+  {
+    id: 4, name: 'Sarah', age: 29, emoji: '✍️',
+    situation: 'Game designer independante, Kickstarter prevu juin 2026, budget ~2000€',
+    canal: 'IA (Claude)', device: 'Desktop', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Coup de coeur pour le style. Essaie de lire le blog pour valider l\'approche. HTTP 500. Peur d\'etre hors budget. N\'envoie pas de message.',
+    localisation: 'Nantes', maturite: 'Comparaison',
+    contexte: 'A demande a Claude "graphiste specialise documents escape game France". Kickstarter dans 3 mois.',
+    impression: 'Le site lui-meme est immersif — coherent avec ce qu\'elle vend. "Faire du faux qui fait vrai" resonne avec son projet.',
+    parcours: [
+      ['Hero', 'Lit le slogan plusieurs fois. "C\'est exactement ce que je veux pour mon projet."'],
+      ['Portfolio', 'Evalue le style. Se demande si son univers est compatible.'],
+      ['Services', '"Documents de jeu" — directement pertinent pour son Kickstarter'],
+      ['Blog', 'Veut lire sur la methode. Erreur 500. Frustration importante.'],
+      ['Contact', 'Tentee mais craint d\'etre hors budget (~2000€). N\'envoie pas.'],
+    ],
+    questionCle: 'Son style correspond a mon univers ? Et c\'est dans mon budget ?',
+    reponse: 'Partiellement', commentReponse: 'Portfolio repond visuellement, mais sans case studies ni repere budget',
+    impactVitesse: 'Excellente — renforce la coherence du positionnement qualite',
+    impactConfiance: 'Blog 500 deteriore la confiance pour ce profil analytique qui utilise Claude/IA — "un site qui se presente comme pro ne devrait pas avoir de 500"',
+    positifs: ['Le site lui-meme est une demo du style de Laurie : immersif et coherent', '"Documents de jeu" correspond directement a son besoin Kickstarter', 'Slogan et positionnement memorables'],
+    frictions: ['Blog 500 : son unique source d\'information sur la methode', 'Aucun repere tarifaire avec un budget contraint de ~2000€', 'Pas de projets independants/Kickstarter dans le portfolio'],
+    ceQuiFeraitBasculer: 'Le blog fonctionnel + une indication "budget minimum pour collaborer" ou exemples de petits projets',
+    exp: 6, conf: 6, clarte: 3,
+  },
+  {
+    id: 5, name: 'Alain', age: 52, emoji: '🎪',
+    situation: 'Responsable evenementiel chez Koezio, renouvellement prestataire graphique 2026-2027',
+    canal: 'Bouche-a-oreille', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Reference Koezio dans le portfolio : validation immediate. Tout lui convient. Mais SIRET "en cours" = son service achats ne peut pas avancer.',
+    localisation: 'Region parisienne', maturite: 'Decision',
+    contexte: 'Recommande en interne par un collegue ayant deja travaille avec Zompa. SIRET requis par le service achats pour referencer un fournisseur.',
+    impression: 'Arrive avec la plus forte prequalification de cet audit. En mode validation administrative directement.',
+    parcours: [
+      ['Hero', 'Rapide. "C\'est la bonne." Scroll immediat.'],
+      ['Portfolio', 'Cherche Koezio. Le trouve. Parfait.'],
+      ['Services', '"Decors grand format jusqu\'a 3000m2". Confirme les capacites.'],
+      ['Mentions legales', 'Reflexe achat. SIRET "en cours d\'obtention". Probleme critique identifie.'],
+      ['Contact', 'Note le formulaire. Pas de telephone. Sur mobile, moins confortable.'],
+    ],
+    questionCle: 'Vous avez deja travaille avec Koezio et vous avez les capacites pour un projet grand format ?',
+    reponse: 'Oui sur le fond, Bloquant administrativement', commentReponse: 'Reference Koezio + capacites 3000m2 confirmes. Mais SIRET manquant = inutilisable pour le service achats.',
+    impactVitesse: '98/100 mobile — consulte entre deux reunions. Aucune friction.',
+    impactConfiance: 'SIRET "en cours" bascule tout le bilan positif cote juridique/achat.',
+    positifs: ['Reference Koezio explicite : validation immediate', 'Capacites grand format (3000m2) clairement affichees', 'Performance mobile parfaite'],
+    frictions: ['SIRET "en cours" : BLOQUANT ABSOLU pour le service achats de Koezio', 'Pas d\'adresse physique pour le dossier fournisseur', 'Pas de telephone — ralentit un responsable evenementiel'],
+    ceQuiFeraitBasculer: 'SIRET valide — c\'est la seule condition, non-negociable',
+    exp: 7, conf: 5, clarte: 7,
+  },
+  {
+    id: 6, name: 'Emma', age: 31, emoji: '🔍',
+    situation: 'Creatrice de city game (jeu de piste urbain geolocalise) a Bordeaux',
+    canal: 'IA (ChatGPT)', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Double competence print + web confirmee dans les services et la FAQ. Elle remplit le formulaire pour clarifier le perimetre app en detail.',
+    localisation: 'Bordeaux', maturite: 'Decision',
+    contexte: 'A demande a ChatGPT "graphiste specialise app jeu d\'enquete France". Lancement city game payant dans 3 mois.',
+    impression: 'Hero charge instantanement. Badge "Disponible" visible. L\'ambiance immersive colle parfaitement avec son univers.',
+    parcours: [
+      ['Hero', 'Soulagement : exactement le profil recherche'],
+      ['Services', 'Service 4 "Faux sites web et interfaces d\'app". La mention "partenaires techniques" — perimetre a clarifier'],
+      ['Portfolio', 'Cherche un exemple de city game ou app. N\'en trouve pas. Decoit mais les autres projets restent convaincants.'],
+      ['FAQ', 'Q7 collaborations mentionne les city games. Clic mental.'],
+      ['Contact', 'Remplit le formulaire pour clarifier le perimetre app.'],
+    ],
+    questionCle: 'Tu peux faire a la fois le design de l\'appli et les faux documents papier ?',
+    reponse: 'Partiellement', commentReponse: 'Service 4 + FAQ Q7 repondent, mais aucun exemple combinant print + app dans le portfolio',
+    impactVitesse: '98/100 mobile — aucune friction. LCP 2.3s parfait.',
+    impactConfiance: 'A+/120 — site fiable. Aucun signal negatif.',
+    positifs: ['Service 4 repond exactement a la double competence recherchee', 'Portfolio licences majeures rassure sur la capacite a gerer des projets ambitieux', 'FAQ Q7 valide la capacite de co-creation avec city games'],
+    frictions: ['Aucun exemple portfolio combinant print + app/web', 'Blog 500'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 7, clarte: 7,
+  },
+  {
+    id: 7, name: 'Julien', age: 27, emoji: '🃏',
+    situation: 'Createur de jeux de societe en autoedition, Kickstarter dans 2 mois',
+    canal: 'Google Search', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Service packaging correspond exactement. Hachette et Detective Box : references proches. Envoie un formulaire avec "Kickstarter dans 2 mois, budget limite".',
+    localisation: 'Strasbourg', maturite: 'Comparaison',
+    contexte: 'A 3 onglets ouverts avec des prestataires concurrents. Veut qualifier rapidement avant d\'investir du temps.',
+    impression: 'Hero pertinent, logos clients visibles. Scrolle vite.',
+    parcours: [
+      ['Hero', 'Correspond a son univers. CTA "Voir les realisations" — clique.'],
+      ['Portfolio', 'Cherche "packaging jeu de societe". Voit Detective Box, Hachette. Proche.'],
+      ['Services', 'Service 5 : "Key art, packaging — la premiere impression qui declenche l\'achat." Exactement son besoin.'],
+      ['FAQ', 'Cherche prix. "Devis personnalise." Frustration moderee.'],
+      ['Contact', 'Envoie le formulaire avec son contexte Kickstarter.'],
+    ],
+    questionCle: 'Vous avez des exemples de packaging jeu de societe dans mon budget ?',
+    reponse: 'Partiellement', commentReponse: 'Exemples proches (Detective Box, Hachette) mais pas de packaging Kickstarter/autoedition/budget serre',
+    impactVitesse: '98/100 — site plus rapide que tous les autres prestataires creatifs qu\'il compare. Avan tage concurrentiel direct.',
+    impactConfiance: 'A+/120 — rien ne decribilise par rapport aux concurrents.',
+    positifs: ['Service 5 couvre packaging et key art pour l\'industrie du jeu', 'Hachette et Detective Box : references proches de son univers', 'Site mobile parfaitement fluide en comparaison multi-onglets'],
+    frictions: ['Zero indication tarifaire pour qualifier rapidement vs concurrents', 'Aucun exemple de packaging Kickstarter/autoedition'],
+    ceQuiFeraitBasculer: '',
+    exp: 6, conf: 7, clarte: 5,
+  },
+  {
+    id: 8, name: 'Nadia', age: 34, emoji: '📦',
+    situation: 'Product owner chez editeur de jeux de societe, appel d\'offres pour 3 boites',
+    canal: 'LinkedIn', device: 'Desktop', decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Hachette = credibilite immedite. Envoie un formulaire avec le SIRET comme prerequis explicite. Si Laurie le fournit, le contrat suit.',
+    localisation: 'Paris', maturite: 'Decision',
+    contexte: 'A vu la reference Hachette sur le profil LinkedIn. 3 prestataires en competition. SIRET obligatoire pour le service achats.',
+    impression: 'Desktop, mise en page immersive. Logos Netflix, Warner Bros, Ubisoft visibles immediatement. Instinct B2B satisfait en 3 secondes.',
+    parcours: [
+      ['Hero', 'Tres positif. Badge "Disponible" = opportunite.'],
+      ['Temoignages', 'Lit les verbatims. Entreprises verifiables. Credibilite forte.'],
+      ['Portfolio', 'Batman Escape (Warner, 3000m2) + Hachette. Preuve de capacite avec contraintes licences.'],
+      ['FAQ', 'Q5 NDA : tres rassurant pour une editrice.'],
+      ['Mentions legales', 'SIRET "en cours". Blocage identifie mais ne l\'arrete pas — envoie le formulaire en demandant le SIRET.'],
+    ],
+    questionCle: 'Vous avez un SIRET valide pour signer un contrat prestataire ?',
+    reponse: 'Non (mais honnêtement)', commentReponse: 'Mention legale claire. Nadia envoie quand meme un message — le portfolio est suffisamment convaincant.',
+    impactVitesse: 'Desktop excellent. Experience parfaite.',
+    impactConfiance: 'A+/120 technique — contraste douloureux avec le SIRET manquant.',
+    positifs: ['References B2B verifiables (Warner, Hachette, Ubisoft)', 'FAQ Q5 NDA : mention explicite experience licences', 'Temoignages avec noms d\'entreprises reels'],
+    frictions: ['SIRET "en cours" : bloquant pour integrer comme fournisseur reference', 'Blog 500 : image peu soignee pour un editeur qui evalue la rigueur'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 6, clarte: 8,
+  },
+  {
+    id: 9, name: 'Elodie', age: 36, emoji: '🎭',
+    situation: 'Fondatrice agence d\'experiences immersives, cherche un partenaire graphiste durable',
+    canal: 'Direct / Portfolio (Behance)', device: 'Tablette', decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Diversite stylistique du portfolio, FAQ Q7 partenariats, et valeurs explicitement partagees : elle ecrit un email direct (pas le formulaire standard).',
+    localisation: 'Lyon', maturite: 'Comparaison',
+    contexte: 'A trouve le portfolio sur un forum createurs escape game. Cherche un partenaire regulier — pas un prestataire one-shot.',
+    impression: 'Arrive habituee aux sites creatifs soignes. Ambiance cinematographique. Coup de coeur immediat.',
+    parcours: [
+      ['Hero', 'Positionnement ultra-niche la rassure : elle ne veut pas d\'un generaliste.'],
+      ['Portfolio', 'Passe beaucoup de temps. Diversite stylistique (vintage, polar japonais, Gotham) = adaptabilite confirmee.'],
+      ['A propos', 'Lit le texte complet. Parcours (droit → journalisme → graphisme) = rigueur et storytelling.'],
+      ['FAQ', 'Q7 collaborations + Q6 rejoindre un projet en cours : exactement ce qu\'elle attendait.'],
+      ['Contact', 'Ecrit un email direct avec objet "Partenariat regulier — agence experiences immersives".'],
+    ],
+    questionCle: 'Est-ce qu\'on peut construire une collaboration durable, pas juste un projet ponctuel ?',
+    reponse: 'Oui', commentReponse: 'FAQ Q7 repond directement ("collaborations regulieres", "co-creation"), Q6 confirme',
+    impactVitesse: '98/100 tablette — scroll le portfolio sans aucune attente.',
+    impactConfiance: 'A+/120 — signal de serieux pour une agence evaluant un partenariat.',
+    positifs: ['FAQ Q7 repond directement a la question partenariat durable', 'Diversite stylistique prouve l\'adaptabilite a differents univers', '"4 valeurs de travail" articulees : base pour discuter d\'un mode de collaboration'],
+    frictions: ['Blog 500 — voulait lire les articles pour evaluer la vision creative', 'SIRET "en cours" — a verifier avant contrat de partenariat', 'Pas de case studies sur le process complet'],
+    ceQuiFeraitBasculer: '',
+    exp: 8, conf: 7, clarte: 8,
+  },
+  {
+    id: 10, name: 'Maxime', age: 25, emoji: '🎓',
+    situation: 'Etudiant game design, project fin d\'etudes escape game, delai 3 semaines',
+    canal: 'Google Search', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Admire le travail. Mais delai FAQ (2-3 mois) vs ses 3 semaines = incompatible. Et les references Netflix l\'intimident. N\'envoie pas de message.',
+    localisation: 'Paris', maturite: 'Decouverte',
+    contexte: 'A cherche "graphiste escape game pas cher". Budget tres serre. Besoin de visuels pro pour impressionner son jury.',
+    impression: 'Voit les logos Netflix et Warner. Premier reflexe : "c\'est trop bien pour mon budget."',
+    parcours: [
+      ['Hero', 'Slogan lui plait. Logos l\'intimident.'],
+      ['Portfolio', 'Admire. Mais aucun projet etudiant, aucun petit format.'],
+      ['FAQ', 'Cherche frenetiquement un prix. Rien. Delai FAQ (2-3 mois) : incompatible avec ses 3 semaines.'],
+      ['Contact', 'Commence a taper "projet etudiant, budget limite..." puis efface.'],
+    ],
+    questionCle: 'C\'est combien pour un petit projet etudiant ?',
+    reponse: 'Non', commentReponse: 'FAQ renvoie vers devis personnalise sans indication de prix bas. Delai 2-3 mois incompatible avec 3 semaines.',
+    impactVitesse: '98/100 — le seul element qui ne le decolle pas.',
+    impactConfiance: 'Site pro renforce la perception "cher" — aggrave l\'auto-censure tarifaire.',
+    positifs: ['Portfolio inspirant', 'FAQ honnete sur les delais'],
+    frictions: ['Zero indication tarifaire — ne peut pas s\'auto-qualifier', 'Delai 2-3 mois vs besoin 3 semaines : incompatibilite flagrante', 'Portfolio 100% grands comptes : aucun signal d\'accessibilite pour un etudiant'],
+    ceQuiFeraitBasculer: 'Une mention dans la FAQ "petits projets a partir de X€" ou "delais selon la complexite : a partir de X semaines"',
+    exp: 5, conf: 7, clarte: 4,
+  },
+  {
+    id: 11, name: 'Claire', age: 43, emoji: '🏪',
+    situation: 'Co-fondatrice escape room a Clermont-Ferrand, renovation d\'une salle (60m2)',
+    canal: 'Instagram', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Specialisation la rassure. Mais sans repere de prix ni information sur la livraison en province, elle hesite avant d\'envoyer un formulaire.',
+    localisation: 'Clermont-Ferrand', maturite: 'Comparaison',
+    contexte: 'A vu une photo Batman Escape sur @zompa_design. Budget moyen pour renovation de salle.',
+    impression: 'Ambiance visuelle forte. Les logos Netflix/Warner l\'impressionnent ET l\'inquietent : "c\'est peut-etre trop gros pour nous."',
+    parcours: [
+      ['Hero', '"Escape games, jeux d\'enquete et parcs de loisirs" : elle se reconnait'],
+      ['Services', '"Decors imprimes jusqu\'a 3000m2". Cherche info pour 60m2. Rien.'],
+      ['FAQ', 'Budget : "personnalise, contactez-nous". Pas de livraison province mentionnee.'],
+      ['A propos', '"France entiere, travail a distance" — trouve enfin la reponse mais doit chercher.'],
+    ],
+    questionCle: 'Vous livrez en province ? Et c\'est dans quels budgets pour une salle de 60m2 ?',
+    reponse: 'Partiellement', commentReponse: 'Zone France entiere dans A propos. Sur le budget : zero information.',
+    impactVitesse: '98/100 — chargement instantane depuis Instagram mobile.',
+    impactConfiance: 'A+/120 — confiance technique maximale.',
+    positifs: ['Specialisation ultra-claire : seule graphiste 100% escape game en France', 'Zone France entiere trouvable dans A propos', 'Delais explicites (2-3 mois)'],
+    frictions: ['Budget totalement absent — frein principal pour un budget moyen', 'Logos grands comptes : effet d\'intimidation ("c\'est peut-etre trop gros pour nous ?")'],
+    ceQuiFeraitBasculer: 'Une indication "projets a partir de X€" ou fourchette par type de prestation',
+    exp: 6, conf: 7, clarte: 5,
+  },
+  {
+    id: 12, name: 'Romain', age: 39, emoji: '🖥️',
+    situation: 'Developpeur app mobile freelance, cree une app d\'enquete geolocalisee',
+    canal: 'IA (Perplexity)', device: 'Desktop', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Service "Design web immersif" confirme qu\'elle fait ca. Mais blog en 500 + aucun mockup numerique visible = il va voir ailleurs sous 48h.',
+    localisation: 'Lille', maturite: 'Comparaison',
+    contexte: 'A cherche "graphiste app jeu d\'enquete immersif" sur Perplexity. Besoin graphiste pour beta app dans 2 mois.',
+    impression: 'Developpeur habitue aux sites soignes. Voit un site professionnel et coherent.',
+    parcours: [
+      ['Services', 'Trouve "Design web immersif" avec mention "partenaires techniques" — rassure et inquiete a la fois'],
+      ['Blog', 'Clique pour evaluer l\'expertise. HTTP 500. Essaie un autre article : idem. Note "site bacl ou en maintenance".'],
+      ['Portfolio', 'Cherche des mockups d\'app ou interface numerique. Essentiellement du print.'],
+    ],
+    questionCle: 'T\'as deja travaille sur des interfaces d\'app de jeu ? T\'as des mockups a me montrer ?',
+    reponse: 'Partiellement', commentReponse: 'Service 4 confirme, mais aucun mockup d\'app visible dans le portfolio. Blog inaccessible.',
+    impactVitesse: 'Bonne. Pas de reproche technique front.',
+    impactConfiance: 'Blog 500 = signal technique negatif fort pour un developpeur — il diagnostique "Astro mal configure".',
+    positifs: ['Service 4 mentionne explicitement les apps et city games', 'Portfolio visuellement fort'],
+    frictions: ['Blog 500 : signal technique negatif majeur pour un dev', 'Aucun mockup d\'interface numerique visible dans le portfolio', 'Perimetre "graphiste vs dev partenaire" non clarifie'],
+    ceQuiFeraitBasculer: 'Un ou deux screenshots d\'interfaces numeriques dans le portfolio + blog fonctionnel',
+    exp: 5, conf: 5, clarte: 6,
+  },
+  {
+    id: 13, name: 'Patricia', age: 48, emoji: '📚',
+    situation: 'Responsable marketing editeur de livres-jeux, appel d\'offres pour 3 titres',
+    canal: 'LinkedIn', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Reference Hachette = credibilite parfaite. Mais SIRET manquant = son service achats ne peut pas creer le dossier fournisseur. Elle attend.',
+    localisation: 'Paris', maturite: 'Comparaison',
+    contexte: 'A vu une recommandation LinkedIn mentionnant le livre Hachette. Appel d\'offres pour 3 titres livres-jeux escape, parution 2027.',
+    impression: 'Arrive depuis LinkedIn. "Graphiste specialisee escape games" correspond a son besoin livres-jeux.',
+    parcours: [
+      ['Hero', '"Livre Escape Game Leonardo De Vinci (Hachette)" visible tres tot. "Hachette, c\'est un pair."'],
+      ['Portfolio', 'Projet Hachette consulte en detail. Tres pertinent.'],
+      ['Services', 'Packaging + Documents de jeu : exactement son appel d\'offres.'],
+      ['Mentions legales', 'SIRET "en cours d\'obtention". Bloquant pour son service achats.'],
+    ],
+    questionCle: 'Vous avez un SIRET pour le service achats ? Et vous avez d\'autres references editions ?',
+    reponse: 'Partiellement (references) / Non (SIRET)', commentReponse: 'Reference Hachette convaincante. Autres references edition moins developpees. SIRET : blocage administratif pur.',
+    impactVitesse: '98/100 mobile — peut consulter depuis son telephone.',
+    impactConfiance: 'A+/120 technique, mais SIRET manquant inverse la confiance sur le plan legal/commercial.',
+    positifs: ['Reference Hachette : credibilite edition immediate', 'Portfolio livres-jeux (Leonardo De Vinci, 200+ pages)', 'Logos reconnus pour un comite d\'achat'],
+    frictions: ['SIRET "en cours" : blocage administratif absolu pour le service achats', 'Pas de telephone pour un appel de qualification rapide'],
+    ceQuiFeraitBasculer: 'SIRET valide dans les mentions legales — c\'est la seule vraie condition',
+    exp: 7, conf: 6, clarte: 7,
+  },
+  {
+    id: 14, name: 'Antoine', age: 33, emoji: '🎨',
+    situation: 'Passionné de jeux, veut lancer son premier jeu d\'enquete home commercially',
+    canal: 'Instagram', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Coup de coeur total pour l\'univers. Envoie quand meme un message enthousiaste. 60% de chance de convertir si la reponse confirme qu\'un petit projet est envisageable.',
+    localisation: 'Toulouse', maturite: 'Decouverte',
+    contexte: 'Abonne a @zompa_design depuis des mois. A finalement une idee de produit commercialisable.',
+    impression: '"Faire du faux qui fait vrai" — lui parle immediatement. Scroll avec enthousiasme.',
+    parcours: [
+      ['Portfolio', 'Detective Box, Stranger Things, Yakuzas. Exactement son univers. 3-4 minutes ici.'],
+      ['Services', '"Documents de jeu" parfaitement aligne avec son projet print-and-play.'],
+      ['A propos', '"Autodidacte" — il se reconnait dans le parcours.'],
+      ['Contact', 'Envoie un message enthousiaste malgre l\'incertitude budgetaire.'],
+    ],
+    questionCle: 'C\'est combien pour lancer un premier petit tirage de jeu d\'enquete ?',
+    reponse: 'Non', commentReponse: 'Aucun repere tarifaire. Antoine ne sait pas si c\'est 200€ ou 2000€.',
+    impactVitesse: '98/100 — scroll le portfolio sans aucune attente.',
+    impactConfiance: 'Site propre et securise. Renforce la perception de professionnelle serieuse.',
+    positifs: ['Portfolio parfaitement aligne avec son univers', 'Ambiance visuelle : connexion emotionnelle forte', 'Section "Documents de jeu" tres precise sur ce qu\'il cherche'],
+    frictions: ['Absence totale de tarif — ne sait pas si c\'est accessible', 'Messaging oriente grands comptes (Netflix) — aucun signal que les petits projets sont bienvenus'],
+    ceQuiFeraitBasculer: 'Une phrase dans les services : "Du document unique au grand format — chaque projet commence quelque part."',
+    exp: 8, conf: 7, clarte: 5,
+  },
+  {
+    id: 15, name: 'Luc', age: 56, emoji: '🏠',
+    situation: 'Proprietaire d\'hotel, cherche graphiste pour menus et enseignes',
+    canal: 'Google Search', device: 'Mobile', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Specialisation escape game incomprehensible pour lui. Quitte en < 15 secondes. Hors cible — le site filtre correctement.',
+    localisation: 'Reims', maturite: 'Decouverte',
+    contexte: 'A cherche "graphiste freelance pas cher". Arrive par erreur de ciblage SEO.',
+    impression: '"Escape games... experiences immersives." Ne sait pas ce que c\'est. "Ca ressemble a un site de film d\'horreur."',
+    parcours: [
+      ['Hero', '"Escape games". Fronce les sourcils.'],
+      ['Preuve sociale', 'Netflix, Warner = "c\'est des grosses boites, pas pour moi". Quitte.'],
+    ],
+    questionCle: 'Elle fait aussi les menus et supports d\'hotel ?',
+    reponse: 'Non', commentReponse: 'Specialisation escape game exclusive — volontaire et bien executee.',
+    impactVitesse: 'Non pertinent — parti en < 15 secondes.',
+    impactConfiance: 'Non pertinent.',
+    positifs: ['La specialisation si claire qu\'elle filtre rapidement les hors-cibles — c\'est une fonctionnalite, pas un defaut'],
+    frictions: [],
+    ceQuiFeraitBasculer: 'Rien — hors cible total. Le site fait son travail de filtre correctement.',
+    exp: 2, conf: 3, clarte: 9,
+  },
+  {
+    id: 16, name: 'Sophie', age: 22, emoji: '📱',
+    situation: 'Etudiante BTS communication, cherche un stage de 2 mois en design graphique',
+    canal: 'Direct (article blog)', device: 'Mobile', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Son point d\'entree (article de blog) est en HTTP 500. Premiere impression = erreur. Et pas de section recrutement. Elle quitte sans message.',
+    localisation: 'Montpellier', maturite: 'Decouverte',
+    contexte: 'A trouve l\'URL dans un article sur les metiers originaux du jeu. Recherche active de stage.',
+    impression: 'Article blog en 500. Revenue sur l\'accueil via le logo. Esthetique lui plait. Cherche "stage", "equipe". Rien.',
+    parcours: [
+      ['Article blog (entree)', 'HTTP 500. Frustration immediate.'],
+      ['Hero', 'Comprend le positionnement. Cherche "stage", "equipe", "recrutement". Rien.'],
+      ['A propos', 'Freelance solo evident. Pas de section recrutement.'],
+    ],
+    questionCle: 'Elle prend des stagiaires ?',
+    reponse: 'Non', commentReponse: 'Aucune mention de stage, equipe ou recrutement. Freelance solo evident.',
+    impactVitesse: '98/100 mobile — chargement parfait apres l\'erreur initiale.',
+    impactConfiance: 'Article 500 = premiere impression negative. Site par ailleurs professionnel.',
+    positifs: ['Portfolio impressionnant (donne envie de travailler avec Laurie)'],
+    frictions: ['Article blog 500 : son point d\'entree, premiere impression = erreur', 'Aucune section recrutement/stage'],
+    ceQuiFeraitBasculer: 'Rien — hors cible. Mais corriger le blog 500 evite une mauvaise premiere impression.',
+    exp: 4, conf: 6, clarte: 5,
+  },
+  {
+    id: 17, name: 'Bernard', age: 61, emoji: '🥖',
+    situation: 'Artisan boulanger, cherche graphiste pour logo et flyers',
+    canal: 'Google Search', device: 'Desktop', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Specialisation incomprehensible pour lui. Quitte immediatement. Hors cible total — aucune action possible ni souhaitable.',
+    localisation: 'Metz', maturite: 'Decouverte',
+    contexte: 'A cherche "graphiste freelance". Arrive par erreur de recherche.',
+    impression: '"C\'est quoi ca, un jeu ?" Referme l\'onglet.',
+    parcours: [
+      ['Hero', '"Escape games" → confusion totale. Quitte.'],
+    ],
+    questionCle: 'Elle fait aussi les logos pour les commerces ?',
+    reponse: 'Non', commentReponse: 'Specialisation escape game exclusive.',
+    impactVitesse: 'Non pertinent — parti immediatement.',
+    impactConfiance: 'Non pertinent.',
+    positifs: ['La clarte du positionnement filtre correctement ce profil hors-cible'],
+    frictions: [],
+    ceQuiFeraitBasculer: 'Rien — hors cible absolu.',
+    exp: 2, conf: 3, clarte: 1,
+  },
+  {
+    id: 18, name: 'Kevin', age: 30, emoji: '🎮',
+    situation: 'Fan d\'escape games, veut creer un jeu home pour un anniversaire, budget ~100-200€',
+    canal: 'Instagram', device: 'Mobile', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Adore l\'univers. Mais les references Netflix + zero tarif = il juge que "c\'est trop haut de gamme pour moi". Repart vers Fiverr.',
+    localisation: 'Strasbourg', maturite: 'Comparaison',
+    contexte: 'Suit @zompa_design depuis longtemps. Impulse de contacter apres avoir vu le projet Stranger Things.',
+    impression: 'L\'esthetique dark lui parle directement. Enthousiaste. Mais les grandes references l\'intimident.',
+    parcours: [
+      ['Portfolio', 'Batman Escape, Ubisoft... "Attends, c\'est des gros clients ca."'],
+      ['Temoignages', 'Tous des professionnels. Pas de particuliers. Ne se reconnaît pas.'],
+      ['FAQ', 'Budget : "personnalise, contactez-nous". Aucun repere bas de gamme.'],
+      ['Contact', 'Son budget ~100-200€ lui semble ridicule face a Netflix. N\'envoie pas.'],
+    ],
+    questionCle: 'C\'est dans mes prix pour un projet personnel ?',
+    reponse: 'Partiellement', commentReponse: 'FAQ aborde le budget mais reste floue. References presentes signalent implicitement un positionnement premium.',
+    impactVitesse: '98/100 — fluide.',
+    impactConfiance: 'Site pro renforce la perception "cher" — aggrave l\'auto-censure.',
+    positifs: ['Esthetique parfaitement dans son univers', 'Portfolio inspirant'],
+    frictions: ['Absence de prix : auto-censure tarifaire', 'Tous les temoignages sont des pros — pas de particuliers', 'References grands comptes = intimidantes'],
+    ceQuiFeraitBasculer: 'Un temoignage de particulier ou une mention "je travaille aussi sur des projets personnels"',
+    exp: 7, conf: 7, clarte: 4,
+  },
+  {
+    id: 19, name: 'Isabelle', age: 46, emoji: '💼',
+    situation: 'DRH d\'entreprise, cherche une animatrice escape game pour team building',
+    canal: 'Bouche-a-oreille', device: 'Tablette', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Confusion totale entre graphiste et animatrice. Le site la corrige rapidement. Repart chercher une societe d\'animation. Sortie sans frustration.',
+    localisation: 'Nancy', maturite: 'Decouverte',
+    contexte: 'Un collegue lui a recommande "une specialiste escape game" en confondant les metiers.',
+    impression: 'Lit "graphiste specialisee". Hmm — elle cherchait une animatrice.',
+    parcours: [
+      ['Hero', '"Graphiste". Doute naissant.'],
+      ['Services', 'Cherche "animation", "team building". Rien.'],
+      ['Portfolio', 'Comprend progressivement : c\'est une graphiste, pas une animatrice.'],
+    ],
+    questionCle: 'Elle organise aussi les animations escape game pour les entreprises ?',
+    reponse: 'Non, clairement', commentReponse: 'Positionnement "graphiste" explicite partout. La confusion vient de la personne qui a recommande, pas du site.',
+    impactVitesse: 'Bon chargement sur tablette.',
+    impactConfiance: 'Site pro qui donne une bonne image — mais hors cible.',
+    positifs: ['La clarte du positionnement evite une perte de temps prolongee'],
+    frictions: ['Aucune redirection vers des partenaires animateurs — sortie sansressource'],
+    ceQuiFeraitBasculer: 'Une FAQ "Vous organisez aussi des animations escape game ?" + redirection vers des partenaires',
+    exp: 5, conf: 7, clarte: 8,
+  },
+  {
+    id: 20, name: 'Paul', age: 35, emoji: '🎯',
+    situation: 'Game designer independant, a rencontre Laurie a un salon professionnel',
+    canal: 'Salon professionnel (Escape Game Expo)', device: 'Desktop', decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'La rencontre au salon avait deja convaincu. Le site confirme tout : portfolio, FAQ co-creation, valeurs. Envoie un formulaire precis et qualifie.',
+    localisation: 'Lyon', maturite: 'Comparaison',
+    contexte: 'A echange avec Laurie a un salon. Visite le site pour confirmer avant de proposer un projet de boite de jeu d\'enquete.',
+    impression: '"Faire du faux qui fait vrai" — exactement ce qu\'elle lui a dit en salon. L\'esthetique est coherente.',
+    parcours: [
+      ['Hero', 'Reassurance immediate. Slogan = confirmation.'],
+      ['Services', 'Lit attentivement. Evalue les synergies avec son propre travail de game design.'],
+      ['Portfolio', 'Netflix, Warner Bros, Ubisoft. Impressionne ET rassure : "elle a le niveau."'],
+      ['FAQ', 'Cherche la question co-creation / participation au design des enigmes.'],
+      ['Contact', 'Remplit le formulaire avec precision : projet, type de collaboration, retour du salon.'],
+    ],
+    questionCle: 'Est-ce qu\'on peut vraiment co-creer ? Tu participes au design des enigmes ?',
+    reponse: 'Partiellement', commentReponse: 'FAQ aborde la question des enigmes. Paul avait deja la reponse de vive voix — le site confirme le positionnement creatif.',
+    impactVitesse: '98/100 desktop — experience parfaitement fluide.',
+    impactConfiance: 'A+/120 + temoignages + grands clients = confiance maximale.',
+    positifs: ['Portfolio elite confirme la capacite', '19 temoignages 5/5 avec noms et entreprises', 'Slogan et esthetique coherents avec la rencontre en salon', 'Le design du site lui-meme = preuve par l\'exemple'],
+    frictions: ['Pas de case studies developpees — voudrait voir le process complet', 'SIRET "en cours" — a surveiller pour facturation'],
+    ceQuiFeraitBasculer: '',
+    exp: 8, conf: 9, clarte: 9,
+  },
+];
+
+const techVerdicts = [
+  { label: 'Vitesse', verdict: 'Excellent', ok: true, detail: 'PageSpeed 98/100 mobile et desktop — dans le top 5% des sites' },
+  { label: 'Securite', verdict: 'A+', ok: true, detail: 'Mozilla Observatory 120/120 — securite parfaite' },
+  { label: 'SEO', verdict: 'Bon', ok: true, detail: 'Score SEO 100/100 — title, meta, H1, canonical OK' },
+  { label: 'Donnees structurees', verdict: 'Incomplet', ok: false, detail: 'Schema.org ProfessionalService present — SIRET manquant' },
+  { label: 'Partage reseaux', verdict: 'OK', ok: true, detail: 'Open Graph complet : title, description, image, URL' },
+];
+
+const tech = {
+  observatory: { grade: 'A+', score: 120, testsOk: 10, testsTotal: 10 },
+  pagespdMobile: { performance: 98, accessibility: 96, bestPractices: 96, seo: 100 },
+  pagespdDesktop: { performance: 98, accessibility: 96, bestPractices: 96, seo: 100 },
+  cwv: { lcp: '2.3s', inp: '0ms', cls: '0' },
+  headers: [
+    { ok: true, h: 'Content-Security-Policy (hashes SHA-256, pas d\'unsafe-eval)' },
+    { ok: true, h: 'X-Frame-Options: DENY' },
+    { ok: true, h: 'X-Content-Type-Options: nosniff' },
+    { ok: true, h: 'Strict-Transport-Security' },
+    { ok: true, h: 'Referrer-Policy: strict-origin-when-cross-origin' },
+    { ok: true, h: 'Permissions-Policy (camera, microphone, geolocation)' },
+  ],
+  schema: [
+    { item: 'JSON-LD present', ok: true },
+    { item: '@type: ProfessionalService (coherent avec l\'activite)', ok: true },
+    { item: 'name, url, description', ok: true },
+    { item: 'address (structure)', ok: true },
+    { item: 'image / logo', ok: true },
+    { item: 'sameAs (Instagram, LinkedIn)', ok: true },
+    { item: 'SIRET dans Schema.org', ok: false },
+    { item: 'telephone (aucun numero public)', ok: false },
+  ],
+  og: [
+    { item: 'og:title', ok: true, val: 'Zompa Design — Graphiste specialisee escape games' },
+    { item: 'og:description', ok: true, val: 'Faire du faux qui fait vrai' },
+    { item: 'og:image', ok: true, val: 'Image og definie' },
+    { item: 'og:url', ok: true, val: 'https://www.zompa.fr' },
+    { item: 'og:type', ok: true, val: 'website' },
+    { item: 'twitter:card', ok: true, val: 'summary_large_image' },
+  ],
+  seo: [
+    { item: 'Meta description presente', ok: true },
+    { item: 'Canonical (pointe vers www.zompa.fr)', ok: true },
+    { item: 'robots.txt (GPTBot, ClaudeBot, PerplexityBot autorises)', ok: true },
+    { item: 'Sitemap XML', ok: false },
+    { item: 'Un seul H1 par page', ok: true },
+    { item: 'Images avec attribut alt', ok: true },
+  ],
+};
+
+const ameliorationsHautes = [
+  {
+    titre: 'Reparer les articles de blog (HTTP 500)',
+    pourquoi: '5 articles inaccessibles. Votre blog est la seule facon pour vos visiteurs de comprendre votre methode de travail avant de vous contacter. Plusieurs profils (game designers, developpeurs) ont essaye de lire vos articles et sont tombes sur une erreur — signal de manque de maintenance pour des profils techniques.',
+    action: 'Verifier la configuration Astro des routes de blog. Probablement un probleme de build avec les articles JSON en environnement preview. Tester /blog/[slug] en local et verifier que les routes sont correctement generees.',
+    impact: '5+ visiteurs impactes',
+  },
+  {
+    titre: 'Regulariser le SIRET et l\'afficher dans les mentions legales',
+    pourquoi: 'Trois clients B2B en phase de decision (Detective Box, Koezio, editeur de jeux) sont bloques par ce point unique. Leurs services achats ne peuvent pas referencer un fournisseur sans SIRET valide — meme si le talent et les references sont parfaits. Ce sont potentiellement vos contrats les plus importants.',
+    action: 'Des que le SIRET est obtenu, mettre a jour les mentions legales avec : SIRET, statut juridique exact (EI), adresse de departement (meme sans numero de rue). Ajouter aussi le statut en footer pour visibilite immediate.',
+    impact: '3 clients B2B en Decision bloques',
+  },
+  {
+    titre: 'Ajouter des reperes tarifaires dans la FAQ',
+    pourquoi: '11 visiteurs sur 20 ont cherche une indication de prix. 8 se sont auto-censures par peur d\'etre hors budget. Ce n\'est pas un manque d\'interet — c\'est une barriere psychologique. Une fourchette indicative ne vous engage pas sur un tarif fixe mais permet a vos prospects de savoir s\'ils peuvent engager la conversation.',
+    action: 'Dans la FAQ Q1 (budget), ajouter des exemples concrets : "Un jeu de documents complet (10-20 elements) : entre X et Y€. Une salle de 50-100m² habilee : entre Z et W€. Un packaging de jeu de societe : a partir de X€." Ces chiffres peuvent etre larges — l\'objectif est de lever la barriere de l\'incertitude.',
+    impact: '8 visiteurs impactes — votre plus grand levier de conversion',
+  },
+];
+
+const ameliorationsUtiles = [
+  {
+    titre: 'Ajouter un Calendly ou un numero de telephone',
+    detail: '5 visiteurs ont cherche un contact direct — dont 2 en phase de Decision (Florian, Alain) qui preferent appeler. Un Calendly "15 minutes de decouverte" est moins intrusif qu\'un telephone mais leve la barriere du formulaire anonyme. Si vous preferez un telephone, meme un numero WhatsApp suffit pour ces profils.',
+  },
+  {
+    titre: 'Corriger le sitemap.xml en production',
+    detail: 'Le sitemap retourne 404 sur l\'environnement preview. Verifier en production que le sitemap-index.xml est bien genere et accessible. Sans sitemap, Google indexe votre site moins efficacement — vos nouveaux articles de blog (une fois repares) mettront plus de temps a apparaitre dans les resultats.',
+  },
+  {
+    titre: 'Mettre en avant la zone geographique "France entiere" en hero',
+    detail: 'Claire (Clermont-Ferrand) a du chercher dans la section "A propos" pour trouver que vous travaillez sur toute la France. Cette information devrait etre visible des l\'accroche ou dans les services : "France entiere — 100% remote" rassure directement les clients en region.',
+  },
+  {
+    titre: 'Ajouter au moins un screenshot d\'interface numerique dans le portfolio',
+    detail: 'Romain (developpeur) et Emma (city game) cherchaient des exemples de votre travail web/app — et n\'en ont pas trouve. Meme un seul mockup d\'interface ou screenshot de faux site suffirait a prouver cette double competence qui est pourtant clairement annoncee dans les services.',
+  },
+];
+
+const ameliorationsDiscuter = [
+  {
+    emoji: '💰',
+    titre: 'Tarifs publics ou pas ?',
+    detail: 'Afficher des tarifs indicatifs levent une friction majeure (8 visiteurs impactes) mais peuvent aussi decourager des clients avant meme un echange. Option intermediaire : ajouter dans la FAQ "Budget minimum pour un projet : X€" sans donner une grille complete. A discuter selon votre strategie commerciale.',
+  },
+  {
+    emoji: '🤝',
+    titre: 'Creer une page ou section "Partenaires"',
+    detail: 'La FAQ mentionne vos collaborations avec des game designers, illustrateurs, developpeurs. Une page "Partenaires & ecosysteme" renforcerait l\'image d\'un noeud central dans l\'industrie — et genererait des liens entrants si vous mentionnez vos partenaires (qui vous referenceront en retour).',
+  },
+  {
+    emoji: '📖',
+    titre: 'Case studies : 1 projet complet decortique',
+    detail: 'Le portfolio montre le quoi. Plusieurs visiteurs (Elodie, Paul, Sarah) voulaient voir le comment. Meme une seule case study developpee (brief → production → livraison) sur un projet emblematique (Batman Escape, Stranger Things) renforcerait massivement la confiance des profils analytiques.',
+  },
+];
+---
+
+<BaseLayout title={`Echo Complet — ${nomProspect}`} description={`Rapport Echo Complet : ${kpis.nbPersonas} visiteurs simules sur ${urlSite}. ${kpis.nbConvertissent} contacts, ${kpis.nbHesitent} hesitations.`} noindex={true}>
+
+  <!-- ═══ 1. HERO ═══ -->
+  <section class="relative w-full px-6 py-20 md:py-28 overflow-hidden" style="background: #0A0A0A;">
+    <div class="absolute top-[20%] left-[10%] w-[500px] h-[500px] rounded-full blur-[180px] pointer-events-none" style="background: #E86C47; opacity: 0.06;"></div>
+    <div class="relative mx-auto max-w-4xl z-10">
+      <div class="mb-6 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5);">
+        {formuleLabel} · Rapport confidentiel
+      </div>
+      <h1 class="mb-6 text-3xl md:text-4xl font-bold text-white leading-tight tracking-tight">
+        {verdictHero}
+      </h1>
+      <p class="mb-10 text-sm" style="color: rgba(255,255,255,0.4);">
+        Site analyse : <a href={urlSite} target="_blank" rel="noopener" class="underline hover:text-white transition-colors">{urlSite}</a> · {kpis.nbPersonas} visiteurs simules · {dateAudit}
+      </p>
+      <div class="grid grid-cols-3 gap-4">
+        <div class="rounded-xl p-5 text-center" style="background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2);">
+          <div class="text-4xl md:text-5xl font-black text-green-400 mb-1">{kpis.nbConvertissent}</div>
+          <div class="text-sm text-green-400/70">vous contactent</div>
+        </div>
+        <div class="rounded-xl p-5 text-center" style="background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2);">
+          <div class="text-4xl md:text-5xl font-black text-amber-400 mb-1">{kpis.nbHesitent}</div>
+          <div class="text-sm text-amber-400/70">hesitent</div>
+        </div>
+        <div class="rounded-xl p-5 text-center" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
+          <div class="text-4xl md:text-5xl font-black mb-1" style="color: rgba(255,255,255,0.5);">{kpis.nbRepartent}</div>
+          <div class="text-sm" style="color: rgba(255,255,255,0.3);">repartent</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 2. LE CONSTAT ═══ -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <h2 class="text-2xl font-bold text-neutral-900 mb-6">Le constat</h2>
+    <div class="rounded-xl p-6 mb-10 border-l-4" style="background: rgba(232,108,71,0.04); border-color: #E86C47;">
+      <p class="text-sm md:text-base text-neutral-700 leading-relaxed">{constat}</p>
+    </div>
+
+    <!-- Scores -->
+    <div class="grid grid-cols-3 gap-4 mb-10">
+      <div class="bg-white border border-neutral-200 rounded-xl p-5 text-center">
+        <div class="text-3xl font-bold text-neutral-800 mb-1">{kpis.experience}</div>
+        <div class="text-xs text-neutral-500">Experience /10</div>
+      </div>
+      <div class="bg-white border border-neutral-200 rounded-xl p-5 text-center">
+        <div class="text-3xl font-bold text-neutral-800 mb-1">{kpis.confiance}</div>
+        <div class="text-xs text-neutral-500">Confiance /10</div>
+      </div>
+      <div class="bg-white border border-neutral-200 rounded-xl p-5 text-center">
+        <div class="text-3xl font-bold text-neutral-800 mb-1">{kpis.clarte}</div>
+        <div class="text-xs text-neutral-500">Clarte /10</div>
+      </div>
+    </div>
+
+    <!-- Conversion par canal -->
+    <h3 class="text-lg font-bold text-neutral-900 mb-4">Conversion par canal d'arrivee</h3>
+    <div class="space-y-3 mb-4">
+      {canalData.map(c => (
+        <div>
+          <div class="flex items-center justify-between text-sm mb-1">
+            <span class="text-neutral-700">{c.canal} <span class="text-neutral-400 text-xs">({c.nb} visiteurs)</span></span>
+            <span class="font-semibold" style={`color: ${c.rate >= 50 ? '#22c55e' : c.rate >= 25 ? '#f59e0b' : '#ef4444'}`}>{c.rate}%</span>
+          </div>
+          <div class="h-2 bg-neutral-100 rounded-full overflow-hidden">
+            <div class="h-full rounded-full transition-all" style={`width: ${Math.max(c.rate, 2)}%; background: ${c.rate >= 50 ? '#22c55e' : c.rate >= 25 ? '#f59e0b' : '#ef4444'}`}></div>
+          </div>
+        </div>
+      ))}
+    </div>
+    <p class="text-xs text-neutral-500 bg-neutral-50 rounded-lg p-3">Le canal bouche-a-oreille convertit 0% — alors que c'est normalement le canal le plus fort. Florian et Alain (vos profils les plus qualifies) n'ont pas pu aller plus loin : l'un ne trouve pas de telephone, l'autre est bloque par le SIRET manquant.</p>
+  </section>
+
+  <!-- ═══ 3. ALERTES ═══ -->
+  <section class="py-16" style="background: #FFFBEB;">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center gap-3 mb-2">
+        <svg class="w-6 h-6 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+        <h2 class="text-2xl font-bold text-neutral-900">Alertes</h2>
+      </div>
+      <p class="text-sm text-neutral-600 mb-8">Les problemes qui coutent des contacts aujourd'hui.</p>
+      <div class="space-y-4">
+        {alertes.map(a => (
+          <div class={`bg-white rounded-xl p-6 shadow-sm ${a.type === 'critique' ? 'border-2 border-red-300' : 'border border-amber-200'}`}>
+            <div class="flex items-start gap-4">
+              <div class="shrink-0 text-center min-w-[56px]">
+                <div class={`text-xl font-black px-2 py-1 rounded-lg ${a.type === 'critique' ? 'bg-red-100 text-red-600' : 'bg-amber-100 text-amber-600'}`}>{a.chiffre}</div>
+                <div class="text-[9px] text-neutral-500 mt-0.5 leading-tight">{a.chiffreLabel}</div>
+              </div>
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                  {a.type === 'critique' && <span class="text-[10px] font-bold uppercase tracking-widest text-red-600 bg-red-50 px-2 py-0.5 rounded">Critique</span>}
+                  {a.type === 'important' && <span class="text-[10px] font-bold uppercase tracking-widest text-amber-700 bg-amber-50 px-2 py-0.5 rounded">Important</span>}
+                  <h3 class="font-semibold text-neutral-900 text-sm">{a.titre}</h3>
+                </div>
+                <p class="text-xs text-neutral-600">{a.detail}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 4. VOS VISITEURS ═══ -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <h2 class="text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs</h2>
+    <p class="text-sm text-neutral-500 mb-8">Voici ce qui se passe quand quelqu'un cherche vos services et tombe sur votre site.</p>
+
+    <!-- Convertissent -->
+    <h3 class="text-base font-bold text-green-800 mb-3 flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-green-500 inline-block"></span>
+      Ceux qui vous contactent ({kpis.nbConvertissent})
+    </h3>
+    <div class="space-y-2 mb-10">
+      {personas.filter(p => p.decision === 'Convertit').map(p => (
+        <details class="group border border-green-200 bg-green-50/40 rounded-xl overflow-hidden">
+          <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+            <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+              </div>
+              <p class="text-xs text-neutral-600">{p.histoire}</p>
+              <div class="flex flex-wrap items-center gap-1 mt-1.5">
+                <span class="text-[10px] text-neutral-500 bg-white border border-neutral-200 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                <span class="text-[10px] bg-green-600 text-white px-1.5 py-0.5 rounded font-medium">{p.decisionLabel}</span>
+              </div>
+            </div>
+            <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+          </summary>
+          <div class="px-4 pb-4 pt-0 border-t border-green-200 bg-white/60">
+            <div class="grid gap-3 text-xs mt-3">
+              <div><p class="font-semibold text-neutral-700 mb-1">Contexte</p><p class="text-neutral-600">{p.contexte}</p></div>
+              <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.impression}</p></div>
+              <div>
+                <p class="font-semibold text-neutral-700 mb-1">Parcours</p>
+                <ol class="list-decimal list-inside space-y-1 text-neutral-600">
+                  {p.parcours.map(([section, reaction]: [string, string]) => <li><strong>{section}</strong>{reaction ? ` — ${reaction}` : ''}</li>)}
+                </ol>
+              </div>
+              <div class="bg-neutral-50 rounded-lg p-3">
+                <p class="font-semibold text-neutral-700 mb-1">Question cle</p>
+                <p class="text-neutral-600 italic mb-1">"{p.questionCle}"</p>
+                <p class="text-neutral-600">Reponse du site : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse.startsWith('Non') ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> — {p.commentReponse}</p>
+              </div>
+              <div class="flex gap-4">
+                <div class="flex-1"><p class="font-semibold text-green-700 mb-1">Points positifs</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.positifs.map((pt: string) => <li>{pt}</li>)}</ul></div>
+                {p.frictions.length > 0 && <div class="flex-1"><p class="font-semibold text-amber-700 mb-1">Frictions</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map((f: string) => <li>{f}</li>)}</ul></div>}
+              </div>
+              <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                {[{label:'Experience',val:p.exp},{label:'Confiance',val:p.conf},{label:'Clarte',val:p.clarte}].map(s => {
+                  const c = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500';
+                  return <div class="text-center"><span class={`block text-lg font-bold ${c}`}>{s.val}</span><span class="text-[10px] text-neutral-400">{s.label}</span></div>
+                })}
+              </div>
+            </div>
+          </div>
+        </details>
+      ))}
+    </div>
+
+    <!-- Hesitent -->
+    <h3 class="text-base font-bold text-amber-800 mb-3 flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-amber-500 inline-block"></span>
+      Ceux qui hesitent ({kpis.nbHesitent})
+    </h3>
+    <div class="space-y-2 mb-4">
+      {personas.filter(p => p.decision === 'Hesite').map(p => (
+        <details class="group border border-amber-200 bg-amber-50/30 rounded-xl overflow-hidden">
+          <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+            <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+              </div>
+              <p class="text-xs text-neutral-600">{p.histoire}</p>
+              <div class="flex flex-wrap items-center gap-1 mt-1.5">
+                <span class="text-[10px] text-neutral-500 bg-white border border-neutral-200 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                <span class="text-[10px] bg-amber-500 text-white px-1.5 py-0.5 rounded font-medium">{p.decisionLabel}</span>
+              </div>
+            </div>
+            <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+          </summary>
+          <div class="px-4 pb-4 pt-0 border-t border-amber-200 bg-white/60">
+            <div class="grid gap-3 text-xs mt-3">
+              <div><p class="font-semibold text-neutral-700 mb-1">Contexte</p><p class="text-neutral-600">{p.contexte}</p></div>
+              <div><p class="font-semibold text-neutral-700 mb-1">Premiere impression</p><p class="text-neutral-600">{p.impression}</p></div>
+              <div>
+                <p class="font-semibold text-neutral-700 mb-1">Parcours</p>
+                <ol class="list-decimal list-inside space-y-1 text-neutral-600">
+                  {p.parcours.map(([section, reaction]: [string, string]) => <li><strong>{section}</strong>{reaction ? ` — ${reaction}` : ''}</li>)}
+                </ol>
+              </div>
+              <div class="bg-neutral-50 rounded-lg p-3">
+                <p class="font-semibold text-neutral-700 mb-1">Question cle</p>
+                <p class="text-neutral-600 italic mb-1">"{p.questionCle}"</p>
+                <p class="text-neutral-600">Reponse du site : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse.startsWith('Non') ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> — {p.commentReponse}</p>
+              </div>
+              <div class="flex gap-4">
+                <div class="flex-1"><p class="font-semibold text-green-700 mb-1">Points positifs</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.positifs.map((pt: string) => <li>{pt}</li>)}</ul></div>
+                {p.frictions.length > 0 && <div class="flex-1"><p class="font-semibold text-amber-700 mb-1">Frictions</p><ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map((f: string) => <li>{f}</li>)}</ul></div>}
+              </div>
+              {p.ceQuiFeraitBasculer && (
+                <div class="bg-primary-50 rounded-lg p-3">
+                  <p class="font-semibold text-primary-700 text-[10px] uppercase tracking-wider mb-1">Ce qui le ferait passer a l'action</p>
+                  <p class="text-primary-800">{p.ceQuiFeraitBasculer}</p>
+                </div>
+              )}
+              <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                {[{label:'Experience',val:p.exp},{label:'Confiance',val:p.conf},{label:'Clarte',val:p.clarte}].map(s => {
+                  const c = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500';
+                  return <div class="text-center"><span class={`block text-lg font-bold ${c}`}>{s.val}</span><span class="text-[10px] text-neutral-400">{s.label}</span></div>
+                })}
+              </div>
+            </div>
+          </div>
+        </details>
+      ))}
+    </div>
+
+    <!-- Micro-CTA hesitants -->
+    <div class="rounded-xl p-5 mb-10 bg-amber-50 border border-amber-200 flex items-start gap-3">
+      <span class="text-lg shrink-0 mt-0.5">💡</span>
+      <div>
+        <p class="text-sm font-medium text-amber-900">Ces {kpis.nbHesitent} visiteurs ont besoin de vos services.</p>
+        <p class="text-xs text-amber-700 mt-1">Ils ne sont pas partis par manque d'interet. Ils ont besoin d'un repere de prix, d'un SIRET, ou d'un moyen de vous appeler. C'est votre plus grand levier de croissance.</p>
+      </div>
+    </div>
+
+    <!-- Repartent -->
+    <h3 class="text-base font-bold text-neutral-600 mb-3 flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-neutral-400 inline-block"></span>
+      Ceux qui repartent ({kpis.nbRepartent})
+    </h3>
+    <div class="space-y-2 mb-4">
+      {personas.filter(p => p.decision === 'Quitte').map(p => (
+        <details class="group border border-neutral-200 bg-neutral-50/30 rounded-xl overflow-hidden">
+          <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+            <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+              </div>
+              <p class="text-xs text-neutral-600">{p.histoire}</p>
+              <div class="flex flex-wrap items-center gap-1 mt-1.5">
+                <span class="text-[10px] text-neutral-500 bg-white border border-neutral-200 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                <span class="text-[10px] bg-neutral-400 text-white px-1.5 py-0.5 rounded font-medium">{p.decisionLabel}</span>
+              </div>
+            </div>
+            <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+          </summary>
+          <div class="px-4 pb-4 pt-0 border-t border-neutral-200 bg-white/60">
+            <div class="grid gap-3 text-xs mt-3">
+              <div><p class="font-semibold text-neutral-700 mb-1">Contexte</p><p class="text-neutral-600">{p.contexte}</p></div>
+              <div><p class="font-semibold text-neutral-700 mb-1">Parcours</p>
+                <ol class="list-decimal list-inside space-y-1 text-neutral-600">
+                  {p.parcours.map(([section, reaction]: [string, string]) => <li><strong>{section}</strong>{reaction ? ` — ${reaction}` : ''}</li>)}
+                </ol>
+              </div>
+              <div class="bg-neutral-50 rounded-lg p-3">
+                <p class="font-semibold text-neutral-700 mb-1">Question cle</p>
+                <p class="text-neutral-600 italic mb-1">"{p.questionCle}"</p>
+                <p class="text-neutral-600">Reponse du site : <strong class="text-red-600">{p.reponse}</strong> — {p.commentReponse}</p>
+              </div>
+              {p.ceQuiFeraitBasculer && (
+                <div class="bg-neutral-100 rounded-lg p-3">
+                  <p class="font-semibold text-neutral-600 text-[10px] uppercase tracking-wider mb-1">Ce qui l'aurait retenu</p>
+                  <p class="text-neutral-700">{p.ceQuiFeraitBasculer}</p>
+                </div>
+              )}
+              <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                {[{label:'Experience',val:p.exp},{label:'Confiance',val:p.conf},{label:'Clarte',val:p.clarte}].map(s => {
+                  const c = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500';
+                  return <div class="text-center"><span class={`block text-lg font-bold ${c}`}>{s.val}</span><span class="text-[10px] text-neutral-400">{s.label}</span></div>
+                })}
+              </div>
+            </div>
+          </div>
+        </details>
+      ))}
+    </div>
+
+    <!-- Micro-CTA repartent -->
+    <div class="rounded-xl p-5 bg-neutral-100 border border-neutral-200 flex items-start gap-3">
+      <span class="text-lg shrink-0 mt-0.5">📉</span>
+      <div>
+        <p class="text-sm font-medium text-neutral-800">Sur les 6 qui repartent, 4 etaient hors cible — c'est sain.</p>
+        <p class="text-xs text-neutral-600 mt-1">Un site specialise filtre naturellement les mauvais prospects. Celine et Kevin, eux, avaient un vrai besoin — et un seul probleme (SIRET pour Celine, signal d'accessibilite pour Kevin) aurait tout change.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 5. CE QU'ON RECOMMANDE ═══ -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16 border-t border-neutral-100">
+    <h2 class="text-2xl font-bold text-neutral-900 mb-2">Ce qu'on recommande</h2>
+    <p class="text-neutral-600 mb-8">Actions concretes, classees par impact sur vos visiteurs.</p>
+
+    <p class="text-sm font-semibold text-red-700 mb-4">Si vous ne changez que 3 choses :</p>
+
+    <div class="space-y-4 mb-12">
+      {ameliorationsHautes.map((a) => (
+        <div class="bg-white border-2 border-red-200 rounded-xl p-6 shadow-sm">
+          <div class="flex items-start justify-between gap-4 mb-3">
+            <h4 class="font-bold text-neutral-900">{a.titre}</h4>
+            <span class="text-[10px] px-2 py-1 rounded-full bg-red-100 text-red-700 font-semibold shrink-0 whitespace-nowrap">{a.impact}</span>
+          </div>
+          <p class="text-sm text-neutral-600 mb-3">{a.pourquoi}</p>
+          <div class="bg-neutral-50 rounded-lg px-4 py-3 flex items-start gap-2">
+            <svg class="w-4 h-4 text-neutral-400 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+            <p class="text-xs text-neutral-700">{a.action}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <h3 class="text-lg font-bold text-neutral-900 mb-2">Utile aussi</h3>
+    <div class="grid md:grid-cols-2 gap-4 mb-12">
+      {ameliorationsUtiles.map(a => (
+        <div class="bg-white border border-neutral-200 rounded-xl p-5">
+          <h4 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h4>
+          <p class="text-xs text-neutral-600">{a.detail}</p>
+        </div>
+      ))}
+    </div>
+
+    <h3 class="text-lg font-bold text-neutral-900 mb-2">A discuter</h3>
+    <p class="text-sm text-neutral-500 mb-4">Decisions business — pas de bonne ou mauvaise reponse.</p>
+    <div class="space-y-3 mb-12">
+      {ameliorationsDiscuter.map(a => (
+        <div class="bg-neutral-50 border border-neutral-200 rounded-xl p-4 flex gap-3">
+          <span class="text-lg shrink-0">{a.emoji}</span>
+          <div>
+            <h4 class="font-semibold text-neutral-900 text-sm mb-0.5">{a.titre}</h4>
+            <p class="text-xs text-neutral-600">{a.detail}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <!-- Upsell Echo Pro -->
+    {showUpsell && (
+      <div class="rounded-2xl p-8 text-center border-2 border-dashed" style="border-color: #E86C47; background: rgba(232,108,71,0.03);">
+        <p class="text-lg font-bold text-neutral-900 mb-2">20 visiteurs confirment des tendances claires.</p>
+        <p class="text-sm text-neutral-600 mb-6">Avec 100 visiteurs (Echo Pro), vous obtenez une fiabilite statistique : analyse par canal, par maturite, et un appel de 30 min pour parcourir le rapport ensemble et prioriser vos actions.</p>
+        <a href="/echo/" class="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-xl transition-all shadow-md hover:-translate-y-0.5" style="background: linear-gradient(135deg, #E86C47, #D4572F);">
+          Passer a l'Echo Pro — 250€ <span class="text-xs opacity-70 ml-1">(100 visiteurs + appel 30 min)</span>
+        </a>
+      </div>
+    )}
+  </section>
+
+  <!-- ═══ 6. SOUS LE CAPOT ═══ -->
+  <section class="py-16 border-t border-neutral-200">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-2">Sous le capot</h2>
+      <p class="text-neutral-600 mb-8">Pour les curieux : ce que les outils techniques disent de votre site.</p>
+
+      <!-- Badges verdict -->
+      <div class="flex flex-wrap gap-3 mb-10">
+        {techVerdicts.map(v => (
+          <div class={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium ${v.ok ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
+            {v.ok
+              ? <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              : <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            }
+            <span>{v.label}</span>
+            <span class="text-xs opacity-70">{v.verdict}</span>
+          </div>
+        ))}
+      </div>
+
+      <!-- PageSpeed -->
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+          <div class="flex items-center gap-3">
+            <span class="text-base">⚡</span>
+            <div>
+              <h3 class="font-semibold text-neutral-900 text-sm">Vitesse du site</h3>
+              <p class="text-[11px] text-neutral-500">{techVerdicts[0].detail}</p>
+            </div>
+          </div>
+          <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <div class="px-4 pb-4 border-t border-neutral-100">
+          <div class="grid grid-cols-2 gap-6 py-4">
+            <div>
+              <p class="text-xs font-semibold text-neutral-500 mb-3">Mobile</p>
+              <div class="grid grid-cols-4 gap-2">
+                {['Performance', 'Accessibilite', 'Bonnes pratiques', 'SEO'].map((label, i) => {
+                  const scores = [tech.pagespdMobile!.performance, tech.pagespdMobile!.accessibility, tech.pagespdMobile!.bestPractices, tech.pagespdMobile!.seo];
+                  const score = scores[i];
+                  const color = score >= 90 ? '#22c55e' : score >= 50 ? '#f59e0b' : '#ef4444';
+                  return (
+                    <div class="text-center">
+                      <div class="relative w-12 h-12 mx-auto mb-1">
+                        <svg class="w-12 h-12 -rotate-90" viewBox="0 0 36 36">
+                          <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3" />
+                          <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={color} stroke-width="3" stroke-dasharray={`${score}, 100`} stroke-linecap="round" />
+                        </svg>
+                        <span class="absolute inset-0 flex items-center justify-center text-xs font-bold" style={`color: ${color}`}>{score}</span>
+                      </div>
+                      <p class="text-[9px] text-neutral-500 leading-tight">{label}</p>
+                    </div>
+                  );
+                })}
+              </div>
+            </div>
+            <div>
+              <p class="text-xs font-semibold text-neutral-500 mb-3">Core Web Vitals</p>
+              <div class="space-y-2">
+                {[
+                  { label: 'LCP', val: tech.cwv.lcp, ok: true },
+                  { label: 'INP/TBT', val: tech.cwv.inp, ok: true },
+                  { label: 'CLS', val: tech.cwv.cls, ok: true },
+                ].map(m => (
+                  <div class="flex items-center justify-between">
+                    <span class="text-xs text-neutral-600">{m.label}</span>
+                    <span class={`text-xs font-bold ${m.ok ? 'text-green-600' : 'text-red-500'}`}>{m.val}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+        </div>
+      </details>
+
+      <!-- Observatory -->
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+          <div class="flex items-center gap-3">
+            <span class="text-base">🔒</span>
+            <div>
+              <h3 class="font-semibold text-neutral-900 text-sm">Securite</h3>
+              <p class="text-[11px] text-neutral-500">{techVerdicts[1].detail}</p>
+            </div>
+          </div>
+          <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <div class="px-4 pb-4 border-t border-neutral-100">
+          <p class="text-xs text-neutral-500 py-2">Note Mozilla Observatory : {tech.observatory.grade} — {tech.observatory.testsOk}/{tech.observatory.testsTotal} tests passes</p>
+          <div class="space-y-1">
+            {tech.headers.map(h => (
+              <div class="flex items-center gap-2 py-0.5">
+                {h.ok
+                  ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                  : <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                }
+                <span class={`text-xs ${h.ok ? 'text-neutral-600' : 'text-red-500'}`}>{h.h}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </details>
+
+      <!-- Schema.org -->
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+          <div class="flex items-center gap-3">
+            <span class="text-base">📊</span>
+            <div>
+              <h3 class="font-semibold text-neutral-900 text-sm">Donnees structurees (Schema.org)</h3>
+              <p class="text-[11px] text-neutral-500">{techVerdicts[3].detail}</p>
+            </div>
+          </div>
+          <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <div class="px-4 pb-4 border-t border-neutral-100">
+          <div class="space-y-1 py-2">
+            {tech.schema.map(s => (
+              <div class="flex items-center gap-2 py-0.5">
+                {s.ok
+                  ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                  : <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                }
+                <span class={`text-xs ${s.ok ? 'text-neutral-600' : 'text-red-500'}`}>{s.item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </details>
+
+      <!-- SEO -->
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+          <div class="flex items-center gap-3">
+            <span class="text-base">🔍</span>
+            <div>
+              <h3 class="font-semibold text-neutral-900 text-sm">SEO technique</h3>
+              <p class="text-[11px] text-neutral-500">{techVerdicts[2].detail}</p>
+            </div>
+          </div>
+          <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <div class="px-4 pb-4 border-t border-neutral-100">
+          <div class="space-y-1 py-2">
+            {tech.seo.map(s => (
+              <div class="flex items-center gap-2 py-0.5">
+                {s.ok
+                  ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                  : <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                }
+                <span class={`text-xs ${s.ok ? 'text-neutral-600' : 'text-red-500'}`}>{s.item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </details>
+
+      <!-- OG -->
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+          <div class="flex items-center gap-3">
+            <span class="text-base">📱</span>
+            <div>
+              <h3 class="font-semibold text-neutral-900 text-sm">Partage reseaux sociaux (Open Graph)</h3>
+              <p class="text-[11px] text-neutral-500">{techVerdicts[4].detail}</p>
+            </div>
+          </div>
+          <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <div class="px-4 pb-4 border-t border-neutral-100">
+          <div class="space-y-1 py-2">
+            {tech.og.map(o => (
+              <div class="flex items-center gap-2 py-0.5">
+                {o.ok
+                  ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                  : <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                }
+                <span class={`text-xs text-neutral-600`}>{o.item} <span class="text-neutral-400">— {o.val}</span></span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ═══ 7. METHODOLOGIE ═══ -->
+  <section class="py-12 border-t border-neutral-100">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-xl font-bold text-neutral-900 mb-6">Comment on a fait ca</h2>
+      <div class="grid md:grid-cols-2 gap-6 text-sm text-neutral-600">
+        <div class="space-y-3">
+          <div class="flex gap-3"><span class="text-neutral-400 font-bold shrink-0">1.</span><p><strong class="text-neutral-800">Scraping complet</strong> — Toutes les pages du site ont ete analysees : contenu, services, temoignages, FAQ, mentions legales.</p></div>
+          <div class="flex gap-3"><span class="text-neutral-400 font-bold shrink-0">2.</span><p><strong class="text-neutral-800">Audit technique</strong> — PageSpeed Insights (Google), Mozilla Observatory, Schema.org, Open Graph, SEO technique.</p></div>
+          <div class="flex gap-3"><span class="text-neutral-400 font-bold shrink-0">3.</span><p><strong class="text-neutral-800">20 personas</strong> — Creees selon la diversite reelle de vos visiteurs : canal, maturite, device, secteur. 4 personas hors-cible inclus (normal et informatif).</p></div>
+        </div>
+        <div class="space-y-3">
+          <div class="flex gap-3"><span class="text-neutral-400 font-bold shrink-0">4.</span><p><strong class="text-neutral-800">20 visites simulees</strong> — Chaque persona a "visite" le site avec son contexte, ses attentes et ses freins specifiques.</p></div>
+          <div class="flex gap-3"><span class="text-neutral-400 font-bold shrink-0">5.</span><p><strong class="text-neutral-800">Agregation</strong> — Les resultats ont ete aggreges pour identifier les frictions recurrentes et les ameliorations a fort impact.</p></div>
+          <p class="text-xs text-neutral-400 pt-2">20 visiteurs = confirmation des tendances. Avec 100 (Echo Pro), on sait exactement quel canal investir.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 8. CTA FINAL ═══ -->
+  <section class="py-16 border-t border-neutral-200" style="background: #0A0A0A;">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <p class="text-2xl font-bold text-white mb-3">Trois corrections, pas une refonte.</p>
+      <p class="text-neutral-400 mb-8 max-w-xl mx-auto">Votre site a les bases d'un excellent outil commercial. Le blog a reparer, le SIRET a obtenir, et une fourchette de prix dans la FAQ — et vos 9 hesitants deviennent des contacts.</p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="/echo/" class="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-xl transition-all shadow-md hover:-translate-y-0.5" style="background: linear-gradient(135deg, #E86C47, #D4572F);">
+          Echo Pro — 250€ <span class="text-xs opacity-70 ml-1">(100 visiteurs + appel 30 min)</span>
+        </a>
+        <a href="mailto:marc@muller.im?subject=Echo%20Zompa%20Design" class="inline-flex items-center gap-2 px-6 py-3 border border-neutral-700 text-neutral-300 font-semibold rounded-xl transition-all hover:border-neutral-500 hover:text-white">
+          En discuter avec Marc
+        </a>
+      </div>
+      <p class="text-xs text-neutral-600 mt-6">Ce rapport est confidentiel et non indexe par Google.</p>
+    </div>
+  </section>
+
+</BaseLayout>
