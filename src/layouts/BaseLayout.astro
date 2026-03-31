@@ -19,6 +19,7 @@ interface Props {
   enPath?: string; // e.g. '/en/', '/en/portfolio'
   ctaOverrideLabel?: string;
   ctaOverrideHref?: string;
+  preloadImages?: { href: string; media?: string }[];
 }
 
 const {
@@ -33,6 +34,7 @@ const {
   enPath,
   ctaOverrideLabel,
   ctaOverrideHref,
+  preloadImages,
 } = Astro.props;
 
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
@@ -78,6 +80,11 @@ const enURL = enPath ? new URL(enPath, Astro.site).href : null;
     <link rel="preload" as="font" href="/fonts/Satoshi-Variable.woff2" type="font/woff2" crossorigin />
     <link rel="preload" as="font" href="/fonts/Satoshi-VariableItalic.woff2" type="font/woff2" crossorigin />
 
+    <!-- LCP image preload (passed per-page) -->
+    {preloadImages?.map(({ href, media }) => (
+      <link rel="preload" as="image" fetchpriority="high" href={href} {...(media ? { media } : {})} />
+    ))}
+
     <!-- Hreflang alternate links -->
     {frURL && <link rel="alternate" hreflang="fr" href={frURL} />}
     {enURL && <link rel="alternate" hreflang="en" href={enURL} />}
@@ -95,6 +102,12 @@ const enURL = enPath ? new URL(enPath, Astro.site).href : null;
     <a href="#main" class="skip-link">
       {lang === 'en' ? 'Skip to main content' : 'Aller au contenu principal'}
     </a>
+    {lang === 'en' && frPath && (
+      <div style="background:#1a1a1a; border-bottom:1px solid rgba(255,255,255,0.08); padding:10px 16px; text-align:center; font-size:13px; color:rgba(255,255,255,0.6);">
+        🇫🇷 Ce site est aussi disponible en français.
+        <a href={frPath} style="color:#E86C47; font-weight:600; margin-left:6px; text-decoration:none;">Version française →</a>
+      </div>
+    )}
     {!noHeader && <Header lang={lang} frPath={frPath} enPath={enPath} ctaOverrideLabel={ctaOverrideLabel} ctaOverrideHref={ctaOverrideHref} />}
     <main id="main">
       <slot />

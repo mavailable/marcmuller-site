@@ -2,35 +2,42 @@
 import BaseLayout from '../../../layouts/BaseLayout.astro';
 
 const slug = 'marcm';
-const formule: 'decouverte' | 'complet' | 'pro' = 'complet';
-const formuleLabel = 'Echo Complet';
+const formule: 'decouverte' | 'complet' | 'pro' = 'pro';
+const formuleLabel = 'Echo Pro — Suivi V2';
 const nomProspect = 'Marc M';
 const urlSite = 'https://marcm.fr';
-const dateAudit = '30 mars 2026';
-const showUpsell = true;
+const dateAudit = '31 mars 2026';
+const showUpsell = false;
+const showTimeline = true;
+
+const versionsData = [
+  { version: 'v0', date: '29 mars 2026', formule: 'Echo Pro (100p)', nbPersonas: 100, tauxConversion: 57 },
+  { version: 'v1', date: '30 mars 2026', formule: 'Echo Complet (20p)', nbPersonas: 20, tauxConversion: 20 },
+  { version: 'v2', date: '31 mars 2026', formule: 'Echo Suivi Pro (100p)', nbPersonas: 100, tauxConversion: 63 },
+];
 
 const kpis = {
-  nbPersonas: 20,
-  nbConvertissent: 4,
-  nbHesitent: 12,
-  nbRepartent: 4,
-  conversion: 20,
-  experience: 6.2,
-  confiance: 6.6,
-  clarte: 6.9,
+  nbPersonas: 100,
+  nbConvertissent: 63,
+  nbHesitent: 17,
+  nbRepartent: 20,
+  conversion: 63,
+  experience: 7.0,
+  confiance: 6.7,
+  clarte: 7.3,
 };
 
-const verdictHero = "4 visiteurs sur 20 vous contactent directement. Les 12 hésitants ont presque tous pris contact — voici précisément où vous les perdez.";
+const verdictHero = "63 visiteurs sur 100 vous contactent directement. +6 points vs la version initiale — voici ce qui a changé et ce qui bloque encore.";
 
-const constat = "Votre site convainc les visiteurs en Décision et les contacts par bouche-à-oreille ou Google Maps (taux proche de 100%). La friction principale : compteur '0+' (bug visible par 11/20), vitesse mobile sous les standards Google, téléphone introuvable pour les 55+ ans, et aucun signal rassurant pour les visiteurs hors Metz.";
+const constat = "Les améliorations V2 ont un impact direct mesurable : téléphone en header (Monique, Yannick, Patrick convertis), bullet 'zéro lock-in' (Rachid, Sébastien, Carla convertis), FAQ géographie (Marie, Mehdi, Vincent convertis). Les frictions non traitées — LCP mobile 2.8s, portfolio beauté/santé absent, '100% à distance' hors du hero — continuent de bloquer 17 visiteurs.";
 
 const canalData = [
-  { canal: 'Bouche-à-oreille', nb: 2, convert: 2, rate: 100 },
-  { canal: 'Google Maps/GBP', nb: 3, convert: 3, rate: 100 },
-  { canal: 'IA (ChatGPT/Claude)', nb: 3, convert: 3, rate: 100 },
-  { canal: 'Autres', nb: 4, convert: 2, rate: 50 },
-  { canal: 'Google Search', nb: 5, convert: 2, rate: 40 },
-  { canal: 'Réseaux sociaux', nb: 3, convert: 1, rate: 33 },
+  { canal: 'Bouche-à-oreille', nb: 10, convert: 9, rate: 90 },
+  { canal: 'IA (ChatGPT/Claude)', nb: 12, convert: 10, rate: 83 },
+  { canal: 'Google Maps/GBP', nb: 15, convert: 11, rate: 73 },
+  { canal: 'Autres', nb: 18, convert: 12, rate: 67 },
+  { canal: 'Google Search', nb: 30, convert: 17, rate: 57 },
+  { canal: 'Réseaux sociaux', nb: 15, convert: 4, rate: 27 },
 ];
 
 const personas = [
@@ -377,11 +384,12 @@ const personas = [
 ];
 
 const techVerdicts = [
-  { label: 'Vitesse', verdict: 'Mobile ~2.8s', ok: false, detail: 'LCP légèrement > 2.5s sur mobile (seuil Google "good")' },
-  { label: 'Sécurité', verdict: 'Grade B', ok: false, detail: 'Observatory 75/100 — CSP manquant' },
-  { label: 'SEO', verdict: 'Bon', ok: true, detail: 'Title, meta, canonical, sitemap — tout présent' },
-  { label: 'Données structurées', verdict: 'Bon', ok: true, detail: 'WebSite + ProfessionalService + FAQPage (13 Q&A) — bug price:null à corriger' },
-  { label: 'Partage réseaux', verdict: 'OK', ok: true, detail: 'OG images présentes, dimensions à renseigner' },
+  { label: 'Vitesse', verdict: 'Mobile ~2.8s', ok: false, detail: 'LCP légèrement > 2.5s sur mobile (seuil Google "good") — non résolu en V2' },
+  { label: 'Sécurité', verdict: 'Grade B', ok: false, detail: 'Observatory 75/100 — CSP toujours manquant' },
+  { label: 'SEO', verdict: 'Bon ↑', ok: true, detail: 'areaServed élargi "France", hreflang FR/EN ajouté, sitemap étendu /en/*' },
+  { label: 'Données structurées', verdict: 'Bon ↑', ok: true, detail: 'Bug price:"null" corrigé — Rich Results Test propre. FAQPage 13 Q&A maintenue.' },
+  { label: 'Partage réseaux', verdict: 'OK', ok: true, detail: 'OG images présentes, og:image:width/height toujours à renseigner' },
+  { label: 'i18n', verdict: 'Nouveau', ok: true, detail: 'Version /en/* + auto-redirect — attention : friction si navigateur FR configuré en anglais' },
 ];
 
 const tech = {
@@ -423,47 +431,47 @@ const tech = {
 
 const ameliorationsHautes = [
   {
-    titre: 'Corriger le compteur "0+ projets livrés"',
-    pourquoi: 'Sur 20 visiteurs, 11 ont remarqué ce chiffre — et la moitié ont hésité à cause de lui. Quand un artisan voit "0+ projets", il se demande si Marc a déjà eu un seul client. C\'est le frein numéro 1 de ce rapport.',
-    action: 'Remplacer "0+" par le nombre réel (33+, ou "30+" pour la sobriété). Vérifier la source de données dans le composant concerné.',
-    impact: '11 personas sur 20',
+    titre: 'Preload image hero — LCP mobile < 2.5s',
+    pourquoi: 'Sur 100 visiteurs, ~60 arrivent sur mobile. Le LCP de ~2.8s est perçu comme lent sur 4G — et c\'est la première impression. Toutes les améliorations de contenu ne compensent pas un départ sur fond blanc de 3 secondes.',
+    action: 'Ajouter <link rel="preload" as="image" fetchpriority="high"> sur l\'image hero dans le <head>. Ajouter fetchpriority="high" sur la balise <img> correspondante. ~30 minutes de dev.',
+    impact: '~60 personas sur 100',
   },
   {
-    titre: 'Ajouter le numéro de téléphone en texte cliquable',
-    pourquoi: 'Yannick (55 ans, technicien), Patrick (61 ans, artisan menuisier) et Jean-Marc (67 ans) ont tous cherché le numéro — et aucun n\'a rempli le formulaire. Le téléphone, c\'est la poignée de main pour les profils 55+.',
-    action: 'Ajouter +33 6 88 76 66 48 en texte cliquable (tel:) dans le footer et la page Contact. Une ligne, deux minutes.',
-    impact: '6 personas sur 20',
+    titre: 'Portfolio beauté / santé / créatif',
+    pourquoi: '12 personas cherchent un exemple de leur secteur et ne le trouvent pas : coiffeuses, esthéticiennes, ostéopathes, maquilleuses, yoga, wedding planners. Sans exemple, ils ne peuvent pas projeter le rendu de leur propre site.',
+    action: '3 à 5 exemples ajoutés aux réalisations : un salon de beauté, un professionnel de santé libéral, un créatif (photographe, artiste). Ou une mention explicite "je réalise des sites pour les professions libérales de santé et les métiers de la beauté" dans /offre.',
+    impact: '12 personas sur 100',
   },
   {
-    titre: '"100% à distance" visible dès le hero',
-    pourquoi: 'Marie (Luxembourg), Mehdi (hors Metz) et deux autres visiteurs doutent que Marc travaille vraiment avec eux. La FAQ l\'explique — mais personne ne lit la FAQ avant de scroller. Ils repartent avant d\'y arriver.',
-    action: 'Ajouter une ligne sous le hero : "Je travaille avec des clients dans toute la France — 100% à distance." 10 mots, un seul endroit.',
-    impact: '4 personas sur 20',
+    titre: '"100% à distance" dans le hero',
+    pourquoi: 'La FAQ géographie couvre désormais la France entière — mais les personas au scroll rapide (mobile, attention courte) ne descendent pas jusqu\'à la FAQ. Ils repartent en pensant être hors zone alors qu\'ils ne le sont pas.',
+    action: 'Une ligne sous le H1 du hero : "100% à distance — je travaille avec des clients dans toute la France." 12 mots. Applicable même si le client est à 500 km.',
+    impact: '~8 personas sur 100',
   },
   {
-    titre: 'Élargir le wording hero : thérapeutes, créateurs, formateurs',
-    pourquoi: 'Le mot "artisans" exclut mentalement les thérapeutes, coaches, consultants qui ont exactement le même besoin. Amandine (graphiste) et Sophie (ostéopathe) se sont demandé "est-ce pour moi ?" avant de continuer.',
-    action: 'Modifier la ligne sous le H1 : compléter "artisans et petits commerces" par "artisans, thérapeutes, créateurs, freelances".',
-    impact: '3 personas sur 20',
+    titre: 'Correction auto-redirect i18n — bouton "Revenir en français"',
+    pourquoi: 'Nouvelle friction V2 : les visiteurs français avec un navigateur configuré en anglais (iPhone neuf, config pro, reset) sont redirigés vers /en/ sans explication. Claire (consultante), Christophe (prof tech) ont quitté sans comprendre.',
+    action: 'Ajouter une bannière discrète sur les pages /en/* : "You were redirected / Revenir en français →" ou un switcher FR/EN visible dans le header. Empêche le départ immédiat des francophones égarés.',
+    impact: '3-5% des visiteurs FR',
   },
 ];
 
 const ameliorationsUtiles = [
   {
-    titre: 'Enrichir le portfolio secteur beauté/santé',
-    detail: 'Émilie (coiffeuse) et Sophie (ostéopathe) ne trouvent pas d\'exemple de leur secteur dans les réalisations. 2-3 exemples beauté/santé supplémentaires récupéreraient les visiteurs en Comparaison qui ne se voient pas dans les plombiers et maçons.',
+    titre: 'Afficher "33 projets réalisés" (pas "11 livrés")',
+    detail: 'Le compteur "11 projets livrés" est meilleur que "0+" mais plusieurs profils analytiques (Julien, Thomas) font le calcul : "11 c\'est peu". Afficher les 33 projets réels du portfolio ou reformuler "11 nouvelles Vitrines offertes sur 100" clarifie la distinction.',
   },
   {
-    titre: 'Paiement en 2× sous chaque prix',
-    detail: 'Plusieurs visiteurs ne savent pas que le 2×245€ existe tant qu\'ils ne lisent pas la FAQ. Afficher directement sous les 490€ "ou en 2×245€" débloquera les profils à budget serré sans qu\'ils aient à poser la question.',
+    titre: 'Mention "refonte WordPress/Wix" dans l\'offre ou la FAQ',
+    detail: 'Sébastien (P81) et 4 autres personas cherchent explicitement à migrer depuis WordPress ou Wix. Aucune mention de "refonte" dans les titres de l\'offre — ils doivent inférer que le Multi-pages 1290€ couvre leur cas. Une FAQ ou une ligne suffit.',
   },
   {
-    titre: 'LCP mobile < 2.5s',
-    detail: 'L\'image hero n\'est pas préchargée — sur 4G rurale ou appareils anciens, le LCP de ~2.8s est perçu comme "lent". Ajouter fetchpriority="high" + preload sur l\'image hero peut passer sous le seuil Google "good" (2.5s) en une ligne.',
+    titre: 'Content-Security-Policy — Observatory A',
+    detail: 'Header CSP toujours absent, grade B persistant. Les profils tech (Amandine, Julien, Maxime) le voient et y voient un manque de rigueur. Un header CSP dans /public/_headers = grade A en 20 minutes.',
   },
   {
-    titre: 'Critères 100 Vitrines explicités',
-    detail: 'Antoine (nouveau statut), Bruno (gîte rural) et Olivier (formateur) ne savent pas s\'ils sont éligibles. Une section "Suis-je éligible ?" avec liste de critères précis retient ces visiteurs qui repartent sans réponse.',
+    titre: 'og:image:width/height',
+    detail: 'Absent depuis V1 — renseigner 1200×630 améliore le rendu des partages LinkedIn, WhatsApp, Twitter. Impact sur les personas qui partagent le site avant de décider.',
   },
 ];
 
@@ -492,8 +500,8 @@ const ameliorationsDiscuter = [
 ---
 
 <BaseLayout
-  title={`Echo Complet — ${nomProspect} — Rapport confidentiel`}
-  description={`Rapport Echo Complet pour ${nomProspect} — ${kpis.nbPersonas} visiteurs simulés sur ${urlSite}`}
+  title={`Echo Suivi V2 — ${nomProspect} — Rapport confidentiel`}
+  description={`Rapport Echo Suivi V2 pour ${nomProspect} — ${kpis.nbPersonas} visiteurs simulés sur ${urlSite}`}
   noindex={true}
   lang="fr"
   frPath={`/echo/${slug}/`}
@@ -535,6 +543,62 @@ const ameliorationsDiscuter = [
 
   </div>
 </section>
+
+<!-- ═══════════════════════════════════════════════════ -->
+<!-- 1b. ÉVOLUTION — Timeline des versions              -->
+<!-- ═══════════════════════════════════════════════════ -->
+{showTimeline && (
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-10">
+  <h2 class="text-xl font-bold text-neutral-900 mb-2">Évolution du site</h2>
+  <p class="text-sm text-neutral-500 mb-6">Progression du taux de conversion à chaque version auditée.</p>
+
+  <div class="flex flex-wrap gap-4 mb-8">
+    {versionsData.map((v, i) => {
+      const isCurrent = i === versionsData.length - 1;
+      const color = v.tauxConversion >= 60 ? 'green' : v.tauxConversion >= 40 ? 'amber' : 'neutral';
+      const bgClass = isCurrent ? 'bg-neutral-900 text-white' : 'bg-white border border-neutral-200';
+      const scoreColor = color === 'green' ? 'text-green-400' : color === 'amber' ? 'text-amber-500' : 'text-neutral-400';
+      return (
+        <div class={`rounded-xl p-5 flex-1 min-w-[140px] ${bgClass}`}>
+          <div class={`text-3xl font-black mb-1 ${isCurrent ? 'text-green-400' : scoreColor}`}>{v.tauxConversion}%</div>
+          <div class={`text-xs font-semibold mb-0.5 ${isCurrent ? 'text-white' : 'text-neutral-800'}`}>{v.version.toUpperCase()}</div>
+          <div class={`text-[11px] ${isCurrent ? 'text-neutral-400' : 'text-neutral-500'}`}>{v.date}</div>
+          <div class={`text-[10px] mt-1 ${isCurrent ? 'text-neutral-500' : 'text-neutral-400'}`}>{v.formule}</div>
+        </div>
+      );
+    })}
+  </div>
+
+  <!-- Delta table -->
+  <div class="bg-white border border-neutral-200 rounded-xl overflow-hidden">
+    <div class="grid grid-cols-5 gap-0 text-[11px] font-semibold text-neutral-500 uppercase tracking-wider bg-neutral-50 px-4 py-3 border-b border-neutral-200">
+      <div class="col-span-2">Friction V1</div>
+      <div>Statut V2</div>
+      <div class="col-span-2">Impact mesuré</div>
+    </div>
+    {[
+      { friction: 'Compteur "0+ projets livrés"', statut: '✅', label: 'Résolue', impact: '+11 conversions — crédibilité rétablie', color: 'green' },
+      { friction: 'Téléphone absent du header', statut: '✅', label: 'Résolue', impact: 'Monique, Yannick, Patrick, Joséphine convertis', color: 'green' },
+      { friction: 'FAQ géographie absente', statut: '✅', label: 'Résolue', impact: 'Marie, Mehdi, Vincent, Piotr convertis', color: 'green' },
+      { friction: 'Bug price:"null" Schema.org', statut: '✅', label: 'Résolue', impact: 'Rich Results Test propre', color: 'green' },
+      { friction: '"100% à distance" hors du hero', statut: '⚠️', label: 'Partielle', impact: 'FAQ couvre — mais scroll rapide rate toujours la FAQ', color: 'amber' },
+      { friction: 'Portfolio beauté/santé absent', statut: '❌', label: 'Non traitée', impact: '12 personas toujours bloqués (Émilie, Fatima, Vincent…)', color: 'red' },
+      { friction: 'LCP mobile ~2.8s', statut: '❌', label: 'Non traitée', impact: '~60 personas sur mobile toujours impactés', color: 'red' },
+      { friction: '—', statut: '🆕', label: 'Nouvelle', impact: 'Auto-redirect /en/ : artisans FR avec navigateur anglais égarés', color: 'blue' },
+    ].map(row => {
+      const rowBg = row.color === 'green' ? 'bg-green-50' : row.color === 'amber' ? 'bg-amber-50' : row.color === 'red' ? 'bg-red-50' : 'bg-blue-50';
+      const labelColor = row.color === 'green' ? 'text-green-700 bg-green-100' : row.color === 'amber' ? 'text-amber-700 bg-amber-100' : row.color === 'red' ? 'text-red-700 bg-red-100' : 'text-blue-700 bg-blue-100';
+      return (
+        <div class={`grid grid-cols-5 gap-0 px-4 py-3 border-b border-neutral-100 text-xs items-start ${rowBg}`}>
+          <div class="col-span-2 text-neutral-700 font-medium">{row.friction}</div>
+          <div><span class={`px-1.5 py-0.5 rounded text-[10px] font-semibold ${labelColor}`}>{row.statut} {row.label}</span></div>
+          <div class="col-span-2 text-neutral-600">{row.impact}</div>
+        </div>
+      );
+    })}
+  </div>
+</section>
+)}
 
 <!-- ═══════════════════════════════════════════════════ -->
 <!-- 2. LE CONSTAT — Données et analyses                -->
