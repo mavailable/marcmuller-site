@@ -1,7 +1,9 @@
 /**
- * Cloudflare Pages Middleware — détection de langue
- * Redirige les visiteurs non-francophones vers l'équivalent /en/ pour toutes les pages traduites.
+ * Cloudflare Pages Middleware — détection de langue + Content Security Policy
+ * - Redirige les visiteurs non-francophones vers l'équivalent /en/
+ * - Injecte le header CSP (trop long pour le fichier _headers, limité à 2000 chars)
  */
+import { CSP_VALUE } from './_csp-value.js';
 
 // Table de correspondance FR → EN (pages ayant un équivalent traduit)
 const FR_TO_EN = {
@@ -39,20 +41,22 @@ export async function onRequest({ request, next }) {
   const url = new URL(request.url);
   const pathname = url.pathname.replace(/\/$/, '') || '/';
 
-  // Ignorer les pages sans équivalent EN, les assets, et les pages déjà en /en/
+  // Redirection langue : visiteurs non-francophones → /en/
   const enTarget = FR_TO_EN[pathname];
-  if (!enTarget || pathname.startsWith('/en/')) {
-    return next();
+  if (enTarget && !pathname.startsWith('/en/')) {
+    const acceptLanguage = request.headers.get('Accept-Language') || '';
+    const prefersFrench = acceptLanguage
+      .split(',')
+      .some((lang) => lang.trim().toLowerCase().startsWith('fr'));
+
+    if (!prefersFrench) {
+      return Response.redirect(new URL(enTarget, url).toString(), 302);
+    }
   }
 
-  const acceptLanguage = request.headers.get('Accept-Language') || '';
-  const prefersFrench = acceptLanguage
-    .split(',')
-    .some((lang) => lang.trim().toLowerCase().startsWith('fr'));
-
-  if (!prefersFrench) {
-    return Response.redirect(new URL(enTarget, url).toString(), 302);
-  }
-
-  return next();
+  // Servir la page avec le header CSP injecté
+  const response = await next();
+  const newResponse = new Response(response.body, response);
+  newResponse.headers.set('Content-Security-Policy', CSP_VALUE);
+  return newResponse;
 }
