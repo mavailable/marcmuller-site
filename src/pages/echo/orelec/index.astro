@@ -1,0 +1,860 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const slug = 'orelec';
+const formule = 'decouverte';
+const formuleLabel = 'Echo Decouverte';
+const nomProspect = 'OR ELEC';
+const urlSite = 'https://orelec54.com';
+const dateAudit = '31 mars 2026';
+const isProspection = true;
+const showUpsell = true;
+const showTimeline = false;
+
+const kpis = {
+  nbPersonas: 10,
+  nbConvertissent: 5,
+  nbHesitent: 1,
+  nbRepartent: 4,
+  conversion: 50,
+  experience: 5.5,
+  confiance: 5.9,
+  clarte: 3.6,
+};
+
+const verdictHero = 'Sur 10 visiteurs, 5 vous contactent. 1 hesite. 4 repartent — dont un client borne IRVE a 2 000 EUR.';
+const constat = 'OR ELEC a un design moderne, des avis 5.0, et un service urgences 24/7 qui convertit. Mais aucune certification IRVE ou RGE n\'est affichee, aucun tarif, et aucune page dediee par service. Les clients a gros budget partent.';
+
+const canalData = [
+  { canal: 'Google Maps', nb: 2, convert: 2, rate: 100 },
+  { canal: 'Bouche-a-oreille', nb: 1, convert: 1, rate: 100 },
+  { canal: 'Reseaux sociaux', nb: 2, convert: 1, rate: 50 },
+  { canal: 'Google Search', nb: 3, convert: 1, rate: 33 },
+  { canal: 'IA', nb: 2, convert: 0, rate: 0 },
+];
+
+const alertes = [
+  {
+    type: 'critique',
+    titre: 'Certification IRVE absente',
+    detail: 'Vous installez des bornes IRVE mais aucune certification n\'est affichee. Obligatoire depuis 2017 pour > 3.7 kW. Votre client borne part chez un concurrent certifie.',
+    chiffre: '0',
+    chiffreLabel: 'certification affichee',
+  },
+  {
+    type: 'critique',
+    titre: 'Aucun tarif affiche',
+    detail: '8 visiteurs sur 10 cherchent un prix. Meme les urgences ne savent pas combien ca va couter.',
+    chiffre: '0',
+    chiffreLabel: 'tarif affiche',
+  },
+  {
+    type: 'important',
+    titre: 'SIRET absent du site',
+    detail: 'Bloquant pour les syndics, constructeurs et commerces qui doivent justifier leurs depenses.',
+    chiffre: '0',
+    chiffreLabel: 'SIRET visible',
+  },
+];
+
+const personas = [
+  {
+    id: 1, name: 'Catherine', age: 50, emoji: '🔌',
+    situation: 'Proprietaire, panne tableau electrique urgente',
+    canal: 'Google Maps', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Urgences 24/7 + 5.0 etoiles = appel immediat un samedi matin.',
+    localisation: 'Nancy', maturite: 'Decision',
+    contexte: 'Panne de tableau electrique un samedi matin, besoin d\'un depannage urgent.',
+    impression: 'Urgences 24/7 visible immediatement, avis 5.0 rassurants.',
+    parcours: [['Google Maps', 'Urgences 24/7 + 5.0 etoiles'], ['Accueil', 'Confirme le service urgence'], ['Appel', 'Appelle directement']],
+    questionCle: 'Disponible en urgence un samedi ?',
+    reponse: 'Oui', commentReponse: 'Urgences 24/7 clairement affiche',
+    impactVitesse: 'Chargement acceptable en situation d\'urgence', impactConfiance: 'Avis 5.0 + urgences 24/7 = confiance maximale',
+    positifs: ['Urgences 24/7 bien visible', 'Avis 5.0 Google', 'Telephone accessible'], frictions: ['Pas de tarif urgence indique'],
+    ceQuiFeraitBasculer: '',
+    exp: 8, conf: 9, clarte: 5,
+  },
+  {
+    id: 2, name: 'Emma', age: 25, emoji: '💡',
+    situation: 'Locataire, prise qui gresille',
+    canal: 'Reseaux sociaux', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Paniquee. Urgences 24/7 rassure, appelle malgre zero tarif.',
+    localisation: 'Nancy', maturite: 'Decouverte',
+    contexte: 'Prise electrique qui gresille, paniquee, cherche un electricien rapidement.',
+    impression: 'Urgences 24/7 rassure immediatement.',
+    parcours: [['Accueil', 'Urgences 24/7 bien visible'], ['Services', 'Depannage electrique liste'], ['Appel', 'Appelle malgre absence de tarif']],
+    questionCle: 'Pouvez-vous intervenir rapidement ?',
+    reponse: 'Oui', commentReponse: 'Urgences 24/7 rassure',
+    impactVitesse: 'Mobile correct', impactConfiance: 'L\'urgence prime sur le tarif',
+    positifs: ['Urgences 24/7 rassurant', 'Telephone cliquable'], frictions: ['Zero tarif affiche', 'Pas de delai d\'intervention'],
+    ceQuiFeraitBasculer: '',
+    exp: 6, conf: 7, clarte: 3,
+  },
+  {
+    id: 3, name: 'Julien', age: 35, emoji: '⚡',
+    situation: 'Proprietaire, renovation electrique',
+    canal: 'Google Search', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Devis envoye mais faible conviction — continue a chercher.',
+    localisation: 'Nancy', maturite: 'Comparaison',
+    contexte: 'Renovation electrique d\'un appartement, compare les electriciens.',
+    impression: 'Site correct, services listes mais sans detail.',
+    parcours: [['Accueil', 'Design moderne, cherche renovation'], ['Services', 'Renovation electrique listee'], ['Contact', 'Envoie un devis par formulaire']],
+    questionCle: 'Combien coute une renovation electrique ?',
+    reponse: 'Non', commentReponse: 'Aucun tarif ni fourchette indicative',
+    impactVitesse: 'Correct sur mobile', impactConfiance: 'Devis envoye mais conviction moyenne',
+    positifs: ['Renovation dans les services', 'Formulaire de devis accessible'], frictions: ['Zero tarif indicatif', 'Pas de page dediee renovation', 'Pas de realisations montrees'],
+    ceQuiFeraitBasculer: '',
+    exp: 5, conf: 6, clarte: 5,
+  },
+  {
+    id: 4, name: 'Marc', age: 45, emoji: '📹',
+    situation: 'Commercant, cherche une videosurveillance',
+    canal: 'Google Maps', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Terme "video-protection" correct. Devis envoye, conviction moyenne.',
+    localisation: 'Nancy', maturite: 'Comparaison',
+    contexte: 'Commercant cherchant a installer un systeme de videosurveillance.',
+    impression: 'Terme "video-protection" correct, site professionnel.',
+    parcours: [['Google Maps', 'Electricien a proximite, avis positifs'], ['Services', 'Video-protection listee'], ['Contact', 'Envoie un devis']],
+    questionCle: 'Installez-vous de la videosurveillance pour les commerces ?',
+    reponse: 'Oui', commentReponse: 'Video-protection dans les services',
+    impactVitesse: 'Mobile correct', impactConfiance: 'Google Maps + avis rassurent',
+    positifs: ['Video-protection dans les services', 'Terme correct utilise'], frictions: ['Pas de page dediee commerce', 'Zero tarif indicatif', 'Pas de realisations montrees'],
+    ceQuiFeraitBasculer: '',
+    exp: 6, conf: 7, clarte: 4,
+  },
+  {
+    id: 5, name: 'Lucie', age: 32, emoji: '🌬️',
+    situation: 'Proprietaire, VMC bruyante',
+    canal: 'Google Search', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'VMC dans l\'offre, besoin pressant. Appelle directement.',
+    localisation: 'Nancy', maturite: 'Decision',
+    contexte: 'VMC tres bruyante, besoin d\'un remplacement rapide.',
+    impression: 'VMC listee dans les services, telephone accessible.',
+    parcours: [['Accueil', 'Cherche VMC dans les services'], ['Services', 'VMC listee'], ['Appel', 'Appelle directement']],
+    questionCle: 'Remplacez-vous les VMC ?',
+    reponse: 'Oui', commentReponse: 'VMC dans l\'offre de services',
+    impactVitesse: 'Mobile correct', impactConfiance: 'Service liste, besoin pressant prime',
+    positifs: ['VMC dans les services', 'Telephone accessible'], frictions: ['Pas de page dediee VMC', 'Zero tarif indicatif'],
+    ceQuiFeraitBasculer: '',
+    exp: 6, conf: 7, clarte: 4,
+  },
+  {
+    id: 6, name: 'Patrick', age: 48, emoji: '🏗️',
+    situation: 'Constructeur, cherche un sous-traitant electricien',
+    canal: 'Bouche-a-oreille', device: 'Tablette', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Site oriente particuliers. Appel exploratoire sans conviction.',
+    localisation: 'Nancy', maturite: 'Decision',
+    contexte: 'Constructeur cherchant un electricien sous-traitant pour ses chantiers.',
+    impression: 'Site clairement oriente particuliers, pas de section pro.',
+    parcours: [['Accueil', 'Cherche une section "professionnels"'], ['Services', 'Pas de mention sous-traitance'], ['Contact', 'Appel exploratoire sans conviction']],
+    questionCle: 'Travaillez-vous en sous-traitance pour les constructeurs ?',
+    reponse: 'Non', commentReponse: 'Aucune mention B2B ou sous-traitance',
+    impactVitesse: 'Tablette fluide', impactConfiance: 'Recommandation mais site pas adapte au besoin pro',
+    positifs: ['Site professionnel dans la presentation'], frictions: ['Aucune section B2B', 'Pas de SIRET visible', 'Pas de references chantiers'],
+    ceQuiFeraitBasculer: 'Une section dediee aux professionnels avec references chantiers et SIRET',
+    exp: 4, conf: 4, clarte: 2,
+  },
+  {
+    id: 7, name: 'Thomas', age: 40, emoji: '🚗',
+    situation: 'Proprietaire, cherche une borne IRVE',
+    canal: 'Google Search', device: 'Desktop', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Zero certification IRVE = abandon immediat. Perte de 2000 EUR.',
+    localisation: 'Nancy', maturite: 'Comparaison',
+    contexte: 'Proprietaire de voiture electrique, cherche un installateur de borne IRVE certifie.',
+    impression: 'Borne IRVE mentionnee mais aucune certification visible.',
+    parcours: [['Accueil', 'Cherche "IRVE" ou "borne"'], ['Services', 'Borne de recharge listee mais zero certification'], ['Depart', 'Abandon immediat, cherche un concurrent certifie']],
+    questionCle: 'Etes-vous certifie IRVE ?',
+    reponse: 'Non', commentReponse: 'Aucune certification IRVE affichee sur le site',
+    impactVitesse: 'Desktop fluide', impactConfiance: 'Pas de certification = pas de confiance pour un investissement de 2000 EUR',
+    positifs: ['Borne IRVE dans les services'], frictions: ['Zero certification IRVE affichee', 'Obligatoire depuis 2017 pour > 3.7 kW', 'Pas de page dediee IRVE'],
+    ceQuiFeraitBasculer: 'Afficher la certification IRVE + une page dediee avec tarifs et processus',
+    exp: 4, conf: 3, clarte: 2,
+  },
+  {
+    id: 8, name: 'Sophie', age: 28, emoji: '🏠',
+    situation: 'Proprietaire, interesse par la domotique',
+    canal: 'IA', device: 'Mobile', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Contenu domotique creux. Pas de marques, pas de realisations.',
+    localisation: 'Nancy', maturite: 'Decouverte',
+    contexte: 'Interesse par la domotique pour sa maison, cherche un electricien specialise.',
+    impression: 'Domotique mentionnee mais contenu tres superficiel.',
+    parcours: [['Accueil', 'Cherche domotique dans les services'], ['Services', 'Domotique listee mais description vague'], ['Depart', 'Pas assez d\'infos, continue ses recherches']],
+    questionCle: 'Quelles solutions domotiques proposez-vous ?',
+    reponse: 'Non', commentReponse: 'Contenu domotique creux, pas de marques ni de realisations',
+    impactVitesse: 'Mobile correct', impactConfiance: 'Contenu trop vague pour faire confiance',
+    positifs: ['Domotique dans les services'], frictions: ['Contenu domotique creux', 'Pas de marques partenaires', 'Pas de realisations domotique'],
+    ceQuiFeraitBasculer: 'Une page domotique avec marques partenaires, realisations et fourchettes de prix',
+    exp: 4, conf: 5, clarte: 3,
+  },
+  {
+    id: 9, name: 'Antoine', age: 55, emoji: '🏢',
+    situation: 'Syndic, cherche un electricien pour interphonie',
+    canal: 'IA', device: 'Desktop', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Invisible IA, zero contenu B2B, pas de SIRET.',
+    localisation: 'Nancy', maturite: 'Comparaison',
+    contexte: 'Syndic de copropriete cherchant un electricien pour refaire l\'interphonie.',
+    impression: 'Site invisible via IA, oriente particuliers uniquement.',
+    parcours: [['IA', 'OR ELEC n\'apparait pas dans les resultats IA'], ['Site direct', 'Pas de section syndic ou copropriete'], ['Depart', 'Pas de SIRET, pas de contenu B2B']],
+    questionCle: 'Travaillez-vous avec les syndics de copropriete ?',
+    reponse: 'Non', commentReponse: 'Aucun contenu B2B, pas de SIRET, invisible IA',
+    impactVitesse: 'Desktop correct', impactConfiance: 'Absence de SIRET bloquante pour un syndic',
+    positifs: ['Design professionnel'], frictions: ['Invisible via IA', 'Zero contenu B2B', 'SIRET absent', 'Pas de section syndic/copropriete'],
+    ceQuiFeraitBasculer: 'Une section B2B avec SIRET, references coproprietes et interphonie',
+    exp: 3, conf: 5, clarte: 3,
+  },
+  {
+    id: 10, name: 'Nathalie', age: 38, emoji: '🔋',
+    situation: 'Proprietaire, cherche du solaire avec batteries',
+    canal: 'Reseaux sociaux', device: 'Desktop', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Service non propose. Part en 24 secondes.',
+    localisation: 'Nancy', maturite: 'Comparaison',
+    contexte: 'Cherche un installateur de panneaux solaires avec batteries de stockage.',
+    impression: 'Site pro mais service non propose.',
+    parcours: [['Accueil', 'Cherche "solaire" ou "photovoltaique"'], ['Services', 'Solaire non liste'], ['Depart', 'Part en 24 secondes']],
+    questionCle: 'Installez-vous des panneaux solaires ?',
+    reponse: 'Non', commentReponse: 'Service non propose par OR ELEC',
+    impactVitesse: 'Parcours ultra-court, 24 secondes', impactConfiance: 'Pas de probleme de confiance, juste hors perimetre',
+    positifs: ['Site clair sur les services proposes'], frictions: ['Solaire non propose', 'Pas de redirection vers un partenaire'],
+    ceQuiFeraitBasculer: 'Mentionner clairement les services non proposes + recommander un partenaire',
+    exp: 2, conf: 6, clarte: 5,
+  },
+];
+
+const techVerdicts = [
+  { label: 'Vitesse', verdict: 'Moyen', ok: false, detail: 'Performances moyennes sur mobile' },
+  { label: 'Securite', verdict: 'D', ok: false, detail: 'Headers de securite incomplets' },
+  { label: 'SEO', verdict: 'A ameliorer', ok: false, detail: 'Pas de pages dediees par service' },
+  { label: 'Donnees structurees', verdict: 'Absent', ok: false, detail: 'Pas de Schema.org Electrician' },
+  { label: 'Partage reseaux', verdict: 'OK', ok: true, detail: 'OG tags presents' },
+];
+
+const tech = {
+  observatory: { grade: 'D', score: 25, testsOk: 2, testsTotal: 6 },
+  pagespdMobile: { performance: 50, accessibility: 75, bestPractices: 80, seo: 80 },
+  pagespdDesktop: { performance: 80, accessibility: 80, bestPractices: 85, seo: 85 },
+  cwv: { lcp: '~3.5s', inp: '~250ms', cls: '~0.12' },
+  headers: [
+    { ok: true, h: 'Content-Security-Policy' },
+    { ok: true, h: 'Strict-Transport-Security' },
+    { ok: false, h: 'X-Content-Type-Options' },
+    { ok: false, h: 'X-Frame-Options' },
+    { ok: false, h: 'Referrer-Policy' },
+    { ok: false, h: 'Permissions-Policy' },
+  ],
+  schema: [
+    { item: 'JSON-LD present', ok: false },
+    { item: 'Electrician', ok: false },
+    { item: 'LocalBusiness', ok: false },
+    { item: 'AggregateRating', ok: false },
+    { item: 'Service', ok: false },
+    { item: 'hasCredential (IRVE/RGE)', ok: false },
+  ],
+  og: [
+    { item: 'og:title', ok: true, val: 'OR ELEC' },
+    { item: 'og:description', ok: true, val: 'Electricien Nancy' },
+    { item: 'og:image', ok: true, val: 'Image presente' },
+    { item: 'og:url', ok: true, val: 'https://orelec54.com' },
+  ],
+  seo: [
+    { item: 'Meta description', ok: true },
+    { item: 'Canonical', ok: true },
+    { item: 'Sitemap', ok: true },
+    { item: 'robots.txt', ok: true },
+    { item: 'Pages dediees par service', ok: false },
+    { item: 'SIRET visible', ok: false },
+  ],
+};
+
+const ameliorationsHautes = [
+  {
+    titre: 'Afficher certifications IRVE/RGE/Qualibat + SIRET',
+    pourquoi: '4 visiteurs sur 10 partent faute de certifications ou de SIRET. Le client borne IRVE (2 000 EUR) part chez un concurrent certifie. Les syndics et constructeurs ne peuvent pas travailler sans SIRET visible.',
+    action: 'Ajouter une section certifications bien visible sur l\'accueil + SIRET dans le footer et les mentions legales.',
+    impact: '4 visiteurs sur 10',
+  },
+];
+
+const ameliorationsUtiles = [
+  { titre: 'Ajouter des fourchettes tarifaires', detail: '8 visiteurs sur 10 cherchent un prix. Meme un "a partir de X EUR" pour les prestations courantes (depannage, tableau, borne) reduirait les frictions.' },
+  { titre: 'Creer des pages dediees par service', detail: 'Chaque service (IRVE, domotique, renovation, videosurveillance) merite sa propre page avec contenu detaille. Ameliore le SEO et la conversion.' },
+];
+
+const ameliorationsDiscuter = [
+  { emoji: '🏗️', titre: 'Section B2B / professionnels', detail: 'Constructeurs, syndics et commerces ont des besoins specifiques. Une section dediee avec references et SIRET capterait ce segment.' },
+  { emoji: '📸', titre: 'Galerie de realisations', detail: 'Des photos de chantiers termines (tableaux, bornes IRVE, domotique) renforceraient la confiance et le SEO image.' },
+];
+---
+
+<BaseLayout title={`Echo Decouverte — ${nomProspect}`} description={`Rapport Echo : ${kpis.nbPersonas} visiteurs simules sur ${urlSite}`} noindex={true}>
+
+  <!-- ═══ 1. HERO ═══ -->
+  <section class="relative w-full px-6 py-20 md:py-28 overflow-hidden" style="background: #0A0A0A;">
+    <div class="absolute top-[20%] left-[10%] w-[500px] h-[500px] rounded-full blur-[180px] pointer-events-none" style="background: #E86C47; opacity: 0.06;"></div>
+    <div class="relative mx-auto max-w-4xl z-10">
+      <div class="mb-6 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest" style="background: rgba(239,68,68,0.08); border: 1px solid rgba(239,68,68,0.2); color: #ef4444;">
+        Rapport confidentiel — {formuleLabel}
+      </div>
+      <h1 class="mb-4 text-3xl md:text-4xl font-bold text-white leading-tight tracking-tight">
+        {nomProspect}<br/>
+        <span class="text-lg md:text-xl font-normal" style="color: rgba(255,255,255,0.5);">{verdictHero}</span>
+      </h1>
+      <p class="mb-8 text-sm md:text-base" style="color: rgba(255,255,255,0.45);">
+        Site teste : <a href={urlSite} target="_blank" rel="noopener" class="underline hover:text-white transition-colors">{urlSite}</a> · {kpis.nbPersonas} personas · {dateAudit}
+      </p>
+
+      <!-- KPI cards -->
+      <div class="grid grid-cols-3 gap-4">
+        <div class="rounded-xl p-5 text-center" style="background: rgba(34,197,94,0.1); border: 1px solid rgba(34,197,94,0.2);">
+          <div class="text-3xl font-bold text-green-400 mb-1">{kpis.nbConvertissent}</div>
+          <div class="text-xs" style="color: rgba(255,255,255,0.5);">Contactent</div>
+        </div>
+        <div class="rounded-xl p-5 text-center" style="background: rgba(245,158,11,0.1); border: 1px solid rgba(245,158,11,0.2);">
+          <div class="text-3xl font-bold text-amber-400 mb-1">{kpis.nbHesitent}</div>
+          <div class="text-xs" style="color: rgba(255,255,255,0.5);">Hesitent</div>
+        </div>
+        <div class="rounded-xl p-5 text-center" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1);">
+          <div class="text-3xl font-bold mb-1" style="color: rgba(255,255,255,0.5);">{kpis.nbRepartent}</div>
+          <div class="text-xs" style="color: rgba(255,255,255,0.35);">Repartent</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 2. LE CONSTAT ═══ -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <h2 class="text-2xl font-bold text-neutral-900 mb-6">Le constat</h2>
+    <div class="rounded-xl p-6 mb-10 border-l-4" style="background: rgba(232,108,71,0.04); border-color: #E86C47;">
+      <p class="text-sm md:text-base text-neutral-700 leading-relaxed">{constat}</p>
+    </div>
+
+    <!-- Scores -->
+    <div class="grid grid-cols-3 gap-4 mb-10">
+      <div class="bg-white border border-neutral-200 rounded-xl p-5 text-center">
+        <div class="text-3xl font-bold text-neutral-800 mb-1">{kpis.experience}</div>
+        <div class="text-xs text-neutral-500">Experience /10</div>
+      </div>
+      <div class="bg-white border border-neutral-200 rounded-xl p-5 text-center">
+        <div class="text-3xl font-bold text-neutral-800 mb-1">{kpis.confiance}</div>
+        <div class="text-xs text-neutral-500">Confiance /10</div>
+      </div>
+      <div class="bg-white border border-neutral-200 rounded-xl p-5 text-center">
+        <div class="text-3xl font-bold text-neutral-800 mb-1">{kpis.clarte}</div>
+        <div class="text-xs text-neutral-500">Clarte /10</div>
+      </div>
+    </div>
+
+    <!-- Conversion par canal -->
+    <h3 class="text-lg font-bold text-neutral-900 mb-4">Conversion par canal d'arrivee</h3>
+    <div class="space-y-3">
+      {canalData.map(c => (
+        <div>
+          <div class="flex items-center justify-between text-sm mb-1">
+            <span class="text-neutral-700">{c.canal} <span class="text-neutral-400 text-xs">({c.nb} visiteurs)</span></span>
+            <span class="font-semibold" style={`color: ${c.rate >= 50 ? '#22c55e' : c.rate >= 25 ? '#f59e0b' : '#ef4444'}`}>{c.rate}%</span>
+          </div>
+          <div class="h-2 bg-neutral-100 rounded-full overflow-hidden">
+            <div class="h-full rounded-full transition-all" style={`width: ${Math.max(c.rate, 2)}%; background: ${c.rate >= 50 ? '#22c55e' : c.rate >= 25 ? '#f59e0b' : '#ef4444'}`}></div>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- ═══ 3. ALERTES ═══ -->
+  <section class="py-16" style="background: #FFFBEB;">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-2">Alertes</h2>
+      <p class="text-sm text-neutral-600 mb-8">Les problemes qui coutent des clients aujourd'hui.</p>
+      <div class="space-y-4">
+        {alertes.map(a => (
+          <div class={`bg-white rounded-xl p-6 shadow-sm ${a.type === 'critique' ? 'border-2 border-red-300' : 'border border-amber-200'}`}>
+            <div class="flex items-start gap-4">
+              <div class="shrink-0 text-center">
+                <div class={`text-2xl font-black ${a.type === 'critique' ? 'text-red-600' : 'text-amber-600'}`}>{a.chiffre}</div>
+                <div class="text-[10px] text-neutral-500 mt-0.5">{a.chiffreLabel}</div>
+              </div>
+              <div class="flex-1">
+                <div class="flex items-center gap-2 mb-1">
+                  {a.type === 'critique' && <span class="text-[10px] font-bold uppercase tracking-widest text-red-600 bg-red-50 px-2 py-0.5 rounded">Critique</span>}
+                  {a.type === 'important' && <span class="text-[10px] font-bold uppercase tracking-widest text-amber-700 bg-amber-50 px-2 py-0.5 rounded">Important</span>}
+                  <h3 class="font-semibold text-neutral-900">{a.titre}</h3>
+                </div>
+                <p class="text-sm text-neutral-600">{a.detail}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 4. VOS VISITEURS ═══ -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <h2 class="text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs</h2>
+    <p class="text-sm text-neutral-500 mb-8">{kpis.nbPersonas} personas simulees sur {urlSite}</p>
+
+    <!-- Ceux qui contactent -->
+    <h3 class="text-base font-bold text-green-800 mb-3 flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-green-500 inline-block"></span>
+      Ceux qui contactent ({kpis.nbConvertissent})
+    </h3>
+    <div class="space-y-2 mb-10">
+      {personas.filter(p => p.decision === 'Convertit').map(p => (
+        <details class="group border border-green-200 bg-green-50/40 rounded-xl overflow-hidden">
+          <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+            <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+              </div>
+              <p class="text-xs text-neutral-600">{p.histoire}</p>
+              <div class="flex flex-wrap items-center gap-1 mt-1.5">
+                <span class="text-[10px] text-neutral-500 bg-white border border-neutral-200 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                <span class="text-[10px] bg-green-600 text-white px-1.5 py-0.5 rounded font-medium">{p.decisionLabel}</span>
+              </div>
+            </div>
+            <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+          </summary>
+          <div class="px-4 pb-4 pt-0 border-t border-green-200 bg-white/60">
+            <div class="grid gap-3 text-xs mt-3">
+              <div>
+                <p class="font-semibold text-neutral-700 mb-1">Contexte</p>
+                <p class="text-neutral-600">{p.contexte}</p>
+              </div>
+              <div>
+                <p class="font-semibold text-neutral-700 mb-1">Premiere impression</p>
+                <p class="text-neutral-600">{p.impression}</p>
+              </div>
+              <div>
+                <p class="font-semibold text-neutral-700 mb-1">Parcours</p>
+                <ol class="list-decimal list-inside space-y-1 text-neutral-600">
+                  {p.parcours.map(([section, reaction]: [string, string]) => <li><strong>{section}</strong>{reaction ? ` — ${reaction}` : ''}</li>)}
+                </ol>
+              </div>
+              <div>
+                <p class="font-semibold text-neutral-700 mb-1">Question cle</p>
+                <p class="text-neutral-600 italic">"{p.questionCle}"</p>
+                <p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong> — {p.commentReponse}</p>
+              </div>
+              <div>
+                <p class="font-semibold text-neutral-700 mb-1">Impact technique</p>
+                <p class="text-neutral-600">Vitesse : {p.impactVitesse}</p>
+                <p class="text-neutral-600 mt-0.5">Confiance : {p.impactConfiance}</p>
+              </div>
+              <div class="flex gap-4">
+                <div class="flex-1">
+                  <p class="font-semibold text-green-700 mb-1">Points positifs</p>
+                  <ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.positifs.map((pt: string) => <li>{pt}</li>)}</ul>
+                </div>
+                <div class="flex-1">
+                  <p class="font-semibold text-amber-700 mb-1">Frictions</p>
+                  <ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map((f: string) => <li>{f}</li>)}</ul>
+                </div>
+              </div>
+              <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                <div class="text-center"><span class="block text-lg font-bold text-green-600">{p.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                <div class="text-center"><span class="block text-lg font-bold text-green-600">{p.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                <div class="text-center"><span class="block text-lg font-bold text-green-600">{p.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+              </div>
+            </div>
+          </div>
+        </details>
+      ))}
+    </div>
+
+    <!-- Ceux qui hesitent -->
+    <h3 class="text-base font-bold text-amber-800 mb-3 flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-amber-500 inline-block"></span>
+      Ceux qui hesitent ({kpis.nbHesitent})
+    </h3>
+    <div class="space-y-2 mb-10">
+      {personas.filter(p => p.decision === 'Hesite').map(p => (
+        <details class="group border border-amber-200 bg-amber-50/30 rounded-xl overflow-hidden">
+          <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+            <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+              </div>
+              <p class="text-xs text-neutral-600">{p.histoire}</p>
+              <div class="flex flex-wrap items-center gap-1 mt-1.5">
+                <span class="text-[10px] text-neutral-500 bg-white border border-neutral-200 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                <span class="text-[10px] bg-amber-500 text-white px-1.5 py-0.5 rounded font-medium">{p.decisionLabel}</span>
+              </div>
+            </div>
+            <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+          </summary>
+          <div class="px-4 pb-4 pt-0 border-t border-amber-200 bg-white/60">
+            <div class="grid gap-3 text-xs mt-3">
+              <div>
+                <p class="font-semibold text-neutral-700 mb-1">Contexte</p>
+                <p class="text-neutral-600">{p.contexte}</p>
+              </div>
+              <div>
+                <p class="font-semibold text-neutral-700 mb-1">Premiere impression</p>
+                <p class="text-neutral-600">{p.impression}</p>
+              </div>
+              <div>
+                <p class="font-semibold text-neutral-700 mb-1">Parcours</p>
+                <ol class="list-decimal list-inside space-y-1 text-neutral-600">
+                  {p.parcours.map(([section, reaction]: [string, string]) => <li><strong>{section}</strong>{reaction ? ` — ${reaction}` : ''}</li>)}
+                </ol>
+              </div>
+              <div>
+                <p class="font-semibold text-neutral-700 mb-1">Question cle</p>
+                <p class="text-neutral-600 italic">"{p.questionCle}"</p>
+                <p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong> — {p.commentReponse}</p>
+              </div>
+              <div>
+                <p class="font-semibold text-neutral-700 mb-1">Impact technique</p>
+                <p class="text-neutral-600">Vitesse : {p.impactVitesse}</p>
+                <p class="text-neutral-600 mt-0.5">Confiance : {p.impactConfiance}</p>
+              </div>
+              <div class="flex gap-4">
+                <div class="flex-1">
+                  <p class="font-semibold text-green-700 mb-1">Points positifs</p>
+                  <ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.positifs.map((pt: string) => <li>{pt}</li>)}</ul>
+                </div>
+                <div class="flex-1">
+                  <p class="font-semibold text-amber-700 mb-1">Frictions</p>
+                  <ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map((f: string) => <li>{f}</li>)}</ul>
+                </div>
+              </div>
+              <div class="pt-2 border-t border-neutral-200">
+                <p class="font-semibold text-neutral-700 mb-1">Ce qui ferait basculer</p>
+                <p class="text-neutral-600">{p.ceQuiFeraitBasculer}</p>
+              </div>
+              <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                <div class="text-center"><span class="block text-lg font-bold text-amber-600">{p.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                <div class="text-center"><span class="block text-lg font-bold text-amber-600">{p.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                <div class="text-center"><span class="block text-lg font-bold text-amber-600">{p.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+              </div>
+            </div>
+          </div>
+        </details>
+      ))}
+    </div>
+
+    <!-- Ceux qui repartent -->
+    <h3 class="text-base font-bold text-neutral-700 mb-3 flex items-center gap-2">
+      <span class="w-2 h-2 rounded-full bg-neutral-400 inline-block"></span>
+      Ceux qui repartent ({kpis.nbRepartent})
+    </h3>
+    <div class="space-y-2">
+      {personas.filter(p => p.decision === 'Quitte').map(p => (
+        <details class="group border border-neutral-200 bg-neutral-50/40 rounded-xl overflow-hidden">
+          <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+            <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                <span class="text-[11px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+              </div>
+              <p class="text-xs text-neutral-600">{p.histoire}</p>
+              <div class="flex flex-wrap items-center gap-1 mt-1.5">
+                <span class="text-[10px] text-neutral-500 bg-white border border-neutral-200 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                <span class="text-[10px] bg-neutral-400 text-white px-1.5 py-0.5 rounded font-medium">{p.decisionLabel}</span>
+              </div>
+            </div>
+            <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+          </summary>
+          <div class="px-4 pb-4 pt-0 border-t border-neutral-200 bg-white/60">
+            <div class="grid gap-3 text-xs mt-3">
+              <div>
+                <p class="font-semibold text-neutral-700 mb-1">Contexte</p>
+                <p class="text-neutral-600">{p.contexte}</p>
+              </div>
+              <div>
+                <p class="font-semibold text-neutral-700 mb-1">Premiere impression</p>
+                <p class="text-neutral-600">{p.impression}</p>
+              </div>
+              <div>
+                <p class="font-semibold text-neutral-700 mb-1">Parcours</p>
+                <ol class="list-decimal list-inside space-y-1 text-neutral-600">
+                  {p.parcours.map(([section, reaction]: [string, string]) => <li><strong>{section}</strong>{reaction ? ` — ${reaction}` : ''}</li>)}
+                </ol>
+              </div>
+              <div>
+                <p class="font-semibold text-neutral-700 mb-1">Question cle</p>
+                <p class="text-neutral-600 italic">"{p.questionCle}"</p>
+                <p class="text-neutral-600 mt-1">Reponse du site : <strong>{p.reponse}</strong> — {p.commentReponse}</p>
+              </div>
+              <div>
+                <p class="font-semibold text-neutral-700 mb-1">Impact technique</p>
+                <p class="text-neutral-600">Vitesse : {p.impactVitesse}</p>
+                <p class="text-neutral-600 mt-0.5">Confiance : {p.impactConfiance}</p>
+              </div>
+              <div class="flex gap-4">
+                <div class="flex-1">
+                  <p class="font-semibold text-green-700 mb-1">Points positifs</p>
+                  <ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.positifs.map((pt: string) => <li>{pt}</li>)}</ul>
+                </div>
+                <div class="flex-1">
+                  <p class="font-semibold text-red-700 mb-1">Ce qui a fait partir</p>
+                  <ul class="list-disc list-inside text-neutral-600 space-y-0.5">{p.frictions.map((f: string) => <li>{f}</li>)}</ul>
+                </div>
+              </div>
+              <div class="pt-2 border-t border-neutral-200">
+                <p class="font-semibold text-neutral-700 mb-1">Ce qui aurait pu retenir</p>
+                <p class="text-neutral-600">{p.ceQuiFeraitBasculer}</p>
+              </div>
+              <div class="flex gap-6 pt-2 border-t border-neutral-200">
+                <div class="text-center"><span class="block text-lg font-bold text-neutral-500">{p.exp}</span><span class="text-[10px] text-neutral-500">Experience</span></div>
+                <div class="text-center"><span class="block text-lg font-bold text-neutral-500">{p.conf}</span><span class="text-[10px] text-neutral-500">Confiance</span></div>
+                <div class="text-center"><span class="block text-lg font-bold text-neutral-500">{p.clarte}</span><span class="text-[10px] text-neutral-500">Clarte</span></div>
+              </div>
+            </div>
+          </div>
+        </details>
+      ))}
+    </div>
+  </section>
+
+  <!-- ═══ 5. CE QU'ON RECOMMANDE ═══ -->
+  <section class="bg-neutral-50 py-16 border-t border-neutral-200">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-2">Ce qu'on recommande</h2>
+      <p class="text-sm text-neutral-500 mb-8">Priorise par impact sur vos visiteurs.</p>
+
+      <!-- Haute priorite -->
+      <h3 class="text-sm font-bold uppercase tracking-widest text-red-600 mb-4">Priorite haute</h3>
+      <div class="space-y-4 mb-10">
+        {ameliorationsHautes.map(a => (
+          <div class="bg-white border-2 border-red-200 rounded-xl p-6 shadow-sm">
+            <h4 class="font-semibold text-neutral-900 text-lg mb-2">{a.titre}</h4>
+            <p class="text-sm text-neutral-600 mb-3">{a.pourquoi}</p>
+            <div class="bg-red-50 rounded-lg px-4 py-3 flex items-start gap-2">
+              <svg class="w-4 h-4 text-red-600 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+              <p class="text-xs text-red-800"><strong>Action :</strong> {a.action}</p>
+            </div>
+            <p class="text-xs text-neutral-500 mt-2">Impact : {a.impact}</p>
+          </div>
+        ))}
+      </div>
+
+      <!-- Utile aussi -->
+      <h3 class="text-sm font-bold uppercase tracking-widest text-amber-700 mb-4">Utile aussi</h3>
+      <div class="grid md:grid-cols-2 gap-4 mb-10">
+        {ameliorationsUtiles.map(a => (
+          <div class="bg-white border border-neutral-200 rounded-xl p-5">
+            <h4 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h4>
+            <p class="text-xs text-neutral-600">{a.detail}</p>
+          </div>
+        ))}
+      </div>
+
+      <!-- A discuter -->
+      <h3 class="text-sm font-bold uppercase tracking-widest text-neutral-500 mb-4">A discuter ensemble</h3>
+      <div class="space-y-3 mb-10">
+        {ameliorationsDiscuter.map(a => (
+          <div class="bg-white border border-neutral-200 rounded-xl p-4 flex gap-3">
+            <span class="text-lg shrink-0">{a.emoji}</span>
+            <div>
+              <h4 class="font-semibold text-neutral-900 text-sm mb-0.5">{a.titre}</h4>
+              <p class="text-xs text-neutral-600">{a.detail}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Upsell box -->
+      {showUpsell && (
+        <div class="rounded-xl p-6 border-2 border-dashed" style="border-color: #E86C47; background: rgba(232,108,71,0.03);">
+          <p class="text-sm font-semibold text-neutral-900 mb-2">Besoin d'un site qui convertit vraiment ?</p>
+          <p class="text-xs text-neutral-600 mb-3">Un site rapide, avec vos certifications, des tarifs indicatifs, des pages dediees par service, et des donnees structurees pour Google. A partir de 490 euros, livre en 7 jours.</p>
+          <a href="tel:+33695961220" class="inline-flex items-center gap-2 text-sm font-semibold transition-colors" style="color: #E86C47;">
+            En parler avec Marc
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+          </a>
+        </div>
+      )}
+    </div>
+  </section>
+
+  <!-- ═══ 6. SOUS LE CAPOT ═══ -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <h2 class="text-2xl font-bold text-neutral-900 mb-6">Sous le capot</h2>
+
+    <!-- Verdict badges -->
+    <div class="flex flex-wrap gap-2 mb-8">
+      {techVerdicts.map(v => (
+        <span class={`text-xs font-medium px-3 py-1.5 rounded-full border ${v.ok ? 'bg-green-50 text-green-700 border-green-200' : 'bg-red-50 text-red-700 border-red-200'}`}>
+          {v.label} : {v.verdict}
+        </span>
+      ))}
+    </div>
+
+    <!-- PageSpeed Mobile -->
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden bg-white">
+        <h3 class="font-semibold text-neutral-900 text-sm">PageSpeed — Mobile</h3>
+        <svg class="w-5 h-5 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 bg-white border-t border-neutral-100">
+        <div class="grid grid-cols-4 gap-3 mt-3">
+          {[
+            { label: 'Performance', score: tech.pagespdMobile.performance },
+            { label: 'Accessibilite', score: tech.pagespdMobile.accessibility },
+            { label: 'Bonnes pratiques', score: tech.pagespdMobile.bestPractices },
+            { label: 'SEO', score: tech.pagespdMobile.seo },
+          ].map(m => (
+            <div class="text-center">
+              <div class={`text-2xl font-bold mb-1 ${m.score >= 90 ? 'text-green-600' : m.score >= 50 ? 'text-amber-600' : 'text-red-600'}`}>{m.score}</div>
+              <div class="text-[10px] text-neutral-500">{m.label}</div>
+            </div>
+          ))}
+        </div>
+        <div class="mt-3 pt-3 border-t border-neutral-100">
+          <p class="text-xs text-neutral-500">Core Web Vitals : LCP {tech.cwv.lcp} · INP {tech.cwv.inp} · CLS {tech.cwv.cls}</p>
+        </div>
+      </div>
+    </details>
+
+    <!-- PageSpeed Desktop -->
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden bg-white">
+        <h3 class="font-semibold text-neutral-900 text-sm">PageSpeed — Desktop</h3>
+        <svg class="w-5 h-5 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 bg-white border-t border-neutral-100">
+        <div class="grid grid-cols-4 gap-3 mt-3">
+          {[
+            { label: 'Performance', score: tech.pagespdDesktop.performance },
+            { label: 'Accessibilite', score: tech.pagespdDesktop.accessibility },
+            { label: 'Bonnes pratiques', score: tech.pagespdDesktop.bestPractices },
+            { label: 'SEO', score: tech.pagespdDesktop.seo },
+          ].map(m => (
+            <div class="text-center">
+              <div class={`text-2xl font-bold mb-1 ${m.score >= 90 ? 'text-green-600' : m.score >= 50 ? 'text-amber-600' : 'text-red-600'}`}>{m.score}</div>
+              <div class="text-[10px] text-neutral-500">{m.label}</div>
+            </div>
+          ))}
+        </div>
+      </div>
+    </details>
+
+    <!-- Securite -->
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden bg-white">
+        <h3 class="font-semibold text-neutral-900 text-sm">Securite HTTP — Mozilla Observatory <span class="text-xs font-normal text-neutral-500 ml-2">Note {tech.observatory.grade} ({tech.observatory.score}/100)</span></h3>
+        <svg class="w-5 h-5 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 bg-white border-t border-neutral-100">
+        <div class="mt-3 space-y-1">
+          {tech.headers.map(h => (
+            <div class="flex items-center gap-2 py-1">
+              {h.ok
+                ? <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                : <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+              }
+              <span class={`text-xs ${h.ok ? 'text-neutral-700' : 'text-red-500'}`}>{h.h}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </details>
+
+    <!-- Schema.org -->
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden bg-white">
+        <h3 class="font-semibold text-neutral-900 text-sm">Schema.org <span class="text-xs font-normal text-red-500 ml-2">{tech.schema.filter(s => s.ok).length}/{tech.schema.length} elements</span></h3>
+        <svg class="w-5 h-5 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 bg-white border-t border-neutral-100">
+        <div class="mt-3 space-y-1">
+          {tech.schema.map(s => (
+            <div class="flex items-center gap-2 py-1">
+              {s.ok
+                ? <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                : <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+              }
+              <span class={`text-xs ${s.ok ? 'text-neutral-700' : 'text-red-500'}`}>{s.item}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </details>
+
+    <!-- OG + SEO -->
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden bg-white">
+        <h3 class="font-semibold text-neutral-900 text-sm">Open Graph + SEO technique</h3>
+        <svg class="w-5 h-5 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 bg-white border-t border-neutral-100">
+        <p class="text-xs font-semibold text-neutral-700 mt-3 mb-2">Open Graph</p>
+        <div class="space-y-1 mb-4">
+          {tech.og.map(o => (
+            <div class="flex items-start gap-2 py-0.5">
+              {o.ok
+                ? <svg class="w-4 h-4 text-green-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                : <svg class="w-4 h-4 text-red-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+              }
+              <span class="text-xs text-neutral-700">{o.item} <span class="text-neutral-400">— {o.val}</span></span>
+            </div>
+          ))}
+        </div>
+        <p class="text-xs font-semibold text-neutral-700 mb-2">SEO technique</p>
+        <div class="space-y-1">
+          {tech.seo.map(s => (
+            <div class="flex items-center gap-2 py-0.5">
+              {s.ok
+                ? <svg class="w-4 h-4 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                : <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+              }
+              <span class={`text-xs ${s.ok ? 'text-neutral-700' : 'text-red-500'}`}>{s.item}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ═══ 7. METHODOLOGIE ═══ -->
+  <section class="bg-neutral-50 py-16 border-t border-neutral-200">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-6">Methodologie</h2>
+      <div class="grid gap-4 md:grid-cols-5">
+        {[
+          { step: '1', title: 'Scraping', desc: 'Extraction du contenu, navigation, meta tags, Schema.org' },
+          { step: '2', title: 'Audit technique', desc: 'PageSpeed, Observatory, headers, donnees structurees' },
+          { step: '3', title: 'Personas', desc: `Creation de ${kpis.nbPersonas} profils visiteurs realistes et diversifies` },
+          { step: '4', title: 'Simulation', desc: `${kpis.nbPersonas} visites simulees par agents IA independants` },
+          { step: '5', title: 'Synthese', desc: 'Agregation des frictions, recommandations priorisees' },
+        ].map(s => (
+          <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
+            <div class="text-lg font-black mb-1" style="color: #E86C47;">{s.step}</div>
+            <div class="text-sm font-semibold text-neutral-900 mb-1">{s.title}</div>
+            <p class="text-[11px] text-neutral-500">{s.desc}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ 8. CTA FINAL ═══ -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
+    <h2 class="font-heading text-2xl md:text-3xl font-bold text-neutral-900 mb-4">
+      Votre site peut faire beaucoup mieux.
+    </h2>
+    <p class="text-neutral-600 mb-8 max-w-xl mx-auto">
+      Avec un service urgences 24/7 qui convertit et des avis 5.0, vous avez les fondations. Il manque vos certifications, des tarifs, et des pages dediees pour que chaque visiteur trouve ce qu'il cherche.
+    </p>
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+      <a href="tel:+33695961220" class="inline-flex items-center gap-2 px-8 py-3.5 text-white font-semibold rounded-xl transition-all shadow-md hover:-translate-y-0.5" style="background: linear-gradient(135deg, #22c55e, #16a34a); box-shadow: 0 4px 20px rgba(34, 197, 94, 0.3);">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+        Appeler Marc
+      </a>
+      <a href="mailto:marc@muller.im" class="inline-flex items-center gap-2 px-8 py-3.5 border border-neutral-300 text-neutral-700 font-semibold rounded-xl transition-all hover:border-neutral-400 hover:text-neutral-900">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"/></svg>
+        Envoyer un email
+      </a>
+    </div>
+  </section>
+
+</BaseLayout>
