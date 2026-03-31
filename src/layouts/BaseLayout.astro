@@ -59,6 +59,8 @@ const enURL = enPath ? new URL(enPath, Astro.site).href : null;
     <meta property="og:title" content={title} />
     <meta property="og:description" content={description} />
     <meta property="og:image" content={ogImageURL} />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
     <meta property="og:url" content={canonicalURL} />
     <meta property="og:type" content={ogType} />
     <meta property="og:locale" content={ogLocale} />
@@ -104,9 +106,14 @@ const enURL = enPath ? new URL(enPath, Astro.site).href : null;
     </a>
     {lang === 'en' && frPath && (
       <div style="background:#1a1a1a; border-bottom:1px solid rgba(255,255,255,0.08); padding:10px 16px; text-align:center; font-size:13px; color:rgba(255,255,255,0.6);">
-        🇫🇷 Ce site est aussi disponible en français.
-        <a href={frPath} style="color:#E86C47; font-weight:600; margin-left:6px; text-decoration:none;">Version française →</a>
+        You were redirected to English.
+        <a id="lang-switch-fr" href={frPath} style="color:#E86C47; font-weight:600; margin-left:6px; text-decoration:none;">Revenir en français →</a>
       </div>
+      <script is:inline>
+        document.getElementById('lang-switch-fr')?.addEventListener('click', function() {
+          document.cookie = 'lang=fr;path=/;max-age=31536000;SameSite=Lax';
+        });
+      </script>
     )}
     {!noHeader && <Header lang={lang} frPath={frPath} enPath={enPath} ctaOverrideLabel={ctaOverrideLabel} ctaOverrideHref={ctaOverrideHref} />}
     <main id="main">

@@ -63,6 +63,7 @@ export const business = {
     { name: 'Paiement en ligne', price: 250 },
     { name: 'Galerie photos avancée', price: 90 },
     { name: 'Animations au scroll', price: 90 },
+    { name: 'Site bilingue FR/DE ou FR/EN', price: 390 },
   ],
 
   // Accompagnement post-livraison

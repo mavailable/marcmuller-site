@@ -42,8 +42,12 @@ export async function onRequest({ request, next }) {
   const pathname = url.pathname.replace(/\/$/, '') || '/';
 
   // Redirection langue : visiteurs non-francophones → /en/
+  // Skip si le visiteur a explicitement choisi le français (cookie)
+  const cookies = request.headers.get('Cookie') || '';
+  const prefersLangFR = cookies.includes('lang=fr');
+
   const enTarget = FR_TO_EN[pathname];
-  if (enTarget && !pathname.startsWith('/en/')) {
+  if (enTarget && !pathname.startsWith('/en/') && !prefersLangFR) {
     const acceptLanguage = request.headers.get('Accept-Language') || '';
     const prefersFrench = acceptLanguage
       .split(',')
@@ -54,9 +58,13 @@ export async function onRequest({ request, next }) {
     }
   }
 
-  // Servir la page avec le header CSP injecté
+  // Servir la page avec les headers de sécurité
   const response = await next();
   const newResponse = new Response(response.body, response);
   newResponse.headers.set('Content-Security-Policy', CSP_VALUE);
+  newResponse.headers.set('X-Content-Type-Options', 'nosniff');
+  newResponse.headers.set('X-Frame-Options', 'DENY');
+  newResponse.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
+  newResponse.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
   return newResponse;
 }
