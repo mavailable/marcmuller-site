@@ -1,0 +1,581 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const slug = 'my-spa-nancy';
+const formule: 'decouverte' | 'complet' | 'pro' = 'decouverte';
+const formuleLabel = 'Echo Decouverte';
+const isProspection = true;
+const nomProspect = 'My Spa Nancy';
+const urlSite = 'https://myspa-nancy.fr';
+const dateAudit = '31 mars 2026';
+const showUpsell = true;
+
+const kpis = {
+  nbPersonas: 5,
+  nbConvertissent: 3,
+  nbHesitent: 1,
+  nbRepartent: 1,
+  conversion: 60,
+  experience: 6.0,
+  confiance: 8.8,
+  clarte: 4.2,
+};
+
+const verdictHero = 'Sur 5 visiteurs, 3 reservent — l\'offre complete (hammam + sauna + massages + esthetique) est unique a Nancy et convertit les decideurs malgre un site lent sur un WordPress de 2017. Manon cherchait sauna + hammam sur mobile : le site trop dense et trop lent l\'a perdue dans la navigation. Fatima cherchait les tarifs epilation pour comparer : introuvables dans la navigation complexe.';
+
+const constat = 'My Spa Nancy est probablement le spa le plus complet de Nancy (hammam + sauna + massages + soins visage + esthetique + famille) avec 347 avis a 4.6 etoiles. C\'est un atout rare. Mais le site WordPress 4.9.8 de 2017 est un boulet : lent, dense, navigation confuse sur mobile, potentiellement vulnerable. Le site fait fuir les visiteurs mobiles et ne permet pas de trouver les tarifs facilement. Le segment entreprise (CE) est une opportunite non exploitee.';
+
+const canalData = [
+  { canal: 'Google Search (spa couple hammam)', nb: 1, convert: 1, rate: 100 },
+  { canal: 'Bouche-a-oreille (carte cadeau)', nb: 1, convert: 1, rate: 100 },
+  { canal: 'IA (sauna nancy)', nb: 1, convert: 0, rate: 0 },
+  { canal: 'Google Search (spa CE)', nb: 1, convert: 1, rate: 100 },
+  { canal: 'Google Maps (tarifs epilation)', nb: 1, convert: 0, rate: 0 },
+];
+
+const personas = [
+  {
+    id: 1,
+    name: 'Celine',
+    age: 33,
+    emoji: '💑',
+    situation: 'Cherche un spa avec hammam pour une sortie en couple a Nancy',
+    canal: 'Google Search',
+    device: 'Mobile',
+    decision: 'Convertit' as const,
+    decisionLabel: 'Reserve',
+    histoire: '"spa couple nancy hammam" → Maps → My Spa 4.6★ 347 avis + hammam → site → navigation dense mais trouve les soins couple → reserve via Planity.',
+    localisation: 'Nancy (54)',
+    maturite: 'Decision',
+    contexte: 'Anniversaire de rencontre. Cherche une experience unique a deux. Hammam = critere indispensable. Budget jusqu\'a 150€ pour deux.',
+    impression: 'L\'offre hammam + massages couple est la — malgre une navigation dense sur mobile, elle trouve et reserve. La note 4.6 sur 347 avis rassure.',
+    parcours: [
+      ['Google Search', '"spa couple nancy hammam" — My Spa bien place'],
+      ['Fiche Maps', '4.6★ sur 347 avis + hammam confirme'],
+      ['Site', 'Navigation complexe — cherche soins couple → Planity'],
+      ['Reservation', 'Reserve via Planity malgre la friction de navigation'],
+    ] as [string, string][],
+    questionCle: 'Y a-t-il un hammam disponible et un soin couple avec ?',
+    reponse: 'Oui' as const,
+    commentReponse: 'Information trouvee mais avec friction — la navigation dense ralentit la decouverte.',
+    impactVitesse: 'WordPress 4.9.8 mobile ~38 — lent mais decidee motivee persevere',
+    impactConfiance: '4.6★ sur 347 avis + offre hammam unique = double atout',
+    positifs: ['Hammam disponible — critere unique a Nancy', '4.6★ 347 avis = confiance forte', 'Planity pour la reservation'],
+    frictions: ['Navigation mobile confuse pour trouver les soins couple', 'Site lent WordPress 4.9.8'],
+    ceQuiFeraitBasculer: '',
+    exp: 6, conf: 9, clarte: 4,
+  },
+  {
+    id: 2,
+    name: 'Isabelle',
+    age: 48,
+    emoji: '🎁',
+    situation: 'Amie recommande My Spa — cherche a acheter une carte cadeau',
+    canal: 'Bouche-a-oreille',
+    device: 'Desktop',
+    decision: 'Convertit' as const,
+    decisionLabel: 'Appelle',
+    histoire: '"My Spa Nancy" → site → cherche "cartes cadeaux" → trouve la section → pas d\'achat en ligne → appelle pour commander.',
+    localisation: 'Nancy (54)',
+    maturite: 'Decision',
+    contexte: 'Anniversaire d\'une amie dans 3 jours. Achat impulsif. Veut commander maintenant, pas demain.',
+    impression: 'La recommandation + la note confirment. Mais l\'achat de carte cadeau en ligne n\'est pas disponible — obligation d\'appeler. Friction inutile pour un achat impulsif.',
+    parcours: [
+      ['Recherche directe', '"My Spa Nancy carte cadeau"'],
+      ['Site', 'Section carte cadeau presente — pas d\'achat en ligne'],
+      ['Contact', 'Appelle et commande — recommandation forte surmonte la friction'],
+    ] as [string, string][],
+    questionCle: 'Je peux acheter une carte cadeau maintenant, en ligne ?',
+    reponse: 'Non' as const,
+    commentReponse: 'Pas d\'achat en ligne — obligation d\'appeler pour un achat qui devrait etre instantane.',
+    impactVitesse: 'Desktop — non bloquant',
+    impactConfiance: 'Recommandation directe + note = convertit malgre la friction',
+    positifs: ['Section carte cadeau presente', 'Recommandation directe forte'],
+    frictions: ['Pas d\'achat de carte cadeau en ligne — achats impulsifs potentiellement perdus le soir ou le week-end'],
+    ceQuiFeraitBasculer: '',
+    exp: 6, conf: 9, clarte: 5,
+  },
+  {
+    id: 3,
+    name: 'Manon',
+    age: 26,
+    emoji: '🛁',
+    situation: 'Cherche "spa detente avec sauna nancy" — ne connait pas My Spa',
+    canal: 'IA (ChatGPT)',
+    device: 'Mobile',
+    decision: 'Hesite' as const,
+    decisionLabel: 'Hesite',
+    histoire: 'My Spa cite → site → navigation mobile confuse → cherche sauna → perdue dans les sous-menus → site lent → concurrent avec page "Sauna + Hammam Nancy, reservation en ligne" claire → hesite.',
+    localisation: 'Nancy (54)',
+    maturite: 'Decouverte',
+    contexte: 'Stress au travail. Cherche une heure de decompression. Sauna = critere principal. Veut reserver depuis son telephone en 2 minutes.',
+    impression: 'My Spa a tout ce qu\'elle cherche — mais sur mobile avec un site lent et une navigation confuse, elle n\'arrive pas a trouver le sauna directement. Un concurrent clair sur ce point gagne.',
+    parcours: [
+      ['ChatGPT', '"spa sauna nancy" — My Spa cite'],
+      ['Site', 'Page d\'accueil dense — cherche "sauna" dans le menu'],
+      ['Navigation', 'Sous-menus complexes sur mobile — sauna trouve mais lentement'],
+      ['Concurrent', 'Page "Sauna + Hammam Nancy" avec photos, tarifs et Planity integre'],
+      ['Decision', 'Hesite — le concurrent repond en 2 clics sur mobile'],
+    ] as [string, string][],
+    questionCle: 'Y a-t-il un sauna et comment je reserve rapidement sur mobile ?',
+    reponse: 'Partiellement' as const,
+    commentReponse: 'Le sauna existe mais difficile a trouver rapidement sur mobile — friction qui coute des reservations spontanees.',
+    impactVitesse: 'WordPress 4.9.8 mobile ~38 — lenteur critique pour une decouverte mobile',
+    impactConfiance: '4.6★ rassure mais pas suffisant pour compenser la friction mobile',
+    positifs: ['Sauna disponible', '4.6★ visible sur Maps'],
+    frictions: ['Navigation mobile confuse — sauna difficile a trouver', 'Site tres lent sur mobile', 'Pas de page "Sauna Nancy" dediee'],
+    ceQuiFeraitBasculer: 'Une page "Sauna Nancy" directement accessible avec photos, tarif et bouton Planity. Manon voulait reserver — elle avait juste besoin de trouver l\'information en 2 clics.',
+    exp: 3, conf: 7, clarte: 3,
+  },
+  {
+    id: 4,
+    name: 'Laurent',
+    age: 45,
+    emoji: '💼',
+    situation: 'Cherche le meilleur spa de Nancy pour un cadeau CE (50 cheques cadeaux)',
+    canal: 'Google Search',
+    device: 'Desktop',
+    decision: 'Convertit' as const,
+    decisionLabel: 'Appelle',
+    histoire: '"spa nancy entreprise CE" → Maps → My Spa 347 avis 4.6★ → site → cherche page B2B/CE → pas de page dediee → appelle → confirme la possibilite → passe commande.',
+    localisation: 'Nancy (54)',
+    maturite: 'Comparaison',
+    contexte: 'Budget CE de 3500€ pour les cheques cadeaux de fin d\'annee. Cherche un partenaire local de qualite pour les collaborateurs. 347 avis = spa etabli et fiable.',
+    impression: 'Le volume d\'avis et la note confirmaient que My Spa est la reference. Appelle pour confirmer la possibilite B2B — la reponse positive finit de le convaincre.',
+    parcours: [
+      ['Google Search', '"spa nancy CE entreprise"'],
+      ['Maps', '347 avis 4.6★ — reference locale evidente'],
+      ['Site', 'Cherche page entreprise/CE — pas de page dediee'],
+      ['Contact', 'Appelle — reference + offre complete = commande pour 50 cheques'],
+    ] as [string, string][],
+    questionCle: 'Puis-je commander des cheques cadeaux en volume pour un CE ?',
+    reponse: 'Partiellement' as const,
+    commentReponse: 'La reponse est oui mais doit appeler — une page CE eviterait cette etape.',
+    impactVitesse: 'Desktop — non bloquant',
+    impactConfiance: '347 avis + offre complete = reference incontestable pour un CE',
+    positifs: ['Volume d\'avis rassure pour un partenariat B2B', 'Offre complete = cadeau premium CE'],
+    frictions: ['Pas de page CE/entreprise — commande en volume necessite appel'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 9, clarte: 4,
+  },
+  {
+    id: 5,
+    name: 'Fatima',
+    age: 39,
+    emoji: '💅',
+    situation: 'Compare 3 instituts pour une epilation complete mensuelle',
+    canal: 'Google Maps',
+    device: 'Mobile',
+    decision: 'Quitte' as const,
+    decisionLabel: 'Repart',
+    histoire: 'My Spa 347 avis → site → cherche tarifs epilation → navigation trop complexe → tarifs disperses ou non trouvables → concurrent avec "Epilation complète corps 65€, tarif fidelite -15%" visible → choisit le concurrent.',
+    localisation: 'Nancy (54)',
+    maturite: 'Comparaison',
+    contexte: 'Cliente reguliere en epilation. Compare sur le tarif et la facilite de prise de rendez-vous. Veut les prix en 20 secondes sur mobile.',
+    impression: 'La note attire — mais sans tarif epilation visible rapidement sur mobile, elle passe au concurrent suivant qui affiche immediatement ses prix.',
+    parcours: [
+      ['Google Maps', '"epilation complète nancy" — My Spa dans les resultats'],
+      ['Site', 'Cherche "tarifs epilation" ou "prix" — navigation dense'],
+      ['Tarifs', 'Tarifs existent mais disperses dans la navigation — pas trouves en 20s'],
+      ['Concurrent', '"Epilation jambes completes 45€, corps entier 65€, forfait mensuel -15%"'],
+      ['Decision', 'Choisit le concurrent — tarifs immediatement accessibles'],
+    ] as [string, string][],
+    questionCle: 'Combien coute une epilation mensuelle et est-ce pratique a reserver ?',
+    reponse: 'Non' as const,
+    commentReponse: 'Tarifs non trouves en 20 secondes sur mobile — exclu de la comparaison sans les avoir vus.',
+    impactVitesse: 'Site lent + navigation confuse = double handicap mobile',
+    impactConfiance: '4.6★ attirante mais insuffisant sans le tarif de reference',
+    positifs: ['4.6★ + volume rassure sur la qualite'],
+    frictions: ['Tarifs esthetique/epilation non accessibles rapidement sur mobile', 'Navigation complexe = friction fatale pour un comparateur de tarifs'],
+    ceQuiFeraitBasculer: 'Un tableau de tarifs esthetique/epilation visible sans menu complexe. Fatima aurait choisi My Spa si le tarif avait ete la en 15 secondes.',
+    exp: 2, conf: 7, clarte: 2,
+  },
+];
+
+const ameliorationsHautes = [
+  {
+    titre: 'Mise a jour WordPress 4.9.8 — urgence securite + performance',
+    pourquoi: 'WordPress 4.9.8 = version 2017, fin de support, vulnerabilites connues exploitees activement. Score mobile ~38 = 60%+ du trafic part a cause de la lenteur. Manon a ete perdue par la navigation lente sur mobile. La vulnerabilite n\'est pas hypothetique — les sites WordPress anciens non mis a jour sont cibles par des bots de maniere systematique.',
+    action: 'Mise a jour WordPress vers la derniere version + mise a jour de tous les plugins + theme. Alternative et meilleure solution : refonte sur Astro = score mobile 90+ garanti + securite maximale + maintenance eliminee. Le ROI d\'une refonte se calcule en mois de fuite de trafic mobile stoppe.',
+    impact: 'Score mobile de ~38 a 85+ — les 60% de visiteurs mobiles retrouvent une experience acceptable',
+  },
+  {
+    titre: 'Pages dediees par service phare — une requete, une page',
+    pourquoi: 'Manon cherche "sauna nancy" → pas de page dediee → concurrent clair gagne. Fatima cherche "epilation nancy tarif" → tarifs disperses → concurrent avec page tarif gagne. Chaque service (hammam, sauna, massage couple, soins visage, epilation) est une requete locale separee — sans page dediee, My Spa est invisible sur chacune.',
+    action: 'Pages dediees : "Hammam Nancy", "Sauna Nancy", "Massage Couple Nancy", "Epilation Nancy Tarifs", "Soins Visage Nancy". Chaque page : titre H1 cible, description du service, tarifs visibles, photos, bouton Planity. Contenu minimal mais structure — 300 mots suffisent par page.',
+    impact: 'Capture de "hammam nancy", "sauna nancy", "massage couple nancy" — requetes aujourd\'hui non adressee',
+  },
+  {
+    titre: 'Page cartes cadeaux + achat en ligne',
+    pourquoi: 'Isabelle voulait acheter une carte cadeau maintenant — pas d\'achat en ligne = obligation d\'appeler. Les achats de cartes cadeaux sont souvent impulsifs (anniversaire demain, soiree ce soir). Chaque achat impulsif impossible = vente perdue. Schema.org DaySpa + AggregateRating (4.6★, 347 avis) = etoiles SERP.',
+    action: 'Landing page "Offrir une experience My Spa Nancy" : montants predefinies (50€, 80€, 100€, 150€), achat en ligne securise (Stripe ou Sumeria), livraison email immediate. Schema.org DaySpa + AggregateRating JSON-LD.',
+    impact: 'Ventes de cartes cadeaux 24/7 — y compris le soir et le week-end quand le spa est ferme',
+  },
+];
+
+const ameliorationsUtiles = [
+  {
+    titre: 'Tableau de tarifs visible sans navigation complexe',
+    detail: 'Fatima cherche "tarifs epilation" → navigation trop complexe → partie. Un tableau de tarifs par categorie (massages, soins visage, epilation, manucure/pedicure) en page d\'accueil ou accessible en 1 clic = conversion des comparateurs de tarifs.',
+  },
+  {
+    titre: 'Page offres entreprises / CE',
+    detail: 'Laurent represente un segment haute valeur : 50 cheques cadeaux CE = ~3500-5000€ en une commande. Une page "My Spa Nancy — Partenaire CE" avec tarifs volume, conditions et formulaire B2B = capture sans appel du segment entreprise.',
+  },
+];
+
+const ameliorationsDiscuter = [
+  {
+    emoji: '🧖',
+    titre: 'Page "Sauna + Hammam Nancy" couple / famille',
+    detail: 'Le hammam + sauna ensemble est l\'argument unique de My Spa a Nancy. Une page combinee "Sauna & Hammam Nancy" avec forfaits couple et famille = capture de la requete "spa hammam sauna nancy" + conversion du segment couple/anniversaire/CE.',
+  },
+  {
+    emoji: '📱',
+    titre: 'Application ou widget Planity visible en hero',
+    detail: 'Planity est deja integre mais difficile a trouver dans la navigation dense. Mettre le bouton "Reserver en ligne" en hero sur chaque page de service = conversion immediare sans navigation supplementaire.',
+  },
+];
+
+const techVerdicts = [
+  { label: 'Vitesse', verdict: 'Critique', ok: false, detail: 'WordPress 4.9.8 (2017) — ~38 mobile, LCP ~5.2s' },
+  { label: 'Securite', verdict: 'Risque', ok: false, detail: 'WordPress 4.9.8 non mis a jour — vulnerabilites connues exploitees activement' },
+  { label: 'SEO', verdict: 'Faible', ok: false, detail: 'Aucune page par service — hammam/sauna/epilation non indexes' },
+  { label: 'Donnees structurees', verdict: 'Absent', ok: false, detail: '347 avis 4.6★ non exploites en rich snippets' },
+  { label: 'Planity', verdict: 'Present', ok: true, detail: 'Reservation en ligne disponible via Planity' },
+];
+
+const tech = {
+  observatory: { grade: 'C', score: 40, testsOk: 3, testsTotal: 10 },
+  pagespdMobile: { performance: 38, accessibility: 70, bestPractices: 65, seo: 63 },
+  pagespdDesktop: { performance: 58, accessibility: 74, bestPractices: 70, seo: 68 },
+  cwv: { lcp: '~5.2s (WordPress 4.9.8 + plugins anciens)', inp: '~400ms', cls: '~0.15' },
+  headers: [
+    { ok: true, h: 'HTTPS' },
+    { ok: false, h: 'HSTS — non confirme' },
+    { ok: false, h: 'Content-Security-Policy (absent)' },
+    { ok: false, h: 'X-Frame-Options — non confirme' },
+    { ok: false, h: 'WordPress 4.9.8 — vulnerabilites connues' },
+  ],
+  schema: [
+    { item: 'Schema.org DaySpa / LocalBusiness', ok: false },
+    { item: 'Nom + Adresse + Telephone (NAP)', ok: false },
+    { item: 'Avis agreges (4.6★ / 347 avis)', ok: false },
+    { item: 'OpeningHours', ok: false },
+    { item: 'PriceRange', ok: false },
+    { item: 'HasMap / AreaServed (Nancy)', ok: false },
+    { item: 'Offer (carte cadeau)', ok: false },
+  ],
+  og: [
+    { item: 'og:title', ok: true, val: 'Present (WordPress)' },
+    { item: 'og:description', ok: true, val: 'Present (WordPress)' },
+    { item: 'og:image', ok: true, val: 'Present probable' },
+    { item: 'og:type', ok: true, val: 'website' },
+  ],
+  seo: [
+    { item: 'Title tag present', ok: true },
+    { item: 'Meta description', ok: true },
+    { item: 'HTTPS', ok: true },
+    { item: 'Responsive mobile', ok: true },
+    { item: 'WordPress a jour (version actuelle)', ok: false },
+    { item: 'Page "Hammam Nancy" dediee', ok: false },
+    { item: 'Page "Sauna Nancy" dediee', ok: false },
+    { item: 'Tarifs visibles sans navigation complexe', ok: false },
+    { item: 'Schema.org DaySpa + AggregateRating', ok: false },
+    { item: 'Achat carte cadeau en ligne', ok: false },
+  ],
+};
+---
+
+<BaseLayout
+  title={`${formuleLabel} — ${nomProspect}`}
+  description={`Rapport Echo Decouverte pour ${nomProspect}. ${kpis.nbPersonas} visiteurs simules, audit technique, recommandation prioritaire.`}
+  noindex={true}
+  frPath={`/echo/${slug}`}
+  ogImage="/og-echo.png"
+>
+
+<!-- 1. HERO -->
+<section class="relative w-full px-6 py-20 md:py-28 overflow-hidden" style="background: #0A0A0A;">
+  <div class="absolute inset-0 opacity-5" style="background-image: radial-gradient(circle at 25% 50%, #6366f1 0%, transparent 50%), radial-gradient(circle at 75% 50%, #8b5cf6 0%, transparent 50%);"></div>
+  <div class="relative max-w-4xl mx-auto">
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium mb-6" style="background: rgba(99,102,241,0.15); color: #818cf8; border: 1px solid rgba(99,102,241,0.3);">
+      Echo {formuleLabel}
+    </div>
+    <h1 class="text-3xl md:text-5xl font-bold text-white mb-4" style="line-height:1.15;">
+      {nomProspect}
+      <span class="block text-2xl md:text-3xl mt-2" style="color:#818cf8;">ce que vos visiteurs vivent vraiment</span>
+    </h1>
+    <p class="text-lg mb-8" style="color: rgba(255,255,255,0.6);">Audit du {dateAudit} · <a href={urlSite} target="_blank" rel="noopener noreferrer" style="color:#818cf8;">{urlSite}</a></p>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+      <div class="rounded-xl p-4 text-center" style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);">
+        <div class="text-3xl font-bold text-white">{kpis.conversion}%</div>
+        <div class="text-xs mt-1" style="color:rgba(255,255,255,0.5);">conversion simulée</div>
+      </div>
+      <div class="rounded-xl p-4 text-center" style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);">
+        <div class="text-3xl font-bold text-white">{kpis.experience}<span class="text-lg">/10</span></div>
+        <div class="text-xs mt-1" style="color:rgba(255,255,255,0.5);">expérience</div>
+      </div>
+      <div class="rounded-xl p-4 text-center" style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);">
+        <div class="text-3xl font-bold text-white">{kpis.confiance}<span class="text-lg">/10</span></div>
+        <div class="text-xs mt-1" style="color:rgba(255,255,255,0.5);">confiance</div>
+      </div>
+      <div class="rounded-xl p-4 text-center" style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);">
+        <div class="text-3xl font-bold text-white">{kpis.clarte}<span class="text-lg">/10</span></div>
+        <div class="text-xs mt-1" style="color:rgba(255,255,255,0.5);">clarté</div>
+      </div>
+    </div>
+    <div class="rounded-2xl p-6" style="background:rgba(99,102,241,0.1); border:1px solid rgba(99,102,241,0.25);">
+      <p class="text-base leading-relaxed" style="color:rgba(255,255,255,0.85);">"{verdictHero}"</p>
+    </div>
+  </div>
+</section>
+
+<!-- 2. CONSTAT -->
+<section class="w-full px-6 py-16" style="background:#111111;">
+  <div class="max-w-4xl mx-auto">
+    <h2 class="text-2xl md:text-3xl font-bold text-white mb-6">Ce que nous avons observé</h2>
+    <p class="text-base leading-relaxed mb-8" style="color:rgba(255,255,255,0.7);">{constat}</p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="rounded-xl p-5 flex flex-col gap-2" style="background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.2);">
+        <span class="text-2xl font-bold" style="color:#4ade80;">{kpis.nbConvertissent}</span>
+        <span class="text-sm font-medium text-white">réservent ou achètent</span>
+        <span class="text-xs" style="color:rgba(255,255,255,0.5);">offre unique hammam + spa convertit</span>
+      </div>
+      <div class="rounded-xl p-5 flex flex-col gap-2" style="background:rgba(234,179,8,0.08); border:1px solid rgba(234,179,8,0.2);">
+        <span class="text-2xl font-bold" style="color:#facc15;">{kpis.nbHesitent}</span>
+        <span class="text-sm font-medium text-white">hésite</span>
+        <span class="text-xs" style="color:rgba(255,255,255,0.5);">navigation mobile confuse + lenteur</span>
+      </div>
+      <div class="rounded-xl p-5 flex flex-col gap-2" style="background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.2);">
+        <span class="text-2xl font-bold" style="color:#f87171;">{kpis.nbRepartent}</span>
+        <span class="text-sm font-medium text-white">repart chez un concurrent</span>
+        <span class="text-xs" style="color:rgba(255,255,255,0.5);">tarifs introuvables sur mobile</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3. VISITEURS -->
+<section class="w-full px-6 py-16" style="background:#0A0A0A;">
+  <div class="max-w-4xl mx-auto">
+    <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">5 visiteurs, 5 histoires</h2>
+    <p class="text-sm mb-10" style="color:rgba(255,255,255,0.5);">Simulation comportementale — chaque profil représente un segment réel de votre audience.</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {personas.map((p) => (
+        <div class="rounded-2xl p-6" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+          <div class="flex items-start justify-between mb-4">
+            <div>
+              <span class="text-lg mr-2">{p.emoji}</span>
+              <span class="font-semibold text-white">{p.name}, {p.age} ans</span>
+              <div class="text-xs mt-1" style="color:rgba(255,255,255,0.4);">{p.canal} · {p.device} · {p.maturite}</div>
+            </div>
+            <span class={`text-xs px-2 py-1 rounded-full font-medium ${p.decision === 'Convertit' ? 'bg-green-900/40 text-green-400' : p.decision === 'Hesite' ? 'bg-yellow-900/40 text-yellow-400' : 'bg-red-900/40 text-red-400'}`}>
+              {p.decisionLabel}
+            </span>
+          </div>
+          <p class="text-sm mb-4" style="color:rgba(255,255,255,0.65);">{p.histoire}</p>
+          {p.ceQuiFeraitBasculer && (
+            <div class="rounded-lg p-3 text-xs" style="background:rgba(99,102,241,0.1); color:rgba(255,255,255,0.7); border-left:3px solid #6366f1;">
+              <strong style="color:#818cf8;">Ce qui aurait changé la donne :</strong> {p.ceQuiFeraitBasculer}
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+    <div class="mt-10">
+      <h3 class="text-lg font-semibold text-white mb-4">Résultats par canal</h3>
+      <div class="space-y-3">
+        {canalData.map((c) => (
+          <div class="flex items-center gap-4">
+            <span class="text-sm w-64 shrink-0" style="color:rgba(255,255,255,0.7);">{c.canal}</span>
+            <div class="flex-1 rounded-full h-2" style="background:rgba(255,255,255,0.08);">
+              <div class="h-2 rounded-full" style={`width:${c.rate}%; background:${c.rate >= 66 ? '#4ade80' : c.rate >= 33 ? '#facc15' : '#f87171'};`}></div>
+            </div>
+            <span class="text-sm shrink-0" style="color:rgba(255,255,255,0.5);">{c.convert}/{c.nb}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. RECOMMANDATIONS -->
+<section class="w-full px-6 py-16" style="background:#111111;">
+  <div class="max-w-4xl mx-auto">
+    <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">3 actions prioritaires</h2>
+    <p class="text-sm mb-10" style="color:rgba(255,255,255,0.5);">Classées par impact sur la conversion. La première est une urgence de sécurité.</p>
+    <div class="space-y-6 mb-12">
+      {ameliorationsHautes.map((a, i) => (
+        <div class="rounded-2xl p-6" style="background:rgba(99,102,241,0.06); border:1px solid rgba(99,102,241,0.2);">
+          <div class="flex items-start gap-4">
+            <div class="rounded-full w-8 h-8 flex items-center justify-center shrink-0 text-sm font-bold" style="background:#6366f1; color:white;">{i+1}</div>
+            <div>
+              <h3 class="font-semibold text-white mb-2">{a.titre}</h3>
+              <p class="text-sm mb-3" style="color:rgba(255,255,255,0.65);">{a.pourquoi}</p>
+              <div class="rounded-lg p-3 text-sm mb-3" style="background:rgba(0,0,0,0.3); color:rgba(255,255,255,0.8);">{a.action}</div>
+              <span class="text-xs px-2 py-1 rounded-full" style="background:rgba(34,197,94,0.1); color:#4ade80;">↑ {a.impact}</span>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+    {ameliorationsUtiles.length > 0 && (
+      <div>
+        <h3 class="text-lg font-semibold text-white mb-4">Améliorations utiles</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          {ameliorationsUtiles.map((a) => (
+            <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+              <h4 class="font-medium text-white mb-2 text-sm">{a.titre}</h4>
+              <p class="text-xs" style="color:rgba(255,255,255,0.6);">{a.detail}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+    {ameliorationsDiscuter.length > 0 && (
+      <div>
+        <h3 class="text-lg font-semibold text-white mb-4">À discuter selon vos priorités</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {ameliorationsDiscuter.map((a) => (
+            <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);">
+              <div class="text-xl mb-2">{a.emoji}</div>
+              <h4 class="font-medium text-white mb-2 text-sm">{a.titre}</h4>
+              <p class="text-xs" style="color:rgba(255,255,255,0.5);">{a.detail}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
+</section>
+
+<!-- 5. SOUS LE CAPOT -->
+<section class="w-full px-6 py-16" style="background:#0A0A0A;">
+  <div class="max-w-4xl mx-auto">
+    <h2 class="text-2xl md:text-3xl font-bold text-white mb-10">Sous le capot</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+      <div class="rounded-2xl p-6" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+        <h3 class="font-semibold text-white mb-4">PageSpeed Insights</h3>
+        <div class="space-y-3">
+          <div>
+            <div class="flex justify-between text-xs mb-1" style="color:rgba(255,255,255,0.6);"><span>Mobile</span><span>{tech.pagespdMobile.performance}/100</span></div>
+            <div class="rounded-full h-2" style="background:rgba(255,255,255,0.08);"><div class="h-2 rounded-full" style={`width:${tech.pagespdMobile.performance}%; background:${tech.pagespdMobile.performance >= 70 ? '#4ade80' : tech.pagespdMobile.performance >= 50 ? '#facc15' : '#f87171'};`}></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between text-xs mb-1" style="color:rgba(255,255,255,0.6);"><span>Desktop</span><span>{tech.pagespdDesktop.performance}/100</span></div>
+            <div class="rounded-full h-2" style="background:rgba(255,255,255,0.08);"><div class="h-2 rounded-full" style={`width:${tech.pagespdDesktop.performance}%; background:${tech.pagespdDesktop.performance >= 70 ? '#4ade80' : tech.pagespdDesktop.performance >= 50 ? '#facc15' : '#f87171'};`}></div></div>
+          </div>
+        </div>
+        <div class="mt-4 text-xs space-y-1" style="color:rgba(255,255,255,0.45);">
+          <div>LCP : {tech.cwv.lcp}</div>
+          <div>INP : {tech.cwv.inp}</div>
+          <div>CLS : {tech.cwv.cls}</div>
+        </div>
+      </div>
+      <div class="rounded-2xl p-6" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+        <h3 class="font-semibold text-white mb-4">Mozilla Observatory</h3>
+        <div class="text-4xl font-bold text-white mb-2">{tech.observatory.grade}</div>
+        <div class="text-sm mb-4" style="color:rgba(255,255,255,0.5);">{tech.observatory.testsOk}/{tech.observatory.testsTotal} tests passés</div>
+        <div class="space-y-2">
+          {tech.headers.map((h) => (
+            <div class="flex items-center gap-2 text-xs">
+              <span style={h.ok ? 'color:#4ade80;' : 'color:#f87171;'}>{h.ok ? '✓' : '✗'}</span>
+              <span style="color:rgba(255,255,255,0.6);">{h.h}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-10">
+      {techVerdicts.map((v) => (
+        <div class="rounded-xl p-4" style={`background:${v.ok ? 'rgba(34,197,94,0.06)' : 'rgba(239,68,68,0.06)'}; border:1px solid ${v.ok ? 'rgba(34,197,94,0.2)' : 'rgba(239,68,68,0.2)'};`}>
+          <div class="text-xs mb-1" style="color:rgba(255,255,255,0.5);">{v.label}</div>
+          <div class="font-semibold text-sm" style={v.ok ? 'color:#4ade80;' : 'color:#f87171;'}>{v.verdict}</div>
+          <div class="text-xs mt-1" style="color:rgba(255,255,255,0.4);">{v.detail}</div>
+        </div>
+      ))}
+    </div>
+    <div class="rounded-2xl p-6 mb-6" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+      <h3 class="font-semibold text-white mb-4">Données structurées (Schema.org)</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+        {tech.schema.map((s) => (
+          <div class="flex items-center gap-2 text-sm">
+            <span style={s.ok ? 'color:#4ade80;' : 'color:#f87171;'}>{s.ok ? '✓' : '✗'}</span>
+            <span style="color:rgba(255,255,255,0.65);">{s.item}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+    <div class="rounded-2xl p-6" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+      <h3 class="font-semibold text-white mb-4">Signaux SEO</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+        {tech.seo.map((s) => (
+          <div class="flex items-center gap-2 text-sm">
+            <span style={s.ok ? 'color:#4ade80;' : 'color:#f87171;'}>{s.ok ? '✓' : '✗'}</span>
+            <span style="color:rgba(255,255,255,0.65);">{s.item}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. METHODOLOGIE -->
+<section class="w-full px-6 py-16" style="background:#111111;">
+  <div class="max-w-4xl mx-auto">
+    <h2 class="text-2xl md:text-3xl font-bold text-white mb-6">Comment fonctionne Echo</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+        <div class="text-2xl mb-3">🔍</div>
+        <h3 class="font-semibold text-white mb-2 text-sm">Audit du site</h3>
+        <p class="text-xs" style="color:rgba(255,255,255,0.55);">Scraping complet, PageSpeed, Mozilla Observatory, Schema.org, signaux SEO — tout ce que Google et vos visiteurs voient.</p>
+      </div>
+      <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+        <div class="text-2xl mb-3">👥</div>
+        <h3 class="font-semibold text-white mb-2 text-sm">5 visiteurs simulés</h3>
+        <p class="text-xs" style="color:rgba(255,255,255,0.55);">5 profils réels visitent votre site et racontent leur parcours et leur décision.</p>
+      </div>
+      <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+        <div class="text-2xl mb-3">🎯</div>
+        <h3 class="font-semibold text-white mb-2 text-sm">3 actions concrètes</h3>
+        <p class="text-xs" style="color:rgba(255,255,255,0.55);">Les 3 actions qui changeront le résultat le mois prochain — classées par impact réel.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. CTA FINAL -->
+<section class="w-full px-6 py-20" style="background:#0A0A0A;">
+  <div class="max-w-2xl mx-auto text-center">
+    <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">Vous voulez aller plus loin ?</h2>
+    <p class="text-base mb-8" style="color:rgba(255,255,255,0.6);">Ce rapport vous a été préparé par Marc Muller — développeur web indépendant basé en Grand Est. Si vous voulez qu'on en parle, c'est sans engagement.</p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="tel:+33695961220" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold text-white transition-opacity hover:opacity-90" style="background:#6366f1;">
+        📞 Appeler Marc
+      </a>
+      <a href="mailto:marc@muller.im" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold transition-opacity hover:opacity-90" style="background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.9); border:1px solid rgba(255,255,255,0.15);">
+        ✉️ Envoyer un email
+      </a>
+    </div>
+    {showUpsell && (
+      <div class="mt-16 pt-10" style="border-top:1px solid rgba(255,255,255,0.06);">
+        <p class="text-xs mb-6" style="color:rgba(255,255,255,0.3);">Ce rapport est la version Découverte — 5 personas, audit essentiel.</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+          <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+            <div class="font-semibold text-white mb-1 text-sm">Echo Complet</div>
+            <div class="text-xs mb-3" style="color:rgba(255,255,255,0.5);">10 personas · audit technique approfondi · roadmap priorisée · 3 mois de suivi</div>
+            <span class="text-xs px-2 py-1 rounded-full" style="background:rgba(99,102,241,0.15); color:#818cf8;">Sur devis</span>
+          </div>
+          <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+            <div class="font-semibold text-white mb-1 text-sm">Echo Pro</div>
+            <div class="text-xs mb-3" style="color:rgba(255,255,255,0.5);">Complet + implémentation des corrections · nouveau site si nécessaire · suivi 6 mois</div>
+            <span class="text-xs px-2 py-1 rounded-full" style="background:rgba(99,102,241,0.15); color:#818cf8;">Sur devis</span>
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
+</section>
+
+</BaseLayout>

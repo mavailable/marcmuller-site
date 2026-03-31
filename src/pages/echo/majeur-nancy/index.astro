@@ -1,0 +1,583 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const slug = 'majeur-nancy';
+const formule: 'decouverte' | 'complet' | 'pro' = 'decouverte';
+const formuleLabel = 'Echo Decouverte';
+const isProspection = true;
+const nomProspect = 'Le Majeur Nancy';
+const urlSite = 'https://www.lemajeur-nancy.fr';
+const dateAudit = '31 mars 2026';
+const showUpsell = true;
+
+const kpis = {
+  nbPersonas: 5,
+  nbConvertissent: 3,
+  nbHesitent: 1,
+  nbRepartent: 1,
+  conversion: 60,
+  experience: 6.8,
+  confiance: 9.2,
+  clarte: 3.8,
+};
+
+const verdictHero = 'Sur 5 visiteurs, 3 reservent — portes par une note exceptionnelle : 4.8 sur 253 avis, ca ne laisse aucun doute. Juliette cherchait le menu brunch complet avec photos : le concurrent qui montre son brunch l\'a capturee. Stephane comparait sur mobile et ne trouvait ni menu ni tarifs : parti en 30 secondes.';
+
+const constat = 'Le Majeur a la meilleure note de ce secteur : 4.8 etoiles sur 253 avis. C\'est un signal de confiance exceptionnel qui convertit les clients motives et les recommandes sans effort. Mais le site Wix est une coquille vide — aucune page brunch malgre un tarif defini et un creneau dimanche tres recherche, pas de menu visible, des horaires atypiques (ouvert lundi, ferme mar-mer-jeu) qui sont un differenciateur rarissime mais totalement invisible sur le site. "Ouvert le dimanche et le lundi" devrait etre en gros titre sur la page d\'accueil — c\'est la requete sans concurrence qui manque.';
+
+const canalData = [
+  { canal: 'Google Search (brunch dimanche)', nb: 1, convert: 1, rate: 100 },
+  { canal: 'Bouche-a-oreille (lundi)', nb: 1, convert: 1, rate: 100 },
+  { canal: 'IA (brunch menu photos)', nb: 1, convert: 0, rate: 0 },
+  { canal: 'Google Maps (samedi midi)', nb: 1, convert: 0, rate: 0 },
+  { canal: 'Google Search (bistrot famille)', nb: 1, convert: 1, rate: 100 },
+];
+
+const personas = [
+  {
+    id: 1,
+    name: 'Clara',
+    age: 31,
+    emoji: '🥞',
+    situation: 'Cherche un brunch du dimanche a Nancy pour 4 amis',
+    canal: 'Google Search',
+    device: 'Mobile',
+    decision: 'Convertit' as const,
+    decisionLabel: 'Reserve',
+    histoire: '"brunch nancy dimanche" → Maps → Le Majeur 4.8★ → tarif 24€ dans les avis → site → pas de page brunch mais note excellente → reserve par telephone.',
+    localisation: 'Nancy (54)',
+    maturite: 'Decision',
+    contexte: 'Organise le brunch du groupe ce week-end. Prete a reserver des ce soir si le lieu lui plait.',
+    impression: 'La note 4.8 avec 253 avis est parfaite. Le tarif brunch vu dans les avis Google valide le budget. Le site est peu informatif mais la note parle pour elle.',
+    parcours: [
+      ['Google Search', '"brunch nancy dimanche" — Le Majeur bien place sur Maps'],
+      ['Fiche Maps', '4.8★ sur 253 avis — note exceptionnelle'],
+      ['Avis Google', 'Tarif 24€ adulte / 12€ enfant mentionne dans les avis'],
+      ['Site', 'Peu informatif mais la note a deja convaincu'],
+      ['Contact', 'Appelle le 09 51 13 53 94 pour reserver'],
+    ] as [string, string][],
+    questionCle: 'Y a-t-il un brunch le dimanche et a quel prix ?',
+    reponse: 'Partiellement' as const,
+    commentReponse: 'L\'info existe dans les avis Google mais pas directement sur le site — friction evitable.',
+    impactVitesse: 'Wix mobile ~35 — lent mais decidee motivee',
+    impactConfiance: '4.8★ sur 253 avis = note la plus haute du marche local',
+    positifs: ['4.8★ sur 253 avis = confiance maximale', 'Brunch dimanche + samedi confirme via avis', 'Tarif trouve dans les avis (24€ adulte)'],
+    frictions: ['Pas de page brunch dediee — info dispersee dans les avis', 'Pas de reservation en ligne — doit appeler'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 10, clarte: 4,
+  },
+  {
+    id: 2,
+    name: 'Francois',
+    age: 44,
+    emoji: '🍽️',
+    situation: 'Recommande par un ami — cherche pour un diner en famille le lundi',
+    canal: 'Bouche-a-oreille',
+    device: 'Desktop',
+    decision: 'Convertit' as const,
+    decisionLabel: 'Appelle',
+    histoire: '"Le Majeur Nancy" → site → horaires confirmes (lundi ouvert) → appelle pour reserver pour 6 personnes.',
+    localisation: 'Nancy (54)',
+    maturite: 'Decision',
+    contexte: 'Repas de famille le lundi — seul jour ou toute la famille est disponible. Un ami lui a recommande Le Majeur comme un des rares restaurants ouverts le lundi.',
+    impression: 'Confirme que le restaurant est ouvert le lundi — c\'est la seule chose qui comptait. La note conforte le choix.',
+    parcours: [
+      ['Recherche directe', '"Le Majeur Nancy"'],
+      ['Site', 'Horaires — confirme lundi ouvert'],
+      ['Contact', 'Appelle pour reserver 6 couverts'],
+    ] as [string, string][],
+    questionCle: 'Le restaurant est-il ouvert le lundi et peut-il recevoir 6 personnes ?',
+    reponse: 'Oui' as const,
+    commentReponse: 'Horaires trouves — mais la page groupe/famille n\'existe pas, doit appeler pour confirmer la capacite.',
+    impactVitesse: 'Desktop — non bloquant',
+    impactConfiance: 'Recommandation + 4.8★ = confiance maximale',
+    positifs: ['Horaires confirmes lundi ouvert', '4.8★ confirme la recommandation', 'Accessible par telephone'],
+    frictions: ['Pas de page "grand groupe" pour confirmer la capacite sans appeler'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 9, clarte: 5,
+  },
+  {
+    id: 3,
+    name: 'Juliette',
+    age: 27,
+    emoji: '📸',
+    situation: 'Cherche un brunch dimanche a Nancy avec menu detaille et photos',
+    canal: 'IA (ChatGPT)',
+    device: 'Mobile',
+    decision: 'Hesite' as const,
+    decisionLabel: 'Hesite',
+    histoire: '"brunch nancy dimanche menu" via ChatGPT → Le Majeur cite → site → cherche page brunch, menu, photos → contenu limite → concurrent avec page brunch complete → hesite.',
+    localisation: 'Nancy (54)',
+    maturite: 'Decouverte',
+    contexte: 'Amatrice de brunch. Compare sur Instagram et Google avant de choisir. La decision se fait sur les photos et le detail du menu.',
+    impression: 'La note est excellente mais elle ne peut pas voir ce qu\'elle va manger. Le concurrent qui montre son brunch la convainc plus facilement.',
+    parcours: [
+      ['ChatGPT', '"brunch nancy dimanche" — Le Majeur cite avec bonne note'],
+      ['Site', 'Cherche page brunch, galerie, menu detaille — introuvable'],
+      ['Instagram', 'Cherche compte Le Majeur — peu actif ou difficile a trouver'],
+      ['Concurrent', 'Page brunch avec photos, "brunch illimite 29€", galerie de tables dressees'],
+      ['Decision', 'Hesite — le concurrent montre ce qu\'elle va manger'],
+    ] as [string, string][],
+    questionCle: 'A quoi ressemble le brunch et qu\'est-ce qu\'il y a dans le menu ?',
+    reponse: 'Non' as const,
+    commentReponse: 'Pas de page brunch, pas de menu visible, pas de photos de table — impossible de visualiser l\'experience.',
+    impactVitesse: 'Wix mobile lent — second frein',
+    impactConfiance: '4.8★ rassurant mais insuffisant pour une acheteuse visuelle',
+    positifs: ['4.8★ sur 253 avis = signal fort', 'Brunch mentionne dans les avis'],
+    frictions: ['Pas de page brunch avec menu et photos', 'Impossible de visualiser l\'experience avant de reserver'],
+    ceQuiFeraitBasculer: 'Une page brunch avec 5-6 photos et la liste des elements inclus. Juliette voulait venir — elle avait besoin de voir le brunch pour se decider.',
+    exp: 4, conf: 8, clarte: 2,
+  },
+  {
+    id: 4,
+    name: 'Stephane',
+    age: 38,
+    emoji: '📱',
+    situation: 'Cherche un restaurant ouvert le samedi midi a Nancy',
+    canal: 'Google Maps',
+    device: 'Mobile',
+    decision: 'Quitte' as const,
+    decisionLabel: 'Repart',
+    histoire: '"restaurant ouvert samedi nancy" → Le Majeur visible → site → horaires peu lisibles, pas de menu ni tarifs directs sur mobile → 2 concurrents avec menus et "formule samedi midi 18€" → choisit un concurrent.',
+    localisation: 'Nancy (54)',
+    maturite: 'Comparaison',
+    contexte: 'Dejeune tot le samedi avant une activite. Compare 3 adresses sur Maps en 5 minutes. Prend la premiere qui lui donne assez d\'infos pour decider.',
+    impression: 'Le Majeur a une tres bonne note mais Stephane ne trouve pas rapidement le menu et le tarif — ce qu\'il cherche en 30 secondes. Il passe au suivant.',
+    parcours: [
+      ['Google Maps', '"restaurant samedi midi nancy" — Le Majeur visible'],
+      ['Site', 'Cherche menu + tarif — pas trouve rapidement sur mobile'],
+      ['Concurrent', '"Formule samedi midi 2 plats + cafe 18€" + menu visible'],
+      ['Decision', 'Choisit le concurrent — information immediate'],
+    ] as [string, string][],
+    questionCle: 'Qu\'est-ce que je mange et combien ca coute le samedi midi ?',
+    reponse: 'Non' as const,
+    commentReponse: 'Pas de menu visible, pas de tarif formule midi — informations introuvables en 30 secondes sur mobile.',
+    impactVitesse: 'Wix mobile lent + contenu absent = double friction',
+    impactConfiance: '4.8★ remarquee mais insuffisant sans info concrete',
+    positifs: ['4.8★ visible sur Maps — attire l\'oeil'],
+    frictions: ['Menu du jour invisible sur mobile', 'Tarif formule midi introuvable', 'Site lent Wix frustrant'],
+    ceQuiFeraitBasculer: 'Un plat du jour + prix en une ligne sur la page d\'accueil. Stephane aurait choisi Le Majeur si l\'information avait ete la en 5 secondes.',
+    exp: 3, conf: 7, clarte: 2,
+  },
+  {
+    id: 5,
+    name: 'Nathalie',
+    age: 52,
+    emoji: '👨‍👩‍👧',
+    situation: 'Cherche un bistrot de quartier pour un repas de famille (6 personnes)',
+    canal: 'Google Search',
+    device: 'Desktop',
+    decision: 'Convertit' as const,
+    decisionLabel: 'Appelle',
+    histoire: '"bistrot nancy repas famille" → Le Majeur → 4.8★ 253 avis + depuis 2018 → avis chaleureux → appelle directement.',
+    localisation: 'Nancy (54)',
+    maturite: 'Comparaison',
+    contexte: 'Anniversaire de la belle-mere. Cherche un endroit chaleureux, cuisine maison, table suffisamment grande. Pas de restaurant gastronomique — une vraie table de quartier.',
+    impression: 'Les avis decrivent exactement ce qu\'elle cherche : chaleureux, cuisine genereux, accueil familial. La note 4.8 + l\'anciennete depuis 2018 la convainquent sans meme voir le menu.',
+    parcours: [
+      ['Google Search', '"bistrot nancy ambiance familiale"'],
+      ['Maps', '4.8★ sur 253 avis + "bistrot depuis 2018"'],
+      ['Avis', 'Lecture des avis : chaleur, genereux, service attentif'],
+      ['Contact', 'Appelle pour verifier la disponibilite et reserver pour 6'],
+    ] as [string, string][],
+    questionCle: 'C\'est un endroit chaleureux et peut-on reserver pour 6 personnes ?',
+    reponse: 'Partiellement' as const,
+    commentReponse: 'Les avis repondent a la chaleur — mais la capacite groupe doit etre verifiee par appel, pas de page groupe/privatisation.',
+    impactVitesse: 'Desktop — non bloquant',
+    impactConfiance: '4.8★ + 253 avis + depuis 2018 = triple reassurance',
+    positifs: ['Note 4.8★ exceptionnelle', 'Ambiance decrite dans les avis', 'Depuis 2018 = stabilite rassurante'],
+    frictions: ['Pas de page "groupes/reservations speciales"', 'Doit appeler pour confirmer disponibilite pour 6'],
+    ceQuiFeraitBasculer: '',
+    exp: 8, conf: 10, clarte: 5,
+  },
+];
+
+const ameliorationsHautes = [
+  {
+    titre: 'Page brunch dediee — l\'opportunite SEO non exploitee',
+    pourquoi: 'Juliette cherche "brunch nancy dimanche menu" → pas de page brunch → concurrent avec page complete gagne. Le brunch 24€ adulte / 12€ enfant est un produit defini et recherche. "Brunch nancy dimanche" et "brunch nancy samedi" sont des requetes actives avec peu de concurrence optimisee. Clara a du chercher le tarif dans les avis Google au lieu de le trouver sur le site.',
+    action: 'Page brunch : tarifs adulte (24€) et enfant (12€) en evidence, horaires brunch (samedi + dimanche), quelques elements du menu du moment, 5-6 photos de la table dressée, mention reservation recommandee ou spontanee. Titre H1 "Brunch Nancy — Le Majeur, samedi et dimanche".',
+    impact: 'Capture de "brunch nancy dimanche" et "brunch nancy samedi" — requetes sans page optimisee concurrente',
+  },
+  {
+    titre: 'Mettre en avant "ouvert lundi + dimanche" — differenciateur rare',
+    pourquoi: 'Francois cherche specifiquement le lundi — cette information doit etre visible immediatement. A Nancy, les restaurants ouverts le lundi sont rarissimes. "Restaurant ouvert lundi nancy" est une requete sans concurrence directe. Les horaires atypiques (ouvert lundi, ferme mar-mer-jeu) sont une force commerciale, pas une contrainte.',
+    action: 'Banniere ou badge en homepage : "Ouvert lundi et dimanche — ferme mardi, mercredi, jeudi". Title SEO : "Le Majeur Nancy — Bistrot ouvert lundi et dimanche". Page "Horaires" claire avec les jours ouverts en evidence. Schema.org OpeningHours structure avec lundi et dimanche explicites.',
+    impact: 'Capture unique de "restaurant ouvert lundi nancy" — requete pratiquement sans concurrence',
+  },
+  {
+    titre: 'Schema.org Restaurant + AggregateRating + BrunchMenu',
+    pourquoi: '253 avis a 4.8 etoiles non exploites en rich snippets — c\'est la note la plus haute de ce batch. Schema.org Restaurant + AggregateRating (4.8, 253) + OpeningHours (avec lundi + dimanche explicites) + BrunchMenu = etoiles SERP visibles + horaires directs dans Google Knowledge Panel.',
+    action: 'Ajouter Schema.org JSON-LD : @type Restaurant, name, address, telephone, openingHours (Mo / Fr / Sa / Su), servesCuisine ("bistrot", "cuisine de saison"), aggregateRating (ratingValue: 4.8, reviewCount: 253), hasMenu (brunch). Sur Wix via panneau SEO avance ou code HTML personnalise.',
+    impact: 'Etoiles SERP pour 253 avis 4.8★ — CTR organique +25-40% estime',
+  },
+];
+
+const ameliorationsUtiles = [
+  {
+    titre: 'Menu du moment visible — meme partiel',
+    detail: 'Stephane n\'a trouve ni menu ni tarif → parti en 30 secondes. Une section simple "Aujourd\'hui : entree X, plat Y, dessert Z — formule 19€" sur la homepage suffit a maintenir les comparateurs. Le menu saisonnier mis a jour chaque semaine = contenu frais pour Google.',
+  },
+  {
+    titre: 'Email de contact visible',
+    detail: 'L\'email n\'est pas accessible publiquement. Pour les demandes de groupe, privatisation ou evenements, une adresse email visible sur la page contact evite la friction pour les clients qui ne veulent pas appeler.',
+  },
+];
+
+const ameliorationsDiscuter = [
+  {
+    emoji: '🎂',
+    titre: 'Page groupes et evenements prives',
+    detail: 'Nathalie cherche pour 6 personnes, Francois pour un repas de famille — deux clients qui doivent appeler pour confirmer la capacite. Une page simple "Groupes & evenements" avec la capacite maximale, les conditions de reservation et un formulaire dedie = capture sans appel du segment evenementiel.',
+  },
+  {
+    emoji: '📱',
+    titre: 'Instagram actif avec plats du moment',
+    detail: 'Un bistrot saisonnier qui change ses plats regulierement a un sujet naturel pour Instagram : photo du plat du jour, de la table dressee le dimanche matin, du brunch. 3 posts par semaine = audience fidelee + vitrine avant/pendant la visite.',
+  },
+];
+
+const techVerdicts = [
+  { label: 'Vitesse', verdict: 'Faible', ok: false, detail: 'Wix — ~35 mobile, LCP ~4.8s' },
+  { label: 'Securite', verdict: 'Correct', ok: true, detail: 'HTTPS — Wix gere la securite de base' },
+  { label: 'SEO', verdict: 'Faible', ok: false, detail: 'Wix SEO limite — pas de page brunch, horaires non structures' },
+  { label: 'Donnees structurees', verdict: 'Absent', ok: false, detail: 'Schema.org absent — 4.8★ 253 avis non exploites' },
+  { label: 'Partage reseaux', verdict: 'Correct', ok: true, detail: 'OG present (Wix genere)' },
+];
+
+const tech = {
+  observatory: { grade: 'C+', score: 45, testsOk: 4, testsTotal: 10 },
+  pagespdMobile: { performance: 35, accessibility: 72, bestPractices: 68, seo: 65 },
+  pagespdDesktop: { performance: 58, accessibility: 76, bestPractices: 72, seo: 70 },
+  cwv: { lcp: '~4.8s (Wix JS lourd + images)', inp: '~380ms', cls: '~0.12' },
+  headers: [
+    { ok: true, h: 'HTTPS' },
+    { ok: false, h: 'HSTS (Wix ne garantit pas)' },
+    { ok: false, h: 'Content-Security-Policy (absent)' },
+    { ok: false, h: 'X-Frame-Options (Wix)' },
+    { ok: false, h: 'Permissions-Policy (absent)' },
+  ],
+  schema: [
+    { item: 'Schema.org Restaurant / LocalBusiness', ok: false },
+    { item: 'Nom + Adresse + Telephone (NAP)', ok: false },
+    { item: 'Avis agreges (4.8★ / 253 avis)', ok: false },
+    { item: 'OpeningHours (lundi + dimanche)', ok: false },
+    { item: 'BrunchMenu', ok: false },
+    { item: 'ServesCuisine (bistrot, saisonnier)', ok: false },
+    { item: 'FoundingDate (2018)', ok: false },
+  ],
+  og: [
+    { item: 'og:title', ok: true, val: 'Present (Wix auto)' },
+    { item: 'og:description', ok: true, val: 'Present (Wix auto)' },
+    { item: 'og:image', ok: true, val: 'Present probable' },
+    { item: 'og:type', ok: true, val: 'website' },
+  ],
+  seo: [
+    { item: 'Title tag present', ok: true },
+    { item: 'Meta description', ok: true },
+    { item: 'HTTPS', ok: true },
+    { item: 'Responsive mobile', ok: true },
+    { item: 'Page brunch dediee', ok: false },
+    { item: '"Ouvert lundi dimanche" en hero', ok: false },
+    { item: 'Schema.org Restaurant', ok: false },
+    { item: 'Menu visible sur mobile', ok: false },
+    { item: 'Tarif formule midi visible', ok: false },
+    { item: 'Page groupes / evenements', ok: false },
+  ],
+};
+---
+
+<BaseLayout
+  title={`${formuleLabel} — ${nomProspect}`}
+  description={`Rapport Echo Decouverte pour ${nomProspect}. ${kpis.nbPersonas} visiteurs simules, audit technique, recommandation prioritaire.`}
+  noindex={true}
+  frPath={`/echo/${slug}`}
+  ogImage="/og-echo.png"
+>
+
+<!-- 1. HERO -->
+<section class="relative w-full px-6 py-20 md:py-28 overflow-hidden" style="background: #0A0A0A;">
+  <div class="absolute inset-0 opacity-5" style="background-image: radial-gradient(circle at 25% 50%, #6366f1 0%, transparent 50%), radial-gradient(circle at 75% 50%, #8b5cf6 0%, transparent 50%);"></div>
+  <div class="relative max-w-4xl mx-auto">
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium mb-6" style="background: rgba(99,102,241,0.15); color: #818cf8; border: 1px solid rgba(99,102,241,0.3);">
+      Echo {formuleLabel}
+    </div>
+    <h1 class="text-3xl md:text-5xl font-bold text-white mb-4" style="line-height:1.15;">
+      {nomProspect}
+      <span class="block text-2xl md:text-3xl mt-2" style="color:#818cf8;">ce que vos visiteurs vivent vraiment</span>
+    </h1>
+    <p class="text-lg mb-8" style="color: rgba(255,255,255,0.6);">Audit du {dateAudit} · <a href={urlSite} target="_blank" rel="noopener noreferrer" style="color:#818cf8;">{urlSite}</a></p>
+
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+      <div class="rounded-xl p-4 text-center" style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);">
+        <div class="text-3xl font-bold text-white">{kpis.conversion}%</div>
+        <div class="text-xs mt-1" style="color:rgba(255,255,255,0.5);">conversion simulée</div>
+      </div>
+      <div class="rounded-xl p-4 text-center" style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);">
+        <div class="text-3xl font-bold text-white">{kpis.experience}<span class="text-lg">/10</span></div>
+        <div class="text-xs mt-1" style="color:rgba(255,255,255,0.5);">expérience</div>
+      </div>
+      <div class="rounded-xl p-4 text-center" style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);">
+        <div class="text-3xl font-bold text-white">{kpis.confiance}<span class="text-lg">/10</span></div>
+        <div class="text-xs mt-1" style="color:rgba(255,255,255,0.5);">confiance</div>
+      </div>
+      <div class="rounded-xl p-4 text-center" style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);">
+        <div class="text-3xl font-bold text-white">{kpis.clarte}<span class="text-lg">/10</span></div>
+        <div class="text-xs mt-1" style="color:rgba(255,255,255,0.5);">clarté</div>
+      </div>
+    </div>
+
+    <div class="rounded-2xl p-6" style="background:rgba(99,102,241,0.1); border:1px solid rgba(99,102,241,0.25);">
+      <p class="text-base leading-relaxed" style="color:rgba(255,255,255,0.85);">"{verdictHero}"</p>
+    </div>
+  </div>
+</section>
+
+<!-- 2. CONSTAT -->
+<section class="w-full px-6 py-16" style="background:#111111;">
+  <div class="max-w-4xl mx-auto">
+    <h2 class="text-2xl md:text-3xl font-bold text-white mb-6">Ce que nous avons observé</h2>
+    <p class="text-base leading-relaxed mb-8" style="color:rgba(255,255,255,0.7);">{constat}</p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="rounded-xl p-5 flex flex-col gap-2" style="background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.2);">
+        <span class="text-2xl font-bold" style="color:#4ade80;">{kpis.nbConvertissent}</span>
+        <span class="text-sm font-medium text-white">réservent ou appellent</span>
+        <span class="text-xs" style="color:rgba(255,255,255,0.5);">emportés par la note exceptionnelle</span>
+      </div>
+      <div class="rounded-xl p-5 flex flex-col gap-2" style="background:rgba(234,179,8,0.08); border:1px solid rgba(234,179,8,0.2);">
+        <span class="text-2xl font-bold" style="color:#facc15;">{kpis.nbHesitent}</span>
+        <span class="text-sm font-medium text-white">hésite</span>
+        <span class="text-xs" style="color:rgba(255,255,255,0.5);">page brunch manquante</span>
+      </div>
+      <div class="rounded-xl p-5 flex flex-col gap-2" style="background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.2);">
+        <span class="text-2xl font-bold" style="color:#f87171;">{kpis.nbRepartent}</span>
+        <span class="text-sm font-medium text-white">repart chez un concurrent</span>
+        <span class="text-xs" style="color:rgba(255,255,255,0.5);">menu + tarifs invisibles sur mobile</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3. VISITEURS -->
+<section class="w-full px-6 py-16" style="background:#0A0A0A;">
+  <div class="max-w-4xl mx-auto">
+    <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">5 visiteurs, 5 histoires</h2>
+    <p class="text-sm mb-10" style="color:rgba(255,255,255,0.5);">Simulation comportementale — chaque profil représente un segment réel de votre audience.</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {personas.map((p) => (
+        <div class="rounded-2xl p-6" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+          <div class="flex items-start justify-between mb-4">
+            <div>
+              <span class="text-lg mr-2">{p.emoji}</span>
+              <span class="font-semibold text-white">{p.name}, {p.age} ans</span>
+              <div class="text-xs mt-1" style="color:rgba(255,255,255,0.4);">{p.canal} · {p.device} · {p.maturite}</div>
+            </div>
+            <span class={`text-xs px-2 py-1 rounded-full font-medium ${p.decision === 'Convertit' ? 'bg-green-900/40 text-green-400' : p.decision === 'Hesite' ? 'bg-yellow-900/40 text-yellow-400' : 'bg-red-900/40 text-red-400'}`}>
+              {p.decisionLabel}
+            </span>
+          </div>
+          <p class="text-sm mb-4" style="color:rgba(255,255,255,0.65);">{p.histoire}</p>
+          {p.ceQuiFeraitBasculer && (
+            <div class="rounded-lg p-3 text-xs" style="background:rgba(99,102,241,0.1); color:rgba(255,255,255,0.7); border-left:3px solid #6366f1;">
+              <strong style="color:#818cf8;">Ce qui aurait changé la donne :</strong> {p.ceQuiFeraitBasculer}
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+    <div class="mt-10">
+      <h3 class="text-lg font-semibold text-white mb-4">Résultats par canal</h3>
+      <div class="space-y-3">
+        {canalData.map((c) => (
+          <div class="flex items-center gap-4">
+            <span class="text-sm w-64 shrink-0" style="color:rgba(255,255,255,0.7);">{c.canal}</span>
+            <div class="flex-1 rounded-full h-2" style="background:rgba(255,255,255,0.08);">
+              <div class="h-2 rounded-full" style={`width:${c.rate}%; background:${c.rate >= 66 ? '#4ade80' : c.rate >= 33 ? '#facc15' : '#f87171'};`}></div>
+            </div>
+            <span class="text-sm shrink-0" style="color:rgba(255,255,255,0.5);">{c.convert}/{c.nb}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. RECOMMANDATIONS -->
+<section class="w-full px-6 py-16" style="background:#111111;">
+  <div class="max-w-4xl mx-auto">
+    <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">3 actions prioritaires</h2>
+    <p class="text-sm mb-10" style="color:rgba(255,255,255,0.5);">Classées par impact sur la conversion. La première suffit souvent à changer le résultat.</p>
+    <div class="space-y-6 mb-12">
+      {ameliorationsHautes.map((a, i) => (
+        <div class="rounded-2xl p-6" style="background:rgba(99,102,241,0.06); border:1px solid rgba(99,102,241,0.2);">
+          <div class="flex items-start gap-4">
+            <div class="rounded-full w-8 h-8 flex items-center justify-center shrink-0 text-sm font-bold" style="background:#6366f1; color:white;">{i+1}</div>
+            <div>
+              <h3 class="font-semibold text-white mb-2">{a.titre}</h3>
+              <p class="text-sm mb-3" style="color:rgba(255,255,255,0.65);">{a.pourquoi}</p>
+              <div class="rounded-lg p-3 text-sm mb-3" style="background:rgba(0,0,0,0.3); color:rgba(255,255,255,0.8);">{a.action}</div>
+              <span class="text-xs px-2 py-1 rounded-full" style="background:rgba(34,197,94,0.1); color:#4ade80;">↑ {a.impact}</span>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+    {ameliorationsUtiles.length > 0 && (
+      <div>
+        <h3 class="text-lg font-semibold text-white mb-4">Améliorations utiles</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          {ameliorationsUtiles.map((a) => (
+            <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+              <h4 class="font-medium text-white mb-2 text-sm">{a.titre}</h4>
+              <p class="text-xs" style="color:rgba(255,255,255,0.6);">{a.detail}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+    {ameliorationsDiscuter.length > 0 && (
+      <div>
+        <h3 class="text-lg font-semibold text-white mb-4">À discuter selon vos priorités</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {ameliorationsDiscuter.map((a) => (
+            <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);">
+              <div class="text-xl mb-2">{a.emoji}</div>
+              <h4 class="font-medium text-white mb-2 text-sm">{a.titre}</h4>
+              <p class="text-xs" style="color:rgba(255,255,255,0.5);">{a.detail}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
+</section>
+
+<!-- 5. SOUS LE CAPOT -->
+<section class="w-full px-6 py-16" style="background:#0A0A0A;">
+  <div class="max-w-4xl mx-auto">
+    <h2 class="text-2xl md:text-3xl font-bold text-white mb-10">Sous le capot</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+      <div class="rounded-2xl p-6" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+        <h3 class="font-semibold text-white mb-4">PageSpeed Insights</h3>
+        <div class="space-y-3">
+          <div>
+            <div class="flex justify-between text-xs mb-1" style="color:rgba(255,255,255,0.6);"><span>Mobile</span><span>{tech.pagespdMobile.performance}/100</span></div>
+            <div class="rounded-full h-2" style="background:rgba(255,255,255,0.08);"><div class="h-2 rounded-full" style={`width:${tech.pagespdMobile.performance}%; background:${tech.pagespdMobile.performance >= 70 ? '#4ade80' : tech.pagespdMobile.performance >= 50 ? '#facc15' : '#f87171'};`}></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between text-xs mb-1" style="color:rgba(255,255,255,0.6);"><span>Desktop</span><span>{tech.pagespdDesktop.performance}/100</span></div>
+            <div class="rounded-full h-2" style="background:rgba(255,255,255,0.08);"><div class="h-2 rounded-full" style={`width:${tech.pagespdDesktop.performance}%; background:${tech.pagespdDesktop.performance >= 70 ? '#4ade80' : tech.pagespdDesktop.performance >= 50 ? '#facc15' : '#f87171'};`}></div></div>
+          </div>
+        </div>
+        <div class="mt-4 text-xs space-y-1" style="color:rgba(255,255,255,0.45);">
+          <div>LCP : {tech.cwv.lcp}</div>
+          <div>INP : {tech.cwv.inp}</div>
+          <div>CLS : {tech.cwv.cls}</div>
+        </div>
+      </div>
+      <div class="rounded-2xl p-6" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+        <h3 class="font-semibold text-white mb-4">Mozilla Observatory</h3>
+        <div class="text-4xl font-bold text-white mb-2">{tech.observatory.grade}</div>
+        <div class="text-sm mb-4" style="color:rgba(255,255,255,0.5);">{tech.observatory.testsOk}/{tech.observatory.testsTotal} tests passés</div>
+        <div class="space-y-2">
+          {tech.headers.map((h) => (
+            <div class="flex items-center gap-2 text-xs">
+              <span style={h.ok ? 'color:#4ade80;' : 'color:#f87171;'}>{h.ok ? '✓' : '✗'}</span>
+              <span style="color:rgba(255,255,255,0.6);">{h.h}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-10">
+      {techVerdicts.map((v) => (
+        <div class="rounded-xl p-4" style={`background:${v.ok ? 'rgba(34,197,94,0.06)' : 'rgba(239,68,68,0.06)'}; border:1px solid ${v.ok ? 'rgba(34,197,94,0.2)' : 'rgba(239,68,68,0.2)'};`}>
+          <div class="text-xs mb-1" style="color:rgba(255,255,255,0.5);">{v.label}</div>
+          <div class="font-semibold text-sm" style={v.ok ? 'color:#4ade80;' : 'color:#f87171;'}>{v.verdict}</div>
+          <div class="text-xs mt-1" style="color:rgba(255,255,255,0.4);">{v.detail}</div>
+        </div>
+      ))}
+    </div>
+    <div class="rounded-2xl p-6 mb-6" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+      <h3 class="font-semibold text-white mb-4">Données structurées (Schema.org)</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+        {tech.schema.map((s) => (
+          <div class="flex items-center gap-2 text-sm">
+            <span style={s.ok ? 'color:#4ade80;' : 'color:#f87171;'}>{s.ok ? '✓' : '✗'}</span>
+            <span style="color:rgba(255,255,255,0.65);">{s.item}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+    <div class="rounded-2xl p-6" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+      <h3 class="font-semibold text-white mb-4">Signaux SEO</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+        {tech.seo.map((s) => (
+          <div class="flex items-center gap-2 text-sm">
+            <span style={s.ok ? 'color:#4ade80;' : 'color:#f87171;'}>{s.ok ? '✓' : '✗'}</span>
+            <span style="color:rgba(255,255,255,0.65);">{s.item}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. METHODOLOGIE -->
+<section class="w-full px-6 py-16" style="background:#111111;">
+  <div class="max-w-4xl mx-auto">
+    <h2 class="text-2xl md:text-3xl font-bold text-white mb-6">Comment fonctionne Echo</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+        <div class="text-2xl mb-3">🔍</div>
+        <h3 class="font-semibold text-white mb-2 text-sm">Audit du site</h3>
+        <p class="text-xs" style="color:rgba(255,255,255,0.55);">Scraping complet, PageSpeed, Mozilla Observatory, Schema.org, signaux SEO — tout ce que Google et vos visiteurs voient.</p>
+      </div>
+      <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+        <div class="text-2xl mb-3">👥</div>
+        <h3 class="font-semibold text-white mb-2 text-sm">5 visiteurs simulés</h3>
+        <p class="text-xs" style="color:rgba(255,255,255,0.55);">5 profils réels (canal, device, intention) visitent votre site. Chacun raconte son parcours et sa décision : réserve, hésite ou repart.</p>
+      </div>
+      <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+        <div class="text-2xl mb-3">🎯</div>
+        <h3 class="font-semibold text-white mb-2 text-sm">3 actions concrètes</h3>
+        <p class="text-xs" style="color:rgba(255,255,255,0.55);">Pas de liste de 50 points. Les 3 actions qui changeront le résultat le mois prochain — classées par impact réel.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. CTA FINAL -->
+<section class="w-full px-6 py-20" style="background:#0A0A0A;">
+  <div class="max-w-2xl mx-auto text-center">
+    <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">Vous voulez aller plus loin ?</h2>
+    <p class="text-base mb-8" style="color:rgba(255,255,255,0.6);">Ce rapport vous a été préparé par Marc Muller — développeur web indépendant basé en Grand Est. Si vous voulez qu'on en parle, c'est sans engagement.</p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="tel:+33695961220" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold text-white transition-opacity hover:opacity-90" style="background:#6366f1;">
+        📞 Appeler Marc
+      </a>
+      <a href="mailto:marc@muller.im" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold transition-opacity hover:opacity-90" style="background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.9); border:1px solid rgba(255,255,255,0.15);">
+        ✉️ Envoyer un email
+      </a>
+    </div>
+    {showUpsell && (
+      <div class="mt-16 pt-10" style="border-top:1px solid rgba(255,255,255,0.06);">
+        <p class="text-xs mb-6" style="color:rgba(255,255,255,0.3);">Ce rapport est la version Découverte — 5 personas, audit essentiel.</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+          <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+            <div class="font-semibold text-white mb-1 text-sm">Echo Complet</div>
+            <div class="text-xs mb-3" style="color:rgba(255,255,255,0.5);">10 personas · audit technique approfondi · roadmap priorisée · 3 mois de suivi</div>
+            <span class="text-xs px-2 py-1 rounded-full" style="background:rgba(99,102,241,0.15); color:#818cf8;">Sur devis</span>
+          </div>
+          <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+            <div class="font-semibold text-white mb-1 text-sm">Echo Pro</div>
+            <div class="text-xs mb-3" style="color:rgba(255,255,255,0.5);">Complet + implémentation des corrections · nouveau site si nécessaire · suivi 6 mois</div>
+            <span class="text-xs px-2 py-1 rounded-full" style="background:rgba(99,102,241,0.15); color:#818cf8;">Sur devis</span>
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
+</section>
+
+</BaseLayout>

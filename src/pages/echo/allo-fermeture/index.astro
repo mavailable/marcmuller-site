@@ -1,0 +1,579 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const slug = 'allo-fermeture';
+const formule: 'decouverte' | 'complet' | 'pro' = 'decouverte';
+const formuleLabel = 'Echo Decouverte';
+const isProspection = true;
+const nomProspect = 'Allo Fermeture Vandoeuvre';
+const urlSite = 'https://www.allo-fermeture.fr';
+const dateAudit = '31 mars 2026';
+const showUpsell = true;
+
+const kpis = {
+  nbPersonas: 5,
+  nbConvertissent: 3,
+  nbHesitent: 1,
+  nbRepartent: 1,
+  conversion: 60,
+  experience: 6.5,
+  confiance: 9.0,
+  clarte: 4.8,
+};
+
+const verdictHero = 'Sur 5 visiteurs, 3 convertissent — le RGE Qualibat + la note 4.7 sur 322 avis decidient les proprietaires serieux. Marie-France voulait juste demander un devis pour une porte : trop de champs dans le formulaire, elle est partie chez le concurrent qui proposait "devis en 3 clics". Thomas cherchait MaPrimeRenov + RGE : sans page dediee aux aides, il a compare avec un concurrent qui avait un simulateur d\'economies.';
+
+const constat = 'Allo Fermeture possede les deux atouts essentiels du secteur menuiserie renovation : le label RGE Qualibat (eligibilite aux aides financieres MaPrimeRenov, CEE) et une note 4.7 sur 322 avis. Ces deux elements convertissent les decideurs serieux. Mais le formulaire de devis complexe fait partir les comparateurs initiaux, et l\'absence de page dediee MaPrimeRenov manque l\'argument de vente le plus fort du marche en 2026.';
+
+const canalData = [
+  { canal: 'Google Search (volets urgence)', nb: 1, convert: 1, rate: 100 },
+  { canal: 'Bouche-a-oreille (fenetres)', nb: 1, convert: 1, rate: 100 },
+  { canal: 'IA (RGE MaPrimeRenov)', nb: 1, convert: 0, rate: 0 },
+  { canal: 'Google Maps (porte devis)', nb: 1, convert: 0, rate: 0 },
+  { canal: 'Google Search (bailleur RGE)', nb: 1, convert: 1, rate: 100 },
+];
+
+const personas = [
+  {
+    id: 1,
+    name: 'Michel',
+    age: 58,
+    emoji: '🏠',
+    situation: 'Volet roulant casse, ne remonte plus — veut un devis urgent',
+    canal: 'Google Search',
+    device: 'Mobile',
+    decision: 'Convertit' as const,
+    decisionLabel: 'Soumet devis',
+    histoire: '"volets roulants nancy" → Maps → Allo Fermeture 4.7★ 322 avis → site → galerie + certification RGE → formulaire devis → remplit malgre la complexite car la note rassure.',
+    localisation: 'Nancy (54)',
+    maturite: 'Decision',
+    contexte: 'Urgence relative — volet bloque. Pret a depenser pour regler le probleme cette semaine. Note 4.7 sur 322 = critere de decision.',
+    impression: 'La note + le RGE + la galerie convainquent un decideur motive. Le formulaire complexe est une friction mais pas un barrage pour quelqu\'un qui a vraiment besoin.',
+    parcours: [
+      ['Google Search', '"volets roulants nancy" — Allo Fermeture bien place'],
+      ['Maps', '4.7★ sur 322 avis — confiance immediate'],
+      ['Site', 'RGE Qualibat + galerie de realisations'],
+      ['Formulaire', 'Complexe mais remplit — urgence + note le motivent'],
+    ] as [string, string][],
+    questionCle: 'Ce menuisier est serieux et disponible rapidement ?',
+    reponse: 'Oui' as const,
+    commentReponse: '4.7★ + RGE + galerie = oui. Le formulaire complexe est regrettable.',
+    impactVitesse: 'WordPress Divi mobile ~40 — lent mais decideur motive',
+    impactConfiance: '4.7★ sur 322 avis + RGE = double garantie forte',
+    positifs: ['RGE Qualibat = garantie qualite et eligibilite aides', '4.7★ 322 avis = excellent secteur', 'Galerie de realisations presente'],
+    frictions: ['Formulaire devis complexe — friction pour un premier contact'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 9, clarte: 5,
+  },
+  {
+    id: 2,
+    name: 'Christine',
+    age: 51,
+    emoji: '💼',
+    situation: 'Voisine satisfaite — cherche pour changer toutes les fenetres (projet MaPrimeRenov)',
+    canal: 'Bouche-a-oreille',
+    device: 'Desktop',
+    decision: 'Convertit' as const,
+    decisionLabel: 'Appelle',
+    histoire: '"Allo Fermeture" → site → cherche "MaPrimeRenov" ou "aides financieres" → information presente mais peu mise en avant → appelle directement.',
+    localisation: 'Nancy (54)',
+    maturite: 'Decision',
+    contexte: 'Projet de renovation complete des fenetres. Budget important. La recommandation de la voisine + le RGE decidient. Appelle pour confirmer l\'eligibilite MaPrimeRenov.',
+    impression: 'La recommandation + RGE = confiance complete. Elle appelle meme si l\'info MaPrimeRenov est peu visible — la recommandation a fait le travail.',
+    parcours: [
+      ['Recherche directe', '"Allo Fermeture Nancy"'],
+      ['Site', 'RGE confirme — eligibilite aides validee'],
+      ['Contact', 'Appelle pour devis complet fenetres + MaPrimeRenov'],
+    ] as [string, string][],
+    questionCle: 'Etes-vous RGE et pouvez-vous m\'aider a obtenir MaPrimeRenov ?',
+    reponse: 'Partiellement' as const,
+    commentReponse: 'RGE mentionne mais sans page MaPrimeRenov dediee — doit appeler pour les details des aides.',
+    impactVitesse: 'Desktop — non bloquant',
+    impactConfiance: 'Recommandation + RGE + 322 avis = confiance maximale',
+    positifs: ['RGE Qualibat bien mis en avant', 'Recommandation directe', '4.7★ confirme'],
+    frictions: ['Pas de page MaPrimeRenov dediee avec simulateur — doit appeler pour les details'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 9, clarte: 6,
+  },
+  {
+    id: 3,
+    name: 'Thomas',
+    age: 35,
+    emoji: '📱',
+    situation: 'Veut remplacer ses fenetres PVC et profiter des aides MaPrimeRenov',
+    canal: 'IA (ChatGPT)',
+    device: 'Mobile',
+    decision: 'Hesite' as const,
+    decisionLabel: 'Hesite',
+    histoire: '"menuisier RGE MaPrimeRenov nancy" via ChatGPT → Allo Fermeture cite → site → RGE mentionne → pas de page aides financieres → formulaire complexe → concurrent avec page aides completes + simulateur → hesite.',
+    localisation: 'Vandoeuvre (54)',
+    maturite: 'Decouverte',
+    contexte: 'Premier acheteur de fenetres. Ne connait pas le processus MaPrimeRenov. Cherche un menuisier qui l\'accompagne dans la demarche des aides.',
+    impression: 'Allo Fermeture est RGE — c\'est le bon. Mais sans page expliquant comment fonctionne MaPrimeRenov + CEE + le role du RGE, il part vers le concurrent qui lui explique tout.',
+    parcours: [
+      ['ChatGPT', '"menuisier RGE MaPrimeRenov nancy" — Allo Fermeture cite'],
+      ['Site', 'RGE mentionne — cherche page aides/MaPrimeRenov → pas de page dediee'],
+      ['Concurrent', '"Aides financieres 2026 : MaPrimeRenov, CEE, eco-pret — simulateur en ligne"'],
+      ['Decision', 'Hesite — le concurrent repond a toutes ses questions sur les aides'],
+    ] as [string, string][],
+    questionCle: 'Combien je vais economiser avec MaPrimeRenov et comment ca marche ?',
+    reponse: 'Non' as const,
+    commentReponse: 'RGE present mais pas de page aides — ne repond pas a la vraie question de Thomas.',
+    impactVitesse: 'Mobile lent Divi — second frein',
+    impactConfiance: '4.7★ + RGE rassurent mais insuffisant pour un premier acheteur des aides',
+    positifs: ['RGE Qualibat = critere principal confirme', '4.7★ 322 avis = confiance forte'],
+    frictions: ['Pas de page MaPrimeRenov/CEE dediee avec simulateur', 'Formulaire complexe si il veut faire une demande'],
+    ceQuiFeraitBasculer: 'Une page "MaPrimeRenov 2026 avec Allo Fermeture" expliquant les aides + un simulateur d\'economies. Thomas voulait Allo Fermeture — il avait juste besoin que le site lui explique ce qu\'il ne savait pas encore.',
+    exp: 4, conf: 8, clarte: 3,
+  },
+  {
+    id: 4,
+    name: 'Marie-France',
+    age: 63,
+    emoji: '🖥️',
+    situation: 'Compare 3 menuisiers pour une porte d\'entree — veut un devis simple et rapide',
+    canal: 'Google Maps',
+    device: 'Tablette',
+    decision: 'Quitte' as const,
+    decisionLabel: 'Repart',
+    histoire: 'Maps → Allo Fermeture → site → formulaire devis → beaucoup de champs → abandonne → concurrent avec "Devis en 3 clics, rappel sous 24h" → choisit le concurrent.',
+    localisation: 'Nancy (54)',
+    maturite: 'Comparaison',
+    contexte: 'Porte d\'entree a changer. Comparaison initiale — pas encore decidee du menuisier. Cherche a obtenir 3 devis rapidement.',
+    impression: 'Allo Fermeture a l\'air serieux mais le formulaire complexe est dissuasif au stade de la comparaison. Le concurrent qui propose un devis en 3 clics gagne ce premier contact.',
+    parcours: [
+      ['Google Maps', '"menuisier porte entree nancy" — Allo Fermeture visible'],
+      ['Site', 'Formulaire de devis — beaucoup de champs obligatoires'],
+      ['Abandonne', 'Trop de champs pour une premiere prise de contact'],
+      ['Concurrent', '"Devis gratuit en 3 clics + rappel sous 24h"'],
+      ['Decision', 'Choisit le concurrent — moins de friction pour une comparaison initiale'],
+    ] as [string, string][],
+    questionCle: 'Comment je peux avoir un devis rapidement sans trop d\'effort ?',
+    reponse: 'Non' as const,
+    commentReponse: 'Le formulaire est la mais trop complexe pour une comparaison initiale.',
+    impactVitesse: 'Tablette + formulaire complexe = double friction',
+    impactConfiance: '4.7★ + RGE tres attirante — mais trop de friction pour la capturer',
+    positifs: ['4.7★ + RGE = atouts forts', 'Formulaire de devis present'],
+    frictions: ['Formulaire complexe = abandon au stade comparaison', 'Trop de champs pour un premier contact'],
+    ceQuiFeraitBasculer: 'Un formulaire de 3 champs : type de travaux + code postal + telephone. Marie-France voulait contacter Allo Fermeture — c\'est la friction du formulaire qui l\'a fait partir.',
+    exp: 4, conf: 8, clarte: 4,
+  },
+  {
+    id: 5,
+    name: 'Jean-Luc',
+    age: 47,
+    emoji: '🏢',
+    situation: 'Proprietaire bailleur — cherche un menuisier RGE pour 3 logements',
+    canal: 'Google Search',
+    device: 'Desktop',
+    decision: 'Convertit' as const,
+    decisionLabel: 'Appelle',
+    histoire: '"menuisier RGE nancy grand chantier" → Allo Fermeture → 322 avis 4.7★ + RGE Qualibat + galerie projets → prend le telephone directement.',
+    localisation: 'Nancy (54)',
+    maturite: 'Comparaison',
+    contexte: 'Proprietaire de 3 logements locatifs. Renovation energetique pour optimiser les aides et les charges. Cherche un menuisier RGE fiable pour un chantier multi-logements.',
+    impression: 'RGE + galerie de projets + 322 avis = le profil ideal pour un chantier important. Appelle directement sans remplir le formulaire.',
+    parcours: [
+      ['Google Search', '"menuisier RGE nancy" — Allo Fermeture bien place'],
+      ['Site', 'RGE Qualibat + galerie + 322 avis — triple validation'],
+      ['Contact', 'Appelle directement — profil ideal pour gros chantier'],
+    ] as [string, string][],
+    questionCle: 'Ce menuisier RGE peut-il gerer 3 logements avec les aides ?',
+    reponse: 'Oui' as const,
+    commentReponse: 'RGE + galerie + volume d\'avis = oui sans ambiguite.',
+    impactVitesse: 'Desktop — non bloquant',
+    impactConfiance: 'RGE + 322 avis + galerie = triple garantie pour un chantier multi-logements',
+    positifs: ['RGE Qualibat = eligibilite aides sur 3 logements', 'Galerie de realisations rassure sur le volume', '4.7★ sur 322 avis = fiabilite confirmee'],
+    frictions: ['Pas de page "bailleurs / multi-logements" pour ce profil specifique'],
+    ceQuiFeraitBasculer: '',
+    exp: 8, conf: 10, clarte: 6,
+  },
+];
+
+const ameliorationsHautes = [
+  {
+    titre: 'Simplifier le formulaire devis — 3 champs maximum',
+    pourquoi: 'Marie-France abandonne face au formulaire complexe — c\'est la friction numero 1 du site. En menuiserie, le devis est la premiere etape : il doit etre simple et rapide. Un comparateur initial ne veut pas remplir un formulaire complet avant meme d\'avoir choisi son menuisier.',
+    action: 'Formulaire minimal : "Type de travaux" (liste deroulante) + "Votre code postal" + "Votre telephone" + bouton "Je veux un devis gratuit". La qualification se fait par telephone — pas dans le formulaire. Le formulaire complet reste disponible pour les profils deja decides.',
+    impact: 'Capture de Marie-France et de tous les comparateurs initiaux — segment actuellement 0% de conversion',
+  },
+  {
+    titre: 'Page dediee MaPrimeRenov / CEE — l\'argument numero 1 de 2026',
+    pourquoi: 'Thomas cherche "menuisier RGE MaPrimeRenov nancy" → pas de page dediee → concurrent avec simulateur gagne. En 2026, les aides financieres sont l\'argument de decision numero 1 en menuiserie. Les clients choisissent le menuisier qui les aide a naviguer les aides — pas juste celui qui est RGE.',
+    action: 'Page "Aides financieres 2026 avec Allo Fermeture" : explication MaPrimeRenov + CEE, montants types par type de travaux (fenetres, volets, porte), role du RGE Qualibat dans le processus d\'aide, FAQ, simulateur d\'economies simplifie, formulaire devis en bas de page.',
+    impact: 'Capture de "menuisier RGE MaPrimeRenov nancy" — requete a fort intent non adressee',
+  },
+  {
+    titre: 'Schema.org HomeAndConstructionBusiness + RGE + AggregateRating',
+    pourquoi: '322 avis a 4.7 etoiles non exploites en rich snippets Google. Le badge RGE Qualibat n\'est pas structure — invisible dans les SERP. Schema.org LocalBusiness + hasCredential (RGE Qualibat) + AggregateRating (4.7, 322) + AreaServed (Nancy, Grand Est) = etoiles SERP + badge RGE visible dans les resultats.',
+    action: 'Schema.org JSON-LD : @type HomeAndConstructionBusiness, name, address, telephone (03 29 32 85 35), aggregateRating (ratingValue: 4.7, reviewCount: 322), hasCredential (RGE Qualibat), areaServed (Nancy, Vandoeuvre, Grand Est), priceRange ("€€"). WordPress + Yoast/Rank Math.',
+    impact: 'Etoiles SERP pour 322 avis 4.7★ + badge RGE visible — CTR organique +25-40% estime',
+  },
+];
+
+const ameliorationsUtiles = [
+  {
+    titre: 'Temoignages avec le type de chantier et les aides obtenues',
+    detail: 'Christine et Thomas veulent une confirmation avant d\'appeler. Des temoignages du type "12 fenetres PVC + volets, MaPrimeRenov obtenu = 4200€ de remboursement" = preuve complete de la valeur. La galerie existe — les temoignages produit sont le complement naturel.',
+  },
+  {
+    titre: 'Pages dediees par produit pour le SEO local',
+    detail: '"Fenetres PVC Nancy RGE", "Volets roulants Vandoeuvre", "Portes entree aluminium Grand Est". Chaque page = une requete locale ciblee + temoignages produit + formulaire simplifie. Jean-Luc cherche "menuisier RGE nancy" — une page "bailleurs multi-logements" le capturerait directement.',
+  },
+];
+
+const ameliorationsDiscuter = [
+  {
+    emoji: '🧮',
+    titre: 'Simulateur d\'economies MaPrimeRenov en ligne',
+    detail: 'Thomas avait besoin de comprendre combien il allait economiser. Un simulateur simple (type de travaux, surface, revenus fiscaux) donnant une estimation des aides = outil de decision puissant et differenciateur majeur par rapport aux concurrents sans simulateur.',
+  },
+  {
+    emoji: '🏢',
+    titre: 'Page "Bailleurs et syndics"',
+    detail: 'Jean-Luc represente un segment haute valeur : renovation multi-logements avec cumul d\'aides. Une page "Allo Fermeture — Partenaire bailleurs" avec processus simplifie pour les commandes multi-logements = capture du segment professionnel.',
+  },
+];
+
+const techVerdicts = [
+  { label: 'Vitesse', verdict: 'Faible', ok: false, detail: 'WordPress + Divi — ~40 mobile, LCP ~4.2s' },
+  { label: 'Securite', verdict: 'Bon', ok: true, detail: 'HTTPS + HSTS — grade B estime' },
+  { label: 'SEO', verdict: 'Faible', ok: false, detail: 'MaPrimeRenov/CEE non adresses — requetes les plus fortes du secteur' },
+  { label: 'Donnees structurees', verdict: 'Absent', ok: false, detail: '322 avis 4.7★ + RGE non exploites en rich snippets' },
+  { label: 'Formulaire', verdict: 'Friction', ok: false, detail: 'Formulaire devis trop complexe — abandon comparateurs initiaux' },
+];
+
+const tech = {
+  observatory: { grade: 'B', score: 60, testsOk: 5, testsTotal: 10 },
+  pagespdMobile: { performance: 40, accessibility: 76, bestPractices: 74, seo: 70 },
+  pagespdDesktop: { performance: 65, accessibility: 80, bestPractices: 78, seo: 74 },
+  cwv: { lcp: '~4.2s (Divi + galerie photos)', inp: '~300ms', cls: '~0.07' },
+  headers: [
+    { ok: true, h: 'HTTPS' },
+    { ok: true, h: 'HSTS probable' },
+    { ok: false, h: 'Content-Security-Policy (absent)' },
+    { ok: true, h: 'X-Frame-Options' },
+    { ok: false, h: 'Permissions-Policy (absent)' },
+  ],
+  schema: [
+    { item: 'Schema.org HomeAndConstructionBusiness', ok: false },
+    { item: 'Nom + Adresse + Telephone (NAP)', ok: false },
+    { item: 'Avis agreges (4.7★ / 322 avis)', ok: false },
+    { item: 'hasCredential (RGE Qualibat)', ok: false },
+    { item: 'OpeningHours', ok: false },
+    { item: 'AreaServed (Nancy, Grand Est)', ok: false },
+    { item: 'Offer (devis gratuit)', ok: false },
+  ],
+  og: [
+    { item: 'og:title', ok: true, val: 'Present (WordPress)' },
+    { item: 'og:description', ok: true, val: 'Probablement generique' },
+    { item: 'og:image', ok: true, val: 'Present probable' },
+    { item: 'og:type', ok: true, val: 'website' },
+  ],
+  seo: [
+    { item: 'Title tag present', ok: true },
+    { item: 'Meta description', ok: true },
+    { item: 'HTTPS', ok: true },
+    { item: 'Responsive mobile', ok: true },
+    { item: 'RGE Qualibat mis en avant SEO', ok: false },
+    { item: 'Page MaPrimeRenov / CEE dediee', ok: false },
+    { item: 'Schema.org + hasCredential RGE', ok: false },
+    { item: 'Formulaire devis simplifie (3 champs)', ok: false },
+    { item: 'Pages produits (fenetres, volets, portes)', ok: false },
+    { item: 'Temoignages avec type chantier + aides', ok: false },
+  ],
+};
+---
+
+<BaseLayout
+  title={`${formuleLabel} — ${nomProspect}`}
+  description={`Rapport Echo Decouverte pour ${nomProspect}. ${kpis.nbPersonas} visiteurs simules, audit technique, recommandation prioritaire.`}
+  noindex={true}
+  frPath={`/echo/${slug}`}
+  ogImage="/og-echo.png"
+>
+
+<!-- 1. HERO -->
+<section class="relative w-full px-6 py-20 md:py-28 overflow-hidden" style="background: #0A0A0A;">
+  <div class="absolute inset-0 opacity-5" style="background-image: radial-gradient(circle at 25% 50%, #6366f1 0%, transparent 50%), radial-gradient(circle at 75% 50%, #8b5cf6 0%, transparent 50%);"></div>
+  <div class="relative max-w-4xl mx-auto">
+    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full text-xs font-medium mb-6" style="background: rgba(99,102,241,0.15); color: #818cf8; border: 1px solid rgba(99,102,241,0.3);">
+      Echo {formuleLabel}
+    </div>
+    <h1 class="text-3xl md:text-5xl font-bold text-white mb-4" style="line-height:1.15;">
+      {nomProspect}
+      <span class="block text-2xl md:text-3xl mt-2" style="color:#818cf8;">ce que vos visiteurs vivent vraiment</span>
+    </h1>
+    <p class="text-lg mb-8" style="color: rgba(255,255,255,0.6);">Audit du {dateAudit} · <a href={urlSite} target="_blank" rel="noopener noreferrer" style="color:#818cf8;">{urlSite}</a></p>
+    <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-10">
+      <div class="rounded-xl p-4 text-center" style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);">
+        <div class="text-3xl font-bold text-white">{kpis.conversion}%</div>
+        <div class="text-xs mt-1" style="color:rgba(255,255,255,0.5);">conversion simulée</div>
+      </div>
+      <div class="rounded-xl p-4 text-center" style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);">
+        <div class="text-3xl font-bold text-white">{kpis.experience}<span class="text-lg">/10</span></div>
+        <div class="text-xs mt-1" style="color:rgba(255,255,255,0.5);">expérience</div>
+      </div>
+      <div class="rounded-xl p-4 text-center" style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);">
+        <div class="text-3xl font-bold text-white">{kpis.confiance}<span class="text-lg">/10</span></div>
+        <div class="text-xs mt-1" style="color:rgba(255,255,255,0.5);">confiance</div>
+      </div>
+      <div class="rounded-xl p-4 text-center" style="background:rgba(255,255,255,0.04); border:1px solid rgba(255,255,255,0.08);">
+        <div class="text-3xl font-bold text-white">{kpis.clarte}<span class="text-lg">/10</span></div>
+        <div class="text-xs mt-1" style="color:rgba(255,255,255,0.5);">clarté</div>
+      </div>
+    </div>
+    <div class="rounded-2xl p-6" style="background:rgba(99,102,241,0.1); border:1px solid rgba(99,102,241,0.25);">
+      <p class="text-base leading-relaxed" style="color:rgba(255,255,255,0.85);">"{verdictHero}"</p>
+    </div>
+  </div>
+</section>
+
+<!-- 2. CONSTAT -->
+<section class="w-full px-6 py-16" style="background:#111111;">
+  <div class="max-w-4xl mx-auto">
+    <h2 class="text-2xl md:text-3xl font-bold text-white mb-6">Ce que nous avons observé</h2>
+    <p class="text-base leading-relaxed mb-8" style="color:rgba(255,255,255,0.7);">{constat}</p>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="rounded-xl p-5 flex flex-col gap-2" style="background:rgba(34,197,94,0.08); border:1px solid rgba(34,197,94,0.2);">
+        <span class="text-2xl font-bold" style="color:#4ade80;">{kpis.nbConvertissent}</span>
+        <span class="text-sm font-medium text-white">soumettent ou appellent</span>
+        <span class="text-xs" style="color:rgba(255,255,255,0.5);">RGE + 4.7★ convertissent les decideurs</span>
+      </div>
+      <div class="rounded-xl p-5 flex flex-col gap-2" style="background:rgba(234,179,8,0.08); border:1px solid rgba(234,179,8,0.2);">
+        <span class="text-2xl font-bold" style="color:#facc15;">{kpis.nbHesitent}</span>
+        <span class="text-sm font-medium text-white">hésite</span>
+        <span class="text-xs" style="color:rgba(255,255,255,0.5);">page MaPrimeRénov manquante</span>
+      </div>
+      <div class="rounded-xl p-5 flex flex-col gap-2" style="background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.2);">
+        <span class="text-2xl font-bold" style="color:#f87171;">{kpis.nbRepartent}</span>
+        <span class="text-sm font-medium text-white">repart chez un concurrent</span>
+        <span class="text-xs" style="color:rgba(255,255,255,0.5);">formulaire trop complexe</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3. VISITEURS -->
+<section class="w-full px-6 py-16" style="background:#0A0A0A;">
+  <div class="max-w-4xl mx-auto">
+    <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">5 visiteurs, 5 histoires</h2>
+    <p class="text-sm mb-10" style="color:rgba(255,255,255,0.5);">Simulation comportementale — chaque profil représente un segment réel de votre audience.</p>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      {personas.map((p) => (
+        <div class="rounded-2xl p-6" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+          <div class="flex items-start justify-between mb-4">
+            <div>
+              <span class="text-lg mr-2">{p.emoji}</span>
+              <span class="font-semibold text-white">{p.name}, {p.age} ans</span>
+              <div class="text-xs mt-1" style="color:rgba(255,255,255,0.4);">{p.canal} · {p.device} · {p.maturite}</div>
+            </div>
+            <span class={`text-xs px-2 py-1 rounded-full font-medium ${p.decision === 'Convertit' ? 'bg-green-900/40 text-green-400' : p.decision === 'Hesite' ? 'bg-yellow-900/40 text-yellow-400' : 'bg-red-900/40 text-red-400'}`}>
+              {p.decisionLabel}
+            </span>
+          </div>
+          <p class="text-sm mb-4" style="color:rgba(255,255,255,0.65);">{p.histoire}</p>
+          {p.ceQuiFeraitBasculer && (
+            <div class="rounded-lg p-3 text-xs" style="background:rgba(99,102,241,0.1); color:rgba(255,255,255,0.7); border-left:3px solid #6366f1;">
+              <strong style="color:#818cf8;">Ce qui aurait changé la donne :</strong> {p.ceQuiFeraitBasculer}
+            </div>
+          )}
+        </div>
+      ))}
+    </div>
+    <div class="mt-10">
+      <h3 class="text-lg font-semibold text-white mb-4">Résultats par canal</h3>
+      <div class="space-y-3">
+        {canalData.map((c) => (
+          <div class="flex items-center gap-4">
+            <span class="text-sm w-64 shrink-0" style="color:rgba(255,255,255,0.7);">{c.canal}</span>
+            <div class="flex-1 rounded-full h-2" style="background:rgba(255,255,255,0.08);">
+              <div class="h-2 rounded-full" style={`width:${c.rate}%; background:${c.rate >= 66 ? '#4ade80' : c.rate >= 33 ? '#facc15' : '#f87171'};`}></div>
+            </div>
+            <span class="text-sm shrink-0" style="color:rgba(255,255,255,0.5);">{c.convert}/{c.nb}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. RECOMMANDATIONS -->
+<section class="w-full px-6 py-16" style="background:#111111;">
+  <div class="max-w-4xl mx-auto">
+    <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">3 actions prioritaires</h2>
+    <p class="text-sm mb-10" style="color:rgba(255,255,255,0.5);">Classées par impact sur la conversion. La première suffit souvent à changer le résultat.</p>
+    <div class="space-y-6 mb-12">
+      {ameliorationsHautes.map((a, i) => (
+        <div class="rounded-2xl p-6" style="background:rgba(99,102,241,0.06); border:1px solid rgba(99,102,241,0.2);">
+          <div class="flex items-start gap-4">
+            <div class="rounded-full w-8 h-8 flex items-center justify-center shrink-0 text-sm font-bold" style="background:#6366f1; color:white;">{i+1}</div>
+            <div>
+              <h3 class="font-semibold text-white mb-2">{a.titre}</h3>
+              <p class="text-sm mb-3" style="color:rgba(255,255,255,0.65);">{a.pourquoi}</p>
+              <div class="rounded-lg p-3 text-sm mb-3" style="background:rgba(0,0,0,0.3); color:rgba(255,255,255,0.8);">{a.action}</div>
+              <span class="text-xs px-2 py-1 rounded-full" style="background:rgba(34,197,94,0.1); color:#4ade80;">↑ {a.impact}</span>
+            </div>
+          </div>
+        </div>
+      ))}
+    </div>
+    {ameliorationsUtiles.length > 0 && (
+      <div>
+        <h3 class="text-lg font-semibold text-white mb-4">Améliorations utiles</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+          {ameliorationsUtiles.map((a) => (
+            <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+              <h4 class="font-medium text-white mb-2 text-sm">{a.titre}</h4>
+              <p class="text-xs" style="color:rgba(255,255,255,0.6);">{a.detail}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+    {ameliorationsDiscuter.length > 0 && (
+      <div>
+        <h3 class="text-lg font-semibold text-white mb-4">À discuter selon vos priorités</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {ameliorationsDiscuter.map((a) => (
+            <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.02); border:1px solid rgba(255,255,255,0.06);">
+              <div class="text-xl mb-2">{a.emoji}</div>
+              <h4 class="font-medium text-white mb-2 text-sm">{a.titre}</h4>
+              <p class="text-xs" style="color:rgba(255,255,255,0.5);">{a.detail}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    )}
+  </div>
+</section>
+
+<!-- 5. SOUS LE CAPOT -->
+<section class="w-full px-6 py-16" style="background:#0A0A0A;">
+  <div class="max-w-4xl mx-auto">
+    <h2 class="text-2xl md:text-3xl font-bold text-white mb-10">Sous le capot</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-10">
+      <div class="rounded-2xl p-6" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+        <h3 class="font-semibold text-white mb-4">PageSpeed Insights</h3>
+        <div class="space-y-3">
+          <div>
+            <div class="flex justify-between text-xs mb-1" style="color:rgba(255,255,255,0.6);"><span>Mobile</span><span>{tech.pagespdMobile.performance}/100</span></div>
+            <div class="rounded-full h-2" style="background:rgba(255,255,255,0.08);"><div class="h-2 rounded-full" style={`width:${tech.pagespdMobile.performance}%; background:${tech.pagespdMobile.performance >= 70 ? '#4ade80' : tech.pagespdMobile.performance >= 50 ? '#facc15' : '#f87171'};`}></div></div>
+          </div>
+          <div>
+            <div class="flex justify-between text-xs mb-1" style="color:rgba(255,255,255,0.6);"><span>Desktop</span><span>{tech.pagespdDesktop.performance}/100</span></div>
+            <div class="rounded-full h-2" style="background:rgba(255,255,255,0.08);"><div class="h-2 rounded-full" style={`width:${tech.pagespdDesktop.performance}%; background:${tech.pagespdDesktop.performance >= 70 ? '#4ade80' : tech.pagespdDesktop.performance >= 50 ? '#facc15' : '#f87171'};`}></div></div>
+          </div>
+        </div>
+        <div class="mt-4 text-xs space-y-1" style="color:rgba(255,255,255,0.45);">
+          <div>LCP : {tech.cwv.lcp}</div>
+          <div>INP : {tech.cwv.inp}</div>
+          <div>CLS : {tech.cwv.cls}</div>
+        </div>
+      </div>
+      <div class="rounded-2xl p-6" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+        <h3 class="font-semibold text-white mb-4">Mozilla Observatory</h3>
+        <div class="text-4xl font-bold text-white mb-2">{tech.observatory.grade}</div>
+        <div class="text-sm mb-4" style="color:rgba(255,255,255,0.5);">{tech.observatory.testsOk}/{tech.observatory.testsTotal} tests passés</div>
+        <div class="space-y-2">
+          {tech.headers.map((h) => (
+            <div class="flex items-center gap-2 text-xs">
+              <span style={h.ok ? 'color:#4ade80;' : 'color:#f87171;'}>{h.ok ? '✓' : '✗'}</span>
+              <span style="color:rgba(255,255,255,0.6);">{h.h}</span>
+            </div>
+          ))}
+        </div>
+      </div>
+    </div>
+    <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mb-10">
+      {techVerdicts.map((v) => (
+        <div class="rounded-xl p-4" style={`background:${v.ok ? 'rgba(34,197,94,0.06)' : 'rgba(239,68,68,0.06)'}; border:1px solid ${v.ok ? 'rgba(34,197,94,0.2)' : 'rgba(239,68,68,0.2)'};`}>
+          <div class="text-xs mb-1" style="color:rgba(255,255,255,0.5);">{v.label}</div>
+          <div class="font-semibold text-sm" style={v.ok ? 'color:#4ade80;' : 'color:#f87171;'}>{v.verdict}</div>
+          <div class="text-xs mt-1" style="color:rgba(255,255,255,0.4);">{v.detail}</div>
+        </div>
+      ))}
+    </div>
+    <div class="rounded-2xl p-6 mb-6" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+      <h3 class="font-semibold text-white mb-4">Données structurées (Schema.org)</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+        {tech.schema.map((s) => (
+          <div class="flex items-center gap-2 text-sm">
+            <span style={s.ok ? 'color:#4ade80;' : 'color:#f87171;'}>{s.ok ? '✓' : '✗'}</span>
+            <span style="color:rgba(255,255,255,0.65);">{s.item}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+    <div class="rounded-2xl p-6" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+      <h3 class="font-semibold text-white mb-4">Signaux SEO</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-2">
+        {tech.seo.map((s) => (
+          <div class="flex items-center gap-2 text-sm">
+            <span style={s.ok ? 'color:#4ade80;' : 'color:#f87171;'}>{s.ok ? '✓' : '✗'}</span>
+            <span style="color:rgba(255,255,255,0.65);">{s.item}</span>
+          </div>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. METHODOLOGIE -->
+<section class="w-full px-6 py-16" style="background:#111111;">
+  <div class="max-w-4xl mx-auto">
+    <h2 class="text-2xl md:text-3xl font-bold text-white mb-6">Comment fonctionne Echo</h2>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+      <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+        <div class="text-2xl mb-3">🔍</div>
+        <h3 class="font-semibold text-white mb-2 text-sm">Audit du site</h3>
+        <p class="text-xs" style="color:rgba(255,255,255,0.55);">Scraping complet, PageSpeed, Mozilla Observatory, Schema.org, signaux SEO.</p>
+      </div>
+      <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+        <div class="text-2xl mb-3">👥</div>
+        <h3 class="font-semibold text-white mb-2 text-sm">5 visiteurs simulés</h3>
+        <p class="text-xs" style="color:rgba(255,255,255,0.55);">5 profils réels visitent votre site et racontent leur parcours et leur décision.</p>
+      </div>
+      <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+        <div class="text-2xl mb-3">🎯</div>
+        <h3 class="font-semibold text-white mb-2 text-sm">3 actions concrètes</h3>
+        <p class="text-xs" style="color:rgba(255,255,255,0.55);">Les 3 actions qui changeront le résultat le mois prochain.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 7. CTA FINAL -->
+<section class="w-full px-6 py-20" style="background:#0A0A0A;">
+  <div class="max-w-2xl mx-auto text-center">
+    <h2 class="text-2xl md:text-3xl font-bold text-white mb-4">Vous voulez aller plus loin ?</h2>
+    <p class="text-base mb-8" style="color:rgba(255,255,255,0.6);">Ce rapport vous a été préparé par Marc Muller — développeur web indépendant basé en Grand Est. Si vous voulez qu'on en parle, c'est sans engagement.</p>
+    <div class="flex flex-col sm:flex-row gap-4 justify-center">
+      <a href="tel:+33695961220" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold text-white transition-opacity hover:opacity-90" style="background:#6366f1;">
+        📞 Appeler Marc
+      </a>
+      <a href="mailto:marc@muller.im" class="inline-flex items-center justify-center gap-2 px-6 py-3 rounded-full font-semibold transition-opacity hover:opacity-90" style="background:rgba(255,255,255,0.08); color:rgba(255,255,255,0.9); border:1px solid rgba(255,255,255,0.15);">
+        ✉️ Envoyer un email
+      </a>
+    </div>
+    {showUpsell && (
+      <div class="mt-16 pt-10" style="border-top:1px solid rgba(255,255,255,0.06);">
+        <p class="text-xs mb-6" style="color:rgba(255,255,255,0.3);">Ce rapport est la version Découverte — 5 personas, audit essentiel.</p>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+          <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+            <div class="font-semibold text-white mb-1 text-sm">Echo Complet</div>
+            <div class="text-xs mb-3" style="color:rgba(255,255,255,0.5);">10 personas · audit technique approfondi · roadmap priorisée · 3 mois de suivi</div>
+            <span class="text-xs px-2 py-1 rounded-full" style="background:rgba(99,102,241,0.15); color:#818cf8;">Sur devis</span>
+          </div>
+          <div class="rounded-xl p-5" style="background:rgba(255,255,255,0.03); border:1px solid rgba(255,255,255,0.08);">
+            <div class="font-semibold text-white mb-1 text-sm">Echo Pro</div>
+            <div class="text-xs mb-3" style="color:rgba(255,255,255,0.5);">Complet + implémentation des corrections · nouveau site si nécessaire · suivi 6 mois</div>
+            <span class="text-xs px-2 py-1 rounded-full" style="background:rgba(99,102,241,0.15); color:#818cf8;">Sur devis</span>
+          </div>
+        </div>
+      </div>
+    )}
+  </div>
+</section>
+
+</BaseLayout>

@@ -1,0 +1,731 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const slug = 'french-trattoria';
+const formule: 'decouverte' | 'complet' | 'pro' = 'decouverte';
+const formuleLabel = 'Echo Decouverte';
+const isProspection = true;
+const nomProspect = 'French Trattoria Nancy';
+const urlSite = 'https://french-trattoria.fr';
+const dateAudit = '31 mars 2026';
+const showUpsell = true;
+
+const kpis = {
+  nbPersonas: 5,
+  nbConvertissent: 3,
+  nbHesitent: 1,
+  nbRepartent: 1,
+  conversion: 60,
+  experience: 6.5,
+  confiance: 8.8,
+  clarte: 3.8,
+};
+
+const verdictHero = 'Sur 5 visiteurs, 3 reservent — la note 4.7 et le label Gault & Millau convertissent les decideurs malgre un site fige depuis la livraison agence. Thomas organisait un repas d\'affaires : pas de reservation en ligne, pas de prix, email gmail — il est alle directement sur TheFork. Lea cherchait a reserver depuis son mobile : sans menu lisible ni reservation directe, elle a choisi un concurrent.';
+
+const constat = 'French Trattoria est un restaurant de qualite avec un concept rare a Nancy (franco-italien, Gault & Millau) et une note tres solide. Mais son site agence livre en one-shot est une photographie figee : aucune mise a jour, carte en image, pas de reservation en ligne, email gmail affiche publiquement. Chaque conversion passe par un appel — friction eliminable. L\'etablissement est invisible sur "restaurant franco-italien nancy", "gault millau nancy" malgre des atouts qui devraient dominer ces requetes.';
+
+const canalData = [
+  { canal: 'Google Search (franco-italien)', nb: 1, convert: 1, rate: 100 },
+  { canal: 'Bouche-a-oreille (adresse)', nb: 1, convert: 1, rate: 100 },
+  { canal: 'IA (gastronomique fusion)', nb: 1, convert: 0, rate: 0 },
+  { canal: 'Google Maps (repas affaires)', nb: 1, convert: 0, rate: 0 },
+  { canal: 'Google Search (original)', nb: 1, convert: 1, rate: 100 },
+];
+
+const personas = [
+  {
+    id: 1,
+    name: 'Alice',
+    age: 34,
+    emoji: '🍝',
+    situation: 'Cherche un restaurant franco-italien gastronomique pour un diner romantique',
+    canal: 'Google Search',
+    device: 'Mobile',
+    decision: 'Convertit' as const,
+    decisionLabel: 'Appelle',
+    histoire: '"restaurant franco-italien nancy" → Maps → French Trattoria 4.7 → site → carte en image difficilement lisible → mention Gault & Millau → appelle pour reserver.',
+    localisation: 'Nancy (54)',
+    maturite: 'Decision',
+    contexte: 'Diner romantique prevu ce week-end. Cherche quelque chose d\'original qui sort des restaurants classiques nancy.',
+    impression: 'Le concept franco-italien + Gault & Millau = exactement ce qu\'elle cherchait. La friction du site (carte image, pas de resa en ligne) est compensee par la distinction.',
+    parcours: [
+      ['Google Search', '"restaurant franco-italien nancy"'],
+      ['Google Maps', 'French Trattoria — 4.7 sur 361 avis, 6 rue Baron Louis'],
+      ['Site', 'Mention Gault & Millau + carte en image — difficilement lisible mobile'],
+      ['Appel', 'Appelle le 09 73 88 08 36 pour reserver'],
+    ] as [string, string][],
+    questionCle: 'C\'est un vrai restaurant gastronomique original et peut-on reserver ?',
+    reponse: 'Partiellement' as const,
+    commentReponse: 'Gault & Millau valide la qualite — mais la reservation ne se fait que par appel.',
+    impactVitesse: 'Site statique — bonne vitesse mais contenu fige',
+    impactConfiance: '4.7 sur 361 avis + Gault & Millau = double signal fort',
+    positifs: ['Label Gault & Millau Grand Est', 'Note 4.7 tres solide', 'Concept franco-italien unique'],
+    frictions: ['Pas de reservation en ligne', 'Carte en image illisible mobile', 'Email gmail'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 9, clarte: 4,
+  },
+  {
+    id: 2,
+    name: 'Pierre',
+    age: 55,
+    emoji: '🏢',
+    situation: 'Collegue recommande — cherche l\'adresse et pour reserver en ligne',
+    canal: 'Bouche-a-oreille',
+    device: 'Desktop',
+    decision: 'Convertit' as const,
+    decisionLabel: 'Appelle',
+    histoire: '"French Trattoria Nancy" → site → adresse trouvee → pas de reservation en ligne → appelle → reserver.',
+    localisation: 'Nancy (54)',
+    maturite: 'Decision',
+    contexte: 'Recommandation enthousiaste d\'un collegue. Veut juste confirmer l\'adresse et reserver rapidement.',
+    impression: 'Le site donne l\'adresse — c\'est suffisant avec la recommandation. Mais l\'absence de reservation en ligne ajoute une etape inutile.',
+    parcours: [
+      ['Recherche directe', '"French Trattoria Nancy"'],
+      ['Site', 'Adresse 6 rue Baron Louis trouvee'],
+      ['Reservation', 'Appelle faute de reservation en ligne'],
+    ] as [string, string][],
+    questionCle: 'Ou c\'est et comment je reserve ?',
+    reponse: 'Partiellement' as const,
+    commentReponse: 'Adresse trouvee — mais pas de reservation en ligne, doit appeler.',
+    impactVitesse: 'Desktop — non bloquant',
+    impactConfiance: 'Recommandation directe = confiance totale',
+    positifs: ['Adresse disponible', 'Recommandation forte'],
+    frictions: ['Pas de reservation en ligne', 'Doit appeler pour reserver'],
+    ceQuiFeraitBasculer: '',
+    exp: 6, conf: 9, clarte: 5,
+  },
+  {
+    id: 3,
+    name: 'Lea',
+    age: 27,
+    emoji: '📱',
+    situation: 'Cherche un restaurant gastronomique fusion a Nancy — ne connait pas French Trattoria',
+    canal: 'IA (ChatGPT)',
+    device: 'Mobile',
+    decision: 'Hesite' as const,
+    decisionLabel: 'Hesite',
+    histoire: '"restaurant gastronomique fusion nancy" via ChatGPT → French Trattoria cite. Site → carte en image illisible mobile → pas de prix → pas de reservation en ligne → email gmail visible → concurrent avec reservation en ligne + menu HTML → hesite.',
+    localisation: 'Nancy (54)',
+    maturite: 'Decouverte',
+    contexte: 'Cherche pour la premiere fois, veut reserver directement en ligne comme elle le fait pour tous ses restaurants. Habituee a TheFork ou LaFourchette.',
+    impression: 'Le concept l\'interesse — mais l\'experience utilisateur est datee. Pas de reservation en ligne, carte illisible sur mobile, email gmail. Ca ne colle pas avec l\'image "gastronomique".',
+    parcours: [
+      ['ChatGPT', '"restaurant gastronomique fusion nancy" — French Trattoria cite'],
+      ['Site', 'Carte en image — ouvre l\'image, trop petite sur mobile'],
+      ['Reservation', 'Cherche bouton reservation en ligne → pas de bouton'],
+      ['Email', 'Voit gestionfrench.trattoria@gmail.com — doute sur le serieux'],
+      ['Concurrent', 'Trouve un concurrent avec TheFork integration + menu HTML + photos plats → reserve directement'],
+    ] as [string, string][],
+    questionCle: 'Puis-je voir la carte et reserver directement en ligne ?',
+    reponse: 'Non' as const,
+    commentReponse: 'Pas de reservation en ligne, carte illisible sur mobile — le concurrent plus digital l\'emporte.',
+    impactVitesse: 'Site statique rapide — mais contenu inadapte mobile',
+    impactConfiance: 'Gault & Millau fort — mais email gmail signal de discordance avec l\'image gastronomique',
+    positifs: ['Label Gault & Millau connu', 'Note 4.7 tres solide'],
+    frictions: ['Pas de reservation en ligne', 'Carte illisible mobile', 'Email gmail public discordant', 'Site non maintenu depuis livraison'],
+    ceQuiFeraitBasculer: 'Un widget de reservation en ligne (TheFork, Zenchef ou simple formulaire) + menu HTML lisible sur mobile. Lea voulait venir — elle avait juste besoin de pouvoir reserver en 3 clics comme partout ailleurs.',
+    exp: 4, conf: 7, clarte: 3,
+  },
+  {
+    id: 4,
+    name: 'Thomas',
+    age: 42,
+    emoji: '💼',
+    situation: 'Organise un repas d\'affaires pour 8 personnes — besoin de budget et resa facile',
+    canal: 'Google Maps',
+    device: 'Tablette',
+    decision: 'Quitte' as const,
+    decisionLabel: 'Repart',
+    histoire: 'Maps → French Trattoria 4.7 Gault & Millau → site → pas de prix → pas de formule affaires → pas de resa en ligne → email gmail → repart vers concurrent avec page "reservation groupe + menu prix fixe".',
+    localisation: 'Nancy (54)',
+    maturite: 'Comparaison',
+    contexte: 'Repas d\'affaires avec client important. Doit valider le budget avec son chef et proposer une solution complete : reservation confirmee + prix connus.',
+    impression: 'Gault & Millau serait parfait pour impressionner le client. Mais sans prix visibles, sans formule affaires, sans reservation en ligne — il ne peut pas presenter ca a son chef comme une solution cle en main.',
+    parcours: [
+      ['Google Maps', '"restaurant affaires nancy"'],
+      ['Site', 'Cherche menu + prix — carte en image, prix invisibles'],
+      ['Reservation', 'Cherche reservation en ligne → pas de bouton'],
+      ['Email', 'Voit email gmail → h\'esite sur le professionnalisme'],
+      ['Decision', 'Repart vers concurrent avec page "repas d\'affaires, menu a 45€/pers, reservation directe"'],
+    ] as [string, string][],
+    questionCle: 'Quel budget pour 8 personnes et comment je confirme la reservation rapidement ?',
+    reponse: 'Non' as const,
+    commentReponse: 'Pas de prix, pas de reservation en ligne, email gmail — impossible de presenter ca en interne.',
+    impactVitesse: 'Tablette — vitesse non bloquante',
+    impactConfiance: 'Gault & Millau fort mais email gmail creer un doute sur le processus professionnel',
+    positifs: ['Label Gault & Millau = image premium', 'Note 4.7 pour impressionner le client'],
+    frictions: ['Pas de prix affichés', 'Pas de reservation en ligne', 'Email gmail discordant', 'Pas de formule affaires/groupe'],
+    ceQuiFeraitBasculer: 'Un menu avec les prix (ou fourchette) + reservation en ligne ou formulaire groupe + email professionnel reservation@french-trattoria.fr. Thomas voulait offrir le meilleur restaurant — il avait juste besoin d\'une solution cle en main.',
+    exp: 4, conf: 7, clarte: 2,
+  },
+  {
+    id: 5,
+    name: 'Elodie',
+    age: 39,
+    emoji: '🎉',
+    situation: 'Compare 3 restaurants pour un diner d\'anniversaire — cherche le plus original',
+    canal: 'Google Search',
+    device: 'Desktop',
+    decision: 'Convertit' as const,
+    decisionLabel: 'Appelle',
+    histoire: '"restaurant original nancy" → French Trattoria → 4.7 Gault & Millau → concept franco-italien unique → appelle pour reserver → decide.',
+    localisation: 'Nancy (54)',
+    maturite: 'Comparaison',
+    contexte: 'Anniversaire de son mari, veut quelque chose d\'unique. Le concept franco-italien avec Gault & Millau = cadre ideal.',
+    impression: 'L\'originalite du concept + la distinction Gault & Millau = exactement ce qu\'elle voulait pour un anniversaire memorable. Le site est peu commode mais la note et la distinction decidient.',
+    parcours: [
+      ['Google Search', '"restaurant original nancy"'],
+      ['Site', '4.7 + Gault & Millau + concept franco-italien — le plus original de sa liste'],
+      ['Appel', 'Appelle pour confirmer et reserver'],
+    ] as [string, string][],
+    questionCle: 'C\'est vraiment unique et memorable ?',
+    reponse: 'Oui' as const,
+    commentReponse: 'Gault & Millau + concept franco-italien = la reponse la plus convaincante de sa liste.',
+    impactVitesse: 'Desktop — non bloquant',
+    impactConfiance: '4.7 + Gault & Millau = maximum de credibilite pour un anniversaire',
+    positifs: ['Concept unique a Nancy', 'Gault & Millau = gage de qualite pour un anniversaire', 'Note 4.7 rassurante'],
+    frictions: ['Doit appeler — pas de reservation en ligne'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 9, clarte: 4,
+  },
+];
+
+const ameliorationsHautes = [
+  {
+    titre: 'Reservation en ligne — friction #1',
+    pourquoi: 'Thomas et Lea veulent reserver directement — pas d\'appel, pas d\'email. En 2026, l\'absence de reservation en ligne est eliminatoire pour le segment jeune et professionnel. Gault & Millau + pas de reservation en ligne = discordance qui casse la confiance.',
+    action: 'Integration TheFork ou Zenchef (widget embed), ou formulaire Web3Forms avec confirmation automatique. Un bouton "Reserver" visible en hero sur toutes les pages. Pour les groupes : formulaire dedie avec champ nombre de personnes + date + occasion.',
+    impact: '2 visiteurs sur 5 perdus ou bloque par l\'absence de reservation en ligne',
+  },
+  {
+    titre: 'Menu textuel HTML avec les prix',
+    pourquoi: 'Lea et Thomas ont besoin de voir les plats et les prix avant de decider. Carte en image = invisible pour Google + illisible sur mobile. Un menu HTML ("Pates fraiches maison 18€, Risotto aux cepes de Lorraine 22€, Tiramisu revisit 9€") = SEO + conversion + image gastronomique coherente.',
+    action: 'Menu HTML structure (entrees, plats, desserts, prix) avec description courte de chaque plat. Mention des specialites franco-italiennes. Garder le PDF en complementaire pour l\'impression.',
+    impact: 'Requetes "menu restaurant franco-italien nancy" = actuellement invisible',
+  },
+  {
+    titre: 'Mettre en avant Gault & Millau + email professionnel + Schema.org Award',
+    pourquoi: 'La distinction Gault & Millau Grand Est est l\'atout #1 — elle doit etre visible des le hero, pas seulement mention discrete. L\'email gmail discorde avec cette image gastronomique. Schema.org Restaurant + AggregateRating + Award = etoiles SERP + badge distinction.',
+    action: 'Badge "Gault & Millau Grand Est" en hero H1. Email reservation@french-trattoria.fr (~2€/mois). Schema.org JSON-LD : @type Restaurant, aggregateRating (4.7, 361), award (Guide Gault & Millau).',
+    impact: 'CTR +30% estime sur "restaurant gastronomique nancy" avec badge Gault & Millau visible',
+  },
+];
+
+const ameliorationsUtiles = [
+  {
+    titre: 'Site maintenable avec CMS simple',
+    detail: 'Le site agence livré est fige — impossible d\'ajouter des actualites, changer la carte, annoncer un evenement. Un site avec Keystatic ou WordPress simple = autonomie totale pour les mises a jour.',
+  },
+  {
+    titre: 'Email professionnel',
+    detail: 'gestionfrench.trattoria@gmail.com est discordant avec l\'image Gault & Millau. reservation@french-trattoria.fr ou contact@french-trattoria.fr = professionnalisation immediate (~2€/mois).',
+  },
+];
+
+const ameliorationsDiscuter = [
+  {
+    emoji: '🍷',
+    titre: 'Page "Notre histoire" — raconter la genese franco-italienne',
+    detail: 'Le concept franco-italien a Nancy est une vraie histoire — qui a fonde, quelle inspiration, quelle philosophie. Un contenu editorial unique impossible a copier et tres valorise en SEO editorial.',
+  },
+];
+
+const techVerdicts = [
+  { label: 'Vitesse', verdict: 'Bon', ok: true, detail: 'Site statique — ~62 mobile, LCP ~2.8s' },
+  { label: 'Securite', verdict: 'Acceptable', ok: true, detail: 'HTTPS probable — grade B- estime (statique)' },
+  { label: 'SEO local', verdict: 'Absent', ok: false, detail: 'Carte en image — invisible Google sur toute la longue traine' },
+  { label: 'Donnees structurees', verdict: 'Absent', ok: false, detail: 'Schema.org absent — 4.7 sur 361 avis + Gault & Millau non exploites' },
+  { label: 'Partage reseaux', verdict: 'Basique', ok: true, detail: 'OG probable (agence)' },
+];
+
+const tech = {
+  observatory: { grade: 'B-', score: 60, testsOk: 4, testsTotal: 10 },
+  pagespdMobile: { performance: 62, accessibility: 78, bestPractices: 75, seo: 65 },
+  pagespdDesktop: { performance: 80, accessibility: 82, bestPractices: 80, seo: 72 },
+  cwv: { lcp: '~2.8s (statique)', inp: '~150ms', cls: '~0.03' },
+  headers: [
+    { ok: true, h: 'HTTPS' },
+    { ok: false, h: 'HSTS (statique — non configure)' },
+    { ok: false, h: 'Content-Security-Policy (absent)' },
+    { ok: false, h: 'X-Frame-Options (absent ou statique)' },
+    { ok: false, h: 'Permissions-Policy (absent)' },
+  ],
+  schema: [
+    { item: 'Schema.org Restaurant', ok: false },
+    { item: 'NAP (nom, adresse, tel)', ok: false },
+    { item: 'AggregateRating (4.7 / 361 avis)', ok: false },
+    { item: 'Award (Gault & Millau Grand Est)', ok: false },
+    { item: 'OpeningHours', ok: false },
+    { item: 'Menu structure', ok: false },
+  ],
+  og: [
+    { item: 'og:title', ok: true, val: 'Probable (agence)' },
+    { item: 'og:description', ok: true, val: 'Probable (agence)' },
+    { item: 'og:image', ok: true, val: 'Probable' },
+  ],
+  seo: [
+    { item: 'Title tag present', ok: true },
+    { item: 'HTTPS', ok: true },
+    { item: 'Responsive mobile', ok: true },
+    { item: 'Menu textuel indexable', ok: false },
+    { item: 'Reservation en ligne', ok: false },
+    { item: 'Gault & Millau en hero/H1', ok: false },
+    { item: 'Schema.org Restaurant + Award', ok: false },
+    { item: 'Email professionnel', ok: false },
+    { item: 'Site mis a jour regulierement', ok: false },
+  ],
+};
+---
+
+<BaseLayout
+  title={`${formuleLabel} — ${nomProspect}`}
+  description={`Rapport Echo Decouverte pour ${nomProspect}. ${kpis.nbPersonas} visiteurs simules, audit technique, recommandation prioritaire.`}
+  noindex={true}
+  frPath={`/echo/${slug}`}
+  ogImage="/og-echo.png"
+>
+
+<!-- 1. HERO -->
+<section class="relative w-full px-6 py-20 md:py-28 overflow-hidden" style="background: #0A0A0A;">
+  <div class="absolute top-[20%] left-[10%] w-[500px] h-[500px] rounded-full blur-[180px] pointer-events-none" style="background: #E86C47; opacity: 0.06;"></div>
+  <div class="relative mx-auto max-w-4xl z-10">
+    <div class="mb-6 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5);">
+      {formuleLabel} · Rapport confidentiel
+    </div>
+    <h1 class="mb-6 text-3xl md:text-4xl font-bold text-white leading-tight tracking-tight">{verdictHero}</h1>
+    <p class="mb-10 text-sm" style="color: rgba(255,255,255,0.4);">
+      Site analyse : <a href={urlSite} target="_blank" class="underline hover:text-white transition-colors">{urlSite}</a> · {kpis.nbPersonas} visiteurs simules · {dateAudit}
+    </p>
+    <div class="grid grid-cols-3 gap-4">
+      <div class="rounded-xl p-5 text-center" style="background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2);">
+        <div class="text-4xl md:text-5xl font-black text-green-400 mb-1">{kpis.nbConvertissent}</div>
+        <div class="text-sm text-green-400/70">vous contactent</div>
+      </div>
+      <div class="rounded-xl p-5 text-center" style="background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2);">
+        <div class="text-4xl md:text-5xl font-black text-amber-400 mb-1">{kpis.nbHesitent}</div>
+        <div class="text-sm text-amber-400/70">hesitent</div>
+      </div>
+      <div class="rounded-xl p-5 text-center" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
+        <div class="text-4xl md:text-5xl font-black mb-1" style="color: rgba(255,255,255,0.5);">{kpis.nbRepartent}</div>
+        <div class="text-sm" style="color: rgba(255,255,255,0.3);">repartent</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 2. CONSTAT -->
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <div class="rounded-2xl p-6 md:p-8 mb-12 border-l-4" style="background: rgba(232,108,71,0.04); border-color: #E86C47;">
+    <p class="text-lg md:text-xl font-medium text-neutral-800 leading-relaxed">{constat}</p>
+  </div>
+  <h2 class="text-xl font-bold text-neutral-900 mb-2">D'ou viennent vos visiteurs</h2>
+  <p class="text-sm text-neutral-500 mb-6">Et combien vous contactent selon leur canal d'arrivee.</p>
+  <div class="space-y-4 mb-12">
+    {canalData.map(c => {
+      const color = c.rate >= 50 ? '#22c55e' : c.rate >= 25 ? '#f59e0b' : '#ef4444';
+      return (
+        <div class="flex items-center gap-4">
+          <div class="w-48 sm:w-56 text-sm text-neutral-700 shrink-0">{c.canal}</div>
+          <div class="flex-1 h-3 bg-neutral-100 rounded-full overflow-hidden">
+            <div class="h-full rounded-full transition-all" style={`width: ${c.rate}%; background: ${color}`}></div>
+          </div>
+          <div class="w-20 text-right">
+            <span class="text-sm font-bold" style={`color: ${color}`}>{c.rate}%</span>
+            <span class="text-xs text-neutral-400 ml-1">({c.convert}/{c.nb})</span>
+          </div>
+        </div>
+      );
+    })}
+  </div>
+  <div class="rounded-2xl p-6 mb-6" style="background: #fefce8; border: 1px solid #fbbf24;">
+    <div class="flex items-start gap-3">
+      <svg class="w-5 h-5 text-amber-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+      <div>
+        <p class="font-semibold text-amber-900 mb-1">Gault & Millau + 4.7 etoiles — le site ne fait pas travailler ces atouts</p>
+        <p class="text-sm text-amber-800">Pas de reservation en ligne, carte illisible mobile, email gmail public — un site agence livre et oublie. Ces frictions eliminables font partir les clients les plus motives.</p>
+      </div>
+    </div>
+  </div>
+  <details class="group mb-4">
+    <summary class="flex items-center gap-2 cursor-pointer text-sm text-neutral-500 hover:text-neutral-700 py-2">
+      <svg class="w-4 h-4 transition-transform group-open:rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      Voir les scores detailles
+    </summary>
+    <div class="grid grid-cols-3 gap-4 mt-3">
+      <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
+        <div class="text-2xl font-bold text-neutral-800 mb-1">{kpis.experience}<span class="text-sm text-neutral-400">/10</span></div>
+        <div class="text-xs text-neutral-500">Experience</div>
+      </div>
+      <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
+        <div class="text-2xl font-bold text-neutral-800 mb-1">{kpis.confiance}<span class="text-sm text-neutral-400">/10</span></div>
+        <div class="text-xs text-neutral-500">Confiance</div>
+      </div>
+      <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
+        <div class="text-2xl font-bold text-neutral-800 mb-1">{kpis.clarte}<span class="text-sm text-neutral-400">/10</span></div>
+        <div class="text-xs text-neutral-500">Clarte</div>
+      </div>
+    </div>
+  </details>
+</section>
+
+<!-- 3. VOS VISITEURS -->
+<section class="py-16" style="background: #fafafa;">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs</h2>
+    <p class="text-neutral-600 mb-8">Voici ce qui se passe quand quelqu'un cherche un restaurant gastronomique a Nancy.</p>
+
+    <div class="mb-10">
+      <h3 class="text-base font-bold text-green-800 mb-4 flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-green-500 inline-block"></span>
+        Ceux qui vous contactent <span class="text-sm font-normal text-green-600">({kpis.nbConvertissent})</span>
+      </h3>
+      <div class="space-y-3">
+        {personas.filter(p => p.decision === 'Convertit').map(p => (
+          <details class="group bg-white rounded-xl overflow-hidden shadow-sm border border-green-200">
+            <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+              <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1 flex-wrap">
+                  <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                  <span class="text-[10px] bg-green-600 text-white px-1.5 py-0.5 rounded font-medium">{p.decisionLabel}</span>
+                </div>
+                <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                  <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                  <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                </div>
+              </div>
+              <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <div class="px-4 pb-5 border-t border-green-200">
+              <div class="grid gap-4 text-xs mt-4">
+                <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p><p class="text-neutral-600">{p.contexte}</p></div>
+                <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Premiere impression</p><p class="text-neutral-600">{p.impression}</p></div>
+                <div>
+                  <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours</p>
+                  <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                    {p.parcours.map(([s, r]: [string, string]) => <li><strong class="text-neutral-800">{s}</strong>{r ? ` — ${r}` : ''}</li>)}
+                  </ol>
+                </div>
+                <div class="bg-neutral-50 rounded-lg p-3">
+                  <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p>
+                  <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
+                  <p class="text-neutral-600">Le site repond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> — {p.commentReponse}</p>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div><p class="font-semibold text-green-700 mb-1.5">Points positifs</p><ul class="space-y-1 text-neutral-600">{p.positifs.map(pt => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">·</span>{pt}</li>)}</ul></div>
+                  <div><p class="font-semibold text-amber-700 mb-1.5">Frictions</p><ul class="space-y-1 text-neutral-600">{p.frictions.map(f => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">·</span>{f}</li>)}</ul></div>
+                </div>
+                <div class="flex gap-6 pt-3 border-t border-neutral-100">
+                  {[{label:'Experience',val:p.exp},{label:'Confiance',val:p.conf},{label:'Clarte',val:p.clarte}].map(s => {
+                    const sColor = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500';
+                    return <div class="text-center"><span class={`block text-lg font-bold ${sColor}`}>{s.val}</span><span class="text-[10px] text-neutral-400">{s.label}</span></div>;
+                  })}
+                </div>
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <h3 class="text-base font-bold text-amber-800 mb-4 flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span>
+        Ceux qui hesitent <span class="text-sm font-normal text-amber-600">({kpis.nbHesitent})</span>
+      </h3>
+      <div class="space-y-3">
+        {personas.filter(p => p.decision === 'Hesite').map(p => (
+          <details class="group bg-white rounded-xl overflow-hidden shadow-sm border border-amber-200">
+            <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+              <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1 flex-wrap">
+                  <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                  <span class="text-[10px] bg-amber-500 text-white px-1.5 py-0.5 rounded font-medium">{p.decisionLabel}</span>
+                </div>
+                <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                  <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                  <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                </div>
+              </div>
+              <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <div class="px-4 pb-5 border-t border-amber-200">
+              <div class="grid gap-4 text-xs mt-4">
+                <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p><p class="text-neutral-600">{p.contexte}</p></div>
+                <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Premiere impression</p><p class="text-neutral-600">{p.impression}</p></div>
+                <div>
+                  <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours</p>
+                  <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                    {p.parcours.map(([s, r]: [string, string]) => <li><strong class="text-neutral-800">{s}</strong>{r ? ` — ${r}` : ''}</li>)}
+                  </ol>
+                </div>
+                <div class="bg-neutral-50 rounded-lg p-3">
+                  <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p>
+                  <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
+                  <p class="text-neutral-600">Le site repond : <strong class="text-red-600">{p.reponse}</strong> — {p.commentReponse}</p>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div><p class="font-semibold text-green-700 mb-1.5">Points positifs</p><ul class="space-y-1 text-neutral-600">{p.positifs.map(pt => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">·</span>{pt}</li>)}</ul></div>
+                  <div><p class="font-semibold text-amber-700 mb-1.5">Frictions</p><ul class="space-y-1 text-neutral-600">{p.frictions.map(f => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">·</span>{f}</li>)}</ul></div>
+                </div>
+                <div class="bg-primary-50 rounded-lg p-3">
+                  <p class="font-semibold text-primary-700 text-[10px] uppercase tracking-wider mb-1">Ce qui le ferait passer a l'action</p>
+                  <p class="text-primary-800">{p.ceQuiFeraitBasculer}</p>
+                </div>
+                <div class="flex gap-6 pt-3 border-t border-neutral-100">
+                  {[{label:'Experience',val:p.exp},{label:'Confiance',val:p.conf},{label:'Clarte',val:p.clarte}].map(s => {
+                    const sColor = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500';
+                    return <div class="text-center"><span class={`block text-lg font-bold ${sColor}`}>{s.val}</span><span class="text-[10px] text-neutral-400">{s.label}</span></div>;
+                  })}
+                </div>
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+
+    <div class="rounded-xl p-5 mb-10 bg-amber-50 border border-amber-200 flex items-start gap-3">
+      <span class="text-lg shrink-0 mt-0.5">💡</span>
+      <div>
+        <p class="text-sm font-medium text-amber-900">Lea voulait venir chez French Trattoria — elle avait juste besoin de reserver en 3 clics comme partout ailleurs.</p>
+        <p class="text-xs text-amber-700 mt-1">Un widget de reservation en ligne aurait converti directement ce profil mobile habituee au digital.</p>
+      </div>
+    </div>
+
+    <div class="mb-4">
+      <h3 class="text-base font-bold text-neutral-600 mb-4 flex items-center gap-2">
+        <span class="w-2.5 h-2.5 rounded-full bg-neutral-400 inline-block"></span>
+        Ceux qui repartent <span class="text-sm font-normal text-neutral-500">({kpis.nbRepartent})</span>
+      </h3>
+      <div class="space-y-3">
+        {personas.filter(p => p.decision === 'Quitte').map(p => (
+          <details class="group bg-white rounded-xl overflow-hidden shadow-sm border border-neutral-200">
+            <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+              <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+              <div class="flex-1 min-w-0">
+                <div class="flex items-center gap-2 mb-1 flex-wrap">
+                  <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                  <span class="text-[10px] bg-neutral-400 text-white px-1.5 py-0.5 rounded font-medium">{p.decisionLabel}</span>
+                </div>
+                <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                <div class="flex flex-wrap items-center gap-1.5">
+                  <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                  <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                  <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                </div>
+              </div>
+              <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+            </summary>
+            <div class="px-4 pb-5 border-t border-neutral-200">
+              <div class="grid gap-4 text-xs mt-4">
+                <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p><p class="text-neutral-600">{p.contexte}</p></div>
+                <div>
+                  <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours</p>
+                  <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                    {p.parcours.map(([s, r]: [string, string]) => <li><strong class="text-neutral-800">{s}</strong>{r ? ` — ${r}` : ''}</li>)}
+                  </ol>
+                </div>
+                <div class="bg-neutral-50 rounded-lg p-3">
+                  <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p>
+                  <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
+                  <p class="text-neutral-600">Le site repond : <strong class="text-red-600">{p.reponse}</strong> — {p.commentReponse}</p>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div><p class="font-semibold text-green-700 mb-1.5">Points positifs</p><ul class="space-y-1 text-neutral-600">{p.positifs.map(pt => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">·</span>{pt}</li>)}</ul></div>
+                  <div><p class="font-semibold text-red-700 mb-1.5">Frictions</p><ul class="space-y-1 text-neutral-600">{p.frictions.map(f => <li class="flex gap-1.5"><span class="text-red-400 shrink-0">·</span>{f}</li>)}</ul></div>
+                </div>
+                <div class="bg-primary-50 rounded-lg p-3">
+                  <p class="font-semibold text-primary-700 text-[10px] uppercase tracking-wider mb-1">Ce qui l'aurait retenu</p>
+                  <p class="text-primary-800">{p.ceQuiFeraitBasculer}</p>
+                </div>
+                <div class="flex gap-6 pt-3 border-t border-neutral-100">
+                  {[{label:'Experience',val:p.exp},{label:'Confiance',val:p.conf},{label:'Clarte',val:p.clarte}].map(s => {
+                    const sColor = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500';
+                    return <div class="text-center"><span class={`block text-lg font-bold ${sColor}`}>{s.val}</span><span class="text-[10px] text-neutral-400">{s.label}</span></div>;
+                  })}
+                </div>
+              </div>
+            </div>
+          </details>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. RECOMMANDATIONS -->
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+  <h2 class="text-2xl font-bold text-neutral-900 mb-2">Ce qui changerait les resultats</h2>
+  <p class="text-neutral-600 mb-8">Trois actions concretes, classees par impact.</p>
+  <div class="space-y-4 mb-10">
+    {ameliorationsHautes.map((a, i) => (
+      <div class="rounded-2xl overflow-hidden border border-neutral-200 bg-white">
+        <div class="flex items-center gap-3 px-5 py-3 border-b border-neutral-100" style="background: rgba(232,108,71,0.04);">
+          <span class="w-6 h-6 rounded-full text-white text-xs font-bold flex items-center justify-center shrink-0" style="background: #E86C47;">{i+1}</span>
+          <h3 class="font-semibold text-neutral-900 text-sm">{a.titre}</h3>
+        </div>
+        <div class="p-5 space-y-3 text-sm text-neutral-600">
+          <p><strong class="text-neutral-800">Pourquoi :</strong> {a.pourquoi}</p>
+          <p><strong class="text-neutral-800">Action :</strong> {a.action}</p>
+          {a.impact && <p class="text-xs text-neutral-400 italic">Impact observe : {a.impact}</p>}
+        </div>
+      </div>
+    ))}
+  </div>
+  <h3 class="text-base font-semibold text-neutral-700 mb-4">Utile mais non urgent</h3>
+  <div class="space-y-3 mb-10">
+    {ameliorationsUtiles.map(a => (
+      <div class="rounded-xl p-4 bg-neutral-50 border border-neutral-200">
+        <p class="font-medium text-neutral-800 text-sm mb-1">{a.titre}</p>
+        <p class="text-xs text-neutral-500">{a.detail}</p>
+      </div>
+    ))}
+  </div>
+  <h3 class="text-base font-semibold text-neutral-700 mb-4">A discuter selon vos objectifs</h3>
+  <div class="space-y-3 mb-10">
+    {ameliorationsDiscuter.map(d => (
+      <div class="rounded-xl p-4 bg-white border border-neutral-200 flex items-start gap-3">
+        <span class="text-base">{d.emoji}</span>
+        <div><span class="font-medium text-neutral-800">{d.titre}</span><span class="text-neutral-500"> — {d.detail}</span></div>
+      </div>
+    ))}
+  </div>
+  {showUpsell && (
+    <div class="rounded-2xl p-8 text-center border-2 border-dashed" style="border-color: #E86C47; background: rgba(232,108,71,0.03);">
+      <p class="text-lg font-bold text-neutral-900 mb-2">Gault & Millau. 4.7 etoiles. Concept unique. Le site peut les faire travailler.</p>
+      <p class="text-sm text-neutral-600 mb-6">Echangeons 15 minutes — sans engagement. Je vous montre comment une reservation en ligne, un menu textuel et un email professionnel transforment votre distinction Gault & Millau en clients directs sans friction.</p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-3">
+        <a href="tel:+33695961220" data-umami-event="echo-report-upsell-tel" class="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-xl transition-all shadow-md hover:-translate-y-0.5" style="background: linear-gradient(135deg, #22c55e, #16a34a);">
+          Parlons-en
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+        </a>
+        <a href="mailto:marc@muller.im" data-umami-event="echo-report-upsell-email" class="inline-flex items-center gap-2 px-6 py-3 border border-neutral-300 text-neutral-700 font-semibold rounded-xl transition-all hover:border-[#E86C47] hover:text-[#E86C47]">Par email</a>
+      </div>
+    </div>
+  )}
+</section>
+
+<!-- 5. SOUS LE CAPOT -->
+<section class="py-16 border-t border-neutral-200">
+  <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+    <h2 class="text-2xl font-bold text-neutral-900 mb-2">Sous le capot</h2>
+    <p class="text-neutral-600 mb-8">Ce que les outils techniques disent de votre site.</p>
+    <div class="flex flex-wrap gap-3 mb-10">
+      {techVerdicts.map(v => (
+        <div class={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium ${v.ok ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
+          {v.ok ? <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                : <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}
+          <span>{v.label}</span>
+          <span class="text-xs opacity-70">{v.verdict}</span>
+        </div>
+      ))}
+    </div>
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+        <div class="flex items-center gap-3"><span class="text-base">⚡</span><div><h3 class="font-semibold text-neutral-900 text-sm">Vitesse</h3><p class="text-[11px] text-neutral-500">{techVerdicts[0].detail}</p></div></div>
+        <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 border-t border-neutral-100">
+        <div class="grid grid-cols-2 gap-4 py-4">
+          <div><p class="text-xs font-semibold text-neutral-500 mb-2">Mobile</p>
+            {tech.pagespdMobile && Object.entries(tech.pagespdMobile).map(([k, v]) => (
+              <div class="flex justify-between text-xs py-0.5"><span class="text-neutral-600 capitalize">{k}</span><span class={`font-bold ${v >= 90 ? 'text-green-600' : v >= 50 ? 'text-amber-600' : 'text-red-500'}`}>{v}</span></div>
+            ))}
+          </div>
+          <div><p class="text-xs font-semibold text-neutral-500 mb-2">Desktop</p>
+            {tech.pagespdDesktop && Object.entries(tech.pagespdDesktop).map(([k, v]) => (
+              <div class="flex justify-between text-xs py-0.5"><span class="text-neutral-600 capitalize">{k}</span><span class={`font-bold ${v >= 90 ? 'text-green-600' : v >= 50 ? 'text-amber-600' : 'text-red-500'}`}>{v}</span></div>
+            ))}
+          </div>
+        </div>
+        <div class="text-xs text-neutral-500 pt-2 border-t border-neutral-100"><span class="font-semibold">CWV :</span> LCP {tech.cwv.lcp} · INP {tech.cwv.inp} · CLS {tech.cwv.cls}</div>
+        <a href={`https://pagespeed.web.dev/report?url=${urlSite}`} target="_blank" class="text-sm text-primary-600 underline hover:text-primary-800 mt-2 inline-block">Tester en direct →</a>
+      </div>
+    </details>
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+        <div class="flex items-center gap-3"><span class="text-base">📊</span><div><h3 class="font-semibold text-neutral-900 text-sm">Donnees structurees</h3><p class="text-[11px] text-neutral-500">{techVerdicts[3].detail}</p></div></div>
+        <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 border-t border-neutral-100">
+        {tech.schema.map(s => (
+          <div class="flex items-center gap-2 py-1">
+            {s.ok ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                  : <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}
+            <span class={`text-xs ${s.ok ? 'text-neutral-600' : 'text-red-500 font-medium'}`}>{s.item}</span>
+          </div>
+        ))}
+        <p class="text-xs text-neutral-400 mt-3 italic">4.7 sur 361 avis + Gault & Millau non exploites — Google ne peut pas afficher vos etoiles ni votre distinction dans les resultats de recherche.</p>
+      </div>
+    </details>
+    <details class="group border border-neutral-200 rounded-xl overflow-hidden bg-white">
+      <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+        <div class="flex items-center gap-3"><span class="text-base">🔍</span><div><h3 class="font-semibold text-neutral-900 text-sm">SEO technique</h3><p class="text-[11px] text-neutral-500">{techVerdicts[2].detail}</p></div></div>
+        <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+      </summary>
+      <div class="px-4 pb-4 border-t border-neutral-100">
+        {tech.seo.map(s => (
+          <div class="flex items-center gap-2 py-1">
+            {s.ok ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                  : <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}
+            <span class={`text-xs ${s.ok ? 'text-neutral-600' : 'text-red-500'}`}>{s.item}</span>
+          </div>
+        ))}
+      </div>
+    </details>
+    <div class="mt-8 rounded-xl p-5 bg-white border border-neutral-200 flex items-start gap-3">
+      <span class="text-lg shrink-0 mt-0.5">🔧</span>
+      <div>
+        <p class="text-sm font-medium text-neutral-800">Le Gault & Millau et les 361 avis sont la — le site peut les faire travailler.</p>
+        <p class="text-xs text-neutral-600 mt-1">Reservation en ligne + menu HTML + Schema.org Award + email professionnel = votre distinction Gault & Millau en etoiles dans Google et vos clients motives convertis sans friction.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. METHODOLOGIE -->
+<section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-neutral-200">
+  <h2 class="text-base font-bold text-neutral-900 mb-4">Comment ca marche</h2>
+  <ol class="space-y-3 text-sm text-neutral-600">
+    {[
+      'On scrape votre site — on lit chaque page comme un visiteur le ferait',
+      'On audite la technique — vitesse, securite, referencement, donnees structurees',
+      `On cree ${kpis.nbPersonas} profils realistes — adaptes a votre secteur et votre zone`,
+      'Chaque profil visite votre site — premiere impression, parcours, decision',
+      'On compile : frictions recurrentes, canaux efficaces, recommandations concretes',
+    ].map((step, i) => (
+      <li class="flex gap-3">
+        <span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">{i+1}</span>
+        <span>{step}</span>
+      </li>
+    ))}
+  </ol>
+  <div class="mt-6 p-4 rounded-lg bg-neutral-50 text-xs text-neutral-500">
+    <strong>Note :</strong> 5 visiteurs donnent une tendance. 20 (Echo Complet) la confirment. 100 (Echo Pro) la prouvent statistiquement.
+  </div>
+</section>
+
+<!-- 7. CTA FINAL -->
+<section class="relative w-full px-6 py-20 overflow-hidden" style="background: #0A0A0A;">
+  <div class="absolute bottom-[10%] right-[10%] w-[400px] h-[400px] rounded-full blur-[160px] pointer-events-none" style="background: #E86C47; opacity: 0.05;"></div>
+  <div class="relative mx-auto max-w-3xl z-10 text-center">
+    <h2 class="text-2xl md:text-3xl font-bold text-white mb-4 leading-tight">Gault & Millau. 4.7 etoiles. Concept unique a Nancy. Le site peut convertir les 40% qui repartent faute d'information.</h2>
+    <p class="text-sm mb-8" style="color: rgba(255,255,255,0.5);">Avec votre distinction et votre concept unique, vous meritez un site qui permet de reserver en ligne, affiche votre menu et fait apparaitre vos etoiles et votre label dans Google.</p>
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+      <a href="tel:+33695961220" data-umami-event="echo-report-final-tel" class="inline-flex items-center gap-2 px-8 py-4 text-white font-semibold rounded-xl transition-all shadow-lg hover:-translate-y-0.5" style="background: linear-gradient(135deg, #22c55e, #16a34a); box-shadow: 0 4px 24px rgba(34, 197, 94, 0.35);">
+        Parlons-en — Marc Muller
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z"/></svg>
+      </a>
+      <a href="mailto:marc@muller.im" data-umami-event="echo-report-final-email" class="inline-flex items-center gap-2 px-8 py-4 border border-neutral-600 font-semibold rounded-xl transition-all hover:border-white/40" style="color: rgba(255,255,255,0.6);">Par email</a>
+    </div>
+  </div>
+</section>
+
+</BaseLayout>
