@@ -75,13 +75,15 @@ export function getLocalBusinessSchema() {
     "sameAs": [
       business.socialMedia.linkedin
     ],
-    "makesOffer": business.offers.map(offer => ({
-      "@type": "Offer",
-      "name": offer.name,
-      "price": String(offer.price),
-      "priceCurrency": offer.currency,
-      "description": offer.description
-    }))
+    "makesOffer": business.offers
+      .filter(offer => offer.price != null)
+      .map(offer => ({
+        "@type": "Offer",
+        "name": offer.name,
+        "price": String(offer.price),
+        "priceCurrency": offer.currency,
+        "description": offer.description
+      }))
   };
 }
 

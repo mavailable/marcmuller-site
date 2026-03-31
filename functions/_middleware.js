@@ -42,12 +42,19 @@ export async function onRequest({ request, next }) {
   const pathname = url.pathname.replace(/\/$/, '') || '/';
 
   // Redirection langue : visiteurs non-francophones → /en/
-  // Skip si le visiteur a explicitement choisi le français (cookie)
+  // Skip si le visiteur a explicitement choisi une langue (cookie)
   const cookies = request.headers.get('Cookie') || '';
   const prefersLangFR = cookies.includes('lang=fr');
+  const prefersLangEN = cookies.includes('lang=en');
 
   const enTarget = FR_TO_EN[pathname];
   if (enTarget && !pathname.startsWith('/en/') && !prefersLangFR) {
+    // Si l'utilisateur a explicitement choisi EN via le toggle, rediriger
+    if (prefersLangEN) {
+      return Response.redirect(new URL(enTarget, url).toString(), 302);
+    }
+
+    // Sinon, détecter la langue du navigateur
     const acceptLanguage = request.headers.get('Accept-Language') || '';
     const prefersFrench = acceptLanguage
       .split(',')

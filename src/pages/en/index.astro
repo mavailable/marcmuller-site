@@ -2,9 +2,11 @@
 import BaseLayout from '../../layouts/BaseLayout.astro';
 import SchemaOrg from '../../components/SchemaOrg.astro';
 import { business } from '../../data/business';
+import { getClientProjects, getSampleProjects } from '../../data/projects';
 
 const { sitesRealises, sitesTotal } = business;
 const progressPercent = Math.round((sitesRealises / sitesTotal) * 100);
+const totalProjects = getClientProjects().length + getSampleProjects().length;
 
 const faqItems = [
   {
@@ -128,6 +130,10 @@ const faqItems = [
             <div class="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);">
               <svg class="h-4 w-4 shrink-0" fill="#34D399" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
               <span style="color: rgba(255,255,255,0.75);">Content written for you</span>
+            </div>
+            <div class="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);">
+              <svg class="h-4 w-4 shrink-0" fill="#34D399" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
+              <span style="color: rgba(255,255,255,0.75);">100% remote — All of France</span>
             </div>
           </div>
         </div>
@@ -323,7 +329,7 @@ const faqItems = [
       <p class="text-center text-[var(--color-text-muted)] mb-16 text-lg">Numbers, not promises.</p>
       <div class="grid gap-12 md:grid-cols-3">
         <div class="text-center">
-          <div class="mb-3 text-6xl font-bold text-[var(--color-accent)]"><span class="count-up" data-target="12">0</span><span class="text-3xl">+</span></div>
+          <div class="mb-3 text-6xl font-bold text-[var(--color-accent)]"><span class="count-up" data-target={totalProjects}>{totalProjects}</span><span class="text-3xl">+</span></div>
           <p class="text-[var(--color-text-muted)]">Projects delivered and live</p>
         </div>
         <div class="text-center">
@@ -459,6 +465,7 @@ const faqItems = [
       entries.forEach((entry) => {
         if (entry.isIntersecting && !element.classList.contains('counted')) {
           element.classList.add('counted');
+          element.textContent = '0';
           animateCount(element, target, 1500);
           originalObserver.unobserve(element);
         }
