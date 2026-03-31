@@ -3,11 +3,17 @@ import BaseLayout from '../../layouts/BaseLayout.astro';
 import { business } from '../../data/business';
 
 const whatsappMessage = encodeURIComponent("Hi Marc, I'd like a free audit of my online visibility.");
+
+const demoPersonas = [
+  { emoji: '🔧', name: 'Tom', age: 52, job: 'Plumber', canal: 'Google', device: 'Mobile', decision: 'hesitates', color: 'amber', reason: 'Searches "emergency plumber [city]". Lands on your site. No phone number visible above the fold. Gone in 8 seconds.' },
+  { emoji: '✂️', name: 'Emma', age: 34, job: 'Hairdresser', canal: 'Google Maps', device: 'Mobile', decision: 'converts', color: 'emerald', reason: 'Clicks your Maps listing. Sees 5★ reviews, a price, a "Book now" button. Calls within the hour.' },
+  { emoji: '🏡', name: 'Diane', age: 58, job: 'Looking for a tradesperson', canal: 'Word of mouth', device: 'Mobile', decision: 'leaves', color: 'red', reason: 'Someone recommended you. She finds your site. Not mobile-friendly. No company number visible. She doubts. Goes to a directory instead.' },
+];
 ---
 
 <BaseLayout
-  title="Free audit — Is your site visible on Google? — Marc M"
-  description="Submit your site (or lack of one) in 2 minutes. I'll send you 3 personalised observations about your online visibility within 48 hours. Free, no commitment."
+  title="Free audit — What your visitors see that you don't — Marc M"
+  description="I visit your site as a real potential client would and tell you what's making them leave. Free, within 48h, no commitment."
   lang="en"
   frPath="/audit-gratuit"
   enPath="/en/free-audit"
@@ -18,22 +24,71 @@ const whatsappMessage = encodeURIComponent("Hi Marc, I'd like a free audit of my
     <div class="absolute top-20 right-0 w-96 h-96 rounded-full opacity-10 blur-3xl" style="background: #E86C47;"></div>
     <div class="mx-auto max-w-2xl relative z-10 text-center">
       <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--color-accent)]/40 mb-6">
-        <span class="w-2 h-2 rounded-full bg-green-400"></span>
+        <span class="w-2 h-2 rounded-full bg-green-400 animate-pulse"></span>
         <span class="text-sm font-medium text-white/90">Free — response within 48h</span>
       </div>
       <h1 class="text-3xl font-bold text-white md:text-4xl lg:text-5xl mb-6 leading-tight">
-        Is your site<br/>
-        <span class="bg-gradient-to-r from-[#E86C47] to-[#F5C8B3] bg-clip-text text-transparent">visible on Google?</span>
+        What your visitors see<br/>
+        <span class="bg-gradient-to-r from-[#E86C47] to-[#F5C8B3] bg-clip-text text-transparent">that you don't.</span>
       </h1>
       <p class="text-lg text-neutral-300 leading-relaxed mb-4">
-        Fill in the form in 2 minutes. I'll look at your situation and send you <strong class="text-white">3 concrete observations</strong> about what's blocking your visibility.
+        I visit your site as a real potential client would, and tell you what's making them leave. Not a generic PDF — a human look at your actual situation.
       </p>
       <p class="text-sm text-neutral-500">No automated follow-ups. No email sequence. A real answer, from me.</p>
     </div>
   </section>
 
-  <section class="w-full bg-white px-6 py-16 md:px-8 md:py-20">
+  <!-- WHAT I ACTUALLY DO -->
+  <section class="w-full bg-[var(--color-bg)] px-6 py-16 md:px-8 md:py-20">
+    <div class="mx-auto max-w-2xl">
+
+      <h2 class="text-xl font-bold text-[var(--color-text)] mb-6">What I actually do</h2>
+
+      <p class="text-base md:text-lg leading-relaxed text-[var(--color-text-muted)] mb-6">
+        When you submit your site, I visit it by putting myself in the shoes of a few of your typical clients. Not with automated tools — with my head, simulating what a 50-year-old tradesperson arriving from Google Maps would see on their phone, or what a young entrepreneur looking for a specific reference would find (or not find).
+      </p>
+
+      <p class="text-base md:text-lg leading-relaxed text-[var(--color-text-muted)] mb-10">
+        It's a lighter version of my <a href="/en/echo" class="underline underline-offset-2" style="color: var(--color-accent);">Écho service</a> — where I simulate up to 100 different visitor profiles with varied channels and intentions. Here, I focus on the two or three most visible frictions: the ones costing you clients today.
+      </p>
+
+      <p class="text-xs font-bold uppercase tracking-widest mb-4" style="color: var(--color-accent); letter-spacing: 0.15em;">Examples of what I observe</p>
+      <div class="space-y-3 mb-10">
+        {demoPersonas.map(p => (
+          <div class={`rounded-xl border p-4 ${p.color === 'emerald' ? 'border-emerald-200 bg-emerald-50' : p.color === 'red' ? 'border-red-200 bg-red-50' : 'border-amber-200 bg-amber-50'}`}>
+            <div class="flex items-start gap-3">
+              <span class="text-xl flex-shrink-0">{p.emoji}</span>
+              <div class="min-w-0">
+                <div class="flex items-center gap-2 flex-wrap mb-1">
+                  <span class="font-semibold text-sm text-[var(--color-text)]">{p.name}, {p.age}</span>
+                  <span class="text-xs text-neutral-500">{p.job}</span>
+                  <span class="text-xs text-neutral-400">· {p.canal} · {p.device}</span>
+                </div>
+                <p class={`text-xs leading-relaxed ${p.color === 'emerald' ? 'text-emerald-800' : p.color === 'red' ? 'text-red-800' : 'text-amber-800'}`}>
+                  {p.reason}
+                </p>
+              </div>
+              <span class={`flex-shrink-0 text-xs font-semibold px-2 py-0.5 rounded-full ${p.color === 'emerald' ? 'bg-emerald-100 text-emerald-700' : p.color === 'red' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>
+                {p.decision}
+              </span>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
+        For your free audit, I give you 3 observations like these — targeted at your real situation, not a generic scoring grid.
+      </p>
+
+    </div>
+  </section>
+
+  <!-- FORM -->
+  <section class="w-full bg-white px-6 py-16 md:px-8 md:py-20 border-t border-neutral-100">
     <div class="mx-auto max-w-xl">
+      <h2 class="text-xl font-bold text-[var(--color-text)] mb-2">Request your audit</h2>
+      <p class="text-[var(--color-text-muted)] text-sm mb-8">2 minutes. I'll reply within 48h.</p>
+
       <form action="https://api.web3forms.com/submit" method="POST" class="space-y-6">
         <input type="hidden" name="access_key" value="dccda1f5-4e63-4b9f-9c66-f5ce76f0dfdd" />
         <input type="text" name="_gotcha" style="display:none" tabindex="-1" autocomplete="off" />
@@ -85,26 +140,47 @@ const whatsappMessage = encodeURIComponent("Hi Marc, I'd like a free audit of my
     </div>
   </section>
 
+  <!-- WHAT YOU'LL RECEIVE -->
   <section class="w-full px-6 py-16 md:px-8 md:py-20" style="background: #FAFAFA;">
-    <div class="mx-auto max-w-3xl">
-      <h2 class="text-2xl font-bold text-[var(--color-text)] mb-8 text-center">What you'll receive</h2>
-      <div class="grid gap-5 sm:grid-cols-3">
+    <div class="mx-auto max-w-2xl">
+      <h2 class="text-xl font-bold text-[var(--color-text)] mb-2">What you'll receive</h2>
+      <p class="text-[var(--color-text-muted)] text-sm mb-8">Not a 12-page PDF with screenshots and scores. Three specific points, written by hand.</p>
+      <div class="space-y-4">
         {[
-          { num: '01', title: 'Observation #1', desc: 'What is blocking your visibility right now — main cause identified.' },
-          { num: '02', title: 'Observation #2', desc: 'What your competitors are doing that you aren\'t — concrete comparison.' },
-          { num: '03', title: 'Observation #3', desc: 'The first action to take — achievable alone or with my help, depending on your situation.' },
+          { num: '01', title: 'The main friction', desc: 'What\'s making your visitors leave — the real reason, not "your LCP is 3.8 seconds". Something like: Tom, a 52-year-old plumber, couldn\'t find your phone number in 8 seconds.' },
+          { num: '02', title: 'What your competitors are doing', desc: 'Not a list of 40 things to fix. One concrete point where a local competitor is beating your site in the eyes of a typical client.' },
+          { num: '03', title: 'The first action to take', desc: 'Achievable alone if you control your site, or with my help if you want it. Zero obligation — the audit belongs to you.' },
         ].map(o => (
-          <div class="bg-white rounded-xl border border-[var(--color-border)] p-6">
-            <div class="text-3xl font-bold mb-3" style="color: #E86C47; opacity: 0.4;">{o.num}</div>
-            <h3 class="font-bold text-[var(--color-text)] mb-2 text-sm">{o.title}</h3>
-            <p class="text-xs text-[var(--color-text-muted)] leading-relaxed">{o.desc}</p>
+          <div class="bg-white rounded-xl border border-[var(--color-border)] p-6 flex gap-4">
+            <div class="text-2xl font-bold flex-shrink-0" style="color: #E86C47; opacity: 0.35;">{o.num}</div>
+            <div>
+              <h3 class="font-bold text-[var(--color-text)] mb-1 text-sm">{o.title}</h3>
+              <p class="text-xs text-[var(--color-text-muted)] leading-relaxed">{o.desc}</p>
+            </div>
           </div>
         ))}
       </div>
     </div>
   </section>
 
+  <!-- LINK TO ECHO -->
   <section class="w-full bg-white px-6 py-12 md:px-8 border-t border-neutral-100">
+    <div class="mx-auto max-w-2xl">
+      <div class="rounded-xl border border-neutral-200 p-6 flex flex-col sm:flex-row items-start sm:items-center gap-4">
+        <div class="flex-1">
+          <p class="font-semibold text-[var(--color-text)] text-sm mb-1">Want to go further?</p>
+          <p class="text-xs text-[var(--color-text-muted)] leading-relaxed">
+            My Écho service simulates up to 100 different visitors on your site — with profiles, arrival channels, and varied intentions. Results in 48h, private interactive report.
+          </p>
+        </div>
+        <a href="/echo" class="flex-shrink-0 inline-flex items-center gap-1.5 px-4 py-2.5 rounded-xl font-semibold text-sm text-white transition-opacity hover:opacity-90 whitespace-nowrap" style="background-color: #E86C47;">
+          Discover Écho →
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <section class="w-full bg-white px-6 py-10 md:px-8 border-t border-neutral-100">
     <div class="mx-auto max-w-xl text-center">
       <p class="text-neutral-500 text-sm mb-4">Prefer to discuss directly?</p>
       <a href={`https://wa.me/${business.whatsapp}?text=${whatsappMessage}`} target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-5 py-3 rounded-xl border border-neutral-200 text-sm font-medium text-[var(--color-text)] hover:bg-neutral-50 transition">
