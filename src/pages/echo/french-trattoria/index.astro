@@ -1,0 +1,330 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const slug = 'french-trattoria';
+const formule = 'decouverte';
+const formuleLabel = 'Echo Decouverte';
+const nomProspect = 'French Trattoria';
+const urlSite = 'https://french-trattoria.fr';
+const dateAudit = '1er avril 2026';
+const isProspection = true;
+const showUpsell = true;
+
+const title = 'Echo Decouverte — French Trattoria | Marc M';
+const description = 'Analyse de french-trattoria.fr : simulation de 10 visites clients, audit technique, recommandations. Rapport confidentiel.';
+
+const kpis = { nbPersonas: 10, nbConvertissent: 5, nbHesitent: 3, nbRepartent: 2, conversion: 50, experience: 6.5, confiance: 6.8, clarte: 5.9 };
+
+const verdictHero = '5 clients sur 10 reservent ou viennent. 5 repartent — parce qu\'ils ne trouvent pas votre adresse.';
+
+const constat = '361 avis Google a 4.7 etoiles, une carte complete avec des prix affiches (rare), une formule etudiant a 8€ qui tue, et des fournisseurs locaux nommes — vous avez tout pour convertir. Sauf que votre adresse est invisible sur la page d\'accueil, votre numero est au format +33973880836 (illisible), et vos 361 avis ne sont nulle part sur le site. Votre carte est votre meilleur atout — le reste du site ne suit pas.';
+
+const canalData = [
+  { canal: 'Bouche-a-oreille', nb: 1, convert: 0, rate: 0 },
+  { canal: 'Google Maps', nb: 2, convert: 1, rate: 50 },
+  { canal: 'Google Search', nb: 3, convert: 2, rate: 67 },
+  { canal: 'Reseaux sociaux', nb: 2, convert: 1, rate: 50 },
+  { canal: 'IA (ChatGPT / Perplexity)', nb: 2, convert: 1, rate: 50 },
+];
+
+const alertes = [
+  { type: 'critique' as const, titre: 'Adresse introuvable sur la page d\'accueil', detail: 'Les visiteurs veulent savoir OU est le restaurant. L\'adresse n\'est pas visible sur la page principale. Ceux qui arrivent par Google Search ou les reseaux sociaux (pas par Maps) ne savent pas ou aller.', chiffre: '0', chiffreLabel: 'adresse visible en accueil' },
+  { type: 'critique' as const, titre: 'Telephone au format illisible', detail: 'Le numero +33973880836 n\'est ni lisible ni cliquable facilement. Les clients veulent voir "09 73 88 08 36" avec un lien tel: pour appeler en un tap sur mobile.', chiffre: '+33...', chiffreLabel: 'format illisible' },
+  { type: 'important' as const, titre: '361 avis Google invisibles sur le site', detail: '4.7 etoiles sur 361 avis — vous etes l\'un des restaurants les mieux notes de Nancy. Mais votre site ne montre aucun avis. Les visiteurs Google Search et IA ne voient pas cette preuve sociale.', chiffre: '0/361', chiffreLabel: 'avis affiches' },
+  { type: 'important' as const, titre: 'Pas d\'info sur la livraison ni les groupes', detail: 'Les clients veulent savoir si vous livrez (non ?). Les familles veulent savoir si vous accueillez les grands groupes. Le site ne repond a aucune de ces questions.', chiffre: '0', chiffreLabel: 'info livraison/groupe' },
+];
+
+const personas = [
+  {
+    id: 1, name: 'Lucie', age: 28, emoji: '🍕',
+    situation: 'Nanceienne, envie de pizza ce soir, compare les options',
+    canal: 'Google Search', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Reserve',
+    histoire: 'Cherche "pizza Nancy". Trouve la carte avec les prix — les pizzas creations a 15-17€ l\'attirent. Reserve en ligne pour ce soir.',
+    localisation: 'Nancy', maturite: 'Comparaison',
+    contexte: 'Envie de pizza avec sa coloc. Compare 3-4 pizzerias.',
+    impression: 'Carte detaillee avec prix — j\'aime la transparence. Les pizzas creations sont originales.',
+    parcours: [['Accueil', 'Concept franco-italien, circuit court — cool'], ['Carte', 'Pizzas creations originales, prix raisonnables'], ['Reservation', 'Reserve pour 2 ce soir']],
+    questionCle: 'Vous livrez ? C\'est ou ?',
+    reponse: 'Non', commentReponse: 'Pas d\'info livraison, adresse peu visible',
+    positifs: ['Carte complete avec prix', 'Pizzas creations originales', 'Reservation en ligne'],
+    frictions: ['Adresse difficile a trouver', 'Pas d\'info livraison'],
+    ceQuiFeraitBasculer: '', exp: 7, conf: 7, clarte: 6,
+  },
+  {
+    id: 2, name: 'Maxime', age: 32, emoji: '🍝',
+    situation: 'Couple, cherche un bon italien pour un samedi soir',
+    canal: 'Google Search', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Reserve',
+    histoire: '4.7★ sur Google + carte detaillee = go. Reserve pour samedi soir. Les lasagnes aux pates fraiches l\'ont convaincu.',
+    localisation: 'Nancy', maturite: 'Comparaison',
+    contexte: 'Samedi soir en couple. Veut un bon italien sans se ruiner.',
+    impression: 'Lasagnes aux pates fraiches + circuit court = ca va etre bon.',
+    parcours: [['Accueil', 'Franco-italien, produits frais'], ['Carte', 'Lasagnes French 16€ — pile dans le budget'], ['Reservation', 'Reserve samedi 20h']],
+    questionCle: 'Rapport qualite-prix ? Reservation en ligne ?',
+    reponse: 'Oui', commentReponse: 'Carte claire, prix visibles, reservation fonctionnelle',
+    positifs: ['Prix affiches', 'Carte saisonniere', 'Reservation en ligne', 'Circuit court'],
+    frictions: ['Pas de photos des plats sur le site'],
+    ceQuiFeraitBasculer: '', exp: 7, conf: 7, clarte: 7,
+  },
+  {
+    id: 3, name: 'Claire', age: 24, emoji: '📱',
+    situation: 'Etudiante, cherche ou manger ce soir entre amis',
+    canal: 'Google Maps', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Vient',
+    histoire: 'Google Maps montre 4.7★ et la distance. Verifie les horaires — ouvert ce soir. Y va directement.',
+    localisation: 'Nancy', maturite: 'Decision',
+    contexte: 'Sortie entre amis, cherche un endroit ouvert maintenant.',
+    impression: '4.7★ sur Maps, a 5 minutes a pied — on y va.',
+    parcours: [['Google Maps', 'Note + distance + horaires']],
+    questionCle: 'Ouvert ce soir ? Reservation en ligne ?',
+    reponse: 'Oui', commentReponse: 'Horaires et reservation visibles',
+    positifs: ['Bonne note Google', 'Reservation en ligne', 'Horaires clairs'],
+    frictions: [],
+    ceQuiFeraitBasculer: '', exp: 8, conf: 8, clarte: 7,
+  },
+  {
+    id: 4, name: 'Patrick', age: 55, emoji: '👨‍👩‍👧‍👦',
+    situation: 'Pere de famille, repas de famille pour 12 personnes',
+    canal: 'Google Search', device: 'Desktop', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Cherche un restaurant pour un anniversaire en famille (12 personnes). Le site ne mentionne pas les groupes. Pas de menu enfant visible (juste "Bambino" dans les pizzas). Hesite et continue a chercher.',
+    localisation: 'Nancy', maturite: 'Comparaison',
+    contexte: 'Anniversaire de la grand-mere, 12 personnes dont 4 enfants.',
+    impression: 'Ca a l\'air bien mais... on rentre a 12 ? Menu enfant ?',
+    parcours: [['Accueil', 'Restaurant familial — ca pourrait coller'], ['Carte', 'Pizza Bambino 9€ — OK pour les enfants. Mais groupe de 12 ?']],
+    questionCle: 'Groupe de 12 ? Menu enfant complet ?',
+    reponse: 'Partiellement', commentReponse: 'Pizza Bambino existe mais pas d\'info groupe',
+    positifs: ['Pizza Bambino pour les enfants', 'Prix raisonnables pour une famille'],
+    frictions: ['Pas d\'info sur les groupes', 'Capacite du restaurant inconnue', 'Pas de menu enfant complet'],
+    ceQuiFeraitBasculer: 'Une mention "Nous accueillons les groupes — contactez-nous" avec capacite',
+    exp: 6, conf: 6, clarte: 5,
+  },
+  {
+    id: 5, name: 'Amandine', age: 30, emoji: '📸',
+    situation: 'Foodie nanceienne, decouvre le restaurant sur Instagram',
+    canal: 'Reseaux sociaux (Instagram)', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Reserve',
+    histoire: 'Les photos Instagram sont appetissantes. Le site confirme le concept. Reserve pour tester les pizzas creations.',
+    localisation: 'Nancy', maturite: 'Decouverte',
+    contexte: 'Toujours a la recherche de nouvelles adresses. Instagram est sa source #1.',
+    impression: 'Photos Instagram delicieuses. Le concept circuit court me plait.',
+    parcours: [['Instagram', 'Photos de pizzas creations — envie'], ['Accueil', 'Circuit court, fournisseurs locaux — j\'adhere'], ['Reservation', 'Reserve pour vendredi']],
+    questionCle: 'Les plats sont aussi beaux en vrai ?',
+    reponse: 'Partiellement', commentReponse: 'Instagram montre les plats mais le site n\'a pas de galerie',
+    positifs: ['Instagram actif et appetissant', 'Concept circuit court attractif', 'Reservation facile'],
+    frictions: ['Pas de galerie photos sur le site'],
+    ceQuiFeraitBasculer: '', exp: 7, conf: 7, clarte: 6,
+  },
+  {
+    id: 6, name: 'Romain', age: 22, emoji: '🎓',
+    situation: 'Etudiant, cherche un bon plan resto pas cher',
+    canal: 'IA (ChatGPT)', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Vient',
+    histoire: 'ChatGPT mentionne la formule etudiant a 8€ chez French Trattoria. Il verifie sur le site — c\'est vrai. Panini + soft + dessert pour 8€. Il y va demain midi.',
+    localisation: 'Nancy', maturite: 'Comparaison',
+    contexte: 'Budget etudiant, cherche un dejeuner correct a <10€.',
+    impression: 'Formule etudiant 8€ — imbattable pour un vrai restaurant.',
+    parcours: [['Carte', 'Formule Etudiant 8€ — French Panini + soft + dessert 2€'], ['Horaires', 'Ouvert le midi mardi-vendredi — parfait']],
+    questionCle: 'Formule etudiant — faut montrer la carte ?',
+    reponse: 'Non', commentReponse: 'La formule etudiant ne precise pas les conditions',
+    positifs: ['Formule etudiant imbattable a 8€', 'Carte claire avec prix'],
+    frictions: ['Conditions de la formule etudiant pas precisees', 'Adresse manquante'],
+    ceQuiFeraitBasculer: '', exp: 7, conf: 6, clarte: 6,
+  },
+  {
+    id: 7, name: 'Martine', age: 65, emoji: '🌾',
+    situation: 'Retraitee, mari intolerant au gluten, cherche un restaurant adapte',
+    canal: 'Bouche-a-oreille', device: 'Tablette', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Sa petite-fille recommande. Elle va voir la page allergenes — bonne idee d\'avoir cette page. Mais les options sans gluten ne sont pas clairement identifiees dans la carte. Hesite a appeler.',
+    localisation: 'Nancy', maturite: 'Decision',
+    contexte: 'Dejeuner en couple, mari celiaque. Besoin de certitude.',
+    impression: 'Page allergenes — c\'est bien. Mais quels plats exactement sans gluten ?',
+    parcours: [['Accueil', 'Restaurant italien — risque gluten eleve'], ['Allergenes', 'Page existe mais ne liste pas les plats par regime'], ['Carte', 'Grandes salades probablement OK mais pas de mention "sans gluten"']],
+    questionCle: 'Options sans gluten ? Quels plats exactement ?',
+    reponse: 'Partiellement', commentReponse: 'Page allergenes existe mais pas de filtre par regime sur la carte',
+    positifs: ['Page allergenes dediee — rare', 'Grandes salades probablement adaptees'],
+    frictions: ['Pas de filtre "sans gluten" dans la carte', 'Doit appeler pour etre sure'],
+    ceQuiFeraitBasculer: 'Pictogrammes allergenes a cote de chaque plat dans la carte',
+    exp: 6, conf: 6, clarte: 5,
+  },
+  {
+    id: 8, name: 'Alexandre', age: 40, emoji: '🚗',
+    situation: 'Messin, veut tester le restaurant mais cherche l\'adresse et le parking',
+    canal: 'Google Maps', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Google Maps montre 4.7★. Va sur le site pour confirmer l\'adresse et voir s\'il y a un parking. L\'adresse est introuvable sur le site. Pas de mention de parking. Met de cote.',
+    localisation: 'Metz', maturite: 'Comparaison',
+    contexte: 'Sortie en couple, pret a faire 30 min de route pour un bon italien. Mais besoin de l\'adresse exacte.',
+    impression: '4.7★ — ca vaut le deplacement. Mais ou c\'est exactement ?',
+    parcours: [['Accueil', 'Concept sympa'], ['Navigation', 'Cherche l\'adresse — introuvable'], ['Contact', 'Juste un tel au format international et un email']],
+    questionCle: 'Adresse exacte ? Parking ?',
+    reponse: 'Non', commentReponse: 'Adresse invisible, pas d\'info parking',
+    positifs: ['Bonne note Google'],
+    frictions: ['Adresse introuvable', 'Pas d\'info parking', 'Tel au format illisible'],
+    ceQuiFeraitBasculer: 'Adresse en gros + Google Maps integre + mention parking proche',
+    exp: 5, conf: 6, clarte: 4,
+  },
+  {
+    id: 9, name: 'Jennifer', age: 35, emoji: '🏠',
+    situation: 'Vandoeuvre, veut commander des pizzas a livrer',
+    canal: 'IA (Perplexity)', device: 'Mobile', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Cherche une bonne pizza a se faire livrer. Le site ne mentionne pas la livraison. Pas de Click & Collect non plus. Part sur Uber Eats.',
+    localisation: 'Vandoeuvre-les-Nancy', maturite: 'Comparaison',
+    contexte: 'Soiree tele, veut des pizzas livrees a domicile.',
+    impression: 'Les pizzas ont l\'air bonnes mais... vous livrez ?',
+    parcours: [['Accueil', 'Concept sympa'], ['Navigation', 'Cherche "livraison", "delivery", "Click & Collect" — rien']],
+    questionCle: 'Vous livrez a Vandoeuvre ?',
+    reponse: 'Non', commentReponse: 'Aucune mention de livraison ni Click & Collect',
+    positifs: ['Carte appetissante'],
+    frictions: ['Pas de livraison mentionnee', 'Pas de Click & Collect'],
+    ceQuiFeraitBasculer: '', exp: 5, conf: 6, clarte: 5,
+  },
+  {
+    id: 10, name: 'Mehdi', age: 27, emoji: '🍖',
+    situation: 'Cherche un restaurant avec options halal',
+    canal: 'Reseaux sociaux (Facebook)', device: 'Mobile', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Voit un post appetissant dans un groupe Facebook Nancy Food. Va sur le site. Pas de mention halal. Quitte.',
+    localisation: 'Nancy', maturite: 'Decouverte',
+    contexte: 'Regime halal, cherche un bon restaurant adapte.',
+    impression: 'Ca a l\'air bon mais je ne sais pas si c\'est halal.',
+    parcours: [['Accueil', 'Concept sympa'], ['Carte', 'Pas de mention halal']],
+    questionCle: 'Options halal ?',
+    reponse: 'Non', commentReponse: 'Pas de mention halal ni de regime alimentaire specifique',
+    positifs: [],
+    frictions: ['Pas de mention halal', 'Pas de filtre par regime alimentaire'],
+    ceQuiFeraitBasculer: '', exp: 5, conf: 5, clarte: 5,
+  },
+];
+
+const ameliorationsHautes = [
+  { titre: 'Afficher l\'adresse en gros + Google Maps integre', pourquoi: 'C\'est la friction #1 : les visiteurs ne savent pas OU vous etes. L\'adresse doit etre visible immediatement en page d\'accueil, avec une carte Google Maps interactive et les infos de stationnement.', action: 'Adresse en footer + header, Google Maps integre en page d\'accueil, mention du parking le plus proche.', impact: '5 visiteurs sur 10' },
+  { titre: 'Formatter le telephone et le rendre cliquable', pourquoi: '+33973880836 est illisible. Les clients veulent voir "09 73 88 08 36" et appeler en un tap. Sur mobile, c\'est essentiel — surtout pour les reservations de derniere minute.', action: 'Remplacer par "09 73 88 08 36" avec un lien <a href="tel:0973880836"> partout.', impact: '4 visiteurs sur 10' },
+  { titre: 'Integrer les 361 avis Google sur le site', pourquoi: '4.7★ sur 361 avis — c\'est votre meilleur argument commercial. Les visiteurs qui arrivent par Google Search ou IA ne voient pas cette preuve sociale. Une section temoignages en accueil ferait la difference.', action: 'Section "Nos clients" avec 5-6 avis Google selectionnes + badge "4.7★ sur 361 avis" en haut de page.', impact: '4 visiteurs sur 10' },
+];
+
+const ameliorationsUtiles = [
+  { titre: 'Preciser la livraison (ou son absence)', detail: 'Les clients veulent savoir si vous livrez. Si non, mentionnez-le clairement et proposez le Click & Collect. Si oui, integrez la commande en ligne.' },
+  { titre: 'Info groupes + menu enfant complet', detail: 'Les familles et les groupes veulent savoir si vous pouvez les accueillir. Capacite, reservation groupe, menu enfant detaille.' },
+  { titre: 'Pictogrammes allergenes sur la carte', detail: 'La page allergenes existe (rare et bien) mais les clients veulent voir les pictogrammes directement a cote de chaque plat. Sans gluten, vegan, noix, etc.' },
+  { titre: 'Schema.org Restaurant + Menu', detail: 'Google affiche les menus et prix dans les resultats de recherche quand le Schema.org est en place. Vos prix sont votre force — montrez-les a Google.' },
+];
+
+const ameliorationsDiscuter = [
+  { emoji: '🛵', titre: 'Click & Collect ou livraison propre', detail: 'Uber Eats prend 30% de commission. Un Click & Collect maison garderait cette marge et developperait le chiffre a emporter.' },
+  { emoji: '📱', titre: 'Galerie photos des plats sur le site', detail: 'Votre Instagram est appetissant. Le site devrait avoir une galerie de plats — les photos vendent mieux que les descriptions.' },
+];
+
+const techVerdicts = [
+  { label: 'Vitesse', verdict: '~70/100 (estime)', ok: true, detail: 'Site custom leger — correct' },
+  { label: 'Securite', verdict: 'C-D (estime)', ok: false, detail: 'Headers HTTP probablement partiels' },
+  { label: 'SEO', verdict: 'Faible', ok: false, detail: 'Pas de Schema.org Restaurant ni Menu' },
+  { label: 'Donnees structurees', verdict: 'Absent', ok: false, detail: 'Aucun Schema Restaurant/Menu malgre carte complete' },
+  { label: 'Analytics', verdict: 'Piwik Pro', ok: true, detail: 'RGPD-friendly — bon choix vs Google Analytics' },
+];
+
+const tech = {
+  observatory: { grade: 'C-D', score: 40, testsOk: 5, testsTotal: 10 },
+  pagespdMobile: null, pagespdDesktop: null,
+  cwv: { lcp: 'Non mesure (~2.5s estime)', inp: 'Non mesure', cls: 'Non mesure' },
+  headers: [{ ok: true, h: 'HTTPS actif' }, { ok: true, h: 'Piwik Pro (RGPD)' }, { ok: false, h: 'CSP — non verifie' }],
+  schema: [{ item: 'Restaurant — ABSENT', ok: false }, { item: 'Menu — ABSENT (malgre carte complete)', ok: false }, { item: 'AggregateRating — ABSENT (361 avis)', ok: false }],
+  og: [{ item: 'og:title', ok: true, val: 'Probable' }, { item: 'og:image', ok: false, val: 'Non verifie' }],
+  seo: [{ item: 'HTTPS', ok: true }, { item: 'Carte avec prix', ok: true }, { item: 'Page allergenes', ok: true }, { item: 'Schema.org Restaurant', ok: false }, { item: 'Adresse visible', ok: false }, { item: 'Tel format lisible', ok: false }],
+};
+
+function decisionBorder(d: string) { if (d === 'Convertit') return 'border-green-200'; if (d === 'Hesite') return 'border-amber-200'; return 'border-neutral-200'; }
+function decisionBadge(d: string) { if (d === 'Convertit') return 'bg-green-600'; if (d === 'Hesite') return 'bg-amber-500'; return 'bg-neutral-400'; }
+const accentColor = '#DC2626';
+const accentGradient = 'linear-gradient(135deg, #DC2626, #B91C1C)';
+---
+
+<BaseLayout title={title} description={description} noindex={true} lang="fr" frPath={`/echo/${slug}`}>
+
+  <section class="relative w-full px-6 py-20 md:py-28 overflow-hidden" style="background: #0A0A0A;">
+    <div class="absolute top-[20%] left-[10%] w-[500px] h-[500px] rounded-full blur-[180px] pointer-events-none" style={`background: ${accentColor}; opacity: 0.06;`}></div>
+    <div class="relative mx-auto max-w-4xl z-10">
+      <div class="mb-6 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5);">{formuleLabel} &middot; Rapport confidentiel</div>
+      <h1 class="mb-6 text-3xl md:text-4xl font-bold text-white leading-tight tracking-tight">{verdictHero}</h1>
+      <p class="mb-10 text-sm" style="color: rgba(255,255,255,0.4);">Site analyse : <a href={urlSite} target="_blank" rel="noopener" class="underline hover:text-white transition-colors">{urlSite}</a> &middot; {kpis.nbPersonas} visiteurs simules &middot; {dateAudit}</p>
+      <div class="grid grid-cols-3 gap-4">
+        <div class="rounded-xl p-5 text-center" style="background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2);"><div class="text-4xl md:text-5xl font-black text-green-400 mb-1">{kpis.nbConvertissent}</div><div class="text-sm text-green-400/70">reservent</div></div>
+        <div class="rounded-xl p-5 text-center" style="background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2);"><div class="text-4xl md:text-5xl font-black text-amber-400 mb-1">{kpis.nbHesitent}</div><div class="text-sm text-amber-400/70">hesitent</div></div>
+        <div class="rounded-xl p-5 text-center" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);"><div class="text-4xl md:text-5xl font-black mb-1" style="color: rgba(255,255,255,0.5);">{kpis.nbRepartent}</div><div class="text-sm" style="color: rgba(255,255,255,0.3);">repartent</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="rounded-2xl p-6 md:p-8 mb-12 border-l-4" style={`background: rgba(220,38,38,0.04); border-color: ${accentColor};`}><p class="text-lg md:text-xl font-medium text-neutral-800 leading-relaxed">{constat}</p></div>
+    <h2 class="text-xl font-bold text-neutral-900 mb-2">D'ou viennent vos visiteurs</h2><p class="text-sm text-neutral-500 mb-6">Et combien reservent selon leur canal.</p>
+    <div class="space-y-4 mb-12">{canalData.map(c => { const color = c.rate >= 50 ? '#22c55e' : c.rate >= 25 ? '#f59e0b' : '#ef4444'; return (<div class="flex items-center gap-4"><div class="w-52 text-sm text-neutral-700 shrink-0">{c.canal}</div><div class="flex-1 h-3 bg-neutral-100 rounded-full overflow-hidden"><div class="h-full rounded-full" style={`width: ${c.rate}%; background: ${color}`}></div></div><div class="w-20 text-right"><span class="text-sm font-bold" style={`color: ${color}`}>{c.rate}%</span><span class="text-xs text-neutral-400 ml-1">({c.convert}/{c.nb})</span></div></div>); })}</div>
+  </section>
+
+  <section class="py-12" style="background: #fefce8;">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center gap-3 mb-6"><svg class="w-6 h-6 text-amber-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg><div><h2 class="text-lg font-bold text-neutral-900">Problemes detectes</h2><p class="text-sm text-neutral-600">{alertes.filter(a => a.type === 'critique').length} critiques &middot; {alertes.filter(a => a.type === 'important').length} importants</p></div></div>
+      <div class="grid md:grid-cols-2 gap-4">{alertes.map(a => (<div class={`bg-white rounded-xl p-5 ${a.type === 'critique' ? 'border-2 border-red-300' : 'border border-amber-300'}`}><div class={`inline-block text-2xl font-black px-3 py-1 rounded-lg mb-3 ${a.type === 'critique' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>{a.chiffre}</div><p class="text-[10px] text-neutral-400 uppercase tracking-wider mb-1">{a.chiffreLabel}</p><h3 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h3><p class="text-xs text-neutral-600 leading-relaxed">{a.detail}</p></div>))}</div>
+    </div>
+  </section>
+
+  <section class="py-16" style="background: #fafafa;">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs</h2><p class="text-neutral-600 mb-8">Voici ce qui se passe quand quelqu'un cherche un restaurant italien a Nancy et tombe sur votre site.</p>
+      {(['Convertit', 'Hesite', 'Quitte'] as const).map(decision => {
+        const filtered = personas.filter(p => p.decision === decision);
+        const labels = { Convertit: 'Ceux qui reservent', Hesite: 'Ceux qui hesitent', Quitte: 'Ceux qui repartent' };
+        const colors = { Convertit: { dot: 'bg-green-500', text: 'text-green-800', sub: 'text-green-600' }, Hesite: { dot: 'bg-amber-500', text: 'text-amber-800', sub: 'text-amber-600' }, Quitte: { dot: 'bg-neutral-400', text: 'text-neutral-600', sub: 'text-neutral-500' } };
+        const c = colors[decision];
+        return (<div class="mb-10"><h3 class={`text-base font-bold ${c.text} mb-4 flex items-center gap-2`}><span class={`w-2.5 h-2.5 rounded-full ${c.dot} inline-block`}></span>{labels[decision]}<span class={`text-sm font-normal ${c.sub}`}>({filtered.length})</span></h3>
+          <div class="space-y-3">{filtered.map(p => (
+            <details class={`group bg-white rounded-xl overflow-hidden shadow-sm border ${decisionBorder(p.decision)}`}>
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden"><div class="text-xl shrink-0 mt-0.5">{p.emoji}</div><div class="flex-1 min-w-0"><div class="flex items-center gap-2 mb-1 flex-wrap"><h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4><span class={`text-[10px] ${decisionBadge(p.decision)} text-white px-1.5 py-0.5 rounded font-medium`}>{p.decisionLabel}</span></div><p class="text-sm text-neutral-600 mb-2">{p.histoire}</p><div class="flex flex-wrap items-center gap-1.5"><span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span><span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span><span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span></div></div><svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></summary>
+              <div class={`px-4 pb-5 border-t ${decisionBorder(p.decision)}`}><div class="grid gap-4 text-xs mt-4">
+                <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p><p class="text-neutral-600">{p.contexte}</p></div>
+                <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Premiere impression</p><p class="text-neutral-600">{p.impression}</p></div>
+                <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours</p><ol class="list-decimal list-inside space-y-1.5 text-neutral-600">{p.parcours.map(([s, r]) => (<li><strong class="text-neutral-800">{s}</strong>{r ? ` — ${r}` : ''}</li>))}</ol></div>
+                <div class="bg-neutral-50 rounded-lg p-3"><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p><p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p><p class="text-neutral-600">Le site repond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> — {p.commentReponse}</p></div>
+                <div class="grid grid-cols-2 gap-4"><div><p class="font-semibold text-green-700 mb-1.5">Points positifs</p><ul class="space-y-1 text-neutral-600">{p.positifs.map(pt => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">·</span>{pt}</li>)}</ul></div><div><p class="font-semibold text-amber-700 mb-1.5">Frictions</p><ul class="space-y-1 text-neutral-600">{p.frictions.map(f => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">·</span>{f}</li>)}</ul></div></div>
+                {p.ceQuiFeraitBasculer && <div class="bg-amber-50 rounded-lg p-3"><p class="font-semibold text-amber-700 text-[10px] uppercase tracking-wider mb-1">Ce qui le ferait passer a l'action</p><p class="text-neutral-700 text-xs">{p.ceQuiFeraitBasculer}</p></div>}
+                <div class="flex gap-6 pt-3 border-t border-neutral-100">{[{ label: 'Exp', val: p.exp },{ label: 'Conf', val: p.conf },{ label: 'Clarte', val: p.clarte }].map(s => { const sc = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500'; return (<div class="text-center"><span class={`block text-lg font-bold ${sc}`}>{s.val}</span><span class="text-[10px] text-neutral-400">{s.label}</span></div>);})}</div>
+              </div></div>
+            </details>))}</div></div>);
+      })}
+    </div>
+  </section>
+
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <h2 class="text-2xl font-bold text-neutral-900 mb-2">Ce qu'on recommande</h2><p class="text-neutral-600 mb-8">Actions concretes, classees par impact.</p>
+    <p class="text-sm font-semibold text-red-700 mb-4">Si vous ne changez que 3 choses :</p>
+    <div class="space-y-4 mb-12">{ameliorationsHautes.map(a => (<div class="bg-white border-2 border-red-200 rounded-xl p-6 shadow-sm"><div class="flex items-start justify-between gap-4 mb-3"><h4 class="font-bold text-neutral-900">{a.titre}</h4><span class="text-[10px] px-2 py-1 rounded-full bg-red-100 text-red-700 font-semibold shrink-0 whitespace-nowrap">{a.impact}</span></div><p class="text-sm text-neutral-600 mb-3">{a.pourquoi}</p><div class="bg-neutral-50 rounded-lg px-4 py-3 flex items-start gap-2"><svg class="w-4 h-4 text-neutral-400 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg><p class="text-xs text-neutral-700">{a.action}</p></div></div>))}</div>
+    <h3 class="text-lg font-bold text-neutral-900 mb-2">Utile aussi</h3>
+    <div class="grid md:grid-cols-2 gap-4 mb-12">{ameliorationsUtiles.map(a => (<div class="bg-white border border-neutral-200 rounded-xl p-5"><h4 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h4><p class="text-xs text-neutral-600">{a.detail}</p></div>))}</div>
+    <h3 class="text-lg font-bold text-neutral-900 mb-2">A discuter</h3>
+    <div class="space-y-3 mb-12">{ameliorationsDiscuter.map(a => (<div class="bg-neutral-50 border border-neutral-200 rounded-xl p-4 flex gap-3"><span class="text-lg shrink-0">{a.emoji}</span><div><h4 class="font-semibold text-neutral-900 text-sm mb-0.5">{a.titre}</h4><p class="text-xs text-neutral-600">{a.detail}</p></div></div>))}</div>
+    {showUpsell && (<div class="rounded-2xl p-8 text-center border-2 border-dashed" style={`border-color: ${accentColor}; background: rgba(220,38,38,0.03);`}><p class="text-lg font-bold text-neutral-900 mb-2">Ce rapport gratuit identifie les tendances.</p><p class="text-sm text-neutral-600 mb-6">Avec un Echo Complet (90€), 20 visiteurs simules et un audit technique approfondi pour des recommandations chiffrees.</p><a href="tel:0677138777" class="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-xl transition-all shadow-md hover:-translate-y-0.5" style={`background: ${accentGradient};`}>Appeler Marc — 06 77 13 87 77</a></div>)}
+  </section>
+
+  <section class="py-16 border-t border-neutral-200">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-2">Sous le capot</h2><p class="text-neutral-600 mb-8">Ce que les outils techniques disent de votre site.</p>
+      <div class="flex flex-wrap gap-3 mb-10">{techVerdicts.map(v => (<div class={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium ${v.ok ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}>{v.ok ? <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> : <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}<span>{v.label}</span><span class="text-xs opacity-70">{v.verdict}</span></div>))}</div>
+    </div>
+  </section>
+
+  <section class="py-12 bg-neutral-50 border-t border-neutral-100">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-lg font-bold text-neutral-900 mb-4">Comment on a fait ca</h2>
+      <div class="grid md:grid-cols-3 gap-4 text-sm text-neutral-600">
+        <div class="bg-white rounded-xl p-4 border border-neutral-200"><div class="text-2xl font-black text-neutral-300 mb-2">1</div><p class="font-semibold text-neutral-800 mb-1">Scraping complet</p><p class="text-xs">Lecture de tout le site — accueil, carte, allergenes, mentions legales.</p></div>
+        <div class="bg-white rounded-xl p-4 border border-neutral-200"><div class="text-2xl font-black text-neutral-300 mb-2">2</div><p class="font-semibold text-neutral-800 mb-1">Audit technique</p><p class="text-xs">Estimation depuis la stack (site custom, Piwik Pro).</p></div>
+        <div class="bg-white rounded-xl p-4 border border-neutral-200"><div class="text-2xl font-black text-neutral-300 mb-2">3</div><p class="font-semibold text-neutral-800 mb-1">10 personas simules</p><p class="text-xs">Nanceiens, etudiants, familles, foodies — chacun avec son envie et son budget.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="py-16 border-t border-neutral-200">
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-3">361 avis a 4.7 etoiles + une carte imbattable.</h2>
+      <p class="text-neutral-600 mb-8">Votre carte est votre meilleur atout — prix affiches, circuit court, formule etudiant. Il manque juste l'adresse en gros, un numero lisible et vos avis sur le site pour passer de 50% a 75% de conversion.</p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="tel:0677138777" class="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-xl transition-all shadow-md hover:-translate-y-0.5" style={`background: ${accentGradient};`}>Appeler Marc — 06 77 13 87 77</a>
+        <a href="https://wa.me/33677138777" class="inline-flex items-center gap-2 px-6 py-3 border border-neutral-300 text-neutral-700 font-semibold rounded-xl transition-all hover:border-neutral-500">WhatsApp</a>
+      </div>
+      <p class="text-xs text-neutral-400 mt-6">Ce rapport est confidentiel et non indexe par Google &middot; Genere le {dateAudit}</p>
+    </div>
+  </section>
+</BaseLayout>
