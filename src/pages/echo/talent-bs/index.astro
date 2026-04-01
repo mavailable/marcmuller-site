@@ -1,0 +1,3225 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+// ─── Meta ───────────────────────────────────────────────────────────────────
+const formule = 'pro';
+const formuleLabel = 'Echo Pro';
+const nomProspect = 'Talent Business Solutions';
+const urlSite = 'https://www.talent-bs.com/';
+const dateAudit = '1er avril 2026';
+const showUpsell = false;
+
+// ─── KPIs ────────────────────────────────────────────────────────────────────
+const kpis = {
+  nbPersonas: 100,
+  nbConvertissent: 55,
+  nbHesitent: 20,
+  nbRepartent: 25,
+  conversion: 55,
+  experience: 6.1,
+  confiance: 7.0,
+  clarte: 5.8,
+};
+
+const verdictHero = '55 visiteurs sur 100 vous contactent. Les 45 autres partent — et on sait exactement où vous les perdez.';
+const constat = 'Votre site convainc vos prospects déjà décidés. Il perd massivement ceux qui comparent encore — et les visiteurs mobiles, quelle que soit leur motivation.';
+
+// ─── Canal ──────────────────────────────────────────────────────────────────
+const canalData = [
+  { canal: 'BAO / Lien direct', nb: 15, convert: 12, rate: 80 },
+  { canal: 'IA (ChatGPT/Claude/Perplexity)', nb: 15, convert: 9, rate: 60 },
+  { canal: 'Autres (salon, newsletter)', nb: 15, convert: 8, rate: 53 },
+  { canal: 'Reseaux sociaux (LinkedIn)', nb: 15, convert: 8, rate: 53 },
+  { canal: 'Google Maps', nb: 15, convert: 7, rate: 47 },
+  { canal: 'Google Search', nb: 25, convert: 11, rate: 44 },
+];
+
+// ─── Maturite ───────────────────────────────────────────────────────────────
+const maturiteData = [
+  { label: 'Decision', total: 30, convert: 24, hesite: 4, quitte: 2, rate: 80, friction: 'Absence temoignages verbatim, pas de FAQ' },
+  { label: 'Comparaison', total: 40, convert: 24, hesite: 11, quitte: 5, rate: 60, friction: 'Prix absent, pages 2021, differentiation insuffisante' },
+  { label: 'Decouverte', total: 30, convert: 7, hesite: 5, quitte: 18, rate: 23, friction: 'Jargon technique, navigation mobile, pas de pedagogie' },
+];
+
+// ─── Device ─────────────────────────────────────────────────────────────────
+const deviceData = [
+  { device: 'Desktop', total: 30, convert: 22, rate: 73, insight: 'Experience fluide, conversion solide — le site a ete concu pour ce device' },
+  { device: 'Tablette', total: 10, convert: 7, rate: 70, insight: 'Comportement proche du desktop — navigation correcte' },
+  { device: 'Mobile', total: 60, convert: 26, rate: 43, insight: 'Catastrophique — navigation dense, tel non cliquable, CTA invisibles. -30 pts vs desktop' },
+];
+
+// ─── Segments ───────────────────────────────────────────────────────────────
+const segmentData = [
+  { segment: 'Recommande', total: 10, convert: 9, rate: 90, insight: 'BAO + decision = conversion quasi-automatique' },
+  { segment: 'Ideal', total: 25, convert: 20, rate: 80, insight: 'Solide — perd sur mobile en comparaison' },
+  { segment: 'Adjacent', total: 20, convert: 13, rate: 65, insight: 'Convertit si l\'offre couvre son cas' },
+  { segment: 'Decouverte', total: 15, convert: 6, rate: 40, insight: 'Curiosite sans fort engagement' },
+  { segment: 'Hesitant', total: 20, convert: 7, rate: 35, insight: 'Perd sur prix absent, clarte, mobile — 20 conversions potentielles' },
+  { segment: 'Hors cible', total: 10, convert: 0, rate: 0, insight: 'Le site fait bien son travail de filtre' },
+];
+
+// ─── Matrice ─────────────────────────────────────────────────────────────────
+const matriceData = [
+  { canal: 'BAO', decouverte: 50, comparaison: 80, decision: 100 },
+  { canal: 'IA', decouverte: 30, comparaison: 65, decision: 90 },
+  { canal: 'LinkedIn', decouverte: 10, comparaison: 55, decision: 85 },
+  { canal: 'Autres', decouverte: 25, comparaison: 60, decision: 80 },
+  { canal: 'Google Search', decouverte: 15, comparaison: 45, decision: 75 },
+  { canal: 'Google Maps', decouverte: 10, comparaison: 35, decision: 65 },
+];
+
+// ─── Alertes ─────────────────────────────────────────────────────────────────
+const alertes = [
+  {
+    type: 'critique' as const,
+    titre: 'Navigation mobile catastrophique',
+    detail: '60% de vos visiteurs arrivent sur mobile. Votre site WordPress n\'a pas été optimisé pour mobile — navigation dense, textes minuscules, CTA peu visibles. Résultat : seulement 43% de conversion sur mobile vs 73% sur desktop.',
+    chiffre: '−30pts',
+    chiffreLabel: 'desktop vs mobile',
+  },
+  {
+    type: 'critique' as const,
+    titre: 'Grade F sécurité — et vous vendez de la cybersécurité',
+    detail: 'Mozilla Observatory note votre site F/20 (6/10 tests de sécurité échoués). Vous vendez Zenisys (cybersécurité PME). Les RSSI et DSI qui visitent votre site — votre cœur de cible — voient ce paradoxe. Correctif : 1 journée de développeur.',
+    chiffre: 'F',
+    chiffreLabel: 'grade sécurité',
+  },
+  {
+    type: 'important' as const,
+    titre: 'Pages solutions datées 2021',
+    detail: 'Vos pages Productivité, Cloud, Data affichent des dates de 2021. En 2026, Business Central a intégré Copilot, Azure a évolué, le marché IA a explosé. Ces dates signalent un manque de réactivité à vos prospects qui comparent.',
+    chiffre: '2021',
+    chiffreLabel: 'date dernière màj',
+  },
+  {
+    type: 'important' as const,
+    titre: 'Téléphone non cliquable sur mobile',
+    detail: 'Le 03 88 87 00 14 n\'est pas un lien cliquable (tel:) sur mobile. 45 visiteurs sont impactés — notamment les profils Google Maps qui cherchent le numéro pour appeler directement.',
+    chiffre: '45',
+    chiffreLabel: 'visiteurs bloqués',
+  },
+];
+
+// ─── Tech ────────────────────────────────────────────────────────────────────
+const techVerdicts = [
+  { label: 'Vitesse', verdict: 'Non mesure', ok: false, detail: 'API PageSpeed quota epuise — estimer 40-60 mobile / 65-80 desktop (scripts analytics multiples)' },
+  { label: 'Securite', verdict: 'F / 20pts', ok: false, detail: 'Grade F Mozilla Observatory — 6/10 tests de securite ecoues, CSP absent, paradoxe cybersecurite' },
+  { label: 'SEO', verdict: 'Partiel', ok: false, detail: 'Yoast SEO en place, sitemap OK, mais pages solutions datees 2021 et pas de SEO local' },
+  { label: 'Schema.org', verdict: 'Generique', ok: false, detail: 'WebPage uniquement — pas de LocalBusiness, pas de Service, pas de AggregateRating pour les avis formations' },
+  { label: 'Open Graph', verdict: 'Partiel', ok: false, detail: 'og:image absent sur plusieurs pages — preview LinkedIn sous-optimale' },
+];
+
+const tech = {
+  observatory: { grade: 'F', score: 20, testsOk: 4, testsTotal: 10 },
+  pagespdMobile: null,
+  pagespdDesktop: null,
+  cwv: { lcp: 'Non disponible (quota API)', inp: 'Non disponible', cls: 'Non disponible' },
+  headers: [
+    { ok: false, h: 'Content-Security-Policy (CSP) — absent' },
+    { ok: false, h: 'Referrer-Policy — absent probable' },
+    { ok: false, h: 'X-Frame-Options — absent probable' },
+    { ok: false, h: 'X-Content-Type-Options — variable' },
+    { ok: true, h: 'HSTS (Strict-Transport-Security) — HTTPS actif' },
+    { ok: false, h: 'Permissions-Policy — absent probable' },
+  ],
+  schema: [
+    { item: 'WebPage — present (toutes les pages)', ok: true },
+    { item: 'BreadcrumbList — present (pages interieures)', ok: true },
+    { item: 'WebSite + Organization — presents', ok: true },
+    { item: 'LocalBusiness — ABSENT (critique pour 13 agences)', ok: false },
+    { item: 'address + geo — ABSENT (aucune adresse structuree)', ok: false },
+    { item: 'telephone — ABSENT en JSON-LD', ok: false },
+    { item: 'Service — ABSENT (malgre 21 offres)', ok: false },
+    { item: 'AggregateRating — ABSENT (avis formations 4.75/5 non structures)', ok: false },
+    { item: 'FAQPage — ABSENT (pas de FAQ sur le site)', ok: false },
+    { item: 'sameAs LinkedIn/Facebook — ABSENT', ok: false },
+  ],
+  og: [
+    { item: 'og:title', ok: true, val: 'Present (Yoast SEO)' },
+    { item: 'og:description', ok: true, val: 'Present (Yoast SEO)' },
+    { item: 'og:url', ok: true, val: 'Present' },
+    { item: 'og:type', ok: true, val: 'website' },
+    { item: 'og:image', ok: false, val: 'Absent sur plusieurs pages' },
+    { item: 'og:image:width / height', ok: false, val: 'Absent' },
+    { item: 'twitter:card', ok: false, val: 'Non verifie' },
+    { item: 'og:locale', ok: true, val: 'fr_FR (probable via Yoast)' },
+  ],
+  seo: [
+    { item: 'Title et meta description presents (Yoast SEO)', ok: true },
+    { item: 'robots.txt correct (tout autorise + sitemap)', ok: true },
+    { item: 'Sitemap XML present (6 sitemaps)', ok: true },
+    { item: 'HTTPS actif — redirections HTTP→HTTPS', ok: true },
+    { item: 'URL structure claire (/productivite/, /success_story/...)', ok: true },
+    { item: 'Canonical present (Yoast SEO)', ok: true },
+    { item: 'Pages solutions datees 2021 — dateModified obsolete', ok: false },
+    { item: 'Pas de pages agences locales (SEO local inexploite)', ok: false },
+    { item: 'Pas de FAQ (opportunites featured snippets manquees)', ok: false },
+    { item: 'Contenu mince sur certaines pages solutions', ok: false },
+  ],
+};
+
+// ─── Ameliorations ───────────────────────────────────────────────────────────
+const amelioHautes = [
+  { num: 1, titre: 'Refonte mobile complete — navigation, CTA, lisibilite', impact: 52, detail: '60% des visiteurs arrivent sur mobile avec une experience catastrophique (score 5,1/10). Chaque deuxieme visiteur mobile hesite ou quitte. Refonte du theme WordPress en mobile-first : menu hamburger simplifie, polices augmentees, boutons CTA plus larges.' },
+  { num: 2, titre: 'Numero de telephone cliquable (tel:) sur toutes les pages', impact: 45, detail: 'Sur mobile, le 03 88 n\'est pas cliquable. Les visiteurs en decision frustrés abandonnent au moment critique. Balise <a href="tel:+33388..."> sur le header mobile. Impact : immediat, correctif HTML trivial.' },
+  { num: 3, titre: 'Corriger le grade F securite HTTP (Mozilla Observatory)', impact: 22, detail: 'TBS vend de la cybersecurite Zenisys. Un grade F sur son propre site est detecte par les RSSI et DSI et detruit la credibilite. Configurer les en-tetes HTTP (CSP, HSTS, X-Frame-Options, Referrer-Policy). 1 journee developpeur.' },
+  { num: 4, titre: 'Ajouter 3 temoignages verbatim clients en page d\'accueil', impact: 30, detail: '30 personas cherchent une preuve sociale immediate en arrivant. Les success stories existent mais sont enfouies. Section "Ils nous font confiance" en home avec citations chiffrees (ROI, delai, satisfaction).' },
+  { num: 5, titre: 'Creer des pages agences locales (SEO local — 13 villes)', impact: 28, detail: '28 personas ne savent pas si TBS intervient dans leur ville. 13 pages /agences/strasbourg, /agences/paris, etc. avec adresse, numero local, equipe locale. Impact SEO local fort.' },
+  { num: 6, titre: 'Afficher des fourchettes de prix indicatives', impact: 38, detail: '38 personas sont bloques par l\'absence de prix. En B2B, un "a partir de X€" filtre les hors-budgets et rassure les bons profils. Page "Tarifs" avec 3 gammes (demarrage / PME / ETI).' },
+  { num: 7, titre: 'Mettre a jour les pages solutions (millesime 2025)', impact: 35, detail: '35 personas voient "2021" sur les pages solutions et doutent. Le marche ERP a evolue (Business Central 2024, Copilot IA). Rafraichir le contenu avec les nouvelles fonctionnalites, supprimer les dates de publication.' },
+  { num: 8, titre: 'Creer une FAQ (15 questions les plus frequentes)', impact: 20, detail: '20 personas ont des questions precises sans reponse (delai de deploiement ? taille minimale ? migration depuis Sage ?). Une FAQ reduit les abandons et prequalifie les leads. Themes : prix, delais, taille, migration, secteurs, support.' },
+];
+
+const amelioUtiles = [
+  { num: 9, titre: 'Pages sectorielles (BTP, industrie, logistique, sante, agroalimentaire)', detail: '25 personas cherchent une expertise sectorielle que le site ne met pas assez en avant. 5-7 pages /secteurs/btp avec cas client, problematiques, solutions specifiques.' },
+  { num: 10, titre: 'Chatbot ou formulaire de qualification rapide', detail: 'TBS vend des chatbots mais n\'en a pas sur son propre site. Paradoxe note par plusieurs personas. Un chatbot 3 questions (secteur / taille / besoin) permettrait de router les visiteurs vers la bonne offre.' },
+  { num: 11, titre: 'Presentation de l\'equipe (photos + LinkedIn)', detail: '18 personas veulent savoir a qui ils vont s\'adresser. En B2B la confiance passe par les personnes. Page /equipe avec photos et bios des consultants experts par domaine.' },
+  { num: 12, titre: 'Section "Pourquoi TBS vs nos concurrents"', detail: '15 personas comparent explicitement TBS avec Inetum, Prodware, KPMG IT, etc. Tableau comparatif ou section "Notre difference" : local + partenaire de l\'annee + 120 collaborateurs + 13 agences.' },
+  { num: 13, titre: 'Blog avec contenu sectoriel et SEO', detail: 'Contenu optimise pour les requetes longue traine sur les secteurs cles (BTP, industrie, logistique). Articles "comment migrer de Sage vers Business Central" captent les profils en comparaison.' },
+  { num: 14, titre: 'Optimiser Google Business Profile (13 agences)', detail: 'Si les 13 fiches GBP ne sont pas toutes a jour, les visiteurs Google Maps voient des infos incompletes ou obsoletes. Chaque fiche avec photos, horaires, numero local et specialites.' },
+];
+
+const amelioDiscuter = [
+  { num: 15, titre: 'Publier les fourchettes de prix ERP', detail: 'Risque de froisser des prospects avec des budgets eleves, mais le gain en qualification est significatif. A discuter selon la strategie commerciale.' },
+  { num: 16, titre: 'Page anglaise pour filiales etrangeres', detail: 'Plusieurs personas ETI ont des filiales europeennes. Une version anglaise de la home et des pages solutions pourrait ouvrir de nouveaux segments.' },
+  { num: 17, titre: 'Programme partenaires / ISV documente', detail: 'Des profils intermediaires (consultants indep, cabinets comptables) amenent des affaires a TBS. Un programme partenaires documente structurerait et amplifierait ce canal.' },
+];
+
+// ─── 100 Personas ─────────────────────────────────────────────────────────────
+const personas = [
+  // ── P1 – P20 : donnees completes ──────────────────────────────────────────
+  {
+    id: 1, name: 'Laurent', age: 48, emoji: '💼',
+    situation: 'DAF PME BTP 80 salaries, Colmar',
+    canal: 'LinkedIn', maturite: 'Comparaison', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Reference Lingenheld convaincante — remplit le formulaire malgre les pages 2021',
+    localisation: 'Colmar, Haut-Rhin',
+    contexte: 'Remplacer ERP vieillissant Sage 50, budget 150K€ valide en CODIR',
+    impression: 'Site professionnel, certifications Microsoft rassurent immediatement',
+    parcours: [
+      ['Accueil', 'Badge Microsoft Partner of the Year = signal fort'],
+      ['Productivite ERP', 'Contenu correct mais generique'],
+      ['Success Story Lingenheld', 'Reference BTP convaincante mais sans chiffres ROI'],
+      ['Contact', 'Remplit le formulaire'],
+    ],
+    questionCle: 'Avez-vous deja deploye un ERP pour une PME BTP de ma taille ?',
+    reponse: 'Partiellement',
+    positifs: ['Microsoft Partner of the Year = rassurant', 'Reference Lingenheld BTP', 'Formulaire de contact simple'],
+    frictions: ['Success stories sans chiffres ROI', 'Pages solutions 2021', 'Equipe locale Alsace non mise en avant'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 8, clarte: 7,
+  },
+  {
+    id: 2, name: 'Sophie', age: 41, emoji: '🏭',
+    situation: 'DSI ETI industrie 350 salaries, Nancy',
+    canal: 'Google Search', maturite: 'Decision', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Demande RDV',
+    histoire: 'Certifications Solutions Partner suffisantes pour demander un RDV CRM immediat',
+    localisation: 'Nancy, Meurthe-et-Moselle',
+    contexte: 'Migration CRM Salesforce → Dynamics 365, 80 commerciaux, deadline Q3 2026',
+    impression: 'Integrateur Microsoft certifie au plus haut niveau — exactement ce que je cherche',
+    parcours: [
+      ['Accueil', 'KPIs (120 collab, 13 agences, 20M€) rassurants pour une ETI'],
+      ['Solutions Partner Microsoft', 'Lit les 6 specialisations — note Business Applications et Modern Work'],
+      ['Productivite CRM Dynamics 365', 'Contenu suffisant pour confirmer l\'expertise'],
+      ['Contact', 'Remplit le formulaire, demande RDV'],
+    ],
+    questionCle: 'Quelle est votre methodologie de deploiement CRM et quel est le profil du chef de projet ?',
+    reponse: 'Partiellement',
+    positifs: ['6 specialisations Microsoft listees = preuve de competence globale', 'Page Success Story bien structuree', 'Formulaire contact clair'],
+    frictions: ['Pas de profils consultants — ne peut pas evaluer le niveau senior', 'Pas de timeline indicative de projet CRM', 'Nancy visible seulement en page Contact'],
+    ceQuiFeraitBasculer: '',
+    exp: 8, conf: 9, clarte: 8,
+  },
+  {
+    id: 3, name: 'Mickael', age: 35, emoji: '💻',
+    situation: 'Responsable IT PME RH 45 salaries, Metz',
+    canal: 'IA (ChatGPT)', maturite: 'Decouverte', device: 'Desktop',
+    decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Le site ne lui parle pas directement — aucun contenu PME sous 50 personnes',
+    localisation: 'Metz, Moselle',
+    contexte: 'Nouveau DSI depuis 3 mois — exploration migration G Suite → M365 et Power BI',
+    impression: 'Impressionnant sur le papier, mais est-ce que c\'est pour moi avec mes 45 salaries ?',
+    parcours: [
+      ['Accueil', 'Les chiffres (120 collab, 20M€) le font se demander si TBS n\'est pas trop grand'],
+      ['Productivite Collaboratif', 'Contenu Teams/SharePoint, pertinent pour sa migration'],
+      ['Data Intelligence Power BI', 'Interesse mais pas d\'exemple PME'],
+      ['Blog', 'Cherche un article migration G Suite — n\'en trouve pas'],
+    ],
+    questionCle: 'Est-ce que TBS accompagne des PME de 45 personnes ?',
+    reponse: 'Non',
+    positifs: ['Certifications Microsoft rassurantes', 'Contenu Teams/SharePoint pertinent'],
+    frictions: ['Aucun contenu pour PME <50 personnes', 'Pas de ressources telechargeable', 'Pas de point d\'entree facile (diagnostic gratuit)'],
+    ceQuiFeraitBasculer: 'Un article blog "PME 50 personnes : comment passer a M365" ou une offre diagnostic gratuit',
+    exp: 6, conf: 7, clarte: 5,
+  },
+  {
+    id: 4, name: 'Isabelle', age: 52, emoji: '🌾',
+    situation: 'DG PME agroalimentaire 120 salaries, Strasbourg',
+    canal: 'BAO', maturite: 'Decision', device: 'Mobile',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Numero non cliquable sur mobile — finit par envoyer le formulaire faute de pouvoir appeler',
+    localisation: 'Strasbourg, Bas-Rhin',
+    contexte: 'Recommandee par le DG d\'Arpa Cooking, veut ERP + CRM, budget valide',
+    impression: 'Ca a l\'air tres bien — la reference Arpa va me rassurer, je la cherche',
+    parcours: [
+      ['Accueil mobile', 'Navigation dense, trouve le menu'],
+      ['Success Story Arpa', 'Convaincante, meme secteur agroalimentaire'],
+      ['A propos', 'Confirme l\'ancrage Strasbourg/Grand Est'],
+      ['Contact', 'Cherche le numero de telephone — non cliquable, remplit le formulaire'],
+    ],
+    questionCle: 'Pouvez-vous me recevoir rapidement a Eckbolsheim ?',
+    reponse: 'Partiellement',
+    positifs: ['Reference Arpa Cooking = argument definitif', 'Adresse siege clairement affichee', 'Formulaire fonctionnel sur mobile'],
+    frictions: ['Numero non cliquable (tel:) sur mobile — FRICTION CRITIQUE', 'Horaires d\'ouverture absents', 'Navigation mobile dense et lente'],
+    ceQuiFeraitBasculer: 'Tel cliquable en haut de page mobile + horaires affichees',
+    exp: 6, conf: 9, clarte: 7,
+  },
+  {
+    id: 5, name: 'Thomas', age: 29, emoji: '📱',
+    situation: 'Responsable commercial startup SaaS 12 personnes, Paris',
+    canal: 'Google Search', maturite: 'Decouverte', device: 'Mobile',
+    decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Aucun prix visible, pas adapte a une startup de 12 personnes — va vers HubSpot',
+    localisation: 'Paris',
+    contexte: 'Cherche CRM pour 5 commerciaux, budget 500€/mois maximum',
+    impression: 'Ca a l\'air tres gros. Et je ne vois aucun prix.',
+    parcours: [
+      ['Accueil mobile', 'Ne comprend pas le positionnement en 5 secondes'],
+      ['Productivite CRM', 'Trouve la page mais pas de prix'],
+      ['Offres cles en main', 'Parcourt la liste (21 offres) — toujours aucun prix'],
+      ['Quitte', ''],
+    ],
+    questionCle: 'Combien ca coute pour 5 utilisateurs CRM ?',
+    reponse: 'Non',
+    positifs: [],
+    frictions: ['Zero tarification visible', 'References clients incompatibles avec son profil startup', 'Navigation mobile difficile', 'Formulaire = trop d\'engagement pour phase decouverte'],
+    ceQuiFeraitBasculer: 'Une page "Nos tarifs d\'entree" ou "A partir de X€/mois pour les PME"',
+    exp: 3, conf: 4, clarte: 3,
+  },
+  {
+    id: 6, name: 'Nathalie', age: 44, emoji: '🤝',
+    situation: 'DRH + referente numerique PME 200 personnes, Lyon',
+    canal: 'LinkedIn', maturite: 'Comparaison', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Demande devis',
+    histoire: 'Copilot Jumpstart Partner + Qualiopi = double validation — demande un RDV Lyon',
+    localisation: 'Lyon, Rhone',
+    contexte: 'Deployer Microsoft Copilot pour 50 employes — adoption nulle apres 3 mois, cherche accompagnement',
+    impression: 'Microsoft Copilot Partner — exactement ce que je cherche. Ca semble serieux.',
+    parcours: [
+      ['Accueil', 'Badge Copilot Jumpstart Partner attire son attention'],
+      ['Offres cles Copilot & IA', '6 offres Copilot bien filtrees — tres bien'],
+      ['Formations Qualiopi', 'Satisfaite par les notes (4.3 a 4.75/5)'],
+      ['Contact', 'Remplit le formulaire en demandant un RDV Lyon'],
+    ],
+    questionCle: 'Avez-vous un programme d\'accompagnement change management Copilot ?',
+    reponse: 'Partiellement',
+    positifs: ['Filtres offres = navigation efficace', 'Notes formations rassurantes', 'Certification Qualiopi = financement OPCO possible'],
+    frictions: ['Agence Lyon visible seulement en page Contact', 'Pas de mention financement OPCO', 'Terme "change management" absent du site'],
+    ceQuiFeraitBasculer: '',
+    exp: 8, conf: 8, clarte: 8,
+  },
+  {
+    id: 7, name: 'Frederic', age: 57, emoji: '🏗️',
+    situation: 'PDG PME BTP 35 salaries, Thionville',
+    canal: 'Google Maps', maturite: 'Comparaison', device: 'Mobile',
+    decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Seul numero Strasbourg affiché — cherche Lorraine, hesite car se sent "trop petit"',
+    localisation: 'Thionville, Moselle',
+    contexte: 'Veut un ERP simple pour chantiers/facturation avant depart en retraite de sa comptable',
+    impression: 'C\'est tres grand, est-ce qu\'ils vont s\'occuper de moi avec mes 35 employes ?',
+    parcours: [
+      ['Accueil mobile', 'Trop de contenu, navigation difficile'],
+      ['ERP Business Central', 'Quelques lignes, trouve ca complexe'],
+      ['Contact', 'Cherche numero local Lorraine — ne trouve que le 03 88 (Strasbourg)'],
+    ],
+    questionCle: 'Vous prenez aussi les petites boites de 35 personnes ?',
+    reponse: 'Non',
+    positifs: ['Certifications Microsoft inspirent confiance', 'Numero visible (mais non cliquable)'],
+    frictions: ['Pas de numero par agence Lorraine', 'Navigation mobile trop complexe pour son profil', '"Trop grand pour moi" pensee recurrente'],
+    ceQuiFeraitBasculer: 'Un numero de telephone local Lorraine cliquable + phrase "Nous accompagnons les PME a partir de 20 salaries"',
+    exp: 5, conf: 7, clarte: 4,
+  },
+  {
+    id: 8, name: 'Amira', age: 33, emoji: '🔍',
+    situation: 'Consultante independante transformation digitale, Paris',
+    canal: 'Google Search', maturite: 'Decouverte', device: 'Mobile',
+    decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Due diligence rapide — quitte sans interagir mais dira que TBS est credible a son client',
+    localisation: 'Paris (teletravail)',
+    contexte: 'Son client a recu une proposition TBS — elle fait une recherche de validation',
+    impression: 'Site professionnel, certifications solides. Mon client peut leur faire confiance.',
+    parcours: [
+      ['Accueil', 'Evalue rapidement la credibilite (Microsoft Partner, 20M€, 13 agences)'],
+      ['Success Stories', 'Cherche des temoignages verbatim — n\'en trouve pas'],
+      ['A propos', 'Lit l\'histoire de l\'entreprise'],
+      ['Mentions legales', 'Verifie la solidite juridique'],
+    ],
+    questionCle: 'Ces gens sont-ils credibles et serieux ?',
+    reponse: 'Oui',
+    positifs: ['Credibilite institutionnelle tres forte (certifications, CA, anciennete)', 'Mentions legales completes'],
+    frictions: ['Aucun temoignage client verbatim sur l\'accueil', 'Les success stories sont des descriptions, pas des citations', 'Grade F securite si detecte par un expert'],
+    ceQuiFeraitBasculer: '',
+    exp: 5, conf: 7, clarte: 6,
+  },
+  {
+    id: 9, name: 'Patrick', age: 61, emoji: '👨‍💼',
+    situation: 'DAF groupe familial 4 PME 280 salaries, Mulhouse',
+    canal: 'BAO', maturite: 'Decision', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Reference Lingenheld groupe multi-entites = argument definitif, contacte avec brief complet',
+    localisation: 'Mulhouse, Haut-Rhin',
+    contexte: 'Harmoniser les outils de 4 entites, ERP + BI consolide, budget 250K€, signer avant l\'ete',
+    impression: '120 collaborateurs, 13 agences, 20 millions de CA. Ils ont la taille pour mon projet groupe.',
+    parcours: [
+      ['Accueil', 'KPIs rassurants sur la taille de TBS'],
+      ['Solutions Partner Microsoft', 'Confirme le niveau de partenariat'],
+      ['Success Story Lingenheld', 'Parfaite reference groupe multi-entites — decide de contacter'],
+      ['Contact', 'Remplit le formulaire en precisant le budget 250K€'],
+    ],
+    questionCle: 'Avez-vous un chef de projet dedie interlocuteur unique sur tout le projet ?',
+    reponse: 'Partiellement',
+    positifs: ['Reference Lingenheld = argument definitif pour un projet groupe', 'KPIs entreprise rassurante', 'Formulaire permet de qualifier le projet'],
+    frictions: ['Success story Lingenheld sans chiffres (duree projet, economies, nb users)', 'Pas de page "Projets Groupe" ou "Clients ETI"'],
+    ceQuiFeraitBasculer: '',
+    exp: 8, conf: 9, clarte: 8,
+  },
+  {
+    id: 10, name: 'Clara', age: 27, emoji: '⚡',
+    situation: 'Chef de projet digital ETI e-commerce 90 personnes, Nantes',
+    canal: 'IA (Perplexity)', maturite: 'Comparaison', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Demande demo',
+    histoire: 'Systeme de filtres offres efficace + Waterair = convaincante — demande une demo Power Platform',
+    localisation: 'Nantes, Loire-Atlantique',
+    contexte: 'Automatiser des processus metier avec Power Automate, gagner 10h/semaine sur taches manuelles',
+    impression: 'Microsoft certified, Power Platform en evidence. C\'est dans ma liste de finalistes.',
+    parcours: [
+      ['Accueil', 'Identifie rapidement les offres Low-Code / Power Platform'],
+      ['Offres cles → filtre Low-code', '2 offres trouvees — navigation efficace'],
+      ['Success Story Waterair', 'Power Platform + interconnexion ecosysteme convaincant'],
+      ['Contact', 'Demande une demonstration'],
+    ],
+    questionCle: 'Avez-vous des exemples de workflows Power Automate pour des equipes e-commerce ?',
+    reponse: 'Non',
+    positifs: ['Systeme de filtres sur la page offres = navigation efficace', 'Reference Waterair Power Platform convaincante'],
+    frictions: ['Pas de cas d\'usage specifiques par secteur', 'Manque de demos en ligne', 'Contenu Power Platform trop generique'],
+    ceQuiFeraitBasculer: '',
+    exp: 8, conf: 8, clarte: 7,
+  },
+  {
+    id: 11, name: 'Jean-Pierre', age: 55, emoji: '💰',
+    situation: 'PDG PME services financiers 60 salaries, Strasbourg',
+    canal: 'LinkedIn', maturite: 'Comparaison', device: 'Desktop',
+    decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Interesse par Copilot mais aucun declencheur — secteur services financiers non represente',
+    localisation: 'Strasbourg, Bas-Rhin',
+    contexte: 'Veille Copilot sans projet immediat — ne veut pas prendre de retard sur ses concurrents',
+    impression: 'Grand integrateur Microsoft. Mais pour moi, 60 salaries services financiers... je ne suis pas sur.',
+    parcours: [
+      ['Accueil', 'Comprend le positionnement mais ne se reconnait pas dans les references'],
+      ['Offres cles Copilot', 'Interesse par l\'IA mais pas de budget defini'],
+      ['Actualites', 'Cherche contenus sur l\'IA pour les services financiers — n\'en trouve pas'],
+      ['A propos', 'Verifie le positionnement — ne trouve pas "services financiers"'],
+    ],
+    questionCle: 'Par ou commencer pour une PME de 60 personnes qui n\'a jamais travaille avec vous ?',
+    reponse: 'Non',
+    positifs: ['Blog actif avec contenu Microsoft pertinent', 'Certifications inspirent confiance'],
+    frictions: ['Secteur services financiers non represente dans les references', 'Pas d\'offre "decouverte" ou "diagnostic gratuit"', 'Pas de page "PME - par ou commencer"'],
+    ceQuiFeraitBasculer: 'Un article "Comment une PME de services peut debuter avec Copilot" ou un atelier gratuit',
+    exp: 6, conf: 7, clarte: 5,
+  },
+  {
+    id: 12, name: 'Valerie', age: 46, emoji: '🔩',
+    situation: 'Responsable achats ETI industrie mecanique 180 personnes, Besancon',
+    canal: 'Google Search', maturite: 'Decouverte', device: 'Mobile',
+    decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Aucune reference industrie mecanique + navigation mobile lente — cherche un autre integrateur',
+    localisation: 'Besancon, Doubs',
+    contexte: 'Ruptures de stock recurrentes (-200K€ en 2025), cherche ERP supply chain, premiere recherche',
+    impression: 'Integrateur Microsoft — mais est-ce qu\'ils font de la supply chain ?',
+    parcours: [
+      ['Accueil mobile', 'Lente, navigue vers Productivite'],
+      ['ERP Business Central', 'Mentionne supply chain mais vaguement'],
+      ['Success Stories', 'Cherche industrie mecanique — ne trouve rien'],
+      ['Quitte', ''],
+    ],
+    questionCle: 'Avez-vous deploye Business Central pour une PME industrie mecanique avec supply chain ?',
+    reponse: 'Non',
+    positifs: ['Business Central mentionne avec supply chain comme benefice'],
+    frictions: ['Navigation mobile difficile et lente', 'Pas de reference industrie mecanique', 'Supply chain non traitee comme expertise'],
+    ceQuiFeraitBasculer: '"Industrie" comme filtre dans les success stories + page dediee supply chain',
+    exp: 4, conf: 6, clarte: 4,
+  },
+  {
+    id: 13, name: 'Romain', age: 38, emoji: '☁️',
+    situation: 'CTO scale-up SaaS 65 employes, Lyon, post Serie B',
+    canal: 'IA (Claude)', maturite: 'Decision', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Demande RDV technique',
+    histoire: 'Solutions Partner Infrastructure + Digital & App Innovation = RDV technique demande immediatement',
+    localisation: 'Lyon, Rhone',
+    contexte: 'Migration infrastructure on-premise → Azure, budget 180K€, due diligence investisseurs exige roadmap cloud',
+    impression: 'Solutions Partner Infrastructure + Digital & App Innovation — exactement les certifications Azure que je cherche.',
+    parcours: [
+      ['Accueil', 'Repere immediatement le badge Microsoft Partner'],
+      ['Solutions Partner Microsoft', 'Lit les 6 specialisations, coche Infrastructure et Digital & App Innovation'],
+      ['Transformation Digitale Azure', 'Contenu suffisant pour confirmer l\'expertise'],
+      ['Contact', 'RDV technique demande'],
+    ],
+    questionCle: 'Quel est le niveau de certification Azure de vos architectes cloud ?',
+    reponse: 'Non',
+    positifs: ['Specialisations Microsoft tres detaillees = credibilite technique', 'Offre Migration Azure clairement identifiable'],
+    frictions: ['Pas de profils consultants experts', 'Pas de prix ni d\'estimation', 'Pas de blog technique'],
+    ceQuiFeraitBasculer: '2-3 profils anonymises d\'architectes Azure avec leurs certifications',
+    exp: 8, conf: 9, clarte: 8,
+  },
+  {
+    id: 14, name: 'Christine', age: 50, emoji: '🏛️',
+    situation: 'Directrice association culturelle 12 salaries subventionnee, Metz',
+    canal: 'Google Search', maturite: 'Decouverte', device: 'Mobile',
+    decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'ERP, CRM, Azure — pas du tout pour elle, quitte en 15 secondes sans comprendre l\'offre',
+    localisation: 'Metz, Moselle',
+    contexte: 'Cherche outil simple de gestion pour son association, budget 5K€/an maximum',
+    impression: 'ERP, CRM, Azure... ce n\'est pas pour moi. Trop complexe, trop cher.',
+    parcours: [
+      ['Accueil mobile', 'Decroche en 15 secondes'],
+      ['Quitte', ''],
+    ],
+    questionCle: 'Faites-vous des outils pour les associations a petit budget ?',
+    reponse: 'Non',
+    positifs: [],
+    frictions: ['Jargon technique immediat incomprehensible', 'Aucune section par secteur incluant l\'associatif', 'Vitesse lente aggrave l\'impression negative'],
+    ceQuiFeraitBasculer: '',
+    exp: 2, conf: 5, clarte: 2,
+  },
+  {
+    id: 15, name: 'David', age: 43, emoji: '⚽',
+    situation: 'IT Manager Racing Club de Strasbourg (RCSA), Strasbourg',
+    canal: 'BAO', maturite: 'Comparaison', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Relance son interlocuteur',
+    histoire: 'Client existant RCSA — visite pour valider l\'expertise Power BI avant d\'etendre le contrat',
+    localisation: 'Strasbourg, Bas-Rhin',
+    contexte: 'Client existant TBS (CRM), cherche a etendre vers Power BI pour dashboards commerciaux en temps reel',
+    impression: 'Je connais TBS, je veux juste confirmer l\'expertise BI avant de relancer la discussion.',
+    parcours: [
+      ['Accueil', 'Cherche la success story RCSA'],
+      ['Data Intelligence', 'Verifie l\'offre Power BI'],
+      ['Contact', 'Relance son interlocuteur habituel'],
+    ],
+    questionCle: 'Avez-vous deja fait des dashboards Power BI pour d\'autres clubs sportifs ?',
+    reponse: 'Partiellement',
+    positifs: ['Relation existante = confiance maximale', 'Certifications Power Platform visibles'],
+    frictions: ['Success story RCSA peu detaillee (pas de chiffres ROI)', 'Pas de page dediee "BI pour le sport"'],
+    ceQuiFeraitBasculer: '',
+    exp: 8, conf: 9, clarte: 8,
+  },
+  {
+    id: 16, name: 'Margot', age: 31, emoji: '📋',
+    situation: 'Assistante de direction cabinet comptable 55 personnes, Strasbourg',
+    canal: 'Google Maps', maturite: 'Decision', device: 'Mobile',
+    decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Son directeur veut un RDV urgent — numero non cliquable, finit par appeler via Google Maps',
+    localisation: 'Strasbourg, Bas-Rhin',
+    contexte: 'Mission: trouver les coordonnees TBS et organiser un RDV pour son directeur (projet Dynamics 365)',
+    impression: 'Je cherche juste un numero de telephone ou un formulaire simple.',
+    parcours: [
+      ['Accueil', 'Cherche le numero de telephone'],
+      ['Contact', 'Trouve le formulaire mais cherche le tel direct'],
+    ],
+    questionCle: 'Quel est votre numero de telephone direct et ou etes-vous exactement ?',
+    reponse: 'Partiellement',
+    positifs: ['Formulaire de contact trouve'],
+    frictions: ['Numero non visible/non cliquable en haut de page mobile', 'Doit naviguer jusqu\'a la page Contact'],
+    ceQuiFeraitBasculer: 'Numero cliquable en header mobile + adresse visible sur accueil',
+    exp: 5, conf: 7, clarte: 6,
+  },
+  {
+    id: 17, name: 'Bruno', age: 59, emoji: '🏪',
+    situation: 'Gerant PME retail 3 magasins vetements, Colmar',
+    canal: 'LinkedIn', maturite: 'Decouverte', device: 'Mobile',
+    decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Curiosite suite a prospection LinkedIn — decroche en 30 secondes, trop technique pour lui',
+    localisation: 'Colmar, Haut-Rhin',
+    contexte: 'Simple curiosite suite a une invitation LinkedIn TBS — pas de projet IT en cours',
+    impression: 'C\'est impressionnant mais je ne comprends rien a ERP, Azure, Power Platform.',
+    parcours: [
+      ['Accueil', 'Decroche apres 30 secondes'],
+      ['Quitte', ''],
+    ],
+    questionCle: 'En quoi est-ce que ca me concerne, moi qui ai 3 boutiques ?',
+    reponse: 'Non',
+    positifs: [],
+    frictions: ['Jargon technique incomprehensible pour un non-technicien', 'Pas de page "Pour qui ?" claire', 'Navigation mobile mauvaise'],
+    ceQuiFeraitBasculer: '',
+    exp: 3, conf: 5, clarte: 2,
+  },
+  {
+    id: 18, name: 'Helene', age: 36, emoji: '🔒',
+    situation: 'RSSI PME industrielle 85 salaries soumise a NIS2, Mulhouse',
+    canal: 'Google Search', maturite: 'Decision', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Demande demo',
+    histoire: 'Grade F securite detecte mais continue car urgence NIS2 — demande demo Zenisys malgre le paradoxe',
+    localisation: 'Mulhouse, Haut-Rhin',
+    contexte: 'Mise en conformite NIS2 avant fin 2026, budget 80K€ valide, audit ANSSI prevu Q4',
+    impression: 'Zenisys couvre NIS2 — exactement ce qu\'il me faut. Note mentale sur le grade F.',
+    parcours: [
+      ['Accueil', 'Cherche la section cybersecurite / Zenisys'],
+      ['Zenisys', 'Offre NIS2 directement addressee a son besoin'],
+      ['Offres cles Cybersecurite', 'Defender/Entra/Intune — confirme l\'expertise'],
+      ['Contact', 'Demande demo et devis detaille'],
+    ],
+    questionCle: 'Zenisys couvre-t-il les 10 mesures essentielles de la directive NIS2 ?',
+    reponse: 'Partiellement',
+    positifs: ['Zenisys = solution directement addressee a NIS2', 'Tarif affiche (seule offre tarifee) = rassurant', 'Navigation vers Zenisys accessible'],
+    frictions: ['Grade F Mozilla Observatory — paradoxe detecte immediatement par une RSSI', 'Zenisys peu visible en page d\'accueil'],
+    ceQuiFeraitBasculer: '',
+    exp: 8, conf: 8, clarte: 7,
+  },
+  {
+    id: 19, name: 'Youssef', age: 34, emoji: '🖥️',
+    situation: 'Developpeur interne PME 70 personnes, Nancy',
+    canal: 'Google Search', maturite: 'Decouverte', device: 'Desktop',
+    decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Cherche documentation technique Power Platform — le site est un site commercial, pas un portail doc',
+    localisation: 'Nancy, Meurthe-et-Moselle',
+    contexte: 'Mission: evaluer si Power Platform peut remplacer un dev custom — cherche contenu technique approfondi',
+    impression: 'Certifications OK mais pas de contenu technique — il me faut Microsoft Learn.',
+    parcours: [
+      ['Accueil', 'Cherche du contenu technique Power Platform'],
+      ['Blog', 'Cherche article technique — trop generique'],
+      ['Quitte', 'Va sur Microsoft Learn'],
+    ],
+    questionCle: 'Quelles limites a Power Platform par rapport a du dev custom C# ?',
+    reponse: 'Non',
+    positifs: ['Expertise Microsoft certifiee visible'],
+    frictions: ['Site commercial, pas portail technique', 'Pas de documentation, pas d\'articles de blog techniques'],
+    ceQuiFeraitBasculer: '',
+    exp: 4, conf: 6, clarte: 4,
+  },
+  {
+    id: 20, name: 'Anne-Marie', age: 53, emoji: '🎓',
+    situation: 'DG organisme de formation 40 personnes, Strasbourg',
+    canal: 'Autres', maturite: 'Decision', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Referral Microsoft direct — confirme Copilot Jumpstart et Qualiopi, remplit le formulaire en mentionnant le referral',
+    localisation: 'Strasbourg, Bas-Rhin',
+    contexte: 'Recommandee par son account manager Microsoft, M365 sous-utilise, veut SharePoint + Power Automate',
+    impression: 'Copilot Jumpstart + Qualiopi + Strasbourg — tout ce qu\'il me faut.',
+    parcours: [
+      ['Accueil', 'Confirme le badge Copilot Jumpstart Partner'],
+      ['Solutions Partner Microsoft', 'Valide les certifications'],
+      ['Formations Qualiopi', 'Verifie la liste des formations et les notes'],
+      ['Contact', 'Remplit le formulaire avec mention du referral Microsoft'],
+    ],
+    questionCle: 'Les formations Qualiopi sont-elles eligibles au financement OPCO ?',
+    reponse: 'Partiellement',
+    positifs: ['Referral Microsoft = confiance pre-etablie', 'Certifications Qualiopi + Copilot = double validation', 'Formulaire de contact clair'],
+    frictions: ['Pas de mention explicite financement OPCO pour les formations', 'Pas de page "M365 pour les organismes de formation"'],
+    ceQuiFeraitBasculer: '',
+    exp: 9, conf: 9, clarte: 8,
+  },
+
+  // ── P21-P100 : construits depuis personas.md + simulations echo-report.md ──
+  {
+    id: 21, name: 'Karim', age: 45, emoji: '📦',
+    situation: 'DAF PME logistique 120 salaries, Mulhouse',
+    canal: 'Google Search', maturite: 'Comparaison', device: 'Mobile',
+    decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Navigation mobile difficile — pas de reference logistique visible, hesite a contacter',
+    localisation: 'Mulhouse, Haut-Rhin',
+    contexte: 'Croissance +30% en 2 ans, QuickBooks + Excel ingerable, CODIR dans 3 semaines',
+    impression: 'Integrateur Business Central Alsace — mais je ne vois pas de reference logistique.',
+    parcours: [
+      ['Accueil mobile', 'Navigation difficile, cherche logistique/transport'],
+      ['Productivite → Business Central', 'Contenu generique, pas de cas logistique'],
+      ['References', 'Lingenheld BTP, pas transport'],
+      ['Hesite sur Contact', 'Incertain sur la couverture sectorielle'],
+    ],
+    questionCle: 'Est-ce qu\'ils ont deja deploye Business Central dans une PME logistique multi-sites ?',
+    reponse: 'Non',
+    positifs: ['Certifications Microsoft rassurantes', 'Chiffres entreprise (13 agences) rassurants'],
+    frictions: ['Aucune reference logistique visible', 'Navigation mobile difficile', 'Un seul numero Strasbourg pour un besoin Mulhouse'],
+    ceQuiFeraitBasculer: 'Une page sectorielle "Logistique & Transport" avec cas client',
+    exp: 5, conf: 6, clarte: 5,
+  },
+  {
+    id: 22, name: 'Sandrine', age: 39, emoji: '🏭',
+    situation: 'DSI ETI agroalimentaire 280 salaries, Strasbourg',
+    canal: 'LinkedIn', maturite: 'Decision', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Post salon ERP LinkedIn → site → certifications Microsoft confirment le niveau — contacte via formulaire',
+    localisation: 'Strasbourg, Bas-Rhin',
+    contexte: 'Fin contrat integrateur SAP, migration vers solution plus agile, budget 200K€, RFP avec 3 prestataires',
+    impression: 'Solutions Partner Cloud + references agroalimentaires — TBS est en shortlist.',
+    parcours: [
+      ['Accueil', 'Certifications Microsoft immediatement rassurantes'],
+      ['Certifications', 'Lit les 6 specialisations atentivemement'],
+      ['Solutions Productivite', 'Contenu suffisant pour confirmer l\'expertise'],
+      ['Contact', 'Remplit le formulaire'],
+    ],
+    questionCle: 'Quelles sont leurs certifications Microsoft et combien de consultants certifies ?',
+    reponse: 'Partiellement',
+    positifs: ['Niveau de partenariat Microsoft tres rassurant', 'Certifications bien mises en avant'],
+    frictions: ['Pages solutions datees 2021', 'Pas de presentation consultants individuels', 'Absence de temoignages chiffres en home'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 8, clarte: 7,
+  },
+  {
+    id: 23, name: 'Olivier', age: 52, emoji: '⚙️',
+    situation: 'PDG PME industrie mecanique 95 salaries, Metz',
+    canal: 'Google Maps', maturite: 'Comparaison', device: 'Mobile',
+    decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Cherche agence Metz/Nancy — ne trouve qu\'un numero Strasbourg, hesite face a la distance',
+    localisation: 'Metz, Moselle',
+    contexte: 'Perd des appels d\'offres pour tracabilite insuffisante, veut ERP production, compare avec Infor et SAP B1',
+    impression: 'C\'est a Strasbourg — est-ce qu\'ils ont vraiment une equipe a Metz ?',
+    parcours: [
+      ['Google Maps', 'Arrive sur le site'],
+      ['Accueil', 'Navigation mobile catastrophique'],
+      ['Contact', 'Cherche numero local Nancy — trouve seulement 03 88'],
+    ],
+    questionCle: 'Est-ce qu\'ils ont une equipe sur Metz ou Nancy ?',
+    reponse: 'Non',
+    positifs: ['Certifications Microsoft rassurent sur le niveau technique'],
+    frictions: ['Navigation mobile catastrophique', 'Seul numero Strasbourg', 'Pas de page agence Metz/Nancy visible'],
+    ceQuiFeraitBasculer: 'Page agence Nancy avec numero local cliquable',
+    exp: 4, conf: 6, clarte: 4,
+  },
+  {
+    id: 24, name: 'Fatima', age: 41, emoji: '🏥',
+    situation: 'Responsable IT PME sante clinique privee 160 salaries, Lyon',
+    canal: 'IA (Gemini)', maturite: 'Comparaison', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Gemini recommande TBS — aucune reference sante mais certifications Microsoft compensent, contacte',
+    localisation: 'Lyon, Rhone',
+    contexte: 'Deadline 1er janvier pour nouvelle solution RH/ERP, budget 80K€, compare 4 prestataires Gemini',
+    impression: 'TBS est sur la liste Gemini — je verifie les certifications Microsoft avant de contacter.',
+    parcours: [
+      ['Accueil', 'Identifie les certifications Microsoft'],
+      ['Solutions CRM/Power Platform', 'Cherche expertise RH et sante'],
+      ['Success Stories', 'Pas de reference sante — Waterair est industriel'],
+      ['Contact', 'Contacte quand meme car certifications solides'],
+    ],
+    questionCle: 'Ont-ils des references dans le secteur sante ou cliniques ?',
+    reponse: 'Non',
+    positifs: ['Recommandation Gemini = signal de credibilite IA', 'Certifications Microsoft compensent l\'absence de reference sante'],
+    frictions: ['Aucune reference sante ou clinique visible', 'Pas de consultant nomme pour le secteur sante'],
+    ceQuiFeraitBasculer: '',
+    exp: 6, conf: 7, clarte: 6,
+  },
+  {
+    id: 25, name: 'Marc', age: 47, emoji: '🚛',
+    situation: 'DG PME transport routier 180 salaries 85 camions, Reims',
+    canal: 'Google Search', maturite: 'Decision', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Demande RDV',
+    histoire: 'Nouvelle reglementation chronotachygraphe = urgence — budget 120K€ valide, contacte malgre absence de reference transport',
+    localisation: 'Reims, Marne',
+    contexte: 'Reglementation transport impose tracabilite accrue, budget 120K€, veut integrer donnee tachygraphe dans ERP',
+    impression: 'TBS a le niveau de certification qu\'il faut pour un projet de cette envergure.',
+    parcours: [
+      ['Accueil', 'Certifications Microsoft rassurent'],
+      ['Productivite → Business Central', 'Cherche reference transport'],
+      ['Success Stories', 'Lingenheld BTP — proche mais pas transport'],
+      ['Contact', 'Contacte malgre l\'absence de reference exacte'],
+    ],
+    questionCle: 'Est-ce que Business Central s\'integre avec un TMS comme Trimble ou Transics ?',
+    reponse: 'Non',
+    positifs: ['Niveau de partenariat Microsoft justifie le contact', 'Formulaire clair'],
+    frictions: ['Pas de reference transport visible', 'Pages solutions generiques et datees'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 8, clarte: 6,
+  },
+  {
+    id: 26, name: 'Sylvie', age: 54, emoji: '🏢',
+    situation: 'DAF ETI immobiliere 240 salaries 4000 logements, Strasbourg',
+    canal: 'BAO', maturite: 'Decision', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Expert-comptable recommande TBS — groupe en fusion, budget 250K€, contacte pour harmonisation ERP',
+    localisation: 'Strasbourg, Bas-Rhin',
+    contexte: 'Fusion avec fonciere parisienne, harmonisation outils financiers imposee par Paris, budget 250K€',
+    impression: 'TBS est sur Strasbourg, les certifications sont bonnes — la recommandation suffit.',
+    parcours: [
+      ['Accueil', 'Verifie la credibilite'],
+      ['Certifications', 'Confirme le niveau Microsoft'],
+      ['Solutions', 'Cherche reference fusion/harmonisation'],
+      ['Contact', 'Contacte directement'],
+    ],
+    questionCle: 'Ont-ils deja gere une migration ERP dans un contexte de fusion ?',
+    reponse: 'Non',
+    positifs: ['Recommandation expert-comptable = confiance pre-etablie', 'Localisation Strasbourg rassurant'],
+    frictions: ['Site WordPress date de 2021', 'Manque de reassurance sur l\'equipe (pas de pages collaborateurs)'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 8, clarte: 7,
+  },
+  {
+    id: 27, name: 'Nicolas', age: 33, emoji: '⚡',
+    situation: 'Responsable IT PME energies renouvelables 75 salaries, Colmar',
+    canal: 'IA (ChatGPT)', maturite: 'Comparaison', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Meilleur integrateur Microsoft Alsace PME selon ChatGPT — contacte malgre absence de prix',
+    localisation: 'Colmar, Haut-Rhin',
+    contexte: 'PME triplée en 2 ans, Excel + SAV standalone ne tiennent plus, cherche Dynamics 365 Field Service',
+    impression: 'ChatGPT recommande TBS — je verifie l\'expertise Field Service avant de contacter.',
+    parcours: [
+      ['Accueil', 'Identifie Dynamics 365 dans les offres'],
+      ['Solutions CRM', 'Cherche Field Service specifiquement'],
+      ['Certifications', 'Confirme le niveau Dynamics'],
+      ['Contact', 'Contacte malgre l\'absence de prix'],
+    ],
+    questionCle: 'Est-ce que Dynamics 365 Field Service peut gerer des techniciens terrain avec tablettes en mode offline ?',
+    reponse: 'Non',
+    positifs: ['Recommandation ChatGPT = signal de credibilite IA', 'Expertise Dynamics 365 certifiee visible'],
+    frictions: ['Pas de prix pour Field Service', 'Pages solutions trop generiques', 'Pas de contact local Colmar visible'],
+    ceQuiFeraitBasculer: '',
+    exp: 6, conf: 7, clarte: 6,
+  },
+  {
+    id: 28, name: 'Leila', age: 36, emoji: '💳',
+    situation: 'CTO PME fintech 45 salaries solution paiement B2B, Paris',
+    canal: 'Google Search', maturite: 'Comparaison', device: 'Mobile',
+    decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Grade F securite detecte immediatement — paradoxe majeur pour une fintech cherchant un expert Azure/securite',
+    localisation: 'Paris, Ile-de-France',
+    contexte: 'Audit PCI-DSS dans 6 mois, migration Azure securisee, budget 60K€, doute sur la presence parisienne',
+    impression: 'Comment un expert cybersecurite peut avoir un grade F sur son propre site ?',
+    parcours: [
+      ['Accueil', 'Identifie l\'offre Azure et securite'],
+      ['Cloud Azure', 'Contenu rassurant sur Azure'],
+      ['Cybersecurite Zenisys', 'Contenu pertinent mais...'],
+      ['Verifie la securite du site', 'Grade F detecte → doute majeur'],
+    ],
+    questionCle: 'Comment TBS gere la securite de ses propres systemes — leur site a un grade F Mozilla ?',
+    reponse: 'Non',
+    positifs: ['Expertise Azure certifiee visible', 'Offre Zenisys pertinente pour PCI-DSS'],
+    frictions: ['Grade F securite = paradoxe redhibitoire pour une fintech', 'Navigation mobile difficile', 'Doute sur la presence Paris'],
+    ceQuiFeraitBasculer: 'Corriger le grade F + page agence Paris avec equipe dedicee',
+    exp: 5, conf: 5, clarte: 6,
+  },
+  {
+    id: 29, name: 'Gerard', age: 60, emoji: '🔧',
+    situation: 'PDG ETI mecanique industrielle 320 salaries Mulhouse et Belfort',
+    canal: 'LinkedIn', maturite: 'Decision', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Message LinkedIn commercial TBS → site → solidite TBS (13 agences) confirme, contacte pour moderniser SI avant cession',
+    localisation: 'Mulhouse, Haut-Rhin',
+    contexte: 'Prepare transmission dans 3 ans, veut moderniser SI pour valoriser l\'entreprise, budget 300K€',
+    impression: '120 collaborateurs, 13 agences, 10 ans — TBS sera encore la dans 5 ans pour le support.',
+    parcours: [
+      ['Accueil', 'Les KPIs rassurent sur la perenite de TBS'],
+      ['A propos', 'Cherche equipe — ne trouve pas les dirigeants'],
+      ['References Lingenheld', 'Industrie lourde — reference proche'],
+      ['Contact', 'Contacte pour un RDV de decouverte'],
+    ],
+    questionCle: 'TBS sera encore la dans 5 ans pour assurer le support ?',
+    reponse: 'Partiellement',
+    positifs: ['KPIs TBS rassurantes sur la perenite', 'Reference Lingenheld industrie'],
+    frictions: ['Pas de temoignages en home page', 'Pas de presentation equipe de direction', 'Pages solutions datees'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 8, clarte: 7,
+  },
+  {
+    id: 30, name: 'Aurelie', age: 29, emoji: '🎓',
+    situation: 'Chef de projet ERP junior cabinet de conseil parisien, benchmarking client',
+    canal: 'IA (Copilot)', maturite: 'Decouverte', device: 'Desktop',
+    decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Benchmark integrateurs BC pour client ETI — quitte sans contact car positionnement regional doute',
+    localisation: 'Paris, Ile-de-France',
+    contexte: 'Prepare un benchmark integrateurs pour client ETI — inclut TBS dans la liste des candidats',
+    impression: 'TBS = Grand Est. Mais mon client est a Paris. Est-ce qu\'ils peuvent intervenir partout ?',
+    parcours: [
+      ['Accueil', 'Comprend le positionnement regional'],
+      ['Certifications', 'Lit les specialisations'],
+      ['Solutions', 'Parcourt les offres'],
+      ['Quitte', 'Sans contact — incertitude sur la couverture nationale'],
+    ],
+    questionCle: 'TBS peut-il intervenir sur Paris avec la meme qualite qu\'en Alsace ?',
+    reponse: 'Non',
+    positifs: ['Certifications Microsoft tres solides', 'Chiffres (13 agences) pourraient rassurer'],
+    frictions: ['Pas de mention explicite de la couverture nationale', 'Pas de tarification visible', 'Pages generiques'],
+    ceQuiFeraitBasculer: 'Section "Nos 13 agences en France" bien visible en home',
+    exp: 5, conf: 7, clarte: 5,
+  },
+  {
+    id: 31, name: 'Thierry', age: 50, emoji: '🏦',
+    situation: 'RSSI ETI bancaire regionale 200 salaries, Strasbourg',
+    canal: 'Google Search', maturite: 'Comparaison', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Grade F securite detecte et note mentalement — continue quand meme car offre DORA pertinente et urgence Q2',
+    localisation: 'Strasbourg, Bas-Rhin',
+    contexte: 'DORA impose plans de continuite et tests d\'intrusion, contractualiser avant fin Q2',
+    impression: 'Offre Zenisys DORA pertinente — je note le grade F mais l\'urgence prime.',
+    parcours: [
+      ['Accueil', 'Cherche la section cybersecurite'],
+      ['Zenisys', 'Offre DORA rassurante'],
+      ['Certifications securite', 'Verifie les certifications'],
+      ['Contact', 'Contacte malgre le paradoxe securite'],
+    ],
+    questionCle: 'Quelles certifications securite TBS/Zenisys possede-t-elle concretement ?',
+    reponse: 'Partiellement',
+    positifs: ['Offre Zenisys directement addressee a DORA', 'Localisation Strasbourg = equipe locale'],
+    frictions: ['Grade F Mozilla Observatory — paradoxe flagrant pour un RSSI', 'Zenisys peu visible en home'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 7, clarte: 7,
+  },
+  {
+    id: 32, name: 'Aminata', age: 37, emoji: '👔',
+    situation: 'DRH PME retail textile 60 salaries 8 boutiques, Lyon',
+    canal: 'LinkedIn', maturite: 'Decouverte', device: 'Mobile',
+    decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Pub "logiciels de gestion pour PME" → cherche SIRH standalone → ne trouve rien, quitte vers Lucca ou Payfit',
+    localisation: 'Lyon, Rhone',
+    contexte: 'Cherche SIRH standalone pour conges/paie, budget 5K€/an max',
+    impression: 'C\'est pour des grands ERP, pas pour mon SIRH de base a 5K€.',
+    parcours: [
+      ['Accueil', 'Cherche "RH" — ne trouve pas'],
+      ['Quitte', 'Va vers un SIRH specialise'],
+    ],
+    questionCle: 'Ont-ils une solution RH abordable pour une PME de 60 personnes ?',
+    reponse: 'Non',
+    positifs: [],
+    frictions: ['Site oriente ERP complet pas SIRH standalone', 'Budget incompatible', 'Navigation mobile mauvaise'],
+    ceQuiFeraitBasculer: '',
+    exp: 3, conf: 5, clarte: 3,
+  },
+  {
+    id: 33, name: 'Pascal', age: 56, emoji: '🏗️',
+    situation: 'PDG PME BTP 140 salaries gros oeuvre charpente, Epinal',
+    canal: 'Google Maps', maturite: 'Decision', device: 'Mobile',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Motivation forte (marche public 8M€) — convertit malgre mobile difficile et numero non cliquable',
+    localisation: 'Epinal, Vosges',
+    contexte: 'Marche public 8M€ remporte, facturation marchés publics au-dela d\'Excel, budget 100K€ approuve',
+    impression: 'Lingenheld BTP Grand Est — exactement ce qu\'il me faut. Je dois contacter même sur ce mobile.',
+    parcours: [
+      ['Google Maps', 'Arrive sur le site depuis sa recherche locale'],
+      ['Accueil', 'Navigation difficile — cherche BTP'],
+      ['Lingenheld', 'Reference BTP convaincante'],
+      ['Contact', 'Essaie d\'appeler — numero non cliquable — remplit le formulaire'],
+    ],
+    questionCle: 'Ils connaissent les contraintes de facturation marches publics avec Business Central ?',
+    reponse: 'Partiellement',
+    positifs: ['Reference Lingenheld BTP Grand Est parfaite pour son profil', 'Certifications Microsoft'],
+    frictions: ['Navigation mobile catastrophique', 'Numero non cliquable frustrant au moment critique', 'Un seul numero Strasbourg pas Epinal'],
+    ceQuiFeraitBasculer: '',
+    exp: 5, conf: 8, clarte: 6,
+  },
+  {
+    id: 34, name: 'Celine', age: 42, emoji: '💰',
+    situation: 'Responsable financiere PME negoce alimentaire 85 salaries, Besancon',
+    canal: 'Google Search', maturite: 'Comparaison', device: 'Mobile',
+    decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Pas de page agence Besancon visible — incertitude sur la couverture geo bloque la decision',
+    localisation: 'Besancon, Doubs',
+    contexte: 'Expert-comptable a recommande Business Central, compare 3 integrateurs, cherche couverture Besancon',
+    impression: 'Est-ce qu\'ils interviennent vraiment a Besancon ou c\'est juste une liste d\'agences ?',
+    parcours: [
+      ['Accueil', 'Navigation mobile difficile'],
+      ['Productivite', 'Contenu Business Central — pas de reference negoce'],
+      ['Contact', 'Hesite car pas sure de la couverture geo'],
+    ],
+    questionCle: 'Est-ce qu\'ils interviennent vraiment a Besancon ou c\'est une liste d\'agences vitrine ?',
+    reponse: 'Non',
+    positifs: ['Expert-comptable a recommande Business Central', 'Certifications rassurantes'],
+    frictions: ['Mobile difficile', 'Pas de prix', 'Pas de page agence Besancon', 'Incertitude couverture geographique'],
+    ceQuiFeraitBasculer: 'Page agence Franche-Comte/Besancon avec numero local et equipe',
+    exp: 4, conf: 6, clarte: 4,
+  },
+  {
+    id: 35, name: 'Eric', age: 48, emoji: '🛡️',
+    situation: 'IT Manager ETI assurance 190 salaries, Strasbourg',
+    canal: 'IA (Perplexity)', maturite: 'Comparaison', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Perplexity recommande TBS — expertise Power Platform certifiee, contacte pour projet 70K€',
+    localisation: 'Strasbourg, Bas-Rhin',
+    contexte: 'Digitalisation processus RH et sinistres, budget Power Platform 70K€, delai 6 mois',
+    impression: 'Perplexity Solutions Partner Grand Est — Power Platform en evidence sur le site.',
+    parcours: [
+      ['Accueil', 'Identifie Power Platform dans les offres'],
+      ['Power Platform', 'Contenu pertinent mais peu d\'exemples concrets'],
+      ['Certifications', 'Confirme le niveau Microsoft'],
+      ['Contact', 'Contacte pour un RDV devis'],
+    ],
+    questionCle: 'Combien de projets Power Platform ont-ils deployes l\'an dernier ?',
+    reponse: 'Non',
+    positifs: ['Recommandation Perplexity valide la credibilite IA', 'Expertise Power Platform certifiee', 'Equipe Strasbourg locale'],
+    frictions: ['Power Platform peu mis en avant', 'Pas de consultant nomme visible'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 8, clarte: 7,
+  },
+  {
+    id: 36, name: 'Maryse', age: 58, emoji: '📚',
+    situation: 'DG organisme de formation professionnelle 110 salaries Qualiopi, Metz',
+    canal: 'BAO', maturite: 'Decision', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Collegue DG recommande TBS — loi de finances 2026 impose nouveaux reportings, contacte directement',
+    localisation: 'Metz, Moselle',
+    contexte: 'Loi de finances 2026 = nouveaux reportings OF, EBP ne peut pas les produire, budget 90K€',
+    impression: 'Ma collegue m\'a recommande TBS et elle en est tres satisfaite — je contacte directement.',
+    parcours: [
+      ['Accueil', 'Verifie la credibilite — rassurante'],
+      ['Productivite', 'Business Central — pertinent pour les OF'],
+      ['Contact', 'Contacte directement via formulaire'],
+    ],
+    questionCle: 'Ont-ils deja deploye BC dans un organisme de formation avec gestion financements OPCO ?',
+    reponse: 'Non',
+    positifs: ['Recommandation collegue DG = confiance maximale', 'Certifications Qualiopi visibles'],
+    frictions: ['Pas de reference visible dans la formation professionnelle', 'Un seul numero Strasbourg pas Metz'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 8, clarte: 7,
+  },
+  {
+    id: 37, name: 'Julien', age: 31, emoji: '🔐',
+    situation: 'Responsable cybersecurite ETI industrielle 250 salaries, Mulhouse — poste cree il y a 6 mois',
+    canal: 'LinkedIn', maturite: 'Decouverte', device: 'Desktop',
+    decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Grade F Mozilla detecte immediatement — credibilite Zenisys detruite, hesite malgre l\'offre pertinente',
+    localisation: 'Mulhouse, Haut-Rhin',
+    contexte: 'Vient d\'etre nomme RSSI sans politique securite formelle, pas encore de budget, cherche partenaire long terme',
+    impression: 'Pourquoi leur propre site a un grade F en securite s\'ils vendent de la cybersecurite ?',
+    parcours: [
+      ['Accueil', 'Cherche la section securite'],
+      ['Zenisys', 'Offre pertinente pour son contexte'],
+      ['Verifie securite site', 'Grade F detecte via son outil habituel → doute'],
+      ['Hesite', 'Reste sans contact'],
+    ],
+    questionCle: 'Pourquoi leur propre site a un grade F en securite ?',
+    reponse: 'Non',
+    positifs: ['Offre Zenisys pertinente pour son besoin', 'Zenisys page bien detaillee'],
+    frictions: ['Grade F = redhibitoire pour un RSSI — credibilite detruite', 'Zenisys peu visible en home', 'Budget pas encore formalise'],
+    ceQuiFeraitBasculer: 'Corriger le grade F + mettre Zenisys en avant sur la home',
+    exp: 5, conf: 5, clarte: 5,
+  },
+  {
+    id: 38, name: 'Houda', age: 44, emoji: '🏢',
+    situation: 'Directrice des Operations ETI services aux entreprises 310 salaries, Toulouse',
+    canal: 'Google Search', maturite: 'Decision', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Premiere presentation telephonique TBS deja realisee — visite site pour confirmer, contacte',
+    localisation: 'Toulouse, Haute-Garonne',
+    contexte: 'CRM operationnel avant septembre pour 45 commerciaux, budget 80K€, shortlist TBS apres appel',
+    impression: 'TBS est deja en shortlist — je visite le site pour confirmer avant de valider.',
+    parcours: [
+      ['Accueil', 'Confirme les certifications'],
+      ['CRM Dynamics 365', 'Contenu confirme l\'expertise'],
+      ['Success Stories', 'Cherche reference services B2B'],
+      ['Contact', 'Contacte avec formulaire detaille'],
+    ],
+    questionCle: 'Peuvent-ils deployer Dynamics 365 Sales pour 45 users en 3 mois avec formation incluse ?',
+    reponse: 'Partiellement',
+    positifs: ['Relation telephonique pre-etablie = confiance', 'Expertise Dynamics 365 certifiee'],
+    frictions: ['Pas de temoignages verbatim en home', 'Pages solutions peu actualisees'],
+    ceQuiFeraitBasculer: '',
+    exp: 8, conf: 8, clarte: 7,
+  },
+  {
+    id: 39, name: 'Bernard', age: 63, emoji: '👴',
+    situation: 'PDG groupe familial 3 societes 280 salaries negoce materiaux, Strasbourg',
+    canal: 'Autres', maturite: 'Comparaison', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'QR code salon Industries Grand Est → site → groupe Lingenheld rassure, contacte pour harmonisation 3 ERP',
+    localisation: 'Strasbourg, Bas-Rhin',
+    contexte: '3eme societe acquise, harmoniser 3 ERP en un seul, budget multi-societes 400K€',
+    impression: 'Ils etaient au salon, ils ont la reference multi-entites — je les contacte.',
+    parcours: [
+      ['Accueil', 'Identifie la solidite TBS (120 collab rassure)'],
+      ['A propos', 'Verifie le positionnement groupe'],
+      ['References', 'Lingenheld multi-entites convaincant'],
+      ['Contact', 'Contacte pour RDV de decouverte'],
+    ],
+    questionCle: 'TBS a-t-il deja gere une harmonisation ERP sur 3 entites differentes simultanement ?',
+    reponse: 'Partiellement',
+    positifs: ['Rencontre physique salon = confiance pre-etablie', 'Reference Lingenheld groupe multi-entites', 'Solidite TBS (120 collab)'],
+    frictions: ['Pas de page "Groupe / Multi-entites" visible', 'Temoignages clients absents en home'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 8, clarte: 7,
+  },
+  {
+    id: 40, name: 'Lucie', age: 27, emoji: '🎒',
+    situation: 'Etudiante Master 2 SI ecole de commerce Strasbourg — redige un memoire',
+    canal: 'Google Search', maturite: 'Decouverte', device: 'Mobile',
+    decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Cherche des chiffres ROI publies pour son memoire — le site est commercial, pas documentaire',
+    localisation: 'Strasbourg, Bas-Rhin',
+    contexte: 'Memoire sur la transformation digitale des PME alsaciennes — cherche cas pratiques',
+    impression: 'Le site ne publie pas de chiffres ROI — je vais chercher les etudes de cas sur le site Microsoft.',
+    parcours: [
+      ['Accueil', 'Cherche des cas d\'usage et des chiffres'],
+      ['Success Stories', 'Descriptions sans chiffres precis'],
+      ['Blog', 'Articles generiques'],
+      ['Quitte', ''],
+    ],
+    questionCle: 'Ont-ils des chiffres de ROI publies sur leurs deploiements ?',
+    reponse: 'Non',
+    positifs: ['Success stories structurees'],
+    frictions: ['Pas d\'espace "Ressources" telechargeable', 'Navigation mobile mauvaise', 'Success stories sans chiffres ROI'],
+    ceQuiFeraitBasculer: '',
+    exp: 4, conf: 6, clarte: 4,
+  },
+  {
+    id: 41, name: 'Stephane', age: 46, emoji: '💊',
+    situation: 'DSI PME pharmaceutique 220 salaries soumise FDA/EU GMP, Illkirch-Graffenstaden',
+    canal: 'IA (Claude)', maturite: 'Decision', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Audit FDA dans 9 mois — cherche alternative locale a l\'offre parisienne 380K€, contacte en urgence',
+    localisation: 'Illkirch-Graffenstaden, Bas-Rhin',
+    contexte: 'Audit FDA Q4 2025, ERP actuel non valide, integrateur parisien propose 380K€, cherche alternatif local',
+    impression: 'TBS Strasbourg a la taille pour un projet pharma — et c\'est 5x moins loin que Paris.',
+    parcours: [
+      ['Accueil', 'KPIs rassurants sur la taille TBS'],
+      ['Solutions Productivite', 'Cherche mention reglementaire pharma'],
+      ['Certifications', 'Confirme le niveau Microsoft'],
+      ['Contact', 'Contacte en urgence avec brief technique'],
+    ],
+    questionCle: 'TBS a-t-il de l\'experience en validation de systemes ERP pour le secteur pharmaceutique ?',
+    reponse: 'Non',
+    positifs: ['Proximite Strasbourg = avantage vs integrateur Paris', 'Certifications Microsoft au plus haut niveau'],
+    frictions: ['Pas de mention des industries reglementees', 'Pas de temoignage pharma ou medtech'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 8, clarte: 6,
+  },
+  {
+    id: 42, name: 'Rachida', age: 35, emoji: '🛒',
+    situation: 'Responsable achats PME distribution 50 salaries, Strasbourg',
+    canal: 'Google Search', maturite: 'Decouverte', device: 'Mobile',
+    decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Cherche module achats standalone a 3K€/an — le site ne propose qu\'ERP complet, quitte',
+    localisation: 'Strasbourg, Bas-Rhin',
+    contexte: 'Professionnaliser le processus achats, budget 3K€/an, pas d\'ERP complet',
+    impression: 'Ils font que des grands ERP — pas ce que je cherche.',
+    parcours: [
+      ['Accueil', 'Ne comprend pas l\'offre pour son cas'],
+      ['Productivite', 'Pas de module achats standalone'],
+      ['Quitte', ''],
+    ],
+    questionCle: 'Ont-ils un module achats seul a un prix raisonnable pour une PME de 50 personnes ?',
+    reponse: 'Non',
+    positifs: [],
+    frictions: ['Site oriente ERP complet', 'Budget incompatible', 'Navigation mobile difficile'],
+    ceQuiFeraitBasculer: '',
+    exp: 3, conf: 5, clarte: 3,
+  },
+  {
+    id: 43, name: 'Franck', age: 51, emoji: '🧀',
+    situation: 'PDG PME industrie alimentaire alsacienne 70 salaries charcuterie, Obernai',
+    canal: 'Google Maps', maturite: 'Comparaison', device: 'Mobile',
+    decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Grande distribution impose tracabilite numerique en 6 mois — pas de reference alimentaire artisanale, hesite',
+    localisation: 'Obernai, Bas-Rhin',
+    contexte: 'Client grande distribution impose tracabilite lots (FSSC 22000) — fin contrat si pas conforme en 6 mois',
+    impression: 'Waterair c\'est des piscines, pas de la charcuterie — ils comprennent la tracabilite alimentaire ?',
+    parcours: [
+      ['Google Maps', 'Arrive sur le site mobile'],
+      ['Accueil', 'Navigation mobile catastrophique'],
+      ['Solutions', 'Cherche "agroalimentaire" — Waterair (piscines) pas pertinent'],
+      ['Hesite', 'Sans contact pour l\'instant'],
+    ],
+    questionCle: 'Est-ce que Business Central gere la tracabilite par lot pour l\'industrie alimentaire ?',
+    reponse: 'Non',
+    positifs: ['Certifications Microsoft rassurent sur le niveau technique'],
+    frictions: ['Navigation mobile difficile', 'Numero non cliquable', 'Pas de reference agroalimentaire artisanale'],
+    ceQuiFeraitBasculer: 'Reference alimentaire ou page sectorielle "Industrie alimentaire"',
+    exp: 4, conf: 6, clarte: 4,
+  },
+  {
+    id: 44, name: 'Veronique', age: 48, emoji: '🤝',
+    situation: 'DG PME services aux entreprises conseil recrutement 80 salaries, Nantes',
+    canal: 'LinkedIn', maturite: 'Comparaison', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Post LinkedIn transformation digitale PME services → offre ERP+CRM combine — contacte pour devis',
+    localisation: 'Nantes, Loire-Atlantique',
+    contexte: 'Rachat par fonds, reporting mensuel standardise impose, ERP + CRM avant fin annee',
+    impression: 'TBS propose Business Central + Dynamics 365 ensemble — exactement ce qu\'on cherche.',
+    parcours: [
+      ['Accueil', 'Post LinkedIn pertinent confirme par le site'],
+      ['Productivite', 'Business Central + CRM'],
+      ['Success Stories', 'Cherche reference services aux entreprises'],
+      ['Contact', 'Contacte pour devis combine'],
+    ],
+    questionCle: 'Peut-on deployer Business Central et Dynamics 365 Sales en meme temps pour une PME de services ?',
+    reponse: 'Partiellement',
+    positifs: ['Offre combinee ERP+CRM bien presentee', 'Agence Nantes mentionnee'],
+    frictions: ['Pas de page "Services aux entreprises"', 'Pas de temoignage verbatim en home'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 7, clarte: 7,
+  },
+  {
+    id: 45, name: 'Christophe', age: 40, emoji: '🚗',
+    situation: 'Responsable IT PME distribution automobile 180 salaries 5 concessions, Lyon',
+    canal: 'IA (Gemini)', maturite: 'Comparaison', device: 'Tablette',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Gemini recommande TBS — tablette = experience correcte, contacte pour ERP unifie 5 concessions',
+    localisation: 'Lyon, Rhone',
+    contexte: 'Groupe auto racheté 5 concessions, holding impose ERP unifie, budget 150K€',
+    impression: 'TBS recommande par Gemini + Solutions Partner Microsoft + agence Lyon — ca coche les cases.',
+    parcours: [
+      ['Accueil', 'Tablette — experience correcte'],
+      ['Productivite', 'Business Central multi-sites'],
+      ['References', 'Cherche reference automobile'],
+      ['Contact', 'Contacte pour devis'],
+    ],
+    questionCle: 'Business Central peut-il s\'integrer avec des DMS automobiles comme IDS ou Pinnacle ?',
+    reponse: 'Non',
+    positifs: ['Recommandation Gemini', 'Experience tablette correcte', 'Agence Lyon disponible'],
+    frictions: ['Pas de reference secteur automobile', 'Pages solutions generiques'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 7, clarte: 7,
+  },
+  {
+    id: 46, name: 'Nadege', age: 53, emoji: '🏨',
+    situation: 'DAF groupe hotelier independant 4 hotels 95 salaries, Strasbourg',
+    canal: 'BAO', maturite: 'Decision', device: 'Mobile',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Ami restaurateur client TBS recommande — numéro non cliquable sur mobile mais motivation forte, remplit formulaire',
+    localisation: 'Strasbourg, Bas-Rhin',
+    contexte: 'Consolider 4 comptabilites manuelles par mois, budget 70K€, prete a signer dans le mois',
+    impression: 'Mon ami en est tres content — je contacte malgre la navigation mobile difficile.',
+    parcours: [
+      ['Accueil mobile', 'Navigation difficile'],
+      ['Productivite', 'Business Central multi-entites'],
+      ['Contact', 'Essaie d\'appeler — non cliquable → formulaire'],
+    ],
+    questionCle: 'Business Central peut-il se connecter a un PMS hotelier comme Opera ou Protel ?',
+    reponse: 'Non',
+    positifs: ['Recommandation BAO = confiance pre-etablie', 'Formulaire fonctionnel sur mobile'],
+    frictions: ['Navigation mobile difficile', 'Numero non cliquable — frustration au moment de la decision', 'Pas de reference hotelerie visible'],
+    ceQuiFeraitBasculer: '',
+    exp: 5, conf: 8, clarte: 6,
+  },
+  {
+    id: 47, name: 'Gregoire', age: 44, emoji: '🔒',
+    situation: 'RSSI ETI industrielle 280 salaries certifie CISSP, Strasbourg',
+    canal: 'Google Search', maturite: 'Decision', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Tentative ransomware bloquee — urgence absolue, note le grade F mais l\'urgence prime, contacte Zenisys',
+    localisation: 'Strasbourg, Bas-Rhin',
+    contexte: 'Tentative intrusion ransomware bloquee, audit securite sous 30 jours, budget 50K€',
+    impression: 'Grade F sur leur site — je note. Mais j\'ai besoin d\'un audit securite en urgence maintenant.',
+    parcours: [
+      ['Accueil', 'Cherche directement Zenisys'],
+      ['Zenisys', 'Methodologie audit rassurante'],
+      ['Contact', 'Cherche numero direct — l\'urgence justifie l\'appel'],
+    ],
+    questionCle: 'Zenisys peut-il demarrer un audit de securite dans les 2 semaines ?',
+    reponse: 'Non',
+    positifs: ['Zenisys = solution directe pour son urgence', 'Localisation Strasbourg = equipe immediate'],
+    frictions: ['Grade F securite — paradoxe note', 'Zenisys peu visible en home', 'Numero non cliquable pour un appel d\'urgence'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 7, clarte: 7,
+  },
+  {
+    id: 48, name: 'Sebastien', age: 38, emoji: '🛍️',
+    situation: 'CTO ETI e-commerce B2B 120 salaries 50K references, Paris',
+    canal: 'LinkedIn', maturite: 'Comparaison', device: 'Desktop',
+    decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Post LinkedIn integration BC/Shopify B2B attire — mais TBS percu comme regional, hesite a contacter Paris',
+    localisation: 'Paris, Ile-de-France',
+    contexte: 'Plateforme e-commerce deconnectee ERP, 20K commandes/mois ressaisies manuellement, cherche integrateur ERP+e-commerce',
+    impression: 'TBS Alsace — ils peuvent vraiment gerer 20K commandes/mois et avoir une equipe Paris solide ?',
+    parcours: [
+      ['Accueil', 'Post LinkedIn technique confirme l\'expertise'],
+      ['Solutions ERP', 'Certifications rassurantes'],
+      ['Hesite sur Contact', 'Perception regionale bloque'],
+    ],
+    questionCle: 'TBS a-t-il deja integre Business Central avec une plateforme e-commerce B2B a fort volume ?',
+    reponse: 'Non',
+    positifs: ['Post LinkedIn technique pertinent', 'Certifications Microsoft tres solides'],
+    frictions: ['Pas de reference e-commerce B2B', 'TBS percu comme regional — credibilite Paris questionnable', 'Pages solutions datees'],
+    ceQuiFeraitBasculer: 'Une reference e-commerce B2B fort volume + mise en avant de l\'equipe Paris',
+    exp: 6, conf: 7, clarte: 6,
+  },
+  {
+    id: 49, name: 'Francoise', age: 57, emoji: '❤️',
+    situation: 'Directrice association sante soins a domicile 90 benevoles 30 salaries, Mulhouse',
+    canal: 'Google Search', maturite: 'Decouverte', device: 'Mobile',
+    decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Budget 5K€ pour logiciel associatif — decroche immediatement face a l\'offre ERP',
+    localisation: 'Mulhouse, Haut-Rhin',
+    contexte: 'Subvention Region 5K€ pour logiciel gestion association — pas du tout le bon endroit',
+    impression: 'C\'est pour les grandes entreprises, pas pour notre association.',
+    parcours: [
+      ['Accueil mobile', 'Ne comprend pas l\'offre'],
+      ['Quitte immediatement', ''],
+    ],
+    questionCle: 'C\'est pour les entreprises, pas les associations ?',
+    reponse: 'Oui',
+    positifs: [],
+    frictions: ['Offre inadaptee', 'Navigation mobile mauvaise', 'Couts bien au-dela du budget'],
+    ceQuiFeraitBasculer: '',
+    exp: 2, conf: 4, clarte: 2,
+  },
+  {
+    id: 50, name: 'Mohamed', age: 42, emoji: '🏗️',
+    situation: 'IT Manager PME BTP 160 salaries terrassement VRD, Strasbourg',
+    canal: 'IA (ChatGPT)', maturite: 'Comparaison', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'ChatGPT recommande TBS pour BTP Strasbourg — Lingenheld confirme, contacte pour demo gestion chantiers',
+    localisation: 'Strasbourg, Bas-Rhin',
+    contexte: 'Contrat 5M€ Eurometropole, suivi couts chantiers par Excel impossible, budget 80K€',
+    impression: 'Lingenheld BTP Alsace + ChatGPT recommande TBS — c\'est le bon interlocuteur.',
+    parcours: [
+      ['Accueil', 'Identifie l\'expertise BTP'],
+      ['Productivite', 'Business Central gestion de chantiers'],
+      ['References Lingenheld', 'Reference BTP alsacienne convaincante'],
+      ['Contact', 'Demande demo specifique module chantier'],
+    ],
+    questionCle: 'Le module BTP de Business Central gere-t-il les budgets de chantiers avec alertes depassement ?',
+    reponse: 'Partiellement',
+    positifs: ['Recommandation ChatGPT', 'Reference Lingenheld BTP Alsace parfaite', 'Desktop = experience fluide'],
+    frictions: ['Manque de detail technique sur la gestion de chantiers', 'Pas de demo en ligne'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 8, clarte: 7,
+  },
+  {
+    id: 51, name: 'Pauline', age: 34, emoji: '👥',
+    situation: 'Responsable RH PME cabinet avocats 55 salaries, Paris',
+    canal: 'LinkedIn', maturite: 'Decouverte', device: 'Mobile',
+    decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Pub "Optimisez votre gestion avec Microsoft" → cherche SIRH → ne trouve rien, quitte',
+    localisation: 'Paris, Ile-de-France',
+    contexte: 'Cherche SIRH pour automatiser paies et conges, budget 4K€/an',
+    impression: 'C\'est un integrateur ERP, pas un fournisseur SIRH. Pas pour moi.',
+    parcours: [
+      ['Accueil', 'Cherche outil RH'],
+      ['Navigation', 'Ne trouve pas de SIRH standalone'],
+      ['Quitte', ''],
+    ],
+    questionCle: 'C\'est quoi concretement leur offre RH ?',
+    reponse: 'Non',
+    positifs: [],
+    frictions: ['TBS ne vend pas de SIRH standalone', 'Offre inadaptee au profil', 'Navigation mobile difficile'],
+    ceQuiFeraitBasculer: '',
+    exp: 3, conf: 5, clarte: 3,
+  },
+  {
+    id: 52, name: 'Alain', age: 55, emoji: '🖨️',
+    situation: 'PDG PME imprimerie numerique 65 salaries Colmar — en difficulte',
+    canal: 'Google Maps', maturite: 'Comparaison', device: 'Mobile',
+    decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Cherche audit licences Microsoft a 10K€/an — TBS semble oriente grands projets, hesite a contacter',
+    localisation: 'Colmar, Haut-Rhin',
+    contexte: 'Paie des licences Microsoft en doublon, veut rationaliser, budget 10K€/an — pas de grand projet ERP',
+    impression: 'Est-ce qu\'ils font juste un audit de licences ou seulement des ERP complets ?',
+    parcours: [
+      ['Google Maps', 'Arrive sur le site mobile'],
+      ['Accueil', 'Navigation difficile, cherche "audit licences"'],
+      ['Ne trouve pas', 'Hesite a contacter'],
+    ],
+    questionCle: 'Peuvent-ils faire juste un audit de licences Microsoft sans vendre un ERP complet ?',
+    reponse: 'Non',
+    positifs: ['Certifications Microsoft = expertise licences probable'],
+    frictions: ['Navigation mobile difficile', 'TBS oriente grands projets ERP', 'Pas d\'offre audit licences visible', 'Numero non cliquable'],
+    ceQuiFeraitBasculer: 'Une offre "Audit licences Microsoft" dans les offres cles',
+    exp: 4, conf: 6, clarte: 4,
+  },
+  {
+    id: 53, name: 'Karima', age: 39, emoji: '🚚',
+    situation: 'DSI PME logistique e-commerce 130 salaries growth rapide, Strasbourg',
+    canal: 'Google Search', maturite: 'Decision', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Levee de fonds 8M€ impose SI structurant — contacte avec brief technique BC+WMS avant la prochaine saison',
+    localisation: 'Strasbourg, Bas-Rhin',
+    contexte: '15K colis/jour en pic, WMS deconnecte comptabilite, levee de fonds 8M€ impose SI structurant',
+    impression: 'TBS local + certifications Microsoft + le site montre BC — je les contacte avec le brief technique.',
+    parcours: [
+      ['Accueil', 'Identifie l\'expertise BC et les certifications'],
+      ['Productivite', 'Business Central — cherche integration WMS'],
+      ['Contact', 'Contacte avec brief technique joint'],
+    ],
+    questionCle: 'TBS a-t-il deja connecte Business Central avec un WMS en haute volumetrie ?',
+    reponse: 'Non',
+    positifs: ['Proximite Strasbourg', 'Certifications Microsoft au plus haut niveau', 'Desktop = experience fluide'],
+    frictions: ['Pages solutions datees', 'Pas de reference WMS visible'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 8, clarte: 7,
+  },
+  {
+    id: 54, name: 'Guillaume', age: 46, emoji: '🏠',
+    situation: 'DAF ETI construction promotion immobiliere 200 salaries groupe cote, Strasbourg',
+    canal: 'IA (Perplexity)', maturite: 'Comparaison', device: 'Tablette',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'AMF exige reporting IFRS — tablette OK, contacte pour devis consolidation multi-SCI',
+    localisation: 'Strasbourg, Bas-Rhin',
+    contexte: 'AMF exige reportings financiers trimestriels consolides IFRS, ERP actuel ne les produit pas, budget 180K€',
+    impression: 'TBS Strasbourg + certifications finance — je les contacte pour les reportings IFRS.',
+    parcours: [
+      ['Accueil', 'Tablette — experience correcte'],
+      ['Productivite', 'Business Central finance'],
+      ['Certifications', 'Confirme le niveau'],
+      ['Contact', 'Contacte pour devis IFRS'],
+    ],
+    questionCle: 'Business Central supporte-t-il la consolidation IFRS pour une societe cotee avec multi-SCI ?',
+    reponse: 'Non',
+    positifs: ['Proximite Strasbourg', 'Experience tablette correcte', 'Certifications rassurantes'],
+    frictions: ['Pas de reference promotion immobiliere', 'Pas de mention IFRS sur le site'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 7, clarte: 7,
+  },
+  {
+    id: 55, name: 'Martine', age: 61, emoji: '🏪',
+    situation: 'DG PME negoce industriel 110 salaries Belfort — groupe familial 3eme generation',
+    canal: 'BAO', maturite: 'Decision', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Fournisseur commun recommande TBS apres son propre deploiement — contacte directement pour transmission SI',
+    localisation: 'Belfort, Territoire de Belfort',
+    contexte: 'Fils reprend l\'entreprise et exige modernisation SI avant transmission, budget 130K€, decision 3 semaines',
+    impression: 'Si leur deploiement s\'est bien passe chez mon fournisseur, je les contacte directement.',
+    parcours: [
+      ['Accueil', 'Verifie la credibilite — rassurante'],
+      ['A propos', 'Cherche experience accompagnement PME familiale'],
+      ['Contact', 'Contacte directement'],
+    ],
+    questionCle: 'TBS accompagne-t-il des transmissions d\'entreprise avec modernisation du SI ?',
+    reponse: 'Non',
+    positifs: ['Recommandation directe fournisseur = confiance maximale', 'Taille TBS rassurante pour un projet 130K€'],
+    frictions: ['Pas de page "Transmission / Succession"', 'Un seul numero Strasbourg pour un besoin Belfort'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 8, clarte: 7,
+  },
+  {
+    id: 56, name: 'Xavier', age: 36, emoji: '📡',
+    situation: 'Responsable IT PME telecom 40 salaries operateur MVNO, Paris',
+    canal: 'LinkedIn', maturite: 'Decouverte', device: 'Desktop',
+    decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Post technique Azure Stack Hub → site → TBS percu comme provincial, quitte sans contact',
+    localisation: 'Paris, Ile-de-France',
+    contexte: 'Veut explorer Azure pour deplacement services voix vers cloud — pas de budget defini',
+    impression: 'C\'est interessant mais est-ce qu\'ils ont une expertise telecom ? Et a Paris vraiment ?',
+    parcours: [
+      ['Accueil', 'Post LinkedIn pertinent'],
+      ['Cloud Azure', 'Contenu sur Azure — pas de mention telecom'],
+      ['Certifications', 'Rassurantes mais generiques'],
+      ['Quitte sans contact', ''],
+    ],
+    questionCle: 'TBS a-t-il une experience sur Azure pour les operateurs telecom ?',
+    reponse: 'Non',
+    positifs: ['Post LinkedIn technique original et pertinent', 'Certifications Azure solides'],
+    frictions: ['Offre Azure peu detaillee', 'Pas d\'info secteur telecom', 'Percu comme provincial', 'Pas de tarif'],
+    ceQuiFeraitBasculer: '',
+    exp: 5, conf: 6, clarte: 5,
+  },
+  {
+    id: 57, name: 'Nora', age: 43, emoji: '💼',
+    situation: 'Directrice financiere ETI distribution specialise 170 salaries, Bordeaux',
+    canal: 'Google Search', maturite: 'Comparaison', device: 'Mobile',
+    decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Migration Cegid obligatoire (hausse tarifs 40%) — navigation mobile difficile, pas de page Bordeaux visible',
+    localisation: 'Bordeaux, Gironde',
+    contexte: 'Cegid augmente tarifs 40%, DAG veut alternative BC, compare 3 integrateurs',
+    impression: 'TBS a l\'air serieux mais il n\'y a pas de page Bordeaux — ils sont vraiment la-bas ?',
+    parcours: [
+      ['Accueil mobile', 'Navigation difficile'],
+      ['Productivite', 'Business Central — migration Cegid pas mentionnee'],
+      ['Contact', 'Cherche agence Bordeaux — hesite'],
+    ],
+    questionCle: 'TBS a-t-il une equipe a Bordeaux ou est-ce uniquement telephonique ?',
+    reponse: 'Non',
+    positifs: ['Certifications Microsoft solides', 'Niveau partenariat rassurant'],
+    frictions: ['Navigation mobile difficile', 'Pas de page agence Bordeaux claire', 'Bordeaux non liste en evidence'],
+    ceQuiFeraitBasculer: 'Page agence Bordeaux/Aquitaine avec equipe et numero local',
+    exp: 5, conf: 6, clarte: 5,
+  },
+  {
+    id: 58, name: 'Denis', age: 50, emoji: '🧴',
+    situation: 'PDG PME plasturgie 55 salaries Haguenau — peu digital, bons de commande papier',
+    canal: 'Google Maps', maturite: 'Decouverte', device: 'Mobile',
+    decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Cherche quelqu\'un pour "l\'aider avec les ordinateurs" — bloque par le jargon ERP/Azure, quitte',
+    localisation: 'Haguenau, Bas-Rhin',
+    contexte: 'Comptable lui a dit de "passer au numerique" — vague envie, pas de projet precis',
+    impression: 'C\'est quoi un ERP ?',
+    parcours: [
+      ['Google Maps', 'Arrive sur le site'],
+      ['Accueil', 'Bloque par le jargon immediatement'],
+      ['Quitte', ''],
+    ],
+    questionCle: 'C\'est quoi un ERP ?',
+    reponse: 'Non',
+    positifs: [],
+    frictions: ['Site trop complexe et technique pour un non-initie', 'Navigation mobile difficile', 'Jargon incomprehensible'],
+    ceQuiFeraitBasculer: '',
+    exp: 2, conf: 4, clarte: 2,
+  },
+  {
+    id: 59, name: 'Isabelle B.', age: 47, emoji: '🖥️',
+    situation: 'Responsable SI PME ingenierie bureau d\'etudes 100 salaries, Strasbourg',
+    canal: 'IA (Copilot)', maturite: 'Comparaison', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Copilot recommande TBS — Power BI deja installe non configure, contacte pour deploiement 25K€',
+    localisation: 'Strasbourg, Bas-Rhin',
+    contexte: 'Direction exige dashboard rentabilite projets temps reel, Power BI installe non configure, budget 25K€',
+    impression: 'Copilot recommande TBS pour Power BI Strasbourg — et c\'est a 7 km de mon bureau.',
+    parcours: [
+      ['Accueil', 'Identifie l\'expertise Power Platform'],
+      ['Power Platform', 'Power BI mentionne — pertinent'],
+      ['Contact', 'Contacte pour deploiement Power BI + MS Project'],
+    ],
+    questionCle: 'TBS peut-il deployer Power BI connecte a MS Project pour le suivi de projets d\'ingenierie ?',
+    reponse: 'Partiellement',
+    positifs: ['Recommandation Copilot', 'Proximite Strasbourg', 'Expertise Power Platform certifiee'],
+    frictions: ['Power BI peu mis en avant', 'Pas de tarif', 'Pas de portfolio visible'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 7, clarte: 7,
+  },
+  {
+    id: 60, name: 'Renaud', age: 54, emoji: '📦',
+    situation: 'CTO ETI logistique 3PL 400 salaries 3 entrepots France, Lyon',
+    canal: 'LinkedIn', maturite: 'Decision', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Microsoft Partner of the Year sur LinkedIn attire — shortlist RFP 500K€, envoie formulaire complet',
+    localisation: 'Lyon, Rhone',
+    contexte: 'Fusion 3 SI logistiques en un ERP, budget 500K€, RFP envoye a 5 integrateurs, TBS en shortlist finale',
+    impression: '"Partner of the Year PME 2024" — c\'est le signe que TBS est en haut du marche.',
+    parcours: [
+      ['Accueil', 'Partner of the Year = signal fort immediat'],
+      ['A propos', 'Verifie la taille TBS (120 collab = limite pour 500K€)'],
+      ['Certifications', 'Lit attentivement les 6 specialisations'],
+      ['Contact', 'Envoie formulaire complet avec brief RFP'],
+    ],
+    questionCle: 'TBS peut-il allouer une equipe projet dediee pour un deploiement ERP 400 salaries multi-sites ?',
+    reponse: 'Non',
+    positifs: ['Partner of the Year = preuve de niveau superieur', 'Certifications tres detaillees', 'Formulaire contact clair'],
+    frictions: ['Pas de case study logistique complexe visible', 'Equipe 120 collab peut sembler petite pour 500K€'],
+    ceQuiFeraitBasculer: '',
+    exp: 8, conf: 8, clarte: 7,
+  },
+  {
+    id: 61, name: 'Amandine', age: 32, emoji: '📱',
+    situation: 'Chef de projet digital agence communication 20 salaries Nancy — mission client',
+    canal: 'Google Search', maturite: 'Decouverte', device: 'Mobile',
+    decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Cherche noms integrateurs ERP Nancy pour son client — navigation mobile bloque, quitte',
+    localisation: 'Nancy, Meurthe-et-Moselle',
+    contexte: 'Client agence en pre-projet ERP, cherche quelques noms d\'integrateurs a soumettre',
+    impression: 'Est-ce qu\'ils ont une agence a Nancy ou c\'est seulement Strasbourg ?',
+    parcours: [
+      ['Accueil mobile', 'Navigation difficile'],
+      ['Contact', 'Cherche adresse Nancy'],
+      ['Quitte', 'Incertitude sur la presence locale'],
+    ],
+    questionCle: 'TBS a-t-il une agence a Nancy ?',
+    reponse: 'Non',
+    positifs: ['Certifications visibles'],
+    frictions: ['Navigation mobile difficile', 'Pas d\'espace partenaires agences', 'Nancy pas clairement visible'],
+    ceQuiFeraitBasculer: 'Page agences locales avec Nancy bien listee',
+    exp: 4, conf: 6, clarte: 4,
+  },
+  {
+    id: 62, name: 'Abdelkader', age: 48, emoji: '✈️',
+    situation: 'DSI PME mecanique de precision sous-traitance aeronautique 150 salaries, Toulouse',
+    canal: 'IA (Claude)', maturite: 'Decision', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Airbus impose tracabilite numerique — Claude recommande TBS, contacte en urgence pour ERP EN 9100',
+    localisation: 'Toulouse, Haute-Garonne',
+    contexte: 'Airbus impose tracabilite complete des pieces, Sage X3 ne supporte pas EN 9100, budget 200K€',
+    impression: 'Claude recommande TBS — agence Toulouse + certifications Microsoft = je contacte.',
+    parcours: [
+      ['Accueil', 'Identifie l\'expertise BC'],
+      ['Productivite', 'Cherche mention aeronautique / EN 9100'],
+      ['Certifications', 'Confirme le niveau Microsoft'],
+      ['Contact', 'Contacte en urgence'],
+    ],
+    questionCle: 'TBS a-t-il des references en deploiement Business Central pour des sous-traitants aeronautiques ?',
+    reponse: 'Non',
+    positifs: ['Recommandation Claude', 'Agence Toulouse disponible', 'Certifications rassurantes'],
+    frictions: ['Pas de reference aeronautique visible', 'Secteur non mentionne'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 8, clarte: 7,
+  },
+  {
+    id: 63, name: 'Corinne', age: 44, emoji: '📊',
+    situation: 'DRH ETI distribution alimentaire 350 salaries 20 points de vente, Strasbourg',
+    canal: 'LinkedIn', maturite: 'Decouverte', device: 'Mobile',
+    decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Pub DRH "gestion RH sous Microsoft" → cherche SIRH plannings → ne trouve rien, quitte',
+    localisation: 'Strasbourg, Bas-Rhin',
+    contexte: 'Cherche SIRH pour gerer 20 points de vente (plannings, paie), pas ERP financier',
+    impression: 'C\'est de l\'ERP finance et Cloud — ils n\'ont pas de module RH pour les plannings.',
+    parcours: [
+      ['Accueil', 'Cherche "RH" ou "plannings"'],
+      ['Ne trouve pas', ''],
+      ['Quitte', ''],
+    ],
+    questionCle: 'Ont-ils un module RH dedie pour la gestion des plannings ?',
+    reponse: 'Non',
+    positifs: [],
+    frictions: ['Offre orientee ERP/finance/cloud, pas SIRH', 'Navigation mobile mauvaise', 'Cible inadaptee'],
+    ceQuiFeraitBasculer: '',
+    exp: 3, conf: 5, clarte: 3,
+  },
+  {
+    id: 64, name: 'Thierry B.', age: 59, emoji: '🏔️',
+    situation: 'PDG PME tourisme d\'affaires 45 salaries seminaires et incentives, Strasbourg',
+    canal: 'Google Maps', maturite: 'Comparaison', device: 'Mobile',
+    decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Perd des affaires car devis trop lents — cherche CRM mobile pour 8 commerciaux terrain, bloque par prix et mobile',
+    localisation: 'Strasbourg, Bas-Rhin',
+    contexte: 'Devis clients en 3 jours trop lent, veut CRM + outil devis mobile pour 8 commerciaux, budget petit',
+    impression: 'Dynamics 365 — mais est-ce que c\'est accessible pour une PME de 45 personnes ?',
+    parcours: [
+      ['Google Maps', 'Arrive sur le site mobile'],
+      ['Accueil', 'Navigation difficile'],
+      ['CRM', 'Pas de tarif visible pour petites equipes'],
+      ['Hesite sur Contact', 'Numero non cliquable'],
+    ],
+    questionCle: 'Dynamics 365 est-il accessible pour une PME de 45 personnes avec 8 commerciaux ?',
+    reponse: 'Non',
+    positifs: ['Offre CRM Dynamics 365 visible'],
+    frictions: ['Navigation mobile mauvaise', 'Numero non cliquable', 'Pas de tarif CRM petites equipes', 'Entreprise 45 salaries sous le segment ideal'],
+    ceQuiFeraitBasculer: 'Offre CRM "PME 10-50 salaries" avec tarif indicatif',
+    exp: 4, conf: 6, clarte: 4,
+  },
+  {
+    id: 65, name: 'Sarah', age: 30, emoji: '📣',
+    situation: 'Responsable marketing PME communication 35 salaries, Strasbourg',
+    canal: 'Google Search', maturite: 'Decouverte', device: 'Mobile',
+    decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Budget 8K€/an pour marketing automation — TBS vise 50K€+ minimum, quitte vers Mailchimp',
+    localisation: 'Strasbourg, Bas-Rhin',
+    contexte: 'Automatiser newsletters et campagnes LinkedIn, budget marketing 8K€/an',
+    impression: 'Ils font du Dynamics 365 Marketing a 100K€ le projet — pas pour mon budget de 8K€.',
+    parcours: [
+      ['Accueil', 'Cherche marketing automation'],
+      ['Ne trouve pas ce qu\'elle cherche', ''],
+      ['Quitte', 'Va vers Mailchimp ou ActiveCampaign'],
+    ],
+    questionCle: 'Ont-ils une offre marketing automation pour une PME de 35 personnes ?',
+    reponse: 'Non',
+    positifs: [],
+    frictions: ['Offre inadaptee au profil et au budget', 'Navigation mobile difficile', 'Pas de contenu "petite PME"'],
+    ceQuiFeraitBasculer: '',
+    exp: 3, conf: 5, clarte: 3,
+  },
+  {
+    id: 66, name: 'Philippe', age: 52, emoji: '🌾',
+    situation: 'IT Manager ETI agroalimentaire 240 salaries cooperative viticole, Colmar',
+    canal: 'BAO', maturite: 'Decision', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'President recommande via Foire Europeenne — ERP Silog fin de maintenance, migration obligatoire, budget 160K€',
+    localisation: 'Colmar, Haut-Rhin',
+    contexte: 'ERP Silog non maintenu, migration obligatoire avant fin d\'annee, budget 160K€',
+    impression: 'Le president a ramene une brochure — si Waterair les utilise, c\'est serieux pour l\'industrie.',
+    parcours: [
+      ['Accueil', 'Valide la credibilite (certifications, taille)'],
+      ['References (Waterair)', 'Industrie proche — reference acceptable'],
+      ['Certifications', 'Confirme le niveau Microsoft'],
+      ['Contact', 'Contacte via formulaire'],
+    ],
+    questionCle: 'TBS a-t-il deja migre une entreprise depuis Silog vers Business Central ?',
+    reponse: 'Non',
+    positifs: ['Recommandation presidentielle directe', 'Reference Waterair industrie proche', 'Agence Alsace locale'],
+    frictions: ['Waterair = piscines, pas viticole', 'Pages solutions 2021'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 8, clarte: 7,
+  },
+  {
+    id: 67, name: 'Karine', age: 41, emoji: '🏥',
+    situation: 'Directrice SI PME sante au travail 180 salaries reseau centres medicaux, Paris',
+    canal: 'LinkedIn', maturite: 'Comparaison', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Post LinkedIn "Transformation digitale sante" → CRM medecins du travail + ERP facturation, contacte',
+    localisation: 'Paris, Ile-de-France',
+    contexte: 'CRM 80 medecins du travail + ERP facturation services entreprises clientes, budget 120K€',
+    impression: 'Post LinkedIn pertinent sur la sante — je verifie les certifications et je contacte.',
+    parcours: [
+      ['Accueil', 'Post LinkedIn confirme par le site'],
+      ['Solutions CRM', 'Expertise Dynamics 365 pour les professions medicales'],
+      ['Certifications', 'Confirme le niveau Microsoft'],
+      ['Contact', 'Contacte pour devis CRM + ERP'],
+    ],
+    questionCle: 'TBS a-t-il de l\'experience avec les donnees de sante et le RGPD renforce ?',
+    reponse: 'Non',
+    positifs: ['Post LinkedIn pertinent sur la sante', 'Certifications Microsoft solides', 'Agence Paris disponible'],
+    frictions: ['Pas de reference sante au travail visible', 'Zenisys mis en avant mais pas les solutions sectorielles sante'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 7, clarte: 7,
+  },
+  {
+    id: 68, name: 'Jean-Luc', age: 56, emoji: '🌞',
+    situation: 'DAF ETI energies renouvelables 220 salaries developpeur parcs solaires, Strasbourg',
+    canal: 'IA (Gemini)', maturite: 'Comparaison', device: 'Tablette',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Gemini recommande TBS — 10 parcs en construction simultanement, tablette OK, contacte pour Project Operations',
+    localisation: 'Strasbourg, Bas-Rhin',
+    contexte: '10 parcs en construction simultanement, pilotage financier par Excel impossible, budget 200K€',
+    impression: 'Gemini recommande TBS pour Project Operations — et c\'est a 4 km de chez nous.',
+    parcours: [
+      ['Accueil', 'Tablette — experience correcte'],
+      ['Productivite', 'Business Central / Project Operations'],
+      ['Certifications', 'Confirme le niveau'],
+      ['Contact', 'Contacte pour devis Project Operations'],
+    ],
+    questionCle: 'TBS deploie-t-il Microsoft Project Operations pour la gestion financiere de projets de construction ?',
+    reponse: 'Non',
+    positifs: ['Recommandation Gemini', 'Proximite Strasbourg', 'Experience tablette correcte'],
+    frictions: ['Pas de mention Microsoft Project Operations sur le site', 'Pages solutions generiques'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 7, clarte: 7,
+  },
+  {
+    id: 69, name: 'Nassim', age: 35, emoji: '💻',
+    situation: 'Developpeur chef de projet IT PME SaaS B2B 40 salaries, Paris — veille personnelle',
+    canal: 'Google Search', maturite: 'Decouverte', device: 'Desktop',
+    decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Veille technologique sur l\'ecosysteme Microsoft Partners — site trop commercial, quitte vers Microsoft Learn',
+    localisation: 'Paris, Ile-de-France',
+    contexte: 'Benchmark integrateurs Microsoft en France pour analyse interne — pas de projet d\'achat',
+    impression: 'C\'est un site commercial, pas une source d\'information sur l\'ecosysteme partners.',
+    parcours: [
+      ['Accueil', 'Identifie le positionnement partenaire Microsoft'],
+      ['Certifications', 'Lit les niveaux de partenariat'],
+      ['Blog', 'Cherche article sur l\'ecosysteme Microsoft — trop general'],
+      ['Quitte', ''],
+    ],
+    questionCle: 'Comment fonctionne le programme Solutions Partner Microsoft ?',
+    reponse: 'Non',
+    positifs: ['Certifications bien documentees'],
+    frictions: ['Site trop oriente vente pour un profil en veille', 'Pas de contenu educatif sur l\'ecosysteme'],
+    ceQuiFeraitBasculer: '',
+    exp: 5, conf: 6, clarte: 5,
+  },
+  {
+    id: 70, name: 'Brigitte', age: 60, emoji: '🧵',
+    situation: 'DG ETI textile 320 salaries fabrication textiles techniques Alsace — fondatrice',
+    canal: 'BAO', maturite: 'Decision', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Expert-comptable recommande TBS — succession dans 2 ans, budget 280K€, veut un senior Alsace',
+    localisation: 'Selestat, Bas-Rhin',
+    contexte: 'Succession dans 2 ans, veut moderniser SI pour cession a meilleures conditions, budget 280K€',
+    impression: 'Mon expert-comptable leur fait confiance — c\'est la bonne reference pour ma succession.',
+    parcours: [
+      ['Accueil', 'Verifie la solidite (13 agences, 120 collab rassure)'],
+      ['A propos', 'Cherche equipe dirigeante — ne la trouve pas'],
+      ['Certifications', 'Confirme le niveau'],
+      ['Contact', 'Contacte pour un RDV senior'],
+    ],
+    questionCle: 'Avec qui aurai-je affaire chez TBS et quelle est leur experience ?',
+    reponse: 'Non',
+    positifs: ['Recommandation expert-comptable', 'Solidite TBS rassurante pour un projet long terme'],
+    frictions: ['Pas de presentation equipe dirigeante TBS', 'Pas de temoignage ETI industrielle similaire'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 8, clarte: 7,
+  },
+  {
+    id: 71, name: 'Lucas', age: 26, emoji: '📖',
+    situation: 'Stagiaire direction PME 30 salaries mission veille ERP, Strasbourg',
+    canal: 'Google Search', maturite: 'Decouverte', device: 'Mobile',
+    decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Mission veille ERP pour rapport interne — site commercial pas documentaire, quitte vers Gartner',
+    localisation: 'Strasbourg, Bas-Rhin',
+    contexte: 'Mission de stage : veille ERP Microsoft pour rapport interne. Pas de budget ni de decision.',
+    impression: 'C\'est un site commercial — il me faut un comparatif objectif, pas une page de vente.',
+    parcours: [
+      ['Accueil mobile', 'Cherche des comparatifs'],
+      ['Solutions', 'Trop oriente vente'],
+      ['Quitte', ''],
+    ],
+    questionCle: 'Quelle est la difference entre Business Central et SAP B1 ?',
+    reponse: 'Non',
+    positifs: [],
+    frictions: ['Site commercial sans comparatif', 'Navigation mobile difficile', 'Pas de contenu educatif'],
+    ceQuiFeraitBasculer: '',
+    exp: 3, conf: 5, clarte: 3,
+  },
+  {
+    id: 72, name: 'Elise', age: 38, emoji: '🏡',
+    situation: 'Responsable IT PME administration de biens immobiliers 120 salaries, Strasbourg',
+    canal: 'LinkedIn', maturite: 'Comparaison', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Approchee par consultant TBS LinkedIn — logiciel ICS discontinue, contacte pour explorer BC gestion locative',
+    localisation: 'Strasbourg, Bas-Rhin',
+    contexte: 'Logiciel metier immobilier ICS discontinue, cherche alternative BC ou solution hybride',
+    impression: 'Je connais deja quelqu\'un chez TBS — je visite le site pour qualifier l\'offre avant de rappeler.',
+    parcours: [
+      ['Accueil', 'Identifie l\'expertise BC'],
+      ['Productivite', 'Cherche gestion locative / syndic dans BC'],
+      ['Contact', 'Contacte son interlocuteur LinkedIn TBS'],
+    ],
+    questionCle: 'Existe-t-il un addon Business Central pour la gestion locative et syndic de copropriete ?',
+    reponse: 'Non',
+    positifs: ['Relation LinkedIn pre-etablie avec consultant TBS', 'Desktop = experience fluide', 'Localisation Strasbourg'],
+    frictions: ['Pas de page equipe individuelle', 'Pas de reference immobilier locatif'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 7, clarte: 7,
+  },
+  {
+    id: 73, name: 'Robert', age: 64, emoji: '🖨️',
+    situation: 'PDG PME imprimerie offset 40 salaries Strasbourg — peu a l\'aise avec le numerique',
+    canal: 'Google Maps', maturite: 'Decouverte', device: 'Mobile',
+    decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Cherche maintenance postes de travail Windows — bloque par l\'offre ERP, quitte',
+    localisation: 'Strasbourg, Bas-Rhin',
+    contexte: 'Postes de travail non mis a jour depuis 3 ans, cherche infogérance IT de base',
+    impression: 'C\'est pour les grands projets ERP — je cherche juste quelqu\'un pour les Windows.',
+    parcours: [
+      ['Google Maps', 'Arrive sur le site'],
+      ['Accueil', 'Bloque par le jargon ERP/Azure'],
+      ['Quitte', ''],
+    ],
+    questionCle: 'Ils font aussi la maintenance des postes de travail ?',
+    reponse: 'Non',
+    positifs: [],
+    frictions: ['TBS = grands projets ERP, pas infogérance TPE', 'Navigation mobile catastrophique', 'Jargon incomprehensible'],
+    ceQuiFeraitBasculer: '',
+    exp: 2, conf: 4, clarte: 2,
+  },
+  {
+    id: 74, name: 'Yasmina', age: 46, emoji: '⚖️',
+    situation: 'DAF PME cabinet avocats d\'affaires 80 salaries, Paris',
+    canal: 'IA (ChatGPT)', maturite: 'Decision', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'ChatGPT recommande TBS pour BC cabinet avocats Paris — decision dans le mois, contacte avec brief detaille',
+    localisation: 'Paris, 8eme arr.',
+    contexte: '3 nouveaux associes, consolidation financiere Q prend 10 jours, budget 70K€, decision dans le mois',
+    impression: 'ChatGPT recommande TBS — agence Paris + certifications Microsoft au plus haut niveau.',
+    parcours: [
+      ['Accueil', 'Identifie les certifications'],
+      ['Productivite', 'Business Central facturation professionnelle'],
+      ['References', 'Cherche reference services/cabinet'],
+      ['Contact', 'Contacte avec brief complet'],
+    ],
+    questionCle: 'Business Central gere-t-il la facturation au temps passe pour un cabinet d\'avocats ?',
+    reponse: 'Non',
+    positifs: ['Recommandation ChatGPT valide', 'Certifications Microsoft au plus haut niveau', 'Agence Paris'],
+    frictions: ['Pas de reference secteur services juridiques', 'Forte concurrence integrateurs BC parisiens'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 8, clarte: 7,
+  },
+  {
+    id: 75, name: 'Benoit', age: 43, emoji: '📋',
+    situation: 'DSI PME assurance courtage 140 salaries 5 agences regionales, Strasbourg',
+    canal: 'Google Search', maturite: 'Comparaison', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Salesforce trop cher (+80K€/an), migration vers Dynamics 365 validee, contacte TBS pour ROI documente',
+    localisation: 'Strasbourg, Bas-Rhin',
+    contexte: 'Salesforce coute 80K€/an, direction veut migrer vers D365 pour -50%, compare 3 integrateurs',
+    impression: 'TBS Strasbourg local + Dynamics 365 certifie — le bon profil pour une migration Salesforce.',
+    parcours: [
+      ['Accueil', 'Identifie l\'expertise Dynamics 365'],
+      ['CRM Dynamics 365', 'Contenu sur la migration CRM'],
+      ['Certifications', 'Confirme le niveau Microsoft'],
+      ['Contact', 'Contacte pour ROI documente sur migration Salesforce → D365'],
+    ],
+    questionCle: 'TBS a-t-il migre des entreprises de Salesforce vers Dynamics 365 avec un ROI documente ?',
+    reponse: 'Non',
+    positifs: ['Proximite Strasbourg', 'Expertise Dynamics 365 certifiee', 'Desktop = experience fluide'],
+    frictions: ['Pas de reference assurance visible', 'Pas de comparatif Salesforce vs D365'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 8, clarte: 7,
+  },
+  {
+    id: 76, name: 'Celia', age: 29, emoji: '🚀',
+    situation: 'IT Manager startup SaaS 20 salaries Paris — phase de croissance',
+    canal: 'LinkedIn', maturite: 'Decouverte', device: 'Mobile',
+    decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Pub "Deployez Business Central en 30 jours" → budget 15K€/an, TBS vise 50K€+, quitte',
+    localisation: 'Paris, Ile-de-France',
+    contexte: 'ERP basique pour gestion financiere startup, budget 15K€/an maximum',
+    impression: 'Ils ciblent les PME 50-500 personnes — pas ma startup de 20 personnes a 15K€.',
+    parcours: [
+      ['Accueil', 'Cherche une offre starter'],
+      ['Ne trouve pas', ''],
+      ['Quitte', ''],
+    ],
+    questionCle: 'Ont-ils une offre ERP basique pour startups a 15K€/an ?',
+    reponse: 'Non',
+    positifs: [],
+    frictions: ['TBS cible PME 50-500 salaries', 'Pas d\'offre starter visible', 'Navigation mobile difficile'],
+    ceQuiFeraitBasculer: '',
+    exp: 3, conf: 5, clarte: 3,
+  },
+  {
+    id: 77, name: 'Patrice', age: 53, emoji: '🪵',
+    situation: 'PDG ETI menuiserie industrielle 190 salaries Moselle — transmission prevue',
+    canal: 'BAO', maturite: 'Decision', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Expert-comptable local recommande TBS — ERP vieillissant, repreneur exige modernisation SI, contacte',
+    localisation: 'Thionville, Moselle',
+    contexte: 'ERP vieillissant, repreneur industriel conditionne l\'acquisition a un SI moderne, budget 180K€',
+    impression: 'L\'expert-comptable me dit TBS — et la reference industrie alsacienne rassure.',
+    parcours: [
+      ['Accueil', 'Solidite TBS confirmee (13 agences, 120 collab)'],
+      ['References', 'Cherche industrie Alsace-Lorraine — Lingenheld proche'],
+      ['Contact', 'Contacte pour RDV urgent (condition repreneur)'],
+    ],
+    questionCle: 'Peuvent-ils livrer un SI moderne en 6 mois pour une transmission d\'entreprise ?',
+    reponse: 'Non',
+    positifs: ['Recommandation expert-comptable', 'Solidite TBS rassurante', 'Reference industrie Alsace'],
+    frictions: ['Pas de page transmission d\'entreprise', 'Un seul numero Strasbourg pas Thionville'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 8, clarte: 7,
+  },
+  {
+    id: 78, name: 'Djamila', age: 40, emoji: '💰',
+    situation: 'Responsable financiere PME nettoyage industriel 90 salaries, Strasbourg',
+    canal: 'Google Search', maturite: 'Comparaison', device: 'Mobile',
+    decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Migration Cegid → BC recommandee par son expert-comptable — navigation mobile difficile et absence de prix bloquent',
+    localisation: 'Strasbourg, Bas-Rhin',
+    contexte: 'Migration Cegid vers BC recommandee par expert-comptable, budget 45K€, compare 2 integrateurs',
+    impression: 'TBS a l\'air serieux mais pas de prix et le site est difficile sur mobile.',
+    parcours: [
+      ['Accueil mobile', 'Navigation difficile'],
+      ['Productivite', 'Business Central — migration Cegid'],
+      ['Contact', 'Hesite car pas de prix indicatif'],
+    ],
+    questionCle: 'Combien coute une migration Cegid → Business Central pour une PME de 90 personnes ?',
+    reponse: 'Non',
+    positifs: ['Recommendation expert-comptable deja acquise', 'Localisation Strasbourg locale'],
+    frictions: ['Navigation mobile difficile', 'Absence de prix — bloque le passage a l\'action', 'Pas de delai indicatif'],
+    ceQuiFeraitBasculer: 'Un tarif indicatif "a partir de X€ pour une migration Cegid"',
+    exp: 4, conf: 6, clarte: 4,
+  },
+  {
+    id: 79, name: 'Herve', age: 57, emoji: '🧪',
+    situation: 'IT Manager PME chimie de specialite 140 salaries, Mulhouse',
+    canal: 'IA (Perplexity)', maturite: 'Comparaison', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Perplexity recommande TBS pour Business Central Alsace — conformite REACH/REACH exige tracabilite, contacte',
+    localisation: 'Mulhouse, Haut-Rhin',
+    contexte: 'Conformite REACH + tracabilite chimique imposee, ERP vieillissant, budget 110K€',
+    impression: 'Perplexity recommande TBS — le niveau Microsoft est bon pour un projet regulatoire.',
+    parcours: [
+      ['Accueil', 'Identifie l\'expertise BC'],
+      ['Certifications', 'Confirme le niveau Microsoft'],
+      ['Contact', 'Contacte avec brief tracabilite chimique'],
+    ],
+    questionCle: 'TBS a-t-il de l\'experience avec la tracabilite chimique et la conformite REACH dans Business Central ?',
+    reponse: 'Non',
+    positifs: ['Recommandation Perplexity', 'Proximite Mulhouse', 'Certifications solides'],
+    frictions: ['Pas de reference chimie ou industrie regulatoire', 'Pages solutions generiques'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 7, clarte: 7,
+  },
+  {
+    id: 80, name: 'Sylvain', age: 45, emoji: '💡',
+    situation: 'CTO PME tech SaaS industrie 70 salaries, Lyon',
+    canal: 'LinkedIn', maturite: 'Decision', device: 'Desktop',
+    decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Partner of the Year attire — mais projet migration Azure haut risque, hesite sur la taille de TBS pour ce perimetre',
+    localisation: 'Lyon, Rhone',
+    contexte: 'Migration infrastructure on-premise vers Azure, budget 120K€, preoccupe par la taille TBS vs ESN parisiennes',
+    impression: '120 collab chez TBS vs 2000 chez une ESN parisienne — suffit-il pour un projet Azure critique ?',
+    parcours: [
+      ['Accueil', 'Partner of the Year attire'],
+      ['A propos', 'Verifie la taille TBS'],
+      ['Certifications', 'Infrastructure + Digital & App Innovation — tres bien'],
+      ['Hesite', 'La taille TBS l\'interroge pour un projet critique'],
+    ],
+    questionCle: 'TBS a-t-il la taille et l\'experience pour une migration Azure critique d\'infrastructure ?',
+    reponse: 'Partiellement',
+    positifs: ['Partner of the Year = signal de niveau superieur', 'Certifications Azure tres solides'],
+    frictions: ['Taille TBS (120 collab) questionnee pour projet critique', 'Pas de case study migration Azure complexe visible'],
+    ceQuiFeraitBasculer: 'Un case study migration Azure complex avec chiffres (delai, uptime, equipe allouee)',
+    exp: 6, conf: 7, clarte: 6,
+  },
+  {
+    id: 81, name: 'Camille', age: 33, emoji: '📢',
+    situation: 'Chargee de mission digitale collectivite territoriale 50 salaries, Strasbourg',
+    canal: 'Google Search', maturite: 'Decouverte', device: 'Mobile',
+    decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Cherche des outils numeriques pour une collectivite — TBS cible clairement le secteur prive, quitte',
+    localisation: 'Strasbourg, Bas-Rhin',
+    contexte: 'Mission de digitalisation pour une collectivite territoriale, budget public contraint',
+    impression: 'C\'est pour les entreprises privees, pas les collectivites — mauvais moteur de recherche.',
+    parcours: [
+      ['Accueil', 'Identifie le positionnement prive'],
+      ['Quitte immediatement', ''],
+    ],
+    questionCle: 'TBS travaille-t-il aussi avec les collectivites territoriales ?',
+    reponse: 'Non',
+    positifs: [],
+    frictions: ['Secteur public non adresse', 'Navigation mobile difficile', 'Hors cible totale'],
+    ceQuiFeraitBasculer: '',
+    exp: 2, conf: 4, clarte: 2,
+  },
+  {
+    id: 82, name: 'Serge', age: 62, emoji: '🏗️',
+    situation: 'PDG PME negoce materiaux de construction 130 salaries, Colmar',
+    canal: 'Google Maps', maturite: 'Comparaison', device: 'Mobile',
+    decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Cherche integrateur ERP negoce a Colmar — navigation mobile catastrophique, numero non cliquable, hesite',
+    localisation: 'Colmar, Haut-Rhin',
+    contexte: 'ERP vieillissant negoce, modernisation SI avant retraite dans 2 ans, budget 85K€',
+    impression: 'Strasbourg — c\'est loin de Colmar et le site est difficile sur mobile.',
+    parcours: [
+      ['Google Maps', 'Arrive depuis recherche locale Colmar'],
+      ['Accueil mobile', 'Navigation catastrophique'],
+      ['Contact', 'Cherche numero local Colmar — seulement 03 88'],
+    ],
+    questionCle: 'TBS a-t-il une equipe qui peut se deplacer a Colmar facilement ?',
+    reponse: 'Non',
+    positifs: ['Certifications Microsoft rassurantes'],
+    frictions: ['Navigation mobile catastrophique', 'Seul numero Strasbourg', 'Pas de page agence Colmar / Haut-Rhin'],
+    ceQuiFeraitBasculer: 'Page agence Colmar ou Haut-Rhin avec numero local',
+    exp: 4, conf: 6, clarte: 4,
+  },
+  {
+    id: 83, name: 'Ines', age: 37, emoji: '💊',
+    situation: 'RSSI ETI pharmaceutique 300 salaries certifiee ISO 27001, Paris',
+    canal: 'IA (Copilot)', maturite: 'Decision', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Copilot recommande TBS pour Zenisys — certification ISO 27001 mutuelle, contacte malgre le paradoxe grade F',
+    localisation: 'Paris, Ile-de-France',
+    contexte: 'Audit ISO 27001 renouvellement en 6 mois, cherche prestataire XDR et vulnerability management',
+    impression: 'Copilot recommande Zenisys — je note le grade F mais j\'ai besoin d\'un XDR rapidement.',
+    parcours: [
+      ['Accueil', 'Cherche Zenisys directement'],
+      ['Zenisys', 'XDR et vulnerability management — pertinent'],
+      ['Certifications securite', 'Confirme le niveau'],
+      ['Contact', 'Contacte avec brief technique'],
+    ],
+    questionCle: 'Zenisys propose-t-il un XDR compatible avec notre stack securite ISO 27001 ?',
+    reponse: 'Partiellement',
+    positifs: ['Recommandation Copilot', 'Zenisys = offre directe pour son besoin', 'Agence Paris disponible'],
+    frictions: ['Grade F securite — paradoxe ISO 27001', 'Zenisys peu visible en home'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 7, clarte: 7,
+  },
+  {
+    id: 84, name: 'Alexandre', age: 41, emoji: '🚛',
+    situation: 'DSI PME transport fluvial 170 salaries, Strasbourg',
+    canal: 'LinkedIn', maturite: 'Comparaison', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Post LinkedIn partenariat TBS port de Strasbourg → visite site → certifications confirment, contacte',
+    localisation: 'Strasbourg, Bas-Rhin',
+    contexte: 'Numerisation de la gestion des barges et de la facturation fret, budget 90K€',
+    impression: 'TBS Strasbourg avec une reference port — exactement le bon interlocuteur pour le transport fluvial.',
+    parcours: [
+      ['Accueil', 'Post LinkedIn liant TBS au port de Strasbourg'],
+      ['Certifications', 'Confirme le niveau Microsoft Dynamics 365'],
+      ['Contact', 'Contacte pour RDV devis'],
+    ],
+    questionCle: 'TBS a-t-il de l\'experience dans la gestion de la logistique fluviale ?',
+    reponse: 'Non',
+    positifs: ['Proximite Strasbourg port', 'Post LinkedIn pertinent pour le secteur', 'Certifications solides'],
+    frictions: ['Pas de reference transport fluvial visible', 'Pages solutions generiques'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 7, clarte: 7,
+  },
+  {
+    id: 85, name: 'Monique', age: 55, emoji: '🏨',
+    situation: 'DG PME hotelerie 3 hotels 120 salaries, Strasbourg',
+    canal: 'Google Search', maturite: 'Decision', device: 'Mobile',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Recherche integrateur ERP hotellerie Strasbourg — motivee, convertit malgre mobile difficile',
+    localisation: 'Strasbourg, Bas-Rhin',
+    contexte: 'Consolidation financiere 3 hotels impossible manuellement, budget 80K€, decision urgente',
+    impression: 'TBS Strasbourg local + Business Central multi-entites — ca correspond a mon besoin.',
+    parcours: [
+      ['Accueil mobile', 'Navigation difficile mais cherche Business Central'],
+      ['Productivite', 'Business Central multi-entites'],
+      ['Contact', 'Remplit formulaire malgre mobile difficile'],
+    ],
+    questionCle: 'Business Central peut-il consolider 3 hotels avec des PMS differents ?',
+    reponse: 'Non',
+    positifs: ['Proximite Strasbourg', 'Chiffres TBS rassurants pour gestion multi-entites'],
+    frictions: ['Navigation mobile difficile', 'Numero non cliquable', 'Pas de reference hotellerie visible'],
+    ceQuiFeraitBasculer: '',
+    exp: 5, conf: 7, clarte: 6,
+  },
+  {
+    id: 86, name: 'Tariq', age: 44, emoji: '🏭',
+    situation: 'IT Manager PME industrie plastique 160 salaries, Mulhouse',
+    canal: 'IA (Claude)', maturite: 'Comparaison', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Claude recommande TBS pour Business Central Alsace industrie — contacte pour voir les references sectorielles',
+    localisation: 'Mulhouse, Haut-Rhin',
+    contexte: 'Remplacement ERP SAGE X3 trop couteux en maintenance, budget 120K€, compare 3 integrateurs',
+    impression: 'Claude recommande TBS pour BC Alsace — je les contacte meme si je ne vois pas de reference plastique.',
+    parcours: [
+      ['Accueil', 'Identifie l\'expertise BC'],
+      ['Productivite', 'Business Central migration SAGE'],
+      ['Certifications', 'Confirme le niveau'],
+      ['Contact', 'Contacte avec brief migration SAGE X3'],
+    ],
+    questionCle: 'TBS a-t-il migre des entreprises depuis SAGE X3 vers Business Central ?',
+    reponse: 'Non',
+    positifs: ['Recommandation Claude', 'Proximite Mulhouse', 'Certifications solides'],
+    frictions: ['Pas de reference industrie plastique', 'Pages solutions generiques et datees'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 7, clarte: 7,
+  },
+  {
+    id: 87, name: 'Florence', age: 50, emoji: '📊',
+    situation: 'Directrice des Operations ETI services informatiques 250 salaries, Paris',
+    canal: 'BAO', maturite: 'Decision', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Client commun recommend TBS pour deploiement Power Platform — contacte directement pour projet workflows',
+    localisation: 'Paris, Ile-de-France',
+    contexte: 'Automatisation des processus RH et facturation via Power Platform, budget 55K€',
+    impression: 'Un client commun vient de reussir son deploiement Power Platform avec TBS — je les contacte.',
+    parcours: [
+      ['Accueil', 'Verifie la credibilite'],
+      ['Power Platform', 'Offre directement pertinente'],
+      ['Contact', 'Contacte directement'],
+    ],
+    questionCle: 'TBS peut-il deployer Power Platform pour automatiser des processus RH et facturation ?',
+    reponse: 'Partiellement',
+    positifs: ['Recommandation client commun directe', 'Expertise Power Platform certifiee', 'Agence Paris'],
+    frictions: ['Pas de temoignages verbatim en home', 'Certifications individuelles consultants non visibles'],
+    ceQuiFeraitBasculer: '',
+    exp: 8, conf: 8, clarte: 7,
+  },
+  {
+    id: 88, name: 'Antoine', age: 28, emoji: '🎓',
+    situation: 'Consultant ERP independant, Paris — benchmark pour un client',
+    canal: 'Google Search', maturite: 'Decouverte', device: 'Mobile',
+    decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Benchmark integrateurs BC pour client ETI — navigation mobile difficile, quitte sans contact',
+    localisation: 'Paris, Ile-de-France',
+    contexte: 'Consultant freelance en veille integrateurs BC pour un client — pas d\'intention d\'achat propre',
+    impression: 'TBS a l\'air solide mais le site mobile est un cauchemar pour une visite de benchmark.',
+    parcours: [
+      ['Accueil mobile', 'Navigation difficile'],
+      ['Certifications', 'Lit les specialisations'],
+      ['Quitte', 'Passe au suivant sur sa liste'],
+    ],
+    questionCle: 'TBS est-il really national ou uniquement Grand Est ?',
+    reponse: 'Non',
+    positifs: ['Certifications Microsoft documentees'],
+    frictions: ['Navigation mobile catastrophique pour une visite de benchmark', 'Couverture nationale non clairement exprimee'],
+    ceQuiFeraitBasculer: '',
+    exp: 3, conf: 6, clarte: 4,
+  },
+  {
+    id: 89, name: 'Michele', age: 58, emoji: '🎭',
+    situation: 'DG association de formation artistique 20 salaries, Lyon',
+    canal: 'LinkedIn', maturite: 'Decouverte', device: 'Mobile',
+    decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Pub LinkedIn "digitalisation PME" → hors cible totale, quitte en 10 secondes',
+    localisation: 'Lyon, Rhone',
+    contexte: 'Cherche outil de gestion simple pour association artistique subventionnee, budget < 3K€',
+    impression: 'C\'est clairement pour des entreprises, pas pour une association artistique.',
+    parcours: [
+      ['Accueil', 'Identifie immediatement que ce n\'est pas pour elle'],
+      ['Quitte immediatement', ''],
+    ],
+    questionCle: 'Ont-ils une solution pour les associations culturelles ?',
+    reponse: 'Non',
+    positifs: [],
+    frictions: ['Hors cible totale', 'Navigation mobile difficile', 'Jargon ERP incomprehensible'],
+    ceQuiFeraitBasculer: '',
+    exp: 2, conf: 3, clarte: 2,
+  },
+  {
+    id: 90, name: 'Edouard', age: 47, emoji: '🏗️',
+    situation: 'DAF ETI BTP promotion immobiliere 250 salaries, Strasbourg',
+    canal: 'Google Maps', maturite: 'Comparaison', device: 'Tablette',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Cherche integrateur ERP BTP Strasbourg via Google Maps — tablette OK, Lingenheld rassure, contacte',
+    localisation: 'Strasbourg, Bas-Rhin',
+    contexte: 'Consolidation financiere chantiers et promotions immobilieres, budget 150K€, compare 2 integrateurs',
+    impression: 'Lingenheld BTP + TBS Strasbourg — ca correspond pour mon projet BTP.',
+    parcours: [
+      ['Google Maps', 'Arrive depuis recherche locale'],
+      ['Accueil', 'Tablette — experience acceptable'],
+      ['References', 'Lingenheld BTP = reference rassurante'],
+      ['Contact', 'Contacte pour RDV'],
+    ],
+    questionCle: 'Business Central gere-t-il la promotion immobiliere avec suivi des SCI et des programmes ?',
+    reponse: 'Non',
+    positifs: ['Reference Lingenheld BTP', 'Proximite Strasbourg', 'Experience tablette acceptable'],
+    frictions: ['Pas de reference promotion immobiliere specifique', 'Pages solutions generiques'],
+    ceQuiFeraitBasculer: '',
+    exp: 6, conf: 7, clarte: 6,
+  },
+  {
+    id: 91, name: 'Aicha', age: 36, emoji: '🛍️',
+    situation: 'Responsable SI PME retail mode 100 salaries 15 boutiques, Paris',
+    canal: 'IA (Gemini)', maturite: 'Comparaison', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Gemini recommande TBS pour Business Central retail — contacte pour voir si BC gere le multi-boutiques',
+    localisation: 'Paris, Ile-de-France',
+    contexte: 'Harmonisation SI 15 boutiques, gestion stocks centralisee, budget 100K€',
+    impression: 'Gemini recommande TBS + Microsoft Solutions Partner = credentiales suffisantes pour contacter.',
+    parcours: [
+      ['Accueil', 'Identifie les certifications'],
+      ['Productivite', 'Business Central multi-sites'],
+      ['Contact', 'Contacte pour devis retail multi-boutiques'],
+    ],
+    questionCle: 'Business Central peut-il gerer les stocks et les ventes de 15 boutiques mode en temps reel ?',
+    reponse: 'Partiellement',
+    positifs: ['Recommandation Gemini', 'Certifications Microsoft solides', 'Agence Paris'],
+    frictions: ['Pas de reference retail multi-boutiques visible', 'Pages solutions 2021'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 7, clarte: 7,
+  },
+  {
+    id: 92, name: 'Laurent B.', age: 51, emoji: '🔧',
+    situation: 'PDG ETI pieces automobiles 220 salaries, Mulhouse — filiales Allemagne et Pologne',
+    canal: 'BAO', maturite: 'Decision', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Association industrielle Grand Est recommande TBS — ERP multi-pays et multi-devises urgent, contacte directement',
+    localisation: 'Mulhouse, Haut-Rhin',
+    contexte: 'Harmoniser ERP France + filiales Allemagne et Pologne, multi-devises (EUR/PLN), budget 300K€',
+    impression: 'L\'association industrielle fait confiance a TBS — et 13 agences ca me rassure pour la multi-pays.',
+    parcours: [
+      ['Accueil', 'Identifie les 13 agences — rassure sur la couverture'],
+      ['Certifications', 'Confirme le niveau Microsoft'],
+      ['Contact', 'Contacte directement avec brief multi-pays'],
+    ],
+    questionCle: 'Business Central supporte-t-il facilement un deploiement multi-pays avec multi-devises EUR/PLN ?',
+    reponse: 'Partiellement',
+    positifs: ['Recommandation association industrielle', '13 agences rassure sur la couverture', 'Desktop = experience fluide'],
+    frictions: ['Pas de mention explicite des deployements multi-pays', 'Pas de reference filiales etrangeres'],
+    ceQuiFeraitBasculer: '',
+    exp: 8, conf: 8, clarte: 7,
+  },
+  {
+    id: 93, name: 'Nadia', age: 43, emoji: '💻',
+    situation: 'CTO PME services numeriques 80 salaries, Strasbourg',
+    canal: 'LinkedIn', maturite: 'Comparaison', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Approchee par consultant TBS LinkedIn — cherche partenaire Azure pour migration cloud hybride',
+    localisation: 'Strasbourg, Bas-Rhin',
+    contexte: 'Migration cloud hybride Azure, budget 70K€, compare TBS avec deux ESN parisiennes',
+    impression: 'TBS local + certifications Azure solides — l\'avantage de la proximite est reel pour un projet hybride.',
+    parcours: [
+      ['Accueil', 'Identifie l\'expertise Azure et cloud hybride'],
+      ['Transformation Digitale Azure', 'Contenu pertinent sur le cloud hybride'],
+      ['Contact', 'Contacte son interlocuteur TBS LinkedIn'],
+    ],
+    questionCle: 'TBS a-t-il de l\'experience sur des architectures Azure cloud hybride pour des PME du numerique ?',
+    reponse: 'Non',
+    positifs: ['Relation LinkedIn pre-etablie', 'Proximite Strasbourg', 'Certifications Azure solides'],
+    frictions: ['Pages Azure generiques', 'Pas de reference cloud hybride visible'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 7, clarte: 7,
+  },
+  {
+    id: 94, name: 'Jean-Francois', age: 60, emoji: '⚙️',
+    situation: 'PDG PME metallurgie 180 salaries, Mulhouse — troisieme generation',
+    canal: 'Google Search', maturite: 'Decision', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'ERP vieillissant metallurgie — Google Search "integrateur Business Central Mulhouse", certifications convaincantes',
+    localisation: 'Mulhouse, Haut-Rhin',
+    contexte: 'ERP metallurgie vieillissant, modernisation avant passage de direction a son fils, budget 200K€',
+    impression: 'TBS est en haut des resultats Google pour Mulhouse — et les certifications Microsoft sont serieuses.',
+    parcours: [
+      ['Accueil', 'Lit attentivement les KPIs TBS'],
+      ['Productivite', 'Business Central — gestion production/fabrication'],
+      ['References', 'Lingenheld industrie — proche'],
+      ['Contact', 'Contacte via formulaire'],
+    ],
+    questionCle: 'Business Central gere-t-il la gestion de production pour la metallurgie (ordres de fabrication) ?',
+    reponse: 'Partiellement',
+    positifs: ['Presence Google Search confirmee', 'Certifications Microsoft au plus haut niveau', 'Reference Lingenheld industrie proche'],
+    frictions: ['Pas de reference metallurgie specifique', 'Pages solutions 2021'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 8, clarte: 7,
+  },
+  {
+    id: 95, name: 'Priya', age: 34, emoji: '💊',
+    situation: 'IT Manager PME pharmaceutique 110 salaries, Strasbourg',
+    canal: 'IA (ChatGPT)', maturite: 'Decouverte', device: 'Desktop',
+    decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'ChatGPT recommande TBS mais site ne mentionne pas les industries reglementees — hesite a contacter',
+    localisation: 'Strasbourg, Bas-Rhin',
+    contexte: 'Evaluation ERP pour remplacer logiciel maison non scalable, pas de budget formel encore',
+    impression: 'TBS est recommande par ChatGPT mais rien sur le pharma ni le reglementaire — je ne suis pas sure.',
+    parcours: [
+      ['Accueil', 'Identifie les certifications'],
+      ['Productivite', 'Business Central — pas de mention pharma'],
+      ['Certifications', 'Globales mais pas sectorielles pharma'],
+      ['Hesite', 'Sans contact pour l\'instant'],
+    ],
+    questionCle: 'TBS a-t-il une expertise en deploiement ERP pour les PME pharmaceutiques soumises a des normes reglementaires ?',
+    reponse: 'Non',
+    positifs: ['Recommandation ChatGPT', 'Certifications Microsoft solides', 'Proximite Strasbourg'],
+    frictions: ['Aucun contenu sectoriel pharma', 'Pas de budget formel bloque la decision'],
+    ceQuiFeraitBasculer: 'Une page sectorielle "Pharmaceutique & Industries reglementees"',
+    exp: 5, conf: 6, clarte: 5,
+  },
+  {
+    id: 96, name: 'Gilbert', age: 65, emoji: '🪚',
+    situation: 'PDG PME artisanat ebenisterie 12 salaries, Strasbourg',
+    canal: 'Google Maps', maturite: 'Decouverte', device: 'Mobile',
+    decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Cherche logiciel facturation simple pour son atelier — totalement hors cible, quitte immediatement',
+    localisation: 'Strasbourg, Bas-Rhin',
+    contexte: 'Cherche logiciel de facturation simple pour artisan, budget < 1K€/an',
+    impression: 'C\'est pour les grandes entreprises pas pour mon atelier de 12 personnes.',
+    parcours: [
+      ['Google Maps', 'Arrive sur le site'],
+      ['Accueil', 'Ne comprend pas l\'offre'],
+      ['Quitte immediatement', ''],
+    ],
+    questionCle: 'Ils font aussi la facturation pour les petits artisans ?',
+    reponse: 'Non',
+    positifs: [],
+    frictions: ['Hors cible totale', 'Jargon incomprehensible', 'Navigation mobile catastrophique'],
+    ceQuiFeraitBasculer: '',
+    exp: 1, conf: 3, clarte: 1,
+  },
+  {
+    id: 97, name: 'Delphine', age: 39, emoji: '👩‍💼',
+    situation: 'Responsable RH ETI grande distribution 400 salaries, Nancy',
+    canal: 'Google Search', maturite: 'Decouverte', device: 'Mobile',
+    decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Cherche SIRH pour 400 salaries grande distribution — TBS ne vend pas de SIRH standalone, quitte',
+    localisation: 'Nancy, Meurthe-et-Moselle',
+    contexte: 'Deployer un SIRH complet pour 400 salaries grande distribution, budget 30K€/an SIRH',
+    impression: 'TBS c\'est de l\'ERP Microsoft — pas du SIRH. Je vais aller chez Cegedim ou SAGE RH.',
+    parcours: [
+      ['Accueil', 'Cherche "SIRH" ou "paie"'],
+      ['Ne trouve pas', ''],
+      ['Quitte', ''],
+    ],
+    questionCle: 'TBS propose-t-il un SIRH complet pour une ETI de 400 salaries ?',
+    reponse: 'Non',
+    positifs: [],
+    frictions: ['Pas de SIRH standalone dans l\'offre', 'Navigation mobile difficile', 'Hors offre pour ce besoin'],
+    ceQuiFeraitBasculer: '',
+    exp: 3, conf: 5, clarte: 3,
+  },
+  {
+    id: 98, name: 'Yann', age: 42, emoji: '🌾',
+    situation: 'IT Manager PME agroalimentaire cooperative cerealiere 160 salaries, Colmar',
+    canal: 'LinkedIn', maturite: 'Comparaison', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Post LinkedIn TBS salon industries agroalimentaires → contacte pour voir si BC gere la tracabilite cereales',
+    localisation: 'Colmar, Haut-Rhin',
+    contexte: 'Tracabilite cereales depuis la recolte jusqu\'a la livraison, exigences traçabilite grain EU, budget 100K€',
+    impression: 'TBS au salon industries agroalimentaires + Waterair industrie — ils ont l\'experience de la tracabilite.',
+    parcours: [
+      ['Accueil', 'Post LinkedIn sur le salon agroalimentaire'],
+      ['References (Waterair)', 'Reference industrie avec tracabilite'],
+      ['Certifications', 'Confirme le niveau'],
+      ['Contact', 'Contacte pour demo tracabilite'],
+    ],
+    questionCle: 'Business Central gere-t-il la tracabilite complete des lots de cereales de la recolte a la livraison ?',
+    reponse: 'Non',
+    positifs: ['Post LinkedIn sectoriel pertinent', 'Desktop = experience fluide', 'Proximite Colmar'],
+    frictions: ['Waterair = piscines, pas cereales', 'Pas de reference cooperative agricole'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 7, clarte: 7,
+  },
+  {
+    id: 99, name: 'Karoline', age: 48, emoji: '🔬',
+    situation: 'DAF PME ingenierie environnementale 95 salaries, Strasbourg',
+    canal: 'BAO', maturite: 'Decision', device: 'Desktop',
+    decision: 'Convertit', decisionLabel: 'Contacte',
+    histoire: 'Expert-comptable recommande TBS — ERP pour gestion projets environnementaux, contacte directement',
+    localisation: 'Strasbourg, Bas-Rhin',
+    contexte: 'ERP pour gestion de projets d\'etudes environnementales et facturation au temps passe, budget 75K€',
+    impression: 'Mon expert-comptable leur fait confiance — et TBS est a 5 minutes de nos bureaux.',
+    parcours: [
+      ['Accueil', 'Verifie la credibilite'],
+      ['Productivite', 'Business Central gestion de projets'],
+      ['Contact', 'Contacte directement'],
+    ],
+    questionCle: 'Business Central gere-t-il les projets d\'etudes avec facturation au temps passe et redeontologie ?',
+    reponse: 'Non',
+    positifs: ['Recommandation expert-comptable', 'Proximite Strasbourg', 'Certifications solides'],
+    frictions: ['Pas de reference ingenierie environnementale', 'Gestion projets pas mise en avant'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 8, clarte: 7,
+  },
+  {
+    id: 100, name: 'Mehdi', age: 31, emoji: '🧵',
+    situation: 'Responsable IT PME textile fast fashion 120 salaries, Strasbourg',
+    canal: 'Google Search', maturite: 'Comparaison', device: 'Mobile',
+    decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Navigation mobile difficile + prix absents — hesite entre TBS et un integrateur parisien moins cher',
+    localisation: 'Strasbourg, Bas-Rhin',
+    contexte: 'Remplacement logiciel gestion stocks textile (obsolete), budget 60K€, compare 2 integrateurs',
+    impression: 'TBS local c\'est bien, mais je ne vois aucun prix et le site mobile est difficile.',
+    parcours: [
+      ['Accueil mobile', 'Navigation difficile'],
+      ['Productivite', 'Business Central stocks'],
+      ['Contact', 'Hesite — pas de prix, incertitude budget'],
+    ],
+    questionCle: 'Business Central gere-t-il les stocks par taille/couleur pour l\'industrie textile ?',
+    reponse: 'Partiellement',
+    positifs: ['Proximite Strasbourg', 'Certifications Microsoft'],
+    frictions: ['Navigation mobile difficile', 'Prix absents bloquent la decision', 'Pas de reference textile visible'],
+    ceQuiFeraitBasculer: 'Une fourchette de prix pour la migration ERP textile + page mobile corrigee',
+    exp: 4, conf: 6, clarte: 4,
+  },
+];
+
+// ─── Groupes ─────────────────────────────────────────────────────────────────
+const convertissent = personas.filter(p => p.decision === 'Convertit');
+const hesitent = personas.filter(p => p.decision === 'Hesite');
+const repartent = personas.filter(p => p.decision === 'Quitte');
+
+// Couleur heatmap helper
+function heatColor(rate: number): string {
+  if (rate >= 85) return 'bg-green-600 text-white';
+  if (rate >= 65) return 'bg-green-400 text-white';
+  if (rate >= 45) return 'bg-yellow-300 text-neutral-800';
+  if (rate >= 25) return 'bg-orange-400 text-white';
+  return 'bg-red-500 text-white';
+}
+---
+
+<BaseLayout title={`Echo Pro — ${nomProspect}`} description={`Rapport Echo Pro confidentiel — ${nomProspect} — ${dateAudit}`} noindex={true} lang="fr" frPath="/echo/talent-bs/">
+
+  <!-- ═══════════════════════════════════════════════════════
+       1. HERO
+  ═══════════════════════════════════════════════════════ -->
+  <section class="bg-[#0A0A0A] text-white py-20 px-4">
+    <div class="max-w-4xl mx-auto text-center">
+      <span class="inline-block mb-6 px-3 py-1 rounded-full text-xs font-mono bg-white/10 text-white/70 border border-white/20">
+        {formuleLabel} · Rapport confidentiel
+      </span>
+      <h1 class="text-3xl md:text-5xl font-bold leading-tight mb-6">
+        {verdictHero}
+      </h1>
+      <p class="text-white/60 text-sm mb-10">
+        Audit de <a href={urlSite} target="_blank" rel="noopener" class="underline hover:text-white">{urlSite}</a>
+        · {kpis.nbPersonas} visiteurs simulés · {dateAudit}
+      </p>
+
+      <!-- 3 KPI cards -->
+      <div class="grid grid-cols-3 gap-4 max-w-lg mx-auto">
+        <div class="rounded-2xl bg-green-900/40 border border-green-500/30 p-5">
+          <div class="text-4xl font-bold text-green-400">{kpis.nbConvertissent}</div>
+          <div class="text-xs text-green-300/70 mt-1">contactent</div>
+        </div>
+        <div class="rounded-2xl bg-amber-900/40 border border-amber-500/30 p-5">
+          <div class="text-4xl font-bold text-amber-400">{kpis.nbHesitent}</div>
+          <div class="text-xs text-amber-300/70 mt-1">hésitent</div>
+        </div>
+        <div class="rounded-2xl bg-neutral-800 border border-neutral-600 p-5">
+          <div class="text-4xl font-bold text-neutral-300">{kpis.nbRepartent}</div>
+          <div class="text-xs text-neutral-400 mt-1">repartent</div>
+        </div>
+      </div>
+
+      <!-- Scores -->
+      <div class="mt-10 flex flex-wrap justify-center gap-6 text-sm text-white/60">
+        <span>Expérience <strong class="text-white">{kpis.experience}/10</strong></span>
+        <span>Confiance <strong class="text-white">{kpis.confiance}/10</strong></span>
+        <span>Clarté <strong class="text-white">{kpis.clarte}/10</strong></span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       2. CONSTAT + ANALYSES PRO
+  ═══════════════════════════════════════════════════════ -->
+  <section class="py-16 px-4 bg-white">
+    <div class="max-w-5xl mx-auto space-y-14">
+
+      <!-- Constat -->
+      <div class="border-l-4 pl-6" style="border-color: var(--color-accent)">
+        <p class="text-xl font-medium text-neutral-800">{constat}</p>
+      </div>
+
+      <!-- Canal -->
+      <div>
+        <h2 class="text-2xl font-bold text-neutral-900 mb-6">Conversion par canal d'arrivée</h2>
+        <div class="space-y-3">
+          {canalData.sort((a, b) => b.rate - a.rate).map(c => (
+            <div class="flex items-center gap-4">
+              <span class="text-sm text-neutral-600 w-56 flex-shrink-0">{c.canal}</span>
+              <div class="flex-1 bg-neutral-100 rounded-full h-3 relative">
+                <div
+                  class="h-3 rounded-full"
+                  style={`width:${c.rate}%; background-color: var(--color-accent)`}
+                ></div>
+              </div>
+              <span class="text-sm font-bold w-12 text-right text-neutral-800">{c.rate}%</span>
+              <span class="text-xs text-neutral-400 w-20">{c.convert}/{c.nb} contactent</span>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- PRO : Maturite -->
+      <div>
+        <h2 class="text-2xl font-bold text-neutral-900 mb-6">Analyse par maturité</h2>
+        <div class="grid md:grid-cols-3 gap-4">
+          {maturiteData.map(m => (
+            <div class="rounded-2xl border border-neutral-200 p-5">
+              <div class="flex items-start justify-between mb-3">
+                <span class="font-bold text-neutral-900">{m.label}</span>
+                <span class="text-2xl font-bold" style="color: var(--color-accent)">{m.rate}%</span>
+              </div>
+              <div class="text-sm text-neutral-500 mb-3">{m.total} visiteurs · {m.convert} contactent</div>
+              <div class="flex gap-1 mb-3">
+                <div class="h-2 rounded-full bg-green-500" style={`width:${(m.convert/m.total)*100}%`}></div>
+                <div class="h-2 rounded-full bg-amber-400" style={`width:${(m.hesite/m.total)*100}%`}></div>
+                <div class="h-2 rounded-full bg-neutral-300" style={`width:${(m.quitte/m.total)*100}%`}></div>
+              </div>
+              <p class="text-xs text-neutral-500 italic">{m.friction}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- PRO : Device -->
+      <div>
+        <h2 class="text-2xl font-bold text-neutral-900 mb-6">Analyse par device</h2>
+        <div class="grid md:grid-cols-3 gap-4">
+          {deviceData.map(d => (
+            <div class={`rounded-2xl border p-5 ${d.device === 'Mobile' ? 'border-red-200 bg-red-50' : 'border-neutral-200'}`}>
+              <div class="flex items-start justify-between mb-2">
+                <span class="font-bold text-neutral-900">{d.device}</span>
+                <span class={`text-2xl font-bold ${d.device === 'Mobile' ? 'text-red-600' : ''}`} style={d.device !== 'Mobile' ? 'color: var(--color-accent)' : ''}>{d.rate}%</span>
+              </div>
+              <div class="text-sm text-neutral-500 mb-2">{d.total} visiteurs · {d.convert} contactent</div>
+              <p class="text-xs text-neutral-500 italic">{d.insight}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- PRO : Segments -->
+      <div>
+        <h2 class="text-2xl font-bold text-neutral-900 mb-6">Score par segment</h2>
+        <div class="grid md:grid-cols-3 gap-4">
+          {segmentData.map(s => (
+            <div class="rounded-xl border border-neutral-200 p-4">
+              <div class="flex justify-between items-center mb-1">
+                <span class="font-semibold text-neutral-800">{s.segment}</span>
+                <span class="text-lg font-bold" style="color: var(--color-accent)">{s.rate}%</span>
+              </div>
+              <div class="text-xs text-neutral-500 mb-1">{s.total} visiteurs · {s.convert} contactent</div>
+              <p class="text-xs text-neutral-400 italic">{s.insight}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- PRO : Heatmap -->
+      <div>
+        <h2 class="text-2xl font-bold text-neutral-900 mb-6">Heatmap canal × maturité</h2>
+        <div class="overflow-x-auto rounded-2xl border border-neutral-200">
+          <table class="w-full text-sm">
+            <thead>
+              <tr class="bg-neutral-50">
+                <th class="text-left px-4 py-3 font-semibold text-neutral-700">Canal</th>
+                <th class="px-4 py-3 font-semibold text-neutral-700">Découverte</th>
+                <th class="px-4 py-3 font-semibold text-neutral-700">Comparaison</th>
+                <th class="px-4 py-3 font-semibold text-neutral-700">Décision</th>
+              </tr>
+            </thead>
+            <tbody>
+              {matriceData.map(row => (
+                <tr class="border-t border-neutral-100">
+                  <td class="px-4 py-3 font-medium text-neutral-700">{row.canal}</td>
+                  <td class="px-4 py-3 text-center">
+                    <span class={`inline-block px-3 py-1 rounded-full text-xs font-bold ${heatColor(row.decouverte)}`}>{row.decouverte}%</span>
+                  </td>
+                  <td class="px-4 py-3 text-center">
+                    <span class={`inline-block px-3 py-1 rounded-full text-xs font-bold ${heatColor(row.comparaison)}`}>{row.comparaison}%</span>
+                  </td>
+                  <td class="px-4 py-3 text-center">
+                    <span class={`inline-block px-3 py-1 rounded-full text-xs font-bold ${heatColor(row.decision)}`}>{row.decision}%</span>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+        <p class="text-xs text-neutral-400 mt-2">Cellules critiques : Google Maps × Découverte (10%) et LinkedIn × Découverte (10%)</p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       2b. ALERTES
+  ═══════════════════════════════════════════════════════ -->
+  <section class="py-12 px-4" style="background-color: #fefce8;">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-6">⚠️ Ce qui fait fuir vos visiteurs</h2>
+      <div class="grid md:grid-cols-2 gap-4">
+        {alertes.map(a => (
+          <div class={`rounded-2xl p-5 border-l-4 bg-white ${a.type === 'critique' ? 'border-red-500' : 'border-amber-400'}`}>
+            <div class="flex items-start gap-4">
+              <div class={`text-center flex-shrink-0 ${a.type === 'critique' ? 'text-red-600' : 'text-amber-600'}`}>
+                <div class="text-2xl font-black">{a.chiffre}</div>
+                <div class="text-xs font-medium">{a.chiffreLabel}</div>
+              </div>
+              <div>
+                <div class="flex items-center gap-2 mb-1">
+                  <span class={`text-xs font-bold px-2 py-0.5 rounded-full ${a.type === 'critique' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>
+                    {a.type === 'critique' ? 'CRITIQUE' : 'IMPORTANT'}
+                  </span>
+                </div>
+                <h3 class="font-bold text-neutral-800 mb-1">{a.titre}</h3>
+                <p class="text-sm text-neutral-600">{a.detail}</p>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       3. VOS VISITEURS
+  ═══════════════════════════════════════════════════════ -->
+  <section class="py-16 px-4 bg-neutral-50">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-3xl font-bold text-neutral-900 mb-4">Vos 100 visiteurs simulés</h2>
+      <p class="text-neutral-500 mb-8">Filtrez par canal pour voir qui vous visite — et pourquoi ils restent ou partent.</p>
+
+      <!-- Filtres -->
+      <div class="flex flex-wrap gap-2 mb-10">
+        <button class="filter-btn bg-neutral-900 text-white px-4 py-2 rounded-full text-sm font-medium" data-filter="all">Tous</button>
+        {['BAO', 'LinkedIn', 'Google Search', 'Google Maps', 'IA (ChatGPT)', 'IA (Perplexity)', 'IA (Claude)', 'IA (Gemini)', 'IA (Copilot)', 'Autres'].map(canal => (
+          <button class="filter-btn bg-white text-neutral-600 border border-neutral-200 px-4 py-2 rounded-full text-sm font-medium hover:bg-neutral-100" data-filter={canal}>{canal}</button>
+        ))}
+      </div>
+
+      <!-- ✅ Convertissent -->
+      <div class="mb-12">
+        <h3 class="text-xl font-bold text-green-700 mb-2">✅ Ils contactent ({convertissent.length})</h3>
+        <p class="text-sm text-neutral-500 mb-4">Ces visiteurs ont trouvé ce qu'ils cherchaient — ou leur motivation dépasse les frictions.</p>
+        <div class="space-y-3">
+          {convertissent.slice(0, 4).map(p => (
+            <details class="group persona-card rounded-2xl border border-neutral-200 bg-white overflow-hidden" data-canal={p.canal}>
+              <summary class="flex items-center gap-3 px-5 py-4 cursor-pointer list-none">
+                <span class="text-2xl">{p.emoji}</span>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <span class="font-semibold text-neutral-800">{p.name}, {p.age} ans</span>
+                    <span class="text-xs text-neutral-400">— {p.situation}</span>
+                  </div>
+                  <p class="text-sm text-neutral-500 italic mt-0.5 truncate">{p.histoire}</p>
+                </div>
+                <div class="flex-shrink-0 flex gap-2">
+                  <span class="text-xs px-2 py-0.5 bg-neutral-100 rounded-full text-neutral-500">{p.canal}</span>
+                  <span class="text-xs px-2 py-0.5 bg-neutral-100 rounded-full text-neutral-500">{p.device}</span>
+                  <span class="text-xs px-2 py-0.5 bg-green-100 text-green-700 rounded-full font-medium">{p.decisionLabel}</span>
+                </div>
+              </summary>
+              <div class="px-5 pb-5 border-t border-neutral-100 pt-4 space-y-3 text-sm">
+                <div class="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <p class="text-xs text-neutral-400 uppercase tracking-wide mb-1">Contexte</p>
+                    <p class="text-neutral-700">{p.contexte}</p>
+                  </div>
+                  <div>
+                    <p class="text-xs text-neutral-400 uppercase tracking-wide mb-1">Première impression</p>
+                    <p class="text-neutral-700 italic">"{p.impression}"</p>
+                  </div>
+                </div>
+                <div>
+                  <p class="text-xs text-neutral-400 uppercase tracking-wide mb-2">Parcours sur le site</p>
+                  <div class="flex flex-wrap gap-2">
+                    {p.parcours.map((step, i) => (
+                      <div class="flex items-center gap-1">
+                        {i > 0 && <span class="text-neutral-300">→</span>}
+                        <span class="bg-neutral-100 rounded-full px-2 py-0.5 text-xs text-neutral-600">{step[0]}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <p class="text-xs text-neutral-400 uppercase tracking-wide mb-1">Question clé</p>
+                  <p class="text-neutral-700 font-medium">« {p.questionCle} »</p>
+                  <p class="text-neutral-500 text-xs mt-0.5">Réponse du site : <strong>{p.reponse}</strong></p>
+                </div>
+                <div class="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <p class="text-xs text-neutral-400 uppercase tracking-wide mb-1">Ce qui a convaincu</p>
+                    <ul class="space-y-1">
+                      {p.positifs.map(pos => (
+                        <li class="text-xs text-green-700">✓ {pos}</li>
+                      ))}
+                    </ul>
+                  </div>
+                  <div>
+                    <p class="text-xs text-neutral-400 uppercase tracking-wide mb-1">Frictions rencontrées</p>
+                    <ul class="space-y-1">
+                      {p.frictions.map(fr => (
+                        <li class="text-xs text-red-600">✗ {fr}</li>
+                      ))}
+                    </ul>
+                  </div>
+                </div>
+                <div class="flex gap-4 pt-2 border-t border-neutral-100">
+                  <span class="text-xs text-neutral-500">Exp : <strong>{p.exp}/10</strong></span>
+                  <span class="text-xs text-neutral-500">Confiance : <strong>{p.conf}/10</strong></span>
+                  <span class="text-xs text-neutral-500">Clarté : <strong>{p.clarte}/10</strong></span>
+                </div>
+              </div>
+            </details>
+          ))}
+        </div>
+        {convertissent.length > 4 && (
+          <details class="mt-3">
+            <summary class="cursor-pointer text-sm font-medium text-neutral-500 hover:text-neutral-800 py-2">
+              Voir les {convertissent.length - 4} autres qui contactent…
+            </summary>
+            <div class="space-y-3 mt-3">
+              {convertissent.slice(4).map(p => (
+                <details class="group persona-card rounded-2xl border border-neutral-200 bg-white overflow-hidden" data-canal={p.canal}>
+                  <summary class="flex items-center gap-3 px-5 py-4 cursor-pointer list-none">
+                    <span class="text-2xl">{p.emoji}</span>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 flex-wrap">
+                        <span class="font-semibold text-neutral-800">{p.name}, {p.age} ans</span>
+                        <span class="text-xs text-neutral-400">— {p.situation}</span>
+                      </div>
+                      <p class="text-sm text-neutral-500 italic mt-0.5 truncate">{p.histoire}</p>
+                    </div>
+                    <div class="flex-shrink-0 flex gap-2">
+                      <span class="text-xs px-2 py-0.5 bg-neutral-100 rounded-full text-neutral-500">{p.canal}</span>
+                      <span class="text-xs px-2 py-0.5 bg-neutral-100 rounded-full text-neutral-500">{p.device}</span>
+                      <span class="text-xs px-2 py-0.5 bg-green-100 text-green-700 rounded-full font-medium">{p.decisionLabel}</span>
+                    </div>
+                  </summary>
+                  <div class="px-5 pb-5 border-t border-neutral-100 pt-4 space-y-3 text-sm">
+                    <div class="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <p class="text-xs text-neutral-400 uppercase tracking-wide mb-1">Contexte</p>
+                        <p class="text-neutral-700">{p.contexte}</p>
+                      </div>
+                      <div>
+                        <p class="text-xs text-neutral-400 uppercase tracking-wide mb-1">Première impression</p>
+                        <p class="text-neutral-700 italic">"{p.impression}"</p>
+                      </div>
+                    </div>
+                    <div>
+                      <p class="text-xs text-neutral-400 uppercase tracking-wide mb-2">Parcours sur le site</p>
+                      <div class="flex flex-wrap gap-2">
+                        {p.parcours.map((step, i) => (
+                          <div class="flex items-center gap-1">
+                            {i > 0 && <span class="text-neutral-300">→</span>}
+                            <span class="bg-neutral-100 rounded-full px-2 py-0.5 text-xs text-neutral-600">{step[0]}</span>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                    <div>
+                      <p class="text-xs text-neutral-400 uppercase tracking-wide mb-1">Question clé</p>
+                      <p class="text-neutral-700 font-medium">« {p.questionCle} »</p>
+                      <p class="text-neutral-500 text-xs mt-0.5">Réponse du site : <strong>{p.reponse}</strong></p>
+                    </div>
+                    <div class="grid md:grid-cols-2 gap-4">
+                      <div>
+                        <p class="text-xs text-neutral-400 uppercase tracking-wide mb-1">Ce qui a convaincu</p>
+                        <ul class="space-y-1">
+                          {p.positifs.map(pos => (
+                            <li class="text-xs text-green-700">✓ {pos}</li>
+                          ))}
+                        </ul>
+                      </div>
+                      <div>
+                        <p class="text-xs text-neutral-400 uppercase tracking-wide mb-1">Frictions rencontrées</p>
+                        <ul class="space-y-1">
+                          {p.frictions.map(fr => (
+                            <li class="text-xs text-red-600">✗ {fr}</li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+                    <div class="flex gap-4 pt-2 border-t border-neutral-100">
+                      <span class="text-xs text-neutral-500">Exp : <strong>{p.exp}/10</strong></span>
+                      <span class="text-xs text-neutral-500">Confiance : <strong>{p.conf}/10</strong></span>
+                      <span class="text-xs text-neutral-500">Clarté : <strong>{p.clarte}/10</strong></span>
+                    </div>
+                  </div>
+                </details>
+              ))}
+            </div>
+          </details>
+        )}
+      </div>
+
+      <!-- Micro CTA hesitants -->
+      <div class="rounded-2xl p-5 mb-8 border border-amber-200 bg-amber-50">
+        <p class="text-sm font-medium text-amber-800">
+          ⚠️ <strong>{hesitent.length} visiteurs hésitent</strong> — ils sont intéressés mais un détail les bloque (prix, mobile, géographie).
+          Ces leads qualifiés sont accessibles avec des correctifs simples.
+        </p>
+      </div>
+
+      <!-- ⚠️ Hesitent -->
+      <div class="mb-12">
+        <h3 class="text-xl font-bold text-amber-600 mb-2">⚠️ Ils hésitent ({hesitent.length})</h3>
+        <p class="text-sm text-neutral-500 mb-4">Intéressés mais bloqués par un frein précis — ce sont vos conversions les plus faciles à aller chercher.</p>
+        <div class="space-y-3">
+          {hesitent.slice(0, 4).map(p => (
+            <details class="group persona-card rounded-2xl border border-amber-100 bg-white overflow-hidden" data-canal={p.canal}>
+              <summary class="flex items-center gap-3 px-5 py-4 cursor-pointer list-none">
+                <span class="text-2xl">{p.emoji}</span>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <span class="font-semibold text-neutral-800">{p.name}, {p.age} ans</span>
+                    <span class="text-xs text-neutral-400">— {p.situation}</span>
+                  </div>
+                  <p class="text-sm text-neutral-500 italic mt-0.5 truncate">{p.histoire}</p>
+                </div>
+                <div class="flex-shrink-0 flex gap-2">
+                  <span class="text-xs px-2 py-0.5 bg-neutral-100 rounded-full text-neutral-500">{p.canal}</span>
+                  <span class="text-xs px-2 py-0.5 bg-neutral-100 rounded-full text-neutral-500">{p.device}</span>
+                  <span class="text-xs px-2 py-0.5 bg-amber-100 text-amber-700 rounded-full font-medium">{p.decisionLabel}</span>
+                </div>
+              </summary>
+              <div class="px-5 pb-5 border-t border-neutral-100 pt-4 space-y-3 text-sm">
+                <div class="grid md:grid-cols-2 gap-4">
+                  <div>
+                    <p class="text-xs text-neutral-400 uppercase tracking-wide mb-1">Contexte</p>
+                    <p class="text-neutral-700">{p.contexte}</p>
+                  </div>
+                  <div>
+                    <p class="text-xs text-neutral-400 uppercase tracking-wide mb-1">Première impression</p>
+                    <p class="text-neutral-700 italic">"{p.impression}"</p>
+                  </div>
+                </div>
+                <div>
+                  <p class="text-xs text-neutral-400 uppercase tracking-wide mb-2">Parcours sur le site</p>
+                  <div class="flex flex-wrap gap-2">
+                    {p.parcours.map((step, i) => (
+                      <div class="flex items-center gap-1">
+                        {i > 0 && <span class="text-neutral-300">→</span>}
+                        <span class="bg-neutral-100 rounded-full px-2 py-0.5 text-xs text-neutral-600">{step[0]}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+                <div>
+                  <p class="text-xs text-neutral-400 uppercase tracking-wide mb-1">Question clé</p>
+                  <p class="text-neutral-700 font-medium">« {p.questionCle} »</p>
+                </div>
+                {p.ceQuiFeraitBasculer && (
+                  <div class="rounded-xl bg-green-50 border border-green-200 p-3">
+                    <p class="text-xs text-neutral-400 uppercase tracking-wide mb-1">Ce qui ferait basculer</p>
+                    <p class="text-sm text-green-800">{p.ceQuiFeraitBasculer}</p>
+                  </div>
+                )}
+                <div>
+                  <p class="text-xs text-neutral-400 uppercase tracking-wide mb-1">Frictions</p>
+                  <ul class="space-y-1">
+                    {p.frictions.map(fr => (
+                      <li class="text-xs text-red-600">✗ {fr}</li>
+                    ))}
+                  </ul>
+                </div>
+                <div class="flex gap-4 pt-2 border-t border-neutral-100">
+                  <span class="text-xs text-neutral-500">Exp : <strong>{p.exp}/10</strong></span>
+                  <span class="text-xs text-neutral-500">Confiance : <strong>{p.conf}/10</strong></span>
+                  <span class="text-xs text-neutral-500">Clarté : <strong>{p.clarte}/10</strong></span>
+                </div>
+              </div>
+            </details>
+          ))}
+        </div>
+        {hesitent.length > 4 && (
+          <details class="mt-3">
+            <summary class="cursor-pointer text-sm font-medium text-neutral-500 hover:text-neutral-800 py-2">
+              Voir les {hesitent.length - 4} autres qui hésitent…
+            </summary>
+            <div class="space-y-3 mt-3">
+              {hesitent.slice(4).map(p => (
+                <details class="group persona-card rounded-2xl border border-amber-100 bg-white overflow-hidden" data-canal={p.canal}>
+                  <summary class="flex items-center gap-3 px-5 py-4 cursor-pointer list-none">
+                    <span class="text-2xl">{p.emoji}</span>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 flex-wrap">
+                        <span class="font-semibold text-neutral-800">{p.name}, {p.age} ans</span>
+                        <span class="text-xs text-neutral-400">— {p.situation}</span>
+                      </div>
+                      <p class="text-sm text-neutral-500 italic mt-0.5 truncate">{p.histoire}</p>
+                    </div>
+                    <div class="flex-shrink-0 flex gap-2">
+                      <span class="text-xs px-2 py-0.5 bg-neutral-100 rounded-full text-neutral-500">{p.canal}</span>
+                      <span class="text-xs px-2 py-0.5 bg-neutral-100 rounded-full text-neutral-500">{p.device}</span>
+                      <span class="text-xs px-2 py-0.5 bg-amber-100 text-amber-700 rounded-full font-medium">{p.decisionLabel}</span>
+                    </div>
+                  </summary>
+                  <div class="px-5 pb-5 border-t border-neutral-100 pt-4 space-y-3 text-sm">
+                    <p class="text-neutral-700">{p.contexte}</p>
+                    <div>
+                      <p class="text-xs text-neutral-400 uppercase tracking-wide mb-1">Question clé</p>
+                      <p class="text-neutral-700 font-medium">« {p.questionCle} »</p>
+                    </div>
+                    {p.ceQuiFeraitBasculer && (
+                      <div class="rounded-xl bg-green-50 border border-green-200 p-3">
+                        <p class="text-sm text-green-800">{p.ceQuiFeraitBasculer}</p>
+                      </div>
+                    )}
+                    <ul class="space-y-1">
+                      {p.frictions.map(fr => (
+                        <li class="text-xs text-red-600">✗ {fr}</li>
+                      ))}
+                    </ul>
+                    <div class="flex gap-4 pt-2 border-t border-neutral-100">
+                      <span class="text-xs text-neutral-500">Exp : <strong>{p.exp}/10</strong></span>
+                      <span class="text-xs text-neutral-500">Confiance : <strong>{p.conf}/10</strong></span>
+                      <span class="text-xs text-neutral-500">Clarté : <strong>{p.clarte}/10</strong></span>
+                    </div>
+                  </div>
+                </details>
+              ))}
+            </div>
+          </details>
+        )}
+      </div>
+
+      <!-- Micro CTA repartants -->
+      <div class="rounded-2xl p-5 mb-8 border border-neutral-200 bg-white">
+        <p class="text-sm font-medium text-neutral-700">
+          ❌ <strong>{repartent.length} visiteurs repartent</strong> — hors cible, mauvaise expérience mobile ou offre incompréhensible.
+          La majorité sont hors cible (normal) mais 8-10 auraient pu être retenus.
+        </p>
+      </div>
+
+      <!-- ❌ Repartent -->
+      <div class="mb-12">
+        <h3 class="text-xl font-bold text-neutral-500 mb-2">❌ Ils repartent ({repartent.length})</h3>
+        <p class="text-sm text-neutral-500 mb-4">La plupart sont hors cible — le site fait bien son travail de filtre. Quelques-uns auraient pu être retenus.</p>
+        <div class="space-y-3">
+          {repartent.slice(0, 4).map(p => (
+            <details class="group persona-card rounded-2xl border border-neutral-100 bg-neutral-50 overflow-hidden" data-canal={p.canal}>
+              <summary class="flex items-center gap-3 px-5 py-4 cursor-pointer list-none">
+                <span class="text-2xl">{p.emoji}</span>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 flex-wrap">
+                    <span class="font-semibold text-neutral-700">{p.name}, {p.age} ans</span>
+                    <span class="text-xs text-neutral-400">— {p.situation}</span>
+                  </div>
+                  <p class="text-sm text-neutral-400 italic mt-0.5 truncate">{p.histoire}</p>
+                </div>
+                <div class="flex-shrink-0 flex gap-2">
+                  <span class="text-xs px-2 py-0.5 bg-neutral-200 rounded-full text-neutral-500">{p.canal}</span>
+                  <span class="text-xs px-2 py-0.5 bg-neutral-200 rounded-full text-neutral-500">{p.device}</span>
+                  <span class="text-xs px-2 py-0.5 bg-neutral-200 text-neutral-500 rounded-full font-medium">{p.decisionLabel}</span>
+                </div>
+              </summary>
+              <div class="px-5 pb-5 border-t border-neutral-200 pt-4 space-y-3 text-sm">
+                <p class="text-neutral-600">{p.contexte}</p>
+                <div>
+                  <p class="text-xs text-neutral-400 uppercase tracking-wide mb-1">Question clé</p>
+                  <p class="text-neutral-700 font-medium">« {p.questionCle} »</p>
+                  <p class="text-neutral-500 text-xs">Réponse du site : <strong>{p.reponse}</strong></p>
+                </div>
+                <ul class="space-y-1">
+                  {p.frictions.map(fr => (
+                    <li class="text-xs text-red-500">✗ {fr}</li>
+                  ))}
+                </ul>
+                <div class="flex gap-4 pt-2 border-t border-neutral-200">
+                  <span class="text-xs text-neutral-400">Exp : <strong>{p.exp}/10</strong></span>
+                  <span class="text-xs text-neutral-400">Confiance : <strong>{p.conf}/10</strong></span>
+                  <span class="text-xs text-neutral-400">Clarté : <strong>{p.clarte}/10</strong></span>
+                </div>
+              </div>
+            </details>
+          ))}
+        </div>
+        {repartent.length > 4 && (
+          <details class="mt-3">
+            <summary class="cursor-pointer text-sm font-medium text-neutral-500 hover:text-neutral-800 py-2">
+              Voir les {repartent.length - 4} autres qui repartent…
+            </summary>
+            <div class="space-y-3 mt-3">
+              {repartent.slice(4).map(p => (
+                <details class="group persona-card rounded-2xl border border-neutral-100 bg-neutral-50 overflow-hidden" data-canal={p.canal}>
+                  <summary class="flex items-center gap-3 px-5 py-4 cursor-pointer list-none">
+                    <span class="text-2xl">{p.emoji}</span>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 flex-wrap">
+                        <span class="font-semibold text-neutral-700">{p.name}, {p.age} ans</span>
+                        <span class="text-xs text-neutral-400">— {p.situation}</span>
+                      </div>
+                      <p class="text-sm text-neutral-400 italic mt-0.5 truncate">{p.histoire}</p>
+                    </div>
+                    <div class="flex-shrink-0 flex gap-2">
+                      <span class="text-xs px-2 py-0.5 bg-neutral-200 rounded-full text-neutral-500">{p.canal}</span>
+                      <span class="text-xs px-2 py-0.5 bg-neutral-200 rounded-full text-neutral-500">{p.device}</span>
+                      <span class="text-xs px-2 py-0.5 bg-neutral-200 text-neutral-500 rounded-full">{p.decisionLabel}</span>
+                    </div>
+                  </summary>
+                  <div class="px-5 pb-5 border-t border-neutral-200 pt-4 space-y-2 text-sm">
+                    <p class="text-neutral-600">{p.contexte}</p>
+                    <p class="text-neutral-700 font-medium">« {p.questionCle} »</p>
+                    <ul class="space-y-1">
+                      {p.frictions.map(fr => (
+                        <li class="text-xs text-red-500">✗ {fr}</li>
+                      ))}
+                    </ul>
+                    <div class="flex gap-4 pt-2 border-t border-neutral-200">
+                      <span class="text-xs text-neutral-400">Exp : <strong>{p.exp}/10</strong></span>
+                      <span class="text-xs text-neutral-400">Conf : <strong>{p.conf}/10</strong></span>
+                    </div>
+                  </div>
+                </details>
+              ))}
+            </div>
+          </details>
+        )}
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       4. CE QU'ON RECOMMANDE
+  ═══════════════════════════════════════════════════════ -->
+  <section class="py-16 px-4 bg-white">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-3xl font-bold text-neutral-900 mb-2">Ce qu'on recommande</h2>
+      <p class="text-neutral-500 mb-10">Classées par impact — avec le nombre de visiteurs concernés.</p>
+
+      <!-- Hautes -->
+      <h3 class="text-lg font-bold text-red-700 mb-4">🔴 Priorité haute — dans les 30 jours</h3>
+      <div class="space-y-3 mb-12">
+        {amelioHautes.map(a => (
+          <div class="rounded-2xl border-l-4 border-red-500 bg-red-50 p-5">
+            <div class="flex items-start justify-between gap-4">
+              <div>
+                <div class="flex items-center gap-2 mb-1">
+                  <span class="text-xs font-bold text-red-600 bg-red-100 px-2 py-0.5 rounded-full">{a.num}</span>
+                  <h4 class="font-bold text-neutral-800">{a.titre}</h4>
+                </div>
+                <p class="text-sm text-neutral-600">{a.detail}</p>
+              </div>
+              <div class="flex-shrink-0 text-center">
+                <div class="text-2xl font-black text-red-600">{a.impact}</div>
+                <div class="text-xs text-red-500">visiteurs</div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <!-- Utiles -->
+      <h3 class="text-lg font-bold text-amber-700 mb-4">🟡 Utile — dans les 60-90 jours</h3>
+      <div class="grid md:grid-cols-2 gap-4 mb-12">
+        {amelioUtiles.map(a => (
+          <div class="rounded-2xl border border-amber-200 bg-amber-50 p-4">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="text-xs font-bold text-amber-700 bg-amber-100 px-2 py-0.5 rounded-full">{a.num}</span>
+              <h4 class="font-bold text-neutral-800 text-sm">{a.titre}</h4>
+            </div>
+            <p class="text-xs text-neutral-600">{a.detail}</p>
+          </div>
+        ))}
+      </div>
+
+      <!-- A discuter -->
+      <h3 class="text-lg font-bold text-neutral-600 mb-4">💬 À discuter selon votre stratégie</h3>
+      <div class="space-y-3">
+        {amelioDiscuter.map(a => (
+          <div class="rounded-2xl border border-neutral-200 bg-neutral-50 p-4">
+            <div class="flex items-center gap-2 mb-1">
+              <span class="text-xs font-bold text-neutral-500 bg-neutral-200 px-2 py-0.5 rounded-full">{a.num}</span>
+              <h4 class="font-bold text-neutral-700 text-sm">{a.titre}</h4>
+            </div>
+            <p class="text-xs text-neutral-500">{a.detail}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       5. SOUS LE CAPOT
+  ═══════════════════════════════════════════════════════ -->
+  <section class="py-16 px-4 bg-neutral-50">
+    <div class="max-w-5xl mx-auto">
+      <h2 class="text-3xl font-bold text-neutral-900 mb-8">Sous le capot — données techniques</h2>
+
+      <!-- Badges -->
+      <div class="flex flex-wrap gap-3 mb-10">
+        {techVerdicts.map(t => (
+          <div class={`flex items-center gap-2 px-4 py-2 rounded-full border text-sm font-medium ${t.ok ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
+            <span>{t.ok ? '✓' : '✗'}</span>
+            <span>{t.label}</span>
+            <span class="font-bold">{t.verdict}</span>
+          </div>
+        ))}
+      </div>
+
+      <div class="space-y-3">
+
+        <!-- Vitesse -->
+        <details class="rounded-2xl border border-neutral-200 bg-white">
+          <summary class="px-5 py-4 cursor-pointer font-semibold text-neutral-800 flex items-center gap-3 list-none">
+            <span class="text-lg">⚡</span> Vitesse & Core Web Vitals
+          </summary>
+          <div class="px-5 pb-5 pt-2 text-sm text-neutral-600 space-y-2 border-t border-neutral-100">
+            <p>API PageSpeed quota épuisé au moment de l'audit. Estimation basée sur l'analyse du code :</p>
+            <ul class="space-y-1">
+              <li>· Mobile : estimé <strong>40-60/100</strong> (scripts analytics multiples : Clarity + GA + ClickDimensions)</li>
+              <li>· Desktop : estimé <strong>65-80/100</strong></li>
+              <li>· LCP : {tech.cwv.lcp}</li>
+              <li>· INP : {tech.cwv.inp}</li>
+              <li>· CLS : {tech.cwv.cls}</li>
+            </ul>
+            <p class="text-amber-600 text-xs italic">Action : désactiver ou différer les scripts tiers non critiques (Clarity peut être en async). Gain estimé : +15 points mobile.</p>
+          </div>
+        </details>
+
+        <!-- Securite -->
+        <details class="rounded-2xl border border-red-200 bg-white">
+          <summary class="px-5 py-4 cursor-pointer font-semibold text-neutral-800 flex items-center gap-3 list-none">
+            <span class="text-lg">🔒</span> Sécurité HTTP — Grade {tech.observatory.grade} / {tech.observatory.score} pts
+          </summary>
+          <div class="px-5 pb-5 pt-2 text-sm text-neutral-600 space-y-3 border-t border-neutral-100">
+            <p><strong class="text-red-600">Grade F Mozilla Observatory</strong> — {tech.observatory.testsOk}/{tech.observatory.testsTotal} tests réussis.</p>
+            <div class="space-y-1">
+              {tech.headers.map(h => (
+                <div class={`flex items-center gap-2 text-xs ${h.ok ? 'text-green-700' : 'text-red-600'}`}>
+                  <span>{h.ok ? '✓' : '✗'}</span>
+                  <span>{h.h}</span>
+                </div>
+              ))}
+            </div>
+            <p class="text-red-700 text-xs italic font-medium">Paradoxe critique : vous vendez Zenisys (cybersécurité) et votre propre site a un grade F. Les RSSI et DSI qui testent votre site le détectent immédiatement.</p>
+          </div>
+        </details>
+
+        <!-- Schema.org -->
+        <details class="rounded-2xl border border-neutral-200 bg-white">
+          <summary class="px-5 py-4 cursor-pointer font-semibold text-neutral-800 flex items-center gap-3 list-none">
+            <span class="text-lg">🗂️</span> Schema.org — Générique
+          </summary>
+          <div class="px-5 pb-5 pt-2 text-sm border-t border-neutral-100">
+            <div class="space-y-1">
+              {tech.schema.map(s => (
+                <div class={`flex items-center gap-2 text-xs ${s.ok ? 'text-green-700' : 'text-red-600'}`}>
+                  <span>{s.ok ? '✓' : '✗'}</span>
+                  <span>{s.item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </details>
+
+        <!-- Open Graph -->
+        <details class="rounded-2xl border border-neutral-200 bg-white">
+          <summary class="px-5 py-4 cursor-pointer font-semibold text-neutral-800 flex items-center gap-3 list-none">
+            <span class="text-lg">🔗</span> Open Graph & Réseaux sociaux
+          </summary>
+          <div class="px-5 pb-5 pt-2 text-sm border-t border-neutral-100">
+            <div class="space-y-1">
+              {tech.og.map(o => (
+                <div class={`flex items-center gap-2 text-xs ${o.ok ? 'text-green-700' : 'text-red-600'}`}>
+                  <span>{o.ok ? '✓' : '✗'}</span>
+                  <span class="font-mono">{o.item}</span>
+                  <span class="text-neutral-500">— {o.val}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </details>
+
+        <!-- SEO -->
+        <details class="rounded-2xl border border-neutral-200 bg-white">
+          <summary class="px-5 py-4 cursor-pointer font-semibold text-neutral-800 flex items-center gap-3 list-none">
+            <span class="text-lg">🔍</span> SEO — Partiel
+          </summary>
+          <div class="px-5 pb-5 pt-2 text-sm border-t border-neutral-100">
+            <div class="space-y-1">
+              {tech.seo.map(s => (
+                <div class={`flex items-center gap-2 text-xs ${s.ok ? 'text-green-700' : 'text-red-600'}`}>
+                  <span>{s.ok ? '✓' : '✗'}</span>
+                  <span>{s.item}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        </details>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       6. METHODOLOGIE
+  ═══════════════════════════════════════════════════════ -->
+  <section class="py-16 px-4 bg-white">
+    <div class="max-w-3xl mx-auto">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-6">Méthodologie</h2>
+      <div class="space-y-4 text-sm text-neutral-600">
+        <div class="flex gap-4">
+          <span class="text-2xl font-black text-neutral-200">1</span>
+          <div>
+            <h3 class="font-semibold text-neutral-800 mb-1">Audit technique automatisé</h3>
+            <p>Scraping complet du site (14 pages), analyse Mozilla Observatory, tentative PageSpeed API, audit Schema.org et Open Graph, analyse du sitemap et du robots.txt.</p>
+          </div>
+        </div>
+        <div class="flex gap-4">
+          <span class="text-2xl font-black text-neutral-200">2</span>
+          <div>
+            <h3 class="font-semibold text-neutral-800 mb-1">Création des 100 personas</h3>
+            <p>100 profils représentatifs de vos visiteurs réels, répartis sur 6 canaux, 3 niveaux de maturité, 3 devices et 6 segments. Chaque persona est construit à partir des caractéristiques de votre secteur (B2B IT, PME/ETI, Grand Est + national).</p>
+          </div>
+        </div>
+        <div class="flex gap-4">
+          <span class="text-2xl font-black text-neutral-200">3</span>
+          <div>
+            <h3 class="font-semibold text-neutral-800 mb-1">Simulation de visite</h3>
+            <p>Chaque persona visite le site selon son contexte, ses attentes et ses freins. Nous simulons le parcours, la question clé, et la décision finale. Les scores d'expérience (1-10) reflètent la qualité perçue selon le profil.</p>
+          </div>
+        </div>
+        <div class="flex gap-4">
+          <span class="text-2xl font-black text-neutral-200">4</span>
+          <div>
+            <h3 class="font-semibold text-neutral-800 mb-1">Priorisation des améliorations</h3>
+            <p>Les recommandations sont classées selon l'impact (nombre de visiteurs concernés) et la faisabilité. Les scores de conversion par canal/maturité/device permettent d'identifier les leviers les plus efficaces.</p>
+          </div>
+        </div>
+        <p class="text-xs text-neutral-400 mt-4 border-t border-neutral-100 pt-4">
+          Ce rapport est généré par Marc M. · Web Factory · marc@muller.im · 1er avril 2026.
+          Les conversions sont des simulations — elles reflètent les tendances comportementales, pas des données analytics réelles.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════════════════════
+       7. CTA FINAL
+  ═══════════════════════════════════════════════════════ -->
+  <section class="bg-[#0A0A0A] text-white py-20 px-4">
+    <div class="max-w-3xl mx-auto text-center">
+      <h2 class="text-3xl font-bold mb-4">Prêt à capter les 45 visiteurs qui partent ?</h2>
+      <p class="text-white/60 mb-10 text-lg">
+        Les correctifs prioritaires sont identifiés. Un site refait en mobile-first, avec des pages agences locales
+        et un téléphone cliquable, peut vous rapporter +15 leads qualifiés pour 100 visiteurs.
+      </p>
+      <div class="flex flex-col sm:flex-row gap-4 justify-center">
+        <a
+          href="https://www.marcm.fr/commander/"
+          class="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold text-neutral-900 bg-white hover:bg-white/90 transition-colors"
+        >
+          Commander un site
+        </a>
+        <a
+          href="mailto:marc@muller.im?subject=Echo Pro — Talent Business Solutions — Question"
+          class="inline-flex items-center justify-center gap-2 px-8 py-4 rounded-full font-semibold text-white border border-white/30 hover:bg-white/10 transition-colors"
+        >
+          En discuter
+        </a>
+      </div>
+      <p class="text-white/30 text-xs mt-8">
+        Marc M. · Web Factory · Grand Est, France · marc@muller.im
+      </p>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<!-- ═══════════════════════════════════════════════════════
+     Script filtres JS
+═══════════════════════════════════════════════════════ -->
+<script is:inline>
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const personaCards = document.querySelectorAll('.persona-card');
+  if (filterBtns.length > 0) {
+    filterBtns.forEach(btn => {
+      btn.addEventListener('click', () => {
+        const filter = btn.dataset.filter;
+        filterBtns.forEach(b => {
+          b.classList.remove('bg-neutral-900', 'text-white');
+          b.classList.add('bg-white', 'text-neutral-600');
+        });
+        btn.classList.remove('bg-white', 'text-neutral-600');
+        btn.classList.add('bg-neutral-900', 'text-white');
+        personaCards.forEach(card => {
+          card.style.display = (filter === 'all' || card.dataset.canal === filter) ? '' : 'none';
+        });
+      });
+    });
+  }
+</script>
