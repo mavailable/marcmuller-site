@@ -151,6 +151,27 @@ Bonne fête du poisson 🐟
 </div>
 
 <script>
+  const ICON_DL = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg>`;
+
+  function resetBtn() {
+    const btn = document.getElementById('btn-download')!;
+    const status = document.getElementById('dl-status')!;
+    btn.innerHTML = ICON_DL + ' Télécharger PNG';
+    (btn as HTMLButtonElement).disabled = false;
+    status.textContent = '';
+  }
+
+  function fallbackSvg(svgText: string) {
+    const blob = new Blob([svgText], { type: 'image/svg+xml' });
+    const a = document.createElement('a');
+    a.download = 'marcm-formation-poisson-davril.svg';
+    a.href = URL.createObjectURL(blob);
+    a.click();
+    setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+    document.getElementById('dl-status')!.textContent = '⚠️ PNG impossible sur ce navigateur — SVG téléchargé à la place (convertissez sur cloudconvert.com)';
+    setTimeout(resetBtn, 5000);
+  }
+
   // --- Copier post ---
   document.querySelectorAll('.btn-copy').forEach(btn => {
     btn.addEventListener('click', () => {
@@ -167,46 +188,72 @@ Bonne fête du poisson 🐟
   // --- Télécharger PNG ---
   document.getElementById('btn-download')?.addEventListener('click', async () => {
     const status = document.getElementById('dl-status')!;
-    const btn = document.getElementById('btn-download')!;
-    btn.textContent = 'Génération…';
-    status.textContent = 'Conversion SVG → PNG en cours…';
+    const btn = document.getElementById('btn-download') as HTMLButtonElement;
+    btn.innerHTML = 'Génération…';
+    btn.disabled = true;
+    status.textContent = 'Conversion en cours…';
+
+    // Timeout de sécurité : si rien ne se passe après 8s → fallback SVG
+    let done = false;
+    const timeout = setTimeout(() => {
+      if (!done) {
+        fetch('/social-formation-carre.svg').then(r => r.text()).then(fallbackSvg).catch(() => {
+          status.textContent = 'Erreur — téléchargez le SVG manuellement.';
+          setTimeout(resetBtn, 4000);
+        });
+      }
+    }, 8000);
 
     try {
-      const svgUrl = '/social-formation-carre.svg';
-      const res = await fetch(svgUrl);
+      const res = await fetch('/social-formation-carre.svg');
       const svgText = await res.text();
-      const blob = new Blob([svgText], { type: 'image/svg+xml' });
-      const url = URL.createObjectURL(blob);
+
+      // Encoder en data URI base64 (évite les problèmes de taint avec blob URL)
+      const svgB64 = 'data:image/svg+xml;base64,' + btoa(unescape(encodeURIComponent(svgText)));
 
       const img = new Image();
       img.onload = () => {
-        const canvas = document.createElement('canvas');
-        canvas.width = 1080;
-        canvas.height = 1080;
-        const ctx = canvas.getContext('2d')!;
-        ctx.drawImage(img, 0, 0, 1080, 1080);
-        URL.revokeObjectURL(url);
+        try {
+          const canvas = document.createElement('canvas');
+          canvas.width = 1080;
+          canvas.height = 1080;
+          const ctx = canvas.getContext('2d')!;
+          ctx.drawImage(img, 0, 0, 1080, 1080);
 
-        canvas.toBlob(pngBlob => {
-          if (!pngBlob) { status.textContent = 'Erreur de conversion.'; return; }
-          const a = document.createElement('a');
-          a.download = 'marcm-formation-poisson-davril.png';
-          a.href = URL.createObjectURL(pngBlob);
-          a.click();
-          setTimeout(() => URL.revokeObjectURL(a.href), 5000);
-          status.textContent = '✓ PNG téléchargé — 1080×1080px';
-          btn.innerHTML = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> Téléchargé`;
-          setTimeout(() => {
-            btn.innerHTML = `<svg width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 01-2 2H5a2 2 0 01-2-2v-4M7 10l5 5 5-5M12 15V3"/></svg> Télécharger PNG`;
-            status.textContent = '';
-          }, 3000);
-        }, 'image/png');
+          // toBlob peut échouer silencieusement si canvas est taché
+          canvas.toBlob(pngBlob => {
+            done = true;
+            clearTimeout(timeout);
+            if (!pngBlob) {
+              fallbackSvg(svgText);
+              return;
+            }
+            const a = document.createElement('a');
+            a.download = 'marcm-formation-poisson-davril.png';
+            a.href = URL.createObjectURL(pngBlob);
+            a.click();
+            setTimeout(() => URL.revokeObjectURL(a.href), 5000);
+            status.textContent = '✓ PNG téléchargé — 1080×1080px';
+            btn.innerHTML = `<svg width="14" height="14" fill="none" stroke="#4ADE80" stroke-width="2.5" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> <span style="color:#4ADE80;">Téléchargé</span>`;
+            setTimeout(resetBtn, 3000);
+          }, 'image/png');
+        } catch {
+          done = true;
+          clearTimeout(timeout);
+          fallbackSvg(svgText);
+        }
       };
-      img.onerror = () => { status.textContent = 'Erreur de chargement du SVG.'; };
-      img.src = url;
-    } catch (e) {
-      status.textContent = 'Erreur — essayez dans Chrome.';
-      btn.textContent = 'Télécharger PNG';
+      img.onerror = () => {
+        done = true;
+        clearTimeout(timeout);
+        fallbackSvg(svgText);
+      };
+      img.src = svgB64;
+    } catch {
+      done = true;
+      clearTimeout(timeout);
+      status.textContent = 'Erreur réseau.';
+      setTimeout(resetBtn, 3000);
     }
   });
 </script>
