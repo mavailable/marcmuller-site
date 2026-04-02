@@ -1,0 +1,465 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const slug = 'racine';
+const formule = 'decouverte';
+const formuleLabel = 'Echo Decouverte';
+const nomProspect = 'Racine';
+const urlSite = 'https://racine-nancy.com';
+const dateAudit = '2 avril 2026';
+const isProspection = true;
+const showUpsell = true;
+
+const title = 'Echo Decouverte — Racine | Marc M';
+const description = 'Analyse de racine-nancy.com : simulation de 10 visites clients, audit technique, recommandations. Rapport confidentiel.';
+
+const kpis = {
+  nbPersonas: 10,
+  nbConvertissent: 4,
+  nbHesitent: 3,
+  nbRepartent: 3,
+  conversion: 40,
+  experience: 5.9,
+  confiance: 6.5,
+  clarte: 4.8,
+};
+
+const verdictHero = '4 clients sur 10 reservent. 6 repartent \u2014 parce qu\'ils ne trouvent ni votre carte, ni vos prix sur le site.';
+
+const constat = 'Rue Stanislas, 605 avis Google, un chef passe par Apicius et des producteurs locaux nommes un par un. Tout est la pour convaincre. Sauf que votre site ne montre pas ce que les gens viennent chercher : les plats, les prix, une raison de choisir Racine plutot que le restaurant d\'a cote. Ceux qui vous connaissent deja reservent. Les autres comparent, ne trouvent rien, et vont voir ailleurs.';
+
+const canalData = [
+  { canal: 'Bouche-a-oreille', nb: 1, convert: 1, rate: 100 },
+  { canal: 'Google Maps', nb: 2, convert: 2, rate: 100 },
+  { canal: 'Google Search', nb: 3, convert: 1, rate: 33 },
+  { canal: 'Reseaux sociaux', nb: 2, convert: 0, rate: 0 },
+  { canal: 'IA (ChatGPT / Perplexity)', nb: 2, convert: 0, rate: 0 },
+];
+
+const alertes = [
+  {
+    type: 'critique' as const,
+    titre: 'Carte et prix invisibles sur le site',
+    detail: 'Le menu est un PDF telechargeable, illisible sur mobile. Aucun prix affiche. Les visiteurs qui comparent 2-3 restaurants choisissent celui qui montre tout. Racine perd ces comparateurs.',
+    chiffre: '0',
+    chiffreLabel: 'prix affiche sur le site',
+  },
+  {
+    type: 'critique' as const,
+    titre: 'Dependance totale a TheFork',
+    detail: '3 conversions sur 4 passent par TheFork, pas par votre site. Chaque reservation via TheFork coute une commission. Le site devrait convertir directement.',
+    chiffre: '75%',
+    chiffreLabel: 'des reservations via TheFork',
+  },
+  {
+    type: 'important' as const,
+    titre: 'Aucune photo de plats',
+    detail: 'Un restaurant vend avec les yeux. Votre site montre le chef et la salle, mais pas un seul plat. Les visiteurs Instagram et les comparateurs ont besoin de visuels appetissants.',
+    chiffre: '0',
+    chiffreLabel: 'photo de plat sur le site',
+  },
+  {
+    type: 'important' as const,
+    titre: 'Zero header de securite',
+    detail: '6 headers de securite web manquants. Le navigateur considere le site comme moins fiable. Pour un site de restauration ce n\'est pas critique, mais ca reste un signal negatif pour les moteurs de recherche.',
+    chiffre: 'F',
+    chiffreLabel: 'grade securite',
+  },
+];
+
+const personas = [
+  {
+    id: 1, name: 'Sophie', age: 38, emoji: '\uD83C\uDF82',
+    situation: 'Cadre Nancy, cherche un restaurant pour son anniversaire',
+    canal: 'Google Search', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Reserve',
+    histoire: 'Cherche "restaurant gastronomique Nancy" pour ses 39 ans. TheFork lui donne les infos que le site ne donne pas. Reserve via TheFork, pas via le site.',
+    localisation: 'Nancy', maturite: 'Decision',
+    contexte: 'Anniversaire dans 2 semaines. Veut impressionner ses amis.',
+    impression: 'Beau site, ambiance classe. Mais... combien ca coute ?',
+    parcours: [['Accueil', 'Lit le concept, "cuisine canaille de terroir" — intrigue'], ['La carte', 'PDF a telecharger. Pas de prix visible. Frustrant.'], ['Reservation', 'Tombe sur TheFork — reserve la, pas sur le site']],
+    questionCle: 'C\'est dans quel budget pour un diner a 4 ?',
+    reponse: 'Non', commentReponse: 'Aucun prix visible sur le site — le PDF du menu ne s\'ouvre pas bien sur mobile',
+    positifs: ['Emplacement rue Stanislas', 'Ambiance soignee', 'Reservation fonctionnelle via TheFork'],
+    frictions: ['Prix invisibles', 'Carte en PDF illisible sur mobile', 'Tout passe par TheFork'],
+    ceQuiFeraitBasculer: '',
+    exp: 6, conf: 7, clarte: 5,
+  },
+  {
+    id: 2, name: 'Thomas', age: 42, emoji: '\uD83D\uDCCD',
+    situation: 'Touriste en passage, cherche un bon restaurant pres de la place Stanislas',
+    canal: 'Google Maps', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Appelle',
+    histoire: '605 avis et 4.6 etoiles sur Google Maps. L\'adresse "rue Stanislas" suffit. Il appelle pour reserver sans meme visiter le site.',
+    localisation: 'De passage a Nancy', maturite: 'Decision',
+    contexte: 'Touriste, veut manger pres de la place Stanislas ce soir.',
+    impression: 'Google Maps dit 4.6 etoiles, 605 avis. C\'est la. J\'appelle.',
+    parcours: [['Google Maps', 'Voit les avis et la localisation'], ['Appel', 'Appelle le 09 86... et reserve pour ce soir']],
+    questionCle: 'C\'est ouvert ce soir et il reste de la place ?',
+    reponse: 'Oui', commentReponse: 'Le numero est sur Google Maps — conversion directe',
+    positifs: ['605 avis 4.6 etoiles', 'Emplacement exceptionnel', 'Numero visible sur Maps'],
+    frictions: ['Le site n\'a joue aucun role dans sa decision'],
+    ceQuiFeraitBasculer: '',
+    exp: 6, conf: 8, clarte: 5,
+  },
+  {
+    id: 3, name: 'Nathalie', age: 55, emoji: '\uD83C\uDF77',
+    situation: 'Epicurienne, compare les restaurants gastronomiques de Nancy',
+    canal: 'Google Search', device: 'Desktop', decision: 'Convertit', decisionLabel: 'Reserve',
+    histoire: 'Le parcours du chef (Apicius, Polmard) et les producteurs locaux la convainquent. Telecharge le PDF du menu. Reserve via TheFork.',
+    localisation: 'Luneville', maturite: 'Comparaison',
+    contexte: 'Diner special avec son mari. Compare 3 restaurants gastronomiques a Nancy.',
+    impression: 'Le chef vient d\'Apicius — serieux. Mais ou est la carte ?',
+    parcours: [['Accueil', 'Lit le concept — "cuisine canaille de terroir", producteurs locaux'], ['Le restaurant', 'Parcours du chef convaincant. Liste des producteurs = gage de qualite.'], ['La carte', 'Telecharge le PDF. Compare les prix avec La Maison dans le Parc.'], ['Reservation', 'Reserve via TheFork']],
+    questionCle: 'Quel est le niveau gastronomique par rapport aux concurrents ?',
+    reponse: 'Partiellement', commentReponse: 'Le parcours du chef rassure mais la carte en PDF rend la comparaison laborieuse',
+    positifs: ['Parcours du chef credible (Apicius)', 'Producteurs locaux nommes', 'Concept clair'],
+    frictions: ['Carte en PDF — comparaison difficile', 'Pas de photos de plats', 'Pas de formule/menu clairement affichee'],
+    ceQuiFeraitBasculer: '',
+    exp: 6, conf: 7, clarte: 5,
+  },
+  {
+    id: 4, name: 'Julien', age: 29, emoji: '\uD83D\uDCF1',
+    situation: 'Jeune actif, cherche un restau sympa pour un premier rdv',
+    canal: 'Google Search', device: 'Mobile', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Menu en PDF illisible sur son iPhone. Pas de prix. Pas de photos de plats. Il va sur TheFork directement et choisit un concurrent qui affiche tout.',
+    localisation: 'Nancy', maturite: 'Comparaison',
+    contexte: 'Premier rendez-vous vendredi soir. Veut un endroit qui impressionne sans se ruiner.',
+    impression: 'Le site est joli mais il ne me dit rien d\'utile. Combien ? Quels plats ?',
+    parcours: [['Accueil', 'Concept sympa mais vague'], ['La carte', 'PDF. Sur mobile. Illisible. Abandon.'], ['TheFork directement', 'Compare 4 restaurants — choisit celui qui montre sa carte']],
+    questionCle: 'C\'est dans mon budget ? Quels plats pour impressionner ?',
+    reponse: 'Non', commentReponse: 'Zero prix visible, zero plat visible',
+    positifs: ['Emplacement rue Stanislas — ca impressionne'],
+    frictions: ['PDF illisible sur mobile', 'Pas de prix', 'Pas de photos de plats', 'Impossible de comparer'],
+    ceQuiFeraitBasculer: 'Afficher la carte avec les prix directement sur le site, avec de belles photos',
+    exp: 4, conf: 5, clarte: 3,
+  },
+  {
+    id: 5, name: 'Claire', age: 34, emoji: '\uD83E\uDD16',
+    situation: 'Curieuse foodie, decouvre Racine via Perplexity',
+    canal: 'IA (Perplexity)', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Perplexity recommande Racine pour la cuisine de terroir a Nancy. Le site confirme le concept mais ne montre pas de plats. Elle sauvegarde le lien et oublie.',
+    localisation: 'Metz', maturite: 'Decouverte',
+    contexte: 'Cherche des idees de sortie pour le week-end prochain.',
+    impression: 'Le concept me plait mais je ne vois pas ce que je vais manger.',
+    parcours: [['Accueil', 'Lit le concept — terroir, producteurs locaux, ca lui parle'], ['Le restaurant', 'Producteurs locaux — bon signe. Mais pas de plats.'], ['La carte', 'PDF. Elle note "a regarder plus tard" et ferme.']],
+    questionCle: 'Ca ressemble a quoi concretement ? Quels plats ?',
+    reponse: 'Non', commentReponse: 'Aucune photo de plat, aucune description attirante visible sans telecharger un PDF',
+    positifs: ['Concept terroir/producteurs locaux', 'Emplacement place Stanislas'],
+    frictions: ['Pas de visuels de plats', 'PDF a telecharger', 'Rien qui donne envie de reserver maintenant'],
+    ceQuiFeraitBasculer: 'Des photos de plats et une carte lisible directement sur le site',
+    exp: 5, conf: 6, clarte: 4,
+  },
+  {
+    id: 6, name: 'Marc-Antoine', age: 48, emoji: '\uD83D\uDCBB',
+    situation: 'Cadre en deplacement, compare les restaurants Nancy pour un diner d\'affaires',
+    canal: 'IA (ChatGPT)', device: 'Desktop', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'ChatGPT recommande 3 restaurants a Nancy. Il compare les sites. Racine ne montre ni carte, ni prix, ni photos. La Maison dans le Parc affiche tout. Decision en 30 secondes.',
+    localisation: 'Paris (en deplacement)', maturite: 'Comparaison',
+    contexte: 'Diner d\'affaires a Nancy mardi prochain. Doit impressionner un client important.',
+    impression: 'Site esthetique mais ou est l\'essentiel ? Carte, prix, espace privatisable ?',
+    parcours: [['Accueil', 'Concept sympa mais pas suffisant pour un diner d\'affaires'], ['Le restaurant', 'Table d\'hote 10 personnes — interessant mais pas de details'], ['La carte', 'PDF. Pas de menu groupe/affaires.']],
+    questionCle: 'Avez-vous un menu groupe pour 6 personnes, et a quel prix ?',
+    reponse: 'Non', commentReponse: 'Pas de menu groupe visible, pas de prix, la table d\'hote est mentionnee mais sans details',
+    positifs: ['Table d\'hote mentionnee (10 pers)', 'Adresse prestigieuse'],
+    frictions: ['Pas de menu groupe/affaires', 'Pas de prix', 'Le concurrent affiche tout'],
+    ceQuiFeraitBasculer: '',
+    exp: 5, conf: 6, clarte: 3,
+  },
+  {
+    id: 7, name: 'Emilie', age: 31, emoji: '\uD83D\uDCF8',
+    situation: 'Instagrammeuse food, decouvre Racine via Instagram',
+    canal: 'Reseaux sociaux (Instagram)', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Reserve',
+    histoire: 'Les photos Instagram sont appetissantes. Elle clique sur le lien bio, voit TheFork, reserve directement. Le site web n\'a joue aucun role.',
+    localisation: 'Nancy', maturite: 'Decouverte',
+    contexte: 'Cherche de nouveaux restaurants a photographier pour son compte food.',
+    impression: 'Les photos Instagram donnent envie. Le site, pas du tout.',
+    parcours: [['Instagram', 'Photos de plats magnifiques — donne envie'], ['Lien bio', 'Redirigee vers TheFork — reserve pour samedi']],
+    questionCle: 'C\'est photogenique ? L\'ambiance est instagrammable ?',
+    reponse: 'Oui', commentReponse: 'Instagram montre exactement ce qu\'elle cherche — le site web, non',
+    positifs: ['Photos Instagram appetissantes', 'Ambiance photogenique', 'TheFork fonctionnel'],
+    frictions: ['Le site web ne capitalise pas sur le contenu Instagram', 'Pas de galerie de plats sur le site'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 7, clarte: 6,
+  },
+  {
+    id: 8, name: 'Philippe', age: 60, emoji: '\uD83D\uDCF0',
+    situation: 'Cadre retraite, cherche un restaurant pour son club',
+    canal: 'Reseaux sociaux (Facebook)', device: 'Tablette', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Vu une publication Facebook. Le site est joli mais il veut voir la carte et les prix pour evaluer le budget du club. Le PDF ne s\'ouvre pas bien sur sa tablette. Il demande a sa femme de regarder.',
+    localisation: 'Vandoeuvre-les-Nancy', maturite: 'Comparaison',
+    contexte: 'Organise le diner mensuel de son club Rotary (8 personnes).',
+    impression: 'Belle adresse. Mais je dois justifier le budget au club. Ou sont les prix ?',
+    parcours: [['Facebook', 'Publication Racine — joli, ambiance conviviale'], ['Accueil', 'Concept terroir, bon. Mais ou est la carte ?'], ['La carte', 'PDF. Sa tablette l\'ouvre mal. Il abandonne.']],
+    questionCle: 'Menu groupe 8 personnes, quel budget prevoir ?',
+    reponse: 'Non', commentReponse: 'Pas de menu groupe, pas de prix visibles, PDF inutilisable sur tablette',
+    positifs: ['Belle adresse pour un evenement', 'Table d\'hote mentionnee'],
+    frictions: ['PDF inutilisable sur tablette', 'Pas de formule groupe', 'Pas de prix pour evaluer le budget'],
+    ceQuiFeraitBasculer: 'Une page "Groupes et evenements" avec formules et prix',
+    exp: 5, conf: 6, clarte: 4,
+  },
+  {
+    id: 9, name: 'Lea', age: 26, emoji: '\uD83C\uDF5D',
+    situation: 'Jeune salariee, cherche un dejeuner rapide chic pour un entretien',
+    canal: 'Google Maps', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Voit Racine sur Google Maps. Service 12h-13h30, c\'est court. Pas de formule dejeuner visible. Pas de prix. Elle hesite et cherchera un autre endroit plus clair.',
+    localisation: 'Nancy', maturite: 'Decision',
+    contexte: 'Dejeuner de travail avec un partenaire. Veut chic mais rapide.',
+    impression: '12h-13h30 c\'est serre. Y a une formule dejeuner ?',
+    parcours: [['Google Maps', 'Horaires : 12h-13h30. C\'est court.'], ['Site', 'Cherche une formule dejeuner. Rien.'], ['La carte', 'PDF. Elle n\'a pas le temps de telecharger.']],
+    questionCle: 'Formule dejeuner ? A quel prix ? C\'est rapide ?',
+    reponse: 'Non', commentReponse: 'Aucune formule dejeuner visible, aucun prix, aucune indication de duree de service',
+    positifs: ['Emplacement ideal pour un dejeuner d\'affaires'],
+    frictions: ['Pas de formule dejeuner visible', 'Pas de prix', 'Horaires serres sans precision'],
+    ceQuiFeraitBasculer: 'Une formule dejeuner clairement affichee avec prix et duree estimee',
+    exp: 6, conf: 6, clarte: 4,
+  },
+  {
+    id: 10, name: 'Dominique', age: 52, emoji: '\uD83C\uDF7D\uFE0F',
+    situation: 'Nanceien fidele, vient sur recommandation d\'un ami',
+    canal: 'Bouche-a-oreille', device: 'Desktop', decision: 'Convertit', decisionLabel: 'Appelle',
+    histoire: 'Son ami lui a parle de Racine. Il veut juste le numero et l\'adresse. Le site lui donne les deux. Il appelle et reserve pour samedi.',
+    localisation: 'Nancy', maturite: 'Decision',
+    contexte: 'Son meilleur ami lui a dit "va chez Racine, c\'est incroyable". Il veut reserver.',
+    impression: 'J\'ai le numero, j\'ai l\'adresse. C\'est tout ce qu\'il me faut.',
+    parcours: [['Accueil', 'Trouve l\'adresse et le numero en 10 secondes'], ['Appel', 'Reserve pour samedi soir']],
+    questionCle: 'Comment je reserve ?',
+    reponse: 'Oui', commentReponse: 'Numero visible, reservation simple par telephone',
+    positifs: ['Coordonnees facilement accessibles', 'Site confirme le standing decrit par l\'ami'],
+    frictions: ['Le site ne montre pas ce que l\'ami lui avait decrit (les plats, l\'ambiance en vrai)'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 8, clarte: 6,
+  },
+];
+
+const ameliorationsHautes = [
+  {
+    titre: 'Afficher la carte et les prix directement sur le site',
+    pourquoi: '7 visiteurs sur 10 cherchent les prix et la carte. Le PDF est illisible sur mobile. Les comparateurs (Julien, Marc-Antoine, Philippe) choisissent le concurrent qui affiche tout. C\'est la raison numero 1 des abandons.',
+    action: 'Remplacer le PDF par une page /la-carte avec les plats, les prix et de belles photos. Mettre a jour a chaque changement de carte. Mobile-first.',
+    impact: '7 visiteurs sur 10',
+  },
+];
+
+const ameliorationsUtiles = [
+  { titre: 'Ajouter des photos de plats sur le site', detail: 'Instagram est plein de belles photos de vos plats. Le site n\'en montre aucune. Integrer une selection directement sur la page d\'accueil et la page carte.' },
+  { titre: 'Creer une page Groupes / Evenements', detail: 'Table d\'hote 10 personnes mentionnee mais sans details. Les clubs, entreprises et familles veulent une formule groupe avec prix.' },
+  { titre: 'Proposer la reservation directe (sans TheFork)', detail: '75% des reservations passent par TheFork = commissions. Un formulaire de reservation simple sur le site reduirait cette dependance.' },
+  { titre: 'Afficher une formule dejeuner', detail: 'Les actifs cherchent "formule dejeuner Nancy". Si elle existe, la mettre en evidence. Si elle n\'existe pas, c\'est une opportunite manquee.' },
+];
+
+const ameliorationsDiscuter = [
+  { emoji: '\uD83D\uDCF7', titre: 'Integrer le feed Instagram sur le site', detail: 'Vos photos Instagram vendent mieux que votre site. Un widget ou une galerie connectee a Instagram montrerait les plats sans effort supplementaire.' },
+  { emoji: '\uD83D\uDD12', titre: 'Configurer les headers de securite', detail: '6 headers manquants = grade F. Rapide a corriger, ameliore le SEO et la confiance navigateur.' },
+];
+
+const techVerdicts = [
+  { label: 'Vitesse', verdict: 'Moyenne', ok: false, detail: 'WordPress + images lourdes (photo chef 1642x2350) — probable LCP > 3s mobile' },
+  { label: 'Securite', verdict: 'F', ok: false, detail: '0/6 headers de securite configures' },
+  { label: 'SEO', verdict: 'Passable', ok: true, detail: 'Title + meta OK. Mais Schema.org Restaurant absent.' },
+  { label: 'Donnees structurees', verdict: 'Insuffisant', ok: false, detail: 'WebPage generique — pas de Restaurant, Menu, AggregateRating' },
+  { label: 'Partage reseaux', verdict: 'OK', ok: true, detail: 'OG complet mais image portrait (pas ideal pour preview)' },
+];
+
+const tech = {
+  observatory: { grade: 'F', score: 0, testsOk: 0, testsTotal: 6 },
+  pagespdMobile: null,
+  pagespdDesktop: null,
+  cwv: { lcp: 'Non mesure (estime > 3s)', inp: 'Non mesure', cls: 'Non mesure' },
+  headers: [
+    { ok: false, h: 'X-Content-Type-Options — ABSENT' },
+    { ok: false, h: 'X-Frame-Options — ABSENT' },
+    { ok: false, h: 'Strict-Transport-Security — ABSENT' },
+    { ok: false, h: 'Content-Security-Policy — ABSENT' },
+    { ok: false, h: 'Permissions-Policy — ABSENT' },
+    { ok: false, h: 'Referrer-Policy — ABSENT' },
+  ],
+  schema: [
+    { item: 'WebPage generique present', ok: true },
+    { item: 'Restaurant schema — ABSENT', ok: false },
+    { item: 'Menu / hasMenu — ABSENT', ok: false },
+    { item: 'AggregateRating (605 avis) — ABSENT', ok: false },
+    { item: 'OpeningHoursSpecification — ABSENT', ok: false },
+  ],
+  og: [
+    { item: 'og:title', ok: true, val: 'Restaurant Racine a Nancy - Cuisine canaille de terroir' },
+    { item: 'og:description', ok: true, val: 'Le restaurant Racine situe pres de la place Stanislas...' },
+    { item: 'og:image', ok: true, val: 'Photo chef (1642x2350 — portrait, pas ideal)' },
+    { item: 'og:type', ok: false, val: 'website (devrait etre restaurant)' },
+  ],
+  seo: [
+    { item: 'Title et meta description presents', ok: true },
+    { item: 'HTTPS actif', ok: true },
+    { item: 'Reseaux sociaux lies (Facebook, Instagram)', ok: true },
+    { item: 'Schema.org Restaurant', ok: false },
+    { item: 'Menu/carte indexable (actuellement PDF)', ok: false },
+    { item: 'Donnees structurees Menu', ok: false },
+    { item: 'AggregateRating (605 avis non exploites)', ok: false },
+  ],
+};
+
+function decisionBorder(d: string) {
+  if (d === 'Convertit') return 'border-green-200';
+  if (d === 'Hesite') return 'border-amber-200';
+  return 'border-neutral-200';
+}
+function decisionBadge(d: string) {
+  if (d === 'Convertit') return 'bg-green-600';
+  if (d === 'Hesite') return 'bg-amber-500';
+  return 'bg-neutral-400';
+}
+
+const accentColor = '#D97706';
+const accentGradient = 'linear-gradient(135deg, #D97706, #B45309)';
+---
+
+<BaseLayout title={title} description={description} noindex={true} lang="fr" frPath={`/echo/${slug}`}>
+
+  <!-- HERO -->
+  <section class="relative w-full px-6 py-20 md:py-28 overflow-hidden" style="background: #0A0A0A;">
+    <div class="absolute top-[20%] left-[10%] w-[500px] h-[500px] rounded-full blur-[180px] pointer-events-none" style={`background: ${accentColor}; opacity: 0.06;`}></div>
+    <div class="absolute bottom-[10%] right-[5%] w-[300px] h-[300px] rounded-full blur-[120px] pointer-events-none" style="background: #6366f1; opacity: 0.04;"></div>
+    <div class="relative mx-auto max-w-4xl z-10">
+      <div class="mb-6 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5);">{formuleLabel} &middot; Rapport confidentiel</div>
+      <h1 class="mb-6 text-3xl md:text-4xl font-bold text-white leading-tight tracking-tight">{verdictHero}</h1>
+      <p class="mb-10 text-sm" style="color: rgba(255,255,255,0.4);">Site analyse : <a href={urlSite} target="_blank" rel="noopener" class="underline hover:text-white transition-colors">{urlSite}</a> &middot; {kpis.nbPersonas} visiteurs simules &middot; {dateAudit}</p>
+      <div class="grid grid-cols-3 gap-4">
+        <div class="rounded-xl p-5 text-center" style="background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2);"><div class="text-4xl md:text-5xl font-black text-green-400 mb-1">{kpis.nbConvertissent}</div><div class="text-sm text-green-400/70">reservent</div></div>
+        <div class="rounded-xl p-5 text-center" style="background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2);"><div class="text-4xl md:text-5xl font-black text-amber-400 mb-1">{kpis.nbHesitent}</div><div class="text-sm text-amber-400/70">hesitent</div></div>
+        <div class="rounded-xl p-5 text-center" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);"><div class="text-4xl md:text-5xl font-black mb-1" style="color: rgba(255,255,255,0.5);">{kpis.nbRepartent}</div><div class="text-sm" style="color: rgba(255,255,255,0.3);">repartent</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONSTAT -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="rounded-2xl p-6 md:p-8 mb-12 border-l-4" style={`background: rgba(217,119,6,0.04); border-color: ${accentColor};`}>
+      <p class="text-lg md:text-xl font-medium text-neutral-800 leading-relaxed">{constat}</p>
+    </div>
+    <h2 class="text-xl font-bold text-neutral-900 mb-2">D'ou viennent vos visiteurs</h2>
+    <p class="text-sm text-neutral-500 mb-6">Et combien reservent selon leur canal d'arrivee.</p>
+    <div class="space-y-4 mb-12">
+      {canalData.map(c => {
+        const color = c.rate >= 50 ? '#22c55e' : c.rate >= 25 ? '#f59e0b' : '#ef4444';
+        return (<div class="flex items-center gap-4"><div class="w-52 text-sm text-neutral-700 shrink-0">{c.canal}</div><div class="flex-1 h-3 bg-neutral-100 rounded-full overflow-hidden"><div class="h-full rounded-full transition-all" style={`width: ${c.rate}%; background: ${color}`}></div></div><div class="w-20 text-right"><span class="text-sm font-bold" style={`color: ${color}`}>{c.rate}%</span><span class="text-xs text-neutral-400 ml-1">({c.convert}/{c.nb})</span></div></div>);
+      })}
+    </div>
+    <details class="group"><summary class="flex items-center gap-2 cursor-pointer text-sm text-neutral-500 hover:text-neutral-700 py-2"><svg class="w-4 h-4 transition-transform group-open:rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>Voir les scores moyens</summary>
+      <div class="grid grid-cols-3 gap-4 mt-3">
+        {[{ label: 'Experience', val: kpis.experience },{ label: 'Confiance', val: kpis.confiance },{ label: 'Clarte', val: kpis.clarte }].map(s => {
+          const sColor = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500';
+          return (<div class="bg-white border border-neutral-200 rounded-xl p-4 text-center"><div class={`text-2xl font-bold mb-1 ${sColor}`}>{s.val}<span class="text-sm text-neutral-400">/10</span></div><div class="text-xs text-neutral-500">{s.label}</div></div>);
+        })}
+      </div>
+    </details>
+  </section>
+
+  <!-- ALERTES -->
+  <section class="py-12" style="background: #fefce8;">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center gap-3 mb-6"><svg class="w-6 h-6 text-amber-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg><div><h2 class="text-lg font-bold text-neutral-900">Problemes detectes</h2><p class="text-sm text-neutral-600">{alertes.filter(a => a.type === 'critique').length} critiques &middot; {alertes.filter(a => a.type === 'important').length} importants</p></div></div>
+      <div class="grid md:grid-cols-2 gap-4">
+        {alertes.map(a => (<div class={`bg-white rounded-xl p-5 ${a.type === 'critique' ? 'border-2 border-red-300' : 'border border-amber-300'}`}><div class={`inline-block text-2xl font-black px-3 py-1 rounded-lg mb-3 ${a.type === 'critique' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>{a.chiffre}</div><p class="text-[10px] text-neutral-400 uppercase tracking-wider mb-1">{a.chiffreLabel}</p><h3 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h3><p class="text-xs text-neutral-600 leading-relaxed">{a.detail}</p></div>))}
+      </div>
+    </div>
+  </section>
+
+  <!-- VOS VISITEURS -->
+  <section class="py-16" style="background: #fafafa;">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs</h2>
+      <p class="text-neutral-600 mb-8">Voici ce qui se passe quand quelqu'un cherche un restaurant a Nancy et tombe sur votre site.</p>
+
+      {(['Convertit', 'Hesite', 'Quitte'] as const).map(decision => {
+        const filtered = personas.filter(p => p.decision === decision);
+        const labelMap = { Convertit: 'Ceux qui reservent', Hesite: 'Ceux qui hesitent', Quitte: 'Ceux qui repartent' };
+        const colorMap = { Convertit: { dot: 'bg-green-500', text: 'text-green-800', sub: 'text-green-600' }, Hesite: { dot: 'bg-amber-500', text: 'text-amber-800', sub: 'text-amber-600' }, Quitte: { dot: 'bg-neutral-400', text: 'text-neutral-600', sub: 'text-neutral-500' } };
+        const c = colorMap[decision];
+        return (
+          <div class="mb-10">
+            <h3 class={`text-base font-bold ${c.text} mb-4 flex items-center gap-2`}><span class={`w-2.5 h-2.5 rounded-full ${c.dot} inline-block`}></span>{labelMap[decision]}<span class={`text-sm font-normal ${c.sub}`}>({filtered.length})</span></h3>
+            <div class="space-y-3">
+              {filtered.map(p => (
+                <details class={`group bg-white rounded-xl overflow-hidden shadow-sm border ${decisionBorder(p.decision)}`}>
+                  <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                    <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 mb-1 flex-wrap"><h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4><span class={`text-[10px] ${decisionBadge(p.decision)} text-white px-1.5 py-0.5 rounded font-medium`}>{p.decisionLabel}</span></div>
+                      <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                      <div class="flex flex-wrap items-center gap-1.5"><span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span><span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span><span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span></div>
+                    </div>
+                    <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                  </summary>
+                  <div class={`px-4 pb-5 border-t ${decisionBorder(p.decision)}`}>
+                    <div class="grid gap-4 text-xs mt-4">
+                      <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p><p class="text-neutral-600">{p.contexte}</p></div>
+                      <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Premiere impression (5 sec)</p><p class="text-neutral-600">{p.impression}</p></div>
+                      <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours sur le site</p><ol class="list-decimal list-inside space-y-1.5 text-neutral-600">{p.parcours.map(([section, reaction]) => (<li><strong class="text-neutral-800">{section}</strong>{reaction ? ` \u2014 ${reaction}` : ''}</li>))}</ol></div>
+                      <div class="bg-neutral-50 rounded-lg p-3"><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p><p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p><p class="text-neutral-600">Le site repond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> \u2014 {p.commentReponse}</p></div>
+                      <div class="grid grid-cols-2 gap-4"><div><p class="font-semibold text-green-700 mb-1.5">Points positifs</p><ul class="space-y-1 text-neutral-600">{p.positifs.map(pt => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">&middot;</span>{pt}</li>)}</ul></div><div><p class="font-semibold text-amber-700 mb-1.5">Frictions</p><ul class="space-y-1 text-neutral-600">{p.frictions.map(f => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">&middot;</span>{f}</li>)}</ul></div></div>
+                      {p.ceQuiFeraitBasculer && <div class="bg-amber-50 rounded-lg p-3"><p class="font-semibold text-amber-700 text-[10px] uppercase tracking-wider mb-1">Ce qui le ferait passer a l'action</p><p class="text-neutral-700 text-xs">{p.ceQuiFeraitBasculer}</p></div>}
+                      <div class="flex gap-6 pt-3 border-t border-neutral-100">{[{ label: 'Experience', val: p.exp },{ label: 'Confiance', val: p.conf },{ label: 'Clarte', val: p.clarte }].map(s => { const sc = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500'; return (<div class="text-center"><span class={`block text-lg font-bold ${sc}`}>{s.val}</span><span class="text-[10px] text-neutral-400">{s.label}</span></div>);})}</div>
+                    </div>
+                  </div>
+                </details>
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  </section>
+
+  <!-- RECOMMANDATIONS -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <h2 class="text-2xl font-bold text-neutral-900 mb-2">Ce qu'on recommande</h2>
+    <p class="text-neutral-600 mb-8">Actions concretes, classees par impact.</p>
+    <p class="text-sm font-semibold text-red-700 mb-4">Si vous ne changez qu'une chose :</p>
+    <div class="space-y-4 mb-12">
+      {ameliorationsHautes.map(a => (<div class="bg-white border-2 border-red-200 rounded-xl p-6 shadow-sm"><div class="flex items-start justify-between gap-4 mb-3"><h4 class="font-bold text-neutral-900">{a.titre}</h4><span class="text-[10px] px-2 py-1 rounded-full bg-red-100 text-red-700 font-semibold shrink-0 whitespace-nowrap">{a.impact}</span></div><p class="text-sm text-neutral-600 mb-3">{a.pourquoi}</p><div class="bg-neutral-50 rounded-lg px-4 py-3 flex items-start gap-2"><svg class="w-4 h-4 text-neutral-400 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg><p class="text-xs text-neutral-700">{a.action}</p></div></div>))}
+    </div>
+    <h3 class="text-lg font-bold text-neutral-900 mb-2">Utile aussi</h3>
+    <div class="grid md:grid-cols-2 gap-4 mb-12">{ameliorationsUtiles.map(a => (<div class="bg-white border border-neutral-200 rounded-xl p-5"><h4 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h4><p class="text-xs text-neutral-600">{a.detail}</p></div>))}</div>
+    <h3 class="text-lg font-bold text-neutral-900 mb-2">A discuter</h3>
+    <div class="space-y-3 mb-12">{ameliorationsDiscuter.map(a => (<div class="bg-neutral-50 border border-neutral-200 rounded-xl p-4 flex gap-3"><span class="text-lg shrink-0">{a.emoji}</span><div><h4 class="font-semibold text-neutral-900 text-sm mb-0.5">{a.titre}</h4><p class="text-xs text-neutral-600">{a.detail}</p></div></div>))}</div>
+    {showUpsell && (<div class="rounded-2xl p-8 text-center border-2 border-dashed" style={`border-color: ${accentColor}; background: rgba(217,119,6,0.03);`}><p class="text-lg font-bold text-neutral-900 mb-2">Ce rapport gratuit identifie les tendances.</p><p class="text-sm text-neutral-600 mb-6">Avec un Echo Complet (90 euros), 20 visiteurs simules et un audit technique approfondi pour des recommandations chiffrees.</p><a href="tel:+33688766648" class="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-xl transition-all shadow-md hover:-translate-y-0.5" style={`background: ${accentGradient};`}>Appeler Marc &mdash; 06 88 76 66 48</a></div>)}
+  </section>
+
+  <!-- TECHNIQUE -->
+  <section class="py-16 border-t border-neutral-200">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-2">Sous le capot</h2>
+      <p class="text-neutral-600 mb-8">Ce que les outils techniques disent de votre site.</p>
+      <div class="flex flex-wrap gap-3 mb-10">{techVerdicts.map(v => (<div class={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium ${v.ok ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}>{v.ok ? <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> : <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}<span>{v.label}</span><span class="text-xs opacity-70">{v.verdict}</span></div>))}</div>
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white"><summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50"><div class="flex items-center gap-3"><span class="text-base">&#128274;</span><div><h3 class="font-semibold text-neutral-900 text-sm">Headers de securite</h3><p class="text-[11px] text-neutral-500">0/6 configures — grade F</p></div></div><svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></summary><div class="px-4 pb-4 border-t border-neutral-100 pt-4"><div class="space-y-2">{tech.headers.map(s => (<div class="flex items-start gap-2 text-xs text-neutral-600"><span class={`shrink-0 font-bold ${s.ok ? 'text-green-500' : 'text-red-400'}`}>{s.ok ? '\u2713' : '\u2717'}</span><span>{s.h}</span></div>))}</div></div></details>
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white"><summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50"><div class="flex items-center gap-3"><span class="text-base">&#128202;</span><div><h3 class="font-semibold text-neutral-900 text-sm">Donnees structurees (Schema.org)</h3><p class="text-[11px] text-neutral-500">{techVerdicts[3].detail}</p></div></div><svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></summary><div class="px-4 pb-4 border-t border-neutral-100 pt-4"><div class="space-y-2">{tech.schema.map(s => (<div class="flex items-start gap-2 text-xs text-neutral-600"><span class={`shrink-0 font-bold ${s.ok ? 'text-green-500' : 'text-red-400'}`}>{s.ok ? '\u2713' : '\u2717'}</span><span>{s.item}</span></div>))}</div></div></details>
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white"><summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50"><div class="flex items-center gap-3"><span class="text-base">&#128269;</span><div><h3 class="font-semibold text-neutral-900 text-sm">SEO technique</h3><p class="text-[11px] text-neutral-500">{techVerdicts[2].detail}</p></div></div><svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></summary><div class="px-4 pb-4 border-t border-neutral-100 pt-4"><div class="space-y-2">{tech.seo.map(s => (<div class="flex items-start gap-2 text-xs text-neutral-600"><span class={`shrink-0 font-bold ${s.ok ? 'text-green-500' : 'text-red-400'}`}>{s.ok ? '\u2713' : '\u2717'}</span><span>{s.item}</span></div>))}</div></div></details>
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white"><summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50"><div class="flex items-center gap-3"><span class="text-base">&#128279;</span><div><h3 class="font-semibold text-neutral-900 text-sm">Partage reseaux (Open Graph)</h3><p class="text-[11px] text-neutral-500">{techVerdicts[4].detail}</p></div></div><svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></summary><div class="px-4 pb-4 border-t border-neutral-100 pt-4"><div class="space-y-2">{tech.og.map(s => (<div class="flex items-start gap-2 text-xs text-neutral-600"><span class={`shrink-0 font-bold ${s.ok ? 'text-green-500' : 'text-red-400'}`}>{s.ok ? '\u2713' : '\u2717'}</span><span>{s.item} : {s.val}</span></div>))}</div></div></details>
+    </div>
+  </section>
+
+  <!-- METHODOLOGIE -->
+  <section class="py-12 bg-neutral-50 border-t border-neutral-100">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-lg font-bold text-neutral-900 mb-4">Comment on a fait ca</h2>
+      <div class="grid md:grid-cols-3 gap-4 text-sm text-neutral-600">
+        <div class="bg-white rounded-xl p-4 border border-neutral-200"><div class="text-2xl font-black text-neutral-300 mb-2">1</div><p class="font-semibold text-neutral-800 mb-1">Scraping complet</p><p class="text-xs">Lecture des 4 pages du site : accueil, restaurant, carte, reservation.</p></div>
+        <div class="bg-white rounded-xl p-4 border border-neutral-200"><div class="text-2xl font-black text-neutral-300 mb-2">2</div><p class="font-semibold text-neutral-800 mb-1">Audit technique</p><p class="text-xs">Headers de securite, Schema.org, Open Graph, SEO technique.</p></div>
+        <div class="bg-white rounded-xl p-4 border border-neutral-200"><div class="text-2xl font-black text-neutral-300 mb-2">3</div><p class="font-semibold text-neutral-800 mb-1">10 visiteurs simules</p><p class="text-xs">10 profils realistes de Nanceiens — touristes, actifs, foodies, clubs, premiers rdv.</p></div>
+      </div>
+      <p class="text-xs text-neutral-400 mt-4">10 visiteurs = une tendance solide. 20 la confirment. 100 la certifient.</p>
+    </div>
+  </section>
+
+  <!-- CTA FINAL (Prospection) -->
+  <section class="py-16 border-t border-neutral-200">
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-3">Votre site peut faire beaucoup mieux.</h2>
+      <p class="text-neutral-600 mb-8">605 avis, place Stanislas, un chef passe par Apicius. Tout est la. Il manque juste un site qui montre ce que vos clients viennent chercher : la carte, les plats, les prix.</p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="tel:+33688766648" class="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white font-semibold rounded-xl transition-all shadow-md hover:bg-green-700 hover:-translate-y-0.5">Appeler Marc &mdash; 06 88 76 66 48</a>
+        <a href="https://wa.me/33688766648" class="inline-flex items-center gap-2 px-6 py-3 border border-neutral-300 text-neutral-700 font-semibold rounded-xl transition-all hover:border-neutral-500">WhatsApp</a>
+      </div>
+      <p class="text-xs text-neutral-400 mt-6">Ce rapport est confidentiel et non indexe par Google &middot; Genere le {dateAudit}</p>
+    </div>
+  </section>
+
+</BaseLayout>

@@ -1,0 +1,455 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const slug = 'boubou-nancy';
+const formule = 'decouverte';
+const formuleLabel = 'Echo Decouverte';
+const nomProspect = 'Bou Bou Nancy';
+const urlSite = 'https://www.boubounancy.fr';
+const dateAudit = '2 avril 2026';
+const isProspection = true;
+const showUpsell = true;
+
+const title = 'Echo Decouverte — Bou Bou Nancy | Marc M';
+const description = 'Analyse de boubounancy.fr : simulation de 10 visites clients, audit technique, recommandations. Rapport confidentiel.';
+
+const kpis = {
+  nbPersonas: 10,
+  nbConvertissent: 5,
+  nbHesitent: 2,
+  nbRepartent: 3,
+  conversion: 50,
+  experience: 5.8,
+  confiance: 6.8,
+  clarte: 4.5,
+};
+
+const verdictHero = '5 clients sur 10 prennent RDV. 5 repartent \u2014 parce que votre site Wix est invisible pour Google et les IA.';
+
+const constat = '240 avis, 5 etoiles, un barbershop qui tourne bien a Nancy. Le bouche-a-oreille et Google Maps font le travail. Mais votre site Wix est un mur : le contenu est rendu cote client, invisible pour les bots SEO et les IA. Perplexity et ChatGPT ne peuvent pas lire vos tarifs, vos services, vos horaires. Les visiteurs qui comparent ne trouvent rien et vont chez le concurrent qui affiche tout.';
+
+const canalData = [
+  { canal: 'Bouche-a-oreille', nb: 1, convert: 1, rate: 100 },
+  { canal: 'Google Maps', nb: 2, convert: 2, rate: 100 },
+  { canal: 'Google Search', nb: 3, convert: 2, rate: 67 },
+  { canal: 'Reseaux sociaux', nb: 2, convert: 0, rate: 0 },
+  { canal: 'IA (ChatGPT / Perplexity)', nb: 2, convert: 0, rate: 0 },
+];
+
+const alertes = [
+  {
+    type: 'critique' as const,
+    titre: 'Site invisible pour les IA',
+    detail: 'Wix rend le contenu cote client (JavaScript). Les IA (Perplexity, ChatGPT) ne peuvent pas lire vos tarifs, services ni horaires. Quand un prospect demande "meilleur barbershop Nancy" a une IA, elle ne peut rien dire sur vous. Le concurrent avec un site crawlable gagne.',
+    chiffre: '0%',
+    chiffreLabel: 'contenu lisible par les IA',
+  },
+  {
+    type: 'important' as const,
+    titre: 'Schema.org basique',
+    detail: 'Votre site declare un LocalBusiness generique. Pas de BarberShop, pas d\'horaires d\'ouverture, pas de note agregee. Les 240 avis 5 etoiles ne remontent pas dans les resultats enrichis de Google.',
+    chiffre: '0',
+    chiffreLabel: 'etoile affichee dans Google',
+  },
+  {
+    type: 'important' as const,
+    titre: 'Zero header de securite',
+    detail: 'X-Content-Type-Options, X-Frame-Options, HSTS, CSP : tous absents. Le navigateur considere le site comme moins fiable. C\'est un signal negatif pour le referencement.',
+    chiffre: '0/4',
+    chiffreLabel: 'headers configures',
+  },
+];
+
+const personas = [
+  {
+    id: 1, name: 'Romain', age: 28, emoji: '\uD83D\uDCCD',
+    situation: 'Jeune actif, cherche un bon barbershop pres de chez lui',
+    canal: 'Google Maps', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Appelle',
+    histoire: '5.0 etoiles et 240 avis sur Google Maps. Il voit le numero, il appelle. Le site n\'a joue aucun role.',
+    localisation: 'Nancy centre', maturite: 'Decision',
+    contexte: 'Vient d\'emmenager a Nancy. Cherche un barbier de confiance.',
+    impression: '5 etoiles, 240 avis. J\'appelle.',
+    parcours: [['Google Maps', 'Voit la note 5.0 et 240 avis'], ['Appel', 'Appelle le 06 65... pour prendre RDV']],
+    questionCle: 'C\'est ouvert aujourd\'hui ?',
+    reponse: 'Oui', commentReponse: 'Le numero est sur Google Maps, conversion directe',
+    positifs: ['240 avis 5 etoiles', 'Numero visible sur Maps', 'Adresse facile a trouver'],
+    frictions: ['Le site web n\'a joue aucun role dans sa decision'],
+    ceQuiFeraitBasculer: '',
+    exp: 6, conf: 8, clarte: 5,
+  },
+  {
+    id: 2, name: 'Karim', age: 35, emoji: '\uD83D\uDCCD',
+    situation: 'Habitue des barbershops, cherche le meilleur a Nancy',
+    canal: 'Google Maps', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Se deplace',
+    histoire: '5.0 etoiles, adresse a 10 min a pied. Il se deplace directement sans passer par le site.',
+    localisation: 'Nancy Ville Vieille', maturite: 'Decision',
+    contexte: 'Son barbier habituel a ferme. Il en cherche un nouveau, vite.',
+    impression: '5 etoiles parfait, c\'est a cote. J\'y vais.',
+    parcours: [['Google Maps', '5.0 etoiles, 240 avis, 10 min a pied'], ['Deplacement', 'Se rend directement au salon']],
+    questionCle: 'Ils prennent sans RDV ?',
+    reponse: 'Non', commentReponse: 'Pas d\'info sur le site, pas visible sur Maps non plus. Il tente le deplacement.',
+    positifs: ['Note parfaite', 'Proximite', 'Nombre d\'avis rassurant'],
+    frictions: ['Pas d\'horaires visibles sur le site', 'Pas d\'info sur RDV avec/sans rendez-vous'],
+    ceQuiFeraitBasculer: '',
+    exp: 6, conf: 8, clarte: 5,
+  },
+  {
+    id: 3, name: 'Nicolas', age: 42, emoji: '\uD83D\uDCBB',
+    situation: 'Cadre, cherche un barbershop haut de gamme pour entretien regulier',
+    canal: 'Google Search', device: 'Desktop', decision: 'Convertit', decisionLabel: 'Appelle',
+    histoire: 'Cherche "barbershop Nancy qualite". Le site Wix charge lentement mais il patiente. Le concept "qualite superieure" correspond. Les 5.0 etoiles le rassurent. Il appelle pour les tarifs.',
+    localisation: 'Vandoeuvre-les-Nancy', maturite: 'Comparaison',
+    contexte: 'Veut un barbier serieux pour une coupe et un entretien barbe toutes les 3 semaines.',
+    impression: 'Le concept a l\'air serieux. Mais combien ca coute ?',
+    parcours: [['Google', 'Cherche "barbershop Nancy qualite"'], ['Site', 'Le site charge... charge... OK. "Qualite superieure", ca lui parle.'], ['Tarifs', 'Cherche les tarifs. Rien de visible ou trop lent a charger.'], ['Appel', 'Appelle pour demander les prix']],
+    questionCle: 'Combien pour coupe + barbe ? Et quelle frequence recommandee ?',
+    reponse: 'Non', commentReponse: 'Pas de tarifs visibles sur le site, il doit appeler',
+    positifs: ['Concept "qualite superieure" qui correspond', '5.0 etoiles rassurant', 'Numero accessible'],
+    frictions: ['Site lent a charger (Wix)', 'Pas de tarifs', 'Pas de description des services'],
+    ceQuiFeraitBasculer: '',
+    exp: 6, conf: 7, clarte: 5,
+  },
+  {
+    id: 4, name: 'Youssef', age: 24, emoji: '\uD83D\uDCF1',
+    situation: 'Etudiant, compare les barbershops Nancy sur son budget',
+    canal: 'Google Search', device: 'Mobile', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Compare 3 barbershops a Nancy. Les deux autres affichent leurs tarifs et services. Bou Bou : site lent, pas de prix, pas de services listes. Il passe au suivant en 15 secondes.',
+    localisation: 'Nancy campus', maturite: 'Comparaison',
+    contexte: 'Budget etudiant. Veut une bonne coupe sans se ruiner.',
+    impression: 'Le site rame sur mon tel. Et je vois pas les prix. Suivant.',
+    parcours: [['Google', 'Cherche "barbershop Nancy pas cher"'], ['Site', 'Le site Wix charge lentement sur 4G'], ['Abandon', 'Pas de tarifs en 15 secondes. Il ferme et va chez le concurrent.']],
+    questionCle: 'C\'est combien une coupe ?',
+    reponse: 'Non', commentReponse: 'Zero prix visible. Impossible de comparer avec les concurrents.',
+    positifs: ['Bonne note Google'],
+    frictions: ['Site Wix lent sur mobile', 'Pas de tarifs', 'Pas de liste de services', 'Impossible de comparer'],
+    ceQuiFeraitBasculer: 'Afficher les tarifs directement sur le site avec une page dediee',
+    exp: 4, conf: 5, clarte: 3,
+  },
+  {
+    id: 5, name: 'Antoine', age: 31, emoji: '\u2702\uFE0F',
+    situation: 'Client fidele d\'un autre barbier qui a ferme, cherche un remplacement',
+    canal: 'Google Search', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Appelle',
+    histoire: 'Son barbier a ferme. Il cherche un remplacement serieux. Les 240 avis 5.0 etoiles suffisent. Il appelle pour savoir s\'ils font aussi la barbe.',
+    localisation: 'Nancy', maturite: 'Decision',
+    contexte: 'Son barbier depuis 5 ans a ferme le mois dernier. Il est en urgence.',
+    impression: '240 avis 5 etoiles, ca a l\'air serieux. Je tente.',
+    parcours: [['Google', 'Cherche "meilleur barbier Nancy"'], ['Site', 'Le concept "qualite superieure" lui plait'], ['Appel', 'Appelle pour demander s\'ils font coupe + barbe']],
+    questionCle: 'Vous faites barbe + coupe ? C\'est combien ?',
+    reponse: 'Non', commentReponse: 'Les services ne sont pas clairement listes. Il appelle pour verifier.',
+    positifs: ['240 avis 5 etoiles', 'Concept "qualite superieure"'],
+    frictions: ['Pas de liste de services', 'Pas de tarifs', 'Site lent'],
+    ceQuiFeraitBasculer: '',
+    exp: 5, conf: 7, clarte: 4,
+  },
+  {
+    id: 6, name: 'Mehdi', age: 27, emoji: '\uD83E\uDD16',
+    situation: 'Demande a Perplexity le meilleur barbershop a Nancy',
+    canal: 'IA (Perplexity)', device: 'Mobile', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Perplexity tente de scraper le site mais Wix rend le contenu cote client. L\'IA ne cite que le titre OG et la note Google. Pas de tarifs, pas de services, pas d\'horaires. Mehdi clique sur le lien, le site est lent, il ferme.',
+    localisation: 'Nancy', maturite: 'Decouverte',
+    contexte: 'Nouveau a Nancy. Demande a Perplexity "meilleur barbershop Nancy" pour se faire une idee.',
+    impression: 'Perplexity dit que c\'est bien note mais ne peut rien me dire de plus. Le site ne charge pas.',
+    parcours: [['Perplexity', 'Demande "meilleur barbershop Nancy"'], ['Resultat IA', 'Bou Bou cite avec note 5.0 mais sans details (tarifs, services, horaires)'], ['Clic sur le lien', 'Site Wix lent. Contenu qui ne charge pas bien.'], ['Abandon', 'Ferme et clique sur le resultat suivant']],
+    questionCle: 'C\'est quoi leurs specialites et c\'est dans quel budget ?',
+    reponse: 'Non', commentReponse: 'Ni l\'IA ni le site ne peuvent repondre. Le contenu Wix est invisible pour les bots.',
+    positifs: ['Note 5.0 citee par l\'IA'],
+    frictions: ['Site invisible pour les IA (contenu Wix cote client)', 'Pas de contenu crawlable', 'Site lent au clic'],
+    ceQuiFeraitBasculer: 'Un site statique avec contenu crawlable pour que l\'IA puisse citer les tarifs et services',
+    exp: 3, conf: 5, clarte: 2,
+  },
+  {
+    id: 7, name: 'Sebastien', age: 45, emoji: '\uD83D\uDCBB',
+    situation: 'Cadre en deplacement, demande a ChatGPT un barbershop a Nancy',
+    canal: 'IA (ChatGPT)', device: 'Desktop', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'ChatGPT compare 4 barbershops a Nancy. Pour Bou Bou, il n\'a que le titre OG et la note. Pour le concurrent, il a les tarifs, les services, les horaires. Sebastien choisit le concurrent.',
+    localisation: 'Lyon (en deplacement a Nancy)', maturite: 'Comparaison',
+    contexte: 'En deplacement a Nancy pour la semaine. A besoin d\'une coupe avant une reunion client.',
+    impression: 'ChatGPT me recommande 4 barbershops. Sur Bou Bou il ne sait rien me dire de concret.',
+    parcours: [['ChatGPT', '"Barbershop bien note a Nancy, dispo cette semaine"'], ['Comparaison IA', 'Bou Bou cite avec 5.0 etoiles mais sans tarifs ni horaires. Le concurrent a tout.'], ['Decision', 'Choisit le concurrent parce que ChatGPT peut argumenter dessus']],
+    questionCle: 'Tarifs et dispos cette semaine ?',
+    reponse: 'Non', commentReponse: 'ChatGPT ne peut pas lire le site Wix. Aucun argument au-dela de la note.',
+    positifs: ['Note 5.0 mentionnee par ChatGPT'],
+    frictions: ['Site invisible pour ChatGPT', 'Aucun contenu exploitable par l\'IA', 'Le concurrent est mieux documente'],
+    ceQuiFeraitBasculer: '',
+    exp: 4, conf: 5, clarte: 3,
+  },
+  {
+    id: 8, name: 'Lucas', age: 22, emoji: '\uD83D\uDCF8',
+    situation: 'Etudiant, decouvre Bou Bou via Instagram',
+    canal: 'Reseaux sociaux (Instagram)', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Voit un post Instagram sympa. Clique sur le lien bio, le site Wix charge lentement sur sa 4G. Il ne trouve pas les tarifs. Il ne sait pas si c\'est dans son budget etudiant. Il sauvegarde et oublie.',
+    localisation: 'Nancy', maturite: 'Decouverte',
+    contexte: 'Cherche un nouveau style. Voit des photos de coupes tendance sur Insta.',
+    impression: 'Les coupes ont l\'air bien. Mais combien ca coute ?',
+    parcours: [['Instagram', 'Photos de coupes tendance'], ['Lien bio', 'Site Wix lent sur 4G'], ['Recherche tarifs', 'Rien de visible'], ['Sauvegarde', 'Sauvegarde le post Instagram et oublie']],
+    questionCle: 'C\'est dans mon budget etudiant ?',
+    reponse: 'Non', commentReponse: 'Pas de tarifs sur le site. Il ne peut pas evaluer.',
+    positifs: ['Photos Instagram attractives', 'Style tendance visible'],
+    frictions: ['Site lent sur mobile', 'Pas de tarifs', 'Pas de lien direct vers une page tarifs'],
+    ceQuiFeraitBasculer: 'Une page tarifs accessible en un clic depuis Instagram',
+    exp: 5, conf: 6, clarte: 4,
+  },
+  {
+    id: 9, name: 'David', age: 38, emoji: '\uD83D\uDCF0',
+    situation: 'Pere de famille, voit une recommandation sur Facebook',
+    canal: 'Reseaux sociaux (Facebook)', device: 'Tablette', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Vu une recommandation Facebook. Le site ne charge pas correctement sur sa tablette (rendu Wix cote client). Il ne trouve ni tarifs, ni services, ni horaires. Il demande a un collegue qui y est deja alle.',
+    localisation: 'Laxou', maturite: 'Comparaison',
+    contexte: 'Cherche un barbershop pour lui et son fils de 16 ans.',
+    impression: 'Bonne reputation sur Facebook. Mais le site ne me dit rien.',
+    parcours: [['Facebook', 'Recommandation d\'un ami'], ['Site', 'Charge mal sur tablette. Contenu Wix qui rame.'], ['Recherche info', 'Pas de tarifs, pas de services, pas d\'horaires'], ['Abandon temporaire', 'Demandera a un collegue']],
+    questionCle: 'Ils font pere et fils ? C\'est combien pour deux ?',
+    reponse: 'Non', commentReponse: 'Aucune info sur le site. Il ne peut pas planifier.',
+    positifs: ['Bonne reputation Facebook', 'Recommandation d\'un ami'],
+    frictions: ['Site qui charge mal sur tablette', 'Pas de tarifs', 'Pas d\'info sur les services pour ados'],
+    ceQuiFeraitBasculer: 'Une page tarifs avec offre pere/fils ou tarif jeune',
+    exp: 5, conf: 6, clarte: 4,
+  },
+  {
+    id: 10, name: 'Franck', age: 50, emoji: '\uD83D\uDC54',
+    situation: 'Cadre, vient sur recommandation d\'un collegue',
+    canal: 'Bouche-a-oreille', device: 'Desktop', decision: 'Convertit', decisionLabel: 'Appelle',
+    histoire: 'Son collegue lui a dit "va chez Bou Bou, c\'est le meilleur a Nancy". Il veut juste le numero. Le site finit par charger, il trouve le tel et appelle.',
+    localisation: 'Nancy', maturite: 'Decision',
+    contexte: 'Son collegue ne tarit pas d\'eloges. Il veut prendre RDV pour samedi.',
+    impression: 'Je veux juste le numero. Le site met du temps mais je le trouve.',
+    parcours: [['Accueil', 'Site Wix qui charge... il patiente'], ['Contact', 'Trouve le numero de telephone'], ['Appel', 'Appelle et prend RDV pour samedi']],
+    questionCle: 'Comment je prends RDV ?',
+    reponse: 'Oui', commentReponse: 'Numero visible, il appelle',
+    positifs: ['Numero accessible', 'Recommandation collegue = confiance maximale'],
+    frictions: ['Site lent a charger', 'Rien sur le site qui confirme ce que le collegue a decrit'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 8, clarte: 6,
+  },
+];
+
+const ameliorationsHautes = [
+  {
+    titre: 'Remplacer le site Wix par un site statique rapide et crawlable',
+    pourquoi: '10 visiteurs sur 10 sont affectes par la lenteur et le rendu cote client de Wix. Les 2 visiteurs IA repartent systematiquement parce que le contenu est invisible. Les visiteurs mobiles attendent que le JavaScript charge. Un site statique (Astro) se charge en moins d\'une seconde et est lisible par tous les bots.',
+    action: 'Site statique Astro + Tailwind, heberge sur Cloudflare Pages. Tarifs, services, horaires, photos : tout en HTML, crawlable par Google et les IA. Schema.org BarberShop avec note agregee.',
+    impact: '10 visiteurs sur 10',
+  },
+];
+
+const ameliorationsUtiles = [
+  { titre: 'Afficher les tarifs et les services', detail: '7 visiteurs sur 10 cherchent les tarifs. Une page dediee avec coupe, barbe, soins, forfaits et prix evite les appels "juste pour savoir combien".' },
+  { titre: 'Ajouter le Schema.org BarberShop', detail: 'Les 240 avis 5 etoiles ne remontent pas dans les resultats enrichis Google. Un schema BarberShop avec AggregateRating, horaires et services ferait apparaitre les etoiles directement dans Google.' },
+  { titre: 'Afficher les horaires d\'ouverture', detail: '3 personas ne savent pas si le salon est ouvert. Les horaires doivent etre visibles en 2 secondes sur le site et dans le schema.' },
+  { titre: 'Mettre des photos de coupes recentes', detail: 'Le barbershop vend un resultat visuel. Instagram a les photos, le site non. Integrer une galerie de coupes recentes directement sur le site.' },
+];
+
+const ameliorationsDiscuter = [
+  { emoji: '\uD83D\uDCC5', titre: 'Reservation en ligne', detail: 'Un formulaire de prise de RDV en ligne reduirait les appels et convertirait les hesitants qui ne veulent pas telephoner (Lucas, David).' },
+  { emoji: '\uD83D\uDD12', titre: 'Configurer les headers de securite', detail: '4 headers manquants = aucune protection. Rapide a corriger sur un site statique, ameliore le SEO.' },
+];
+
+const techVerdicts = [
+  { label: 'Vitesse', verdict: 'Moyenne', ok: false, detail: 'Wix : rendu cote client, JavaScript lourd, temps de chargement eleve sur mobile' },
+  { label: 'Securite', verdict: 'F', ok: false, detail: '0/4 headers de securite configures' },
+  { label: 'SEO', verdict: 'Faible', ok: false, detail: 'Contenu rendu cote client, non crawlable par les bots SEO et IA' },
+  { label: 'Donnees structurees', verdict: 'Partiel', ok: false, detail: 'WebSite + LocalBusiness generique, pas de BarberShop, pas d\'horaires, pas de note' },
+  { label: 'Partage reseaux', verdict: 'OK', ok: true, detail: 'OG title, description et image presents' },
+];
+
+const tech = {
+  observatory: { grade: 'F', score: 0, testsOk: 0, testsTotal: 4 },
+  pagespdMobile: null,
+  pagespdDesktop: null,
+  cwv: { lcp: 'Non mesure (Wix cote client)', inp: 'Non mesure', cls: 'Non mesure' },
+  headers: [
+    { ok: false, h: 'X-Content-Type-Options \u2014 ABSENT' },
+    { ok: false, h: 'X-Frame-Options \u2014 ABSENT' },
+    { ok: false, h: 'Strict-Transport-Security \u2014 ABSENT' },
+    { ok: false, h: 'Content-Security-Policy \u2014 ABSENT' },
+  ],
+  schema: [
+    { item: 'WebSite present', ok: true },
+    { item: 'LocalBusiness generique present', ok: true },
+    { item: 'BarberShop \u2014 ABSENT', ok: false },
+    { item: 'OpeningHoursSpecification \u2014 ABSENT', ok: false },
+    { item: 'AggregateRating (240 avis 5.0) \u2014 ABSENT', ok: false },
+  ],
+  og: [
+    { item: 'og:title', ok: true, val: 'Bou Bou a Nancy | Salon de coiffure pour hommes de qualite superieure' },
+    { item: 'og:description', ok: true, val: 'Decouvrez Bou Bou a Nancy, le salon de coiffure pour hommes...' },
+    { item: 'og:image', ok: true, val: 'Photo salon presente' },
+  ],
+  seo: [
+    { item: 'Title et meta description presents', ok: true },
+    { item: 'HTTPS actif', ok: true },
+    { item: 'Contenu crawlable par les bots', ok: false },
+    { item: 'Schema.org BarberShop', ok: false },
+    { item: 'AggregateRating (240 avis non exploites)', ok: false },
+    { item: 'OpeningHoursSpecification', ok: false },
+    { item: 'Tarifs indexables', ok: false },
+  ],
+};
+
+function decisionBorder(d: string) {
+  if (d === 'Convertit') return 'border-green-200';
+  if (d === 'Hesite') return 'border-amber-200';
+  return 'border-neutral-200';
+}
+function decisionBadge(d: string) {
+  if (d === 'Convertit') return 'bg-green-600';
+  if (d === 'Hesite') return 'bg-amber-500';
+  return 'bg-neutral-400';
+}
+
+const accentColor = '#1E40AF';
+const accentGradient = 'linear-gradient(135deg, #1E40AF, #1E3A8A)';
+---
+
+<BaseLayout title={title} description={description} noindex={true} lang="fr" frPath={`/echo/${slug}`}>
+
+  <!-- HERO -->
+  <section class="relative w-full px-6 py-20 md:py-28 overflow-hidden" style="background: #0A0A0A;">
+    <div class="absolute top-[20%] left-[10%] w-[500px] h-[500px] rounded-full blur-[180px] pointer-events-none" style={`background: ${accentColor}; opacity: 0.06;`}></div>
+    <div class="absolute bottom-[10%] right-[5%] w-[300px] h-[300px] rounded-full blur-[120px] pointer-events-none" style="background: #6366f1; opacity: 0.04;"></div>
+    <div class="relative mx-auto max-w-4xl z-10">
+      <div class="mb-6 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5);">{formuleLabel} &middot; Rapport confidentiel</div>
+      <h1 class="mb-6 text-3xl md:text-4xl font-bold text-white leading-tight tracking-tight">{verdictHero}</h1>
+      <p class="mb-10 text-sm" style="color: rgba(255,255,255,0.4);">Site analyse : <a href={urlSite} target="_blank" rel="noopener" class="underline hover:text-white transition-colors">{urlSite}</a> &middot; {kpis.nbPersonas} visiteurs simules &middot; {dateAudit}</p>
+      <div class="grid grid-cols-3 gap-4">
+        <div class="rounded-xl p-5 text-center" style="background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2);"><div class="text-4xl md:text-5xl font-black text-green-400 mb-1">{kpis.nbConvertissent}</div><div class="text-sm text-green-400/70">prennent RDV</div></div>
+        <div class="rounded-xl p-5 text-center" style="background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2);"><div class="text-4xl md:text-5xl font-black text-amber-400 mb-1">{kpis.nbHesitent}</div><div class="text-sm text-amber-400/70">hesitent</div></div>
+        <div class="rounded-xl p-5 text-center" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);"><div class="text-4xl md:text-5xl font-black mb-1" style="color: rgba(255,255,255,0.5);">{kpis.nbRepartent}</div><div class="text-sm" style="color: rgba(255,255,255,0.3);">repartent</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONSTAT -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="rounded-2xl p-6 md:p-8 mb-12 border-l-4" style={`background: rgba(30,64,175,0.04); border-color: ${accentColor};`}>
+      <p class="text-lg md:text-xl font-medium text-neutral-800 leading-relaxed">{constat}</p>
+    </div>
+    <h2 class="text-xl font-bold text-neutral-900 mb-2">D'ou viennent vos visiteurs</h2>
+    <p class="text-sm text-neutral-500 mb-6">Et combien prennent RDV selon leur canal d'arrivee.</p>
+    <div class="space-y-4 mb-12">
+      {canalData.map(c => {
+        const color = c.rate >= 50 ? '#22c55e' : c.rate >= 25 ? '#f59e0b' : '#ef4444';
+        return (<div class="flex items-center gap-4"><div class="w-52 text-sm text-neutral-700 shrink-0">{c.canal}</div><div class="flex-1 h-3 bg-neutral-100 rounded-full overflow-hidden"><div class="h-full rounded-full transition-all" style={`width: ${c.rate}%; background: ${color}`}></div></div><div class="w-20 text-right"><span class="text-sm font-bold" style={`color: ${color}`}>{c.rate}%</span><span class="text-xs text-neutral-400 ml-1">({c.convert}/{c.nb})</span></div></div>);
+      })}
+    </div>
+    <details class="group"><summary class="flex items-center gap-2 cursor-pointer text-sm text-neutral-500 hover:text-neutral-700 py-2"><svg class="w-4 h-4 transition-transform group-open:rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>Voir les scores moyens</summary>
+      <div class="grid grid-cols-3 gap-4 mt-3">
+        {[{ label: 'Experience', val: kpis.experience },{ label: 'Confiance', val: kpis.confiance },{ label: 'Clarte', val: kpis.clarte }].map(s => {
+          const sColor = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500';
+          return (<div class="bg-white border border-neutral-200 rounded-xl p-4 text-center"><div class={`text-2xl font-bold mb-1 ${sColor}`}>{s.val}<span class="text-sm text-neutral-400">/10</span></div><div class="text-xs text-neutral-500">{s.label}</div></div>);
+        })}
+      </div>
+    </details>
+  </section>
+
+  <!-- ALERTES -->
+  <section class="py-12" style="background: #fefce8;">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center gap-3 mb-6"><svg class="w-6 h-6 text-amber-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg><div><h2 class="text-lg font-bold text-neutral-900">Problemes detectes</h2><p class="text-sm text-neutral-600">{alertes.filter(a => a.type === 'critique').length} critique{alertes.filter(a => a.type === 'critique').length > 1 ? 's' : ''} &middot; {alertes.filter(a => a.type === 'important').length} important{alertes.filter(a => a.type === 'important').length > 1 ? 's' : ''}</p></div></div>
+      <div class="grid md:grid-cols-2 gap-4">
+        {alertes.map(a => (<div class={`bg-white rounded-xl p-5 ${a.type === 'critique' ? 'border-2 border-red-300' : 'border border-amber-300'}`}><div class={`inline-block text-2xl font-black px-3 py-1 rounded-lg mb-3 ${a.type === 'critique' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>{a.chiffre}</div><p class="text-[10px] text-neutral-400 uppercase tracking-wider mb-1">{a.chiffreLabel}</p><h3 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h3><p class="text-xs text-neutral-600 leading-relaxed">{a.detail}</p></div>))}
+      </div>
+    </div>
+  </section>
+
+  <!-- VOS VISITEURS -->
+  <section class="py-16" style="background: #fafafa;">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs</h2>
+      <p class="text-neutral-600 mb-8">Voici ce qui se passe quand quelqu'un cherche un barbershop a Nancy et tombe sur votre site.</p>
+
+      {(['Convertit', 'Hesite', 'Quitte'] as const).map(decision => {
+        const filtered = personas.filter(p => p.decision === decision);
+        const labelMap = { Convertit: 'Ceux qui prennent RDV', Hesite: 'Ceux qui hesitent', Quitte: 'Ceux qui repartent' };
+        const colorMap = { Convertit: { dot: 'bg-green-500', text: 'text-green-800', sub: 'text-green-600' }, Hesite: { dot: 'bg-amber-500', text: 'text-amber-800', sub: 'text-amber-600' }, Quitte: { dot: 'bg-neutral-400', text: 'text-neutral-600', sub: 'text-neutral-500' } };
+        const c = colorMap[decision];
+        return (
+          <div class="mb-10">
+            <h3 class={`text-base font-bold ${c.text} mb-4 flex items-center gap-2`}><span class={`w-2.5 h-2.5 rounded-full ${c.dot} inline-block`}></span>{labelMap[decision]}<span class={`text-sm font-normal ${c.sub}`}>({filtered.length})</span></h3>
+            <div class="space-y-3">
+              {filtered.map(p => (
+                <details class={`group bg-white rounded-xl overflow-hidden shadow-sm border ${decisionBorder(p.decision)}`}>
+                  <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                    <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 mb-1 flex-wrap"><h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4><span class={`text-[10px] ${decisionBadge(p.decision)} text-white px-1.5 py-0.5 rounded font-medium`}>{p.decisionLabel}</span></div>
+                      <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                      <div class="flex flex-wrap items-center gap-1.5"><span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span><span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span><span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span></div>
+                    </div>
+                    <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                  </summary>
+                  <div class={`px-4 pb-5 border-t ${decisionBorder(p.decision)}`}>
+                    <div class="grid gap-4 text-xs mt-4">
+                      <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p><p class="text-neutral-600">{p.contexte}</p></div>
+                      <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Premiere impression (5 sec)</p><p class="text-neutral-600">{p.impression}</p></div>
+                      <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours sur le site</p><ol class="list-decimal list-inside space-y-1.5 text-neutral-600">{p.parcours.map(([section, reaction]) => (<li><strong class="text-neutral-800">{section}</strong>{reaction ? ` \u2014 ${reaction}` : ''}</li>))}</ol></div>
+                      <div class="bg-neutral-50 rounded-lg p-3"><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p><p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p><p class="text-neutral-600">Le site repond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> \u2014 {p.commentReponse}</p></div>
+                      <div class="grid grid-cols-2 gap-4"><div><p class="font-semibold text-green-700 mb-1.5">Points positifs</p><ul class="space-y-1 text-neutral-600">{p.positifs.map(pt => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">&middot;</span>{pt}</li>)}</ul></div><div><p class="font-semibold text-amber-700 mb-1.5">Frictions</p><ul class="space-y-1 text-neutral-600">{p.frictions.map(f => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">&middot;</span>{f}</li>)}</ul></div></div>
+                      {p.ceQuiFeraitBasculer && <div class="bg-amber-50 rounded-lg p-3"><p class="font-semibold text-amber-700 text-[10px] uppercase tracking-wider mb-1">Ce qui le ferait passer a l'action</p><p class="text-neutral-700 text-xs">{p.ceQuiFeraitBasculer}</p></div>}
+                      <div class="flex gap-6 pt-3 border-t border-neutral-100">{[{ label: 'Experience', val: p.exp },{ label: 'Confiance', val: p.conf },{ label: 'Clarte', val: p.clarte }].map(s => { const sc = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500'; return (<div class="text-center"><span class={`block text-lg font-bold ${sc}`}>{s.val}</span><span class="text-[10px] text-neutral-400">{s.label}</span></div>);})}</div>
+                    </div>
+                  </div>
+                </details>
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  </section>
+
+  <!-- RECOMMANDATIONS -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <h2 class="text-2xl font-bold text-neutral-900 mb-2">Ce qu'on recommande</h2>
+    <p class="text-neutral-600 mb-8">Actions concretes, classees par impact.</p>
+    <p class="text-sm font-semibold text-red-700 mb-4">Si vous ne changez qu'une chose :</p>
+    <div class="space-y-4 mb-12">
+      {ameliorationsHautes.map(a => (<div class="bg-white border-2 border-red-200 rounded-xl p-6 shadow-sm"><div class="flex items-start justify-between gap-4 mb-3"><h4 class="font-bold text-neutral-900">{a.titre}</h4><span class="text-[10px] px-2 py-1 rounded-full bg-red-100 text-red-700 font-semibold shrink-0 whitespace-nowrap">{a.impact}</span></div><p class="text-sm text-neutral-600 mb-3">{a.pourquoi}</p><div class="bg-neutral-50 rounded-lg px-4 py-3 flex items-start gap-2"><svg class="w-4 h-4 text-neutral-400 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg><p class="text-xs text-neutral-700">{a.action}</p></div></div>))}
+    </div>
+    <h3 class="text-lg font-bold text-neutral-900 mb-2">Utile aussi</h3>
+    <div class="grid md:grid-cols-2 gap-4 mb-12">{ameliorationsUtiles.map(a => (<div class="bg-white border border-neutral-200 rounded-xl p-5"><h4 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h4><p class="text-xs text-neutral-600">{a.detail}</p></div>))}</div>
+    <h3 class="text-lg font-bold text-neutral-900 mb-2">A discuter</h3>
+    <div class="space-y-3 mb-12">{ameliorationsDiscuter.map(a => (<div class="bg-neutral-50 border border-neutral-200 rounded-xl p-4 flex gap-3"><span class="text-lg shrink-0">{a.emoji}</span><div><h4 class="font-semibold text-neutral-900 text-sm mb-0.5">{a.titre}</h4><p class="text-xs text-neutral-600">{a.detail}</p></div></div>))}</div>
+    {showUpsell && (<div class="rounded-2xl p-8 text-center border-2 border-dashed" style={`border-color: ${accentColor}; background: rgba(30,64,175,0.03);`}><p class="text-lg font-bold text-neutral-900 mb-2">Ce rapport gratuit identifie les tendances.</p><p class="text-sm text-neutral-600 mb-6">Avec un Echo Complet (90 euros), 20 visiteurs simules et un audit technique approfondi pour des recommandations chiffrees.</p><a href="tel:+33688766648" class="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-xl transition-all shadow-md hover:-translate-y-0.5" style={`background: ${accentGradient};`}>Appeler Marc &mdash; 06 88 76 66 48</a></div>)}
+  </section>
+
+  <!-- TECHNIQUE -->
+  <section class="py-16 border-t border-neutral-200">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-2">Sous le capot</h2>
+      <p class="text-neutral-600 mb-8">Ce que les outils techniques disent de votre site.</p>
+      <div class="flex flex-wrap gap-3 mb-10">{techVerdicts.map(v => (<div class={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium ${v.ok ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}>{v.ok ? <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> : <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}<span>{v.label}</span><span class="text-xs opacity-70">{v.verdict}</span></div>))}</div>
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white"><summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50"><div class="flex items-center gap-3"><span class="text-base">&#128274;</span><div><h3 class="font-semibold text-neutral-900 text-sm">Headers de securite</h3><p class="text-[11px] text-neutral-500">0/4 configures — grade F</p></div></div><svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></summary><div class="px-4 pb-4 border-t border-neutral-100 pt-4"><div class="space-y-2">{tech.headers.map(s => (<div class="flex items-start gap-2 text-xs text-neutral-600"><span class={`shrink-0 font-bold ${s.ok ? 'text-green-500' : 'text-red-400'}`}>{s.ok ? '\u2713' : '\u2717'}</span><span>{s.h}</span></div>))}</div></div></details>
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white"><summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50"><div class="flex items-center gap-3"><span class="text-base">&#128202;</span><div><h3 class="font-semibold text-neutral-900 text-sm">Donnees structurees (Schema.org)</h3><p class="text-[11px] text-neutral-500">{techVerdicts[3].detail}</p></div></div><svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></summary><div class="px-4 pb-4 border-t border-neutral-100 pt-4"><div class="space-y-2">{tech.schema.map(s => (<div class="flex items-start gap-2 text-xs text-neutral-600"><span class={`shrink-0 font-bold ${s.ok ? 'text-green-500' : 'text-red-400'}`}>{s.ok ? '\u2713' : '\u2717'}</span><span>{s.item}</span></div>))}</div></div></details>
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white"><summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50"><div class="flex items-center gap-3"><span class="text-base">&#128269;</span><div><h3 class="font-semibold text-neutral-900 text-sm">SEO technique</h3><p class="text-[11px] text-neutral-500">{techVerdicts[2].detail}</p></div></div><svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></summary><div class="px-4 pb-4 border-t border-neutral-100 pt-4"><div class="space-y-2">{tech.seo.map(s => (<div class="flex items-start gap-2 text-xs text-neutral-600"><span class={`shrink-0 font-bold ${s.ok ? 'text-green-500' : 'text-red-400'}`}>{s.ok ? '\u2713' : '\u2717'}</span><span>{s.item}</span></div>))}</div></div></details>
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white"><summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50"><div class="flex items-center gap-3"><span class="text-base">&#128279;</span><div><h3 class="font-semibold text-neutral-900 text-sm">Partage reseaux (Open Graph)</h3><p class="text-[11px] text-neutral-500">{techVerdicts[4].detail}</p></div></div><svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></summary><div class="px-4 pb-4 border-t border-neutral-100 pt-4"><div class="space-y-2">{tech.og.map(s => (<div class="flex items-start gap-2 text-xs text-neutral-600"><span class={`shrink-0 font-bold ${s.ok ? 'text-green-500' : 'text-red-400'}`}>{s.ok ? '\u2713' : '\u2717'}</span><span>{s.item} : {s.val}</span></div>))}</div></div></details>
+    </div>
+  </section>
+
+  <!-- METHODOLOGIE -->
+  <section class="py-12 bg-neutral-50 border-t border-neutral-100">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-lg font-bold text-neutral-900 mb-4">Comment on a fait ca</h2>
+      <div class="grid md:grid-cols-3 gap-4 text-sm text-neutral-600">
+        <div class="bg-white rounded-xl p-4 border border-neutral-200"><div class="text-2xl font-black text-neutral-300 mb-2">1</div><p class="font-semibold text-neutral-800 mb-1">Scraping du site</p><p class="text-xs">Tentative de lecture du site Wix. Contenu rendu cote client : seuls le titre, la description OG et le Schema.org basique sont accessibles.</p></div>
+        <div class="bg-white rounded-xl p-4 border border-neutral-200"><div class="text-2xl font-black text-neutral-300 mb-2">2</div><p class="font-semibold text-neutral-800 mb-1">Audit technique</p><p class="text-xs">Headers de securite, Schema.org, Open Graph, SEO technique, crawlabilite.</p></div>
+        <div class="bg-white rounded-xl p-4 border border-neutral-200"><div class="text-2xl font-black text-neutral-300 mb-2">3</div><p class="font-semibold text-neutral-800 mb-1">10 visiteurs simules</p><p class="text-xs">10 profils realistes de Nanceiens et visiteurs : etudiants, cadres, peres de famille, touristes.</p></div>
+      </div>
+      <p class="text-xs text-neutral-400 mt-4">10 visiteurs = une tendance solide. 20 la confirment. 100 la certifient.</p>
+    </div>
+  </section>
+
+  <!-- CTA FINAL (Prospection) -->
+  <section class="py-16 border-t border-neutral-200">
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-3">Votre salon merite mieux qu'un site invisible.</h2>
+      <p class="text-neutral-600 mb-8">240 avis, 5 etoiles, un barbershop qui tourne. Il manque juste un site qui montre ce que vos clients viennent chercher : les tarifs, les services, les horaires. Et que les IA puissent enfin vous recommander.</p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="tel:+33688766648" class="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white font-semibold rounded-xl transition-all shadow-md hover:bg-green-700 hover:-translate-y-0.5">Appeler Marc &mdash; 06 88 76 66 48</a>
+        <a href="https://wa.me/33688766648" class="inline-flex items-center gap-2 px-6 py-3 border border-neutral-300 text-neutral-700 font-semibold rounded-xl transition-all hover:border-neutral-500">WhatsApp</a>
+      </div>
+      <p class="text-xs text-neutral-400 mt-6">Ce rapport est confidentiel et non indexe par Google &middot; Genere le {dateAudit}</p>
+    </div>
+  </section>
+
+</BaseLayout>

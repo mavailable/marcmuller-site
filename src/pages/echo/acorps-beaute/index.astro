@@ -1,0 +1,479 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const slug = 'acorps-beaute';
+const formule = 'decouverte';
+const formuleLabel = 'Echo Decouverte';
+const nomProspect = "A'Corps Beaute";
+const urlSite = 'https://acorpsbeaute.com';
+const dateAudit = '2 avril 2026';
+const isProspection = true;
+const showUpsell = true;
+
+const title = "Echo Decouverte — A'Corps Beaute | Marc M";
+const description = "Analyse de acorpsbeaute.com : simulation de 10 visites clientes, audit technique, recommandations. Rapport confidentiel.";
+
+const kpis = {
+  nbPersonas: 10,
+  nbConvertissent: 5,
+  nbHesitent: 3,
+  nbRepartent: 2,
+  conversion: 50,
+  experience: 6.2,
+  confiance: 6.5,
+  clarte: 5.4,
+};
+
+const verdictHero = "5 clientes sur 10 prennent RDV. 5 repartent — parce que le site est trop dense pour trouver le soin qu'elles cherchent.";
+
+const constat = "2 centres, 15 000 clientes, Biologique Recherche et Hydrafacial en vitrine, 4.8/5 sur Google avec 500 avis — votre institut a tout pour convertir. Mais votre site est victime de sa richesse : trop de pages, trop de sous-menus, trop de categories. Les clientes qui persistent finissent par trouver. Les autres partent. Et les compteurs casses sur la page d'accueil (\"0+ ans d'experience\", \"0 avis Google\") donnent une impression d'amateurisme qui contredit tout le positionnement premium.";
+
+const canalData = [
+  { canal: 'Instagram', nb: 1, convert: 1, rate: 100 },
+  { canal: 'TikTok', nb: 1, convert: 1, rate: 100 },
+  { canal: 'Bouche-a-oreille', nb: 1, convert: 1, rate: 100 },
+  { canal: 'Google Maps', nb: 2, convert: 1, rate: 50 },
+  { canal: 'IA (ChatGPT / Perplexity)', nb: 2, convert: 1, rate: 50 },
+  { canal: 'Google Search', nb: 3, convert: 1, rate: 33 },
+];
+
+const alertes = [
+  {
+    type: 'critique' as const,
+    titre: 'Compteurs casses sur la page d\'accueil',
+    detail: '"0+ ans d\'experience" et "0 avis Google Reviews" affiches en pleine page. Pour un institut premium avec 15 ans d\'historique et 500 vrais avis, c\'est un sabotage involontaire de votre credibilite.',
+    chiffre: '0+',
+    chiffreLabel: 'ans d\'experience affiches',
+  },
+  {
+    type: 'critique' as const,
+    titre: 'Navigation trop profonde — sous-menus excessifs',
+    detail: 'Trop de categories, trop de niveaux de menu. Les clientes se perdent avant de trouver le soin qu\'elles cherchent. Sur mobile, les sous-menus qui se chevauchent rendent la navigation penible.',
+    chiffre: '3',
+    chiffreLabel: 'clientes perdues a cause de la navigation',
+  },
+  {
+    type: 'important' as const,
+    titre: 'Schema.org LocalBusiness absent pour les 2 centres',
+    detail: 'Nancy et Metz ne sont pas identifies comme des etablissements distincts dans les donnees structurees. Google ne peut pas afficher correctement vos 2 centres dans les resultats locaux (horaires, adresse, avis).',
+    chiffre: '0/2',
+    chiffreLabel: 'centres identifies en Schema.org',
+  },
+  {
+    type: 'important' as const,
+    titre: 'Headers de securite : 0 sur 6',
+    detail: 'Aucun header de securite HTTP configure (CSP, HSTS, X-Frame-Options, etc.). Risque de deferencement progressif et de vulnerabilites. Seul Permissions-Policy partiel via reCAPTCHA/Cloudflare.',
+    chiffre: '0/6',
+    chiffreLabel: 'headers securite configures',
+  },
+];
+
+const personas = [
+  {
+    id: 1, name: 'Stephanie', age: 42, emoji: '💆',
+    situation: 'Cadre a Nancy, peau fatiguee, cherche un Hydrafacial',
+    canal: 'Google Search', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Prend RDV',
+    histoire: 'Teint terne apres l\'hiver, reunion importante dans 10 jours. Trouve le soin Hydrafacial apres quelques clics. Le bouton "JE RESERVE" l\'amene sur Planity — elle reserve.',
+    localisation: 'Nancy', maturite: 'Decision',
+    contexte: 'Reunion importante dans 10 jours. Veut un soin visage rapide et efficace.',
+    impression: 'Beaucoup de contenu... ou est le Hydrafacial exactement ?',
+    parcours: [['Accueil', 'Page dense, cherche les soins visage'], ['Soins visage', 'Trouve Hydrafacial apres 2 clics dans les sous-menus'], ['Hydrafacial', 'Page convaincante'], ['RDV Planity', 'Bouton "JE RESERVE" fonctionne — reserve']],
+    questionCle: 'Combien coute un Hydrafacial et quand est-ce disponible ?',
+    reponse: 'Partiellement', commentReponse: 'Page Hydrafacial OK mais tarif pas immediatement visible',
+    positifs: ['Contenu Hydrafacial detaille', 'Prise de RDV Planity fonctionnelle', 'Marques premium rassurantes'],
+    frictions: ['Tarif non visible en surface', 'Navigation dans les sous-menus laborieuse'], ceQuiFeraitBasculer: '',
+    exp: 7, conf: 7, clarte: 6,
+  },
+  {
+    id: 2, name: 'Marine', age: 28, emoji: '📱',
+    situation: 'Jeune active, decouvre l\'institut via Instagram',
+    canal: 'Instagram', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Prend RDV',
+    histoire: 'A vu un Reel avant/apres sur les soins visage. Arrive sur le site, submergee par la quantite d\'informations. Mais retrouve les soins visage et reserve via Planity.',
+    localisation: 'Nancy', maturite: 'Decouverte',
+    contexte: 'Curieuse apres les visuels Instagram. Premiere visite sur le site.',
+    impression: 'Waouh, ils font beaucoup de choses... mais je voulais juste un soin visage.',
+    parcours: [['Accueil', 'Page tres chargee sur mobile'], ['Menu', 'Cherche les soins visage parmi les categories'], ['Soins visage', 'Trouve la bonne page'], ['RDV Planity', 'Reserve un soin']],
+    questionCle: 'C\'est quoi comme soins visage et a quel prix ?',
+    reponse: 'Partiellement', commentReponse: 'Les soins sont presentes mais le prix n\'est pas affiche directement',
+    positifs: ['Contenu soins riche et detaille', 'Planity fonctionnel'],
+    frictions: ['Site tres dense a l\'arrivee sur mobile', 'Trop de categories avant d\'arriver au bon soin'],
+    ceQuiFeraitBasculer: '',
+    exp: 6, conf: 6, clarte: 5,
+  },
+  {
+    id: 3, name: 'Corinne', age: 55, emoji: '✨',
+    situation: 'Commercante a Metz, cherche epilation laser',
+    canal: 'Google Maps', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Prend RDV',
+    histoire: 'Marre du rasage. Google Maps affiche A\'Corps Beaute a Metz. Le centre Metz est bien identifie, epilation laser presentee, elle reserve via Planity Metz.',
+    localisation: 'Metz', maturite: 'Decision',
+    contexte: 'Veut une solution definitive avant l\'ete. Cherche a Metz specifiquement.',
+    impression: 'OK c\'est bien a Metz. Mais ou est la page epilation laser exactement ?',
+    parcours: [['Accueil', 'Confirme que Metz est couvert'], ['Epilation laser', 'Trouve la page apres navigation dans les sous-menus'], ['RDV Planity Metz', 'Reserve une seance']],
+    questionCle: 'Vous faites l\'epilation laser a Metz ? Combien de seances et a quel prix ?',
+    reponse: 'Partiellement', commentReponse: 'Epilation laser a Metz confirme mais tarif non immediat',
+    positifs: ['Centre Metz bien identifie', 'Planity Metz fonctionnel', 'Contenu epilation detaille'],
+    frictions: ['Navigation dans les sous-menus pour trouver l\'epilation', 'Tarif non visible en surface'],
+    ceQuiFeraitBasculer: '',
+    exp: 6, conf: 7, clarte: 5,
+  },
+  {
+    id: 4, name: 'Laetitia', age: 35, emoji: '🤱',
+    situation: 'Maman post-grossesse, compare les instituts pour EMSculpt',
+    canal: 'Google Search', device: 'Desktop', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Compare 3 instituts pour EMSculpt post-grossesse. La page EMSculpt d\'A\'Corps Beaute est interessante mais pas de tarif affiche. Les 2 concurrents affichent leurs prix.',
+    localisation: 'Nancy', maturite: 'Comparaison',
+    contexte: 'Diastasis post-grossesse. Kine recommande EMSculpt. Compare 3 instituts.',
+    impression: 'Page EMSculpt bien faite. Mais combien ca coute ? Les concurrents affichent leurs prix.',
+    parcours: [['Accueil', 'Trouve les soins corps'], ['EMSculpt', 'Page detaillee et convaincante'], ['Tarifs', 'Cherche le prix — introuvable en surface'], ['Compare', 'Ouvre les 2 autres instituts — ils affichent les tarifs']],
+    questionCle: 'EMSculpt post-grossesse, combien ca coute ?',
+    reponse: 'Non', commentReponse: 'Tarif EMSculpt non visible sur la page du soin',
+    positifs: ['Page EMSculpt bien documentee', 'Contenu pedagogique sur le traitement'],
+    frictions: ['Tarif invisible', 'Pas de temoignage de maman post-grossesse', 'Concurrents plus transparents sur les prix'],
+    ceQuiFeraitBasculer: 'Afficher le tarif EMSculpt sur la page du soin + temoignage maman',
+    exp: 6, conf: 6, clarte: 5,
+  },
+  {
+    id: 5, name: 'Valerie', age: 48, emoji: '💎',
+    situation: 'Cadre dirigeante a Metz, cherche un protocole anti-age premium',
+    canal: 'IA (Perplexity)', device: 'Mobile', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Perplexity recommande A\'Corps Beaute pour Biologique Recherche a Metz. Elle arrive sur le site et voit "0+ ans d\'experience" et "0 avis Google". Pour une cliente premium, c\'est eliminatoire. Elle part en 10 secondes.',
+    localisation: 'Metz', maturite: 'Comparaison',
+    contexte: '50 ans approchent. Cherche un protocole anti-age serieux. Habituee au premium.',
+    impression: '"0 ans d\'experience" ? "0 avis" ? Ce n\'est pas l\'institut premium que Perplexity m\'a recommande.',
+    parcours: [['Accueil', 'Voit les compteurs casses "0+" et "0 avis"'], ['Quitte', 'Ferme l\'onglet en 10 secondes']],
+    questionCle: 'C\'est un institut premium ou un site amateur ?',
+    reponse: 'Non', commentReponse: 'Les compteurs casses contredisent tout le positionnement premium',
+    positifs: ['Recommandation IA (Perplexity)'],
+    frictions: ['Compteurs casses = credibilite detruite', 'Premiere impression catastrophique pour une cliente premium'],
+    ceQuiFeraitBasculer: '',
+    exp: 4, conf: 3, clarte: 5,
+  },
+  {
+    id: 6, name: 'Amelie', age: 31, emoji: '🔍',
+    situation: 'Infirmiere, cherche le detatouage laser a Nancy',
+    canal: 'Google Search', device: 'Mobile', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Cherche "detatouage laser Nancy". Arrive sur le site. Essaie de trouver la page detatouage dans le menu. Trop de sous-menus, se perd sur mobile. Apres 3 clics infructueux, ouvre le site du concurrent.',
+    localisation: 'Nancy', maturite: 'Comparaison',
+    contexte: 'Tatouage rate il y a 5 ans. Compare 2 centres a Nancy. Veut des infos et un prix.',
+    impression: 'Ou est la page detatouage ? Je ne trouve pas dans ce menu...',
+    parcours: [['Accueil', 'Menu complexe sur mobile'], ['Sous-menu 1', 'Pas la bonne categorie'], ['Sous-menu 2', 'Toujours pas'], ['Quitte', 'Ouvre le site du concurrent']],
+    questionCle: 'Ou est la page detatouage et combien par seance ?',
+    reponse: 'Non', commentReponse: 'La page existe mais est introuvable via la navigation mobile',
+    positifs: ['Le service existe bien'],
+    frictions: ['Page detatouage enfouie dans l\'arborescence', 'Navigation mobile penible', 'Concurrent accessible en 1 clic'],
+    ceQuiFeraitBasculer: '',
+    exp: 5, conf: 6, clarte: 3,
+  },
+  {
+    id: 7, name: 'Pauline', age: 24, emoji: '😁',
+    situation: 'Etudiante, veut un blanchiment dentaire pour son mariage',
+    canal: 'TikTok', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Prend RDV',
+    histoire: 'Video TikTok avant/apres blanchiment. Arrive sur le site, hesite quand elle voit les compteurs "0+" sur l\'accueil. Mais la page blanchiment dentaire la rassure. Reserve via Planity.',
+    localisation: 'Nancy', maturite: 'Decouverte',
+    contexte: 'Mariage dans 2 mois. Veut un sourire parfait sur les photos.',
+    impression: 'Les compteurs "0+" sont bizarres... mais la page blanchiment a l\'air serieuse.',
+    parcours: [['Accueil', 'Voit les compteurs casses — hesite'], ['Blanchiment dentaire', 'Page trouvee, contenu rassurant'], ['RDV Planity', 'Reserve une seance']],
+    questionCle: 'Le blanchiment en institut, c\'est sur et ca coute combien ?',
+    reponse: 'Partiellement', commentReponse: 'Contenu securite OK mais tarif non affiche',
+    positifs: ['Page blanchiment rassurante', 'Planity fonctionnel', 'Contenu securite du traitement'],
+    frictions: ['Compteurs "0+" sur l\'accueil', 'Tarif non visible avant RDV'],
+    ceQuiFeraitBasculer: '',
+    exp: 6, conf: 6, clarte: 6,
+  },
+  {
+    id: 8, name: 'Catherine', age: 62, emoji: '🌿',
+    situation: 'Retraitee, cherche un institut Biologique Recherche a Nancy',
+    canal: 'Google Maps', device: 'Tablette', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Son ancienne estheticienne a ferme. Cherche un nouvel institut Biologique Recherche a Nancy. Le site est trop charge sur tablette. Trop de categories, les marques ne sont pas mises en avant dans le menu. Elle se dit qu\'elle appellera demain.',
+    localisation: 'Nancy', maturite: 'Decision',
+    contexte: 'Fidele a Biologique Recherche depuis 10 ans. Cherche un nouvel institut.',
+    impression: 'Je sais qu\'ils travaillent avec BR, mais ou est la page ? Trop de menus.',
+    parcours: [['Accueil', 'Page dense sur tablette'], ['Menu', 'Cherche "Biologique Recherche" — pas dans le menu principal'], ['Sous-menus', 'Se perd dans les categories de soins'], ['Hesite', 'Se dit qu\'elle appellera demain']],
+    questionCle: 'Vous travaillez avec Biologique Recherche ? Comment prendre RDV ?',
+    reponse: 'Partiellement', commentReponse: 'L\'information existe sur le site mais n\'est pas accessible facilement depuis le menu',
+    positifs: ['Biologique Recherche bien presente sur le site', 'Numero de telephone visible'],
+    frictions: ['Marques non mises en avant dans la navigation', 'Site surcharge sur tablette', 'Menu trop profond pour un senior'],
+    ceQuiFeraitBasculer: 'Une page "Nos marques" accessible en 1 clic depuis le menu principal',
+    exp: 5, conf: 7, clarte: 4,
+  },
+  {
+    id: 9, name: 'Jessica', age: 33, emoji: '💇',
+    situation: 'Freelance, probleme de chute de cheveux, decouvre la tricopigmentation',
+    canal: 'IA (ChatGPT)', device: 'Desktop', decision: 'Convertit', decisionLabel: 'Prend RDV',
+    histoire: 'ChatGPT recommande A\'Corps Beaute pour la tricopigmentation a Nancy. Trouve la page dediee, contenu pedagogique convaincant. Reserve une consultation via Planity.',
+    localisation: 'Nancy', maturite: 'Comparaison',
+    contexte: 'Chute de cheveux depuis 6 mois. Dermato suggere la tricopigmentation.',
+    impression: 'Page tricopigmentation bien faite. ChatGPT avait raison. Mais combien ca coute ?',
+    parcours: [['Accueil', 'Trouve les soins cheveux dans le menu'], ['Tricopigmentation', 'Page detaillee et pedagogique'], ['FAQ', 'Repond a ses questions techniques'], ['RDV Planity', 'Reserve une consultation']],
+    questionCle: 'La tricopigmentation, ca donne quoi et combien ca coute ?',
+    reponse: 'Partiellement', commentReponse: 'Explication du traitement excellente mais tarif non affiche',
+    positifs: ['Page tricopigmentation tres pedagogique', 'FAQ complete', 'Planity fonctionnel'],
+    frictions: ['Tarif non visible avant reservation', 'Pas de galerie avant/apres sur la page'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 7, clarte: 6,
+  },
+  {
+    id: 10, name: 'Sandrine', age: 45, emoji: '👩‍👧',
+    situation: 'Mere de famille, amie enthousiaste, veut juste prendre RDV',
+    canal: 'Bouche-a-oreille', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Hesite puis convertit',
+    histoire: 'Son amie est fan d\'A\'Corps Beaute. Arrive sur le site, submergee par le nombre de soins. Ne sait pas lequel choisir. Appelle son amie qui lui envoie le lien direct Planity par SMS.',
+    localisation: 'Vandoeuvre-les-Nancy', maturite: 'Decision',
+    contexte: 'Amie enthousiaste. Veut essayer un soin visage mais ne sait pas lequel.',
+    impression: 'Ils font tellement de choses... lequel est le bon soin pour moi ?',
+    parcours: [['Accueil', 'Submergee par la quantite de soins'], ['Soins visage', 'Trop de choix, ne sait pas lequel prendre'], ['Appelle son amie', 'L\'amie lui envoie le lien Planity direct'], ['RDV Planity', 'Reserve grace au lien de l\'amie']],
+    questionCle: 'Ma copine m\'a dit un soin visage, mais lequel ?',
+    reponse: 'Non', commentReponse: 'Le site ne guide pas vers un soin recommande ou populaire',
+    positifs: ['Planity fonctionnel via lien direct', 'Contenu riche sur chaque soin'],
+    frictions: ['Trop de choix sans guide', 'Pas de "soin le plus populaire" ou "best-seller" mis en avant', 'C\'est l\'amie qui convertit, pas le site'],
+    ceQuiFeraitBasculer: 'Un "Top 3 soins les plus demandes" visible des l\'accueil',
+    exp: 6, conf: 7, clarte: 5,
+  },
+];
+
+const ameliorationsHautes = [
+  {
+    titre: 'Reparer les compteurs casses en urgence',
+    pourquoi: '"0+ ans d\'experience" et "0 avis Google" sont affiches sur votre page d\'accueil. C\'est la premiere chose que voient vos visiteurs. Pour un institut premium avec 15 ans d\'historique et 500 vrais avis Google, c\'est un contre-sens total. Les clientes premium (Valerie) partent en 10 secondes.',
+    action: 'Corriger les compteurs Elementor pour qu\'ils affichent les vrais chiffres : "15+ ans", "4.8/5 — 500+ avis Google", "15 000+ clientes". Tester sur mobile ET desktop.',
+    impact: '8 clientes sur 10',
+  },
+  {
+    titre: 'Simplifier la navigation — 5 categories maximum',
+    pourquoi: 'Trop de sous-menus, trop de niveaux. Les clientes se perdent avant de trouver le soin. Amelie (detatouage) et Catherine (Biologique Recherche) n\'ont jamais trouve ce qu\'elles cherchaient. Sur mobile, c\'est pire.',
+    action: 'Restructurer le menu : Soins visage | Soins corps | Epilation & Laser | Cheveux | Formations. Max 1 niveau de sous-menu. Les marques et tarifs accessibles en 1 clic.',
+    impact: '5 clientes sur 10',
+  },
+  {
+    titre: 'Afficher les tarifs sur chaque page de soin',
+    pourquoi: 'Les clientes en comparaison (Laetitia, Amelie) quittent le site parce qu\'elles ne trouvent pas les prix. Les concurrents qui affichent les tarifs en surface gagnent ces clientes par defaut.',
+    action: 'Ajouter un encadre tarif + bouton "JE RESERVE" sur chaque page de soin. Format simple : "A partir de XX€ — Duree : XX min".',
+    impact: '6 clientes sur 10',
+  },
+];
+
+const ameliorationsUtiles = [
+  { titre: 'Mettre en avant les marques dans le menu', detail: 'Les clientes fideles a Biologique Recherche ou Mesoestetic cherchent par marque, pas par type de soin. Une page "Nos marques" dans le menu principal les guiderait directement.' },
+  { titre: 'Ajouter un "Top soins" ou "Best-sellers" sur l\'accueil', detail: 'Les nouvelles clientes (bouche-a-oreille, reseaux sociaux) ne savent pas quel soin choisir parmi la masse. Un top 3-5 soins populaires les guiderait.' },
+  { titre: 'Galeries avant/apres par soin', detail: 'Tricopigmentation, blanchiment, Hydrafacial — les clientes veulent voir des resultats concrets. Les visuels avant/apres sur chaque page de soin renforcent la conversion.' },
+  { titre: 'Schema.org HealthAndBeautyBusiness pour les 2 centres', detail: 'Nancy et Metz doivent etre identifies comme 2 etablissements distincts dans les donnees structurees. Impact SEO local direct.' },
+];
+
+const ameliorationsDiscuter = [
+  { emoji: '🔒', titre: 'Headers de securite HTTP', detail: '0/6 headers configures. CSP, HSTS, X-Frame-Options, Referrer-Policy, X-Content-Type-Options, Permissions-Policy. Configuration serveur ou via Cloudflare/plugin WordPress.' },
+  { emoji: '📊', titre: 'Simplifier la page tarifs', detail: 'Une page tarifs claire et accessible en 1 clic depuis le menu principal, avec tous les soins et prix — comme un menu de restaurant.' },
+];
+
+const techVerdicts = [
+  { label: 'Vitesse', verdict: 'Moyenne', ok: false, detail: 'WordPress + Elementor — correct mais optimisable (poids de page, scripts tiers GTM/GA/Pixel)' },
+  { label: 'Securite', verdict: 'F (0/6)', ok: false, detail: 'Aucun header securite configure. Seul Permissions-Policy partiel via reCAPTCHA/Cloudflare' },
+  { label: 'SEO', verdict: 'Passable', ok: false, detail: 'Title + meta OK, contenu riche, mais navigation trop profonde nuit au crawl' },
+  { label: 'Donnees structurees', verdict: 'Partiel', ok: false, detail: 'BreadcrumbList + FAQPage presents. LocalBusiness/HealthAndBeautyBusiness ABSENTS pour les 2 centres' },
+  { label: 'Partage reseaux', verdict: 'OK', ok: true, detail: 'OG complet (title, description, image, url, locale)' },
+];
+
+const tech = {
+  observatory: { grade: 'F', score: 0, testsOk: 0, testsTotal: 6 },
+  pagespdMobile: null, pagespdDesktop: null,
+  cwv: { lcp: 'Non mesure (~3s estime — WP+Elementor)', inp: 'Non mesure', cls: 'Non mesure' },
+  headers: [
+    { ok: false, h: 'Content-Security-Policy — ABSENT' },
+    { ok: false, h: 'Strict-Transport-Security — ABSENT' },
+    { ok: false, h: 'X-Frame-Options — ABSENT' },
+    { ok: false, h: 'X-Content-Type-Options — ABSENT' },
+    { ok: false, h: 'Referrer-Policy — ABSENT' },
+    { ok: true, h: 'Permissions-Policy — partiel (reCAPTCHA/Cloudflare)' },
+  ],
+  schema: [
+    { item: 'BreadcrumbList — present', ok: true },
+    { item: 'FAQPage — present', ok: true },
+    { item: 'HealthAndBeautyBusiness — ABSENT', ok: false },
+    { item: 'LocalBusiness Nancy — ABSENT', ok: false },
+    { item: 'LocalBusiness Metz — ABSENT', ok: false },
+    { item: 'AggregateRating — ABSENT', ok: false },
+  ],
+  og: [
+    { item: 'og:title', ok: true, val: 'Present' },
+    { item: 'og:description', ok: true, val: 'Present' },
+    { item: 'og:image', ok: true, val: 'Present' },
+    { item: 'og:url', ok: true, val: 'Present' },
+    { item: 'og:locale', ok: true, val: 'fr_FR' },
+  ],
+  seo: [
+    { item: 'Title + meta description presents', ok: true },
+    { item: 'Contenu riche par soin/prestation', ok: true },
+    { item: 'HTTPS actif', ok: true },
+    { item: 'Blog present et actif', ok: true },
+    { item: 'Reseaux sociaux lies (FB, IG, TikTok, LI)', ok: true },
+    { item: 'BreadcrumbList + FAQPage Schema.org', ok: true },
+    { item: 'Schema.org LocalBusiness (2 centres)', ok: false },
+    { item: 'Schema.org HealthAndBeautyBusiness', ok: false },
+    { item: 'Headers securite HTTP', ok: false },
+    { item: 'Navigation optimisee pour le crawl (trop profonde)', ok: false },
+  ],
+};
+
+function decisionBorder(d: string) {
+  if (d === 'Convertit') return 'border-green-200';
+  if (d === 'Hesite') return 'border-amber-200';
+  return 'border-neutral-200';
+}
+function decisionBadge(d: string) {
+  if (d === 'Convertit') return 'bg-green-600';
+  if (d === 'Hesite') return 'bg-amber-500';
+  return 'bg-neutral-400';
+}
+
+const accentColor = '#C026D3';
+const accentGradient = 'linear-gradient(135deg, #C026D3, #A21CAF)';
+---
+
+<BaseLayout title={title} description={description} noindex={true} lang="fr" frPath={`/echo/${slug}`}>
+
+  <!-- HERO -->
+  <section class="relative w-full px-6 py-20 md:py-28 overflow-hidden" style="background: #0A0A0A;">
+    <div class="absolute top-[20%] left-[10%] w-[500px] h-[500px] rounded-full blur-[180px] pointer-events-none" style={`background: ${accentColor}; opacity: 0.06;`}></div>
+    <div class="absolute bottom-[10%] right-[5%] w-[300px] h-[300px] rounded-full blur-[120px] pointer-events-none" style="background: #6366f1; opacity: 0.04;"></div>
+    <div class="relative mx-auto max-w-4xl z-10">
+      <div class="mb-6 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5);">{formuleLabel} &middot; Rapport confidentiel</div>
+      <h1 class="mb-6 text-3xl md:text-4xl font-bold text-white leading-tight tracking-tight">{verdictHero}</h1>
+      <p class="mb-10 text-sm" style="color: rgba(255,255,255,0.4);">Site analyse : <a href={urlSite} target="_blank" rel="noopener" class="underline hover:text-white transition-colors">{urlSite}</a> &middot; {kpis.nbPersonas} visiteuses simulees &middot; {dateAudit}</p>
+      <div class="grid grid-cols-3 gap-4">
+        <div class="rounded-xl p-5 text-center" style="background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2);"><div class="text-4xl md:text-5xl font-black text-green-400 mb-1">{kpis.nbConvertissent}</div><div class="text-sm text-green-400/70">prennent RDV</div></div>
+        <div class="rounded-xl p-5 text-center" style="background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2);"><div class="text-4xl md:text-5xl font-black text-amber-400 mb-1">{kpis.nbHesitent}</div><div class="text-sm text-amber-400/70">hesitent</div></div>
+        <div class="rounded-xl p-5 text-center" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);"><div class="text-4xl md:text-5xl font-black mb-1" style="color: rgba(255,255,255,0.5);">{kpis.nbRepartent}</div><div class="text-sm" style="color: rgba(255,255,255,0.3);">repartent</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONSTAT -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="rounded-2xl p-6 md:p-8 mb-12 border-l-4" style={`background: rgba(192,38,211,0.04); border-color: ${accentColor};`}>
+      <p class="text-lg md:text-xl font-medium text-neutral-800 leading-relaxed">{constat}</p>
+    </div>
+    <h2 class="text-xl font-bold text-neutral-900 mb-2">D'ou viennent vos visiteuses</h2>
+    <p class="text-sm text-neutral-500 mb-6">Et combien prennent RDV selon leur canal d'arrivee.</p>
+    <div class="space-y-4 mb-12">
+      {canalData.map(c => {
+        const color = c.rate >= 50 ? '#22c55e' : c.rate >= 25 ? '#f59e0b' : '#ef4444';
+        return (<div class="flex items-center gap-4"><div class="w-52 text-sm text-neutral-700 shrink-0">{c.canal}</div><div class="flex-1 h-3 bg-neutral-100 rounded-full overflow-hidden"><div class="h-full rounded-full transition-all" style={`width: ${c.rate}%; background: ${color}`}></div></div><div class="w-20 text-right"><span class="text-sm font-bold" style={`color: ${color}`}>{c.rate}%</span><span class="text-xs text-neutral-400 ml-1">({c.convert}/{c.nb})</span></div></div>);
+      })}
+    </div>
+    <details class="group"><summary class="flex items-center gap-2 cursor-pointer text-sm text-neutral-500 hover:text-neutral-700 py-2"><svg class="w-4 h-4 transition-transform group-open:rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>Voir les scores moyens</summary>
+      <div class="grid grid-cols-3 gap-4 mt-3">
+        {[{ label: 'Experience', val: kpis.experience },{ label: 'Confiance', val: kpis.confiance },{ label: 'Clarte', val: kpis.clarte }].map(s => {
+          const sColor = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500';
+          return (<div class="bg-white border border-neutral-200 rounded-xl p-4 text-center"><div class={`text-2xl font-bold mb-1 ${sColor}`}>{s.val}<span class="text-sm text-neutral-400">/10</span></div><div class="text-xs text-neutral-500">{s.label}</div></div>);
+        })}
+      </div>
+    </details>
+  </section>
+
+  <!-- ALERTES -->
+  <section class="py-12" style="background: #fefce8;">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center gap-3 mb-6"><svg class="w-6 h-6 text-amber-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg><div><h2 class="text-lg font-bold text-neutral-900">Problemes detectes</h2><p class="text-sm text-neutral-600">{alertes.filter(a => a.type === 'critique').length} critiques &middot; {alertes.filter(a => a.type === 'important').length} importants</p></div></div>
+      <div class="grid md:grid-cols-2 gap-4">
+        {alertes.map(a => (<div class={`bg-white rounded-xl p-5 ${a.type === 'critique' ? 'border-2 border-red-300' : 'border border-amber-300'}`}><div class={`inline-block text-2xl font-black px-3 py-1 rounded-lg mb-3 ${a.type === 'critique' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>{a.chiffre}</div><p class="text-[10px] text-neutral-400 uppercase tracking-wider mb-1">{a.chiffreLabel}</p><h3 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h3><p class="text-xs text-neutral-600 leading-relaxed">{a.detail}</p></div>))}
+      </div>
+    </div>
+  </section>
+
+  <!-- VOS VISITEURS -->
+  <section class="py-16" style="background: #fafafa;">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-2">Vos visiteuses</h2>
+      <p class="text-neutral-600 mb-8">Voici ce qui se passe quand quelqu'un cherche un institut de beaute a Nancy ou Metz et tombe sur votre site.</p>
+
+      {(['Convertit', 'Hesite', 'Quitte'] as const).map(decision => {
+        const filtered = personas.filter(p => p.decision === decision);
+        const labelMap = { Convertit: 'Celles qui prennent RDV', Hesite: 'Celles qui hesitent', Quitte: 'Celles qui repartent' };
+        const colorMap = { Convertit: { dot: 'bg-green-500', text: 'text-green-800', sub: 'text-green-600' }, Hesite: { dot: 'bg-amber-500', text: 'text-amber-800', sub: 'text-amber-600' }, Quitte: { dot: 'bg-neutral-400', text: 'text-neutral-600', sub: 'text-neutral-500' } };
+        const c = colorMap[decision];
+        return (
+          <div class="mb-10">
+            <h3 class={`text-base font-bold ${c.text} mb-4 flex items-center gap-2`}><span class={`w-2.5 h-2.5 rounded-full ${c.dot} inline-block`}></span>{labelMap[decision]}<span class={`text-sm font-normal ${c.sub}`}>({filtered.length})</span></h3>
+            <div class="space-y-3">
+              {filtered.map(p => (
+                <details class={`group bg-white rounded-xl overflow-hidden shadow-sm border ${decisionBorder(p.decision)}`}>
+                  <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                    <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 mb-1 flex-wrap"><h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4><span class={`text-[10px] ${decisionBadge(p.decision)} text-white px-1.5 py-0.5 rounded font-medium`}>{p.decisionLabel}</span></div>
+                      <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                      <div class="flex flex-wrap items-center gap-1.5"><span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span><span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span><span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span></div>
+                    </div>
+                    <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                  </summary>
+                  <div class={`px-4 pb-5 border-t ${decisionBorder(p.decision)}`}>
+                    <div class="grid gap-4 text-xs mt-4">
+                      <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p><p class="text-neutral-600">{p.contexte}</p></div>
+                      <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Premiere impression (5 sec)</p><p class="text-neutral-600">{p.impression}</p></div>
+                      <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours sur le site</p><ol class="list-decimal list-inside space-y-1.5 text-neutral-600">{p.parcours.map(([section, reaction]) => (<li><strong class="text-neutral-800">{section}</strong>{reaction ? ` — ${reaction}` : ''}</li>))}</ol></div>
+                      <div class="bg-neutral-50 rounded-lg p-3"><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p><p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p><p class="text-neutral-600">Le site repond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> — {p.commentReponse}</p></div>
+                      <div class="grid grid-cols-2 gap-4"><div><p class="font-semibold text-green-700 mb-1.5">Points positifs</p><ul class="space-y-1 text-neutral-600">{p.positifs.map(pt => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">·</span>{pt}</li>)}</ul></div><div><p class="font-semibold text-amber-700 mb-1.5">Frictions</p><ul class="space-y-1 text-neutral-600">{p.frictions.map(f => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">·</span>{f}</li>)}</ul></div></div>
+                      {p.ceQuiFeraitBasculer && <div class="bg-amber-50 rounded-lg p-3"><p class="font-semibold text-amber-700 text-[10px] uppercase tracking-wider mb-1">Ce qui la ferait passer a l'action</p><p class="text-neutral-700 text-xs">{p.ceQuiFeraitBasculer}</p></div>}
+                      <div class="flex gap-6 pt-3 border-t border-neutral-100">{[{ label: 'Experience', val: p.exp },{ label: 'Confiance', val: p.conf },{ label: 'Clarte', val: p.clarte }].map(s => { const sc = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500'; return (<div class="text-center"><span class={`block text-lg font-bold ${sc}`}>{s.val}</span><span class="text-[10px] text-neutral-400">{s.label}</span></div>);})}</div>
+                    </div>
+                  </div>
+                </details>
+              ))}
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  </section>
+
+  <!-- RECOMMANDATIONS -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <h2 class="text-2xl font-bold text-neutral-900 mb-2">Ce qu'on recommande</h2>
+    <p class="text-neutral-600 mb-8">Actions concretes, classees par impact.</p>
+    <p class="text-sm font-semibold text-red-700 mb-4">Si vous ne changez que 3 choses :</p>
+    <div class="space-y-4 mb-12">
+      {ameliorationsHautes.map(a => (<div class="bg-white border-2 border-red-200 rounded-xl p-6 shadow-sm"><div class="flex items-start justify-between gap-4 mb-3"><h4 class="font-bold text-neutral-900">{a.titre}</h4><span class="text-[10px] px-2 py-1 rounded-full bg-red-100 text-red-700 font-semibold shrink-0 whitespace-nowrap">{a.impact}</span></div><p class="text-sm text-neutral-600 mb-3">{a.pourquoi}</p><div class="bg-neutral-50 rounded-lg px-4 py-3 flex items-start gap-2"><svg class="w-4 h-4 text-neutral-400 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg><p class="text-xs text-neutral-700">{a.action}</p></div></div>))}
+    </div>
+    <h3 class="text-lg font-bold text-neutral-900 mb-2">Utile aussi</h3>
+    <div class="grid md:grid-cols-2 gap-4 mb-12">{ameliorationsUtiles.map(a => (<div class="bg-white border border-neutral-200 rounded-xl p-5"><h4 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h4><p class="text-xs text-neutral-600">{a.detail}</p></div>))}</div>
+    <h3 class="text-lg font-bold text-neutral-900 mb-2">A discuter</h3>
+    <div class="space-y-3 mb-12">{ameliorationsDiscuter.map(a => (<div class="bg-neutral-50 border border-neutral-200 rounded-xl p-4 flex gap-3"><span class="text-lg shrink-0">{a.emoji}</span><div><h4 class="font-semibold text-neutral-900 text-sm mb-0.5">{a.titre}</h4><p class="text-xs text-neutral-600">{a.detail}</p></div></div>))}</div>
+    {showUpsell && (<div class="rounded-2xl p-8 text-center border-2 border-dashed" style={`border-color: ${accentColor}; background: rgba(192,38,211,0.03);`}><p class="text-lg font-bold text-neutral-900 mb-2">Ce rapport gratuit identifie les tendances.</p><p class="text-sm text-neutral-600 mb-6">Avec un Echo Complet (90€), 20 visiteuses simulees et un audit technique approfondi pour des recommandations chiffrees.</p><a href="tel:+33688766648" class="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-xl transition-all shadow-md hover:-translate-y-0.5" style={`background: ${accentGradient};`}>Appeler Marc — 06 88 76 66 48</a></div>)}
+  </section>
+
+  <!-- TECHNIQUE -->
+  <section class="py-16 border-t border-neutral-200">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-2">Sous le capot</h2>
+      <p class="text-neutral-600 mb-8">Ce que les outils techniques disent de votre site.</p>
+      <div class="flex flex-wrap gap-3 mb-10">{techVerdicts.map(v => (<div class={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium ${v.ok ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}>{v.ok ? <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> : <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}<span>{v.label}</span><span class="text-xs opacity-70">{v.verdict}</span></div>))}</div>
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white"><summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50"><div class="flex items-center gap-3"><span class="text-base">&#128274;</span><div><h3 class="font-semibold text-neutral-900 text-sm">Headers de securite</h3><p class="text-[11px] text-neutral-500">{techVerdicts[1].detail}</p></div></div><svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></summary><div class="px-4 pb-4 border-t border-neutral-100 pt-4"><div class="space-y-2">{tech.headers.map(s => (<div class="flex items-start gap-2 text-xs text-neutral-600"><span class={`shrink-0 font-bold ${s.ok ? 'text-green-500' : 'text-red-400'}`}>{s.ok ? '✓' : '✗'}</span><span>{s.h}</span></div>))}</div></div></details>
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white"><summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50"><div class="flex items-center gap-3"><span class="text-base">&#128202;</span><div><h3 class="font-semibold text-neutral-900 text-sm">Donnees structurees (Schema.org)</h3><p class="text-[11px] text-neutral-500">{techVerdicts[3].detail}</p></div></div><svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></summary><div class="px-4 pb-4 border-t border-neutral-100 pt-4"><div class="space-y-2">{tech.schema.map(s => (<div class="flex items-start gap-2 text-xs text-neutral-600"><span class={`shrink-0 font-bold ${s.ok ? 'text-green-500' : 'text-red-400'}`}>{s.ok ? '✓' : '✗'}</span><span>{s.item}</span></div>))}</div></div></details>
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white"><summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50"><div class="flex items-center gap-3"><span class="text-base">&#128269;</span><div><h3 class="font-semibold text-neutral-900 text-sm">SEO technique</h3><p class="text-[11px] text-neutral-500">{techVerdicts[2].detail}</p></div></div><svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></summary><div class="px-4 pb-4 border-t border-neutral-100 pt-4"><div class="space-y-2">{tech.seo.map(s => (<div class="flex items-start gap-2 text-xs text-neutral-600"><span class={`shrink-0 font-bold ${s.ok ? 'text-green-500' : 'text-red-400'}`}>{s.ok ? '✓' : '✗'}</span><span>{s.item}</span></div>))}</div></div></details>
+    </div>
+  </section>
+
+  <!-- METHODOLOGIE -->
+  <section class="py-12 bg-neutral-50 border-t border-neutral-100">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-lg font-bold text-neutral-900 mb-4">Comment on a fait ca</h2>
+      <div class="grid md:grid-cols-3 gap-4 text-sm text-neutral-600">
+        <div class="bg-white rounded-xl p-4 border border-neutral-200"><div class="text-2xl font-black text-neutral-300 mb-2">1</div><p class="font-semibold text-neutral-800 mb-1">Scraping complet</p><p class="text-xs">Lecture de toutes les pages accessibles — soins, tarifs, centres Nancy et Metz, blog, boutique, FAQ.</p></div>
+        <div class="bg-white rounded-xl p-4 border border-neutral-200"><div class="text-2xl font-black text-neutral-300 mb-2">2</div><p class="font-semibold text-neutral-800 mb-1">Audit technique</p><p class="text-xs">Security headers, Schema.org, Open Graph, SEO, stack technique (WordPress + Elementor + GTM + GA + Meta Pixel).</p></div>
+        <div class="bg-white rounded-xl p-4 border border-neutral-200"><div class="text-2xl font-black text-neutral-300 mb-2">3</div><p class="font-semibold text-neutral-800 mb-1">10 personas simulees</p><p class="text-xs">Profils realistes de clientes Nancy/Metz — soins visage, corps, epilation, cheveux, blanchiment dentaire.</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="py-16 border-t border-neutral-200">
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-3">15 000 clientes, 500 avis, 2 centres — vous avez la base.</h2>
+      <p class="text-neutral-600 mb-8">Ce qui manque, c'est un site a la hauteur de votre institut. Des compteurs qui marchent, une navigation simple et des tarifs visibles transformeraient vos 50% en 70%+.</p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="tel:+33688766648" class="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white font-semibold rounded-xl transition-all shadow-md hover:-translate-y-0.5 hover:bg-green-700">Appeler Marc — 06 88 76 66 48</a>
+        <a href="https://wa.me/33688766648" class="inline-flex items-center gap-2 px-6 py-3 border border-neutral-300 text-neutral-700 font-semibold rounded-xl transition-all hover:border-neutral-500">WhatsApp</a>
+      </div>
+      <p class="text-xs text-neutral-400 mt-6">Ce rapport est confidentiel et non indexe par Google &middot; Genere le {dateAudit}</p>
+    </div>
+  </section>
+
+</BaseLayout>
