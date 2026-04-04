@@ -1,0 +1,805 @@
+---
+import BaseLayout from '../../../../layouts/BaseLayout.astro';
+
+const slug = 'chill-bar';
+const formule: 'decouverte' | 'complet' | 'pro' | 'suivi' = 'complet';
+const formuleLabel = 'Echo Complet';
+const nomProspect = 'Chill Beach Bar And Grill Koh Tao';
+const urlSite = 'https://dev.chill-bar.pages.dev/th/';
+const dateAudit = '4 avril 2026';
+const showUpsell = true;
+
+const title = 'Echo Complet — Chill Beach Bar Koh Tao (Version TH) | Marc M';
+const description = 'Rapport Echo confidentiel — simulation de 20 visites de profils thaïlandais, audit technique et recommandations pour Chill Beach Bar And Grill Koh Tao.';
+
+const kpis = {
+  nbPersonas: 20,
+  nbConvertissent: 13,
+  nbHesitent: 4,
+  nbRepartent: 3,
+  conversion: 65,
+  experience: 7.0,
+  confiance: 7.3,
+  clarte: 6.4,
+};
+
+const verdictHero = '13 visiteurs thaïs sur 20 vous contactent. Les 7 autres ? Ils ne trouvent pas vos photos, votre Instagram, ou le prix du Happy Hour.';
+
+const constat = 'Votre site en version thaïe a une vraie force : la tagline "เบียร์เย็น ทรายอุ่น อ่าวโฉลก" parle immediatement aux Thaïs, et la presence de Pong (fondatrice thaïe) cree une confiance immediate. Mais le public thaï est ultra-visuel et mobile. Sans galerie photo d\'ambiance et sans lien Instagram visible, les 3 personas TikTok/Instagram repartent systematiquement. Et le prix du Happy Hour a ฿120 — votre meilleur argument pour les locaux — est enfoui dans la section boissons plutot que mis en evidence des l\'accueil.';
+
+const canalData = [
+  { canal: 'Bouche-a-oreille', nb: 3, convert: 3, rate: 100 },
+  { canal: 'Google Maps', nb: 4, convert: 4, rate: 100 },
+  { canal: 'Google Search', nb: 4, convert: 3, rate: 75 },
+  { canal: 'IA (ChatGPT / Perplexity)', nb: 3, convert: 2, rate: 67 },
+  { canal: 'Facebook Thai', nb: 3, convert: 1, rate: 33 },
+  { canal: 'TikTok / Instagram', nb: 3, convert: 0, rate: 0 },
+];
+
+const alertes = [
+  {
+    type: 'critique' as const,
+    titre: 'Aucune galerie photo sur le site',
+    detail: '3 personas TikTok et Instagram repartent systematiquement car ils ne peuvent pas "sentir" l\'ambiance avant de venir. Un bar de plage sans photos d\'ambiance, c\'est comme un menu de restaurant sans description de plats.',
+    chiffre: '3/3',
+    chiffreLabel: 'createurs de contenu repartent',
+  },
+  {
+    type: 'critique' as const,
+    titre: 'Pas de lien Instagram / TikTok visible',
+    detail: 'Pour un bar de plage tropical, l\'Instagram est le canal de preuve sociale #1 en Asie du Sud-Est. Prae (influenceuse 45k followers) cherche votre Instagram — elle ne le trouve pas. 3 personas sur 20 sont bloques par ce manque.',
+    chiffre: '0',
+    chiffreLabel: 'reseaux visuels affichés sur le site',
+  },
+  {
+    type: 'important' as const,
+    titre: 'Prix Happy Hour ฿120 pas mis en evidence',
+    detail: 'Le Happy Hour 17h-20h avec cocktails a ฿120 est votre argument le plus fort pour les locaux et visiteurs a budget serre. Il est actuellement enfoui dans la section boissons. 5 personas cherchent ce prix et doivent scroller pour le trouver.',
+    chiffre: '5/20',
+    chiffreLabel: 'visiteurs frustres par le happy hour peu visible',
+  },
+  {
+    type: 'important' as const,
+    titre: 'Meta description en anglais sur /th/',
+    detail: 'La meta description de /th/ est en anglais. Pour un Thaï qui voit votre lien sur Google, ca cree une dissonance. Et pour le SEO Google Thaïlande, une page TH avec meta en anglais sera moins bien positionnee sur les recherches en thaï.',
+    chiffre: '0%',
+    chiffreLabel: 'thaï dans la meta description de /th/',
+  },
+];
+
+const personas = [
+  {
+    id: 1, name: 'Nong', age: 24, emoji: '🏊',
+    situation: 'Instructrice de plongee a Chalok, cherche un bar apres le travail',
+    canal: 'Google Maps', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Y va',
+    histoire: 'Fin de journee de plongee, ses collegues veulent une vraie biere. Maps, 5 min a pied, happy hour 17h-20h a ฿120 confirme. Elle emmene le groupe.',
+    localisation: 'Chalok Baan Kao, Koh Tao', maturite: 'Decision',
+    contexte: 'Collegues etrangers veulent "une vraie biere". Elle cherche sur Maps.',
+    impression: 'Tagline en thaï, c\'est bon signe. Chalok Bay — c\'est a cote.',
+    parcours: [['Hero', 'Tagline en thaï, ambiance beach'], ['Boissons', 'Cherche les prix — happy hour ฿120'], ['Maps', 'Distance 5 min'], ['WhatsApp', 'Confirme la disponibilite']],
+    questionCle: 'C\'est combien une biere et c\'est quand le happy hour ?',
+    reponse: 'Partiellement', commentReponse: 'Les prix sont la mais le happy hour n\'est pas en evidence depuis le hero',
+    impactVitesse: 'Site rapide (Astro statique CF Pages)',
+    impactConfiance: 'Grade C- Observatory — elle ne le voit pas',
+    positifs: ['Tagline en thaï', 'Prix listes dans la section boissons', 'Localisation sur Maps'],
+    frictions: ['Happy Hour pas visible immediatement depuis le hero', 'Doit scroller pour les prix'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 8, clarte: 6,
+  },
+  {
+    id: 2, name: 'Khun Lek', age: 38, emoji: '🏨',
+    situation: 'Manager de resort, prescripteur de bonnes adresses pour ses clients',
+    canal: 'Facebook Thai', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Recommande',
+    histoire: 'Cherche ou envoyer ses clients ce soir. Trouve le site via Facebook, voit que Pong est thaïe — element decisif. Recommande le bar.',
+    localisation: 'Chalok Baan Kao, Koh Tao', maturite: 'Comparaison',
+    contexte: 'Besoin de connaitre les bonnes adresses pour ses clients touristiques.',
+    impression: 'Site en thaï, c\'est bien. Pong est thaïe — tres rassurant.',
+    parcours: [['Hero', 'Thaï, bien'], ['A propos', 'Voit Pong thaïe — tres rassurant'], ['Avis', 'Beaucoup d\'avis etrangers'], ['Recommande', '']],
+    questionCle: 'C\'est un bar pour les touristes ou les Thaïs aussi sont bienvenus ?',
+    reponse: 'Partiellement', commentReponse: 'La presence de Pong rassure mais le positionnement accueil Thaïs n\'est pas explicite',
+    impactVitesse: 'Bon',
+    impactConfiance: 'Meta description en anglais cree une dissonance',
+    positifs: ['Fondatrice Pong thaïe — argument fort', 'Site en thaï'],
+    frictions: ['Meta description en anglais sur version TH', 'Accueil Thaïs pas assez mis en avant'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 7, clarte: 6,
+  },
+  {
+    id: 3, name: 'Prae', age: 29, emoji: '📸',
+    situation: 'Influenceuse Instagram (45k), cherche un spot pour son contenu',
+    canal: 'TikTok', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'TikTok l\'amene sur le site. Elle cherche des photos pour evaluer l\'esthetique. Pas de galerie, pas d\'Instagram visible. Envoie un WhatsApp — conversion fragile.',
+    localisation: 'Bangkok, de passage', maturite: 'Comparaison',
+    contexte: 'Cherche un aesthetic spot pour ses photos et Reels.',
+    impression: 'Belle tagline. Mais ou sont les photos du bar ?',
+    parcours: [['Hero', 'Belle tagline mais pas de visuels du lieu'], ['Scroll', 'Cherche une galerie — introuvable'], ['Footer', 'Cherche Instagram — pas de lien'], ['WhatsApp', 'Demande quand meme']],
+    questionCle: 'Le bar est photogenique ? Ils ont un Instagram ?',
+    reponse: 'Non', commentReponse: 'Pas de galerie photo, pas de lien Instagram visible',
+    impactVitesse: 'N/A',
+    impactConfiance: 'Un bar sans Instagram parait peu actif sur les reseaux',
+    positifs: ['Tagline evocatrice', 'Concept interessant pour du contenu'],
+    frictions: ['Absence de galerie photo d\'ambiance', 'Pas de lien Instagram', 'Impossible d\'evaluer le potentiel visuel'],
+    ceQuiFeraitBasculer: 'Un lien Instagram actif avec 10+ photos d\'ambiance = conversion immediate',
+    exp: 5, conf: 6, clarte: 4,
+  },
+  {
+    id: 4, name: 'Phon', age: 52, emoji: '🍜',
+    situation: 'Cheffe de cuisine de Ko Samui, cherche ou manger et boire en famille',
+    canal: 'Google Search', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Y va',
+    histoire: 'Sa fille veut quelque chose d\'original. Elle cherche sur Google. Trouve le site, voit cuisine thai + bieres belges. Prix raisonnables. Elle y va.',
+    localisation: 'Ko Samui, de passage', maturite: 'Decouverte',
+    contexte: 'Sa fille veut du "different". Elle veut manger et boire de qualite.',
+    impression: 'Thaï dans l\'adresse, thaï dans le menu nourriture — OK c\'est pour nous.',
+    parcours: [['Hero', 'Tagline thaïe'], ['Nourriture', 'Cuisine thai confirmee ฿120+'], ['Prix', 'Raisonnables'], ['WhatsApp', 'Confirme le menu']],
+    questionCle: 'Est-ce que c\'est vraiment un restaurant ou seulement un bar ?',
+    reponse: 'Partiellement', commentReponse: 'Nourriture mentionnee mais le menu est tres limite sur le site',
+    impactVitesse: 'Bon',
+    impactConfiance: 'OK',
+    positifs: ['Cuisine thai mentionnee', 'Prix raisonnables', 'Concept original'],
+    frictions: ['Menu nourriture tres limite sur le site', 'Pas de description des plats en thaï'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 7, clarte: 6,
+  },
+  {
+    id: 5, name: 'Bank', age: 22, emoji: '🎓',
+    situation: 'Stagiaire en tourisme, cherche les horaires du happy hour',
+    canal: 'Bouche-a-oreille', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Y va a 17h',
+    histoire: 'Son collegue lui dit "vas au Chill Bar". Il cherche juste les horaires et le prix happy hour. Trouve : 17h-20h, ฿120. Il y va pile a 17h.',
+    localisation: 'Koh Tao — stage', maturite: 'Decision',
+    contexte: 'Soir libre, recommandation collegue, budget serre.',
+    impression: 'Le site confirme ce que mon collegue m\'a dit.',
+    parcours: [['Horaires', '16h-minuit, parfait'], ['Happy Hour', '17h-20h cocktails ฿120'], ['Maps', 'Direction']],
+    questionCle: 'Le happy hour c\'est jusqu\'a quelle heure ?',
+    reponse: 'Oui', commentReponse: '17h-20h visible dans la section boissons',
+    impactVitesse: 'Bon',
+    impactConfiance: 'Bon',
+    positifs: ['Horaires clairs', 'Happy Hour visible (en cherchant)', 'Site rapide'],
+    frictions: ['Happy Hour pas en evidence depuis le hero'],
+    ceQuiFeraitBasculer: '',
+    exp: 8, conf: 8, clarte: 7,
+  },
+  {
+    id: 6, name: 'Khun Suchart', age: 45, emoji: '🏭',
+    situation: 'Entrepreneur de Pattaya, veille concurrentielle — hors cible',
+    canal: 'Google Search', device: 'Desktop', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Cherche des concepts de bars originaux. Trouve le site interessant. Ne trouve pas d\'infos business. Quitte.',
+    localisation: 'Pattaya', maturite: 'Decouverte',
+    contexte: 'Prospection concurrentielle.',
+    impression: 'Site moderne, concept original.',
+    parcours: [['Scroll complet', 'Bonne execution'], ['Cherche infos business', 'Hors sujet'], ['Quitte', '']],
+    questionCle: 'Est-ce que ce concept est duplicable ?',
+    reponse: 'Non', commentReponse: 'Hors perimetre',
+    impactVitesse: 'N/A', impactConfiance: 'N/A',
+    positifs: ['Site propre'], frictions: ['Hors cible'],
+    ceQuiFeraitBasculer: '',
+    exp: 6, conf: 7, clarte: 7,
+  },
+  {
+    id: 7, name: 'Wan', age: 31, emoji: '💑',
+    situation: 'En lune de miel, cherche une soiree romantique sur la plage',
+    canal: 'Facebook Thai', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Contacte par WhatsApp',
+    histoire: 'Post Facebook bars coucher de soleil. Tagline romantique. Pas de photos nocturnes. Envoie un WhatsApp pour reserver — ca marche.',
+    localisation: 'Ko Samui, de passage', maturite: 'Comparaison',
+    contexte: 'Derniere nuit de lune de miel — veut quelque chose de special.',
+    impression: 'Biere froide, sable chaud — c\'est romantique.',
+    parcours: [['Hero', 'Tagline romantique'], ['Cherche photos nocturnes', 'Peu de visuels'], ['A propos', 'Histoire Niels & Pong — touchante'], ['WhatsApp', 'Demande une table']],
+    questionCle: 'On peut reserver une table pour une occasion speciale ?',
+    reponse: 'Non', commentReponse: 'Aucune mention de reservation sur le site',
+    impactVitesse: 'Bon', impactConfiance: 'Bon',
+    positifs: ['Tagline evocatrice', 'Histoire fondateurs touchante'],
+    frictions: ['Pas de photos d\'ambiance nocturne romantique', 'Pas d\'option reservation mentionnee'],
+    ceQuiFeraitBasculer: '',
+    exp: 6, conf: 7, clarte: 5,
+  },
+  {
+    id: 8, name: 'Ton', age: 17, emoji: '🧑',
+    situation: 'Lyceen en vacances — hors cible (age legal 20 ans en Thaïlande)',
+    canal: 'TikTok', device: 'Mobile', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'TikTok l\'amene sur le site. Bar a biere, age requis 20 ans. Quitte.',
+    localisation: 'Bangkok', maturite: 'Decouverte',
+    contexte: 'Veut recommander quelque chose a ses parents.',
+    impression: 'Cool, plage. Mais c\'est un bar a biere.',
+    parcours: [['Hero', 'Bar a biere — hors cible'], ['Quitte', '']],
+    questionCle: 'C\'est bien pour toute la famille ?',
+    reponse: 'Non', commentReponse: 'Bar alcool — pas pour mineur',
+    impactVitesse: 'N/A', impactConfiance: 'N/A',
+    positifs: ['Design attrayant'], frictions: ['Hors cible legal'],
+    ceQuiFeraitBasculer: '',
+    exp: 6, conf: 6, clarte: 5,
+  },
+  {
+    id: 9, name: 'Mint', age: 26, emoji: '🎵',
+    situation: 'Barmaid de Ko Phangan, curiosite professionnelle pour les bieres belges',
+    canal: 'Bouche-a-oreille', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Y va apres WhatsApp',
+    histoire: 'Collegue barman lui parle de la selection belge. Elle voit 5 bieres sur "20+". Frustration. WhatsApp pour la selection du soir — reponse rapide — y va.',
+    localisation: 'Ko Phangan, en vacances', maturite: 'Decision',
+    contexte: 'Curiosite professionnelle — nouvelles bieres a decouvrir.',
+    impression: 'Duvel, Karmeliet, Rochefort — c\'est serieux. Mais ou est la liste complete ?',
+    parcours: [['Section bieres', '5 bieres listees sur 20+ annoncees'], ['Frustration', 'La promesse n\'est pas honoree'], ['WhatsApp', 'Selection du soir — reponse rapide']],
+    questionCle: 'Quelles bieres sont disponibles ce soir ?',
+    reponse: 'Non', commentReponse: '"20+" promis mais seulement 5 listees',
+    impactVitesse: 'Bon', impactConfiance: 'OK',
+    positifs: ['Selection belge reconnue', 'Happy Hour attractif'],
+    frictions: ['Promesse "20+" non tenue', 'Pas de description des styles'],
+    ceQuiFeraitBasculer: 'Liste complete des bieres + description des styles',
+    exp: 7, conf: 7, clarte: 5,
+  },
+  {
+    id: 10, name: 'Khun Preecha', age: 55, emoji: '🏡',
+    situation: 'Retraite resident a Chalok, verifie si c\'est accueillant pour les Thaïs',
+    canal: 'IA (ChatGPT)', device: 'Tablette', decision: 'Convertit', decisionLabel: 'Emmene sa femme',
+    histoire: 'ChatGPT recommande le bar. Il consulte le site. Voit Pong (thaïe) — tres rassurant. Il emmene sa femme.',
+    localisation: 'Chalok Baan Kao', maturite: 'Comparaison',
+    contexte: 'Sa femme veut un bar "pas trop farang".',
+    impression: 'Site en thaï — bonne surprise. Pong est thaïe — parfait.',
+    parcours: [['Hero', 'Thaï'], ['A propos', 'Pong thaïe — rassurant'], ['Nourriture', 'Cuisine thai'], ['Convertit', '']],
+    questionCle: 'C\'est un bar thaï ou etranger ?',
+    reponse: 'Partiellement', commentReponse: 'Pong rassure mais le positionnement n\'est pas explicite',
+    impactVitesse: 'Bon', impactConfiance: 'Meta description anglaise — petite dissonance',
+    positifs: ['Pong thaïe — argument decisif', 'Cuisine thai', 'Site en thaï'],
+    frictions: ['Meta description en anglais', 'Accueil Thaïs pas assez mis en avant'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 8, clarte: 7,
+  },
+  {
+    id: 11, name: 'Aom', age: 33, emoji: '🤿',
+    situation: 'Divemaster independant, cherche un bar apres-plongee pour ses clients',
+    canal: 'Google Maps', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Recommande regulierement',
+    histoire: 'Client demande un bon bar. Maps, voit 4.7/5, site confirme 16h. Parfait pour apres plongee. Envoie ses clients regulierement.',
+    localisation: 'Koh Tao', maturite: 'Decision',
+    contexte: 'Client demande une recommendation.',
+    impression: 'Ouvert a 16h, Chalok Bay — parfait apres plongee.',
+    parcours: [['Maps', '4.7/5'], ['Site', 'Horaires 16h confirmes'], ['Prescripteur', '']],
+    questionCle: 'Est-ce que c\'est bien pour apres une plongee ?',
+    reponse: 'Partiellement', commentReponse: 'Ouverture 16h + localisation = oui, mais rien sur "casual/detendu"',
+    impactVitesse: 'Bon', impactConfiance: 'Bon',
+    positifs: ['Ouverture 16h ideal', 'Note Google 4.7/5', 'Localisation Chalok'],
+    frictions: ['Pas de mention "tenue decontractee OK / après-plongee bienvenu"'],
+    ceQuiFeraitBasculer: '',
+    exp: 8, conf: 8, clarte: 7,
+  },
+  {
+    id: 12, name: 'Fon', age: 27, emoji: '🛍',
+    situation: 'Vendeuse locale, vue d\'un cocktail colore sur Facebook — hesite sur le prix',
+    canal: 'Facebook Thai', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Hesite',
+    histoire: 'Photo cocktail sur Facebook. Site : cocktails a ฿180 hors happy hour. Cherche le happy hour — trouve ฿120 mais peu visible. Hesite.',
+    localisation: 'Chalok Baan Kao', maturite: 'Comparaison',
+    contexte: 'Budget serré — cherche rapport qualite/prix.',
+    impression: 'Jolis cocktails. Mais ฿180 c\'est cher.',
+    parcours: [['Hero', 'Sympa'], ['Cocktails', 'Mai Tai ฿180 — cher'], ['Cherche happy hour', '฿120 peu visible'], ['Hesite', '']],
+    questionCle: 'Le happy hour cocktail c\'est vraiment a ฿120 ?',
+    reponse: 'Partiellement', commentReponse: 'Information presente mais pas mise en evidence',
+    impactVitesse: 'Bon', impactConfiance: 'Moyen',
+    positifs: ['Cocktails originaux', 'Happy Hour existe'],
+    frictions: ['Prix happy hour sous-exploite visuellement', 'Peu de photos cocktails'],
+    ceQuiFeraitBasculer: 'Happy Hour visible depuis le hero + photos de cocktails colores',
+    exp: 6, conf: 6, clarte: 5,
+  },
+  {
+    id: 13, name: 'Khun Wichai', age: 62, emoji: '👒',
+    situation: 'Retraite en escale Koh Tao, cherche un bar accessible l\'apres-midi',
+    canal: 'Google Search', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Y va par curiosite',
+    histoire: 'Escale 4h. Site en thaï — bonne surprise. Ouvert a 16h. Se demande s\'il y a des bieres thaïes mais la curiosite l\'emporte.',
+    localisation: 'Bangkok, escale', maturite: 'Decouverte',
+    contexte: 'Escale 4h, profiter de la plage.',
+    impression: 'Site en thaï, ouvert a 16h — c\'est bon.',
+    parcours: [['Horaires', '16h — parfait'], ['Prix', '฿280 cher mais bieres speciales'], ['Curiosite', 'Y va']],
+    questionCle: 'Ils servent aussi des bieres thaïes normales ?',
+    reponse: 'Non', commentReponse: 'Aucune mention des bieres locales — focus exclusif belge',
+    impactVitesse: 'Bon', impactConfiance: 'Bon',
+    positifs: ['Site en thaï', 'Horaires clairs', 'Concept original'],
+    frictions: ['Pas d\'indication sur les bieres locales', 'Prix eleves pour un non-connaisseur'],
+    ceQuiFeraitBasculer: '',
+    exp: 6, conf: 7, clarte: 6,
+  },
+  {
+    id: 14, name: 'Yui', age: 20, emoji: '✨',
+    situation: 'Etudiante de Bangkok, Perplexity recommande le bar',
+    canal: 'IA (Perplexity)', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Y va',
+    histoire: 'Perplexity mentionne le Chill Bar. Design moderne, tagline chill, happy hour ฿120. Decide d\'y aller.',
+    localisation: 'Bangkok, touriste', maturite: 'Comparaison',
+    contexte: 'Planifie ses soirees via IA.',
+    impression: 'Beau site, vibe chill confirme.',
+    parcours: [['Hero', 'Design moderne'], ['Cocktails', 'Original'], ['Happy Hour', '฿120 accessible'], ['Convertit', '']],
+    questionCle: 'C\'est vraiment aussi chill que le nom ?',
+    reponse: 'Oui', commentReponse: 'Le design et la tagline communiquent bien l\'ambiance',
+    impactVitesse: 'Bon', impactConfiance: 'Bon',
+    positifs: ['Design moderne', 'Tagline chill', 'Happy Hour accessible'],
+    frictions: ['Peu de photos de l\'ambiance reelle'],
+    ceQuiFeraitBasculer: '',
+    exp: 8, conf: 8, clarte: 7,
+  },
+  {
+    id: 15, name: 'Khun Arlee', age: 48, emoji: '🏘',
+    situation: 'Proprietaire de bungalow voisin, surveillance concurrentielle — hors cible',
+    canal: 'Direct', device: 'Desktop', decision: 'Quitte', decisionLabel: 'Repart',
+    histoire: 'Visite concurrentielle. Regarde les prix et l\'offre. Bon site. Quitte.',
+    localisation: 'Chalok Baan Kao', maturite: 'N/A',
+    contexte: 'Surveillance concurrence.',
+    impression: 'Site bien fait.',
+    parcours: [['Scroll complet', 'Prix, offre'], ['Quitte', '']],
+    questionCle: 'Comment ils attirent les clients ?',
+    reponse: 'Oui', commentReponse: 'Les elements de conversion sont clairs',
+    impactVitesse: 'Bon', impactConfiance: 'Bon',
+    positifs: ['Site propre'], frictions: ['Hors cible'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 7, clarte: 7,
+  },
+  {
+    id: 16, name: 'Krit', age: 35, emoji: '💻',
+    situation: 'Digital nomad de Chiang Mai, cherche un bar pour sa soiree',
+    canal: 'IA (Claude)', device: 'Desktop', decision: 'Convertit', decisionLabel: 'Y va',
+    histoire: 'Claude recommande le bar. Le site le convainc — belles bieres. Pas d\'info WiFi mais les bieres l\'attirent quand meme.',
+    localisation: 'Koh Tao — remote', maturite: 'Decision',
+    contexte: 'Fin de journee de travail.',
+    impression: 'Super selection de bieres. WiFi ? (pas d\'info).',
+    parcours: [['Bieres', 'Super selection belge'], ['Cherche WiFi', 'Introuvable'], ['Decide quand meme', '']],
+    questionCle: 'Il y a du WiFi ?',
+    reponse: 'Non', commentReponse: 'Aucune mention du WiFi',
+    impactVitesse: 'Bon', impactConfiance: 'Bon',
+    positifs: ['Excellente selection de bieres', 'Ambiance relax'],
+    frictions: ['Pas d\'information WiFi'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 8, clarte: 7,
+  },
+  {
+    id: 17, name: 'Nid', age: 42, emoji: '🍜',
+    situation: 'Restauratrice voisine, envoie ses clients apres le diner',
+    canal: 'Bouche-a-oreille', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Prescriptrice',
+    histoire: 'Ses clients demandent ou aller apres diner. Elle verifie les horaires : ferme a 23h59 — parfait. Continue a les envoyer.',
+    localisation: 'Chalok Baan Kao', maturite: 'Decision',
+    contexte: 'Confirmer les horaires.',
+    impression: 'Horaires OK.',
+    parcours: [['Horaires', '23h59 — apres mon restaurant'], ['Convertit', '']],
+    questionCle: 'Ils ferment a quelle heure ?',
+    reponse: 'Oui', commentReponse: '"23:59" visible clairement',
+    impactVitesse: 'Bon', impactConfiance: 'Bon',
+    positifs: ['Horaires clairement indiques'],
+    frictions: [],
+    ceQuiFeraitBasculer: '',
+    exp: 9, conf: 9, clarte: 8,
+  },
+  {
+    id: 18, name: 'Dao', age: 19, emoji: '🎒',
+    situation: 'Stagiaire TikTok travel, cherche des spots a filmer',
+    canal: 'TikTok', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Rebond en ligne',
+    histoire: 'TikTok l\'amene sur le site. Cherche des photos et l\'Instagram. Pas de galerie, pas de lien Instagram. Va voir le bar directement a pied.',
+    localisation: 'Koh Tao — stage', maturite: 'Decouverte',
+    contexte: 'Cherche des spots pour son TikTok.',
+    impression: 'Belle tagline mais ou sont les photos ?',
+    parcours: [['Hero', 'Pas de galerie'], ['Cherche Instagram', 'Pas de lien'], ['Frustree', 'Va voir a pied']],
+    questionCle: 'Votre Instagram ?',
+    reponse: 'Non', commentReponse: 'Pas de lien Instagram, galerie insuffisante',
+    impactVitesse: 'N/A', impactConfiance: 'Bar sans Instagram parait peu actif',
+    positifs: ['Tagline evocatrice'],
+    frictions: ['Pas de galerie photo', 'Pas de lien Instagram'],
+    ceQuiFeraitBasculer: 'Instagram actif = conversion immediate',
+    exp: 4, conf: 5, clarte: 4,
+  },
+  {
+    id: 19, name: 'Khun Sombat', age: 58, emoji: '🎣',
+    situation: 'Pecheur local natif, ne boit pas — hors cible totale',
+    canal: 'Direct', device: 'Mobile', decision: 'Quitte', decisionLabel: 'Repart immediatement',
+    histoire: 'Son fils mentionne le bar. Bar a biere belge — pas pour lui. Quitte en 5 secondes.',
+    localisation: 'Koh Tao', maturite: 'N/A',
+    contexte: 'Ne boit pas — hors cible.',
+    impression: 'Bar a biere — pas pour moi.',
+    parcours: [['Hero', 'Bar a biere — quitte']],
+    questionCle: 'Qu\'est-ce que c\'est ?',
+    reponse: 'Oui', commentReponse: 'Le concept est clair — trop clair pour lui',
+    impactVitesse: 'N/A', impactConfiance: 'N/A',
+    positifs: [], frictions: ['Hors cible'],
+    ceQuiFeraitBasculer: '',
+    exp: 5, conf: 5, clarte: 8,
+  },
+  {
+    id: 20, name: 'Ploy', age: 24, emoji: '🍺',
+    situation: 'Bartender de Ko Phangan, cherche la liste complete des bieres belges',
+    canal: 'Bouche-a-oreille', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Y va apres WhatsApp',
+    histoire: 'Collegue la recommande pour les bieres belges. 5 bieres listees sur "20+". Frustration. WhatsApp — reponse rapide — y va.',
+    localisation: 'Ko Phangan, en vacances', maturite: 'Decision',
+    contexte: 'Curiosite professionnelle — nouvelles bieres a connaitre.',
+    impression: 'Duvel, Karmeliet, Rochefort — super. Mais ou sont les 15 autres ?',
+    parcours: [['Section bieres', '5 sur "20+" — frustrant'], ['WhatsApp', '"Qu\'est-ce que vous avez ce soir ?" — reponse rapide'], ['Convertit', '']],
+    questionCle: 'Vous avez quelles bieres ce soir ?',
+    reponse: 'Non', commentReponse: '"20+" promis mais 5 listees',
+    impactVitesse: 'Bon', impactConfiance: 'Bon',
+    positifs: ['Selection belge reconnue', 'WhatsApp rapide'],
+    frictions: ['Liste incomplete par rapport a la promesse "20+"', 'Pas de description styles'],
+    ceQuiFeraitBasculer: 'Liste complete + descriptions = conversion sans WhatsApp',
+    exp: 6, conf: 8, clarte: 5,
+  },
+];
+
+const ameliorationsHautes = [
+  {
+    titre: 'Ajouter une galerie photo d\'ambiance',
+    pourquoi: 'Le public thaï est ultra-visuel et mobile. Prae (influenceuse 45k), Dao (TikTok) et Wan (lune de miel) repartent ou hesitent car elles ne peuvent pas "sentir" l\'ambiance. Un bar de plage tropical sans photos, c\'est comme un menu sans description de plats.',
+    action: 'Ajouter une section galerie 6-9 photos dans le one-pager : bar de nuit, cocktails colores en gros plan, coucher de soleil, Niels et Pong derriere le bar, clients jouant aux echecs. Grille 3 colonnes desktop, scroll horizontal mobile.',
+    impact: '4 visiteurs sur 20',
+  },
+  {
+    titre: 'Afficher le Happy Hour ฿120 en evidence depuis le hero',
+    pourquoi: '฿120 pour un cocktail pendant 3h par jour est votre meilleur argument pour les locaux et voyageurs a budget serre. 5 personas cherchent ce prix et doivent scroller pour le trouver. C\'est votre argument de conversion le plus fort.',
+    action: 'Ajouter sous la tagline du hero : "🍹 Happy Hour 17h–20h · Cocktails a ฿120 · Tous les jours" en badge ou bandeau avec un fond amber. Ou integrer dans la tagline : "เบียร์เย็น ทรายอุ่น · Happy Hour 17–20น. ฿120".',
+    impact: '5 visiteurs sur 20',
+  },
+  {
+    titre: 'Ajouter les liens Instagram et TikTok dans le header et le footer',
+    pourquoi: '3 personas visuels cherchent votre Instagram pour evaluer l\'esthetique. Prae a 45 000 followers et aurait pu creer du contenu pour vous — elle a hesite uniquement parce qu\'elle ne trouvait pas votre Instagram. En Asie du Sud-Est, Instagram est la preuve sociale #1 pour les bars.',
+    action: 'Ajouter icones Instagram et TikTok dans le footer (cote du Facebook existant) et dans le menu mobile. Si le compte n\'est pas actif, creer et poster 5-10 photos avant.',
+    impact: '4 visiteurs sur 20',
+  },
+  {
+    titre: 'Corriger la meta description de /th/ : la mettre en thaï',
+    pourquoi: 'La meta de /th/ est en anglais. Un Thaï qui voit votre lien sur Google lit une description anglaise — dissonance. Pour le SEO Google Thaïlande, une page TH avec meta en anglais est moins bien positionnee sur les recherches en thaï.',
+    action: 'Remplacer par : "บาร์เบียร์เบลเยียมและร้านอาหารบนหาดฉลอก เกาะเต่า — เบียร์คราฟต์เบลเยียมกว่า 20 ชนิด ค็อกเทลทำมือ อาหารไทย · Happy Hour 17–20 น. ฿120"',
+    impact: 'SEO + confiance visiteurs thaïs',
+  },
+  {
+    titre: 'Corriger les 4 headers de securite manquants',
+    pourquoi: 'Grade C- Observatory (45/100). CSP, X-Frame-Options, X-Content-Type-Options absents. Cloudflare Pages permet de corriger ca en 5 minutes via public/_headers.',
+    action: 'Ajouter dans public/_headers :\n/*\n  X-Content-Type-Options: nosniff\n  X-Frame-Options: DENY\n  Strict-Transport-Security: max-age=31536000; includeSubDomains\n  Permissions-Policy: camera=(), microphone=(), geolocation=()',
+    impact: 'Securite + grade Observatory',
+  },
+];
+
+const ameliorationsUtiles = [
+  { titre: 'Expliquer le concept "bieres belges" en thaï pour les non-connaisseurs', detail: 'Khun Wichai (62 ans) et Khun Preecha (55 ans) ne connaissent pas forcement Duvel ou Tripel Karmeliet. 2-3 phrases dans la section bieres : "เบียร์เบลเยียมคืออะไร?" + une description courte du style pour chaque biere. Aide aussi les touristes asiatiques non-anglophones.' },
+  { titre: 'Completer la liste des bieres (viser 10-15 sur les 20+)', detail: 'Mint (barmaid) et Ploy (bartender) sont frustrées par la promesse "20+" avec seulement 5 listees. Ces profils professionnels ont une forte influence sur leur entourage. Lister minimum 10 bieres avec style, ABV et prix = moins de WhatsApp "qu\'est-ce que vous avez ce soir ?".' },
+  { titre: 'Ajouter une note de reservation pour occasions speciales', detail: 'Wan (lune de miel) et Khun Lek (manager resort) cherchent la procedure de reservation. Une simple note dans la section "Trouver nous" : "Reservation pour un groupe ou occasion speciale ? WhatsApp." Pas besoin d\'un vrai systeme.' },
+  { titre: 'Mentionner si le WiFi est disponible', detail: 'Krit (digital nomad) cherche l\'info WiFi. Une ligne dans "A propos" ou "Trouver nous" regle la question pour les nomades digitaux de plus en plus nombreux a Koh Tao.' },
+];
+
+const ameliorationsDiscuter = [
+  { emoji: '💳', titre: 'PromptPay / QR Code paiement mobile', detail: '"Cash recommande pour garantir la biere froide" est confus pour les Thaïs habitues aux QR codes PromptPay (usage massif). Si vous acceptez le QR, le mentionner. Si cash only, expliquer pourquoi (generator, refrigeration) pour que ca ne semble pas suspect.' },
+  { emoji: '💬', titre: 'Ajouter un lien LINE OA', detail: 'LINE est la messagerie dominante en Thaïlande (95% utilisateurs). WhatsApp est surtout pour les touristes etrangers. Un LINE Official Account avec QR code permettrait aux locaux de contacter le bar via leur app habituelle.' },
+  { emoji: '⭐', titre: 'Encourager les avis en thaï sur Google', detail: 'Les 196 avis sont majoritairement en langues etrangeres. Les clients thaïs qui cherchent sur Maps voient peu d\'avis dans leur langue. Un QR code au bar ou un message WhatsApp de remerciement peut changer ca.' },
+];
+
+const techVerdicts = [
+  { label: 'Vitesse', verdict: 'Non mesure', ok: false, detail: 'API PageSpeed indisponible — estimation : bon (Astro v5 statique sur Cloudflare Pages)' },
+  { label: 'Securite', verdict: 'C- (45/100)', ok: false, detail: '4 headers manquants : CSP, X-Frame-Options, X-Content-Type-Options, SRI' },
+  { label: 'SEO', verdict: 'Bon', ok: true, detail: 'Schema.org complet, H1 unique en thaï, robots.txt correct avec IA autorisees' },
+  { label: 'Donnees structurees', verdict: 'Bon', ok: true, detail: '2 blocs JSON-LD : BarOrPub + WebSite multilingue, AggregateRating 4.7/5' },
+  { label: 'Partage reseaux', verdict: 'Incomplet', ok: false, detail: 'og:type absent, twitter:card absent, og:url pointe vers production' },
+];
+
+const tech = {
+  observatory: { grade: 'C-', score: 45, testsOk: 6, testsTotal: 10 },
+  pagespdMobile: null, pagespdDesktop: null,
+  cwv: { lcp: 'Non mesure (API throttlee)', inp: 'Non mesure', cls: 'Non mesure' },
+  headers: [
+    { ok: false, h: 'Content Security Policy (CSP) — ABSENT (-25 pts)' },
+    { ok: false, h: 'X-Frame-Options — ABSENT (-20 pts)' },
+    { ok: false, h: 'X-Content-Type-Options — ABSENT (-5 pts)' },
+    { ok: false, h: 'Subresource Integrity (SRI) — ABSENT (-5 pts)' },
+    { ok: true, h: 'HTTPS / HSTS precharge — OK' },
+    { ok: true, h: 'CORS — Non applique (acceptable)' },
+    { ok: true, h: 'Cookies — Aucun detecte' },
+  ],
+  schema: [
+    { item: 'JSON-LD present (2 blocs)', ok: true },
+    { item: '@type BarOrPub / Restaurant — coherent', ok: true },
+    { item: 'name, url, description — presents', ok: true },
+    { item: 'address + geo (lat/lon) — presents', ok: true },
+    { item: 'telephone, openingHours — presents', ok: true },
+    { item: 'aggregateRating 4.7/5 (196 avis) — present', ok: true },
+    { item: 'founder (Niels + Pong) — present', ok: true },
+    { item: 'servesCuisine (Thai + Belgian) — present', ok: true },
+    { item: 'sameAs (Instagram) — probablement absent', ok: false },
+    { item: 'image / logo — a verifier', ok: false },
+  ],
+  og: [
+    { item: 'og:title', ok: true, val: 'Chill Beach Bar And Grill Koh Tao' },
+    { item: 'og:description', ok: true, val: 'Present (en anglais sur /th/ — a corriger)' },
+    { item: 'og:image', ok: true, val: 'https://chill-bar.pages.dev/images/og-image.jpg' },
+    { item: 'og:url', ok: false, val: 'Pointe vers production — a mettre a jour en prod' },
+    { item: 'og:type', ok: false, val: 'ABSENT — devrait etre "website"' },
+    { item: 'twitter:card', ok: false, val: 'ABSENT' },
+    { item: 'twitter:image', ok: false, val: 'ABSENT' },
+  ],
+  seo: [
+    { item: 'H1 unique en thaï — OK', ok: true },
+    { item: 'Hierarchie H2s coherente — OK', ok: true },
+    { item: 'robots.txt accessible + IA autorisees (GPTBot, ClaudeBot...)', ok: true },
+    { item: 'sitemap-index.xml present (16 URLs x 4 langues)', ok: true },
+    { item: 'HTTPS + redirection HTTP', ok: true },
+    { item: 'meta description de /th/ en anglais (pas en thaï)', ok: false },
+    { item: 'og:type manquant', ok: false },
+    { item: 'twitter:card manquant', ok: false },
+    { item: '4 headers securite manquants', ok: false },
+  ],
+};
+
+function decisionBorder(d: string) {
+  if (d === 'Convertit') return 'border-green-200';
+  if (d === 'Hesite') return 'border-amber-200';
+  return 'border-neutral-200';
+}
+function decisionBadge(d: string) {
+  if (d === 'Convertit') return 'bg-green-600';
+  if (d === 'Hesite') return 'bg-amber-500';
+  return 'bg-neutral-400';
+}
+
+const accentColor = '#E86C47';
+const accentGradient = 'linear-gradient(135deg, #E86C47, #D4572F)';
+---
+
+<BaseLayout title={title} description={description} noindex={true} lang="fr" frPath={`/echo/${slug}/th`}>
+
+  <!-- HERO -->
+  <section class="relative w-full px-6 py-20 md:py-28 overflow-hidden" style="background: #0A0A0A;">
+    <div class="absolute top-[20%] left-[10%] w-[500px] h-[500px] rounded-full blur-[180px] pointer-events-none" style={`background: ${accentColor}; opacity: 0.06;`}></div>
+    <div class="absolute bottom-[10%] right-[5%] w-[300px] h-[300px] rounded-full blur-[120px] pointer-events-none" style="background: #3b82f6; opacity: 0.04;"></div>
+    <div class="relative mx-auto max-w-4xl z-10">
+      <div class="mb-6 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5);">{formuleLabel} &middot; Rapport confidentiel &middot; Version TH</div>
+      <h1 class="mb-6 text-3xl md:text-4xl font-bold text-white leading-tight tracking-tight">{verdictHero}</h1>
+      <p class="mb-10 text-sm" style="color: rgba(255,255,255,0.4);">Site analyse : <a href={urlSite} target="_blank" rel="noopener" class="underline hover:text-white transition-colors">{urlSite}</a> &middot; {kpis.nbPersonas} visiteurs thaïlandais simules &middot; {dateAudit}</p>
+      <div class="grid grid-cols-3 gap-4">
+        <div class="rounded-xl p-5 text-center" style="background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2);"><div class="text-4xl md:text-5xl font-black text-green-400 mb-1">{kpis.nbConvertissent}</div><div class="text-sm text-green-400/70">vous contactent</div></div>
+        <div class="rounded-xl p-5 text-center" style="background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2);"><div class="text-4xl md:text-5xl font-black text-amber-400 mb-1">{kpis.nbHesitent}</div><div class="text-sm text-amber-400/70">hesitent</div></div>
+        <div class="rounded-xl p-5 text-center" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);"><div class="text-4xl md:text-5xl font-black mb-1" style="color: rgba(255,255,255,0.5);">{kpis.nbRepartent}</div><div class="text-sm" style="color: rgba(255,255,255,0.3);">repartent</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONSTAT + CANAUX -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="rounded-2xl p-6 md:p-8 mb-12 border-l-4" style={`background: rgba(232,108,71,0.04); border-color: ${accentColor};`}>
+      <p class="text-lg md:text-xl font-medium text-neutral-800 leading-relaxed">{constat}</p>
+    </div>
+    <h2 class="text-xl font-bold text-neutral-900 mb-2">D'ou viennent vos visiteurs thaïs</h2>
+    <p class="text-sm text-neutral-500 mb-6">Et combien vous contactent selon leur canal d'arrivee.</p>
+    <div class="space-y-4 mb-12">
+      {canalData.map(c => {
+        const color = c.rate >= 50 ? '#22c55e' : c.rate >= 25 ? '#f59e0b' : '#ef4444';
+        return (<div class="flex items-center gap-4"><div class="w-52 text-sm text-neutral-700 shrink-0">{c.canal}</div><div class="flex-1 h-3 bg-neutral-100 rounded-full overflow-hidden"><div class="h-full rounded-full transition-all" style={`width: ${c.rate}%; background: ${color}`}></div></div><div class="w-20 text-right"><span class="text-sm font-bold" style={`color: ${color}`}>{c.rate}%</span><span class="text-xs text-neutral-400 ml-1">({c.convert}/{c.nb})</span></div></div>);
+      })}
+    </div>
+    <details class="group"><summary class="flex items-center gap-2 cursor-pointer text-sm text-neutral-500 hover:text-neutral-700 py-2"><svg class="w-4 h-4 transition-transform group-open:rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>Voir les scores moyens</summary>
+      <div class="grid grid-cols-3 gap-4 mt-3">
+        {[{ label: 'Experience', val: kpis.experience },{ label: 'Confiance', val: kpis.confiance },{ label: 'Clarte', val: kpis.clarte }].map(s => {
+          const sColor = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500';
+          return (<div class="bg-white border border-neutral-200 rounded-xl p-4 text-center"><div class={`text-2xl font-bold mb-1 ${sColor}`}>{s.val}<span class="text-sm text-neutral-400">/10</span></div><div class="text-xs text-neutral-500">{s.label}</div></div>);
+        })}
+      </div>
+    </details>
+  </section>
+
+  <!-- ALERTES -->
+  <section class="py-12" style="background: #fefce8;">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center gap-3 mb-6">
+        <svg class="w-6 h-6 text-amber-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+        <div><h2 class="text-lg font-bold text-neutral-900">Problemes detectes</h2><p class="text-sm text-neutral-600">{alertes.filter(a => a.type === 'critique').length} critiques &middot; {alertes.filter(a => a.type === 'important').length} importants</p></div>
+      </div>
+      <div class="grid md:grid-cols-2 gap-4">
+        {alertes.map(a => (
+          <div class={`bg-white rounded-xl p-5 ${a.type === 'critique' ? 'border-2 border-red-300' : 'border border-amber-300'}`}>
+            <div class={`inline-block text-2xl font-black px-3 py-1 rounded-lg mb-3 ${a.type === 'critique' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>{a.chiffre}</div>
+            <p class="text-[10px] text-neutral-400 uppercase tracking-wider mb-1">{a.chiffreLabel}</p>
+            <h3 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h3>
+            <p class="text-xs text-neutral-600 leading-relaxed">{a.detail}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- VOS VISITEURS -->
+  <section class="py-16" style="background: #fafafa;">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs thaïlandais</h2>
+      <p class="text-neutral-600 mb-8">Voici ce qui se passe quand un Thaï cherche un bar sur Koh Tao et tombe sur votre version thaïe.</p>
+
+      {(['Convertit', 'Hesite', 'Quitte'] as const).map(decision => {
+        const filtered = personas.filter(p => p.decision === decision);
+        const labelMap = { Convertit: 'Ceux qui vous contactent', Hesite: 'Ceux qui hesitent', Quitte: 'Ceux qui repartent' };
+        const colorMap = {
+          Convertit: { dot: 'bg-green-500', text: 'text-green-800', sub: 'text-green-600' },
+          Hesite: { dot: 'bg-amber-500', text: 'text-amber-800', sub: 'text-amber-600' },
+          Quitte: { dot: 'bg-neutral-400', text: 'text-neutral-600', sub: 'text-neutral-500' }
+        };
+        const c = colorMap[decision];
+        return (
+          <div class="mb-10">
+            <h3 class={`text-base font-bold ${c.text} mb-4 flex items-center gap-2`}>
+              <span class={`w-2.5 h-2.5 rounded-full ${c.dot} inline-block`}></span>
+              {labelMap[decision]}
+              <span class={`text-sm font-normal ${c.sub}`}>({filtered.length})</span>
+            </h3>
+            <div class="space-y-3">
+              {filtered.map(p => (
+                <details class={`group bg-white rounded-xl overflow-hidden shadow-sm border ${decisionBorder(p.decision)}`}>
+                  <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                    <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                    <div class="flex-1 min-w-0">
+                      <div class="flex items-center gap-2 mb-1 flex-wrap">
+                        <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                        <span class={`text-[10px] ${decisionBadge(p.decision)} text-white px-1.5 py-0.5 rounded font-medium`}>{p.decisionLabel}</span>
+                      </div>
+                      <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                      <div class="flex flex-wrap items-center gap-1.5">
+                        <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                        <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                        <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                      </div>
+                    </div>
+                    <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                  </summary>
+                  <div class={`px-4 pb-5 border-t ${decisionBorder(p.decision)}`}>
+                    <div class="grid gap-4 text-xs mt-4">
+                      <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p><p class="text-neutral-600">{p.contexte}</p></div>
+                      <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Premiere impression (5 sec)</p><p class="text-neutral-600">{p.impression}</p></div>
+                      <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours sur le site</p><ol class="list-decimal list-inside space-y-1.5 text-neutral-600">{p.parcours.map(([section, reaction]) => (<li><strong class="text-neutral-800">{section}</strong>{reaction ? ` — ${reaction}` : ''}</li>))}</ol></div>
+                      <div class="bg-neutral-50 rounded-lg p-3"><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p><p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p><p class="text-neutral-600">Le site repond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> — {p.commentReponse}</p></div>
+                      <div class="grid grid-cols-2 gap-4">
+                        <div><p class="font-semibold text-green-700 mb-1.5">Points positifs</p><ul class="space-y-1 text-neutral-600">{p.positifs.map(pt => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">·</span>{pt}</li>)}</ul></div>
+                        <div><p class="font-semibold text-amber-700 mb-1.5">Frictions</p><ul class="space-y-1 text-neutral-600">{p.frictions.map(f => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">·</span>{f}</li>)}</ul></div>
+                      </div>
+                      {p.ceQuiFeraitBasculer && <div class="bg-amber-50 rounded-lg p-3"><p class="font-semibold text-amber-700 text-[10px] uppercase tracking-wider mb-1">{p.decision === 'Hesite' ? 'Ce qui le ferait passer a l\'action' : 'Ce qui l\'aurait retenu'}</p><p class="text-neutral-700 text-xs">{p.ceQuiFeraitBasculer}</p></div>}
+                      <div class="flex gap-6 pt-3 border-t border-neutral-100">{[{ label: 'Experience', val: p.exp },{ label: 'Confiance', val: p.conf },{ label: 'Clarte', val: p.clarte }].map(s => { const sc = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500'; return (<div class="text-center"><span class={`block text-lg font-bold ${sc}`}>{s.val}</span><span class="text-[10px] text-neutral-400">{s.label}</span></div>);})}</div>
+                    </div>
+                  </div>
+                </details>
+              ))}
+            </div>
+            {decision === 'Hesite' && (
+              <div class="rounded-xl p-5 mt-4 bg-amber-50 border border-amber-200 flex items-start gap-3">
+                <span class="text-lg shrink-0 mt-0.5">💡</span>
+                <div><p class="text-sm font-medium text-amber-900">Ces {kpis.nbHesitent} visiteurs ont besoin de vos services.</p><p class="text-xs text-amber-700 mt-1">Il leur manque un element de rassurance — souvent une photo d'ambiance ou le prix du Happy Hour bien visible. C'est votre plus gros levier de croissance sur le public thaï.</p></div>
+              </div>
+            )}
+            {decision === 'Quitte' && (
+              <div class="rounded-xl p-5 mt-4 bg-neutral-100 border border-neutral-200 flex items-start gap-3">
+                <span class="text-lg shrink-0 mt-0.5">📉</span>
+                <div><p class="text-sm font-medium text-neutral-800">Certains etaient hors cible — c'est normal.</p><p class="text-xs text-neutral-600 mt-1">Khun Sombat (pecheur, ne boit pas), le lyceen de 17 ans et la veille concurrentielle ne sont pas votre public. Ils ne generent pas de perte de chiffre d'affaires.</p></div>
+              </div>
+            )}
+          </div>
+        );
+      })}
+    </div>
+  </section>
+
+  <!-- RECOMMANDATIONS -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <h2 class="text-2xl font-bold text-neutral-900 mb-2">Ce qu'on recommande</h2>
+    <p class="text-neutral-600 mb-8">Actions concretes pour mieux convertir le public thaïlandais, classees par impact.</p>
+    <p class="text-sm font-semibold text-red-700 mb-4">Si vous ne changez que 5 choses :</p>
+    <div class="space-y-4 mb-12">
+      {ameliorationsHautes.map(a => (
+        <div class="bg-white border-2 border-red-200 rounded-xl p-6 shadow-sm">
+          <div class="flex items-start justify-between gap-4 mb-3">
+            <h4 class="font-bold text-neutral-900">{a.titre}</h4>
+            <span class="text-[10px] px-2 py-1 rounded-full bg-red-100 text-red-700 font-semibold shrink-0 whitespace-nowrap">{a.impact}</span>
+          </div>
+          <p class="text-sm text-neutral-600 mb-3">{a.pourquoi}</p>
+          <div class="bg-neutral-50 rounded-lg px-4 py-3 flex items-start gap-2">
+            <svg class="w-4 h-4 text-neutral-400 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+            <p class="text-xs text-neutral-700 whitespace-pre-line">{a.action}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+    <h3 class="text-lg font-bold text-neutral-900 mb-2">Utile aussi</h3>
+    <div class="grid md:grid-cols-2 gap-4 mb-12">
+      {ameliorationsUtiles.map(a => (<div class="bg-white border border-neutral-200 rounded-xl p-5"><h4 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h4><p class="text-xs text-neutral-600">{a.detail}</p></div>))}
+    </div>
+    <h3 class="text-lg font-bold text-neutral-900 mb-2">A discuter</h3>
+    <p class="text-sm text-neutral-500 mb-4">Decisions business — pas de bonne ou mauvaise reponse.</p>
+    <div class="space-y-3 mb-12">
+      {ameliorationsDiscuter.map(a => (<div class="bg-neutral-50 border border-neutral-200 rounded-xl p-4 flex gap-3"><span class="text-lg shrink-0">{a.emoji}</span><div><h4 class="font-semibold text-neutral-900 text-sm mb-0.5">{a.titre}</h4><p class="text-xs text-neutral-600">{a.detail}</p></div></div>))}
+    </div>
+
+    {showUpsell && (
+      <div class="rounded-2xl p-8 text-center border-2 border-dashed" style={`border-color: ${accentColor}; background: rgba(232,108,71,0.03);`}>
+        <p class="text-lg font-bold text-neutral-900 mb-2">{kpis.nbPersonas} visiteurs confirment des tendances claires.</p>
+        <p class="text-sm text-neutral-600 mb-6">Avec 100 visiteurs (Echo Pro), vous obtenez une fiabilite statistique : analyse par canal, par maturite d'achat, et un appel de 30 min pour parcourir le rapport ensemble.</p>
+        <a href="/echo/" class="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-xl transition-all shadow-md hover:-translate-y-0.5" style={`background: ${accentGradient};`}>
+          Echo Pro — 250€ <span class="text-xs opacity-70 ml-1">(100 visiteurs + appel 30 min)</span>
+        </a>
+      </div>
+    )}
+  </section>
+
+  <!-- TECHNIQUE -->
+  <section class="py-16 border-t border-neutral-200">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-2">Sous le capot</h2>
+      <p class="text-neutral-600 mb-8">Ce que les outils techniques disent de votre site.</p>
+      <div class="flex flex-wrap gap-3 mb-10">
+        {techVerdicts.map(v => (
+          <div class={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium ${v.ok ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
+            {v.ok
+              ? <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              : <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            }
+            <span>{v.label}</span>
+            <span class="text-xs opacity-70">{v.verdict}</span>
+          </div>
+        ))}
+      </div>
+
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+          <div class="flex items-center gap-3"><span class="text-base">&#9203;</span><div><h3 class="font-semibold text-neutral-900 text-sm">Vitesse du site (PageSpeed)</h3><p class="text-[11px] text-neutral-500">{techVerdicts[0].detail}</p></div></div>
+          <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <div class="px-4 pb-4 border-t border-neutral-100 pt-4">
+          <p class="text-xs text-neutral-600 mb-3">L'API Google PageSpeed a ete indisponible lors de cet audit (rate limit). Estimation : Astro v5 statique + Cloudflare Pages = architecture tres favorable.</p>
+          <div class="grid grid-cols-3 gap-3">
+            {[{ label: 'LCP', val: tech.cwv.lcp },{ label: 'INP', val: tech.cwv.inp },{ label: 'CLS', val: tech.cwv.cls }].map(s => (
+              <div class="bg-neutral-50 rounded-lg p-3 text-center"><div class="text-xs font-bold text-neutral-500 mb-1">{s.label}</div><div class="text-xs text-neutral-400">{s.val}</div></div>
+            ))}
+          </div>
+          <p class="text-xs text-neutral-400 mt-3">Verifier : <a href="https://pagespeed.web.dev/?url=https://chill-bar.pages.dev/th/" target="_blank" rel="noopener" class="underline">pagespeed.web.dev</a></p>
+        </div>
+      </details>
+
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+          <div class="flex items-center gap-3"><span class="text-base">&#128274;</span><div><h3 class="font-semibold text-neutral-900 text-sm">Securite — Grade {tech.observatory.grade} ({tech.observatory.score}/100)</h3><p class="text-[11px] text-neutral-500">{techVerdicts[1].detail}</p></div></div>
+          <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <div class="px-4 pb-4 border-t border-neutral-100 pt-4">
+          <p class="text-xs text-neutral-500 mb-3">Tests reussis : {tech.observatory.testsOk}/{tech.observatory.testsTotal} — source : Mozilla Observatory</p>
+          <div class="space-y-2">{tech.headers.map(s => (<div class="flex items-start gap-2 text-xs text-neutral-600"><span class={`shrink-0 font-bold ${s.ok ? 'text-green-500' : 'text-red-400'}`}>{s.ok ? '✓' : '✗'}</span><span>{s.h}</span></div>))}</div>
+        </div>
+      </details>
+
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+          <div class="flex items-center gap-3"><span class="text-base">&#128202;</span><div><h3 class="font-semibold text-neutral-900 text-sm">Donnees structurees (Schema.org)</h3><p class="text-[11px] text-neutral-500">{techVerdicts[3].detail}</p></div></div>
+          <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <div class="px-4 pb-4 border-t border-neutral-100 pt-4"><div class="space-y-2">{tech.schema.map(s => (<div class="flex items-start gap-2 text-xs text-neutral-600"><span class={`shrink-0 font-bold ${s.ok ? 'text-green-500' : 'text-red-400'}`}>{s.ok ? '✓' : '✗'}</span><span>{s.item}</span></div>))}</div></div>
+      </details>
+
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+          <div class="flex items-center gap-3"><span class="text-base">&#128200;</span><div><h3 class="font-semibold text-neutral-900 text-sm">Open Graph (partage reseaux sociaux)</h3><p class="text-[11px] text-neutral-500">{techVerdicts[4].detail}</p></div></div>
+          <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <div class="px-4 pb-4 border-t border-neutral-100 pt-4"><div class="space-y-2">{tech.og.map(s => (<div class="flex items-start gap-2 text-xs text-neutral-600"><span class={`shrink-0 font-bold ${s.ok ? 'text-green-500' : 'text-red-400'}`}>{s.ok ? '✓' : '✗'}</span><span><strong>{s.item}</strong>{s.val ? ` — ${s.val}` : ''}</span></div>))}</div></div>
+      </details>
+
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+          <div class="flex items-center gap-3"><span class="text-base">&#128269;</span><div><h3 class="font-semibold text-neutral-900 text-sm">SEO technique</h3><p class="text-[11px] text-neutral-500">{techVerdicts[2].detail}</p></div></div>
+          <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <div class="px-4 pb-4 border-t border-neutral-100 pt-4"><div class="space-y-2">{tech.seo.map(s => (<div class="flex items-start gap-2 text-xs text-neutral-600"><span class={`shrink-0 font-bold ${s.ok ? 'text-green-500' : 'text-red-400'}`}>{s.ok ? '✓' : '✗'}</span><span>{s.item}</span></div>))}</div></div>
+      </details>
+    </div>
+  </section>
+
+  <!-- METHODOLOGIE -->
+  <section class="py-12 bg-neutral-50 border-t border-neutral-100">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-lg font-bold text-neutral-900 mb-4">Comment on a fait ca</h2>
+      <div class="grid md:grid-cols-3 gap-4 text-sm text-neutral-600">
+        <div class="bg-white rounded-xl p-4 border border-neutral-200"><div class="text-2xl font-black text-neutral-300 mb-2">1</div><p class="font-semibold text-neutral-800 mb-1">Scraping complet</p><p class="text-xs">Lecture de la page d'accueil /th/, des pages legal et privacy, du sitemap global (16 URLs en 4 langues). Extraction des menus, prix, services, temoignages, coordonnees.</p></div>
+        <div class="bg-white rounded-xl p-4 border border-neutral-200"><div class="text-2xl font-black text-neutral-300 mb-2">2</div><p class="font-semibold text-neutral-800 mb-1">Audit technique</p><p class="text-xs">Mozilla Observatory (securite C-), Schema.org JSON-LD (2 blocs), Open Graph, meta SEO, robots.txt avec IA autorisees. PageSpeed non disponible — estimation qualitative.</p></div>
+        <div class="bg-white rounded-xl p-4 border border-neutral-200"><div class="text-2xl font-black text-neutral-300 mb-2">3</div><p class="font-semibold text-neutral-800 mb-1">20 personas thaïs</p><p class="text-xs">Profils realistes de Thaïlandais : locaux de Koh Tao, touristes de Bangkok/Ko Samui, digital nomads, influenceurs TikTok/Instagram, plongeurs, prescripteurs locaux (manager resort, restauratrice).</p></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="py-16 border-t border-neutral-200">
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-3">4.7/5 sur Google, "เบียร์เย็น ทรายอุ่น" — vous avez tout pour cartonner aupres des Thaïs.</h2>
+      <p class="text-neutral-600 mb-8">Il manque des photos d'ambiance, un lien Instagram visible, et le prix Happy Hour en evidence. Trois ajouts simples qui feraient passer votre taux de conversion de 65% a 80%+.</p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="tel:+33688766648" class="inline-flex items-center gap-2 px-6 py-3 bg-green-600 text-white font-semibold rounded-xl transition-all shadow-md hover:-translate-y-0.5 hover:bg-green-700">Appeler Marc — 06 88 76 66 48</a>
+        <a href="https://wa.me/33688766648" class="inline-flex items-center gap-2 px-6 py-3 border border-neutral-300 text-neutral-700 font-semibold rounded-xl transition-all hover:border-neutral-500">WhatsApp</a>
+        <a href="/echo/" class="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-xl transition-all shadow-md hover:-translate-y-0.5" style={`background: ${accentGradient};`}>Echo Pro — 250€</a>
+      </div>
+      <p class="text-xs text-neutral-400 mt-6">Ce rapport est confidentiel et non indexe par Google &middot; Version TH &middot; Genere le {dateAudit}</p>
+    </div>
+  </section>
+
+</BaseLayout>
