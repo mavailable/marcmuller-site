@@ -5,6 +5,7 @@ import sitemap from '@astrojs/sitemap';
 export default defineConfig({
   site: 'https://marcm.fr',
   output: 'static',
+  trailingSlash: 'always',
   compressHTML: true,
   integrations: [
     sitemap({
@@ -16,6 +17,7 @@ export default defineConfig({
         !page.includes('/supaire') &&
         !page.includes('/audit/') &&
         !page.includes('/echo/') &&
+        !page.includes('/aide/') &&
         !page.includes('/formation'),
       i18n: {
         defaultLocale: 'fr',

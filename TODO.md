@@ -18,7 +18,9 @@
 
 ## P1 -- Haute priorite
 
-_Aucun probleme critique restant._
+- [ ] **/echo** Section `#formulaire` : `<section>` manque `relative` -- le `div absolute inset-0` n'est pas confine (deborde ou se positionne par rapport a l'ancetre positionne le plus proche) (`echo.astro:446`)
+- [ ] **/audit-gratuit** Pas de `redirect` dans le formulaire -- apres soumission, Web3Forms redirige vers sa propre page au lieu de `/merci` (`audit-gratuit.astro:100`)
+- [ ] **/audit-gratuit** Honeypot incorrect : `name="_gotcha"` (Formspree) au lieu de `name="botcheck"` (Web3Forms) -- le filtre anti-spam ne fonctionne pas (`audit-gratuit.astro:102`)
 
 ## P2 -- Moyenne priorite
 
@@ -29,8 +31,15 @@ _Aucun probleme critique restant._
 - [ ] **SEO** Ajouter des pages ville pour Colmar et Mulhouse (declares dans `areaServed` de business.ts)
 - [ ] **Contenu** Pages ville Nancy/Strasbourg : les exemples clients semblent fictifs -- a remplacer par des cas reels ou a supprimer
 - [ ] **Legal** Ajouter mention CNIL (droit de reclamation aupres de la CNIL) dans la politique de confidentialite
+- [ ] **/audit-gratuit** Pas de case a cocher RGPD -- formulaire Echo en a une, audit-gratuit collecte aussi un email (`audit-gratuit.astro:96`)
+- [ ] **/echo** Chiffre `520+` visiteurs simules hardcode en dur (`echo.astro:412`) -- viser une source dynamique coherente avec `vm.rapportsGeneres`
+- [ ] **/audit-gratuit** Pas d'`ogImage` specifique -- utilise l'OG generique (moins percutant pour le partage)
 
 ## P3 -- Basse priorite
+
+- [ ] **/echo** Accentuation manquante dans les badges uppercase : "Resultats" / "Comment ca marche" / "Le probleme" / "Extrait de rapport reel" / "Experience" / "Clarte" (`echo.astro:84,208,252,126,295,303`)
+- [ ] **/echo** Typo persona Karim : "DMulti Services" -- espace ou orthographe incorrecte (`echo.astro:53`)
+- [ ] **/audit-gratuit** Pas de Schema.org (FAQ ou WebPage) -- `/echo` en a un
 
 - [ ] **A11y** Audit axe DevTools complet sur toutes les pages
 - [ ] **Design** Considerer l'ajout d'un dark mode (Tailwind le supporte nativement)
