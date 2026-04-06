@@ -71,6 +71,24 @@ const {
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const siteUrl = Astro.site?.toString().replace(/\/$/, '');
 
+const allCities = [
+  { name: 'Strasbourg', path: '/creation-site-web-strasbourg/' },
+  { name: 'Metz', path: '/creation-site-web-metz/' },
+  { name: 'Nancy', path: '/creation-site-web-nancy/' },
+  { name: 'Colmar', path: '/creation-site-web-colmar/' },
+  { name: 'Mulhouse', path: '/creation-site-web-mulhouse/' },
+];
+const otherCities = allCities.filter(c => c.name !== ville);
+
+const breadcrumbSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'BreadcrumbList',
+  itemListElement: [
+    { '@type': 'ListItem', position: 1, name: 'Accueil', item: `${business.url}/` },
+    { '@type': 'ListItem', position: 2, name: `Création site web ${ville}`, item: `${business.url}/creation-site-web-${ville.toLowerCase().normalize('NFD').replace(/[\u0300-\u036f]/g, '')}/` },
+  ],
+};
+
 // LocalBusiness Schema JSON-LD
 const localBusinessSchema = {
   "@context": "https://schema.org",
@@ -226,6 +244,26 @@ const faqSchema = {
       </div>
     </section>
 
+    <!-- Autres villes -->
+    <section class="py-12 md:py-16 bg-white border-t border-[var(--color-border)]">
+      <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <p class="text-sm font-semibold uppercase tracking-wider text-[var(--color-text-muted)] mb-6">Aussi disponible à</p>
+        <div class="flex flex-wrap items-center justify-center gap-3">
+          {otherCities.map(({ name, path }) => (
+            <a
+              href={path}
+              class="rounded-full border border-[var(--color-border)] px-5 py-2 text-sm font-medium text-[var(--color-text)] transition-all hover:border-[var(--color-accent)] hover:text-[var(--color-accent)] hover:shadow-sm"
+              data-umami-event="geo-crosslink"
+              data-umami-event-from={ville.toLowerCase()}
+              data-umami-event-to={name.toLowerCase()}
+            >
+              Site web {name}
+            </a>
+          ))}
+        </div>
+      </div>
+    </section>
+
     <!-- CTA Section -->
     <section class="py-16 md:py-20 bg-[#1A1A1A]">
       <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
@@ -255,4 +293,5 @@ const faqSchema = {
   <!-- JSON-LD Schema Scripts -->
   <script type="application/ld+json" set:html={JSON.stringify(localBusinessSchema)} />
   <script type="application/ld+json" set:html={JSON.stringify(faqSchema)} />
+  <script type="application/ld+json" set:html={JSON.stringify(breadcrumbSchema)} />
 </BaseLayout>
