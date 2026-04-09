@@ -18,9 +18,9 @@
 
 ## P1 -- Haute priorite
 
-- [ ] **/echo** Section `#formulaire` : `<section>` manque `relative` -- le `div absolute inset-0` n'est pas confine (deborde ou se positionne par rapport a l'ancetre positionne le plus proche) (`echo.astro:446`)
-- [ ] **/audit-gratuit** Pas de `redirect` dans le formulaire -- apres soumission, Web3Forms redirige vers sa propre page au lieu de `/merci` (`audit-gratuit.astro:100`)
-- [ ] **/audit-gratuit** Honeypot incorrect : `name="_gotcha"` (Formspree) au lieu de `name="botcheck"` (Web3Forms) -- le filtre anti-spam ne fonctionne pas (`audit-gratuit.astro:102`)
+- [x] **/echo** Section `#formulaire` : `<section>` manque `relative` -- le `div absolute inset-0` n'est pas confine (deborde ou se positionne par rapport a l'ancetre positionne le plus proche) (`echo.astro:446`)
+- [x] **/audit-gratuit** Pas de `redirect` dans le formulaire -- apres soumission, Web3Forms redirige vers sa propre page au lieu de `/merci` (`audit-gratuit.astro:100`)
+- [x] **/audit-gratuit** Honeypot incorrect : `name="_gotcha"` (Formspree) au lieu de `name="botcheck"` (Web3Forms) -- le filtre anti-spam ne fonctionne pas (`audit-gratuit.astro:102`)
 
 ## P2 -- Moyenne priorite
 
