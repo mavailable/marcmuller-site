@@ -26,7 +26,7 @@
 
 - [x] **Perf** Compresser `og-default.png` (267 Ko -> cible < 100 Ko) -- converti en og-default.jpg (100 Ko, jpeg q55)
 - [x] **SEO** Verifier le numero de telephone affiche -- OK, +33688766648 coherent partout dans src/, 776 uniquement dans docs audit historiques
-- [ ] **Contenu** Enrichir les temoignages clients (2 avis Google actuellement, viser 5+)
+- [x] **Contenu** Enrichir les temoignages clients -- 4 avis GBP reels affiches (David Merly, Jennifer De Groeve, Anthony Marques, Angelo Grossi), textes complets
 - [ ] **SEO** Configurer Google Search Console et Bing Webmaster Tools
 - [x] **SEO** Pages ville Colmar et Mulhouse -- existaient deja, exemples fictifs corriges
 - [x] **Contenu** Pages ville Nancy/Strasbourg/Colmar/Mulhouse : exemples fictifs remplaces par formulations generiques par secteur

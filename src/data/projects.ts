@@ -117,7 +117,7 @@ export const projects: Project[] = [
     ],
     stack: ['Astro', 'Tailwind', 'Cloudflare', 'Keystatic'],
     review: {
-      text: "Si vous avez envie d'un site web Marc est la personne qu'il vous faut sans hésitation. Réactif, inventif, il sait exactement où il va pour que votre site soit parfait et surtout il est attentif à l'attente du client. Je le recommande à 1000%. Un très grand MERCI, grâce à vous j'ai une meilleure visibilité pour mon entreprise.",
+      text: "Si vous avez envie d'un site web Marc est la personne qu'il vous faut sans hésitation. Réactif, inventif, il sait exactement où il va pour que votre site soit parfait et surtout il est attentif à l'attente du client. Je le recommande à 1000%. Un très grand MERCI pour votre travail, grâce à vous j'ai une meilleure visibilité pour mon entreprise. AU TOOOOOOP.",
       author: 'David Merly',
       role: 'DMulti Services',
       googleUrl: 'https://www.google.com/maps/contrib/117411737389498874981',
@@ -264,7 +264,7 @@ export const projects: Project[] = [
     ],
     stack: ['Astro', 'Tailwind', 'Cloudflare', 'Keystatic'],
     review: {
-      text: "Marc a créé mon site en un temps record et c'était exactement ce que j'attendais. Dès le premier jet ! Il n'a fallu que quelques échanges pour que le contenu soit validé et mes demandes comprises. Bref, du travail de pro à un prix juste. Collègues entrepreneurs : foncez !",
+      text: "Marc a créé mon site en un temps record et c'était exactement ce que j'attendais. Dès le premier jet ! Il n'a fallu que quelques échanges (facilités par sa grande réactivité) pour que le contenu soit validé et mes demandes comprises. Bref, du travail de pro à un prix juste. Collègues entrepreneurs : foncez !",
       author: 'Angelo Grossi',
       role: 'Coach prise de parole',
       googleUrl: 'https://www.google.com/maps/contrib/104411737389498874981',
