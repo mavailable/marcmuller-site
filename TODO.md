@@ -31,7 +31,7 @@
 - [ ] **SEO** Ajouter des pages ville pour Colmar et Mulhouse (declares dans `areaServed` de business.ts)
 - [ ] **Contenu** Pages ville Nancy/Strasbourg : les exemples clients semblent fictifs -- a remplacer par des cas reels ou a supprimer
 - [ ] **Legal** Ajouter mention CNIL (droit de reclamation aupres de la CNIL) dans la politique de confidentialite
-- [ ] **/audit-gratuit** Pas de case a cocher RGPD -- formulaire Echo en a une, audit-gratuit collecte aussi un email (`audit-gratuit.astro:96`)
+- [x] **/audit-gratuit** Pas de case a cocher RGPD -- formulaire Echo en a une, audit-gratuit collecte aussi un email (`audit-gratuit.astro:96`)
 - [ ] **/echo** Chiffre `520+` visiteurs simules hardcode en dur (`echo.astro:412`) -- viser une source dynamique coherente avec `vm.rapportsGeneres`
 - [ ] **/audit-gratuit** Pas d'`ogImage` specifique -- utilise l'OG generique (moins percutant pour le partage)
 
