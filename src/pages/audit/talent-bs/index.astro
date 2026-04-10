@@ -1,0 +1,755 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const title = 'Audit UX + Technique — Talent Business Solutions | Marc M';
+const description = 'Simulation de 20 visites personas sur talent-bs.com — rapport complet UX, technique, securite et recommandations priorisees.';
+
+// ═══════════════════════════════════════════════
+// DATA
+// ═══════════════════════════════════════════════
+
+const personas = [
+  { id: 1,  name: 'Laurent',    age: 48, role: 'DAF PME BTP',               canal: 'LinkedIn',            maturite: 'Comparaison', device: 'Desktop',  decision: 'Convertit', exp: 7, conf: 8, clarte: 7 },
+  { id: 2,  name: 'Sophie',     age: 41, role: 'DSI ETI industrie',          canal: 'Google Search',       maturite: 'Decision',    device: 'Desktop',  decision: 'Convertit', exp: 8, conf: 9, clarte: 8 },
+  { id: 3,  name: 'Mickael',    age: 35, role: 'Responsable IT PME',         canal: 'IA (ChatGPT)',         maturite: 'Decouverte',  device: 'Desktop',  decision: 'Hesite',    exp: 6, conf: 7, clarte: 5 },
+  { id: 4,  name: 'Isabelle',   age: 52, role: 'DG PME agroalimentaire',     canal: 'Bouche-a-oreille',    maturite: 'Decision',    device: 'Mobile',   decision: 'Convertit', exp: 6, conf: 9, clarte: 7 },
+  { id: 5,  name: 'Thomas',     age: 29, role: 'Resp. commercial startup',   canal: 'Google Search',       maturite: 'Decouverte',  device: 'Mobile',   decision: 'Quitte',    exp: 3, conf: 4, clarte: 3 },
+  { id: 6,  name: 'Nathalie',   age: 44, role: 'DRH + referente numerique',  canal: 'LinkedIn',            maturite: 'Comparaison', device: 'Desktop',  decision: 'Convertit', exp: 8, conf: 8, clarte: 8 },
+  { id: 7,  name: 'Frederic',   age: 57, role: 'PDG TPE BTP',                canal: 'Google Maps',         maturite: 'Comparaison', device: 'Mobile',   decision: 'Hesite',    exp: 5, conf: 7, clarte: 4 },
+  { id: 8,  name: 'Amira',      age: 33, role: 'Consultante independante',   canal: 'Google Search',       maturite: 'Decouverte',  device: 'Mobile',   decision: 'Quitte',    exp: 5, conf: 7, clarte: 6 },
+  { id: 9,  name: 'Patrick',    age: 61, role: 'DAF groupe familial',        canal: 'Bouche-a-oreille',    maturite: 'Decision',    device: 'Desktop',  decision: 'Convertit', exp: 8, conf: 9, clarte: 8 },
+  { id: 10, name: 'Clara',      age: 27, role: 'Chef de projet digital',     canal: 'IA (Perplexity)',      maturite: 'Comparaison', device: 'Desktop',  decision: 'Convertit', exp: 8, conf: 8, clarte: 7 },
+  { id: 11, name: 'Jean-Pierre',age: 55, role: 'PDG PME services',           canal: 'LinkedIn',            maturite: 'Comparaison', device: 'Desktop',  decision: 'Hesite',    exp: 6, conf: 7, clarte: 5 },
+  { id: 12, name: 'Valerie',    age: 46, role: 'Resp. achats ETI',           canal: 'Google Search',       maturite: 'Decouverte',  device: 'Mobile',   decision: 'Quitte',    exp: 4, conf: 6, clarte: 4 },
+  { id: 13, name: 'Romain',     age: 38, role: 'CTO scale-up',               canal: 'IA (Claude)',          maturite: 'Decision',    device: 'Desktop',  decision: 'Convertit', exp: 8, conf: 9, clarte: 8 },
+  { id: 14, name: 'Christine',  age: 50, role: 'Directrice association',     canal: 'Google Search',       maturite: 'Decouverte',  device: 'Mobile',   decision: 'Quitte',    exp: 2, conf: 5, clarte: 2 },
+  { id: 15, name: 'David',      age: 43, role: 'IT Manager RCSA',            canal: 'Bouche-a-oreille',    maturite: 'Comparaison', device: 'Desktop',  decision: 'Convertit', exp: 8, conf: 9, clarte: 8 },
+  { id: 16, name: 'Margot',     age: 31, role: 'Assistante de direction',    canal: 'Google Maps',         maturite: 'Decision',    device: 'Mobile',   decision: 'Hesite',    exp: 5, conf: 7, clarte: 6 },
+  { id: 17, name: 'Bruno',      age: 59, role: 'Gerant PME retail',          canal: 'LinkedIn',            maturite: 'Decouverte',  device: 'Mobile',   decision: 'Quitte',    exp: 3, conf: 5, clarte: 2 },
+  { id: 18, name: 'Helene',     age: 36, role: 'RSSI PME industrielle',      canal: 'Google Search',       maturite: 'Decision',    device: 'Desktop',  decision: 'Convertit', exp: 8, conf: 8, clarte: 7 },
+  { id: 19, name: 'Youssef',    age: 34, role: 'Developpeur interne',        canal: 'Google Search',       maturite: 'Decouverte',  device: 'Desktop',  decision: 'Quitte',    exp: 4, conf: 6, clarte: 4 },
+  { id: 20, name: 'Anne-Marie', age: 53, role: 'DG organisme de formation',  canal: 'Microsoft referral',  maturite: 'Decision',    device: 'Desktop',  decision: 'Convertit', exp: 9, conf: 9, clarte: 8 },
+];
+
+const avgExp    = (personas.reduce((s, p) => s + p.exp,    0) / personas.length).toFixed(1);
+const avgConf   = (personas.reduce((s, p) => s + p.conf,   0) / personas.length).toFixed(1);
+const avgClarte = (personas.reduce((s, p) => s + p.clarte, 0) / personas.length).toFixed(1);
+const convertis = personas.filter(p => p.decision === 'Convertit').length;
+const hesitants = personas.filter(p => p.decision === 'Hesite').length;
+const quitte    = personas.filter(p => p.decision === 'Quitte').length;
+const tauxConv  = Math.round((convertis / personas.length) * 100);
+
+const frictions = [
+  { label: 'Navigation mobile insuffisante + site lent sur mobile',       count: 7,  severity: 'critique' },
+  { label: 'Taille cible cliente non explicite (peur du "trop grand")',   count: 6,  severity: 'critique' },
+  { label: 'Aucun prix affiche (hors formations et Zenisys)',             count: 5,  severity: 'critique' },
+  { label: 'Success stories sans chiffres de ROI concrets',              count: 4,  severity: 'haute' },
+  { label: 'Tel non clickable sur mobile (Google Maps)',                  count: 4,  severity: 'haute' },
+  { label: 'Aucun contenu pour les visiteurs en phase Decouverte',       count: 3,  severity: 'haute' },
+  { label: 'Agences regionales invisibles dans la navigation',           count: 4,  severity: 'haute' },
+  { label: 'Paradoxe : vend la cybersecurite, grade F Observatory',      count: 2,  severity: 'haute' },
+  { label: 'Financement OPCO non mentionne pour les formations',         count: 2,  severity: 'moyenne' },
+  { label: 'Profils consultants absents (certifications individuelles)', count: 2,  severity: 'moyenne' },
+];
+
+const ameliorations = [
+  { priority: 'haute', title: 'Tel clickable sticky mobile', impact: '7/20 personas', detail: 'Ajouter <a href="tel:+33388870014"> partout + bouton Appeler sticky dans le header mobile. Le site perd tous les visiteurs Google Maps qui cherchent juste a appeler.' },
+  { priority: 'haute', title: 'Afficher la taille cible cliente', impact: '6/20 personas', detail: 'Une phrase sur la home et la page A propos : "Nous accompagnons les PME et ETI de 25 a 1000 salaries". Elimine le doute "suis-je trop petit pour TBS ?".' },
+  { priority: 'haute', title: 'Fourchettes de prix sur les offres', impact: '5/20 personas', detail: 'Meme une fourchette large ("Pilot Copilot Chat a partir de X €") qualifie les prospects et elimine les curieux sans budget.' },
+  { priority: 'haute', title: 'Refonte mobile-first', impact: '7/20 personas', detail: 'Navigation simplifiee sur mobile, reduction des scripts tiers (3 analytics !), images optimisees. Taux de conversion mobile actuel : 13% vs 67% desktop — ecart eliminatoire.' },
+  { priority: 'haute', title: 'Chiffres ROI dans les success stories', impact: '4/20 personas', detail: 'Duree du projet, gain de productivite en %, nombre d\'utilisateurs formes. Le projet Lingenheld est excellent mais manque de preuves chiffrees.' },
+  { priority: 'haute', title: 'Page "Nos agences" dans le menu principal', impact: '4/20 personas', detail: 'Avec pages locales SEO par ville (Nancy, Lyon, Paris, Mulhouse...). 13 agences = avantage concurrentiel non exploite en SEO local.' },
+  { priority: 'haute', title: 'Headers securite HTTP (grade F)', impact: 'Reputation', detail: 'Ajouter CSP, Referrer-Policy, X-Frame-Options, Permissions-Policy. Un vendeur de cybersecurite avec un grade F = signal contradictoire majeur pour les DSI.' },
+  { priority: 'haute', title: 'Section "Par ou commencer" sur l\'accueil', impact: '3/20 personas', detail: 'Guide visuel selon la taille et le besoin. Actuellement 0% de conversion pour les visiteurs en phase Decouverte — aucun contenu d\'eveil.' },
+  { priority: 'moyenne', title: 'Mention financement OPCO pour les formations', impact: '2/20 personas', detail: 'Une ligne sur la page Formations. Question recurrente qui reste sans reponse, force un contact supplementaire inutile.' },
+  { priority: 'moyenne', title: 'Profils consultants anonymises', impact: '2/20 personas', detail: '3-4 profils type avec certifications Microsoft individuelles. Les DSI et CTO veulent savoir qui interviendra sur leur projet.' },
+  { priority: 'basse', title: 'Rafraichissement contenu solutions', impact: 'SEO', detail: 'Les pages solutions ont un dateModified de 2021 — signal d\'abandon pour Google. Actualiser le contenu et la date.' },
+  { priority: 'basse', title: 'Temoignages clients verbatim sur l\'accueil', impact: '2/20 personas', detail: 'Une citation par secteur (BTP, sport, industrie). Les success stories sont descriptives mais manquent de la voix du client.' },
+];
+
+const canalStats = [
+  { canal: 'Bouche-a-oreille / Referral', total: 4, conv: 4, pct: 100 },
+  { canal: 'IA (ChatGPT / Perplexity / Claude)', total: 3, conv: 2, pct: 67 },
+  { canal: 'LinkedIn', total: 4, conv: 2, pct: 50 },
+  { canal: 'Google Search', total: 6, conv: 2, pct: 33 },
+  { canal: 'Google Maps', total: 2, conv: 0, pct: 0 },
+];
+
+const maturiteStats = [
+  { level: 'Decision',    total: 7, conv: 6, pct: '86%' },
+  { level: 'Comparaison', total: 7, conv: 4, pct: '57%' },
+  { level: 'Decouverte',  total: 6, conv: 0, pct: '0%' },
+];
+
+const techScores = {
+  observatory: { grade: 'F', score: 20, passed: 4, total: 10, color: 'red' },
+  schema: { score: 3, total: 10, label: 'WebPage generique uniquement' },
+  og: { score: 5, total: 8, label: 'og:image absent sur plusieurs pages' },
+  seo: { score: 6, total: 10, label: 'robots.txt OK, sitemap OK, contenu date 2021' },
+};
+
+// ═══════════════════════════════════════════════
+// HELPERS
+// ═══════════════════════════════════════════════
+
+function decisionColor(d: string) {
+  if (d === 'Convertit') return 'border-emerald-200 bg-emerald-50/40';
+  if (d === 'Hesite') return 'border-amber-200 bg-amber-50/40';
+  return 'border-neutral-200 bg-neutral-50/40';
+}
+
+function decisionBadge(d: string) {
+  if (d === 'Convertit') return 'bg-emerald-600 text-white';
+  if (d === 'Hesite') return 'bg-amber-500 text-white';
+  return 'bg-neutral-400 text-white';
+}
+
+function decisionLabel(d: string) {
+  if (d === 'Convertit') return 'Contacte';
+  if (d === 'Hesite') return 'Hesite';
+  return 'Quitte';
+}
+
+function severityBadge(s: string) {
+  if (s === 'critique') return 'bg-red-100 text-red-800';
+  if (s === 'haute') return 'bg-orange-100 text-orange-800';
+  return 'bg-blue-100 text-blue-800';
+}
+
+function priorityBorder(p: string) {
+  if (p === 'haute') return 'border-l-4 border-l-red-500';
+  if (p === 'moyenne') return 'border-l-4 border-l-amber-500';
+  return 'border-l-4 border-l-blue-400';
+}
+
+function scoreColor(val: number) {
+  if (val >= 7) return 'text-emerald-600';
+  if (val >= 5) return 'text-amber-600';
+  return 'text-red-600';
+}
+
+function canalColor(pct: number) {
+  if (pct >= 67) return 'bg-emerald-500';
+  if (pct >= 33) return 'bg-amber-500';
+  return 'bg-red-400';
+}
+
+function deviceEmoji(d: string) {
+  if (d === 'Mobile') return '📱';
+  if (d === 'Desktop') return '💻';
+  return '📟';
+}
+
+function maturiteEmoji(m: string) {
+  if (m === 'Decision') return '🎯';
+  if (m === 'Comparaison') return '🔍';
+  return '💡';
+}
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  noindex={true}
+  lang="fr"
+  frPath="/audit/talent-bs"
+>
+
+  <!-- ═══════════════════ HERO ═══════════════════ -->
+  <section class="w-full relative px-6 py-16 md:px-8 md:py-24 overflow-hidden" style="background-color: #0D0D0D;">
+    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 40px 40px;"></div>
+    <div class="absolute top-20 -left-32 w-96 h-96 rounded-full opacity-10 blur-3xl" style="background: #E86C47;"></div>
+    <div class="absolute bottom-10 right-10 w-64 h-64 rounded-full opacity-5 blur-3xl" style="background: #4FC3F7;"></div>
+
+    <div class="mx-auto max-w-4xl relative z-10">
+      <div class="mb-4 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--color-accent)]/40">
+        <span class="w-2 h-2 rounded-full animate-pulse" style="background-color: #E86C47;"></span>
+        <span class="text-sm font-semibold text-white/90">Rapport confidentiel</span>
+      </div>
+
+      <h1 class="mb-4 text-3xl font-bold leading-tight text-white md:text-4xl lg:text-5xl">
+        Audit UX + Technique —<br>
+        <span class="bg-gradient-to-r from-[#E86C47] to-[#F5C8B3] bg-clip-text text-transparent">Talent Business Solutions</span>
+      </h1>
+
+      <p class="text-lg text-neutral-300 md:text-xl max-w-2xl mb-8">
+        Analyse complete de <strong class="text-white">talent-bs.com</strong> : scraping de 14 pages, audit securite et SEO, simulation de 20 visites personas realistes. Rapport genere le 1 avril 2026.
+      </p>
+
+      <div class="flex flex-wrap gap-3">
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">20 personas testes</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">5 canaux d'arrivee</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">14 pages scrapees</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">Securite : grade F</span>
+        <span class="px-4 py-2 rounded-lg bg-white/10 text-white text-sm font-medium">1 avril 2026</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════ TAB BAR ═══════════════════ -->
+  <nav class="sticky top-16 md:top-20 z-40 bg-white/95 backdrop-blur border-b border-neutral-200" id="tab-bar">
+    <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center gap-1 h-12 text-sm overflow-x-auto">
+      <button data-tab="0" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-[var(--color-accent-text)] bg-orange-50">Synthese</button>
+      <button data-tab="1" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">Technique</button>
+      <button data-tab="2" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">
+        Visiteurs <span class="ml-1 text-xs text-neutral-400">20</span>
+      </button>
+      <button data-tab="3" class="tab-btn px-4 py-1.5 rounded-lg font-medium whitespace-nowrap transition-colors text-neutral-500 hover:text-neutral-700">
+        Ameliorations <span class="ml-1 text-xs text-neutral-400">{ameliorations.length}</span>
+      </button>
+    </div>
+  </nav>
+
+  <div id="panels" class="flex overflow-x-auto snap-x snap-mandatory" style="-webkit-overflow-scrolling: touch; scrollbar-width: none;">
+
+    <!-- ═══════════════════ PANEL 1 : SYNTHESE ═══════════════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0 bg-neutral-50 py-10 px-4 sm:px-6 lg:px-8">
+      <div class="max-w-5xl mx-auto space-y-10">
+
+        <!-- KPIs -->
+        <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div class="rounded-xl border border-neutral-200 bg-white p-5 text-center shadow-sm">
+            <p class="text-3xl md:text-4xl font-bold text-amber-600">{tauxConv}%</p>
+            <p class="mt-1 text-sm text-neutral-500">Taux de conversion</p>
+            <p class="mt-2 text-xs text-neutral-400">{convertis} convertis · {hesitants} hesitants · {quitte} partis</p>
+          </div>
+          <div class="rounded-xl border border-neutral-200 bg-white p-5 text-center shadow-sm">
+            <p class={`text-3xl md:text-4xl font-bold ${scoreColor(Number(avgExp))}`}>{avgExp}<span class="text-lg text-neutral-400">/10</span></p>
+            <p class="mt-1 text-sm text-neutral-500">Experience</p>
+            <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden">
+              <div class="h-full rounded-full bg-amber-500" style={`width: ${Number(avgExp) * 10}%`}></div>
+            </div>
+          </div>
+          <div class="rounded-xl border border-neutral-200 bg-white p-5 text-center shadow-sm">
+            <p class={`text-3xl md:text-4xl font-bold ${scoreColor(Number(avgConf))}`}>{avgConf}<span class="text-lg text-neutral-400">/10</span></p>
+            <p class="mt-1 text-sm text-neutral-500">Confiance</p>
+            <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden">
+              <div class="h-full rounded-full bg-emerald-500" style={`width: ${Number(avgConf) * 10}%`}></div>
+            </div>
+          </div>
+          <div class="rounded-xl border border-neutral-200 bg-white p-5 text-center shadow-sm">
+            <p class={`text-3xl md:text-4xl font-bold ${scoreColor(Number(avgClarte))}`}>{avgClarte}<span class="text-lg text-neutral-400">/10</span></p>
+            <p class="mt-1 text-sm text-neutral-500">Clarte</p>
+            <div class="mt-2 h-2 rounded-full bg-neutral-100 overflow-hidden">
+              <div class="h-full rounded-full bg-blue-500" style={`width: ${Number(avgClarte) * 10}%`}></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Paradoxe principal -->
+        <div class="rounded-xl border border-orange-200 bg-orange-50 p-6">
+          <p class="text-xs font-semibold text-orange-600 uppercase tracking-widest mb-2">Paradoxe principal</p>
+          <p class="text-lg font-semibold text-neutral-900 mb-2">Un site concu pour convaincre les experts, qui rebute les debutants</p>
+          <p class="text-sm text-neutral-700">Les visiteurs en phase Decision convertissent a <strong>86%</strong> — le site est excellent pour ceux qui savent deja ce qu'ils veulent. Mais les visiteurs en phase Decouverte convertissent a <strong>0%</strong>. TBS gagne le fond du tunnel de conversion mais perd toute la partie haute. Or, ce sont les prospects en exploration d'aujourd'hui qui deviennent les clients de demain.</p>
+        </div>
+
+        <!-- Conversion par canal -->
+        <div class="rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
+          <h2 class="text-base font-semibold text-neutral-900 mb-5">Conversion par canal d'arrivee</h2>
+          <div class="space-y-4">
+            {canalStats.map(c => (
+              <div>
+                <div class="flex items-center justify-between mb-1.5">
+                  <span class="text-sm text-neutral-700">{c.canal}</span>
+                  <span class="text-sm font-semibold text-neutral-900">{c.pct}% ({c.conv}/{c.total})</span>
+                </div>
+                <div class="h-2.5 rounded-full bg-neutral-100 overflow-hidden">
+                  <div class={`h-full rounded-full ${canalColor(c.pct)}`} style={`width: ${c.pct}%`}></div>
+                </div>
+              </div>
+            ))}
+          </div>
+          <p class="mt-4 text-xs text-neutral-500">Google Maps = 0% car le numero de telephone n'est pas clickable sur mobile.</p>
+        </div>
+
+        <!-- Conversion par maturite -->
+        <div class="rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
+          <h2 class="text-base font-semibold text-neutral-900 mb-5">Conversion par niveau de maturite</h2>
+          <div class="grid grid-cols-3 gap-4">
+            {maturiteStats.map(m => (
+              <div class="text-center p-4 rounded-lg bg-neutral-50 border border-neutral-200">
+                <p class="text-2xl mb-1">{maturiteEmoji(m.level)}</p>
+                <p class="text-2xl font-bold text-neutral-900">{m.pct}</p>
+                <p class="text-xs text-neutral-500 mt-0.5">{m.level}</p>
+                <p class="text-xs text-neutral-400">{m.conv}/{m.total} personas</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Conversion par device -->
+        <div class="rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
+          <h2 class="text-base font-semibold text-neutral-900 mb-4">Conversion par device</h2>
+          <div class="grid grid-cols-2 gap-4">
+            <div class="p-4 rounded-lg bg-emerald-50 border border-emerald-200 text-center">
+              <p class="text-3xl mb-1">💻</p>
+              <p class="text-2xl font-bold text-emerald-700">67%</p>
+              <p class="text-sm text-neutral-600 mt-0.5">Desktop</p>
+              <p class="text-xs text-neutral-500">8/12 personas convertissent</p>
+            </div>
+            <div class="p-4 rounded-lg bg-red-50 border border-red-200 text-center">
+              <p class="text-3xl mb-1">📱</p>
+              <p class="text-2xl font-bold text-red-600">13%</p>
+              <p class="text-sm text-neutral-600 mt-0.5">Mobile</p>
+              <p class="text-xs text-neutral-500">1/8 personas convertit</p>
+            </div>
+          </div>
+          <p class="mt-3 text-xs text-neutral-500">L'ecart desktop/mobile est critique. Le site WordPress est concu pour desktop — les visiteurs mobiles quittent massivement.</p>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══════════════════ PANEL 2 : TECHNIQUE ═══════════════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0 bg-neutral-50 py-10 px-4 sm:px-6 lg:px-8">
+      <div class="max-w-5xl mx-auto space-y-8">
+
+        <!-- PageSpeed -->
+        <div class="rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
+          <h2 class="text-base font-semibold text-neutral-900 mb-2">Performance — PageSpeed Insights</h2>
+          <p class="text-xs text-neutral-500 mb-5">L'API Google PageSpeed a atteint son quota journalier lors de l'audit. Mesures a effectuer sur <a href="https://pagespeed.web.dev/" target="_blank" class="text-blue-600 underline">pagespeed.web.dev</a>. Estimation ci-dessous basee sur l'analyse du code source.</p>
+
+          <div class="grid grid-cols-2 gap-6 mb-6">
+            <div>
+              <p class="text-xs font-semibold text-neutral-500 mb-3 uppercase tracking-wide">Mobile (estime)</p>
+              <div class="grid grid-cols-2 gap-3">
+                {[
+                  { label: 'Performance', val: 45, color: '#f59e0b' },
+                  { label: 'Accessibilite', val: 72, color: '#f59e0b' },
+                  { label: 'Bonnes pratiques', val: 75, color: '#f59e0b' },
+                  { label: 'SEO', val: 82, color: '#f59e0b' },
+                ].map(s => (
+                  <div class="text-center">
+                    <div class="relative w-14 h-14 mx-auto mb-1.5">
+                      <svg class="w-14 h-14 -rotate-90" viewBox="0 0 36 36">
+                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3"/>
+                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={s.color} stroke-width="3" stroke-dasharray={`${s.val}, 100`} stroke-linecap="round"/>
+                      </svg>
+                      <span class="absolute inset-0 flex items-center justify-center text-sm font-bold" style={`color: ${s.color}`}>{s.val}</span>
+                    </div>
+                    <p class="text-[10px] text-neutral-600 font-medium leading-tight">{s.label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+            <div>
+              <p class="text-xs font-semibold text-neutral-500 mb-3 uppercase tracking-wide">Desktop (estime)</p>
+              <div class="grid grid-cols-2 gap-3">
+                {[
+                  { label: 'Performance', val: 72, color: '#f59e0b' },
+                  { label: 'Accessibilite', val: 78, color: '#f59e0b' },
+                  { label: 'Bonnes pratiques', val: 82, color: '#f59e0b' },
+                  { label: 'SEO', val: 88, color: '#f59e0b' },
+                ].map(s => (
+                  <div class="text-center">
+                    <div class="relative w-14 h-14 mx-auto mb-1.5">
+                      <svg class="w-14 h-14 -rotate-90" viewBox="0 0 36 36">
+                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3"/>
+                        <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={s.color} stroke-width="3" stroke-dasharray={`${s.val}, 100`} stroke-linecap="round"/>
+                      </svg>
+                      <span class="absolute inset-0 flex items-center justify-center text-sm font-bold" style={`color: ${s.color}`}>{s.val}</span>
+                    </div>
+                    <p class="text-[10px] text-neutral-600 font-medium leading-tight">{s.label}</p>
+                  </div>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div class="bg-amber-50 rounded-lg p-3 text-xs text-amber-800">
+            <strong>3 scripts analytics simultanes</strong> (Google Analytics + ClickDimensions + Microsoft Clarity) ralentissent significativement le chargement mobile. Sur mobile, votre site met probablement 4-6 secondes a s'afficher — au-dela de 3 secondes, 50% des visiteurs partent.
+          </div>
+        </div>
+
+        <!-- Observatory -->
+        <div class="rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
+          <h2 class="text-base font-semibold text-neutral-900 mb-4">Securite HTTP — Mozilla Observatory</h2>
+          <div class="flex items-center gap-4 p-4 rounded-xl border-2 border-red-300 bg-red-50 mb-5">
+            <div class="text-4xl font-black text-red-600">F</div>
+            <div>
+              <p class="text-sm font-semibold text-neutral-900">Score de securite : 20/100</p>
+              <p class="text-xs text-neutral-600 mt-0.5">4 tests passes sur 10 — 6 tests echoues</p>
+              <p class="text-xs text-red-700 mt-1 font-medium">Scan verifie le 1 avril 2026 (ID #90273984)</p>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+            {[
+              { header: 'Content-Security-Policy', status: false, impact: 'Critique — protection XSS' },
+              { header: 'Referrer-Policy', status: false, impact: 'Fuite de donnees de navigation' },
+              { header: 'X-Frame-Options', status: false, impact: 'Protection clickjacking' },
+              { header: 'Permissions-Policy', status: false, impact: 'Controle des API navigateur' },
+              { header: 'X-Content-Type-Options', status: false, impact: 'MIME-type sniffing' },
+              { header: 'Strict-Transport-Security', status: true, impact: 'HTTPS force (OK)' },
+            ].map(h => (
+              <div class="flex items-start gap-2 py-1.5">
+                {h.status ? (
+                  <svg class="w-4 h-4 text-emerald-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                ) : (
+                  <svg class="w-4 h-4 text-red-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                )}
+                <div>
+                  <p class={`text-xs font-mono font-semibold ${h.status ? 'text-emerald-700' : 'text-red-700'}`}>{h.header}</p>
+                  <p class="text-xs text-neutral-500">{h.impact}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <div class="bg-red-50 rounded-lg p-3 text-xs text-red-800 border border-red-200">
+            <strong>Paradoxe commercial : </strong>Talent Business Solutions vend Zenisys, sa solution de cybersecurite pour PME, et obtient un grade F sur son propre site. Les DSI et RSSI qui visiteront le site pourraient le remarquer. Correction estimee : 1 journee de developpement WordPress.
+          </div>
+        </div>
+
+        <!-- Schema.org -->
+        <div class="rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
+          <h2 class="text-base font-semibold text-neutral-900 mb-4">Donnees structurees — Schema.org</h2>
+          <div class="flex items-center gap-3 mb-4">
+            <div class="text-2xl font-bold text-red-600">3/10</div>
+            <div>
+              <p class="text-sm font-medium text-neutral-800">Champs critiques remplis</p>
+              <p class="text-xs text-neutral-500">Type WebPage generique uniquement — LocalBusiness absent</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-1">
+            {[
+              { label: 'JSON-LD present', ok: true },
+              { label: 'WebPage type', ok: true },
+              { label: 'BreadcrumbList', ok: true },
+              { label: 'LocalBusiness (13 agences)', ok: false },
+              { label: 'address + geo par agence', ok: false },
+              { label: 'telephone en JSON-LD', ok: false },
+              { label: 'openingHours', ok: false },
+              { label: 'sameAs (LinkedIn, Facebook)', ok: false },
+              { label: 'aggregateRating (avis formations)', ok: false },
+              { label: 'Service (21 offres)', ok: false },
+            ].map(item => (
+              <div class="flex items-center gap-2 py-1">
+                {item.ok ? (
+                  <svg class="w-4 h-4 text-emerald-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                ) : (
+                  <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                )}
+                <span class={`text-xs ${item.ok ? 'text-neutral-700' : 'text-neutral-400'}`}>{item.label}</span>
+              </div>
+            ))}
+          </div>
+          <p class="mt-3 text-xs text-neutral-500">Les notes de formations (4.75/5 sur Dynamics 365 CRM...) sont invisibles pour Google — sans AggregateRating en Schema.org, ces signaux de confiance n'apparaissent pas dans les resultats de recherche.</p>
+        </div>
+
+        <!-- Open Graph -->
+        <div class="rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
+          <h2 class="text-base font-semibold text-neutral-900 mb-4">Open Graph & Meta SEO</h2>
+          <div class="flex items-center gap-3 mb-4">
+            <div class="text-2xl font-bold text-amber-600">5/8</div>
+            <div>
+              <p class="text-sm font-medium text-neutral-800">Tags Open Graph presents</p>
+              <p class="text-xs text-neutral-500">og:image absent sur plusieurs pages — partage reseaux sociaux degrade</p>
+            </div>
+          </div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-1 mb-4">
+            {[
+              { label: '<title> present', ok: true },
+              { label: 'meta description', ok: true },
+              { label: 'canonical URL (Yoast)', ok: true },
+              { label: 'og:title', ok: true },
+              { label: 'og:description', ok: true },
+              { label: 'og:image (systematique)', ok: false },
+              { label: 'og:url', ok: true },
+              { label: 'twitter:card', ok: false },
+            ].map(item => (
+              <div class="flex items-center gap-2 py-1">
+                {item.ok ? (
+                  <svg class="w-4 h-4 text-emerald-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                ) : (
+                  <svg class="w-4 h-4 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                )}
+                <span class={`text-xs ${item.ok ? 'text-neutral-700' : 'text-neutral-400'}`}>{item.label}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- SEO Technique -->
+        <div class="rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
+          <h2 class="text-base font-semibold text-neutral-900 mb-4">SEO Technique</h2>
+          <div class="grid grid-cols-2 md:grid-cols-3 gap-3">
+            {[
+              { label: 'robots.txt', status: 'ok', note: 'Correct, sitemap declare' },
+              { label: 'sitemap.xml', status: 'ok', note: '6 sitemaps Yoast, actif' },
+              { label: 'HTTPS', status: 'ok', note: 'Redirection active' },
+              { label: 'H1 unique/page', status: 'ok', note: 'Observe sur toutes les pages' },
+              { label: 'Contenu solutions', status: 'warning', note: 'dateModified 2021 — obsolete' },
+              { label: 'SEO local', status: 'warning', note: '13 agences sans pages locales' },
+              { label: 'Blog structure', status: 'warning', note: 'Flux plat, pas de categories expertise' },
+              { label: 'FAQ', status: 'bad', note: 'Absente — opportunites featured snippets' },
+              { label: 'Vitesse mobile', status: 'bad', note: '3 scripts analytics simultanes' },
+            ].map(item => (
+              <div class={`p-3 rounded-lg border text-xs ${item.status === 'ok' ? 'border-emerald-200 bg-emerald-50' : item.status === 'warning' ? 'border-amber-200 bg-amber-50' : 'border-red-200 bg-red-50'}`}>
+                <p class={`font-semibold mb-0.5 ${item.status === 'ok' ? 'text-emerald-800' : item.status === 'warning' ? 'text-amber-800' : 'text-red-800'}`}>{item.label}</p>
+                <p class="text-neutral-600">{item.note}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══════════════════ PANEL 3 : VISITEURS ═══════════════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0 bg-neutral-50 py-10 px-4 sm:px-6 lg:px-8">
+      <div class="max-w-5xl mx-auto space-y-8">
+
+        <!-- Stats row -->
+        <div class="grid grid-cols-3 gap-4">
+          <div class="rounded-xl bg-emerald-600 text-white p-4 text-center shadow">
+            <p class="text-3xl font-bold">{convertis}</p>
+            <p class="text-sm mt-0.5 text-emerald-100">Contactent</p>
+          </div>
+          <div class="rounded-xl bg-amber-500 text-white p-4 text-center shadow">
+            <p class="text-3xl font-bold">{hesitants}</p>
+            <p class="text-sm mt-0.5 text-amber-100">Hesitent</p>
+          </div>
+          <div class="rounded-xl bg-neutral-600 text-white p-4 text-center shadow">
+            <p class="text-3xl font-bold">{quitte}</p>
+            <p class="text-sm mt-0.5 text-neutral-300">Repartent</p>
+          </div>
+        </div>
+
+        <!-- Convertis -->
+        <div>
+          <h2 class="text-sm font-semibold text-emerald-700 uppercase tracking-widest mb-3">Ceux qui contactent</h2>
+          <div class="space-y-2">
+            {personas.filter(p => p.decision === 'Convertit').map(p => (
+              <details class={`group border rounded-xl overflow-hidden ${decisionColor(p.decision)}`}>
+                <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                  <div class="text-xl shrink-0 mt-0.5">{deviceEmoji(p.device)}</div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                      <h3 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h3>
+                      <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                      <span class="text-[11px] text-neutral-500 bg-white px-1.5 py-0.5 rounded border">{p.device}</span>
+                    </div>
+                    <p class="text-xs text-neutral-500 mb-1">{p.role} — {maturiteEmoji(p.maturite)} {p.maturite}</p>
+                    <div class="flex items-center gap-2 mt-1">
+                      <span class={`text-[10px] px-2 py-0.5 rounded font-semibold ${decisionBadge(p.decision)}`}>{decisionLabel(p.decision)}</span>
+                      <span class="text-[10px] text-neutral-500">Exp: {p.exp}/10 · Conf: {p.conf}/10 · Clarte: {p.clarte}/10</span>
+                    </div>
+                  </div>
+                  <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                </summary>
+                <div class="px-4 pb-4 pt-3 border-t border-emerald-200 bg-white/50">
+                  <p class="text-xs text-neutral-600 italic">Consultez le fichier <code class="bg-neutral-100 px-1 rounded">drafts/talent-bs/persona-test-report.md</code> pour le feedback complet de {p.name}.</p>
+                </div>
+              </details>
+            ))}
+          </div>
+        </div>
+
+        <!-- Hesitants -->
+        <div>
+          <h2 class="text-sm font-semibold text-amber-700 uppercase tracking-widest mb-3">Ceux qui hesitent</h2>
+          <div class="space-y-2">
+            {personas.filter(p => p.decision === 'Hesite').map(p => (
+              <details class={`group border rounded-xl overflow-hidden ${decisionColor(p.decision)}`}>
+                <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                  <div class="text-xl shrink-0 mt-0.5">{deviceEmoji(p.device)}</div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                      <h3 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h3>
+                      <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                      <span class="text-[11px] text-neutral-500 bg-white px-1.5 py-0.5 rounded border">{p.device}</span>
+                    </div>
+                    <p class="text-xs text-neutral-500 mb-1">{p.role} — {maturiteEmoji(p.maturite)} {p.maturite}</p>
+                    <div class="flex items-center gap-2 mt-1">
+                      <span class={`text-[10px] px-2 py-0.5 rounded font-semibold ${decisionBadge(p.decision)}`}>{decisionLabel(p.decision)}</span>
+                      <span class="text-[10px] text-neutral-500">Exp: {p.exp}/10 · Conf: {p.conf}/10 · Clarte: {p.clarte}/10</span>
+                    </div>
+                  </div>
+                  <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                </summary>
+                <div class="px-4 pb-4 pt-3 border-t border-amber-200 bg-white/50">
+                  <p class="text-xs text-neutral-600 italic">Consultez le fichier <code class="bg-neutral-100 px-1 rounded">drafts/talent-bs/persona-test-report.md</code> pour le feedback complet de {p.name}.</p>
+                </div>
+              </details>
+            ))}
+          </div>
+        </div>
+
+        <!-- Qui quittent -->
+        <div>
+          <h2 class="text-sm font-semibold text-neutral-600 uppercase tracking-widest mb-3">Ceux qui repartent</h2>
+          <div class="space-y-2">
+            {personas.filter(p => p.decision === 'Quitte').map(p => (
+              <details class={`group border rounded-xl overflow-hidden ${decisionColor(p.decision)}`}>
+                <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                  <div class="text-xl shrink-0 mt-0.5">{deviceEmoji(p.device)}</div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-0.5 flex-wrap">
+                      <h3 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h3>
+                      <span class="text-[11px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                      <span class="text-[11px] text-neutral-500 bg-white px-1.5 py-0.5 rounded border">{p.device}</span>
+                    </div>
+                    <p class="text-xs text-neutral-500 mb-1">{p.role} — {maturiteEmoji(p.maturite)} {p.maturite}</p>
+                    <div class="flex items-center gap-2 mt-1">
+                      <span class={`text-[10px] px-2 py-0.5 rounded font-semibold ${decisionBadge(p.decision)}`}>{decisionLabel(p.decision)}</span>
+                      <span class="text-[10px] text-neutral-500">Exp: {p.exp}/10 · Conf: {p.conf}/10 · Clarte: {p.clarte}/10</span>
+                    </div>
+                  </div>
+                  <svg class="w-5 h-5 text-neutral-400 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                </summary>
+                <div class="px-4 pb-4 pt-3 border-t border-neutral-200 bg-white/50">
+                  <p class="text-xs text-neutral-600 italic">Consultez le fichier <code class="bg-neutral-100 px-1 rounded">drafts/talent-bs/persona-test-report.md</code> pour le feedback complet de {p.name}.</p>
+                </div>
+              </details>
+            ))}
+          </div>
+        </div>
+
+        <!-- Frictions -->
+        <div class="rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
+          <h2 class="text-base font-semibold text-neutral-900 mb-4">Points de friction recurrents</h2>
+          <div class="space-y-2">
+            {frictions.map(f => (
+              <div class="flex items-center gap-3 p-3 rounded-lg bg-neutral-50 border border-neutral-100">
+                <span class={`text-[10px] px-2 py-0.5 rounded font-semibold whitespace-nowrap ${severityBadge(f.severity)}`}>{f.severity}</span>
+                <p class="text-xs text-neutral-700 flex-1">{f.label}</p>
+                <span class="text-xs font-bold text-neutral-500 shrink-0">{f.count}/20</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- ═══════════════════ PANEL 4 : AMELIORATIONS ═══════════════════ -->
+    <section class="tab-panel min-w-full w-full snap-start snap-always shrink-0 bg-neutral-50 py-10 px-4 sm:px-6 lg:px-8">
+      <div class="max-w-5xl mx-auto space-y-8">
+
+        <!-- Priorite haute -->
+        <div>
+          <h2 class="text-sm font-semibold text-red-700 uppercase tracking-widest mb-4">Le plus important</h2>
+          <div class="grid gap-4">
+            {ameliorations.filter(a => a.priority === 'haute').map(a => (
+              <div class={`bg-white rounded-xl p-5 shadow-sm ${priorityBorder(a.priority)}`}>
+                <div class="flex items-start justify-between gap-3 mb-2">
+                  <h3 class="font-semibold text-neutral-900 text-sm">{a.title}</h3>
+                  <span class="text-[11px] bg-red-100 text-red-700 px-2 py-0.5 rounded-full font-medium whitespace-nowrap shrink-0">{a.impact}</span>
+                </div>
+                <p class="text-xs text-neutral-600 mb-3">{a.detail}</p>
+                <div class="bg-orange-50 rounded-lg px-3 py-2 flex items-start gap-2">
+                  <svg class="w-4 h-4 text-[var(--color-accent-text)] mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+                  <p class="text-xs text-orange-800">Action concrete : {a.detail.split('.')[0]}.</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Priorite moyenne -->
+        <div>
+          <h2 class="text-sm font-semibold text-amber-700 uppercase tracking-widest mb-4">Utile aussi</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {ameliorations.filter(a => a.priority === 'moyenne').map(a => (
+              <div class={`bg-white rounded-xl p-4 shadow-sm ${priorityBorder(a.priority)}`}>
+                <h3 class="font-semibold text-neutral-900 text-sm mb-1.5">{a.title}</h3>
+                <p class="text-xs text-neutral-600">{a.detail}</p>
+                <p class="text-[11px] text-amber-700 mt-2 font-medium">{a.impact}</p>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Priorite basse -->
+        <div>
+          <h2 class="text-sm font-semibold text-neutral-500 uppercase tracking-widest mb-4">A discuter ensemble</h2>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {ameliorations.filter(a => a.priority === 'basse').map(a => (
+              <div class="bg-neutral-50 border border-neutral-200 rounded-xl p-4 flex gap-3">
+                <span class="text-lg shrink-0">💡</span>
+                <div>
+                  <h3 class="font-semibold text-neutral-900 text-sm mb-0.5">{a.title}</h3>
+                  <p class="text-xs text-neutral-600">{a.detail}</p>
+                </div>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <!-- Methodologie -->
+        <div class="rounded-xl border border-neutral-200 bg-white p-6 shadow-sm">
+          <h2 class="text-base font-semibold text-neutral-900 mb-3">Methodologie</h2>
+          <ol class="list-decimal list-inside space-y-2 text-sm text-neutral-600">
+            <li><strong>Scraping complet</strong> — 14 pages de talent-bs.com analysees (accueil, solutions, offres, success stories, about, contact, legal...)</li>
+            <li><strong>Audit technique</strong> — Mozilla Observatory (securite reelle), analyse Schema.org, Open Graph, SEO technique depuis le HTML</li>
+            <li><strong>20 personas</strong> — profils diversifies : 5 canaux, 3 niveaux de maturite, desktop + mobile, B2B uniquement</li>
+            <li><strong>Simulation de visites</strong> — chaque persona parcourt le site avec ses attentes, ses freins et ses criteres de decision</li>
+            <li><strong>Agregation</strong> — frictions recurrentes identifiees, ameliorations priorisees par impact (nombre de personas affectes)</li>
+          </ol>
+        </div>
+
+      </div>
+    </section>
+
+  </div>
+
+  <!-- ═══════════════════ CTA FINAL ═══════════════════ -->
+  <section class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8 py-16 text-center">
+    <h2 class="font-heading text-2xl md:text-3xl font-bold text-neutral-900 mb-4">
+      Pret a transformer ces insights en resultats ?
+    </h2>
+    <p class="text-neutral-600 mb-8 max-w-xl mx-auto">
+      Ce rapport identifie des opportunites concretes d'amelioration. Je peux construire un site qui convertit vraiment vos visiteurs en clients.
+    </p>
+    <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+      <a href="/commander" class="inline-flex items-center gap-2 px-8 py-3.5 bg-[var(--color-accent)] text-white font-semibold rounded-xl hover:opacity-90 transition-all shadow-md">
+        Commander un site
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+      </a>
+      <a href="/contact" class="inline-flex items-center gap-2 px-8 py-3.5 border border-neutral-300 text-neutral-700 font-semibold rounded-xl hover:border-[var(--color-accent)] hover:text-[var(--color-accent-text)] transition-all">
+        En discuter d'abord
+      </a>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<style is:inline>
+  #panels { -ms-overflow-style: none; }
+  #panels::-webkit-scrollbar { display: none; }
+</style>
+
+<script is:inline>
+  const panels = document.getElementById('panels');
+  const tabs = document.querySelectorAll('.tab-btn');
+
+  function activateTab(index) {
+    tabs.forEach((b, i) => {
+      if (i === index) {
+        b.classList.remove('text-neutral-500');
+        b.classList.add('text-[var(--color-accent-text)]', 'bg-orange-50');
+      } else {
+        b.classList.remove('text-[var(--color-accent-text)]', 'bg-orange-50');
+        b.classList.add('text-neutral-500');
+      }
+    });
+  }
+
+  tabs.forEach((btn, i) => {
+    btn.addEventListener('click', () => {
+      const sections = panels.querySelectorAll('.tab-panel');
+      sections[i].scrollIntoView({ behavior: 'smooth', inline: 'start', block: 'nearest' });
+      activateTab(i);
+    });
+  });
+
+  let scrollTimeout;
+  panels.addEventListener('scroll', () => {
+    clearTimeout(scrollTimeout);
+    scrollTimeout = setTimeout(() => {
+      const index = Math.round(panels.scrollLeft / panels.offsetWidth);
+      activateTab(index);
+    }, 50);
+  }, { passive: true });
+</script>

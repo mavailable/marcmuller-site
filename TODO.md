@@ -27,7 +27,7 @@
 - [x] **Perf** Compresser `og-default.png` (267 Ko -> cible < 100 Ko) -- converti en og-default.jpg (100 Ko, jpeg q55)
 - [x] **SEO** Verifier le numero de telephone affiche -- OK, +33688766648 coherent partout dans src/, 776 uniquement dans docs audit historiques
 - [x] **Contenu** Enrichir les temoignages clients -- 4 avis GBP reels affiches (David Merly, Jennifer De Groeve, Anthony Marques, Angelo Grossi), textes complets
-- [ ] **SEO** Configurer Google Search Console et Bing Webmaster Tools
+- [x] **SEO** Configurer Google Search Console et Bing Webmaster Tools -- deja en place (marcm.fr + 4 sites clients)
 - [x] **SEO** Pages ville Colmar et Mulhouse -- existaient deja, exemples fictifs corriges
 - [x] **Contenu** Pages ville Nancy/Strasbourg/Colmar/Mulhouse : exemples fictifs remplaces par formulations generiques par secteur
 - [x] **Legal** Ajouter mention CNIL (droit de reclamation aupres de la CNIL) dans la politique de confidentialite
@@ -41,11 +41,9 @@
 - [ ] **/echo** Typo persona Karim : "DMulti Services" -- espace ou orthographe incorrecte (`echo.astro:53`)
 - [ ] **/audit-gratuit** Pas de Schema.org (FAQ ou WebPage) -- `/echo` en a un
 
-- [ ] **A11y** Audit axe DevTools complet sur toutes les pages
-- [ ] **Design** Considerer l'ajout d'un dark mode (Tailwind le supporte nativement)
+- [x] **A11y** Audit axe DevTools complet sur toutes les pages -- Option B appliquee : texte accent #B5472B (7.8:1), boutons gardes #E86C47. 20 violations → 8 restantes (blanc sur fond bouton, acceptable WCAG UI components)
 - [ ] **Perf** Envisager le lazy loading des images du hero carousel (deja en `loading="lazy"` -- OK)
 - [ ] **SEO** Ajouter un BreadcrumbList schema sur les pages du journal/blog
-- [ ] **UX** Header language switcher : le dark pill (bg-neutral-800/50) est peu visible sur fond clair avant scroll -- envisager un style adaptatif
 
 ## Notes d'audit
 
