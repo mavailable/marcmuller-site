@@ -1,228 +1,225 @@
 ---
 import BaseLayout from '../../layouts/BaseLayout.astro';
+import SectionTitle from '../../components/SectionTitle.astro';
 import SchemaOrg from '../../components/SchemaOrg.astro';
 import { business } from '../../data/business';
-import { getClientProjects, getSampleProjects } from '../../data/projects';
+import { getProjectsForCarousel, getClientProjects, getSampleProjects } from '../../data/projects';
 
 const { sitesRealises, sitesTotal } = business;
 const progressPercent = Math.round((sitesRealises / sitesTotal) * 100);
 const totalProjects = getClientProjects().length + getSampleProjects().length;
 
+// Hero projects: use portfolio carousel (EN-friendly), fallback to homepage
+const rawHero = getProjectsForCarousel('portfolio').length >= 3
+  ? getProjectsForCarousel('portfolio')
+  : getProjectsForCarousel('homepage');
+const heroProjects = rawHero.slice(0, 3).map(p => ({
+  img: p.screenshot,
+  name: p.titleEn || p.title,
+  sub: p.sectorEn || p.sector,
+  id: p.id,
+  url: p.url,
+}));
+
+// Reviews come from projects.ts (French verbatim preserved, see originalLanguage note below)
+const reviewProjects = getProjectsForCarousel('homepage').filter(p => p.review);
+
 const faqItems = [
   {
     question: "How much does a website cost?",
-    answer: "From €490 for a one-page site. Multi-page from €1,290, custom from €1,990. Hosting, domain name and maintenance included for the first year."
+    answer: "€490 for a professional Starter Site, delivered in 7 days. More complex projects (multi-page, blog, business-specific features) are quoted individually. Hosting and domain are included."
   },
   {
-    question: "How long does it take to build a website?",
-    answer: "On average 7 working days for an Essential site, 10 to 14 days for a Multi-page. Every project starts with a free discovery call."
+    question: "How is a €490 website possible?",
+    answer: "No sales team, no office, no WordPress to maintain. I use modern tools (Astro, Tailwind) and a streamlined process that lets me ship in 7 days what an agency takes 3 weeks to produce. The price reflects efficiency, not corners cut. Every site scores 100 on Lighthouse."
+  },
+  {
+    question: "How long does it take?",
+    answer: "7 working days for a Starter Site. 2 to 4 weeks for a bespoke project. Every project starts with a short scoping call (phone, video or chat)."
   },
   {
     question: "Do you work with WordPress?",
-    answer: "No, I use Astro, a modern framework that's much faster and more secure. The result: a site that loads in under a second and that Google loves."
+    answer: "No. I use Astro, a modern framework that's significantly faster and more secure. The result is a site that loads in under a second and that Google loves."
   },
   {
     question: "Is SEO included?",
-    answer: "Yes. Every site is optimised from the start: semantic markup, performance, structured data, and local SEO. Technical SEO is included in all packages."
+    answer: "Yes. Every site is optimised from the start: semantic markup, performance, structured data, and local SEO. Technical SEO is baked in across all plans."
   },
   {
-    question: "Do you only work in Grand Est?",
-    answer: "I'm based in Metz but I work with clients across France. Everything is done remotely: discovery call, emails and video meetings."
+    question: "I don't know what to write on my site. Is that a problem?",
+    answer: "Not at all. I write all your copy from a short 15-minute chat. You tell me about your work, I handle the rest: headlines, descriptions, About page, FAQ. You review and approve."
   },
   {
-    question: "I don't know what to write on my site, is that a problem?",
-    answer: "Not at all. I write all your content based on a short 15-minute chat. You tell me about your business, I handle the rest. You just approve."
-  },
-  {
-    question: "Can I update the site myself?",
-    answer: "Yes. Your site includes a simple editing dashboard — change text, images and hours as easily as posting on Facebook. No code needed."
+    question: "Can I edit the site myself afterwards?",
+    answer: "Yes. Your site ships with a simple editing dashboard where you can change text, photos and opening hours. It's as easy as posting on Facebook. No code involved."
   },
   {
     question: "Who is this for?",
-    answer: "Tradespeople, shop owners, therapists, photographers, freelancers, coaches, associations — anyone who needs a professional website without spending a fortune or weeks of work."
+    answer: "Craftspeople, shop owners, hairdressers, beauticians, osteopaths, physios, photographers, wedding planners, coaches, restaurateurs, guesthouses, freelancers, associations. Any independent or small business that needs a professional site without draining the budget or weeks of their time. I also work with healthcare professionals and beauty trades."
   },
   {
-    question: "I already have a website — can you help?",
-    answer: "I handle the full transition: domain transfer, old site redirects to preserve your Google ranking, content recovery. You don't lose anything."
+    question: "I already have Instagram (or Doctolib, or a directory listing). Why do I need a site?",
+    answer: "Platforms give you visibility within their audience. A website makes you visible everywhere: Google, ChatGPT, Perplexity, Claude. Without a site, search engines and AI tools don't cite you. Plus, a site is yours. No algorithm decides whether your clients see you. A site doesn't replace social media, it completes it."
   },
   {
-    question: "Only one round of revisions — is that enough?",
-    answer: "One round = a full list of changes, not a single fix. You list everything, I fix everything. The alignment call beforehand means most clients approve on the first version."
+    question: "Do you only work in Grand Est, France?",
+    answer: "I'm based in Metz but I work with clients all over France and beyond. Everything happens remotely: phone, video or chat, emails, WhatsApp. I also ship bilingual sites (FR/EN, FR/DE) for cross-border businesses."
+  },
+  {
+    question: "Can you redo a WordPress, Wix or Squarespace site?",
+    answer: "Yes, this is a common case. I carry over your existing content (text, photos), your domain name, and I redirect the old site to the new one to preserve your Google ranking. Result: a faster, more secure site without monthly subscriptions or plugins to update."
+  },
+  {
+    question: "One round of revisions. Is that enough?",
+    answer: "One round means one complete list of changes, not a single tweak. You send all your feedback at once, I fix everything. In practice, most of my clients approve on the first pass because the scoping call upfront nails the brief."
   },
   {
     question: "Not comfortable with technology?",
-    answer: "Perfect. Give me 15 minutes (phone, video or chat), I do everything else. Nothing to install, configure or manage."
+    answer: "No worries. Give me 15 minutes by phone, video or WhatsApp, I do all the rest. Nothing to install, nothing to configure, nothing to manage. You get a finished site, ready to use."
   }
 ];
 ---
 
 <BaseLayout
-  title="Marc M — Custom Websites for Craftspeople & Small Businesses"
-  description="Custom, fast and SEO-optimised websites for craftspeople, small businesses and entrepreneurs. Based in Grand Est, France. Delivered in 7 days from €490."
+  title="Custom websites for craftspeople and small businesses | €490, delivered in 7 days - Marc M"
+  description="Custom websites for craftspeople, shops and small businesses. Unique design, local SEO, Lighthouse 100. 30+ sites delivered. Free quote within 24h."
   lang="en"
   frPath="/"
   enPath="/en/"
+  preloadImages={[
+    { href: heroProjects[0]?.img, media: '(max-width: 767px)' },
+    { href: heroProjects[1]?.img, media: '(min-width: 768px)' },
+  ]}
 >
   <SchemaOrg type="person" />
   <SchemaOrg type="localBusiness" />
   <SchemaOrg type="faqPage" data={faqItems} />
 
   <!-- HERO -->
-  <section class="relative w-full min-h-screen flex items-center overflow-hidden bg-[#0D0D0D]">
-    <!-- Animated gradient blobs -->
-    <div class="absolute top-[20%] left-[15%] w-[500px] h-[500px] rounded-full bg-[var(--color-accent)] opacity-[0.08] blur-[150px] hero-blob-1"></div>
-    <div class="absolute bottom-[10%] right-[10%] w-[400px] h-[400px] rounded-full bg-[#4F46E5] opacity-[0.05] blur-[130px] hero-blob-2"></div>
-    <div class="absolute top-[60%] left-[50%] w-[300px] h-[300px] rounded-full bg-[var(--color-accent)] opacity-[0.04] blur-[100px] hero-blob-3"></div>
+  <section class="relative w-full overflow-hidden bg-[#0D0D0D]">
+    <!-- Blobs -->
+    <div class="absolute top-[15%] left-[10%] w-[600px] h-[600px] rounded-full bg-[var(--color-accent)] blur-[180px] hero-blob" style="--blob-delay: 0s; --blob-opacity: 0.07;"></div>
+    <div class="absolute bottom-[5%] right-[5%] w-[500px] h-[500px] rounded-full bg-[#4F46E5] blur-[160px] hero-blob" style="--blob-delay: 0.15s; --blob-opacity: 0.04;"></div>
 
-    <!-- Noise texture overlay -->
+    <!-- Noise -->
     <div class="absolute inset-0 opacity-[0.03]" style="background-image: url('data:image/svg+xml,%3Csvg viewBox=%220 0 256 256%22 xmlns=%22http://www.w3.org/2000/svg%22%3E%3Cfilter id=%22noise%22%3E%3CfeTurbulence type=%22fractalNoise%22 baseFrequency=%220.9%22 numOctaves=%224%22 stitchTiles=%22stitch%22/%3E%3C/filter%3E%3Crect width=%22100%25%22 height=%22100%25%22 filter=%22url(%23noise)%22/%3E%3C/svg%3E');"></div>
 
-    <!-- Dot grid pattern -->
-    <div class="absolute inset-0 opacity-[0.06]" style="background-image: radial-gradient(circle, rgba(255,255,255,0.4) 1px, transparent 1px); background-size: 32px 32px;"></div>
+    <div class="relative mx-auto max-w-6xl px-6 pt-16 pb-10 md:pt-14 md:pb-12 lg:pt-16 lg:pb-12 w-full">
 
-    <div class="relative mx-auto max-w-7xl px-6 py-20 md:px-8 w-full">
-      <div class="grid lg:grid-cols-2 gap-12 lg:gap-8 items-center">
-        <!-- Left: Text content -->
-        <div class="hero-content">
-          <!-- Badge -->
-          <div class="hero-badge mb-8 inline-flex items-center gap-3 rounded-full border border-emerald-400/20 bg-emerald-400/[0.06] px-5 py-2.5 text-sm backdrop-blur-md hero-fade hero-fade-1">
-            <span class="relative flex h-2.5 w-2.5">
-              <span class="absolute inline-flex h-full w-full animate-ping rounded-full bg-emerald-400 opacity-75"></span>
-              <span class="relative inline-flex h-2.5 w-2.5 rounded-full bg-emerald-400"></span>
-            </span>
-            <span style="color: rgba(255,255,255,0.8);">Available for new projects</span>
-          </div>
+      <!-- Text - centered -->
+      <div class="text-center max-w-3xl mx-auto">
+        <h1 class="text-[2.5rem] md:text-[3.5rem] lg:text-[4rem] font-bold leading-[1.06] tracking-[-0.035em] text-white hero-reveal">
+          Your pro site,<br>
+          <span class="hero-accent-text">live in 7 days.</span>
+        </h1>
 
-          <h1 class="mb-8 text-[2.75rem] md:text-6xl lg:text-[4.25rem] font-bold leading-[1.08] tracking-[-0.03em] text-white hero-fade hero-fade-2">
-            You do great work.
-            <span class="hero-accent-text">Let the world know.</span>
-          </h1>
+        <p class="mt-4 md:mt-5 text-[15px] md:text-lg text-neutral-400 leading-relaxed max-w-md mx-auto hero-fade" style="--hero-delay: 0.35s;">
+          Custom design, visible on Google and AI tools. I handle everything: design, copy, launch. <span class="text-white font-medium">€490.</span>
+        </p>
+        <p class="mt-3 text-sm text-neutral-500 hero-fade" style="--hero-delay: 0.4s;">100% remote &middot; Clients all over France</p>
 
-          <p class="mb-10 text-lg md:text-xl leading-relaxed text-neutral-400 max-w-xl hero-fade hero-fade-3">
-            Your next client is searching for you on Google right now. Custom websites for craftspeople and small businesses — fast, well-ranked, that convert.
-          </p>
+        <div class="mt-5 md:mt-7 flex flex-row items-center justify-center gap-3 md:gap-4">
+          <a href="/en/contact/?offer=starter" class="hero-cta group inline-flex items-center justify-center rounded-xl bg-accent px-6 py-3.5 md:px-8 md:py-4 text-[15px] md:text-base font-semibold text-white transition-all duration-300 hover:-translate-y-0.5" data-umami-event="en-hero-cta-click">
+            Order - €490
+            <svg class="ml-2 h-4 w-4 md:h-5 md:w-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+          </a>
+          <a href="/en/contact/" class="hero-fade inline-flex items-center justify-center rounded-xl border border-white/15 bg-white/[0.03] px-6 py-3.5 md:px-8 md:py-4 text-[15px] md:text-base font-semibold text-white/80 transition-all duration-300 hover:bg-white/[0.07] hover:text-white" style="--hero-delay: 0.5s;">
+            Discuss a project
+          </a>
+        </div>
+        <p class="mt-4 hero-fade text-sm text-neutral-500" style="--hero-delay: 0.6s;">
+          Not ready yet? <a href="/en/free-audit/" class="text-neutral-400 underline underline-offset-2 hover:text-white transition-colors" data-umami-event="en-hero-audit-gratuit-click">Get a free audit of your online visibility &rarr;</a>
+        </p>
+      </div>
 
-          <div class="flex flex-col gap-4 sm:flex-row hero-fade hero-fade-4">
-            <a href="/en/contact" class="hero-cta-primary group inline-flex items-center justify-center rounded-xl bg-accent px-8 py-4 text-base font-semibold text-white shadow-[0_4px_20px_rgba(232,108,71,0.25)] transition-all duration-300 hover:bg-accent-hover hover:shadow-[0_8px_30px_rgba(232,108,71,0.35)] hover:-translate-y-0.5" data-umami-event="en-hero-cta-click">
-              Tell me about your project
-              <svg class="ml-2 h-5 w-5 transition-transform duration-300 group-hover:translate-x-1" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-            </a>
-            <a href="/en/contact" class="hero-cta-ghost group inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/5 px-8 py-4 text-base font-semibold text-white/85 transition-all duration-300 backdrop-blur-sm hover:bg-white/10 hover:border-white/30 hover:text-white">
-              Start a conversation
-              <svg class="ml-2 h-4 w-4 transition-transform duration-300 group-hover:translate-x-1 opacity-60" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path></svg>
-            </a>
-          </div>
+      <!-- Showcase - Desktop: 3D coverflow / Mobile: scroll -->
+      <div class="mt-8 md:mt-6">
 
-          <!-- Trust indicators -->
-          <div class="mt-14 flex flex-wrap items-center gap-3 hero-fade hero-fade-5">
-            <div class="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);">
-              <svg class="h-4 w-4 shrink-0" fill="#34D399" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-              <span style="color: rgba(255,255,255,0.75);">Delivered in 7 days</span>
-            </div>
-            <div class="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);">
-              <svg class="h-4 w-4 shrink-0" fill="#34D399" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-              <span style="color: rgba(255,255,255,0.75);">From €490</span>
-            </div>
-            <div class="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);">
-              <svg class="h-4 w-4 shrink-0" fill="#34D399" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-              <span style="color: rgba(255,255,255,0.75);">Free quote</span>
-            </div>
-            <div class="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);">
-              <svg class="h-4 w-4 shrink-0" fill="#34D399" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-              <span style="color: rgba(255,255,255,0.75);">Content written for you</span>
-            </div>
-            <div class="inline-flex items-center gap-2 rounded-full px-4 py-2 text-sm" style="background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.08);">
-              <svg class="h-4 w-4 shrink-0" fill="#34D399" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"></path></svg>
-              <span style="color: rgba(255,255,255,0.75);">100% remote — All of France</span>
-            </div>
+        <!-- Desktop coverflow -->
+        <div class="hidden md:block hero-showcase" style="perspective: 1400px;">
+          <div class="relative mx-auto flex items-end justify-center" style="height: 420px; max-width: 1050px;">
+            {heroProjects.slice(0, 3).map((p, i) => (
+              <a
+                href={`/en/portfolio#${p.id}`}
+                class={`hero-card group/card absolute overflow-hidden rounded-2xl border border-white/[0.08] shadow-2xl shadow-black/50 transition-all duration-500 hover:shadow-black/70 ${i === 1 ? 'hero-card-center z-20' : i === 0 ? 'hero-card-left z-10' : 'hero-card-right z-10'}`}
+                style={`--card-delay: ${i === 1 ? '0.5' : i === 0 ? '0.65' : '0.8'}s;`}
+                data-umami-event="en-hero-project-click"
+                data-umami-event-project={p.id}
+              >
+                <div class="relative overflow-hidden">
+                  <img
+                    src={p.img}
+                    alt={p.name}
+                    width={i === 1 ? 520 : 400}
+                    height={i === 1 ? 290 : 230}
+                    class={`w-full object-cover object-top transition-transform duration-700 group-hover/card:scale-[1.03] ${i === 1 ? 'h-[290px]' : 'h-[230px]'}`}
+                    style={`width: ${i === 1 ? '520px' : '400px'};`}
+                    loading="eager"
+                    fetchpriority={i === 1 ? 'high' : 'auto'}
+                  />
+                  <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 60%);"></div>
+                  <div class="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover/card:opacity-100" style="background: rgba(0,0,0,0.3);">
+                    <span class="rounded-full bg-white/15 px-5 py-2 text-sm font-medium text-white backdrop-blur-sm border border-white/20">
+                      View site &rarr;
+                    </span>
+                  </div>
+                  <div class="absolute inset-x-0 bottom-0 px-4 pb-3">
+                    <p class="text-sm font-semibold text-white truncate">{p.name}</p>
+                    <p class="text-xs text-white/50 truncate">{p.sub}</p>
+                  </div>
+                </div>
+              </a>
+            ))}
           </div>
         </div>
 
-        <!-- Right: Browser mockup with floating elements -->
-        <div class="relative hidden lg:block hero-fade hero-fade-3">
-          <!-- Main browser window -->
-          <div class="relative hero-float">
-            <div class="rounded-2xl border border-white/[0.08] bg-white/[0.03] backdrop-blur-xl overflow-hidden shadow-2xl shadow-black/40">
-              <!-- Browser chrome -->
-              <div class="flex items-center gap-2 px-4 py-3 bg-white/[0.04] border-b border-white/[0.06]">
-                <div class="flex gap-1.5">
-                  <div class="w-3 h-3 rounded-full bg-[#FF5F57]"></div>
-                  <div class="w-3 h-3 rounded-full bg-[#FFBD2E]"></div>
-                  <div class="w-3 h-3 rounded-full bg-[#28CA41]"></div>
-                </div>
-                <div class="flex-1 ml-3">
-                  <div class="mx-auto max-w-xs rounded-md bg-white/10 px-3 py-1 text-xs text-neutral-500 text-center">
-                    your-site.com
+        <!-- Mobile carousel -->
+        <div class="md:hidden min-w-0" id="mobile-carousel">
+          <div class="relative overflow-hidden rounded-2xl">
+            <div class="pointer-events-none absolute left-0 top-0 bottom-0 w-6 z-10" style="background: linear-gradient(to right, #0D0D0D, transparent);"></div>
+            <div class="pointer-events-none absolute right-0 top-0 bottom-0 w-6 z-10" style="background: linear-gradient(to left, #0D0D0D, transparent);"></div>
+            <div class="mobile-track flex gap-3" id="mobile-track" style="width: max-content;">
+              {[...heroProjects, ...heroProjects].map((p, i) => (
+                <div
+                  class="carousel-item shrink-0 w-[260px] overflow-hidden rounded-xl border border-white/[0.08] shadow-xl shadow-black/40 transition-all duration-300 cursor-pointer relative"
+                  data-url={`/en/portfolio#${p.id}`}
+                  data-name={p.name}
+                >
+                  <div class="relative overflow-hidden">
+                    <img src={p.img} alt={p.name} width="260" height="146" class="h-[146px] w-full object-cover object-top transition-transform duration-300" loading="eager" fetchpriority={i === 0 ? 'high' : 'auto'} />
+                    <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 55%);"></div>
+                    <div class="absolute inset-x-0 bottom-0 px-3 pb-2.5">
+                      <p class="text-sm font-semibold text-white truncate">{p.name}</p>
+                      <p class="text-[11px] text-white/50 truncate">{p.sub}</p>
+                    </div>
+                    <div class="carousel-overlay absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-200 pointer-events-none" style="background: rgba(0,0,0,0.45); backdrop-filter: blur(2px);">
+                      <a class="pointer-events-auto rounded-full bg-white px-5 py-2.5 text-sm font-semibold text-[#0D0D0D] shadow-lg transition-transform hover:scale-105">
+                        View site &rarr;
+                      </a>
+                    </div>
                   </div>
                 </div>
-              </div>
-              <!-- Fake site content -->
-              <div class="p-6 space-y-4">
-                <div class="flex gap-4 items-center mb-6">
-                  <div class="w-8 h-8 rounded-lg bg-[var(--color-accent)]/20 flex items-center justify-center">
-                    <div class="w-4 h-4 rounded bg-[var(--color-accent)]"></div>
-                  </div>
-                  <div class="flex gap-4">
-                    <div class="h-2 w-12 rounded-full bg-white/10"></div>
-                    <div class="h-2 w-10 rounded-full bg-white/10"></div>
-                    <div class="h-2 w-14 rounded-full bg-white/10"></div>
-                  </div>
-                </div>
-                <div class="space-y-2">
-                  <div class="h-3 w-3/4 rounded-full bg-white/[0.08]"></div>
-                  <div class="h-3 w-1/2 rounded-full bg-white/[0.06]"></div>
-                </div>
-                <div class="h-32 rounded-xl bg-gradient-to-br from-[var(--color-accent)]/10 to-[#4F46E5]/10 border border-white/[0.05]"></div>
-                <div class="grid grid-cols-3 gap-3">
-                  <div class="h-20 rounded-lg bg-white/[0.04] border border-white/[0.05]"></div>
-                  <div class="h-20 rounded-lg bg-white/[0.04] border border-white/[0.05]"></div>
-                  <div class="h-20 rounded-lg bg-white/[0.04] border border-white/[0.05]"></div>
-                </div>
-              </div>
+              ))}
             </div>
           </div>
-
-          <!-- Floating performance card -->
-          <div class="absolute -left-8 top-[20%] hero-float-delayed">
-            <div class="rounded-xl border border-white/[0.08] bg-[#161616]/90 backdrop-blur-xl p-4 shadow-xl shadow-black/30">
-              <div class="flex items-center gap-3">
-                <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-emerald-500/10">
-                  <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
-                </div>
-                <div>
-                  <div class="text-xs text-neutral-400">Performance</div>
-                  <div class="text-lg font-bold text-emerald-400">100/100</div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Floating SEO card -->
-          <div class="absolute -right-4 bottom-[15%] hero-float-delayed-2">
-            <div class="rounded-xl border border-white/[0.08] bg-[#161616]/90 backdrop-blur-xl p-4 shadow-xl shadow-black/30">
-              <div class="flex items-center gap-3">
-                <div class="flex h-10 w-10 items-center justify-center rounded-lg bg-[var(--color-accent)]/10">
-                  <svg class="w-5 h-5 text-[var(--color-accent-text)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 11l5-5m0 0l5 5m-5-5v12"></path></svg>
-                </div>
-                <div>
-                  <div class="text-xs text-neutral-400">SEO Score</div>
-                  <div class="text-lg font-bold text-[var(--color-accent-text)]">98/100</div>
-                </div>
-              </div>
-            </div>
-          </div>
+          <button id="carousel-resume" class="mt-3 mx-auto hidden items-center gap-2 rounded-full border border-white/10 bg-white/[0.04] px-4 py-2 text-xs text-white/60 transition-all active:scale-95" type="button">
+            <svg class="h-3 w-3" fill="currentColor" viewBox="0 0 20 20"><path d="M6.3 2.841A1.5 1.5 0 004 4.11v11.78a1.5 1.5 0 002.3 1.269l9.344-5.89a1.5 1.5 0 000-2.538L6.3 2.84z"/></svg>
+            Resume scrolling
+          </button>
         </div>
       </div>
-    </div>
 
-    <!-- Scroll indicator -->
-    <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 text-neutral-500 hero-fade hero-fade-5">
-      <span class="text-xs tracking-widest uppercase">Scroll</span>
-      <div class="w-5 h-8 rounded-full border border-white/20 flex justify-center pt-1.5">
-        <div class="w-1 h-2 rounded-full bg-white/40 animate-bounce"></div>
+      <!-- Subtle link -->
+      <div class="mt-8 md:mt-10 text-center hero-fade" style="--hero-delay: 1s;">
+        <a href="/en/portfolio/" class="inline-flex items-center gap-2 text-sm text-neutral-500 transition-colors hover:text-white/70">
+          {totalProjects} projects delivered - view the portfolio
+          <svg class="h-3.5 w-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+        </a>
       </div>
+
     </div>
   </section>
+
 
   <!-- 100 WEBSITES CHALLENGE -->
   <section class="w-full relative overflow-hidden" style="background: linear-gradient(135deg, #1A1A1A 0%, #111111 100%);">
@@ -239,8 +236,8 @@ const faqItems = [
             Challenge in progress
           </div>
           <h2 class="mb-3 text-2xl md:text-3xl font-bold text-white leading-tight">
-            100 Websites for 100 Craftspeople.
-            <span class="block text-base md:text-lg font-normal mt-1" style="color: rgba(255,255,255,0.7);">Free. Real. No strings attached.</span>
+            100 free websites for 100 craftspeople.
+            <span class="block text-base md:text-lg font-normal mt-1" style="color: rgba(255,255,255,0.7);">Real. No strings attached.</span>
           </h2>
           <p class="text-sm md:text-base leading-relaxed max-w-xl mx-auto md:mx-0" style="color: rgba(255,255,255,0.75);">
             I'm building 100 free professional websites for craftspeople with no online presence. Design, hosting and domain included for the first year.
@@ -260,7 +257,7 @@ const faqItems = [
           </div>
 
           <a
-            href="/en/100-artisan-websites"
+            href="/en/100-artisan-websites/"
             class="group inline-flex items-center justify-center gap-2 rounded-xl px-7 py-3.5 text-sm font-semibold text-white transition-all duration-300 hover:-translate-y-0.5"
             style="background: linear-gradient(135deg, #E86C47, #D4572F); box-shadow: 0 4px 20px rgba(232, 108, 71, 0.3);"
           >
@@ -269,55 +266,80 @@ const faqItems = [
               <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path>
             </svg>
           </a>
-          <a href="/en/100-artisan-websites" class="text-xs hover:underline" style="color: rgba(255,255,255,0.6);">
-            Learn more about the initiative →
+          <a href="/en/100-artisan-websites/" class="text-xs hover:underline" style="color: rgba(255,255,255,0.6);">
+            Learn more about the initiative &rarr;
           </a>
         </div>
       </div>
     </div>
   </section>
 
-  <!-- PAIN POINTS -->
-  <section class="w-full bg-[var(--color-bg-alt)] px-6 py-24 md:px-8 md:py-32">
+  <!-- PROBLEM - 2 columns: hook + pain points -->
+  <section class="w-full bg-[var(--color-bg-alt)] px-6 py-20 md:px-8 md:py-24">
     <div class="mx-auto max-w-5xl">
-      <h2 class="text-center text-3xl md:text-4xl font-bold text-[var(--color-text)] mb-4">Sound familiar?</h2>
-      <p class="text-center text-[var(--color-text-muted)] mb-16 text-lg">You're not alone. Most small businesses face one of these.</p>
-      <div class="mt-8 grid gap-8 md:grid-cols-3">
-        <div class="rounded-xl bg-white p-8 border border-[var(--color-border)] hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-          <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--color-accent-light)]">
-            <svg class="w-7 h-7 text-[var(--color-accent-text)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
-          </div>
-          <h3 class="mb-3 text-lg font-bold text-[var(--color-text)]">Your WordPress site is slow and costly</h3>
-          <p class="text-[var(--color-text-muted)] leading-relaxed">
-            Constant plugin updates, caching plugins that don't cut it, rising hosting bills. Your site takes 3 seconds to load and your visitors leave.
+      <div class="grid gap-12 md:grid-cols-[1fr_1.2fr] md:gap-16 items-start">
+
+        <!-- Left - sticky hook -->
+        <div class="md:sticky md:top-28">
+          <p class="text-[var(--color-accent-text)] font-semibold text-sm tracking-wide uppercase mb-4">The problem</p>
+          <h2 class="text-3xl md:text-4xl font-bold text-[var(--color-text)] leading-tight">
+            You have a <span class="text-[var(--color-accent-text)]">real craft</span>.
+          </h2>
+          <p class="mt-3 text-[var(--color-text-muted)] text-lg leading-relaxed">
+            Your website should work as hard as you do. And yet...
           </p>
+          <div class="mt-8 hidden md:block">
+            <p class="text-[var(--color-text-muted)]">
+              What if your site became your <span class="font-semibold text-[var(--color-text)]">best salesperson</span>?
+            </p>
+            <a href="#method" class="mt-3 inline-flex items-center gap-2 text-[var(--color-accent-text)] font-semibold text-sm hover:underline transition-colors">
+              See how I work
+              <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+            </a>
+          </div>
         </div>
 
-        <div class="rounded-xl bg-white p-8 border border-[var(--color-border)] hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-          <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--color-accent-light)]">
-            <svg class="w-7 h-7 text-[var(--color-accent-text)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-            </svg>
+        <!-- Right - pain points -->
+        <div class="space-y-4">
+          <div class="group rounded-2xl border-l-4 border-l-red-400 bg-white px-6 py-5 shadow-sm transition-all duration-300 hover:shadow-md">
+            <h3 class="text-[17px] font-bold text-[var(--color-text)] group-hover:text-red-500 transition-colors">
+              Your WordPress site is slow and burning money
+            </h3>
+            <p class="mt-1.5 text-[var(--color-text-muted)] leading-relaxed text-[15px]">
+              Plugins to update, caching that never quite works, hosting bills creeping up. <span class="font-medium text-[var(--color-text)]">3 seconds of load time means 53% of visitors gone.</span>
+            </p>
           </div>
-          <h3 class="mb-3 text-lg font-bold text-[var(--color-text)]">You have no website and you're losing clients</h3>
-          <p class="text-[var(--color-text-muted)] leading-relaxed">
-            Your competitors are visible online. You're invisible. Potential clients go elsewhere. You're leaving money on the table.
-          </p>
+
+          <div class="group rounded-2xl border-l-4 border-l-amber-400 bg-white px-6 py-5 shadow-sm transition-all duration-300 hover:shadow-md">
+            <h3 class="text-[17px] font-bold text-[var(--color-text)] group-hover:text-amber-600 transition-colors">
+              You have no site and you're losing business
+            </h3>
+            <p class="mt-1.5 text-[var(--color-text-muted)] leading-relaxed text-[15px]">
+              Your competitors show up on Google. You don't. <span class="font-medium text-[var(--color-text)]">Every day without a site means revenue walking out the door.</span>
+            </p>
+          </div>
+
+          <div class="group rounded-2xl border-l-4 border-l-[var(--color-accent)] bg-white px-6 py-5 shadow-sm transition-all duration-300 hover:shadow-md">
+            <h3 class="text-[17px] font-bold text-[var(--color-text)] group-hover:text-[var(--color-accent-text)] transition-colors">
+              Your site is generic and feels nothing like you
+            </h3>
+            <p class="mt-1.5 text-[var(--color-text-muted)] leading-relaxed text-[15px]">
+              Template seen a thousand times, stock colours, zero personality. <span class="font-medium text-[var(--color-text)]">Visitors leave without remembering a thing about you.</span>
+            </p>
+          </div>
         </div>
 
-        <div class="rounded-xl bg-white p-8 border border-[var(--color-border)] hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-          <div class="mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-[var(--color-accent-light)]">
-            <svg class="w-7 h-7 text-[var(--color-accent-text)]" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 01-4-4V5a2 2 0 012-2h4a2 2 0 012 2v12a4 4 0 01-4 4zm0 0h12a2 2 0 002-2v-4a2 2 0 00-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 012.828 0l2.829 2.829a2 2 0 010 2.828l-8.486 8.485M7 17h.01"></path>
-            </svg>
-          </div>
-          <h3 class="mb-3 text-lg font-bold text-[var(--color-text)]">Your site looks generic and doesn't feel like you</h3>
-          <p class="text-[var(--color-text-muted)] leading-relaxed">
-            Generic template, default colours, nothing personal. Visitors don't get a real sense of who you are. No connection, no trust.
-          </p>
-        </div>
+      </div>
+
+      <!-- Mobile CTA -->
+      <div class="mt-10 text-center md:hidden">
+        <p class="text-[var(--color-text-muted)]">
+          What if your site became your <span class="font-semibold text-[var(--color-text)]">best salesperson</span>?
+        </p>
+        <a href="#method" class="mt-3 inline-flex items-center gap-2 text-[var(--color-accent-text)] font-semibold text-sm hover:underline transition-colors">
+          See how I work
+          <svg class="h-4 w-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 14l-7 7m0 0l-7-7m7 7V3"></path></svg>
+        </a>
       </div>
     </div>
   </section>
@@ -334,7 +356,7 @@ const faqItems = [
         </div>
         <div class="text-center">
           <div class="mb-3 text-4xl font-bold text-[var(--color-accent-text)]">7<span class="text-2xl">d</span></div>
-          <p class="text-[var(--color-text-muted)]">Average delivery time from brief to launch</p>
+          <p class="text-[var(--color-text-muted)]">Average delivery time, brief to launch</p>
         </div>
         <div class="text-center">
           <div class="mb-3 text-6xl font-bold text-[var(--color-accent-text)]">100<span class="text-3xl">%</span></div>
@@ -344,25 +366,260 @@ const faqItems = [
     </div>
   </section>
 
-  <!-- SERVICES OVERVIEW -->
+  <!-- GOOGLE REVIEWS - pulled from projects.ts -->
   <section class="w-full bg-[var(--color-bg-alt)] px-6 py-24 md:px-8 md:py-32">
     <div class="mx-auto max-w-5xl">
-      <h2 class="text-center text-3xl md:text-4xl font-bold text-[var(--color-text)] mb-4">What I build</h2>
-      <p class="text-center text-[var(--color-text-muted)] mb-16 text-lg">Custom websites. No templates. No page builders.</p>
-      <div class="grid gap-8 md:grid-cols-2 max-w-3xl mx-auto">
-        {business.offers.map((offer) => (
-          <div class="rounded-xl bg-white p-8 border border-[var(--color-border)] hover:shadow-lg hover:-translate-y-1 transition-all duration-300">
-            <div class="mb-4 text-3xl font-extrabold text-[var(--color-accent-text)]">{offer.price ? `€${offer.price.toLocaleString()}` : 'On request'}</div>
-            <h3 class="mb-3 text-xl font-bold text-[var(--color-text)]">{offer.name}</h3>
-            <p class="text-[var(--color-text-muted)] leading-relaxed text-sm">{offer.description}</p>
-          </div>
+      <div class="mb-6 text-center">
+        <p class="mb-2 text-sm font-semibold uppercase tracking-widest text-[var(--color-accent-text)]">Google Reviews</p>
+        <h2 class="text-3xl font-bold text-[var(--color-text)] md:text-4xl">Clients who trust me</h2>
+        <p class="mt-3 text-sm text-[var(--color-text-muted)]">Reviews shown in the original French. Hover or translate if needed.</p>
+      </div>
+      <div class="grid gap-6 md:grid-cols-2 mt-10">
+        {reviewProjects.map((p) => (
+          <a href={`/en/portfolio#${p.id}`} class="rounded-2xl border border-[var(--color-border)] bg-white p-7 shadow-sm flex flex-col transition-all hover:shadow-md hover:-translate-y-0.5 group">
+            <div class="mb-4 flex items-center justify-between">
+              <div class="flex items-center gap-3">
+                <div class="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--color-accent)] text-sm font-bold text-white">{p.review!.author[0]}</div>
+                <div>
+                  <p class="font-semibold text-[var(--color-text)]">{p.review!.author}</p>
+                  <p class="text-xs text-[var(--color-text-muted)]">{p.review!.role} &middot; March 2026</p>
+                </div>
+              </div>
+              <svg class="h-5 w-5 shrink-0" viewBox="0 0 24 24" aria-hidden="true"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+            </div>
+            <div class="mb-3 flex gap-0.5">
+              {[...Array(5)].map(() => <svg class="h-4 w-4 text-yellow-400" fill="currentColor" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>)}
+              <span class="ml-2 text-[10px] uppercase tracking-widest text-[var(--color-text-muted)] font-semibold">Originally in French</span>
+            </div>
+            <p lang="fr" class="text-[var(--color-text-muted)] leading-relaxed flex-1 text-[15px]">&ldquo;{p.review!.text}&rdquo;</p>
+            <p class="mt-4 text-xs text-[var(--color-accent-text)] font-medium opacity-0 group-hover:opacity-100 transition-opacity">View the project &rarr;</p>
+          </a>
+        ))}
+      </div>
+      <!-- CTA to Google -->
+      <div class="mt-10 text-center">
+        <a
+          href="https://www.google.com/search?q=marc+m+avis&rflfq=1&tbm=lcl#lkt=LocalPoiReviews"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 rounded-full border border-[var(--color-border)] bg-white px-6 py-3 text-sm font-medium text-[var(--color-text)] shadow-sm transition hover:shadow-md"
+        >
+          <svg class="h-4 w-4" viewBox="0 0 24 24" aria-hidden="true"><path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z" fill="#4285F4"/><path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853"/><path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l3.66-2.84z" fill="#FBBC05"/><path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335"/></svg>
+          See all my Google reviews
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROJECTS -->
+  <section class="w-full bg-white px-6 py-24 md:px-8 md:py-32">
+    <div class="mx-auto max-w-5xl">
+      <SectionTitle title="Recent projects" align="center" />
+      <div class="mt-16 grid gap-8 md:grid-cols-2">
+        {getProjectsForCarousel('homepage').slice(0, 4).map((p) => (
+          <a href={p.url} target="_blank" rel="noopener noreferrer"
+            class="group overflow-hidden rounded-2xl border border-[var(--color-border)] bg-white shadow-sm transition-all hover:shadow-xl hover:-translate-y-1"
+            data-umami-event="en-home-project-click"
+            data-umami-event-project={p.id}>
+            <div class="relative overflow-hidden" style="aspect-ratio:16/9;">
+              <div class="absolute inset-0" style={`background: linear-gradient(135deg, ${p.gradientFrom}, ${p.gradientTo});`}></div>
+              <img src={p.screenshot} alt={`Website for ${p.titleEn || p.title}`}
+                width="560" height="315"
+                class="absolute inset-0 w-full h-full object-cover object-top transition-transform duration-500 group-hover:scale-105"
+                loading="lazy" />
+              <div class="absolute inset-0 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity duration-300" style="background:rgba(0,0,0,0.4);">
+                <span class="flex items-center gap-2 rounded-lg px-4 py-2 text-xs font-semibold text-white" style="background:rgba(255,255,255,0.15); backdrop-filter:blur(4px); border:1px solid rgba(255,255,255,0.2);">
+                  View site
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                </span>
+              </div>
+            </div>
+            <div class="px-5 py-4">
+              <div class="flex items-center gap-2 mb-1">
+                <p class="text-sm font-semibold text-[var(--color-text)]">{p.titleEn || p.title}</p>
+                <span class={`inline-block rounded-full border px-2 py-0.5 text-[10px] font-medium ${p.sectorColor}`}>{p.sectorEn || p.sector}</span>
+              </div>
+              <p class="text-xs text-[var(--color-text-muted)] line-clamp-2">{p.descriptionEn || p.description}</p>
+            </div>
+          </a>
         ))}
       </div>
       <div class="mt-12 text-center">
-        <a href="/en/services" class="inline-flex items-center gap-2 rounded-xl bg-[var(--color-accent)] px-8 py-4 text-base font-semibold text-white transition-all duration-300 hover:bg-[var(--color-accent-hover)] hover:shadow-lg hover:-translate-y-0.5">
-          View all services
-          <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
+        <a href="/en/portfolio/" class="inline-flex items-center gap-2 text-[var(--color-accent-text)] font-medium hover:gap-3 transition-all">
+          View the full portfolio
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"></path>
+          </svg>
         </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- METHOD - horizontal timeline -->
+  <section id="method" class="w-full bg-[var(--color-bg-alt)] px-6 py-20 md:px-8 md:py-24 scroll-mt-20">
+    <div class="mx-auto max-w-5xl">
+
+      <div class="grid gap-12 md:grid-cols-[1fr_1.5fr] md:gap-16 items-start">
+        <!-- Left - hook -->
+        <div class="md:sticky md:top-28">
+          <p class="text-[var(--color-accent-text)] font-semibold text-sm tracking-wide uppercase mb-4">The method</p>
+          <h2 class="text-3xl md:text-4xl font-bold text-[var(--color-text)] leading-tight">
+            Simple, fast,<br/><span class="text-[var(--color-accent-text)]">no headaches.</span>
+          </h2>
+          <p class="mt-4 text-[var(--color-text-muted)] text-lg leading-relaxed">
+            No 30-page brief. No endless meetings. We talk, I build, you approve.
+          </p>
+        </div>
+
+        <!-- Right - 4 steps with timeline -->
+        <div class="relative">
+          <div class="absolute left-5 top-8 bottom-8 w-px bg-[var(--color-border)] hidden md:block"></div>
+
+          <div class="space-y-6">
+            <!-- Step 1 -->
+            <div class="group relative flex gap-5 md:gap-6">
+              <div class="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--color-accent)] text-white text-sm font-bold shadow-md shadow-[var(--color-accent)]/20">1</div>
+              <div class="flex-1 rounded-2xl bg-white border border-[var(--color-border)] px-6 py-5 transition-all duration-300 group-hover:shadow-md group-hover:border-[var(--color-accent)]/30">
+                <div class="flex items-center justify-between gap-4">
+                  <h3 class="text-lg font-bold text-[var(--color-text)]">You order online</h3>
+                  <span class="shrink-0 rounded-full bg-[var(--color-accent)]/10 px-3 py-1 text-xs font-semibold text-[var(--color-accent-text)]">2 min</span>
+                </div>
+                <p class="mt-2 text-[var(--color-text-muted)] leading-relaxed text-[15px]">
+                  Secure payment, then a guided questionnaire: your business, your copy, your photos, your preferences.
+                </p>
+              </div>
+            </div>
+
+            <!-- Step 2 -->
+            <div class="group relative flex gap-5 md:gap-6">
+              <div class="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--color-accent)] text-white text-sm font-bold shadow-md shadow-[var(--color-accent)]/20">2</div>
+              <div class="flex-1 rounded-2xl bg-white border border-[var(--color-border)] px-6 py-5 transition-all duration-300 group-hover:shadow-md group-hover:border-[var(--color-accent)]/30">
+                <div class="flex items-center justify-between gap-4">
+                  <h3 class="text-lg font-bold text-[var(--color-text)]">We align</h3>
+                  <span class="shrink-0 rounded-full bg-[var(--color-accent)]/10 px-3 py-1 text-xs font-semibold text-[var(--color-accent-text)]">15 min</span>
+                </div>
+                <p class="mt-2 text-[var(--color-text-muted)] leading-relaxed text-[15px]">
+                  Quick call to scope the project - phone, video or chat. If your needs go beyond a Starter Site, I'll tell you and steer you right. No upsell.
+                </p>
+              </div>
+            </div>
+
+            <!-- Step 3 -->
+            <div class="group relative flex gap-5 md:gap-6">
+              <div class="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-[var(--color-accent)] text-white text-sm font-bold shadow-md shadow-[var(--color-accent)]/20">3</div>
+              <div class="flex-1 rounded-2xl bg-white border border-[var(--color-border)] px-6 py-5 transition-all duration-300 group-hover:shadow-md group-hover:border-[var(--color-accent)]/30">
+                <div class="flex items-center justify-between gap-4">
+                  <h3 class="text-lg font-bold text-[var(--color-text)]">I build your site</h3>
+                  <span class="shrink-0 rounded-full bg-[var(--color-accent)]/10 px-3 py-1 text-xs font-semibold text-[var(--color-accent-text)]">7 days</span>
+                </div>
+                <p class="mt-2 text-[var(--color-text-muted)] leading-relaxed text-[15px]">
+                  Design, development, <strong class="text-[var(--color-text)]">copywriting</strong>, SEO - all custom. You don't have to write or produce anything. One round of revisions included.
+                </p>
+              </div>
+            </div>
+
+            <!-- Step 4 -->
+            <div class="group relative flex gap-5 md:gap-6">
+              <div class="relative z-10 flex h-10 w-10 shrink-0 items-center justify-center rounded-xl bg-emerald-500 text-white text-sm font-bold shadow-md shadow-emerald-500/20">4</div>
+              <div class="flex-1 rounded-2xl bg-white border border-[var(--color-border)] px-6 py-5 transition-all duration-300 group-hover:shadow-md group-hover:border-emerald-500/30">
+                <div class="flex items-center justify-between gap-4">
+                  <h3 class="text-lg font-bold text-[var(--color-text)]">You're live</h3>
+                  <span class="shrink-0 rounded-full bg-emerald-500/10 px-3 py-1 text-xs font-semibold text-emerald-600">Live</span>
+                </div>
+                <p class="mt-2 text-[var(--color-text-muted)] leading-relaxed text-[15px]">
+                  Your site is in production. Your clients find you. The first calls start coming in.
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- OFFER - product summary -->
+  <section class="w-full relative px-6 py-24 md:px-8 md:py-32" style="background-color: #0D0D0D;">
+    <div class="absolute inset-0 opacity-5" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 32px 32px;"></div>
+    <div class="mx-auto max-w-5xl relative z-10">
+      <div class="grid gap-12 md:grid-cols-2 items-center">
+
+        <!-- Left - product -->
+        <div>
+          <p class="text-[var(--color-accent-text)] font-semibold text-sm tracking-wide uppercase mb-4">Starter Site</p>
+          <h2 class="text-3xl md:text-4xl font-bold text-white leading-tight mb-6">
+            A pro website at <span class="hero-accent-text">&euro;490</span>
+          </h2>
+
+          <div class="space-y-4 mb-8">
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              <span class="text-neutral-200 text-[15px]"><strong class="text-white">Custom design</strong> - built from scratch, no template</span>
+            </div>
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              <span class="text-neutral-200 text-[15px]"><strong class="text-white">Ranked on Google &amp; AI</strong> - SEO and GEO ready</span>
+            </div>
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              <span class="text-neutral-200 text-[15px]"><strong class="text-white">Built to convert</strong> - call, WhatsApp, contact form</span>
+            </div>
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              <span class="text-neutral-200 text-[15px]"><strong class="text-white">Lightning fast</strong> - your site loads in under a second</span>
+            </div>
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              <span class="text-neutral-200 text-[15px]"><strong class="text-white">Copywriting done for you</strong> - nothing to write yourself</span>
+            </div>
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              <span class="text-neutral-200 text-[15px]"><strong class="text-white">Delivered in 7 days</strong> - hosting and domain included</span>
+            </div>
+            <div class="flex items-start gap-3">
+              <svg class="w-5 h-5 text-emerald-400 flex-shrink-0 mt-0.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>
+              <span class="text-neutral-200 text-[15px]"><strong class="text-white">You own it</strong> - zero subscription, zero lock-in</span>
+            </div>
+          </div>
+
+          <div class="flex flex-col sm:flex-row gap-3">
+            <a href="/en/contact/?offer=starter" class="inline-flex items-center justify-center rounded-xl px-8 py-4 text-base font-semibold text-white transition-all duration-300 hover:shadow-lg hover:-translate-y-0.5" style="background: linear-gradient(135deg, #E86C47, #D4572F); box-shadow: 0 4px 20px rgba(232, 108, 71, 0.3);" data-umami-event="en-home-cta-offre">
+              Order - &euro;490
+            </a>
+            <a href="/en/services/#custom" class="inline-flex items-center justify-center rounded-xl border border-white/20 bg-white/5 px-8 py-4 text-base font-semibold text-white/85 transition-all duration-300 hover:bg-white/10 hover:border-white/30 hover:text-white" data-umami-event="en-home-cta-surmesure">
+              Bespoke project
+            </a>
+          </div>
+        </div>
+
+        <!-- Right - add-ons -->
+        <div class="space-y-4">
+          <p class="text-xs font-bold uppercase tracking-wider text-neutral-500 mb-2" style="letter-spacing: 0.15em;">Add what you need</p>
+
+          <div class="grid grid-cols-2 gap-3">
+            <div class="rounded-xl p-4 border border-neutral-800" style="background: rgba(255,255,255,0.03);">
+              <p class="text-lg font-bold text-[var(--color-accent-text)]">+&euro;120</p>
+              <p class="text-sm text-neutral-300 mt-1">Extra page</p>
+            </div>
+            <div class="rounded-xl p-4 border border-neutral-800" style="background: rgba(255,255,255,0.03);">
+              <p class="text-lg font-bold text-[var(--color-accent-text)]">+&euro;90</p>
+              <p class="text-sm text-neutral-300 mt-1">Google Business Profile</p>
+            </div>
+            <div class="rounded-xl p-4 border border-neutral-800" style="background: rgba(255,255,255,0.03);">
+              <p class="text-lg font-bold text-[var(--color-accent-text)]">+&euro;150</p>
+              <p class="text-sm text-neutral-300 mt-1">Social media pack</p>
+            </div>
+            <div class="rounded-xl p-4 border border-neutral-800" style="background: rgba(255,255,255,0.03);">
+              <p class="text-lg font-bold text-[var(--color-accent-text)]">+&euro;390</p>
+              <p class="text-sm text-neutral-300 mt-1">SEO blog (5 articles + CMS)</p>
+            </div>
+          </div>
+
+          <a href="/en/services/" class="inline-flex items-center gap-1 text-sm font-medium text-[var(--color-accent-text)] hover:underline mt-2">
+            See full details
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+          </a>
+        </div>
       </div>
     </div>
   </section>
@@ -370,74 +627,257 @@ const faqItems = [
   <!-- FAQ -->
   <section class="w-full bg-[var(--color-bg-alt)] px-6 py-24 md:px-8 md:py-32">
     <div class="mx-auto max-w-3xl">
-      <h2 class="text-center text-3xl md:text-4xl font-bold text-[var(--color-text)] mb-4">Frequently asked questions</h2>
-      <p class="text-center text-[var(--color-text-muted)] mb-12 text-lg">Everything you need to know before getting started.</p>
-      <div class="space-y-4">
+      <SectionTitle title="Frequently asked questions" align="center" />
+      <div class="mt-12 space-y-4">
         {faqItems.map((item) => (
-          <details class="group rounded-xl border border-[var(--color-border)] bg-white">
-            <summary class="flex cursor-pointer items-center justify-between px-6 py-5 text-left font-semibold text-[var(--color-text)] hover:text-[var(--color-accent-text)] transition-colors">
+          <details class="group rounded-xl border border-[var(--color-border)] bg-white p-6 transition-all hover:shadow-md">
+            <summary class="flex cursor-pointer items-center justify-between text-lg font-semibold text-[var(--color-text)] list-none [&::-webkit-details-marker]:hidden">
               {item.question}
-              <svg class="h-5 w-5 shrink-0 text-[var(--color-text-muted)] transition-transform duration-200 group-open:rotate-180" aria-hidden="true" role="presentation" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
+              <svg class="ml-4 h-5 w-5 shrink-0 text-[var(--color-text-muted)] transition-transform duration-300 group-open:rotate-180" fill="none" stroke="currentColor" viewBox="0 0 24 24" role="presentation"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path></svg>
             </summary>
-            <div class="px-6 pb-5 text-[var(--color-text-muted)] leading-relaxed">{item.answer}</div>
+            <p class="mt-4 text-[var(--color-text-muted)] leading-relaxed">{item.answer}</p>
           </details>
         ))}
       </div>
     </div>
   </section>
 
-  <!-- CTA SECTION -->
-  <section class="w-full bg-[#0D0D0D] px-6 py-24 md:px-8 md:py-32">
-    <div class="mx-auto max-w-3xl text-center">
-      <h2 class="mb-6 text-3xl md:text-5xl font-bold text-white leading-tight">
-        Ready to get<br><span class="hero-accent-text">a website that works?</span>
+  <!-- COVERAGE AREA -->
+  <section class="w-full bg-white px-6 py-24 md:px-8 md:py-32">
+    <div class="mx-auto max-w-5xl">
+      <p class="text-[var(--color-accent-text)] font-semibold text-sm tracking-wide uppercase mb-4 text-center">Grand Est region, France</p>
+      <h2 class="text-3xl md:text-4xl font-bold text-[var(--color-text)] leading-tight text-center mb-4">
+        Web design near you
       </h2>
-      <p class="mb-10 text-lg text-neutral-400 leading-relaxed">
-        Free consultation. I'll listen to your project and tell you exactly what I can build for you.
+      <p class="text-center text-[var(--color-text-muted)] text-lg max-w-2xl mx-auto mb-12">
+        Based in Montigny-l&egrave;s-Metz (France), I work across the Grand Est region and anywhere in France. Meet in person or entirely over video.
       </p>
-      <a href="/en/contact" class="inline-flex items-center gap-2 rounded-xl px-10 py-4 text-lg font-semibold text-white transition-all duration-300 hover:-translate-y-0.5" style="background: linear-gradient(135deg, #E86C47, #D4572F); box-shadow: 0 4px 20px rgba(232, 108, 71, 0.3);" data-umami-event="en-bottom-cta-click">
-        Start the conversation
-        <svg class="h-5 w-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"></path></svg>
-      </a>
+      <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-4">
+        {[
+          { city: 'Strasbourg', href: '/en/web-design-strasbourg/', region: 'Alsace', active: true },
+          { city: 'Metz', href: '/en/web-design-metz/', region: 'Moselle', active: true },
+          { city: 'Nancy', href: '/en/web-design-nancy/', region: 'Meurthe-et-Moselle', active: true },
+          { city: 'Colmar', href: '/en/contact', region: 'Haut-Rhin', active: false },
+          { city: 'Mulhouse', href: '/en/contact', region: 'Haut-Rhin', active: false },
+        ].map(({ city, href, region, active }) => (
+          <a
+            href={href}
+            class={`group rounded-2xl border p-5 text-center transition-all hover:shadow-md hover:-translate-y-0.5 ${active ? 'border-[var(--color-border)] bg-[var(--color-bg-alt)] hover:border-[var(--color-accent)]/30' : 'border-dashed border-[var(--color-border)] bg-white/60 opacity-80 hover:opacity-100'}`}
+            data-umami-event="en-home-geo-click"
+            data-umami-event-ville={city.toLowerCase()}
+          >
+            <p class="text-lg font-bold text-[var(--color-text)] group-hover:text-[var(--color-accent-text)] transition-colors">{city}</p>
+            <p class="text-xs text-[var(--color-text-muted)] mt-1">{region}</p>
+            {!active && <p class="text-[10px] uppercase tracking-widest text-[var(--color-text-muted)] mt-1.5">On request</p>}
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- FINAL CTA -->
+  <section class="w-full bg-gradient-to-b from-[#1A1A1A] to-[#111111] px-6 py-24 md:px-8 md:py-32">
+    <div class="mx-auto max-w-3xl text-center">
+      <h2 class="mb-6 text-4xl md:text-5xl font-bold text-white">
+        Ready to launch your site?
+      </h2>
+      <p class="mb-8 text-xl text-neutral-300">
+        Order a Starter Site at &euro;490 or let's talk about a bespoke project.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a
+          href="/en/contact/?offer=starter"
+          class="inline-flex items-center justify-center rounded-lg px-8 py-4 font-semibold text-white transition-all hover:shadow-lg hover:-translate-y-0.5"
+          style="background: linear-gradient(135deg, #E86C47, #D4572F); box-shadow: 0 4px 20px rgba(232, 108, 71, 0.3);"
+          data-umami-event="en-cta-click"
+        >
+          Order - &euro;490
+        </a>
+        <a
+          href="/en/contact/"
+          class="inline-flex items-center justify-center rounded-lg border border-white/20 bg-white/5 px-8 py-4 font-semibold text-white/85 transition-all hover:bg-white/10 hover:border-white/30 hover:text-white"
+          data-umami-event="en-home-cta-contact"
+        >
+          Discuss a bespoke project
+        </a>
+      </div>
+      <p class="mt-8 text-sm text-neutral-400">
+        Delivered in 7 days &middot; Quote within 48h &middot; No commitment
+      </p>
+      <p class="mt-4 text-sm text-neutral-500">
+        Not decided yet? <a href="/en/free-audit/" class="text-neutral-400 underline underline-offset-2 hover:text-white transition-colors" data-umami-event="en-cta-final-audit-gratuit">Free audit of your visibility - reply within 48h &rarr;</a>
+      </p>
     </div>
   </section>
 </BaseLayout>
 
 <style>
+  /* Blobs */
+  .hero-blob {
+    scale: 0;
+    animation: blobIn 1.4s cubic-bezier(0.16, 1, 0.3, 1) var(--blob-delay, 0s) forwards;
+  }
+  @keyframes blobIn {
+    0% { scale: 0; opacity: 0; }
+    100% { scale: 1; opacity: var(--blob-opacity, 0.06); }
+  }
+
+  /* H1 reveal - clip mask from bottom */
+  .hero-reveal {
+    clip-path: inset(100% 0 0 0);
+    animation: clipReveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+  }
+  @keyframes clipReveal {
+    0% { clip-path: inset(100% 0 0 0); }
+    100% { clip-path: inset(0 0 0 0); }
+  }
+
+  /* Accent text */
   .hero-accent-text {
-    background: linear-gradient(135deg, #E86C47 0%, #FF8A65 100%);
+    background: linear-gradient(135deg, #E86C47 0%, #FF8A65 50%, #E86C47 100%);
+    background-size: 200% auto;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
     background-clip: text;
-    display: block;
+    animation: shimmer 5s ease-in-out 2s infinite;
   }
-  .hero-float {
-    animation: heroFloat 6s ease-in-out infinite;
+  @keyframes shimmer {
+    0%, 100% { background-position: 0% center; }
+    50% { background-position: 200% center; }
   }
-  .hero-float-delayed {
-    animation: heroFloat 6s ease-in-out 1s infinite;
+
+  /* Generic fade */
+  .hero-fade {
+    opacity: 0;
+    transform: translateY(16px);
+    animation: fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) var(--hero-delay, 0.4s) forwards;
   }
-  .hero-float-delayed-2 {
-    animation: heroFloat 6s ease-in-out 2s infinite;
+  @keyframes fadeUp {
+    to { opacity: 1; transform: none; }
   }
-  @keyframes heroFloat {
-    0%, 100% { transform: translateY(0); }
-    50% { transform: translateY(-12px); }
+
+  /* CTA - entrance + glow pulse */
+  .hero-cta {
+    opacity: 0;
+    transform: translateY(16px);
+    animation:
+      fadeUp 0.7s cubic-bezier(0.16, 1, 0.3, 1) 0.45s forwards,
+      ctaGlow 0.8s ease-in-out 1.3s both;
+    box-shadow: 0 4px 24px rgba(232, 108, 71, 0.2);
   }
-  .hero-fade { opacity: 0; animation: heroFadeIn 0.8s ease forwards; }
-  .hero-fade-1 { animation-delay: 0.1s; }
-  .hero-fade-2 { animation-delay: 0.25s; }
-  .hero-fade-3 { animation-delay: 0.4s; }
-  .hero-fade-4 { animation-delay: 0.55s; }
-  .hero-fade-5 { animation-delay: 0.7s; }
-  @keyframes heroFadeIn {
-    from { opacity: 0; transform: translateY(20px); }
+  .hero-cta:hover {
+    box-shadow: 0 8px 32px rgba(232, 108, 71, 0.35);
+  }
+  @keyframes ctaGlow {
+    0%, 100% { box-shadow: 0 4px 24px rgba(232, 108, 71, 0.2); }
+    50% { box-shadow: 0 4px 48px rgba(232, 108, 71, 0.45), 0 0 80px rgba(232, 108, 71, 0.12); }
+  }
+
+  /* Desktop showcase - 3D coverflow */
+  .hero-showcase {
+    opacity: 0;
+    animation: fadeUp 0.8s cubic-bezier(0.16, 1, 0.3, 1) 0.6s forwards;
+  }
+
+  .hero-card {
+    opacity: 0;
+    animation: cardIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--card-delay, 0.6s) forwards;
+    will-change: transform;
+  }
+  .hero-card:hover {
+    z-index: 30 !important;
+  }
+
+  .hero-card-center {
+    transform: translateZ(0) scale(1);
+  }
+  @keyframes cardIn {
+    0% { opacity: 0; transform: translateY(60px) scale(0.9); }
+    100% { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  .hero-card-left {
+    left: 0;
+    bottom: 10px;
+    transform: translateX(0) rotateY(4deg) scale(0.92);
+  }
+  .hero-card-left.hero-card {
+    animation-name: cardInLeft;
+  }
+  @keyframes cardInLeft {
+    0% { opacity: 0; transform: translateX(-40px) translateY(50px) rotateY(8deg) scale(0.85); }
+    100% { opacity: 1; transform: translateX(0) rotateY(4deg) scale(0.92); }
+  }
+
+  .hero-card-right {
+    right: 0;
+    bottom: 10px;
+    transform: translateX(0) rotateY(-4deg) scale(0.92);
+  }
+  .hero-card-right.hero-card {
+    animation-name: cardInRight;
+  }
+  @keyframes cardInRight {
+    0% { opacity: 0; transform: translateX(40px) translateY(50px) rotateY(-8deg) scale(0.85); }
+    100% { opacity: 1; transform: translateX(0) rotateY(-4deg) scale(0.92); }
+  }
+
+  .hero-card-center {
+    left: 50%;
+    bottom: 0;
+    margin-left: -260px;
+  }
+
+  .hero-card:hover {
+    transform: translateY(-8px) scale(1) rotateY(0deg) !important;
+    transition: transform 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+  }
+
+  @media (min-width: 768px) {
+    .hero-card-center { animation: cardIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--card-delay) forwards, floatCenter 6s ease-in-out 1.6s infinite; }
+    .hero-card-left   { animation: cardInLeft 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--card-delay) forwards, floatSide 7s ease-in-out 1.8s infinite; }
+    .hero-card-right  { animation: cardInRight 0.8s cubic-bezier(0.16, 1, 0.3, 1) var(--card-delay) forwards, floatSide 7s ease-in-out 2s infinite; }
+
+    @keyframes floatCenter {
+      0%, 100% { transform: translateY(0) scale(1); }
+      50% { transform: translateY(-8px) scale(1); }
+    }
+    @keyframes floatSide {
+      0%, 100% { transform: translateY(0) rotateY(var(--ry, 4deg)) scale(0.92); }
+      50% { transform: translateY(-6px) rotateY(var(--ry, 4deg)) scale(0.92); }
+    }
+    .hero-card-left { --ry: 4deg; }
+    .hero-card-right { --ry: -4deg; }
+  }
+
+  /* Mobile carousel */
+  .mobile-track {
+    will-change: transform;
+  }
+  .carousel-item.active {
+    border-color: rgba(232, 108, 71, 0.4);
+    box-shadow: 0 0 30px rgba(232, 108, 71, 0.15), 0 8px 30px rgba(0,0,0,0.5);
+    transform: scale(1.03);
+  }
+  .carousel-item.active img {
+    transform: scale(1.04);
+  }
+  .carousel-item.active .carousel-overlay {
+    opacity: 1;
+    pointer-events: auto;
+  }
+
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
     to { opacity: 1; transform: translateY(0); }
+  }
+  .animate-fadeIn {
+    animation: fadeIn 0.6s ease-out forwards;
+    opacity: 0;
   }
 </style>
 
 <script>
-  // Intersection Observer for scroll animations
   const observerOptions = {
     threshold: 0.1,
     rootMargin: '0px 0px -50px 0px'
@@ -451,12 +891,10 @@ const faqItems = [
     });
   }, observerOptions);
 
-  // Observe count-up elements
   document.querySelectorAll('.count-up').forEach((el) => {
     observer.observe(el);
   });
 
-  // Animate numbers
   document.querySelectorAll('.count-up').forEach((element) => {
     const targetText = element.getAttribute('data-target');
     const target = parseInt(targetText);
@@ -495,5 +933,99 @@ const faqItems = [
     };
 
     animate();
+  }
+
+  // FAQ accordion tracking
+  document.querySelectorAll('details').forEach((el) => {
+    el.addEventListener('toggle', () => {
+      if (el.open) {
+        const question = el.querySelector('summary')?.textContent?.trim() || '';
+        if (typeof umami !== 'undefined') {
+          umami.track('en-faq-open', { question: question.slice(0, 80) });
+        }
+      }
+    });
+  });
+
+  // Mobile carousel: JS-driven scroll + tap to pause
+  const track = document.getElementById('mobile-track') as HTMLElement | null;
+  const resumeBtn = document.getElementById('carousel-resume');
+  const items = document.querySelectorAll<HTMLElement>('.carousel-item');
+
+  if (track) {
+    let offset = 0;
+    let paused = false;
+    let dragging = false;
+    let dragStartX = 0;
+    let dragOriginX = 0;
+    let activeCard: HTMLElement | null = null;
+    const speed = 0.7;
+    const halfWidth = track.scrollWidth / 2;
+
+    function wrap() {
+      if (offset > 0) offset -= halfWidth;
+      if (Math.abs(offset) >= halfWidth) offset += halfWidth;
+    }
+
+    function tick() {
+      if (!paused && !dragging) {
+        offset -= speed;
+        wrap();
+      }
+      track!.style.transform = `translateX(${offset}px)`;
+      requestAnimationFrame(tick);
+    }
+    requestAnimationFrame(tick);
+
+    track.addEventListener('touchstart', (e) => {
+      dragging = true;
+      dragStartX = e.touches[0].clientX;
+      dragOriginX = dragStartX;
+    }, { passive: true });
+
+    track.addEventListener('touchmove', (e) => {
+      if (!dragging) return;
+      const dx = e.touches[0].clientX - dragStartX;
+      offset += dx;
+      wrap();
+      dragStartX = e.touches[0].clientX;
+    }, { passive: true });
+
+    track.addEventListener('touchend', () => {
+      dragging = false;
+    });
+
+    function pauseOn(card: HTMLElement) {
+      if (activeCard) activeCard.classList.remove('active');
+      paused = true;
+      card.classList.add('active');
+      activeCard = card;
+      const link = card.querySelector('.carousel-overlay a');
+      if (link) link.setAttribute('href', card.dataset.url || '/en/portfolio');
+      resumeBtn?.classList.remove('hidden');
+      resumeBtn?.classList.add('flex');
+    }
+
+    function resume() {
+      if (activeCard) activeCard.classList.remove('active');
+      activeCard = null;
+      paused = false;
+      resumeBtn?.classList.add('hidden');
+      resumeBtn?.classList.remove('flex');
+    }
+
+    items.forEach(card => {
+      card.addEventListener('click', (e) => {
+        if ((e.target as HTMLElement).closest('.carousel-overlay a')) return;
+        if (Math.abs(dragStartX - dragOriginX) > 10) return;
+        if (card.classList.contains('active')) {
+          resume();
+        } else {
+          pauseOn(card);
+        }
+      });
+    });
+
+    resumeBtn?.addEventListener('click', resume);
   }
 </script>
