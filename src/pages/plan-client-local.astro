@@ -1,0 +1,685 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import SchemaOrg from '../components/SchemaOrg.astro';
+import { business } from '../data/business';
+
+// ═══════════════════════════════════════
+// CONFIG DE PAGE (éditable en haut)
+// ═══════════════════════════════════════
+const CALENDLY_URL = 'https://calendly.com/marc-muller/plan-client-local-20min';
+const MAILTO_FALLBACK = 'mailto:marc@muller.im?subject=Plan%20Client%20Local%20-%20Je%20veux%20r%C3%A9server%2020%20min';
+const PLACES_PAR_MOIS = 3; // Marc met à jour manuellement
+
+// ═══════════════════════════════════════
+// FAQ (source unique pour Schema + rendu)
+// ═══════════════════════════════════════
+const faqItems = [
+  {
+    question: "C'est quoi un \"nouveau client\" ?",
+    answer: "Toute personne qui te contacte via les canaux que j'ai mis en place (site, fiche Google, post Facebook, bouche-à-oreille déclenché par le kit parrainage) et qui signe un devis ou achète. Tous tracés."
+  },
+  {
+    question: "À qui ça s'adresse exactement ?",
+    answer: "Artisans, commerçants, indépendants en B2C avec une zone de chalandise définie dans le Grand Est. Plombiers, électriciens, coachs, coiffeurs, zoothérapeutes, restaurants, fleuristes. Pas les grosses boîtes, pas le 100% e-commerce national."
+  },
+  {
+    question: "Combien d'heures je dois y consacrer chaque semaine ?",
+    answer: "30 minutes pour le rendez-vous hebdo plus 10 à 15 minutes pour publier les contenus que je te livre. Une heure par semaine maximum."
+  },
+  {
+    question: "Et si j'ai déjà un site ?",
+    answer: "Tant mieux, je le reprends et je l'optimise. Pas de double facturation."
+  },
+  {
+    question: "Pourquoi 3 mois et pas 6 ?",
+    answer: "Parce que 3 mois suffisent pour voir les premiers résultats concrets. Au bout de 90 jours, tu as un système qui tourne. Tu peux continuer seul ou prendre un mois d'accompagnement à la carte si tu veux."
+  },
+];
+
+// ═══════════════════════════════════════
+// Schema.org Service + Offer custom (inline sur la page)
+// ═══════════════════════════════════════
+const serviceSchema = {
+  "@context": "https://schema.org",
+  "@type": "Service",
+  "name": "Plan Client Local",
+  "serviceType": "Accompagnement marketing local",
+  "description": "Accompagnement marketing 3 mois pour artisans, commerçants et indépendants du Grand Est. Site optimisé, fiche Google, avis, contenus réseaux sociaux, suivi hebdomadaire. Garantie 3 nouveaux clients à J90 ou remboursé.",
+  "provider": {
+    "@type": "Person",
+    "name": business.owner,
+    "url": business.url,
+    "email": business.email,
+    "telephone": business.phone,
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": business.address.street,
+      "addressLocality": business.address.city,
+      "addressRegion": business.address.region,
+      "postalCode": business.address.zip,
+      "addressCountry": business.address.country
+    }
+  },
+  "areaServed": {
+    "@type": "AdministrativeArea",
+    "name": "Grand Est",
+    "containedInPlace": {
+      "@type": "Country",
+      "name": "France"
+    }
+  },
+  "offers": {
+    "@type": "Offer",
+    "name": "Plan Client Local 90 jours",
+    "price": "2970",
+    "priceCurrency": "EUR",
+    "priceSpecification": {
+      "@type": "PriceSpecification",
+      "price": "2970",
+      "priceCurrency": "EUR",
+      "valueAddedTaxIncluded": true
+    },
+    "category": "Accompagnement marketing",
+    "availability": "https://schema.org/LimitedAvailability"
+  }
+};
+---
+
+<BaseLayout
+  title="Plan Client Local | 3 nouveaux clients en 90 jours ou remboursé | Marc Muller"
+  description="Accompagnement marketing 3 mois pour artisans, commerçants et indépendants du Grand Est. 2970€ TTC, guarantee 100% remboursé si 0 nouveau client à J90."
+  ogImage="/og-default.jpg"
+  noindex={true}
+  lang="fr"
+  frPath="/plan-client-local"
+>
+  <!-- Schema FAQ (via composant existant) + Schema Service inline -->
+  <SchemaOrg type="faqPage" data={faqItems} />
+  <script type="application/ld+json" set:html={JSON.stringify(serviceSchema)} />
+
+  <!-- ═══════════════════════════════════════
+       HERO — Dark avec guarantee en pill
+       ═══════════════════════════════════════ -->
+  <section class="relative w-full min-h-[85vh] flex items-center justify-center overflow-hidden" style="background:#0A0A0A;">
+    <!-- Gradient ambient -->
+    <div class="absolute inset-0" style="background: radial-gradient(ellipse 80% 60% at 50% 0%, rgba(232,108,71,0.12) 0%, transparent 70%);"></div>
+    <!-- Subtle grid -->
+    <div class="absolute inset-0 opacity-[0.04]" style="background-image: linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px); background-size: 64px 64px;"></div>
+
+    <div class="relative mx-auto max-w-3xl px-6 py-24 text-center">
+
+      <!-- Pill garantie -->
+      <div class="mb-10 inline-flex items-center gap-2.5 rounded-full px-4 py-1.5 text-xs font-medium tracking-widest uppercase hero-fade hero-fade-1" style="background: rgba(232,108,71,0.08); border: 1px solid rgba(232,108,71,0.25); color: #E86C47;">
+        <span class="relative flex h-1.5 w-1.5">
+          <span class="absolute h-full w-full animate-ping rounded-full opacity-60" style="background:#E86C47;"></span>
+          <span class="relative h-1.5 w-1.5 rounded-full" style="background:#E86C47;"></span>
+        </span>
+        Garantie résultat ou remboursé
+      </div>
+
+      <!-- Titre -->
+      <h1 class="mb-6 font-bold leading-none tracking-tight text-white hero-fade hero-fade-2" style="font-size: clamp(2.6rem, 7.5vw, 5rem); letter-spacing: -0.04em;">
+        3 nouveaux clients<br/>
+        en 90 jours.<br/>
+        <span class="hero-accent">Ou je rembourse.</span>
+      </h1>
+
+      <p class="mb-10 text-lg leading-relaxed hero-fade hero-fade-3" style="color: rgba(255,255,255,0.72); max-width: 36rem; margin-left: auto; margin-right: auto;">
+        Un accompagnement marketing concret pour les artisans, commerçants et indépendants du Grand Est qui ont un site web qui dort et un agenda qui tourne au ralenti.
+      </p>
+
+      <!-- CTA -->
+      <div class="flex flex-col sm:flex-row gap-3 justify-center hero-fade hero-fade-4">
+        <a
+          href={CALENDLY_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center justify-center gap-2 rounded-lg px-8 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5"
+          style="background:#E86C47; box-shadow: 0 0 30px rgba(232,108,71,0.3);"
+          data-umami-event="pcl-hero-cta-calendly"
+        >
+          Réserver 20 minutes avec Marc
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+        </a>
+        <a
+          href="#comment-ca-marche"
+          class="inline-flex items-center justify-center gap-2 rounded-lg px-8 py-3.5 text-sm font-medium transition-all hover:bg-white/5"
+          style="color: rgba(255,255,255,0.7); border: 1px solid rgba(255,255,255,0.15);"
+          data-umami-event="pcl-hero-cta-scroll"
+        >
+          Voir comment ça marche
+        </a>
+      </div>
+
+      <!-- Mini fallback mailto pour a11y -->
+      <p class="mt-6 text-xs hero-fade hero-fade-5" style="color: rgba(255,255,255,0.35);">
+        Pas de Calendly ?
+        <a href={MAILTO_FALLBACK} class="underline hover:text-white/70">Envoie-moi un email</a>,
+        je te renvoie des créneaux.
+      </p>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       BLOC 1 — LE PROBLÈME (fond clair éditorial)
+       ═══════════════════════════════════════ -->
+  <section class="w-full px-6 py-20 md:px-8 md:py-28" style="background:#F7F5F2;">
+    <div class="mx-auto max-w-2xl">
+      <p class="text-xs uppercase tracking-widest font-semibold mb-4" style="color:#E86C47;">Le constat</p>
+      <h2 class="text-3xl md:text-4xl font-bold mb-10 leading-tight" style="color:#1A1A1A; letter-spacing:-0.02em;">
+        Ton vrai problème, ce n'est pas ton site.
+      </h2>
+
+      <div class="space-y-5 text-base leading-relaxed" style="color:#3A3A3A;">
+        <p>
+          Tu as peut-être déjà un site web. Peut-être même un joli site. Mais personne ne le visite, les clients ne t'appellent pas, et ton téléphone sonne quand ça lui plait.
+        </p>
+        <p>
+          Tu as essayé Facebook. Tu as essayé d'appeler les clients d'avant. Tu as peut-être même tenté la pub Google et perdu 400€ sans comprendre pourquoi.
+        </p>
+        <p>
+          Le problème n'est pas ton métier. Le problème n'est pas ton site. Le problème c'est qu'il n'existe aucun système qui amène les clients jusqu'à toi et qui tourne tout seul pendant que tu bosses.
+        </p>
+        <p class="text-lg font-semibold" style="color:#1A1A1A;">
+          C'est exactement ça que je construis pour toi en 90 jours.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       BLOC 2 — CE QUE TU AS À J90 (dark, checklist)
+       ═══════════════════════════════════════ -->
+  <section class="w-full px-6 py-20 md:px-8 md:py-28" style="background:#0F0F0F;">
+    <div class="mx-auto max-w-3xl">
+
+      <div class="mb-12 text-center">
+        <p class="text-xs uppercase tracking-widest font-semibold mb-3" style="color:#E86C47;">À la fin des 90 jours</p>
+        <h2 class="text-3xl md:text-4xl font-bold text-white" style="letter-spacing:-0.02em;">
+          Voici ce que tu as entre les mains.
+        </h2>
+      </div>
+
+      <ul class="space-y-4 mb-12">
+        {[
+          "Un site web qui transforme tes visiteurs en appels.",
+          "Une fiche Google optimisée où tes clients te trouvent en tapant \"plombier [ta ville]\".",
+          "20 avis Google au lieu de 5 (ou 0).",
+          "Une présence régulière dans les 3 groupes Facebook Grand Est où tes clients discutent.",
+          "Un calendrier de rendez-vous qui se remplit tout seul.",
+          "Au minimum 3 nouveaux clients payants sur la période.",
+        ].map((item) => (
+          <li class="flex items-start gap-4 rounded-xl p-4 transition-colors hover:bg-white/5" style="border:1px solid rgba(255,255,255,0.06);">
+            <span class="w-7 h-7 rounded-lg flex items-center justify-center flex-shrink-0 mt-0.5" style="background:rgba(232,108,71,0.12);">
+              <svg class="w-4 h-4" style="color:#E86C47;" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+              </svg>
+            </span>
+            <span class="text-base text-white/90 leading-relaxed">{item}</span>
+          </li>
+        ))}
+      </ul>
+
+      <!-- Guarantee bloc (répétition visible) -->
+      <div class="rounded-2xl p-8 md:p-10 text-center" style="background:linear-gradient(135deg, rgba(232,108,71,0.12) 0%, rgba(232,108,71,0.04) 100%); border:1px solid rgba(232,108,71,0.3);">
+        <p class="text-xs uppercase tracking-widest font-semibold mb-3" style="color:#E86C47;">Ma promesse</p>
+        <p class="text-xl md:text-2xl font-bold text-white leading-snug">
+          Et si tu n'as pas ces 3 nouveaux clients, je rembourse l'intégralité de ce que tu as versé.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       BLOC 3 — COMMENT ÇA MARCHE (timeline 3 étapes)
+       ═══════════════════════════════════════ -->
+  <section id="comment-ca-marche" class="w-full px-6 py-20 md:px-8 md:py-28 bg-white">
+    <div class="mx-auto max-w-4xl">
+
+      <div class="mb-14 text-center">
+        <p class="text-xs uppercase tracking-widest font-semibold mb-3" style="color:#E86C47;">Le déroulé</p>
+        <h2 class="text-3xl md:text-4xl font-bold" style="color:#1A1A1A; letter-spacing:-0.02em;">
+          3 phases, 90 jours, un seul interlocuteur.
+        </h2>
+      </div>
+
+      <!-- Timeline verticale -->
+      <div class="space-y-10 md:space-y-12">
+
+        <!-- Phase 1 -->
+        <div class="grid md:grid-cols-[120px_1fr] gap-5 md:gap-8 items-start">
+          <div class="flex md:flex-col items-center md:items-start gap-3">
+            <span class="inline-flex items-center justify-center rounded-xl text-white font-bold" style="background:#E86C47; width:64px; height:64px; font-size:1.25rem;">J1-15</span>
+          </div>
+          <div>
+            <h3 class="text-xl md:text-2xl font-bold mb-3" style="color:#1A1A1A;">Les fondations</h3>
+            <p class="text-base leading-relaxed" style="color:#555;">
+              Je refais ou je crée ton site, ta fiche Google, ton formulaire de contact, ton système d'avis. Tout ce qui convertit un visiteur en client. Livrable net.
+            </p>
+          </div>
+        </div>
+
+        <!-- Phase 2 -->
+        <div class="grid md:grid-cols-[120px_1fr] gap-5 md:gap-8 items-start">
+          <div class="flex md:flex-col items-center md:items-start gap-3">
+            <span class="inline-flex items-center justify-center rounded-xl text-white font-bold" style="background:#E86C47; width:64px; height:64px; font-size:1.25rem;">J15-45</span>
+          </div>
+          <div>
+            <h3 class="text-xl md:text-2xl font-bold mb-3" style="color:#1A1A1A;">Ta présence</h3>
+            <p class="text-base leading-relaxed" style="color:#555;">
+              Je te livre 3 publications Facebook par semaine dans les groupes Grand Est où tes clients traînent. Tu publies en 5 minutes. Je m'occupe du SEO local pour que Google te trouve. Je relance ton ancien fichier client.
+            </p>
+          </div>
+        </div>
+
+        <!-- Phase 3 -->
+        <div class="grid md:grid-cols-[120px_1fr] gap-5 md:gap-8 items-start">
+          <div class="flex md:flex-col items-center md:items-start gap-3">
+            <span class="inline-flex items-center justify-center rounded-xl text-white font-bold" style="background:#E86C47; width:64px; height:64px; font-size:1.25rem;">J45-90</span>
+          </div>
+          <div>
+            <h3 class="text-xl md:text-2xl font-bold mb-3" style="color:#1A1A1A;">L'ajustement</h3>
+            <p class="text-base leading-relaxed" style="color:#555;">
+              On regarde ensemble les chiffres chaque semaine. On garde ce qui marche, on jette ce qui ne marche pas. À la fin, tu as un système qui tourne tout seul.
+            </p>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Encadré suivi hebdo -->
+      <div class="mt-12 rounded-2xl p-6 md:p-8 flex items-start gap-4" style="background:#F7F5F2; border:1px solid #EDEBE8;">
+        <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(232,108,71,0.12);">
+          <svg class="w-5 h-5" style="color:#E86C47;" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z"/>
+          </svg>
+        </div>
+        <p class="text-base leading-relaxed" style="color:#3A3A3A;">
+          Et chaque semaine pendant 90 jours, on se parle 30 minutes en visio. <strong style="color:#1A1A1A;">Tu n'es jamais seul.</strong>
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       BLOC 4 — POUR QUI (2 colonnes fait / pas fait)
+       ═══════════════════════════════════════ -->
+  <section class="w-full px-6 py-20 md:px-8 md:py-28" style="background:#F7F5F2;">
+    <div class="mx-auto max-w-5xl">
+
+      <div class="mb-12 text-center">
+        <p class="text-xs uppercase tracking-widest font-semibold mb-3" style="color:#E86C47;">Pour qui</p>
+        <h2 class="text-3xl md:text-4xl font-bold" style="color:#1A1A1A; letter-spacing:-0.02em;">
+          Ce plan n'est pas pour tout le monde.
+        </h2>
+      </div>
+
+      <div class="grid md:grid-cols-2 gap-6 md:gap-8">
+
+        <!-- Pour toi -->
+        <div class="rounded-2xl p-8 md:p-10" style="background:white; border:1px solid #E8E4E0;">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:#ECFDF5;">
+              <svg class="w-5 h-5" style="color:#059669;" fill="currentColor" viewBox="0 0 20 20" aria-hidden="true">
+                <path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/>
+              </svg>
+            </span>
+            <h3 class="text-lg font-bold" style="color:#1A1A1A;">Fait pour toi si :</h3>
+          </div>
+
+          <ul class="space-y-3">
+            {[
+              "Tu es artisan, commerçant ou indépendant dans le Grand Est.",
+              "Tu travailles en B2C avec une zone de chalandise définie.",
+              "Tu as déjà des clients satisfaits mais tu peines à en trouver de nouveaux.",
+              "Tu es prêt à me consacrer 45 minutes par semaine pendant 3 mois.",
+            ].map((item) => (
+              <li class="flex items-start gap-3 text-sm leading-relaxed" style="color:#3A3A3A;">
+                <span style="color:#059669;" class="flex-shrink-0 mt-0.5">✓</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+        <!-- Pas pour toi -->
+        <div class="rounded-2xl p-8 md:p-10" style="background:white; border:1px solid #E8E4E0;">
+          <div class="flex items-center gap-3 mb-6">
+            <span class="w-10 h-10 rounded-xl flex items-center justify-center" style="background:#FEF2F2;">
+              <svg class="w-5 h-5" style="color:#DC2626;" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M6 18L18 6M6 6l12 12"/>
+              </svg>
+            </span>
+            <h3 class="text-lg font-bold" style="color:#1A1A1A;">Pas fait pour toi si :</h3>
+          </div>
+
+          <ul class="space-y-3">
+            {[
+              "Tu vends en B2B à des grosses boîtes.",
+              "Tu fais du e-commerce national ou international sans ancrage local.",
+              "Tu espères que je fasse tout sans que tu m'envoies jamais d'info.",
+            ].map((item) => (
+              <li class="flex items-start gap-3 text-sm leading-relaxed" style="color:#3A3A3A;">
+                <span style="color:#DC2626;" class="flex-shrink-0 mt-0.5">✗</span>
+                <span>{item}</span>
+              </li>
+            ))}
+          </ul>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       BLOC 5 — PRIX (card centrée + guarantee)
+       ═══════════════════════════════════════ -->
+  <section class="w-full px-6 py-20 md:px-8 md:py-28 bg-white">
+    <div class="mx-auto max-w-2xl">
+
+      <div class="mb-10 text-center">
+        <p class="text-xs uppercase tracking-widest font-semibold mb-3" style="color:#E86C47;">Le tarif</p>
+        <h2 class="text-3xl md:text-4xl font-bold" style="color:#1A1A1A; letter-spacing:-0.02em;">Combien ça coûte.</h2>
+      </div>
+
+      <!-- Card prix -->
+      <div class="relative rounded-2xl p-8 md:p-10" style="background:#0F0F0F; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(232, 108, 71, 0.3);">
+        <div class="absolute top-0 left-0 right-0 h-1 rounded-t-2xl" style="background: linear-gradient(90deg, #E86C47, #F5C8B3);"></div>
+
+        <div class="text-center">
+          <span class="inline-block px-3 py-1 text-xs font-bold uppercase tracking-wider mb-4" style="color:#E86C47; letter-spacing: 0.15em;">Plan Client Local</span>
+
+          <div class="flex items-baseline justify-center gap-1 mb-3">
+            <span class="text-6xl font-extrabold text-white tabular-nums">2 970</span>
+            <span class="text-3xl font-bold text-white">€</span>
+          </div>
+          <p class="text-sm mb-8" style="color:rgba(255,255,255,0.55);">TTC pour 90 jours</p>
+
+          <div class="space-y-2 mb-8 pt-6" style="border-top:1px solid rgba(255,255,255,0.08);">
+            <p class="text-sm" style="color:rgba(255,255,255,0.75);">
+              Payable en <strong class="text-white">3 mensualités de 990€</strong>
+            </p>
+            <p class="text-sm" style="color:rgba(255,255,255,0.55);">
+              ou en 1 fois avec remise
+            </p>
+          </div>
+
+          <a
+            href={CALENDLY_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center gap-2 w-full rounded-xl px-6 py-4 text-sm font-semibold text-white transition-all hover:-translate-y-0.5"
+            style="background:#E86C47; box-shadow: 0 4px 20px rgba(232,108,71,0.3);"
+            data-umami-event="pcl-prix-cta-calendly"
+          >
+            Réserver 20 minutes avec Marc
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Guarantee encadré -->
+      <div class="mt-8 rounded-2xl p-6 md:p-8 flex items-start gap-4" style="background:linear-gradient(135deg, rgba(232,108,71,0.08) 0%, rgba(232,108,71,0.02) 100%); border:1px solid rgba(232,108,71,0.25);">
+        <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0" style="background:rgba(232,108,71,0.15);">
+          <svg class="w-5 h-5" style="color:#E86C47;" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/>
+          </svg>
+        </div>
+        <p class="text-base leading-relaxed" style="color:#1A1A1A;">
+          <strong>Si tu n'as pas au moins 3 nouveaux clients payants à J90</strong> alors que tu as suivi les 12 rendez-vous et publié les contenus fournis, je rembourse 100% sans condition.
+        </p>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       BLOC 6 — PROCHAINE ÉTAPE (dark, CTA répété)
+       ═══════════════════════════════════════ -->
+  <section class="w-full px-6 py-20 md:px-8 md:py-28" style="background:#0F0F0F;">
+    <div class="mx-auto max-w-2xl text-center">
+
+      <p class="text-xs uppercase tracking-widest font-semibold mb-3" style="color:#E86C47;">On démarre</p>
+      <h2 class="text-3xl md:text-4xl font-bold text-white mb-6" style="letter-spacing:-0.02em;">
+        Comment on démarre.
+      </h2>
+
+      <p class="text-base leading-relaxed mb-10" style="color:rgba(255,255,255,0.7);">
+        On commence par un échange de 20 minutes en visio. Tu me racontes ton activité, tes galères actuelles, tes chiffres. Je te dis si le Plan est adapté ou pas. Pas de vente forcée. Si ce n'est pas pour toi, je te le dis honnêtement.
+      </p>
+
+      <div class="flex flex-col sm:flex-row gap-3 justify-center items-center">
+        <a
+          href={CALENDLY_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center justify-center gap-2 rounded-lg px-8 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5"
+          style="background:#E86C47; box-shadow: 0 0 30px rgba(232,108,71,0.3);"
+          data-umami-event="pcl-etape-cta-calendly"
+        >
+          Réserver 20 minutes avec Marc
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+        </a>
+      </div>
+
+      <p class="mt-8 text-sm" style="color:rgba(255,255,255,0.4);">
+        J'ouvre {PLACES_PAR_MOIS} places par mois.
+      </p>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       BLOC 7 — QUI TU AS EN FACE (compact, fond clair)
+       ═══════════════════════════════════════ -->
+  <section class="w-full px-6 py-20 md:px-8 md:py-28" style="background:#F7F5F2;">
+    <div class="mx-auto max-w-2xl">
+
+      <div class="mb-8">
+        <p class="text-xs uppercase tracking-widest font-semibold mb-3" style="color:#E86C47;">Qui tu as en face</p>
+      </div>
+
+      <div class="flex items-start gap-6 rounded-2xl p-6 md:p-8" style="background:white; border:1px solid #E8E4E0;">
+        <div class="w-16 h-16 rounded-full flex items-center justify-center text-white text-xl font-bold flex-shrink-0" style="background:#E86C47;">M</div>
+        <div>
+          <p class="text-lg font-bold mb-1" style="color:#1A1A1A;">Marc Muller</p>
+          <p class="text-sm mb-4" style="color:#888;">Basé à {business.address.city}, Grand Est</p>
+          <p class="text-base leading-relaxed" style="color:#3A3A3A;">
+            15 sites livrés en Grand Est. Un seul interlocuteur, pas d'agence, pas de commercial, pas de turnover. Tu m'as moi pendant 90 jours.
+          </p>
+        </div>
+      </div>
+
+      <!-- ═══════════════════════════════════════
+           Placeholder "Déjà accompagnés" — 3 case studies à venir
+           TODO : injecter chiffres Angelo, DMulti, Occivolt, AM-Electricité
+           ═══════════════════════════════════════ -->
+      <div class="mt-10">
+        <p class="text-center text-sm mb-6" style="color:#888;">
+          Déjà accompagnés : 15 sites livrés en Grand Est.
+        </p>
+
+        {/* TODO — Remplacer ce placeholder par 3 mini-case studies avec chiffres concrets.
+            Structure prête :
+            <div class="grid md:grid-cols-3 gap-6">
+              <div class="rounded-xl p-6 bg-white" style="border:1px solid #E8E4E0;">
+                <p class="text-2xl font-bold text-[#E86C47]">+X clients</p>
+                <p class="text-sm mt-1">Client (métier, ville)</p>
+                <p class="text-xs mt-3 text-neutral-500">Verbatim court ou contexte.</p>
+              </div>
+              [...2 autres]
+            </div>
+        */}
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       BLOC 8 — FAQ (accordion éditorial 2 colonnes)
+       ═══════════════════════════════════════ -->
+  <section class="w-full bg-white px-6 py-20 md:px-8 md:py-28">
+    <div class="mx-auto max-w-4xl">
+
+      <div class="grid md:grid-cols-5 gap-12 md:gap-16">
+
+        <!-- Colonne gauche : intro éditoriale -->
+        <div class="md:col-span-2 md:sticky md:top-24 md:self-start">
+          <p class="text-xs uppercase tracking-widest font-semibold mb-4" style="color:#E86C47;">Questions fréquentes</p>
+          <h2 class="text-3xl font-bold leading-tight mb-5" style="color:#1A1A1A; letter-spacing:-0.02em;">Tu te poses sûrement ces questions.</h2>
+          <p class="text-base leading-relaxed" style="color:#888;">
+            Les 5 que tous les prospects me posent. Si tu en as d'autres, réserve 20 min et on en parle directement.
+          </p>
+        </div>
+
+        <!-- Colonne droite : accordion -->
+        <div class="md:col-span-3 space-y-0">
+          {faqItems.map((item, i) => (
+            <details class="faq-item group" style={i < faqItems.length - 1 ? "border-bottom:1px solid #F0EDEA;" : ""} open={i === 0}>
+              <summary class="flex cursor-pointer items-start justify-between gap-4 py-5 font-semibold text-base" style="color:#1A1A1A; list-style:none;">
+                <span>{item.question}</span>
+                <svg class="w-4 h-4 flex-shrink-0 mt-1 transition-transform duration-200 group-open:rotate-45" style="color:#E86C47;" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"/></svg>
+              </summary>
+              <p class="pb-5 text-sm leading-relaxed" style="color:#555;">
+                {item.answer}
+              </p>
+            </details>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       CTA FINAL — Dark + rappel guarantee
+       ═══════════════════════════════════════ -->
+  <section class="w-full relative px-6 py-20 md:px-8 md:py-24" style="background: linear-gradient(135deg, #1A1A1A 0%, #0A0A0A 100%);">
+    <div class="absolute inset-0" style="background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(232,108,71,0.1) 0%, transparent 70%);"></div>
+
+    <div class="relative mx-auto max-w-2xl text-center">
+      <h2 class="mb-4 text-3xl md:text-4xl font-bold text-white" style="letter-spacing:-0.02em;">
+        3 nouveaux clients. Ou je rembourse.
+      </h2>
+      <p class="mb-10 text-base md:text-lg" style="color:rgba(255,255,255,0.7);">
+        Réserve un créneau de 20 minutes. Si ce n'est pas pour toi, je te le dis.
+      </p>
+
+      <div class="flex flex-col items-center justify-center gap-3">
+        <a
+          href={CALENDLY_URL}
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center gap-2 rounded-lg px-8 py-3.5 text-sm font-semibold text-white transition-all hover:-translate-y-0.5"
+          style="background:#E86C47; box-shadow: 0 0 40px rgba(232,108,71,0.3);"
+          data-umami-event="pcl-final-cta-calendly"
+        >
+          Réserver 20 minutes avec Marc
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+        </a>
+
+        <a href={MAILTO_FALLBACK} class="text-xs mt-3 hover:text-white/70 transition-colors" style="color:rgba(255,255,255,0.4);">
+          Ou envoie-moi un email
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══════════════════════════════════════
+       STICKY CTA mobile
+       ═══════════════════════════════════════ -->
+  <div id="pcl-sticky-cta" class="md:hidden fixed bottom-0 left-0 right-0 z-40 px-4 py-3 backdrop-blur-md transition-transform duration-300 translate-y-full" style="background:rgba(15,15,15,0.92); border-top:1px solid rgba(255,255,255,0.08);">
+    <a
+      href={CALENDLY_URL}
+      target="_blank"
+      rel="noopener noreferrer"
+      class="flex items-center justify-center gap-2 w-full rounded-lg px-6 py-3.5 text-sm font-semibold text-white"
+      style="background:#E86C47; box-shadow:0 4px 12px rgba(232,108,71,0.3);"
+      data-umami-event="pcl-sticky-cta-calendly"
+    >
+      Réserver 20 min avec Marc
+      <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3"/></svg>
+    </a>
+  </div>
+
+</BaseLayout>
+
+<style>
+  /* Hero gradient title */
+  .hero-accent {
+    background: linear-gradient(135deg, #E86C47 0%, #FF8A65 50%, #E86C47 100%);
+    background-size: 200% auto;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    animation: shimmer 4s ease-in-out infinite;
+  }
+  @keyframes shimmer {
+    0%, 100% { background-position: 0% center; }
+    50% { background-position: 200% center; }
+  }
+
+  /* Hero entrance */
+  .hero-fade {
+    opacity: 0;
+    transform: translateY(16px);
+    animation: heroIn 0.7s ease-out forwards;
+  }
+  .hero-fade-1 { animation-delay: 0.1s; }
+  .hero-fade-2 { animation-delay: 0.22s; }
+  .hero-fade-3 { animation-delay: 0.36s; }
+  .hero-fade-4 { animation-delay: 0.5s; }
+  .hero-fade-5 { animation-delay: 0.65s; }
+  @keyframes heroIn {
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  /* FAQ details summary hide default marker */
+  details > summary { list-style: none; }
+  details > summary::-webkit-details-marker { display: none; }
+
+  /* Reduced motion */
+  @media (prefers-reduced-motion: reduce) {
+    .hero-accent { animation: none; }
+    .hero-fade { animation: none; opacity: 1; transform: none; }
+  }
+</style>
+
+<script>
+  // Sticky CTA mobile : apparait apres avoir scrolle 1 viewport
+  const stickyCta = document.getElementById('pcl-sticky-cta');
+  if (stickyCta) {
+    let ticking = false;
+    const onScroll = () => {
+      if (!ticking) {
+        window.requestAnimationFrame(() => {
+          const threshold = window.innerHeight * 0.9;
+          if (window.scrollY > threshold) {
+            stickyCta.classList.remove('translate-y-full');
+          } else {
+            stickyCta.classList.add('translate-y-full');
+          }
+          ticking = false;
+        });
+        ticking = true;
+      }
+    };
+    window.addEventListener('scroll', onScroll, { passive: true });
+  }
+
+  // FAQ tracking Umami
+  document.querySelectorAll('details.faq-item').forEach((el) => {
+    el.addEventListener('toggle', () => {
+      // Cast needed for HTMLDetailsElement
+      const details = el as HTMLDetailsElement;
+      if (details.open) {
+        const question = details.querySelector('summary span')?.textContent?.trim() || '';
+        if (typeof (window as any).umami !== 'undefined') {
+          (window as any).umami.track('pcl-faq-open', { question: question.slice(0, 80) });
+        }
+      }
+    });
+  });
+</script>
