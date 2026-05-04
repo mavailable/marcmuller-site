@@ -1,0 +1,1424 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const slug = 'levelquiz';
+const formule = 'complet';
+const formuleLabel = 'Echo Complet';
+const nomProspect = 'LevelQuiz';
+const urlSite = 'https://levelquiz.fr/';
+const dateAudit = '3 mai 2026';
+const showUpsell = true;
+
+const title = 'Echo Complet — LevelQuiz | Marc M';
+const description = 'Analyse de levelquiz.fr : simulation de 20 visites, audit technique, recommandations priorisees par impact. Rapport confidentiel.';
+
+const kpis = {
+  nbPersonas: 20,
+  nbConvertissent: 9,
+  nbHesitent: 6,
+  nbRepartent: 5,
+  conversion: 45,
+  experience: 6.0,
+  confiance: 5.7,
+  clarte: 6.9,
+};
+
+const verdictHero = '9 visiteurs sur 20 font le test. 6 hesitent, 5 partent — parce que le site execute parfaitement la promesse B2C francophone, mais reste invisible pour les IA et ferme la porte aux usages adjacents (RH, partage social, certificat).';
+
+const constat = 'Votre site convertit tres bien le coeur de cible (etudiants, voyageurs, salaries individuels) grace a une perf irreprochable et une friction zero (pas d\'inscription, resultat immediat). Trois absences cles ferment des segments entiers : aucune page "A propos" pour donner un visage humain au projet, aucun PDF telechargeable du resultat (qui reste captif du navigateur), aucune donnee structuree pour les IA (ChatGPT, Claude, Perplexity ne vous recommandent jamais).';
+
+const canalData = [
+  { canal: 'Backlink article', nb: 1, convert: 1, rate: 100 },
+  { canal: 'Reseaux sociaux (TikTok, Insta, Discord)', nb: 5, convert: 4, rate: 80 },
+  { canal: 'Direct / re-visite', nb: 2, convert: 1, rate: 50 },
+  { canal: 'Google Search', nb: 8, convert: 3, rate: 38 },
+  { canal: 'Bouche-a-oreille (assistant social)', nb: 1, convert: 0, rate: 0 },
+  { canal: 'IA (ChatGPT / Claude / Perplexity)', nb: 3, convert: 0, rate: 0 },
+];
+
+const alertes = [
+  {
+    type: 'critique' as const,
+    titre: 'Invisible pour les IA',
+    detail: 'Aucune donnee structuree (Schema.org) sur le site. ChatGPT, Claude, Perplexity, Gemini ne peuvent pas vous recommander. C\'est un canal de decouverte majeur en 2026, totalement ferme. 3 personas sur 20 cherchaient activement un outil comme le votre via une IA.',
+    chiffre: '0',
+    chiffreLabel: 'donnees structurees',
+  },
+  {
+    type: 'critique' as const,
+    titre: 'Fondateur totalement invisible',
+    detail: 'Aucune page "A propos", aucun nom du fondateur sur le site (sauf SIRET dans les mentions legales). Pas de visage humain, pas de credentials pedagogiques. Le "+2400 tests/mois" et le "4.8/5" restent des chiffres orphelins. La moitie des personas adultes/pros doutent de la legitimite.',
+    chiffre: '10/20',
+    chiffreLabel: 'visiteurs touches',
+  },
+  {
+    type: 'important' as const,
+    titre: 'Resultat captif du navigateur',
+    detail: 'Aucun PDF, aucun export, aucun certificat. Sarah veut envoyer son score a sa RH, Florent voudrait le joindre a sa demande d\'augmentation, Patrick voudrait un export multi-collaborateurs. Le site delivre le resultat puis s\'arrete net au moment ou l\'utilisateur en aurait besoin pour la suite.',
+    chiffre: '7/20',
+    chiffreLabel: 'visiteurs touches',
+  },
+  {
+    type: 'important' as const,
+    titre: 'Image de partage social manquante',
+    detail: 'Pas d\'og:image ni de twitter:image. Quand quelqu\'un partage un lien LevelQuiz sur Facebook, LinkedIn, WhatsApp ou Discord, l\'apercu est vide. Pour un site B2C dont la croissance peut venir du partage entre etudiants/salaries, c\'est un frein majeur a la viralite.',
+    chiffre: '0/2',
+    chiffreLabel: 'meta image presents',
+  },
+];
+
+const personas = [
+  {
+    id: 1,
+    name: 'Sarah',
+    age: 28,
+    emoji: '\u{1F9F3}',
+    situation: 'Future expat Berlin, mutation pro signee',
+    canal: 'Google Search',
+    device: 'Mobile',
+    decision: 'Convertit',
+    decisionLabel: 'Test fait',
+    histoire: 'Test allemand B1 obtenu en 12 min dans le metro. Screenshote pour sa RH faute de PDF telechargeable. Doute leger sur la legitimite du barometre.',
+    localisation: 'Lyon',
+    maturite: 'Decouverte',
+    contexte: 'RH lui a demande "tu te debrouilles en allemand ?" la veille. Depart Berlin dans 4 mois.',
+    impression: 'Site rapide, tutoiement chaleureux comme Duolingo. "+12 min, gratuit, pas d\'email" : elle se lance sans hesiter.',
+    parcours: [
+      ['Hero', 'Clique Choisir mon test sans hesiter'],
+      ['Selection langue', 'Choisit Allemand puis Allemand General'],
+      ['Test', 'QCM clair mobile-friendly, aucun email demande'],
+      ['Resultat', 'Niveau B1 + score par competence, screenshote pour la RH'],
+      ['Cherche PDF / qui est derriere', 'Ne trouve rien'],
+    ],
+    questionCle: 'Mon allemand de lycee est a quel niveau aujourd\'hui ?',
+    reponse: 'Oui',
+    commentReponse: 'B1 en 12 min, score detaille par competence, niveau CECRL exploitable directement avec sa RH',
+    positifs: ['Aucun email demande avant le test', 'Resultat instantane CECRL reconnu', 'Tutoiement chaleureux non jugeant', 'Site fluide en 4G metro'],
+    frictions: ['Pas de PDF telechargeable pour envoyer a la RH', 'Pas de page A propos / nom du fondateur', '3 reco formations sans comparatif', 'Pas d\'avis externe verifiable'],
+    exp: 8, conf: 6, clarte: 8,
+  },
+  {
+    id: 2,
+    name: 'Karim',
+    age: 34,
+    emoji: '\u{1F4BC}',
+    situation: 'Cadre IT, prepare le TOEIC officiel pour une promo interne',
+    canal: 'Google Search',
+    device: 'Desktop',
+    decision: 'Convertit',
+    decisionLabel: 'Test fait',
+    histoire: 'Cherchait un entrainement TOEIC Reading. Format QCM coherent avec le reel. Utilisera en complement d\'un livre ETS officiel, pas comme reference unique.',
+    localisation: 'Paris',
+    maturite: 'Decision',
+    contexte: 'TOEIC officiel dans 3 semaines, veut s\'entrainer avant de payer les 130 euros',
+    impression: 'Hero generique, scrolle direct vers la section certifications, repere TOEIC : ouf, ca colle a la promesse Google.',
+    parcours: [
+      ['Hero', 'Ignore, scrolle vers certifications'],
+      ['Page TOEIC', 'Verifie format, duree, partie (Reading)'],
+      ['Test', 'Format QCM Part 5/7, conforme au reel'],
+      ['Resultat', 'Score chiffre + correspondance estimee'],
+      ['Cherche correlation officielle', 'Pas de page methodologie, pas de mention "X% atteignent leur score reel"'],
+    ],
+    questionCle: 'Le format est-il vraiment proche du TOEIC reel ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Format coherent avec Part 5/7 mais aucune page methodologique ne le revendique',
+    positifs: ['Test TOEIC accessible en 2 clics', 'Format QCM coherent', 'Resultat immediat sans inscription', 'Vitesse desktop instantanee'],
+    frictions: ['Pas de page methodologique sur la conception des questions', 'Pas de comparatif "score LevelQuiz = X au TOEIC reel"', 'Pas d\'historique pour suivre la progression', 'Pas d\'avis externes de candidats TOEIC'],
+    exp: 7, conf: 6, clarte: 6,
+  },
+  {
+    id: 4,
+    name: 'Mehdi',
+    age: 19,
+    emoji: '\u{1F4F1}',
+    situation: 'Etudiant BTS, vient d\'une video TikTok',
+    canal: 'Reseaux sociaux',
+    device: 'Mobile',
+    decision: 'Convertit',
+    decisionLabel: 'Test fait',
+    histoire: 'Vu une video TikTok influenceuse education. Test Anglais Voyage en 12 min. Score B1, voulait partager sur sa story Insta — pas de bouton, screenshot manuel.',
+    localisation: 'Marseille',
+    maturite: 'Decouverte',
+    contexte: 'Vu dans son scroll TikTok, curiosite pure',
+    impression: 'Site qui charge vite meme dans le webview TikTok. Tutoiement et ton qui matchent son monde. Il se lance sans reflechir.',
+    parcours: [
+      ['Hero', 'Clique Choisir mon test, motive par la curiosite TikTok'],
+      ['Selection', 'Anglais > Voyage (plus utile que Enfant)'],
+      ['Test', 'QCM rapide a vitesse Tinder'],
+      ['Resultat', 'B1, score par competence'],
+      ['Cherche bouton partage social', 'Absent — screenshote a la main'],
+    ],
+    questionCle: 'Est-ce que j\'aurai un score sympa a partager ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Score lisible mais aucun format partageable natif (pas de carte resultat, pas de boutons stories)',
+    positifs: ['Vitesse meme en webview TikTok', 'Tutoiement matche l\'esthetique TikTok', 'Aucune inscription', 'Test court compatible attention TikTok'],
+    frictions: ['Pas de partage social natif (story IG, WhatsApp, TikTok)', 'Pas de visuel resultat partageable type carte', 'Pas de gamification fun (badge, score symbolique)', 'og:image absent : preview vide si on colle le lien'],
+    exp: 7, conf: 7, clarte: 8,
+  },
+  {
+    id: 7,
+    name: 'Chloe',
+    age: 24,
+    emoji: '✈️',
+    situation: 'Backpackeuse PVT Australie, depart dans 3 mois',
+    canal: 'Reseaux sociaux',
+    device: 'Mobile',
+    decision: 'Convertit',
+    decisionLabel: 'Test fait',
+    histoire: 'Story Insta d\'un compte voyage. Test Anglais Voyage = diagnostic actionnable (expression orale faible). Screenshot pour sa coloc qui part avec elle.',
+    localisation: 'Toulouse',
+    maturite: 'Decouverte',
+    contexte: 'Hesite Sydney/Melbourne, veut s\'assurer qu\'elle va survivre la-bas',
+    impression: 'Repere direct le test Voyage parmi les 4 contextes. Sourit. "C\'est exactement ce que je veux."',
+    parcours: [
+      ['Home', 'Repere Anglais Voyage, clique sans hesiter'],
+      ['Test Anglais Voyage', 'Questions contextualisees (restau, gare), elle se reconnait'],
+      ['Resultat', 'A2+/B1, comprehension 70%, expression 50%'],
+      ['Reco formations', 'Survole, ferme l\'onglet'],
+      ['Cherche bouton partage', 'Absent, screenshot manuel pour sa coloc'],
+    ],
+    questionCle: 'Est-ce que je vais survivre la-bas ?',
+    reponse: 'Oui',
+    commentReponse: 'Test contextualise voyage tape juste, decoupage par competence actionnable',
+    positifs: ['Test Voyage specifique (pas un test scolaire)', 'Sans inscription, sans email', 'Decoupage par competence actionnable', 'Tutoiement en phase avec son age'],
+    frictions: ['Pas de bouton partage social du resultat', 'Pas de "et maintenant" specifique voyage/PVT', 'Pas d\'historique pour comparer dans 2 mois', 'Pas de quiz cible "expression orale"'],
+    exp: 8, conf: 7, clarte: 9,
+  },
+  {
+    id: 10,
+    name: 'Lucas',
+    age: 16,
+    emoji: '\u{1F3AE}',
+    situation: 'Lyceen prepare le bac LV2 allemand',
+    canal: 'Reseaux sociaux',
+    device: 'Mobile',
+    decision: 'Convertit',
+    decisionLabel: 'Test fait',
+    histoire: 'Lien dans le Discord revisions. Test Allemand General B1, ses notes en cours matchent. Mais pas d\'equivalence bac affichee : il devra chercher ailleurs ce que vaut B1 au bac.',
+    localisation: 'Rennes',
+    maturite: 'Comparaison',
+    contexte: 'Bac dans 2 mois, compare avec apps revisions dont son prof a parle',
+    impression: 'Voit "test gratuit, sans inscription, 10 min". "Ok ca change des apps qui veulent mon mail."',
+    parcours: [
+      ['Home', 'Voit les 4 contextes, eviction Enfant 10-15 ans (vexant)'],
+      ['Test Allemand General', 'Plus dur que les controles, coherent'],
+      ['Resultat', 'B1, scores par competence'],
+      ['Cherche equivalence bac', 'Pas de mention "B1 = note attendue X au bac LV2"'],
+      ['Reco formations', 'Peasy/WSE/CDL : il a 16 ans et zero euro, pas pour lui'],
+    ],
+    questionCle: 'Mon niveau correspond-il au bac ?',
+    reponse: 'Non',
+    commentReponse: 'Score CECRL donne mais aucune correspondance avec le programme/notation bac LV2',
+    positifs: ['Sans inscription, sans email, sans pub', '4 contextes proposes (pas force sur Enfant)', 'Resultat decoupe par competence', 'Tutoiement naturel pour son age'],
+    frictions: ['Aucune correspondance programme/notation bac LV2', 'Aucune ressource gratuite proposee en sortie', 'Pas de quiz cible sur point grammatical rate', 'Pas de partage social pour comparer avec ses potes Discord'],
+    exp: 7, conf: 7, clarte: 6,
+  },
+  {
+    id: 12,
+    name: 'Florent',
+    age: 37,
+    emoji: '\u{1F468}‍\u{1F4BB}',
+    situation: 'Dev en remote pour boite australienne',
+    canal: 'Backlink article',
+    device: 'Desktop',
+    decision: 'Convertit',
+    decisionLabel: 'Test fait',
+    histoire: 'LevelQuiz cite dans un article DevTo "10 outils anglais pour devs". Test Anglais Reunion Pro B2/C1, screenshot pour preparer sa demande d\'augmentation.',
+    localisation: 'Lille',
+    maturite: 'Comparaison',
+    contexte: 'Demande d\'augmentation a preparer, anglais comme argument cle',
+    impression: 'Page sobre, charge instantanement, pas de bullshit marketing. "+2400 tests/mois" parait raisonnable. Clique direct sur Anglais sans scroller.',
+    parcours: [
+      ['Page Anglais', 'Voit la liste des tests + entrainements certif'],
+      ['Test Reunion Pro', 'Apprecie l\'absence d\'inscription'],
+      ['Resultat', 'B2/C1, compare mentalement avec EF SET deja fait'],
+      ['Reco formations', 'Ignore (pas son besoin)'],
+    ],
+    questionCle: 'Mon vrai niveau pro est-il a hauteur de mon poste ?',
+    reponse: 'Oui',
+    commentReponse: 'Test Reunion Pro + decomposition par competence + CECRL = repere chiffre exploitable pour la RH',
+    positifs: ['Pas d\'inscription = friction zero', 'Test Reunion Pro colle au besoin pro', 'Resultat CECRL exploitable RH', 'Reco formations non intrusives'],
+    frictions: ['Pas de PDF/certificat a joindre a sa demande RH', 'Pas de comparatif "scoring vs Cambridge / EF SET"', 'Pas de page methodologie (un dev veut comprendre l\'algo)', 'Pas de credentials pedagogiques visibles'],
+    exp: 8, conf: 7, clarte: 8,
+  },
+  {
+    id: 14,
+    name: 'Bertrand',
+    age: 64,
+    emoji: '\u{1F474}',
+    situation: 'Retraite, joue au scrabble italien chaque semaine',
+    canal: 'Direct',
+    device: 'Desktop',
+    decision: 'Convertit',
+    decisionLabel: 'Test fait',
+    histoire: 'Re-visite directe, ami du club scrabble lui en a parle. Test Italien General B1 (pensait A2 : content). Mais tutoiement systematique le derange a 64 ans.',
+    localisation: 'Aix-en-Provence',
+    maturite: 'Decouverte',
+    contexte: 'Loisir, curiosite. Joue au scrabble italien chaque semaine avec un ami',
+    impression: 'PC fixe ancien, le site charge sans accroc. Mais le slogan "Quel est ton vrai niveau ?" lui donne l\'impression d\'une appli pour ados.',
+    parcours: [
+      ['Home', 'Trouve Italien sans difficulte'],
+      ['Selection test', 'Italien General (les autres ne lui correspondent pas)'],
+      ['Test', 'Questions claires, taille de police OK pour ses yeux'],
+      ['Resultat', 'B1, content de ne pas etre A2'],
+      ['Reco WSE', 'Ignore (cherche pas a se former)'],
+    ],
+    questionCle: 'Est-ce que c\'est encore pour moi a mon age ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Le contenu marche mais le wrapping (tutoiement, "ton vrai niveau") n\'est jamais ajuste',
+    positifs: ['Catalogue italien complet (CELI, CILS)', 'Pas d\'inscription rassurant pour public 60+', 'Test sans gamification agressive', 'Resultat clair en CECRL'],
+    frictions: ['Tutoiement systematique sans alternative', 'Pas de page A propos pour identifier le serieux', 'Pas de temoignage texte de joueurs adultes/seniors', 'Reco Wall Street English mal calibree pour un retraite'],
+    exp: 6, conf: 6, clarte: 7,
+  },
+  {
+    id: 15,
+    name: 'Tania',
+    age: 31,
+    emoji: '\u{1F1EA}\u{1F1F8}',
+    situation: 'Espagnole vivant a Paris, prepare le DELE C1',
+    canal: 'Google Search',
+    device: 'Mobile',
+    decision: 'Convertit',
+    decisionLabel: 'Test fait',
+    histoire: 'Cherchait un entrainement DELE gratuit. DELE present, mais plafonne a B2 (pas de C1). Fait quand meme le B2 pour confirmer son niveau, devra chercher ailleurs pour C1.',
+    localisation: 'Paris',
+    maturite: 'Decision',
+    contexte: 'Inscription DELE C1 prevue cette session',
+    impression: 'Mobile rapide, voit Espagnol, clique direct. Bonne nouvelle : DELE est listee dans les certifications.',
+    parcours: [
+      ['Page Espagnol', 'Repere DELE et SIELE, bons signaux'],
+      ['Page DELE', 'A1, A2, B1, B2 dispos. Cherche C1 : absent. Petit choc.'],
+      ['Test B2', 'Format compatible avec le vrai DELE (texte + QCM)'],
+      ['Resultat B2', 'Confirme son niveau intermediaire'],
+      ['Cherche roadmap C1', 'Aucune mention "Bientot" ou "niveaux avances"'],
+    ],
+    questionCle: 'Le niveau est-il assez eleve pour le DELE C1 ?',
+    reponse: 'Non',
+    commentReponse: 'DELE gratuit plafonne a B2 dans le catalogue visible, C1/C2 absents',
+    positifs: ['Categorie certifications visible et structuree', 'Test gratuit reel sans paywall surprise', 'Format similaire au vrai DELE', 'Mobile fluide en metro'],
+    frictions: ['Absence du niveau C1 sur DELE', 'Pas de roadmap "Bientot C1/C2"', 'Pas de credentials pedagogiques pour valider la fidelite au DELE officiel', 'Pas de version espagnole du site'],
+    exp: 7, conf: 7, clarte: 7,
+  },
+  {
+    id: 16,
+    name: 'Romain',
+    age: 22,
+    emoji: '\u{1F393}',
+    situation: 'Etudiant master commerce, doit avoir TOEIC > 750',
+    canal: 'Reseaux sociaux',
+    device: 'Mobile',
+    decision: 'Convertit',
+    decisionLabel: 'Test fait',
+    histoire: 'Pote Discord lui a balance le lien : "fais celui-la avant le vrai TOEIC". Format proche du reel, partagera a 2 potes de promo.',
+    localisation: 'Grenoble',
+    maturite: 'Decision',
+    contexte: 'TOEIC officiel fin du mois, exige par sa promotion master',
+    impression: 'Page charge instantanement. Voit "TOEIC, LILATE, Goethe..." Le mot TOEIC en gros = il est au bon endroit.',
+    parcours: [
+      ['Home', 'Capte direct entrainement TOEIC dans la liste'],
+      ['Page TOEIC', 'Compare mentalement avec ce qu\'il sait du vrai (Listening + Reading)'],
+      ['Test', 'Interface fluide iPhone, termine en 12 min'],
+      ['Resultat', 'Score + niveau CECRL B2'],
+      ['Reco formations', 'Scroll past, pas son sujet'],
+    ],
+    questionCle: 'Si je reussis ce truc, vais-je avoir 750 au vrai TOEIC ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Format coherent avec le TOEIC officiel mais aucune mention explicite de correlation',
+    positifs: ['Format = TOEIC reel (Listening + Reading annonces)', 'Resultat immediat avec CECRL B2', 'Aucune inscription, enchaine direct', 'Mobile fluide sans friction'],
+    frictions: ['Aucun temoignage texte d\'etudiant ("j\'ai eu 780 grace a ca")', 'Pas de PDF/certificat (mais s\'en fout)', 'Pas de mode "test chrono strict comme le vrai" affiche', 'Pas d\'historique pour comparer avec un test refait'],
+    exp: 8, conf: 7, clarte: 9,
+  },
+  {
+    id: 6,
+    name: 'Antoine',
+    age: 51,
+    emoji: '\u{1F9D1}‍\u{1F3EB}',
+    situation: 'En reconversion, veut utiliser son CPF pour formation anglais',
+    canal: 'Google Search',
+    device: 'Mobile',
+    decision: 'Hesite',
+    decisionLabel: 'Hesite',
+    histoire: 'Page CPF excellente, alerte arnaques rassurante. Test B1 fait. Mais bloque sur les 3 reco partenaires : "C\'est de l\'affiliation ?" Doute revient faute de page A propos.',
+    localisation: 'Nantes',
+    maturite: 'Comparaison',
+    contexte: 'Reconversion reflechie depuis 6 mois, mefiant des arnaques CPF dont il a entendu parler',
+    impression: 'Page CPF s\'affiche instantanement. Alerte arnaques en haut, tutoiement direct. "Tiens, ils en parlent franchement". Pas de pop-up, pas de bandeau formation agressif. Bon signal.',
+    parcours: [
+      ['Page CPF', 'Lit l\'alerte arnaques, hoche la tete'],
+      ['Tutoriel CPF etape par etape', 'Lit en entier sur son telephone'],
+      ['Test General Anglais', '10 min, score B1'],
+      ['Reco Peasy/WSE/CDL', 'Bloque : "Pourquoi ces 3 ? C\'est de l\'affiliation ?"'],
+      ['Cherche page A propos', 'N\'en trouve pas, doute revient'],
+    ],
+    questionCle: 'Comment je m\'y prends sans me faire arnaquer ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Page CPF excellente sur les arnaques par telephone. Mais sur "ce site est-il fiable ?", aucune reponse',
+    positifs: ['Page CPF tres complete, ton honnete', 'Alerte arnaques mise en avant', 'Test gratuit immediat sans inscription', 'Pas de pression commerciale agressive'],
+    frictions: ['Aucune page Qui est derriere LevelQuiz', 'Recommandation 3 formations sans comparatif ni transparence sur l\'affiliation', 'Pas d\'avis externes verifiables (Trustpilot, Google)', 'Pas de PDF du resultat pour eventuel conseiller CPF'],
+    ceQuiFeraitBasculer: 'Une page A propos qui explique qui est David + un encart de transparence "comment et pourquoi on recommande ces 3 partenaires"',
+    exp: 7, conf: 5, clarte: 8,
+  },
+  {
+    id: 8,
+    name: 'Jean-Marc',
+    age: 58,
+    emoji: '\u{1F914}',
+    situation: 'Cadre senior metallurgie, reunion Stuttgart la semaine prochaine',
+    canal: 'Bouche-a-oreille',
+    device: 'Desktop',
+    decision: 'Hesite',
+    decisionLabel: 'Hesite',
+    histoire: 'Lien envoye par sa fille via Twitter/X. Allemand pro A2 confirme. Diagnostic franc utile mais tutoiement ("ton vrai niveau") infantilisant + pas de credentials. Va plutot voir le DRH.',
+    localisation: 'Strasbourg',
+    maturite: 'Decouverte',
+    contexte: 'Appel telephonique en allemand demain qu\'il redoute, reunion Stuttgart la semaine prochaine',
+    impression: 'Page home plein ecran, design propre. Hero "Connais ton vrai niveau". Le ton pique direct. A 58 ans, personne ne le tutoie sauf ses gosses. "Je suis sur un truc pour ados ?"',
+    parcours: [
+      ['Hero', 'Hesitation sur le tutoiement, scrolle pour voir si c\'est cible jeune'],
+      ['Repere Reunion Pro', 'Petite victoire : ils ont prevu son cas'],
+      ['Test allemand pro', 'Transpire un peu, repond en 14 min'],
+      ['Resultat A2', 'Verdict cash mais juste, soulagement modere'],
+      ['Cherche A propos avant de cliquer reco', 'Ne trouve pas, plisse les yeux'],
+    ],
+    questionCle: 'Vais-je pouvoir tenir une conversation pro la semaine prochaine ?',
+    reponse: 'Oui',
+    commentReponse: 'Diagnostic franc et detaille (A2, comprehension OK, expression catastrophique), il sait sur quoi il va galerer',
+    positifs: ['Test Reunion Pro specifique (pas scolaire)', 'Diagnostic franc et detaille', 'Performance instantanee desktop', 'Pas de pub agressive'],
+    frictions: ['Tutoiement systematique : friction continue pour cadre senior', 'Aucune page A propos / Notre methodologie', 'Pas de credentials pedagogiques (qui a concu le test ?)', 'Pas de PDF du resultat pour son dossier voyage Stuttgart', '3 reco formations sans comparatif'],
+    ceQuiFeraitBasculer: 'Une option vouvoiement + une bio pedagogique du fondateur visible des la home',
+    exp: 6, conf: 5, clarte: 8,
+  },
+  {
+    id: 9,
+    name: 'Sophie',
+    age: 33,
+    emoji: '\u{1F310}',
+    situation: 'Coach mobilite internationale, conseille des cadres expat',
+    canal: 'IA (Perplexity)',
+    device: 'Tablette',
+    decision: 'Hesite',
+    decisionLabel: 'Hesite',
+    histoire: 'Perplexity ne lui a PAS recommande LevelQuiz (Schema absent). Arrive via thread LinkedIn d\'un confrere. Outil de qualite mais aucune page B2B / coachs : recommanderait avec reserve forte.',
+    localisation: 'Geneve',
+    maturite: 'Comparaison',
+    contexte: 'Nouveau client cadre la semaine prochaine, cherche un outil credible a integrer dans sa boite a outils',
+    impression: 'Ouvre sur iPad, sourit a la home propre. Reflexe pro : verifier la fiabilite avant de recommander a ses cadres clients.',
+    parcours: [
+      ['Home', 'Cherche menu A propos / Equipe : absent du header'],
+      ['Footer', 'Trouve mentions legales : "auto-entrepreneur David, SIRET..." C\'est tout'],
+      ['Test allemand pro', 'Questions correctes, plutot bien calibrees CECRL'],
+      ['Cherche page Pour entreprises / RH / coachs', 'N\'existe pas, frustration monte'],
+      ['Cherche temoignages de RH/coachs', 'Rien, juste "4.8/5" sans verbatim'],
+    ],
+    questionCle: 'Qui est derriere ce site ? Puis-je le recommander en confiance ?',
+    reponse: 'Non',
+    commentReponse: 'Mentions legales minimales, aucune page A propos, aucune presentation fondateur, aucun temoignage de pair',
+    positifs: ['Qualite du test : questions calibrees, scoring CECRL credible', 'Design soigne, ergonomie iPad parfaite', 'Sans inscription : utilisable comme pre-diagnostic', 'Performance technique impeccable'],
+    frictions: ['Aucune page A propos / equipe / methodologie', 'Aucune page Pour coachs / RH / consultants en mobilite', 'Pas de temoignages textes de pairs (RH, coachs, formateurs)', 'Pas de partenariat / API / White label evoque', 'Pas de PDF/certificat a inclure dans dossier mobilite'],
+    ceQuiFeraitBasculer: 'Une page Pour Pros + une page A propos credible : elle l\'integrerait immediatement dans sa stack',
+    exp: 7, conf: 4, clarte: 6,
+  },
+  {
+    id: 17,
+    name: 'Nathalie',
+    age: 45,
+    emoji: '\u{1F931}',
+    situation: 'Mere de Lea (12 ans) et Lucas (8 ans)',
+    canal: 'Google Search',
+    device: 'Mobile',
+    decision: 'Hesite',
+    decisionLabel: 'Hesite',
+    histoire: '21h45 dans son lit. Test 10-15 ans utilisable pour Lea, mais visuellement austere. Lucas (8 ans) totalement exclu. Bascule pour le cadet vers Cambridge Junior.',
+    localisation: 'Tours',
+    maturite: 'Comparaison',
+    contexte: 'Reunion parents-profs il y a 3 jours',
+    impression: 'Page propre, voit "Anglais Enfant 10-15 ans". Sourcille legerement : "Mon Lucas a 8 ans..."',
+    parcours: [
+      ['Home', 'Repere Enfant 10-15 ans dans la grille'],
+      ['Cherche enfant 6-10 ans / primaire', 'N\'existe pas, frustration silencieuse'],
+      ['Test Anglais Enfant 10-15 ans', 'Pas de mascotte, design adulte adapte, peu kids friendly'],
+      ['Cherche qui sommes-nous', 'N\'en trouve pas. "C\'est concu par qui ?"'],
+      ['Cherche mode parent ou guide parental', 'Rien'],
+    ],
+    questionCle: 'Est-ce que mes enfants peuvent vraiment faire ca ?',
+    reponse: 'Partiellement',
+    commentReponse: 'Test 10-15 ans utilisable pour Lea. Visuellement austere, sans cadrage pedagogique. Lucas 8 ans hors cible',
+    positifs: ['Test gratuit, pas d\'inscription, pas de capture d\'email', 'Mention 4.8/5 rassurante en surface', 'Test 10-15 ans existe et a l\'air serieux pour Lea', 'CECRL affiche (elle connait via les bulletins)'],
+    frictions: ['Lucas 8 ans n\'a pas de test adapte', 'Aucun cadrage pedagogique : qui concoit ? Pas d\'A propos, pas de prof ou pedagogue mentionne', 'Visuellement pas enfant : pas de mascotte, design adulte', 'Pas de mode accompagne par parent ou guide pour expliquer le resultat', 'Pas d\'avis externes pour valider aupres d\'autres parents'],
+    ceQuiFeraitBasculer: 'Une page A propos avec un pedagogue identifie + un test enfant <10 ans avec mode parent',
+    exp: 5, conf: 4, clarte: 6,
+  },
+  {
+    id: 19,
+    name: 'Marine',
+    age: 27,
+    emoji: '\u{1F3AC}',
+    situation: 'Community manager agence digitale, etude UX pro',
+    canal: 'Direct',
+    device: 'Desktop',
+    decision: 'Hesite',
+    decisionLabel: 'Hesite',
+    histoire: 'Lien colle par sa collegue dans Slack. Verdict pro mitige : "perf au top, branding amateur". Note l\'og:image vide quand elle tente de partager sur LinkedIn.',
+    localisation: 'Paris',
+    maturite: 'Decouverte',
+    contexte: 'Veille concurrence / inspiration UX',
+    impression: '"Ah ouais ils ont fait un truc propre". Pas de wow visuel mais pas de degueu non plus. "Ils ont mis le paquet sur la perf, pas sur le wow design".',
+    parcours: [
+      ['Home', 'Analyse la grille des tests, nomenclature claire'],
+      ['Inspecte le code source', 'Voit absence de Schema.org et og:image'],
+      ['Tente partage LinkedIn', 'Preview vide. "Bon ben ils perdent tout le potentiel viral"'],
+      ['Cherche reseaux sociaux du site', 'Aucun lien'],
+      ['Page CPF', 'Note la qualite SEO long-tail'],
+      ['Cherche A propos / bio fondateur', 'Rien. "Bizarre pour un site de cette qualite"'],
+    ],
+    questionCle: 'Cette boite a quel niveau de soin sur l\'UX ?',
+    reponse: 'Partiellement',
+    commentReponse: 'UX fonctionnelle solide mais branding inexistant, social inexistant, partage social casse',
+    positifs: ['Perfs irreprochables (rare a ce niveau)', 'Nomenclature des tests claire et logique', 'Page CPF bien structuree (vraie expertise SEO)', 'Pas d\'inscription forcee, pas de cookie banner abusif'],
+    frictions: ['Design banal, pas de personnalite visuelle marquante', 'Pas d\'og:image = partage social casse, gros oubli pour du B2C', 'Pas de presence sociale (aucun lien Twitter/LinkedIn/Instagram)', 'Pas de page A propos / qui est derriere', 'Pas de blog actif = pas de contenu shareable', 'Aucun temoignage texte (juste la note 4.8/5 brute)'],
+    ceQuiFeraitBasculer: 'Pas dans la cible conversion. Mais une og:image + une page A propos avec personnalite suffirait a rehausser le verdict pro',
+    exp: 6, conf: 6, clarte: 8,
+  },
+  {
+    id: 20,
+    name: 'Patrick',
+    age: 49,
+    emoji: '\u{1F3E2}',
+    situation: 'RH PME industrielle Mulhouse, plan formation 2026 a finaliser',
+    canal: 'Google Search',
+    device: 'Desktop',
+    decision: 'Hesite',
+    decisionLabel: 'Hesite',
+    histoire: 'Cherchait un outil pour 12 collaborateurs avec export. Site B2C strict. Quitte pour son besoin principal mais retient les 3 partenaires Peasy/WSE/CDL pour son benchmark.',
+    localisation: 'Mulhouse',
+    maturite: 'Comparaison',
+    contexte: 'Plan de formation 2026 a finaliser ce trimestre',
+    impression: '"Test gratuit, OK, mais c\'est B2C visiblement". Cherche immediatement entreprise/RH/equipe dans le menu : rien.',
+    parcours: [
+      ['Home', 'Scanne pour entreprise/RH/equipe/API : rien'],
+      ['Liste tests', 'Test Reunion Pro l\'interesse'],
+      ['Page CPF', 'Utile, note le mot CPF pour service formation'],
+      ['Cherche export CSV / mode admin / dashboard RH', 'Rien'],
+      ['S\'attarde sur reco Peasy/WSE/CDL', 'Note les 3 noms pour son benchmark'],
+      ['Mentions legales', 'Voit auto-entrepreneur Pyrenees-Orientales : tique'],
+    ],
+    questionCle: 'Puis-je deployer ca sur mon equipe ou c\'est juste B2C ?',
+    reponse: 'Non',
+    commentReponse: 'Aucune fonctionnalite multi-utilisateurs, pas d\'export, pas de page B2B',
+    positifs: ['Site rapide et propre', 'Liste partenaires utile pour son benchmark', 'Page CPF complete, source d\'inspiration', 'Test Reunion Pro pertinent en intitule'],
+    frictions: ['Pas de page Pour entreprises / RH / formation', 'Pas de mode multi-utilisateurs, pas de dashboard RH', 'Pas d\'API ou d\'integration LMS', 'Auto-entrepreneur Pyrenees-Orientales = pas de credibilite B2B PME', 'Pas de logo client entreprise visible', 'Pas de tarif B2B / volume'],
+    ceQuiFeraitBasculer: 'Une page Pour entreprises avec mode multi-utilisateurs et export. Sinon, une page A propos qui montre une vraie expertise pedagogique pour transformer le solo en credible',
+    exp: 5, conf: 4, clarte: 7,
+  },
+  {
+    id: 3,
+    name: 'Laura',
+    age: 42,
+    emoji: '\u{1F4BC}',
+    situation: 'Manager RH PME, evalue le niveau anglais d\'un collaborateur',
+    canal: 'IA (ChatGPT)',
+    device: 'Desktop',
+    decision: 'Quitte',
+    decisionLabel: 'Repart',
+    histoire: 'ChatGPT ne lui recommande PAS LevelQuiz (Schema absent). Arrive par hasard. Pas de page B2B + pas de PDF = quitte vers EF SET ou Pipplet.',
+    localisation: 'Bordeaux',
+    maturite: 'Comparaison',
+    contexte: 'Budget formation a justifier, cherche outil gratuit pour evaluer un collaborateur sans payer Pipplet',
+    impression: '"Decouvre TON niveau" = le site s\'adresse au candidat, pas a la RH. Tutoiement deroute.',
+    parcours: [
+      ['Hero', 'Perplexite : "TON niveau" = B2C, pas RH'],
+      ['Footer', 'Cherche professionnels/entreprise/RH : absent'],
+      ['Page certifications', 'TOEIC/LILATE rassurent cote serieux'],
+      ['Test General Anglais', 'Le fait elle-meme pour evaluer si exploitable'],
+      ['Cherche PDF / partage manager', 'Bloque : pas de PDF, pas d\'export'],
+    ],
+    questionCle: 'Puis-je faire passer ce test a mon collaborateur et exploiter le resultat ?',
+    reponse: 'Non',
+    commentReponse: 'Pas de page B2B, pas de PDF, pas d\'historique, pas de mention "utilisable a des fins d\'evaluation pro"',
+    positifs: ['Test rapide, format clair, niveau CECRL standard', 'Aucune inscription = friction RGPD nulle', 'Couverture certifications credibilise un peu cote pro'],
+    frictions: ['Aucune page Pour entreprises / RH / coachs : positionnement 100% B2C', 'Aucun PDF / certificat / export du resultat', 'Pas de page A propos / expertise pedagogique pour defendre l\'outil en interne', 'Pas d\'avis externe verifiable pour citer une preuve sociale en reunion', 'Site invisible pour ChatGPT (Schema absent) : ne l\'aurait jamais decouvert seule', 'Tutoiement systematique inadapte a un usage pro'],
+    exp: 5, conf: 4, clarte: 4,
+  },
+  {
+    id: 5,
+    name: 'Maria-Elena',
+    age: 37,
+    emoji: '\u{1F30D}',
+    situation: 'Argentine vivant a Madrid, entretien dans une boite francaise',
+    canal: 'Google Search',
+    device: 'Desktop',
+    decision: 'Quitte',
+    decisionLabel: 'Repart',
+    histoire: 'Voulait tester son francais. Site uniquement en francais et ne propose pas le francais. Quitte en 90 sec.',
+    localisation: 'Madrid',
+    maturite: 'Decouverte',
+    contexte: 'Entretien dans 2 semaines dans une boite francaise',
+    impression: 'Tout est en francais, comprend mais inconfortable. Cherche immediatement "frances" dans les langues proposees.',
+    parcours: [
+      ['Hero', 'Comprend l\'intention, cherche frances dans les langues'],
+      ['Selection langues', 'Anglais/Espagnol/Allemand/Italien. PAS DE FRANCAIS. Decoit total'],
+      ['Cherche selecteur de langue interface (ES, EN)', 'Absent'],
+      ['Cherche test FLE/DELF', 'Pas mis en avant'],
+      ['Quitte', 'Moins de 90 secondes sur le site'],
+    ],
+    questionCle: 'Hay un test de frances aqui ?',
+    reponse: 'Non',
+    commentReponse: 'Aucun test de francais. Paradoxe : le site evalue 4 langues mais pas la langue de son interface',
+    positifs: ['Site rapide et propre (mais inutilisable pour son besoin)', 'Tutoiement universel comprehensible meme pour un non-francophone'],
+    frictions: ['Pas de test de francais : friction produit majeure', 'Pas d\'interface multilingue : aucun selecteur ES/EN/IT', 'Pas de mention cours de francais pour etrangers / FLE / DELF', 'Paradoxe brand : un site de tests de langue sans la langue de son interface', 'Pas de lien vers version anglaise/espagnole'],
+    exp: 3, conf: 5, clarte: 4,
+  },
+  {
+    id: 11,
+    name: 'Valeria',
+    age: 29,
+    emoji: '\u{1F1EE}\u{1F1F9}',
+    situation: 'Italienne preparant le DELF B2 pour fac francaise',
+    canal: 'Google Search',
+    device: 'Mobile',
+    decision: 'Quitte',
+    decisionLabel: 'Repart',
+    histoire: 'Cherchait test de francais et entrainement DELF. Aucun des deux disponible. Quitte en moins de 90 sec.',
+    localisation: 'Milan',
+    maturite: 'Decision',
+    contexte: 'Inscription universite imminente, DELF B2 dans 1 mois',
+    impression: 'Page se charge instantanement. Tout en francais. Cale sur "Quel est ton vrai niveau ?". Cherche le drapeau francais.',
+    parcours: [
+      ['Hero + grille 4 langues', 'Cherche le francais, ne le trouve pas'],
+      ['Scroll bas de page', 'Verifie s\'il y a "Bientot disponible" : rien'],
+      ['Footer', 'Aucun lien A propos, aucun reseau social pour demander'],
+      ['Quitte', 'Moins de 90 secondes, retour a Google'],
+    ],
+    questionCle: 'C\'e\' un test di francese qui ?',
+    reponse: 'Non',
+    commentReponse: 'Le site n\'offre pas de test de francais et ne le mentionne nulle part',
+    positifs: ['Site rapide, design propre, lisible meme en italien', 'Drapeaux clairs sans traduction', 'Pas de pop-up cookies agressif'],
+    frictions: ['Absence totale de francais dans l\'offre', 'Site mono-langue francais : aucun selecteur EN/IT/ES', 'Pas de page A propos ou Contact visible', 'Aucune mention DELF/DALF nulle part', 'Pas de blog/newsletter pour la retenir'],
+    exp: 3, conf: 5, clarte: 7,
+  },
+  {
+    id: 13,
+    name: 'Elise',
+    age: 41,
+    emoji: '\u{1F4DA}',
+    situation: 'Formatrice langue autoentrepreneuse, monte une nouvelle offre',
+    canal: 'IA (Claude)',
+    device: 'Tablette',
+    decision: 'Quitte',
+    decisionLabel: 'Repart',
+    histoire: 'Claude ne cite pas LevelQuiz (Schema absent). Une fois sur le site, cherche partenariat/API : rien. Reco partenaires concurrentes des siennes : conflit d\'interet.',
+    localisation: 'Lyon',
+    maturite: 'Comparaison',
+    contexte: 'Lancement offre prevu dans 6 semaines',
+    impression: 'Design propre, responsive iPad correct. Mais le ton tutoiement ("ton vrai niveau") la fait tiquer pour son usage pro.',
+    parcours: [
+      ['Home', 'Scan rapide, 4 langues, format quiz : OK pour usage prospect'],
+      ['Footer', 'Cherche Partenariat/API/Affiliation/Coachs : trouve juste CPF/Mentions legales'],
+      ['Test Anglais General', 'Quelques QCM standards, correct mais rien de revolutionnaire'],
+      ['Page resultat', 'Reco WSE/CDL/Peasy : conflit d\'interet avec ses propres formations'],
+    ],
+    questionCle: 'Y a-t-il une option partenaire ou API ?',
+    reponse: 'Non',
+    commentReponse: 'Aucune page B2B, pas de mention API, pas d\'offre white-label, pas d\'affiliation pour formateurs',
+    positifs: ['Site fonctionnel, rapide, responsive iPad', 'Modele freemium clair (test gratuit, formation payante)', 'Couverture 4 langues + entrainements certif', 'Pas de pop-up agressif'],
+    frictions: ['Aucune offre B2B / partenaire / API', 'Reco formations partenaires concurrentes des siennes : conflit d\'interet', 'Pas de page A propos pour identifier le fondateur et proposer un deal', 'Aucun lien reseau social (pas de LinkedIn fondateur a DM)', 'Schema.org absent = invisible pour Claude/IA', 'Tutoiement systematique pas adapte a ses prospects 45+ cadres'],
+    exp: 5, conf: 5, clarte: 6,
+  },
+  {
+    id: 18,
+    name: 'Hassan',
+    age: 39,
+    emoji: '\u{1F6C2}',
+    situation: 'Demandeur d\'asile, dossier immigration B1 anglais',
+    canal: 'Bouche-a-oreille',
+    device: 'Mobile',
+    decision: 'Quitte',
+    decisionLabel: 'Repart',
+    histoire: 'Cherchait un certificat officiel pour son dossier. Mentions legales explicites "non officiel" = inutilisable. Quitte en 3 minutes, sans frustration majeure.',
+    localisation: 'Bobigny',
+    maturite: 'Decision',
+    contexte: 'Deadline dossier immigration, doit prouver B1 anglais sans budget pour test officiel cette semaine',
+    impression: 'Telephone Android age, page charge etonnamment vite. "Gratuit, je peux essayer". Cherche immediatement "certificat" ou "attestation".',
+    parcours: [
+      ['Home', 'Cherche certificat/attestation/PDF : rien d\'immediat'],
+      ['Page test General anglais', 'Regarde le contenu du resultat propose'],
+      ['Page CPF + FAQ', 'Cherche certificat reconnu/officiel/OFII/prefecture'],
+      ['Mentions legales par desespoir', 'Lit "Les tests sont des outils d\'evaluation indicatifs et NON OFFICIELS"'],
+      ['Souffle, ferme la page', 'Reconnait l\'honnetete mais le besoin n\'est pas couvert'],
+    ],
+    questionCle: 'Est-ce que ce certificat sera accepte par l\'administration ?',
+    reponse: 'Non',
+    commentReponse: 'Mentions legales explicites : non officiel, indicatif. Aucune valeur juridique pour un dossier immigration',
+    positifs: ['Site rapide meme sur son materiel modeste', 'Tests gratuits sans capture email', 'Honnetete claire sur le caractere non officiel', 'Niveau CECRL affiche, vocabulaire administratif'],
+    frictions: ['Pas de PDF / attestation telechargeable du tout', 'Mentions legales explicites "non officiel" = inutilisable pour son dossier', 'Pas de page preparation aux tests officiels qui le redirigerait vers Cambridge Linguaskill / IELTS', 'Pas de section "pour qui ce test n\'est PAS adapte" en haut de page', 'Pas de page d\'aide aux personnes en demarche administrative'],
+    exp: 4, conf: 7, clarte: 5,
+  },
+];
+
+const ameliorationsHautes = [
+  {
+    titre: 'Creer une page "A propos" avec David visible',
+    pourquoi: 'Sans visage humain pour porter le projet, le "+2400 tests/mois" et le "4.8/5" restent des chiffres orphelins. La moitie des personas adultes/pros doutent de la legitimite pedagogique du barometre. C\'est l\'angle mort numero 1 du site.',
+    action: 'Page /a-propos : photo de David, bio courte (parcours, expertise), pourquoi LevelQuiz a ete cree, methodologie de conception des tests (qui ecrit les questions, validation CECRL, mises a jour), lien LinkedIn fondateur. Bonus : mini-bandeau "Concu par [David], specialiste [X]" dans le footer de chaque page test.',
+    impact: '10 visiteurs sur 20',
+  },
+  {
+    titre: 'Generer un PDF telechargeable du resultat',
+    pourquoi: 'Le resultat est captif du navigateur. Sarah veut envoyer son score a sa RH, Florent voudrait le joindre a sa demande d\'augmentation, Patrick voudrait un export multi-collaborateurs. Le site delivre une experience parfaite pendant le test puis s\'arrete net au moment ou l\'utilisateur en aurait besoin pour la suite.',
+    action: 'Bouton "Telecharger mon resultat (PDF)" en bout de page resultat. Un PDF d\'1 page : niveau CECRL, scores par competence, date, mention "test indicatif non officiel" + URL pour refaire. Bonus : version "carte resultat" 1080x1080 partageable sur Instagram/LinkedIn (resout aussi la friction Mehdi/Chloe/Marine).',
+    impact: '7 visiteurs sur 20',
+  },
+  {
+    titre: 'Ajouter Schema.org + og:image (devenir visible aux IA)',
+    pourquoi: 'ChatGPT, Claude, Perplexity, Gemini lisent les Schema.org pour recommander des sites. Sans Schema, LevelQuiz est invisible pour ce canal en pleine croissance. Et sans og:image, chaque partage social degrade la marque au lieu de la propager. C\'est une friction silencieuse mais qui ferme un canal entier.',
+    action: 'Ajouter sur chaque page : Organization, WebSite, EducationalOrganization, FAQPage (sur la home et chaque guide), Course (sur chaque page certif), Quiz/LearningResource (sur chaque test), BreadcrumbList. Creer une image OG 1200x630 (logo + tagline + couleurs violet/jaune) et la mettre dans og:image + twitter:image. Creer un llms.txt resume des contenus.',
+    impact: '3 visiteurs IA + decuple la viralite des 4 partages sociaux',
+  },
+];
+
+const ameliorationsUtiles = [
+  {
+    titre: 'Page "Pour entreprises / RH / coachs"',
+    detail: 'Page sobre qui cadre l\'usage pro (test sans inscription, lien partageable, mention explicite "utilisable pour un brief equipe ou une session de positionnement"). Pas besoin d\'un produit B2B complet — juste un positionnement explicite. Toucherait Laura, Sophie, Patrick.',
+  },
+  {
+    titre: 'Boutons de partage social du resultat',
+    detail: 'Story Instagram, WhatsApp, LinkedIn. Permettrait a Mehdi, Chloe, Lucas, Florent de partager leur score naturellement. Effet boule de neige B2C qui beneficie a la croissance organique.',
+  },
+  {
+    titre: 'Encart de transparence sur les formations partenaires',
+    detail: '"Pourquoi ces 3 ? Comment on les a choisies ? Touchons-nous une commission ?". Honnetete = confiance. Toucherait Antoine, Jean-Marc, Lucas qui doutent du choix des reco WSE/Peasy/CDL.',
+  },
+  {
+    titre: 'Mini-temoignages textes verifiables',
+    detail: 'Le "4.8/5" sans verbatim est un chiffre orphelin. 5-10 temoignages textes (prenom, contexte, citation courte) ou un widget Trustpilot officiel rendrait la preuve sociale credible. Toucherait Sarah, Karim, Sophie, Nathalie.',
+  },
+];
+
+const ameliorationsDiscuter = [
+  {
+    emoji: '\u{1F30D}',
+    titre: 'Etendre le catalogue aux non-francophones',
+    detail: 'Ajouter test de francais (FLE/DELF) + interface multilingue ES/EN/IT toucherait Maria-Elena et Valeria. Ajouter DELE C1/C2 toucherait Tania. Test enfant <10 ans avec mascotte/mode parent toucherait Nathalie. C\'est une roadmap produit, pas une amelioration UX.',
+  },
+  {
+    emoji: '\u{1F454}',
+    titre: 'Option vouvoiement / version "adulte serieux"',
+    detail: 'Alternative au tutoiement par defaut toucherait Jean-Marc, Bertrand, Sophie, Elise. Mais risque de fragmenter la marque et le ton. Decision business : rester "Duolingo-like" avec tutoiement universel, ou "outil pro" avec vouvoiement optionnel.',
+  },
+  {
+    emoji: '\u{1F512}',
+    titre: 'Ajouter les 3 headers de securite manquants',
+    detail: 'CSP, X-Frame-Options, X-Content-Type-Options. 30 min de travail dans next.config.js. Pas visible par les visiteurs (sauf Marine en mode pro), mais credibilise la fiche technique et passe le grade Mozilla de C a A.',
+  },
+];
+
+const techVerdicts = [
+  { label: 'Vitesse', verdict: 'Excellent', ok: true, detail: 'PSI mobile 99/100, desktop 98/100. LCP mobile 2.1s. Site instantane, optimise comme un produit de classe mondiale.' },
+  { label: 'Securite', verdict: 'C (50/135)', ok: false, detail: '3 headers de securite manquants : protection contre XSS, clickjacking et mime sniffing. 30 min de travail.' },
+  { label: 'SEO on-page', verdict: 'Excellent', ok: true, detail: 'Titles optimises (mot-cle en debut, marque en fin), meta descriptions accrocheuses, H1 unique, hierarchie propre.' },
+  { label: 'Donnees structurees', verdict: 'Absent', ok: false, detail: 'Aucun bloc Schema.org. Site invisible aux IA (ChatGPT, Claude, Perplexity, Gemini). Pas de rich results possibles.' },
+  { label: 'Partage reseaux', verdict: 'Image manquante', ok: false, detail: 'og:image et twitter:image absents. Apercu vide quand on partage le lien sur Facebook, LinkedIn, WhatsApp.' },
+];
+
+const tech = {
+  observatory: { grade: 'C', score: 50, testsOk: 7, testsTotal: 10 },
+  pagespdMobile: { performance: 99, accessibility: 96 },
+  pagespdDesktop: { performance: 98, accessibility: 96 },
+  cwv: { lcp: '2.1s mobile / 0.7s desktop', tbt: '45ms mobile / 22ms desktop', cls: '0' },
+  headers: [
+    { ok: false, h: 'Content-Security-Policy (CSP)' },
+    { ok: false, h: 'X-Frame-Options (anti-clickjacking)' },
+    { ok: false, h: 'X-Content-Type-Options (nosniff)' },
+    { ok: true, h: 'Strict-Transport-Security (HSTS)' },
+    { ok: true, h: 'Referrer-Policy' },
+    { ok: true, h: 'Permissions-Policy' },
+    { ok: true, h: 'HTTPS actif' },
+  ],
+  schema: [
+    { item: 'JSON-LD present', ok: false },
+    { item: 'WebSite', ok: false },
+    { item: 'Organization', ok: false },
+    { item: 'EducationalOrganization', ok: false },
+    { item: 'FAQPage (sur la FAQ home)', ok: false },
+    { item: 'Course (sur chaque page certification)', ok: false },
+    { item: 'Quiz / LearningResource (sur chaque test)', ok: false },
+    { item: 'BreadcrumbList', ok: false },
+  ],
+  og: [
+    { item: 'og:title', ok: true, val: 'Present' },
+    { item: 'og:description', ok: true, val: 'Present' },
+    { item: 'og:url', ok: true, val: 'Present' },
+    { item: 'og:type', ok: true, val: 'Present' },
+    { item: 'og:image', ok: false, val: 'Absent' },
+    { item: 'twitter:card', ok: true, val: 'Present' },
+    { item: 'twitter:image', ok: false, val: 'Absent' },
+  ],
+  seo: [
+    { item: 'HTTPS actif', ok: true },
+    { item: 'Title optimise (mot-cle en debut)', ok: true },
+    { item: 'Meta description < 160 caracteres', ok: true },
+    { item: 'H1 unique par page', ok: true },
+    { item: 'Hierarchie H1>H2>H3 coherente', ok: true },
+    { item: 'lang="fr" defini', ok: true },
+    { item: 'Canonical defini', ok: true },
+    { item: 'llms.txt (referentiel IA 2026)', ok: false },
+  ],
+};
+
+function decisionBorder(d: string) {
+  if (d === 'Convertit') return 'border-green-200';
+  if (d === 'Hesite') return 'border-amber-200';
+  return 'border-neutral-200';
+}
+function decisionBadge(d: string) {
+  if (d === 'Convertit') return 'bg-green-600';
+  if (d === 'Hesite') return 'bg-amber-500';
+  return 'bg-neutral-400';
+}
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  noindex={true}
+  lang="fr"
+  frPath={`/echo/${slug}`}
+>
+
+  <!-- HERO -->
+  <section class="relative w-full px-6 py-20 md:py-28 overflow-hidden" style="background: #0A0A0A;">
+    <div class="absolute top-[20%] left-[10%] w-[500px] h-[500px] rounded-full blur-[180px] pointer-events-none" style="background: #5B4FE9; opacity: 0.08;"></div>
+    <div class="absolute bottom-[10%] right-[5%] w-[300px] h-[300px] rounded-full blur-[120px] pointer-events-none" style="background: #FFD166; opacity: 0.05;"></div>
+
+    <div class="relative mx-auto max-w-4xl z-10">
+      <div class="mb-6 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5);">
+        {formuleLabel} &middot; Rapport confidentiel
+      </div>
+
+      <h1 class="mb-6 text-3xl md:text-4xl font-bold text-white leading-tight tracking-tight">
+        {verdictHero}
+      </h1>
+
+      <p class="mb-10 text-sm" style="color: rgba(255,255,255,0.4);">
+        Site analyse : <a href={urlSite} target="_blank" rel="noopener" class="underline hover:text-white transition-colors">{urlSite}</a> &middot; {kpis.nbPersonas} visiteurs simules &middot; {dateAudit}
+      </p>
+
+      <div class="grid grid-cols-3 gap-4">
+        <div class="rounded-xl p-5 text-center" style="background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2);">
+          <div class="text-4xl md:text-5xl font-black text-green-400 mb-1">{kpis.nbConvertissent}</div>
+          <div class="text-sm text-green-400/70">font le test</div>
+        </div>
+        <div class="rounded-xl p-5 text-center" style="background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2);">
+          <div class="text-4xl md:text-5xl font-black text-amber-400 mb-1">{kpis.nbHesitent}</div>
+          <div class="text-sm text-amber-400/70">hesitent</div>
+        </div>
+        <div class="rounded-xl p-5 text-center" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
+          <div class="text-4xl md:text-5xl font-black mb-1" style="color: rgba(255,255,255,0.5);">{kpis.nbRepartent}</div>
+          <div class="text-sm" style="color: rgba(255,255,255,0.3);">repartent</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONSTAT -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="rounded-2xl p-6 md:p-8 mb-12 border-l-4" style="background: rgba(91,79,233,0.04); border-color: #5B4FE9;">
+      <p class="text-lg md:text-xl font-medium text-neutral-800 leading-relaxed">{constat}</p>
+    </div>
+
+    <h2 class="text-xl font-bold text-neutral-900 mb-2">D'ou viennent vos visiteurs</h2>
+    <p class="text-sm text-neutral-500 mb-6">Et combien font le test selon leur canal d'arrivee.</p>
+
+    <div class="space-y-4 mb-12">
+      {canalData.map(c => {
+        const color = c.rate >= 50 ? '#22c55e' : c.rate >= 25 ? '#f59e0b' : '#ef4444';
+        return (
+          <div class="flex items-center gap-4">
+            <div class="w-52 text-sm text-neutral-700 shrink-0">{c.canal}</div>
+            <div class="flex-1 h-3 bg-neutral-100 rounded-full overflow-hidden">
+              <div class="h-full rounded-full transition-all" style={`width: ${c.rate}%; background: ${color}`}></div>
+            </div>
+            <div class="w-20 text-right">
+              <span class="text-sm font-bold" style={`color: ${color}`}>{c.rate}%</span>
+              <span class="text-xs text-neutral-400 ml-1">({c.convert}/{c.nb})</span>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+
+    <details class="group">
+      <summary class="flex items-center gap-2 cursor-pointer text-sm text-neutral-500 hover:text-neutral-700 py-2">
+        <svg class="w-4 h-4 transition-transform group-open:rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        Voir les scores moyens (experience, confiance, clarte)
+      </summary>
+      <div class="grid grid-cols-3 gap-4 mt-3">
+        {[
+          { label: 'Experience', val: kpis.experience },
+          { label: 'Confiance', val: kpis.confiance },
+          { label: 'Clarte', val: kpis.clarte },
+        ].map(s => {
+          const sColor = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500';
+          return (
+            <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
+              <div class={`text-2xl font-bold mb-1 ${sColor}`}>{s.val}<span class="text-sm text-neutral-400">/10</span></div>
+              <div class="text-xs text-neutral-500">{s.label}</div>
+            </div>
+          );
+        })}
+      </div>
+    </details>
+  </section>
+
+  <!-- ALERTES -->
+  <section class="py-12" style="background: #fefce8;">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center gap-3 mb-6">
+        <svg class="w-6 h-6 text-amber-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+        <div>
+          <h2 class="text-lg font-bold text-neutral-900">Problemes detectes</h2>
+          <p class="text-sm text-neutral-600">
+            {alertes.filter(a => a.type === 'critique').length} critiques &middot; {alertes.filter(a => a.type === 'important').length} importants
+          </p>
+        </div>
+      </div>
+      <div class="grid md:grid-cols-2 gap-4">
+        {alertes.map(a => (
+          <div class={`bg-white rounded-xl p-5 ${a.type === 'critique' ? 'border-2 border-red-300' : 'border border-amber-300'}`}>
+            <div class={`inline-block text-2xl font-black px-3 py-1 rounded-lg mb-3 ${a.type === 'critique' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>
+              {a.chiffre}
+            </div>
+            <p class="text-[10px] text-neutral-400 uppercase tracking-wider mb-1">{a.chiffreLabel}</p>
+            <h3 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h3>
+            <p class="text-xs text-neutral-600 leading-relaxed">{a.detail}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- VOS VISITEURS -->
+  <section class="py-16" style="background: #fafafa;">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs</h2>
+      <p class="text-neutral-600 mb-8">Voici ce qui se passe quand quelqu'un cherche un test de langues et tombe sur votre site.</p>
+
+      <!-- Convertit -->
+      <div class="mb-10">
+        <h3 class="text-base font-bold text-green-800 mb-4 flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-green-500 inline-block"></span>
+          Ceux qui font le test
+          <span class="text-sm font-normal text-green-600">({kpis.nbConvertissent})</span>
+        </h3>
+        <div class="space-y-3">
+          {personas.filter(p => p.decision === 'Convertit').map(p => (
+            <details class={`group bg-white rounded-xl overflow-hidden shadow-sm border ${decisionBorder(p.decision)}`}>
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-1 flex-wrap">
+                    <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                    <span class={`text-[10px] ${decisionBadge(p.decision)} text-white px-1.5 py-0.5 rounded font-medium`}>{p.decisionLabel}</span>
+                  </div>
+                  <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                  </div>
+                </div>
+                <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </summary>
+              <div class={`px-4 pb-5 border-t ${decisionBorder(p.decision)}`}>
+                <div class="grid gap-4 text-xs mt-4">
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p>
+                    <p class="text-neutral-600">{p.contexte}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Premiere impression (5 sec)</p>
+                    <p class="text-neutral-600">{p.impression}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours sur le site</p>
+                    <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                      {p.parcours.map(([section, reaction]) => (
+                        <li><strong class="text-neutral-800">{section}</strong>{reaction ? ` ${'—'} ${reaction}` : ''}</li>
+                      ))}
+                    </ol>
+                  </div>
+                  <div class="bg-neutral-50 rounded-lg p-3">
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p>
+                    <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
+                    <p class="text-neutral-600">Le site repond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> {'—'} {p.commentReponse}</p>
+                  </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <p class="font-semibold text-green-700 mb-1.5">{'✓'} Points positifs</p>
+                      <ul class="space-y-1 text-neutral-600">{p.positifs.map(pt => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">{'·'}</span>{pt}</li>)}</ul>
+                    </div>
+                    <div>
+                      <p class="font-semibold text-amber-700 mb-1.5">{'✗'} Frictions</p>
+                      <ul class="space-y-1 text-neutral-600">{p.frictions.map(f => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">{'·'}</span>{f}</li>)}</ul>
+                    </div>
+                  </div>
+                  <div class="flex gap-6 pt-3 border-t border-neutral-100">
+                    {[{ label: 'Experience', val: p.exp }, { label: 'Confiance', val: p.conf }, { label: 'Clarte', val: p.clarte }].map(s => {
+                      const sc = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500';
+                      return (
+                        <div class="text-center">
+                          <span class={`block text-lg font-bold ${sc}`}>{s.val}</span>
+                          <span class="text-[10px] text-neutral-400">{s.label}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <!-- Hesite -->
+      <div class="mb-4">
+        <h3 class="text-base font-bold text-amber-800 mb-4 flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span>
+          Ceux qui hesitent
+          <span class="text-sm font-normal text-amber-600">({kpis.nbHesitent})</span>
+        </h3>
+        <div class="space-y-3">
+          {personas.filter(p => p.decision === 'Hesite').map(p => (
+            <details class={`group bg-white rounded-xl overflow-hidden shadow-sm border ${decisionBorder(p.decision)}`}>
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-1 flex-wrap">
+                    <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                    <span class={`text-[10px] ${decisionBadge(p.decision)} text-white px-1.5 py-0.5 rounded font-medium`}>{p.decisionLabel}</span>
+                  </div>
+                  <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                  </div>
+                </div>
+                <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </summary>
+              <div class={`px-4 pb-5 border-t ${decisionBorder(p.decision)}`}>
+                <div class="grid gap-4 text-xs mt-4">
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p>
+                    <p class="text-neutral-600">{p.contexte}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Premiere impression (5 sec)</p>
+                    <p class="text-neutral-600">{p.impression}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours sur le site</p>
+                    <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                      {p.parcours.map(([section, reaction]) => (
+                        <li><strong class="text-neutral-800">{section}</strong>{reaction ? ` ${'—'} ${reaction}` : ''}</li>
+                      ))}
+                    </ol>
+                  </div>
+                  <div class="bg-neutral-50 rounded-lg p-3">
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p>
+                    <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
+                    <p class="text-neutral-600">Le site repond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> {'—'} {p.commentReponse}</p>
+                  </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <p class="font-semibold text-green-700 mb-1.5">{'✓'} Points positifs</p>
+                      <ul class="space-y-1 text-neutral-600">{p.positifs.map(pt => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">{'·'}</span>{pt}</li>)}</ul>
+                    </div>
+                    <div>
+                      <p class="font-semibold text-amber-700 mb-1.5">{'✗'} Frictions</p>
+                      <ul class="space-y-1 text-neutral-600">{p.frictions.map(f => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">{'·'}</span>{f}</li>)}</ul>
+                    </div>
+                  </div>
+                  {p.ceQuiFeraitBasculer && (
+                    <div class="rounded-lg p-3" style="background: rgba(91,79,233,0.06);">
+                      <p class="font-semibold text-[10px] uppercase tracking-wider mb-1" style="color: #5B4FE9;">Ce qui le ferait passer a l'action</p>
+                      <p class="text-neutral-700 text-xs">{p.ceQuiFeraitBasculer}</p>
+                    </div>
+                  )}
+                  <div class="flex gap-6 pt-3 border-t border-neutral-100">
+                    {[{ label: 'Experience', val: p.exp }, { label: 'Confiance', val: p.conf }, { label: 'Clarte', val: p.clarte }].map(s => {
+                      const sc = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500';
+                      return (
+                        <div class="text-center">
+                          <span class={`block text-lg font-bold ${sc}`}>{s.val}</span>
+                          <span class="text-[10px] text-neutral-400">{s.label}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <!-- Micro-CTA hesitants -->
+      <div class="rounded-xl p-5 mb-10 bg-amber-50 border border-amber-200 flex items-start gap-3">
+        <span class="text-lg shrink-0 mt-0.5">{'\u{1F4A1}'}</span>
+        <div>
+          <p class="text-sm font-medium text-amber-900">Ces {kpis.nbHesitent} visiteurs ont besoin de votre outil.</p>
+          <p class="text-xs text-amber-700 mt-1">Il leur manque un element cle : une page A propos qui donne un visage humain au projet, un PDF de resultat exportable, ou une page B2B pour les usages pro. C'est votre plus grand levier de conversion.</p>
+        </div>
+      </div>
+
+      <!-- Quitte -->
+      <div class="mb-4">
+        <h3 class="text-base font-bold text-neutral-600 mb-4 flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-neutral-400 inline-block"></span>
+          Ceux qui repartent
+          <span class="text-sm font-normal text-neutral-500">({kpis.nbRepartent})</span>
+        </h3>
+        <div class="space-y-3">
+          {personas.filter(p => p.decision === 'Quitte').map(p => (
+            <details class={`group bg-white rounded-xl overflow-hidden shadow-sm border ${decisionBorder(p.decision)}`}>
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-1 flex-wrap">
+                    <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                    <span class={`text-[10px] ${decisionBadge(p.decision)} text-white px-1.5 py-0.5 rounded font-medium`}>{p.decisionLabel}</span>
+                  </div>
+                  <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                  </div>
+                </div>
+                <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </summary>
+              <div class="px-4 pb-5 border-t border-neutral-200">
+                <div class="grid gap-4 text-xs mt-4">
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p>
+                    <p class="text-neutral-600">{p.contexte}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Premiere impression (5 sec)</p>
+                    <p class="text-neutral-600">{p.impression}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours sur le site</p>
+                    <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                      {p.parcours.map(([section, reaction]) => (
+                        <li><strong class="text-neutral-800">{section}</strong>{reaction ? ` ${'—'} ${reaction}` : ''}</li>
+                      ))}
+                    </ol>
+                  </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <p class="font-semibold text-green-700 mb-1.5">{'✓'} Points positifs</p>
+                      <ul class="space-y-1 text-neutral-600">{p.positifs.map(pt => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">{'·'}</span>{pt}</li>)}</ul>
+                    </div>
+                    <div>
+                      <p class="font-semibold text-amber-700 mb-1.5">{'✗'} Frictions</p>
+                      <ul class="space-y-1 text-neutral-600">{p.frictions.map(f => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">{'·'}</span>{f}</li>)}</ul>
+                    </div>
+                  </div>
+                  <div class="flex gap-6 pt-3 border-t border-neutral-100">
+                    {[{ label: 'Experience', val: p.exp }, { label: 'Confiance', val: p.conf }, { label: 'Clarte', val: p.clarte }].map(s => {
+                      const sc = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500';
+                      return (
+                        <div class="text-center">
+                          <span class={`block text-lg font-bold ${sc}`}>{s.val}</span>
+                          <span class="text-[10px] text-neutral-400">{s.label}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <!-- Micro-CTA repartants -->
+      <div class="rounded-xl p-5 bg-neutral-100 border border-neutral-200 flex items-start gap-3">
+        <span class="text-lg shrink-0 mt-0.5">{'\u{1F4C9}'}</span>
+        <div>
+          <p class="text-sm font-medium text-neutral-800">Sur ces 5, 3 etaient hors cible (besoin d'un certificat officiel, langue source non couverte) : c'est normal.</p>
+          <p class="text-xs text-neutral-600 mt-1">Mais 2 (Laura RH, Elise formatrice) sont arrivees uniquement parce qu'elles ont cherche fort. Avec un Schema.org en place, elles seraient venues spontanement via leurs IA. Et avec une page B2B, vous les auriez retenues.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RECOMMANDATIONS -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <h2 class="text-2xl font-bold text-neutral-900 mb-2">Ce qu'on recommande</h2>
+    <p class="text-neutral-600 mb-8">Actions concretes, classees par impact sur vos visiteurs.</p>
+
+    <p class="text-sm font-semibold text-red-700 mb-4">Si vous ne changez que 3 choses :</p>
+
+    <div class="space-y-4 mb-12">
+      {ameliorationsHautes.map(a => (
+        <div class="bg-white border-2 border-red-200 rounded-xl p-6 shadow-sm">
+          <div class="flex items-start justify-between gap-4 mb-3">
+            <h4 class="font-bold text-neutral-900">{a.titre}</h4>
+            <span class="text-[10px] px-2 py-1 rounded-full bg-red-100 text-red-700 font-semibold shrink-0 whitespace-nowrap">{a.impact}</span>
+          </div>
+          <p class="text-sm text-neutral-600 mb-3">{a.pourquoi}</p>
+          <div class="bg-neutral-50 rounded-lg px-4 py-3 flex items-start gap-2">
+            <svg class="w-4 h-4 text-neutral-400 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+            <p class="text-xs text-neutral-700">{a.action}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <h3 class="text-lg font-bold text-neutral-900 mb-2">Utile aussi</h3>
+    <div class="grid md:grid-cols-2 gap-4 mb-12">
+      {ameliorationsUtiles.map(a => (
+        <div class="bg-white border border-neutral-200 rounded-xl p-5">
+          <h4 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h4>
+          <p class="text-xs text-neutral-600">{a.detail}</p>
+        </div>
+      ))}
+    </div>
+
+    <h3 class="text-lg font-bold text-neutral-900 mb-2">A discuter</h3>
+    <p class="text-sm text-neutral-500 mb-4">Decisions business {'—'} pas de bonne ou mauvaise reponse.</p>
+    <div class="space-y-3 mb-12">
+      {ameliorationsDiscuter.map(a => (
+        <div class="bg-neutral-50 border border-neutral-200 rounded-xl p-4 flex gap-3">
+          <span class="text-lg shrink-0">{a.emoji}</span>
+          <div>
+            <h4 class="font-semibold text-neutral-900 text-sm mb-0.5">{a.titre}</h4>
+            <p class="text-xs text-neutral-600">{a.detail}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <!-- Upsell Pro -->
+    {showUpsell && (
+      <div class="rounded-2xl p-8 text-center border-2 border-dashed" style="border-color: #5B4FE9; background: rgba(91,79,233,0.03);">
+        <p class="text-lg font-bold text-neutral-900 mb-2">20 visiteurs confirment des tendances claires.</p>
+        <p class="text-sm text-neutral-600 mb-6">Avec 100 visiteurs (Echo Pro), vous obtenez une fiabilite statistique : analyse fine par canal et par maturite (combien de TOEIC vs DELE, combien d'enseignants vs salaries), heatmap des frictions, et un appel de 30 min pour parcourir le rapport ensemble et prioriser les actions.</p>
+        <a href="/echo/" class="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-xl transition-all shadow-md hover:-translate-y-0.5" style="background: linear-gradient(135deg, #5B4FE9, #4740C4);">
+          Echo Pro {'—'} 250{'€'} <span class="text-xs opacity-70 ml-1">(100 visiteurs + appel 30 min)</span>
+        </a>
+      </div>
+    )}
+  </section>
+
+  <!-- TECHNIQUE -->
+  <section class="py-16 border-t border-neutral-200">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-2">Sous le capot</h2>
+      <p class="text-neutral-600 mb-8">Pour les curieux : ce que les outils techniques disent de votre site.</p>
+
+      <div class="flex flex-wrap gap-3 mb-10">
+        {techVerdicts.map(v => (
+          <div class={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium ${v.ok ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
+            {v.ok
+              ? <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              : <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            }
+            <span>{v.label}</span>
+            <span class="text-xs opacity-70">{v.verdict}</span>
+          </div>
+        ))}
+      </div>
+
+      <!-- Vitesse (excellente, vert) -->
+      <details class="group border border-green-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-green-50/30">
+          <div class="flex items-center gap-3">
+            <span class="text-base">{'⚡'}</span>
+            <div>
+              <h3 class="font-semibold text-green-800 text-sm">Vitesse du site</h3>
+              <p class="text-[11px] text-green-600">{techVerdicts[0].detail}</p>
+            </div>
+          </div>
+          <svg class="w-4 h-4 text-green-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <div class="px-4 pb-4 border-t border-green-100">
+          <div class="grid grid-cols-2 gap-4 py-4">
+            <div class="text-center">
+              <div class="text-3xl font-black text-green-500 leading-none">{tech.pagespdMobile.performance}</div>
+              <div class="text-xs text-neutral-500 mt-1">Performance mobile /100</div>
+            </div>
+            <div class="text-center">
+              <div class="text-3xl font-black text-green-500 leading-none">{tech.pagespdDesktop.performance}</div>
+              <div class="text-xs text-neutral-500 mt-1">Performance desktop /100</div>
+            </div>
+          </div>
+          <div class="space-y-1 text-xs text-neutral-600">
+            <div>{'✓'} LCP (Largest Contentful Paint) : {tech.cwv.lcp}</div>
+            <div>{'✓'} TBT (Total Blocking Time) : {tech.cwv.tbt}</div>
+            <div>{'✓'} CLS (Cumulative Layout Shift) : {tech.cwv.cls}</div>
+            <div>{'✓'} Accessibilite : {tech.pagespdMobile.accessibility}/100</div>
+          </div>
+        </div>
+      </details>
+
+      <!-- Securite (rouge) -->
+      <details class="group border-2 border-red-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-red-50/30">
+          <div class="flex items-center gap-3">
+            <span class="text-base">{'\u{1F512}'}</span>
+            <div>
+              <h3 class="font-semibold text-red-800 text-sm">Securite</h3>
+              <p class="text-[11px] text-red-500">{techVerdicts[1].detail}</p>
+            </div>
+          </div>
+          <svg class="w-4 h-4 text-red-300 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <div class="px-4 pb-4 border-t border-red-100">
+          <div class="flex items-center gap-6 py-4">
+            <div class="text-center">
+              <div class="text-4xl font-black text-amber-500 leading-none">{tech.observatory.grade}</div>
+              <div class="text-xs text-neutral-500 mt-1">Grade Mozilla</div>
+            </div>
+            <div class="text-center">
+              <div class="text-4xl font-black text-amber-500 leading-none">{tech.observatory.score}</div>
+              <div class="text-xs text-neutral-500 mt-1">Score /135</div>
+            </div>
+            <div class="text-center">
+              <div class="text-4xl font-black text-amber-500 leading-none">{tech.observatory.testsOk}/{tech.observatory.testsTotal}</div>
+              <div class="text-xs text-neutral-500 mt-1">Tests passes</div>
+            </div>
+          </div>
+          <div class="space-y-1">
+            {tech.headers.map(h => (
+              <div class="flex items-center gap-2 text-xs text-neutral-600">
+                <span class={`shrink-0 ${h.ok ? 'text-green-500' : 'text-red-400'}`}>{h.ok ? '✓' : '✗'}</span>
+                <span>{h.h}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </details>
+
+      <!-- Schema.org (rouge) -->
+      <details class="group border-2 border-red-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-red-50/30">
+          <div class="flex items-center gap-3">
+            <span class="text-base">{'\u{1F4CA}'}</span>
+            <div>
+              <h3 class="font-semibold text-red-800 text-sm">Donnees structurees (Schema.org)</h3>
+              <p class="text-[11px] text-red-500">{techVerdicts[3].detail}</p>
+            </div>
+          </div>
+          <svg class="w-4 h-4 text-red-300 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <div class="px-4 pb-4 border-t border-red-100 pt-4">
+          <div class="space-y-2">
+            {tech.schema.map(s => (
+              <div class="flex items-start gap-2 text-xs text-neutral-600">
+                <span class={`shrink-0 font-bold ${s.ok ? 'text-green-500' : 'text-red-400'}`}>{s.ok ? '✓' : '✗'}</span>
+                <span>{s.item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </details>
+
+      <!-- Open Graph (orange/incomplet) -->
+      <details class="group border border-amber-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-amber-50/30">
+          <div class="flex items-center gap-3">
+            <span class="text-base">{'\u{1F517}'}</span>
+            <div>
+              <h3 class="font-semibold text-amber-800 text-sm">Partage reseaux sociaux (Open Graph)</h3>
+              <p class="text-[11px] text-amber-700">{techVerdicts[4].detail}</p>
+            </div>
+          </div>
+          <svg class="w-4 h-4 text-amber-300 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <div class="px-4 pb-4 border-t border-amber-100 pt-4">
+          <div class="space-y-2">
+            {tech.og.map(o => (
+              <div class="flex items-start gap-2 text-xs">
+                <span class={`shrink-0 font-bold ${o.ok ? 'text-green-500' : 'text-red-400'}`}>{o.ok ? '✓' : '✗'}</span>
+                <span class="text-neutral-700 font-mono">{o.item}</span>
+                <span class="text-neutral-400 ml-auto">{o.val}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </details>
+
+      <!-- SEO (vert) -->
+      <details class="group border border-green-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-green-50/30">
+          <div class="flex items-center gap-3">
+            <span class="text-base">{'\u{1F50D}'}</span>
+            <div>
+              <h3 class="font-semibold text-green-800 text-sm">SEO technique</h3>
+              <p class="text-[11px] text-green-600">{techVerdicts[2].detail}</p>
+            </div>
+          </div>
+          <svg class="w-4 h-4 text-green-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <div class="px-4 pb-4 border-t border-green-100 pt-4">
+          <div class="space-y-2">
+            {tech.seo.map(s => (
+              <div class="flex items-start gap-2 text-xs text-neutral-600">
+                <span class={`shrink-0 font-bold ${s.ok ? 'text-green-500' : 'text-red-400'}`}>{s.ok ? '✓' : '✗'}</span>
+                <span>{s.item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- METHODOLOGIE -->
+  <section class="py-12 bg-neutral-50 border-t border-neutral-100">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-lg font-bold text-neutral-900 mb-4">Comment on a fait ca</h2>
+      <div class="grid md:grid-cols-3 gap-4 text-sm text-neutral-600">
+        <div class="bg-white rounded-xl p-4 border border-neutral-200">
+          <div class="text-2xl font-black text-neutral-300 mb-2">1</div>
+          <p class="font-semibold text-neutral-800 mb-1">Scraping de 13 pages cles</p>
+          <p class="text-xs">Home, 4 pages langues, 4 entrainements/guides cles, page CPF, mentions legales, confidentialite.</p>
+        </div>
+        <div class="bg-white rounded-xl p-4 border border-neutral-200">
+          <div class="text-2xl font-black text-neutral-300 mb-2">2</div>
+          <p class="font-semibold text-neutral-800 mb-1">Audit technique mesure</p>
+          <p class="text-xs">PageSpeed Insights mobile + desktop, Mozilla Observatory v2, validation Schema.org + Open Graph + SEO on-page.</p>
+        </div>
+        <div class="bg-white rounded-xl p-4 border border-neutral-200">
+          <div class="text-2xl font-black text-neutral-300 mb-2">3</div>
+          <p class="font-semibold text-neutral-800 mb-1">20 personas simules</p>
+          <p class="text-xs">Profils realistes adaptes a votre audience (etudiants, salaries, voyageurs, expat, RH, coachs) {'—'} 6 canaux d'arrivee, 3 niveaux de maturite, 3 types d'appareils, 3 personas IA, 4 personas hors cible.</p>
+        </div>
+      </div>
+      <p class="text-xs text-neutral-400 mt-4 text-center">20 visiteurs = tendances confirmees &middot; 100 visiteurs (Echo Pro) = certitude statistique</p>
+    </div>
+  </section>
+
+  <!-- CTA FINAL -->
+  <section class="py-16 border-t border-neutral-200">
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-3">Vous avez un produit qui marche {'—'} et un site qui le sert tres bien sur 80% des cas.</h2>
+      <p class="text-neutral-600 mb-8">Les 20% restants sont a portee de main : une page A propos, un PDF telechargeable, un Schema.org propre. Trois absences qui pesent lourd, et qui se reparent en quelques heures de travail.</p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="https://wa.me/33688766648" target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-xl transition-all shadow-md hover:-translate-y-0.5" style="background: linear-gradient(135deg, #5B4FE9, #4740C4);">
+          En discuter sur WhatsApp
+        </a>
+        <a href="tel:+33688766648" class="inline-flex items-center gap-2 px-6 py-3 border border-neutral-300 text-neutral-700 font-semibold rounded-xl transition-all hover:border-neutral-500">
+          Appeler Marc {'—'} 06 88 76 66 48
+        </a>
+      </div>
+      <p class="text-xs text-neutral-400 mt-6">Ce rapport est confidentiel et non indexe par Google &middot; Genere le {dateAudit}</p>
+    </div>
+  </section>
+
+</BaseLayout>
