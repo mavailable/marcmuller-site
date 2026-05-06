@@ -1,0 +1,851 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const slug = 'chaudhier-aujourdhui';
+const formule = 'decouverte';
+const formuleLabel = 'Echo Découverte';
+const isProspection = true;
+const showUpsell = true;
+const nomProspect = "Chaud'hier et d'aujourd'hui";
+const urlSite = "https://www.chaudhier-et-daujourdhui.fr/";
+const dateAudit = "6 mai 2026";
+
+const title = "Echo Découverte — Chaud'hier et d'aujourd'hui | Marc M";
+const description = "Analyse de https://www.chaudhier-et-daujourdhui.fr/ : 10 visiteurs simulés, audit technique, recommandation prioritaire. Rapport confidentiel.";
+
+const phone = "+33688766648";
+const phoneDisplay = "06 88 76 66 48";
+const phoneNoPlus = "33688766648";
+
+const kpis = {
+  nbPersonas: 10,
+  nbConvertissent: 3,
+  nbHesitent: 4,
+  nbRepartent: 3,
+  conversion: 30,
+  experience: 5.1,
+  confiance: 5.0,
+  clarte: 5.4,
+};
+
+const verdictHero = "3 visiteurs sur 10 vous contactent. 7 hésitent ou repartent — la plupart parce qu'ils butent sur le numéro de téléphone caché et l'absence d'avis client.";
+const constat = "Votre métier est solidement positionné (chauffagiste RGE Qualibat à Soultz-Haut-Rhin, services segmentés chauffage / clim / plomberie / traitement d'eau) et la certification est bien mise en avant. Mais l'expérience visiteur bute sur deux choses qui se cumulent : votre numéro de téléphone et votre email sont cachés derrière un clic « Voir le numéro », et le site met 6,5 secondes à s'afficher sur mobile. Sur dépannage urgence — qui est le cœur du métier plombier-chauffagiste — chaque seconde et chaque clic supplémentaires font partir le visiteur chez un concurrent qui affiche son numéro en grand.";
+
+const canalData = [
+  { canal: "Google Search", nb: 3, convert: 1, rate: 33 },
+  { canal: "Google Maps", nb: 2, convert: 0, rate: 0 },
+  { canal: "IA (ChatGPT, Perplexity)", nb: 2, convert: 0, rate: 0 },
+  { canal: "Réseaux sociaux (Facebook)", nb: 2, convert: 1, rate: 50 },
+  { canal: "Bouche-à-oreille", nb: 1, convert: 1, rate: 100 },
+];
+
+const alertes = [
+  {
+    type: "critique",
+    titre: "Téléphone et email cachés derrière un clic supplémentaire",
+    detail: "Sur la page contact, le numéro et l'email sont remplacés par les liens « Voir le numéro » et « Voir l'adresse email ». Sur dépannage urgence (fuite, panne chaudière, plus d'eau chaude), chaque seconde compte. Le visiteur clique sur le concurrent suivant qui affiche son numéro en grand directement.",
+    chiffre: "+1 clic",
+    chiffreLabel: "pour obtenir le numéro",
+  },
+  {
+    type: "critique",
+    titre: "Site lent sur mobile",
+    detail: "Le site pèse 3,1 Mo dont 2,2 Mo d'images. Sur 4G, il met 6,5 secondes à s'afficher. Pour un visiteur en panne (4G en mobilité, batterie faible), c'est trop : il ferme et appelle le concurrent suivant qui s'ouvre tout de suite.",
+    chiffre: "6,5 s",
+    chiffreLabel: "délai d'affichage mobile",
+  },
+  {
+    type: "important",
+    titre: "Aucun avis client visible sur le site",
+    detail: "Pas de témoignage écrit, pas de note Google relayée. Pour un métier de confiance (chaudière, eau chaude, chauffage), un client lit 4 à 6 avis avant de signer. Sans avis sur le site, vos prospects vont les chercher sur Google : si peu d'avis ou peu récents, ils choisissent un concurrent mieux noté.",
+    chiffre: "0",
+    chiffreLabel: "avis affichés sur le site",
+  },
+  {
+    type: "important",
+    titre: "Galerie limitée à la climatisation",
+    detail: "Les 4 chantiers documentés sont exclusivement des installations de climatisation et pompes à chaleur. Aucun chantier chaudière, aucune installation plomberie, aucun adoucisseur. Un visiteur qui cherche un chauffagiste pour chaudière s'interroge : est-ce le cœur du métier ?",
+    chiffre: "0",
+    chiffreLabel: "chantier chaudière documenté",
+  },
+] as const;
+
+const personas = [
+  {
+    id: 1,
+    name: "Brigitte", age: 71, emoji: "👵",
+    canal: "Bouche-à-oreille", device: "Tablette", maturite: "Décision",
+    decisionLabel: "Appelle pour entretien",
+    histoire: "Sa fille lui a recommandé Alexandre Baudry pour entretien annuel chaudière. Brigitte quitte un autre chauffagiste qui a des délais trop longs. Sur tablette le site charge correctement. Le métier et l'adresse confirment la recommandation. Elle clique sur « Voir le numéro » et appelle.",
+    questionCle: "Est-ce bien l'entreprise dont ma fille m'a parlé ?",
+    reponse: "Oui",
+    commentReponse: "Le nom, la ville, le métier, le visage du fondateur dans la rubrique « à propos » — tout colle avec la recommandation.",
+    positifs: ["Métier clairement énoncé", "Logo RGE Qualibat visible", "Histoire du fondateur qui rassure"],
+    frictions: ["Le numéro caché derrière « Voir le numéro » (mais Brigitte est patiente)"],
+    ceQuiFeraitBasculer: "Cette conversion vient quasi-entièrement de la recommandation. Sans elle, Brigitte aurait été dans la catégorie « hésite » à cause du numéro caché.",
+    exp: 7, conf: 8, clarte: 7,
+    decision: "Convertit",
+    localisation: "Lautenbach",
+    contexte: "Recommandation directe d'une fille cliente, intention claire",
+    impression: "Site propre, fondateur visible, certification RGE en évidence. Tout colle avec ce que la fille a dit.",
+    parcours: [
+      ["Hero", "Identité confirmée"],
+      ["À propos", "Histoire du fondateur rassure"],
+      ["Contact", "Clique sur « Voir le numéro » et appelle"],
+    ],
+  },
+  {
+    id: 2,
+    name: "Patrick", age: 45, emoji: "💰",
+    canal: "Google Search", device: "Desktop", maturite: "Décision",
+    decisionLabel: "Envoie demande devis",
+    histoire: "Cherche « chauffagiste RGE Soultz MaPrimeRénov » sur son ordinateur. Veut remplacer chaudière fioul par PAC, dossier d'aide à monter. Le logo RGE Qualibat est affiché en grand sur la home — c'est exactement ce que Patrick cherche. Envoie le formulaire de contact.",
+    questionCle: "Cette entreprise est-elle certifiée RGE pour MaPrimeRénov ?",
+    reponse: "Oui",
+    commentReponse: "Le logo Qualibat est explicite. Pour Patrick qui monte un dossier d'aide, c'est le critère décisif.",
+    positifs: ["Certification RGE Qualibat affichée", "Service remplacement chaudière + PAC clairement listé", "Site stable sur desktop"],
+    frictions: ["Aucune fourchette de prix indicative", "Pas de cas client similaire documenté"],
+    ceQuiFeraitBasculer: "Patrick convertit grâce au RGE. Mais il signera plus vite si le devis arrive avec un cas client similaire (remplacement chaudière fioul par PAC, MaPrimeRénov obtenu, économie réelle).",
+    exp: 7, conf: 7, clarte: 7,
+    decision: "Convertit",
+    localisation: "Soultz-Haut-Rhin",
+    contexte: "Remplacement chaudière fioul par PAC, dossier MaPrimeRénov à monter",
+    impression: "Le RGE est visible immédiatement. Patrick coche son critère #1 en 5 secondes.",
+    parcours: [
+      ["Hero", "RGE identifié"],
+      ["Chauffage > PAC", "Service confirmé"],
+      ["Contact", "Envoie formulaire"],
+    ],
+  },
+  {
+    id: 3,
+    name: "Karim", age: 47, emoji: "❄️",
+    canal: "Réseaux sociaux (Facebook)", device: "Mobile", maturite: "Comparaison",
+    decisionLabel: "Appelle après lecture galerie",
+    histoire: "Vu un partage du nom dans un groupe Facebook « Bons artisans 68 ». Cherche un chauffagiste pour PAC réversible (chauffage + clim). L'aperçu Facebook est correct (image + titre). Sur le site, trouve la galerie qui montre des splits Atlantic. Reconnaît la marque. Clique sur « Voir le numéro » et appelle.",
+    questionCle: "Font-ils vraiment de la PAC réversible et avec quelles marques ?",
+    reponse: "Oui",
+    commentReponse: "La galerie montre des installations Atlantic et Altech. Karim connaît, c'est suffisant pour qualifier l'entreprise.",
+    positifs: ["Aperçu Facebook propre", "Galerie montre des marques connues", "Service clim/PAC réversible explicite"],
+    frictions: ["Site un peu lent sur 4G mais Karim est patient", "Numéro caché derrière un clic"],
+    ceQuiFeraitBasculer: "Karim convertit malgré les frictions parce qu'il a vu la marque dans la galerie. Avec le numéro affiché en grand et un délai d'intervention annoncé, il aurait appelé 2 minutes plus tôt.",
+    exp: 6, conf: 6, clarte: 6,
+    decision: "Convertit",
+    localisation: "Wittelsheim",
+    contexte: "Recherche d'un installateur PAC réversible (chauffage + clim) suite à un partage Facebook",
+    impression: "Page lente mais l'aperçu Facebook a bien fait son travail. La galerie confirme le sérieux.",
+    parcours: [
+      ["Aperçu Facebook", "Image + titre OK"],
+      ["Hero", "Métier confirmé"],
+      ["Galerie clim", "Atlantic + Altech reconnus"],
+      ["Contact", "Clique sur « Voir le numéro » et appelle"],
+    ],
+  },
+  {
+    id: 4,
+    name: "Marcel", age: 68, emoji: "🔥",
+    canal: "Google Search", device: "Mobile", maturite: "Comparaison",
+    decisionLabel: "Demande 2 autres devis",
+    histoire: "Compare 3 chauffagistes pour remplacer sa chaudière gaz. Veut voir des photos de chantiers chaudière similaires. Sur la galerie de Chaud'hier : exclusivement des installations clim et PAC. Aucun chantier chaudière. Marcel s'interroge sur le vrai cœur de métier et va voir 2 autres devis qui montrent leurs chaudières.",
+    questionCle: "Ont-ils déjà remplacé des chaudières comme la mienne ?",
+    reponse: "Partiellement",
+    commentReponse: "Le service est listé mais aucun chantier chaudière documenté. Marcel n'a pas la preuve qu'il cherche.",
+    positifs: ["Service remplacement chaudière listé", "Certification RGE", "Localisation Lautenbach OK"],
+    frictions: ["Galerie 100 % clim/PAC, aucun chantier chaudière documenté", "Pas de témoignage client chaudière"],
+    ceQuiFeraitBasculer: "Ajouter dans la galerie 3 à 5 chantiers chaudière (avant-après, type de chaudière, témoignage client). Sans ça, Marcel ira chez un concurrent qui montre ses chaudières.",
+    exp: 5, conf: 5, clarte: 5,
+    decision: "Hésite",
+    localisation: "Issenheim",
+    contexte: "Remplacement chaudière gaz, comparaison de 3 chauffagistes",
+    impression: "Site propre, certification rassurante, mais la galerie ne raconte que la clim.",
+    parcours: [
+      ["Hero", "Chauffagiste confirmé"],
+      ["Chauffage > Remplacement", "Service listé"],
+      ["Galerie", "Aucune chaudière"],
+      ["Sort comparer ailleurs"],
+    ],
+  },
+  {
+    id: 5,
+    name: "Claire", age: 41, emoji: "💸",
+    canal: "Google Search", device: "Mobile", maturite: "Comparaison",
+    decisionLabel: "Va chez celui qui affiche un prix",
+    histoire: "Cherche un chauffagiste pour installation PAC sur son ordinateur. Compare prix et délais d'intervention. Sur le site Chaud'hier : aucune fourchette, aucun délai annoncé, aucun avis. Va chez un concurrent qui affiche « intervention sous 15 jours, devis sous 48h, à partir de X € ».",
+    questionCle: "Combien ça coûte environ et dans combien de temps peuvent-ils intervenir ?",
+    reponse: "Non",
+    commentReponse: "Aucune fourchette, aucun délai. Pour Claire qui est en mode comparaison, c'est éliminatoire face à un concurrent qui donne ne serait-ce qu'un ordre d'idée.",
+    positifs: ["Certification RGE", "Service PAC listé"],
+    frictions: ["Aucune fourchette de prix", "Aucun délai d'intervention", "Aucun avis client"],
+    ceQuiFeraitBasculer: "Une page « Vous voulez savoir combien ça coûte ? » avec 3 fourchettes (PAC air/air, air/eau, hybride) et un délai indicatif (« devis sous 48h, intervention sous 2 à 4 semaines »). Sans ça, Claire ira chez le concurrent qui rassure sur le timing.",
+    exp: 4, conf: 5, clarte: 4,
+    decision: "Hésite",
+    localisation: "Mulhouse",
+    contexte: "Projet d'installation PAC, comparaison prix et délais",
+    impression: "Site sérieux mais opaque sur les conditions concrètes. Claire ne peut pas comparer.",
+    parcours: [
+      ["Hero", "RGE confirmé"],
+      ["Chauffage > PAC", "Service listé sans détail commercial"],
+      ["Sort comparer ailleurs"],
+    ],
+  },
+  {
+    id: 6,
+    name: "Éric", age: 52, emoji: "⭐",
+    canal: "Google Maps", device: "Mobile", maturite: "Comparaison",
+    decisionLabel: "Va chez le mieux noté",
+    histoire: "Sur Maps, scrolle entre 5 chauffagistes du secteur Colmar/Guebwiller. Compare les notes Google et les avis. Sur le site Chaud'hier : aucun avis affiché. Retourne sur Maps et choisit le concurrent qui a 47 avis à 4,8/5 et qui affiche ses étoiles dans les résultats Google.",
+    questionCle: "Combien d'avis Google et quelle note ?",
+    reponse: "Non",
+    commentReponse: "Pas d'avis sur le site, pas d'étoiles dans les résultats. Éric choisit toujours le mieux noté.",
+    positifs: ["Présence Maps", "Certification RGE"],
+    frictions: ["Aucun avis Google sur le site", "Pas d'étoiles dans les résultats Google"],
+    ceQuiFeraitBasculer: "Une section avis sur la home avec 3-5 retours Google récents et la note moyenne (la balise aggregateRating fait apparaître les étoiles dans les résultats Google). Aujourd'hui Éric ira chez celui qui les affiche.",
+    exp: 5, conf: 4, clarte: 5,
+    decision: "Hésite",
+    localisation: "Colmar",
+    contexte: "Comparaison de 5 chauffagistes locaux via Google Maps",
+    impression: "Sans avis affichés, Chaud'hier devient indifférenciable des autres dans le scan rapide.",
+    parcours: [
+      ["Maps", "Compare 5 chauffagistes"],
+      ["Site Chaud'hier", "Pas d'avis"],
+      ["Retour Maps", "Choisit le mieux noté"],
+    ],
+  },
+  {
+    id: 7,
+    name: "Mehdi", age: 34, emoji: "🤖",
+    canal: "IA (ChatGPT, Perplexity)", device: "Desktop", maturite: "Découverte",
+    decisionLabel: "Va d'abord voir les concurrents avec avis",
+    histoire: "Demande à ChatGPT « meilleurs plombiers chauffagistes RGE Haut-Rhin pour installation PAC ». L'IA fait remonter Chaud'hier dans la liste (la fiche Schema partielle aide). Mais sans avis ni témoignage structuré, l'IA ne la met pas en avant. Mehdi voit le nom mais clique d'abord sur les concurrents qui ont des avis ressortables.",
+    questionCle: "Cette entreprise apparaît-elle dans la shortlist IA et avec quels signaux ?",
+    reponse: "Partiellement",
+    commentReponse: "Présent dans la liste, mais sans note ressortie ni extrait d'avis. Mehdi clique d'abord sur les concurrents avec avis structurés.",
+    positifs: ["Apparaît dans la réponse IA", "Fiche site et fil d'ariane déclarés"],
+    frictions: ["Aucune fiche entreprise locale complète", "Aucun avis structuré (aggregateRating)"],
+    ceQuiFeraitBasculer: "Une fiche LocalBusiness complète (adresse, géolocalisation, zone par commune, services) + avis Google structurés. L'IA met alors le nom en avant avec note moyenne et extrait. Sans ça, Mehdi ira voir un concurrent avant.",
+    exp: 5, conf: 4, clarte: 5,
+    decision: "Hésite",
+    localisation: "Wattwiller",
+    contexte: "Recherche IA d'un chauffagiste RGE pour installation PAC",
+    impression: "Le nom apparaît mais sans signal fort. Mehdi le garde en backup et clique d'abord sur les concurrents mieux référencés.",
+    parcours: [
+      ["ChatGPT — requête PAC RGE 68", "Liste de 4-5 noms dont Chaud'hier"],
+      ["Sans avis ressortie, Mehdi clique d'abord ailleurs"],
+      ["Retour possible si rien ne convient"],
+    ],
+  },
+  {
+    id: 8,
+    name: "Jean-Marc", age: 59, emoji: "🏢",
+    canal: "Réseaux sociaux (Facebook)", device: "Mobile", maturite: "Comparaison",
+    decisionLabel: "Demande 2 autres devis B2B",
+    histoire: "Gestionnaire d'une copropriété de 14 logements à Guebwiller. Cherche un prestataire pour entretien chaufferie collective. Vu un partage. Sur le site : positionnement « entreprise familiale à taille humaine », exclusivement pour le particulier. Aucune section pro, aucun chantier copropriété documenté. Note le numéro mais regardera 2 autres prestataires B2B.",
+    questionCle: "Travaillent-ils avec des copropriétés et chaufferies collectives ?",
+    reponse: "Non",
+    commentReponse: "Le site cible le particulier. Aucune section professionnelle, aucune référence syndic/copro.",
+    positifs: ["Certification RGE Qualibat", "Localisation Lautenbach OK"],
+    frictions: ["Aucune section professionnelle", "Aucune référence chaufferie collective ou copropriété", "Pas de contact dédié syndic"],
+    ceQuiFeraitBasculer: "Une section « Pour les syndics et gestionnaires » avec 3 chantiers récents (lieu, nombre de logements, type de chaufferie, témoignage syndic) et un contact dédié. Sans ça, Jean-Marc ira chez un concurrent qui montre ses références B2B.",
+    exp: 5, conf: 4, clarte: 5,
+    decision: "Hésite",
+    localisation: "Guebwiller",
+    contexte: "Copropriété 14 logements, contrat d'entretien chaufferie collective",
+    impression: "Le positionnement « entreprise familiale particulier » ne rassure pas un syndic.",
+    parcours: [
+      ["Hero", "Métier identifié mais ciblage particulier"],
+      ["Cherche section pro", "Inexistante"],
+      ["Sort comparer ailleurs"],
+    ],
+  },
+  {
+    id: 9,
+    name: "Sandrine", age: 38, emoji: "🚨",
+    canal: "Google Maps", device: "Mobile", maturite: "Décision",
+    decisionLabel: "Appelle le concurrent suivant",
+    histoire: "Recherche « plombier urgence Guebwiller » à 19h30 un samedi soir — fuite sous évier en train de tremper le placard. Le site charge en 6,5 secondes (long quand on est en panique avec un mètre carré qui prend l'eau). Quand il s'affiche, le téléphone est caché derrière « Voir le numéro ». Sandrine ferme et clique sur le concurrent suivant qui affiche son numéro d'urgence en grand.",
+    questionCle: "Qui peut intervenir cette nuit ?",
+    reponse: "Non",
+    commentReponse: "Sandrine n'a même pas vu si Chaud'hier intervient en urgence. Le numéro caché et la lenteur l'ont fait fuir avant. C'est-à-dire jamais.",
+    positifs: [],
+    frictions: ["Site lent à charger en 4G", "Numéro de téléphone caché derrière un clic", "Aucune mention « urgence 24h/7 »"],
+    ceQuiFeraitBasculer: "Un numéro affiché en grand sticky en haut de chaque page mobile + une mention « Urgence — appelez maintenant ». Aujourd'hui Sandrine est cliente perdue, c'est-à-dire jamais.",
+    exp: 1, conf: 0, clarte: 0,
+    decision: "Quitte",
+    localisation: "Guebwiller",
+    contexte: "Fuite sous évier, samedi 19h30, urgence",
+    impression: "Site qui met du temps + numéro non visible = panique amplifiée. Sandrine ferme.",
+    parcours: [
+      ["Maps — recherche urgence", "Clique sur le site"],
+      ["Page lente, attend 4-5 s", "Pas de numéro visible"],
+      ["Ferme l'onglet", "Appelle le concurrent suivant"],
+    ],
+  },
+  {
+    id: 10,
+    name: "Hélène", age: 56, emoji: "💧",
+    canal: "IA (ChatGPT, Perplexity)", device: "Mobile", maturite: "Découverte",
+    decisionLabel: "Pas dans la shortlist IA",
+    histoire: "Demande à Perplexity « qui contacter pour adoucisseur d'eau Lautenbach ». Reçoit une liste de 3 noms — Chaud'hier n'y est pas, malgré le service explicite « installation d'adoucisseurs » sur le site. La fiche métier ne déclare pas les spécialités structurellement, l'IA ne ressort pas le nom. Hélène ne saura jamais que Chaud'hier installe des adoucisseurs.",
+    questionCle: "Cette entreprise est-elle reconnue comme installateur d'adoucisseurs ?",
+    reponse: "Non",
+    commentReponse: "L'IA ne fait pas remonter Chaud'hier en spécialité « traitement d'eau » parce que les services ne sont pas déclarés en fiche structurée. Le texte du site le dit, mais l'IA scanne d'abord la fiche.",
+    positifs: ["Le texte du site mentionne bien les adoucisseurs"],
+    frictions: ["Fiche entreprise locale incomplète (LocalBusiness manquant)", "Spécialités non structurées en données", "L'IA ne ressort pas le nom"],
+    ceQuiFeraitBasculer: "Déclarer une fiche LocalBusiness avec services explicites (chauffage, climatisation, plomberie, adoucisseur) en données structurées. L'IA voit alors la spécialité et fait remonter le nom. Aujourd'hui Hélène ira chez un concurrent que l'IA sait situer en spécialité adoucisseur.",
+    exp: 0, conf: 0, clarte: 0,
+    decision: "Quitte",
+    localisation: "Soultzmatt",
+    contexte: "Recherche via Perplexity d'un installateur d'adoucisseur d'eau",
+    impression: "Hélène ne sait pas que Chaud'hier installe des adoucisseurs. L'IA ne l'a pas remontée.",
+    parcours: [
+      ["Perplexity — requête adoucisseur", "Liste de 3 noms"],
+      ["Chaud'hier absent", "Hélène n'a pas connaissance du site"],
+    ],
+  },
+];
+
+const ameliorationsHautes = [
+  {
+    titre: "Afficher le téléphone en évidence + intégrer 3-5 avis Google sur la home",
+    pourquoi: "Sandrine est l'archétype du client perdu : fuite samedi soir 19h30, ouvre le site sur mobile, attend 6,5 secondes, et au lieu de voir le numéro elle doit cliquer sur « Voir le numéro ». Elle clique sur le concurrent suivant qui affiche son numéro en grand. Sur dépannage urgence — un cœur du métier plombier-chauffagiste — c'est de la perte directe. En parallèle, 4 visiteurs sur 10 (Éric, Claire, Mehdi, Hélène) hésitent ou partent parce qu'ils ne trouvent aucun avis client : pour un métier de confiance, c'est vite disqualifiant face aux concurrents qui en affichent.",
+    action: "(1) Bandeau téléphone visible en haut de chaque page, sticky en mobile, format clic-pour-appeler. Supprimer le pattern « Voir le numéro » sur la page contact. (2) Intégrer 3 à 5 avis Google récents sur la home avec balise aggregateRating (les étoiles apparaîtront aussi dans les résultats Google).",
+    impact: "5 visiteurs sur 10",
+  },
+];
+
+const ameliorationsUtiles = [
+  {
+    titre: "Réduire le temps d'affichage mobile",
+    detail: "Le site met 6,5 secondes à s'afficher sur 4G (cause : 2,2 Mo d'images sur 3,1 Mo de page). Compresser les images au format moderne ramène le délai sous 2,5 secondes — sans toucher au contenu.",
+  },
+  {
+    titre: "Documenter au moins 3 chantiers chaudière dans la galerie",
+    detail: "La galerie actuelle ne montre que des installations clim et PAC. Marcel, qui cherche un chauffagiste pour remplacer sa chaudière gaz, ne voit aucun chantier chaudière et part chez un concurrent qui en montre. Ajouter 3 chantiers chaudière (avant-après, type, témoignage) résout sa friction.",
+  },
+  {
+    titre: "Compléter la fiche entreprise locale (services structurés)",
+    detail: "La fiche actuelle est partielle — site et fil d'ariane sont déclarés, mais ni la fiche LocalBusiness avec adresse/horaires/zone, ni les spécialités (chauffage, clim, plomberie, adoucisseur). Sans ça, l'IA ne fait pas remonter votre nom sur les recherches spécialisées (cas Hélène).",
+  },
+];
+
+const techVerdicts = [
+  { label: 'Vitesse mobile', verdict: "Lent", ok: false, detail: "Mobile 62/100 — affichage en 6,5 s" },
+  { label: 'Sécurité', verdict: "D", ok: false, detail: "Grade Mozilla Observatory : D (30/100)" },
+  { label: 'Fiche métier', verdict: "Partielle", ok: false, detail: "Site et fil d'ariane déclarés, fiche entreprise locale manquante" },
+  { label: 'Partage réseaux', verdict: "OK", ok: true, detail: "Aperçu Facebook/WhatsApp fonctionnel" },
+  { label: 'Visibilité Google', verdict: "Bonne", ok: true, detail: "SEO 100/100, fiche partielle à compléter" },
+];
+
+const tech = {
+  observatory: { grade: "D", score: 30 },
+  pagespdMobile: { performance: 62 },
+  pagespdDesktop: { performance: 77 },
+  cwv: { lcp: "6,5 s", cls: "0,21" },
+  schema: [
+    { item: "Site identifié (WebSite)", ok: true },
+    { item: "Fil d'Ariane (BreadcrumbList)", ok: true },
+    { item: "Page web (WebPage)", ok: true },
+    { item: "Fiche LocalBusiness (entreprise locale géolocalisée)", ok: false },
+    { item: "Avis structurés (aggregateRating)", ok: false },
+  ],
+};
+
+function decisionBorder(d) {
+  if (d === 'Convertit') return 'border-green-200';
+  if (d === 'Hésite') return 'border-amber-200';
+  return 'border-neutral-200';
+}
+function decisionBadge(d) {
+  if (d === 'Convertit') return 'bg-green-600';
+  if (d === 'Hésite') return 'bg-amber-500';
+  return 'bg-neutral-400';
+}
+---
+<BaseLayout
+  title={title}
+  description={description}
+  noindex={true}
+  lang="fr"
+  frPath={`/echo/${slug}`}
+>
+
+  <!-- HERO -->
+  <section class="relative w-full px-6 py-20 md:py-28 overflow-hidden" style="background: #0A0A0A;">
+    <div class="absolute top-[20%] left-[10%] w-[500px] h-[500px] rounded-full blur-[180px] pointer-events-none" style="background: #E86C47; opacity: 0.06;"></div>
+    <div class="relative mx-auto max-w-4xl z-10">
+      <div class="mb-6 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5);">
+        {formuleLabel} &middot; Rapport confidentiel
+      </div>
+      <h1 class="mb-6 text-3xl md:text-4xl font-bold text-white leading-tight tracking-tight">
+        {verdictHero}
+      </h1>
+      <p class="mb-10 text-sm" style="color: rgba(255,255,255,0.4);">
+        Site analysé : <a href={urlSite} target="_blank" rel="noopener" class="underline hover:text-white transition-colors">{urlSite}</a> &middot; {kpis.nbPersonas} visiteurs simulés &middot; {dateAudit}
+      </p>
+      <div class="grid grid-cols-3 gap-4">
+        <div class="rounded-xl p-5 text-center" style="background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2);">
+          <div class="text-4xl md:text-5xl font-black text-green-400 mb-1">{kpis.nbConvertissent}</div>
+          <div class="text-sm text-green-400/70">vous contactent</div>
+        </div>
+        <div class="rounded-xl p-5 text-center" style="background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2);">
+          <div class="text-4xl md:text-5xl font-black text-amber-400 mb-1">{kpis.nbHesitent}</div>
+          <div class="text-sm text-amber-400/70">hésitent</div>
+        </div>
+        <div class="rounded-xl p-5 text-center" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
+          <div class="text-4xl md:text-5xl font-black mb-1" style="color: rgba(255,255,255,0.5);">{kpis.nbRepartent}</div>
+          <div class="text-sm" style="color: rgba(255,255,255,0.3);">repartent</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONSTAT -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="rounded-2xl p-6 md:p-8 mb-12 border-l-4" style="background: rgba(232,108,71,0.04); border-color: #E86C47;">
+      <p class="text-lg md:text-xl font-medium text-neutral-800 leading-relaxed">{constat}</p>
+    </div>
+
+    <h2 class="text-xl font-bold text-neutral-900 mb-2">D'où viennent vos visiteurs</h2>
+    <p class="text-sm text-neutral-500 mb-6">Et combien vous contactent selon leur canal d'arrivée.</p>
+    <div class="space-y-4 mb-12">
+      {canalData.map(c => {
+        const color = c.rate >= 50 ? '#22c55e' : c.rate >= 25 ? '#f59e0b' : '#ef4444';
+        return (
+          <div class="flex items-center gap-4">
+            <div class="w-52 text-sm text-neutral-700 shrink-0">{c.canal}</div>
+            <div class="flex-1 h-3 bg-neutral-100 rounded-full overflow-hidden">
+              <div class="h-full rounded-full transition-all" style={`width: ${c.rate}%; background: ${color}`}></div>
+            </div>
+            <div class="w-20 text-right">
+              <span class="text-sm font-bold" style={`color: ${color}`}>{c.rate}%</span>
+              <span class="text-xs text-neutral-400 ml-1">({c.convert}/{c.nb})</span>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  </section>
+
+  <!-- ALERTES -->
+  <section class="py-12" style="background: #fefce8;">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center gap-3 mb-6">
+        <svg class="w-6 h-6 text-amber-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+        <div>
+          <h2 class="text-lg font-bold text-neutral-900">Problèmes détectés</h2>
+          <p class="text-sm text-neutral-600">
+            {alertes.filter(a => a.type === 'critique').length} critiques &middot; {alertes.filter(a => a.type === 'important').length} importants
+          </p>
+        </div>
+      </div>
+      <div class="grid md:grid-cols-2 gap-4">
+        {alertes.map(a => (
+          <div class={`bg-white rounded-xl p-5 ${a.type === 'critique' ? 'border-2 border-red-300' : 'border border-amber-300'}`}>
+            <div class={`inline-block text-2xl font-black px-3 py-1 rounded-lg mb-3 ${a.type === 'critique' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>
+              {a.chiffre}
+            </div>
+            <p class="text-[10px] text-neutral-400 uppercase tracking-wider mb-1">{a.chiffreLabel}</p>
+            <h3 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h3>
+            <p class="text-xs text-neutral-600 leading-relaxed">{a.detail}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- PERSONAS -->
+  <section class="py-16" style="background: #fafafa;">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs</h2>
+      <p class="text-neutral-600 mb-8">Voici ce qui se passe quand quelqu'un cherche vos services et tombe sur votre site.</p>
+
+      <div class="mb-10">
+        <h3 class="text-base font-bold text-green-800 mb-4 flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-green-500 inline-block"></span>
+          Ceux qui vous contactent
+          <span class="text-sm font-normal text-green-600">({kpis.nbConvertissent})</span>
+        </h3>
+        <div class="space-y-3">
+          {personas.filter(p => p.decision === 'Convertit').map(p => (
+            <details class={`group bg-white rounded-xl overflow-hidden shadow-sm border ${decisionBorder(p.decision)}`}>
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-1 flex-wrap">
+                    <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                    <span class={`text-[10px] ${decisionBadge(p.decision)} text-white px-1.5 py-0.5 rounded font-medium`}>{p.decisionLabel}</span>
+                  </div>
+                  <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                  </div>
+                </div>
+              </summary>
+              <div class="px-4 pb-5 border-t border-green-200">
+                <div class="grid gap-4 text-xs mt-4">
+                  <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p><p class="text-neutral-600">{p.contexte}</p></div>
+                  <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Première impression (5 sec)</p><p class="text-neutral-600">{p.impression}</p></div>
+                  <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours sur le site</p>
+                    <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                      {p.parcours.map((step) => (<li><strong class="text-neutral-800">{step[0]}</strong>{step[1] ? ` — ${step[1]}` : ''}</li>))}
+                    </ol>
+                  </div>
+                  <div class="bg-neutral-50 rounded-lg p-3">
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p>
+                    <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
+                    <p class="text-neutral-600">Le site répond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> — {p.commentReponse}</p>
+                  </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div><p class="font-semibold text-green-700 mb-1.5">✓ Points positifs</p>
+                      <ul class="space-y-1 text-neutral-600">{p.positifs.map(pt => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">·</span>{pt}</li>)}</ul></div>
+                    <div><p class="font-semibold text-amber-700 mb-1.5">✗ Frictions</p>
+                      <ul class="space-y-1 text-neutral-600">{p.frictions.map(f => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">·</span>{f}</li>)}</ul></div>
+                  </div>
+                  {p.ceQuiFeraitBasculer && (
+                    <div class="rounded-lg p-3" style="background: rgba(232,108,71,0.06);">
+                      <p class="font-semibold text-[10px] uppercase tracking-wider mb-1" style="color: #E86C47;">À noter</p>
+                      <p class="text-neutral-700 text-xs">{p.ceQuiFeraitBasculer}</p>
+                    </div>
+                  )}
+                  <div class="flex gap-6 pt-3 border-t border-neutral-100">
+                    {[{ label: 'Expérience', val: p.exp }, { label: 'Confiance', val: p.conf }, { label: 'Clarté', val: p.clarte }].map(s => {
+                      const sc = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500';
+                      return (<div class="text-center"><span class={`block text-lg font-bold ${sc}`}>{s.val}</span><span class="text-[10px] text-neutral-400">{s.label}</span></div>);
+                    })}
+                  </div>
+                </div>
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <h3 class="text-base font-bold text-amber-800 mb-4 flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span>
+          Ceux qui hésitent
+          <span class="text-sm font-normal text-amber-600">({kpis.nbHesitent})</span>
+        </h3>
+        <div class="space-y-3">
+          {personas.filter(p => p.decision === 'Hésite').map(p => (
+            <details class={`group bg-white rounded-xl overflow-hidden shadow-sm border ${decisionBorder(p.decision)}`}>
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-1 flex-wrap">
+                    <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                    <span class={`text-[10px] ${decisionBadge(p.decision)} text-white px-1.5 py-0.5 rounded font-medium`}>{p.decisionLabel}</span>
+                  </div>
+                  <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                  </div>
+                </div>
+              </summary>
+              <div class="px-4 pb-5 border-t border-amber-200">
+                <div class="grid gap-4 text-xs mt-4">
+                  <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p><p class="text-neutral-600">{p.contexte}</p></div>
+                  <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Première impression (5 sec)</p><p class="text-neutral-600">{p.impression}</p></div>
+                  <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours sur le site</p>
+                    <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                      {p.parcours.map((step) => (<li><strong class="text-neutral-800">{step[0]}</strong>{step[1] ? ` — ${step[1]}` : ''}</li>))}
+                    </ol>
+                  </div>
+                  <div class="bg-neutral-50 rounded-lg p-3">
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p>
+                    <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
+                    <p class="text-neutral-600">Le site répond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> — {p.commentReponse}</p>
+                  </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div><p class="font-semibold text-green-700 mb-1.5">✓ Points positifs</p>
+                      <ul class="space-y-1 text-neutral-600">{p.positifs.map(pt => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">·</span>{pt}</li>)}</ul></div>
+                    <div><p class="font-semibold text-amber-700 mb-1.5">✗ Frictions</p>
+                      <ul class="space-y-1 text-neutral-600">{p.frictions.map(f => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">·</span>{f}</li>)}</ul></div>
+                  </div>
+                  {p.ceQuiFeraitBasculer && (
+                    <div class="rounded-lg p-3" style="background: rgba(232,108,71,0.06);">
+                      <p class="font-semibold text-[10px] uppercase tracking-wider mb-1" style="color: #E86C47;">Ce qui le ferait passer à l'action</p>
+                      <p class="text-neutral-700 text-xs">{p.ceQuiFeraitBasculer}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-xl p-5 mb-10 bg-amber-50 border border-amber-200 flex items-start gap-3">
+        <span class="text-lg shrink-0 mt-0.5">💡</span>
+        <div>
+          <p class="text-sm font-medium text-amber-900">Ces {kpis.nbHesitent} visiteurs ont besoin d'un dernier signal pour vous contacter.</p>
+          <p class="text-xs text-amber-700 mt-1">Ils sont déjà sur votre site, motivés, mais retenus par un détail (numéro caché, prix indicatif, avis, type de chantier dans la galerie). C'est votre plus grand levier de conversion.</p>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <h3 class="text-base font-bold text-neutral-600 mb-4 flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-neutral-400 inline-block"></span>
+          Ceux qui repartent
+          <span class="text-sm font-normal text-neutral-500">({kpis.nbRepartent})</span>
+        </h3>
+        <div class="space-y-3">
+          {personas.filter(p => p.decision === 'Quitte').map(p => (
+            <details class={`group bg-white rounded-xl overflow-hidden shadow-sm border ${decisionBorder(p.decision)}`}>
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-1 flex-wrap">
+                    <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                    <span class={`text-[10px] ${decisionBadge(p.decision)} text-white px-1.5 py-0.5 rounded font-medium`}>{p.decisionLabel}</span>
+                  </div>
+                  <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                  </div>
+                </div>
+              </summary>
+              <div class="px-4 pb-5 border-t border-neutral-200">
+                <div class="grid gap-4 text-xs mt-4">
+                  <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p><p class="text-neutral-600">{p.contexte}</p></div>
+                  <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Première impression (5 sec)</p><p class="text-neutral-600">{p.impression}</p></div>
+                  <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours sur le site</p>
+                    <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                      {p.parcours.map((step) => (<li><strong class="text-neutral-800">{step[0]}</strong>{step[1] ? ` — ${step[1]}` : ''}</li>))}
+                    </ol>
+                  </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div><p class="font-semibold text-green-700 mb-1.5">✓ Points positifs</p>
+                      <ul class="space-y-1 text-neutral-600">{p.positifs.map(pt => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">·</span>{pt}</li>)}</ul></div>
+                    <div><p class="font-semibold text-amber-700 mb-1.5">✗ Frictions</p>
+                      <ul class="space-y-1 text-neutral-600">{p.frictions.map(f => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">·</span>{f}</li>)}</ul></div>
+                  </div>
+                  {p.ceQuiFeraitBasculer && (
+                    <div class="rounded-lg p-3" style="background: rgba(232,108,71,0.06);">
+                      <p class="font-semibold text-[10px] uppercase tracking-wider mb-1" style="color: #E86C47;">Ce qui l'aurait retenu</p>
+                      <p class="text-neutral-700 text-xs">{p.ceQuiFeraitBasculer}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-xl p-5 bg-neutral-100 border border-neutral-200 flex items-start gap-3">
+        <span class="text-lg shrink-0 mt-0.5">📉</span>
+        <div>
+          <p class="text-sm font-medium text-neutral-800">Chaque visiteur qui repart, c'est un client en moins.</p>
+          <p class="text-xs text-neutral-600 mt-1">Certains étaient hors cible — c'est normal. Mais d'autres étaient en urgence ou en spécialité précise et n'ont pas trouvé ce qu'ils cherchaient.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RECOMMANDATIONS -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <h2 class="text-2xl font-bold text-neutral-900 mb-2">Ce qu'on recommande</h2>
+    <p class="text-neutral-600 mb-8">La priorité numéro 1 identifiée sur vos 10 visiteurs.</p>
+
+    <p class="text-sm font-semibold text-red-700 mb-4">Si vous ne changez qu'une chose, changez ça :</p>
+
+    <div class="space-y-4 mb-12">
+      {ameliorationsHautes.map(a => (
+        <div class="bg-white border-2 border-red-200 rounded-xl p-6 shadow-sm">
+          <div class="flex items-start justify-between gap-4 mb-3">
+            <h4 class="font-bold text-neutral-900">{a.titre}</h4>
+            <span class="text-[10px] px-2 py-1 rounded-full bg-red-100 text-red-700 font-semibold shrink-0 whitespace-nowrap">{a.impact}</span>
+          </div>
+          <p class="text-sm text-neutral-600 mb-3">{a.pourquoi}</p>
+          <div class="bg-neutral-50 rounded-lg px-4 py-3">
+            <p class="text-[10px] text-neutral-400 uppercase tracking-wider mb-1">Action concrète</p>
+            <p class="text-xs text-neutral-700">{a.action}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <h3 class="text-lg font-bold text-neutral-900 mb-2">Utile aussi</h3>
+    <div class="grid md:grid-cols-2 gap-4 mb-12">
+      {ameliorationsUtiles.map(a => (
+        <div class="bg-white border border-neutral-200 rounded-xl p-5">
+          <h4 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h4>
+          <p class="text-xs text-neutral-600">{a.detail}</p>
+        </div>
+      ))}
+    </div>
+
+    {showUpsell && (
+      <div class="rounded-2xl p-8 text-center border-2 border-dashed" style="border-color: #E86C47; background: rgba(232,108,71,0.03);">
+        <p class="text-lg font-bold text-neutral-900 mb-2">10 visiteurs, c'est une tendance.</p>
+        <p class="text-sm text-neutral-600 mb-6">Avec 20 visiteurs (Echo Complet), ces frictions deviennent des certitudes. Avec 100 (Echo Pro), vous savez exactement quel canal investir.</p>
+      </div>
+    )}
+  </section>
+
+  <!-- TECHNIQUE -->
+  <section class="py-16 border-t border-neutral-200">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-2">Sous le capot</h2>
+      <p class="text-neutral-600 mb-8">Pour les curieux : ce que les outils techniques disent de votre site.</p>
+
+      <div class="flex flex-wrap gap-3 mb-10">
+        {techVerdicts.map(v => (
+          <div class={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium ${v.ok ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
+            {v.ok
+              ? <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              : <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            }
+            <span>{v.label}</span>
+            <span class="text-xs opacity-70">{v.verdict}</span>
+          </div>
+        ))}
+      </div>
+
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+          <div class="flex items-center gap-3">
+            <span class="text-base">⚡</span>
+            <div>
+              <h3 class="font-semibold text-neutral-900 text-sm">Vitesse mobile</h3>
+              <p class="text-[11px] text-neutral-500">{techVerdicts[0].detail}</p>
+            </div>
+          </div>
+        </summary>
+        <div class="px-4 pb-4 border-t border-neutral-100 pt-4">
+          <div class="grid grid-cols-2 gap-4 mb-3">
+            <div class="text-center">
+              <div class="text-3xl font-black leading-none" style="color: #E86C47;">{tech.pagespdMobile.performance ?? '—'}</div>
+              <div class="text-xs text-neutral-500 mt-1">Performance mobile /100</div>
+            </div>
+            <div class="text-center">
+              <div class="text-3xl font-black leading-none" style="color: #E86C47;">{tech.pagespdDesktop.performance ?? '—'}</div>
+              <div class="text-xs text-neutral-500 mt-1">Performance desktop /100</div>
+            </div>
+          </div>
+          <p class="text-xs text-neutral-600">Délai d'affichage mobile : {tech.cwv.lcp} (cible : sous 2,5 s). Stabilité de mise en page desktop : {tech.cwv.cls} (cible : sous 0,1).</p>
+          <p class="text-[10px] text-neutral-400 mt-2 italic">Source : Google PageSpeed Insights v5, mesure réelle.</p>
+        </div>
+      </details>
+
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+          <div class="flex items-center gap-3">
+            <span class="text-base">🔒</span>
+            <div>
+              <h3 class="font-semibold text-neutral-900 text-sm">Sécurité du site</h3>
+              <p class="text-[11px] text-neutral-500">{techVerdicts[1].detail}</p>
+            </div>
+          </div>
+        </summary>
+        <div class="px-4 pb-4 border-t border-neutral-100 pt-4">
+          <div class="flex items-center gap-6 mb-3">
+            <div class="text-center">
+              <div class="text-4xl font-black leading-none" style="color: #E86C47;">{tech.observatory.grade}</div>
+              <div class="text-xs text-neutral-500 mt-1">Grade Mozilla Observatory</div>
+            </div>
+            <div class="text-center">
+              <div class="text-4xl font-black leading-none" style="color: #E86C47;">{tech.observatory.score}</div>
+              <div class="text-xs text-neutral-500 mt-1">Score /100</div>
+            </div>
+          </div>
+          <p class="text-xs text-neutral-600">Le grade indique la robustesse face aux attaques classiques (injection, vol de session, contenu détourné). Plus c'est bas, plus le site est vulnérable.</p>
+          <p class="text-[10px] text-neutral-400 mt-2 italic">Source : Mozilla Observatory v2, mesure réelle.</p>
+        </div>
+      </details>
+
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+          <div class="flex items-center gap-3">
+            <span class="text-base">📊</span>
+            <div>
+              <h3 class="font-semibold text-neutral-900 text-sm">Fiche métier (reconnue par Google et les IA)</h3>
+              <p class="text-[11px] text-neutral-500">{techVerdicts[2].detail}</p>
+            </div>
+          </div>
+        </summary>
+        <div class="px-4 pb-4 border-t border-neutral-100 pt-4">
+          <div class="space-y-2">
+            {tech.schema.map(s => (
+              <div class="flex items-start gap-2 text-xs text-neutral-600">
+                <span class={`shrink-0 font-bold ${s.ok ? 'text-green-500' : 'text-red-400'}`}>{s.ok ? '✓' : '✗'}</span>
+                <span>{s.item}</span>
+              </div>
+            ))}
+          </div>
+          <p class="text-[10px] text-neutral-400 mt-3 italic">Cette fiche structurée est ce que Google et les IA (ChatGPT, Perplexity) lisent en priorité pour catégoriser votre entreprise.</p>
+        </div>
+      </details>
+
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+          <div class="flex items-center gap-3">
+            <span class="text-base">🔗</span>
+            <div>
+              <h3 class="font-semibold text-neutral-900 text-sm">Partage sur les réseaux sociaux</h3>
+              <p class="text-[11px] text-neutral-500">{techVerdicts[3].detail}</p>
+            </div>
+          </div>
+        </summary>
+        <div class="px-4 pb-4 border-t border-neutral-100 pt-4">
+          <p class="text-xs text-neutral-600">Quand un visiteur partage le lien de votre site (Facebook, WhatsApp, Messenger, LinkedIn), un aperçu (titre + image + description) s'affiche correctement — bon point. La carte Twitter est partielle mais les principaux réseaux fonctionnent.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- METHODOLOGIE -->
+  <section class="py-12 bg-neutral-50 border-t border-neutral-100">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-lg font-bold text-neutral-900 mb-4">Comment on a fait ça</h2>
+      <div class="grid md:grid-cols-3 gap-4 text-sm text-neutral-600">
+        <div class="bg-white rounded-xl p-4 border border-neutral-200">
+          <div class="text-2xl font-black text-neutral-300 mb-2">1</div>
+          <p class="font-semibold text-neutral-800 mb-1">Scraping du site</p>
+          <p class="text-xs">Lecture de la page d'accueil et des pages secondaires accessibles. Identification du métier, de la zone, des contenus visibles.</p>
+        </div>
+        <div class="bg-white rounded-xl p-4 border border-neutral-200">
+          <div class="text-2xl font-black text-neutral-300 mb-2">2</div>
+          <p class="font-semibold text-neutral-800 mb-1">Audit technique mesuré</p>
+          <p class="text-xs">PageSpeed Insights mobile + desktop (Google PSI v5), Mozilla Observatory v2, validation fiche métier + partage réseaux. Aucun chiffre inventé.</p>
+        </div>
+        <div class="bg-white rounded-xl p-4 border border-neutral-200">
+          <div class="text-2xl font-black text-neutral-300 mb-2">3</div>
+          <p class="font-semibold text-neutral-800 mb-1">10 visiteurs simulés</p>
+          <p class="text-xs">Profils réalistes adaptés à votre métier — 5 canaux d'arrivée (Google Search, Maps, IA, Réseaux sociaux, Bouche-à-oreille), 3 niveaux de maturité, 3 devices, contextes typiques du secteur.</p>
+        </div>
+      </div>
+      <p class="text-xs text-neutral-400 mt-4 text-center">10 visiteurs = tendance solide &middot; 20 visiteurs (Echo Complet) = confirmation &middot; 100 visiteurs (Echo Pro) = certitude statistique</p>
+    </div>
+  </section>
+
+  <!-- CTA PROSPECTION -->
+  <section class="relative w-full px-6 py-20 overflow-hidden" style="background: #0A0A0A;">
+    <div class="absolute bottom-[10%] right-[10%] w-[400px] h-[400px] rounded-full blur-[160px] pointer-events-none" style="background: #E86C47; opacity: 0.05;"></div>
+    <div class="relative mx-auto max-w-3xl z-10 text-center">
+      <h2 class="text-2xl md:text-3xl font-bold text-white mb-4 leading-tight">
+        Votre site peut faire beaucoup mieux.
+      </h2>
+      <p class="text-sm mb-8" style="color: rgba(255,255,255,0.5);">
+        Ces recommandations sont actionnables en quelques jours. Un appel de 10 minutes suffit pour en discuter.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href={`tel:${phone}`} class="inline-flex items-center gap-2 px-8 py-4 text-white font-bold text-lg rounded-xl transition-all shadow-lg hover:-translate-y-0.5 bg-green-600 hover:bg-green-500">
+          Appeler Marc — {phoneDisplay}
+        </a>
+        <a href={`https://wa.me/${phoneNoPlus}`} target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-8 py-4 border border-neutral-600 font-semibold rounded-xl transition-all hover:border-white/40" style="color: rgba(255,255,255,0.6);">
+          WhatsApp
+        </a>
+      </div>
+      <p class="text-xs mt-6" style="color: rgba(255,255,255,0.3);">Ce rapport est confidentiel et non indexé par Google &middot; Généré le {dateAudit}</p>
+    </div>
+  </section>
+
+</BaseLayout>

@@ -1,0 +1,852 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const slug = 'greg-paysage';
+const formule = 'decouverte';
+const formuleLabel = 'Echo Découverte';
+const isProspection = true;
+const showUpsell = true;
+const nomProspect = "GregPaysage";
+const urlSite = "https://www.greg-paysage.com/";
+const dateAudit = "6 mai 2026";
+
+const title = "Echo Découverte — GregPaysage | Marc M";
+const description = "Analyse de https://www.greg-paysage.com/ : 10 visiteurs simulés, audit technique, recommandation prioritaire. Rapport confidentiel.";
+
+const phone = "+33688766648";
+const phoneDisplay = "06 88 76 66 48";
+const phoneNoPlus = "33688766648";
+
+const kpis = {
+  nbPersonas: 10,
+  nbConvertissent: 3,
+  nbHesitent: 4,
+  nbRepartent: 3,
+  conversion: 30,
+  experience: 4.9,
+  confiance: 4.7,
+  clarte: 5.3,
+};
+
+const verdictHero = "3 visiteurs sur 10 vous contactent. 7 hésitent ou repartent — la plupart parce qu'ils ne trouvent ni avis client ni photo de chantier documentée.";
+const constat = "Votre métier est clairement positionné (paysagiste à Verdun, particuliers + professionnels, zone Meuse / Meurthe-et-Moselle / Marne) et le ton est rassurant. Mais l'expérience visiteur bute sur deux choses qui se cumulent : le site met plus de 11 secondes à s'afficher sur mobile (les 38 images représentent à elles seules 2,7 Mo), et la page « Réalisations » montre seulement trois photos sans légende, sans lieu, sans description. Pour un métier où le visuel et les avis font le contrat de confiance, c'est ce qui fait basculer la majorité de vos hésitants chez la concurrence.";
+
+const canalData = [
+  { canal: "Google Search", nb: 3, convert: 1, rate: 33 },
+  { canal: "Google Maps", nb: 2, convert: 1, rate: 50 },
+  { canal: "IA (ChatGPT, Perplexity)", nb: 2, convert: 0, rate: 0 },
+  { canal: "Réseaux sociaux (Facebook)", nb: 2, convert: 0, rate: 0 },
+  { canal: "Bouche-à-oreille", nb: 1, convert: 1, rate: 100 },
+];
+
+const alertes = [
+  {
+    type: "critique",
+    titre: "Site très lent sur mobile",
+    detail: "Le site pèse 3,5 Mo dont 2,7 Mo d'images. Sur 4G, il met plus de 11 secondes à s'afficher. Un visiteur en mobilité (qui cherche un paysagiste depuis son jardin, son chantier ou sa voiture) attend 3 à 5 secondes maximum avant d'aller voir le concurrent.",
+    chiffre: "11,5 s",
+    chiffreLabel: "délai d'affichage mobile",
+  },
+  {
+    type: "critique",
+    titre: "Aucun avis client visible sur le site",
+    detail: "Pas de témoignage écrit, pas de note Google relayée. Pour une création de jardin à 3 000-15 000 €, un client lit en moyenne 4 avis avant de signer. Ceux qui ne trouvent pas vos avis sur votre site vont les chercher sur Google : sans avis affichés, ils choisissent le concurrent qui en montre.",
+    chiffre: "0",
+    chiffreLabel: "avis affichés sur le site",
+  },
+  {
+    type: "important",
+    titre: "Page Réalisations vide de preuves",
+    detail: "La page parle de « jardin privé, résidence sécurisée, site industriel, espace public, élagage complexe » mais ne montre que 3 photos sans légende, sans lieu, sans année. Vos prospects veulent voir 8 à 10 chantiers documentés pour se projeter — c'est ce que font les concurrents qui prennent les contrats les plus chers.",
+    chiffre: "3",
+    chiffreLabel: "réalisations affichées",
+  },
+  {
+    type: "important",
+    titre: "Sécurité du site très faible",
+    detail: "L'audit sécurité retourne le grade le plus bas (F). Aucune des protections de base n'est en place. Pour un site qui collecte des demandes de devis (donc des données personnelles : nom, adresse, téléphone), c'est un risque RGPD non couvert au niveau infrastructure.",
+    chiffre: "F",
+    chiffreLabel: "grade sécurité (sur A à F)",
+  },
+] as const;
+
+const personas = [
+  {
+    id: 1,
+    name: "Sylvie", age: 67, emoji: "👵",
+    canal: "Bouche-à-oreille", device: "Tablette", maturite: "Décision",
+    decisionLabel: "Appelle pour devis",
+    histoire: "Sa voisine a fait tailler ses arbres l'an dernier par GregPaysage et lui a passé le numéro. Veut un devis pour entretien (taille de haies + tonte de la saison). Sur sa tablette, le site s'affiche correctement. Le métier et la ville collent. Elle appelle.",
+    questionCle: "Est-ce bien l'entreprise que ma voisine m'a recommandée ?",
+    reponse: "Oui",
+    commentReponse: "Le nom, la ville et le métier confirment la recommandation. La voisine a déjà fait 90 % du travail.",
+    positifs: ["Métier clairement énoncé", "Numéros de téléphone bien visibles", "Adresse postale précise"],
+    frictions: ["Pas d'avis affichés (mais la recommandation suffit ici)"],
+    ceQuiFeraitBasculer: "Cette conversion vient quasi-entièrement de la recommandation. Sans elle, Sylvie aurait été dans la catégorie « hésite ».",
+    exp: 6, conf: 8, clarte: 7,
+    decision: "Convertit",
+    localisation: "Verdun",
+    contexte: "Recommandation directe d'une voisine cliente, intention claire",
+    impression: "Le site charge bien sur tablette. Le métier et la ville sont là dès le premier coup d'œil. Tout colle avec ce que la voisine a dit.",
+    parcours: [
+      ["Hero", "Identité confirmée"],
+      ["Services particuliers", "Trouve « entretien paysager »"],
+      ["Page contact", "Note le numéro et appelle"],
+    ],
+  },
+  {
+    id: 2,
+    name: "Pascal", age: 54, emoji: "🏡",
+    canal: "Google Search", device: "Desktop", maturite: "Décision",
+    decisionLabel: "Demande visite + devis",
+    histoire: "Tape « paysagiste Bar-le-Duc création jardin » sur son ordinateur. GregPaysage sort en première page. Vient d'emménager, veut refaire l'avant et l'arrière de la maison. Budget ~5 000 €. Le site liste explicitement Bar-le-Duc dans la zone. Pascal envoie le formulaire.",
+    questionCle: "Cette entreprise intervient-elle à Bar-le-Duc et fait-elle de la création complète ?",
+    reponse: "Oui",
+    commentReponse: "La zone est précisée (Bar-le-Duc cité), le service « création paysagère particuliers » est détaillé. Pascal n'a pas besoin de plus à ce stade.",
+    positifs: ["Zone d'intervention détaillée par commune", "Service création bien identifié", "Site stable sur desktop"],
+    frictions: ["Aucune fourchette de prix indicative", "Pas d'exemple de chantier création documenté"],
+    ceQuiFeraitBasculer: "Pascal convertit parce qu'il a besoin d'une visite. Mais il signera plus vite si la visite est précédée d'exemples concrets de chantiers création (photos avant-après, budget, durée).",
+    exp: 7, conf: 6, clarte: 7,
+    decision: "Convertit",
+    localisation: "Bar-le-Duc",
+    contexte: "Nouvelle maison, projet de création complète à l'avant et à l'arrière",
+    impression: "Site cohérent, métier listé, zone confirmée. Pascal passe 2 minutes à scanner avant de remplir le formulaire.",
+    parcours: [
+      ["Hero", "Métier + zone identifiés"],
+      ["Création paysagère particuliers", "Service confirmé"],
+      ["Contact", "Envoie formulaire"],
+    ],
+  },
+  {
+    id: 3,
+    name: "Annie", age: 49, emoji: "🌳",
+    canal: "Google Maps", device: "Mobile", maturite: "Décision",
+    decisionLabel: "Appelle le portable",
+    histoire: "Cherche « paysagiste près de moi » sur Maps depuis son jardin. Deux arbres tombés après une tempête. La fiche Maps affiche GregPaysage à Verdun. Le site charge lentement en 4G mais elle attend parce que c'est une urgence. Trouve le mot « élagage » et « abattage en sécurité ». Note le portable et appelle.",
+    questionCle: "Est-ce qu'ils interviennent vite et sont équipés pour l'abattage ?",
+    reponse: "Oui",
+    commentReponse: "Le service « élagage et abattage en toute sécurité » est explicitement listé. Le portable est trouvable. C'est ce qu'Annie cherchait.",
+    positifs: ["Service abattage clairement nommé", "Numéro de portable trouvable", "Présence Google Maps"],
+    frictions: ["Site très lent à charger sur 4G", "Pas de mention d'intervention rapide / délai"],
+    ceQuiFeraitBasculer: "Annie convertit parce qu'elle est en urgence réelle. Un visiteur dans la même situation mais moins patient (ou avec une connexion plus lente) aurait fermé l'onglet avant d'avoir vu le contenu.",
+    exp: 4, conf: 6, clarte: 6,
+    decision: "Convertit",
+    localisation: "Verdun",
+    contexte: "Urgence post-tempête, deux arbres à traiter",
+    impression: "La page met longtemps à se stabiliser sur mobile. Annie attend parce qu'elle n'a pas le choix.",
+    parcours: [
+      ["Hero (lent)", "Page met du temps à apparaître"],
+      ["Services particuliers — élagage", "Service confirmé"],
+      ["Coordonnées", "Appelle le portable"],
+    ],
+  },
+  {
+    id: 4,
+    name: "Étienne", age: 61, emoji: "📋",
+    canal: "Google Search", device: "Desktop", maturite: "Comparaison",
+    decisionLabel: "Demande 2 autres devis",
+    histoire: "Compare 3 paysagistes pour un contrat d'entretien annuel sur sa résidence secondaire en Meuse. Veut comparer les engagements et les prix. Sur le site GregPaysage : aucune fourchette, aucun exemple de contrat type, aucun avis client. Va voir les deux concurrents.",
+    questionCle: "Combien ça coûte par an pour un entretien régulier et à quoi je m'engage ?",
+    reponse: "Non",
+    commentReponse: "Aucune fourchette, aucun exemple de contrat type. Étienne ne peut pas comparer concrètement. Il ira chez celui qui détaille son offre.",
+    positifs: ["Service « entretien à l'année » mentionné", "Agrément SAP cité"],
+    frictions: ["Aucune fourchette de prix", "Aucun exemple de contrat type", "Aucun avis client visible"],
+    ceQuiFeraitBasculer: "Une page « Entretien à l'année » avec 3 niveaux d'engagement (basique / intermédiaire / complet), une fourchette de prix indicative, et 2-3 témoignages clients. Sans ça, Étienne ira chez un concurrent qui détaille.",
+    exp: 5, conf: 4, clarte: 5,
+    decision: "Hésite",
+    localisation: "Meuse",
+    contexte: "Recherche d'un paysagiste pour contrat d'entretien annuel",
+    impression: "Le site présente bien l'activité mais ne permet pas de comparer. Étienne sort pour aller voir ailleurs.",
+    parcours: [
+      ["Hero", "Métier identifié"],
+      ["Entretien paysager", "Pas de niveaux, pas de prix"],
+      ["Réalisations", "Trois photos, pas de référence client"],
+      ["Sort comparer ailleurs"],
+    ],
+  },
+  {
+    id: 5,
+    name: "Catherine", age: 58, emoji: "🌷",
+    canal: "Google Search", device: "Mobile", maturite: "Comparaison",
+    decisionLabel: "Cherche un autre paysagiste",
+    histoire: "Cherche un paysagiste pour aménager terrasse + allée + petit muret. Veut voir si GregPaysage a déjà fait ce type de chantier. Page Réalisations : 3 photos sans légende. Aucune indication de lieu, d'année, de description. Frustrée, elle ferme.",
+    questionCle: "Ont-ils déjà réalisé ce type de chantier (terrasse + allée + muret) ?",
+    reponse: "Non",
+    commentReponse: "La page Réalisations ne permet pas de répondre. Trois photos non légendées ne suffisent pas pour un projet à 4 chiffres.",
+    positifs: ["Service « aménagements » listé"],
+    frictions: ["Page Réalisations vide de contexte (3 photos seules)", "Pas de description de chantier", "Pas de lieu / année"],
+    ceQuiFeraitBasculer: "Une grille de 8 à 10 réalisations avec photo, lieu, type de chantier et 1 phrase descriptive. Sans ça, Catherine ira chez un concurrent qui montre des avant-après documentés.",
+    exp: 4, conf: 3, clarte: 4,
+    decision: "Hésite",
+    localisation: "Sainte-Menehould",
+    contexte: "Projet aménagement extérieur (terrasse + allée + muret)",
+    impression: "Catherine clique sur « Réalisations » avec espoir, repart déçue. Trois images sans contexte ne rassurent pas.",
+    parcours: [
+      ["Hero", "Métier identifié"],
+      ["Aménagements", "Service listé en une phrase"],
+      ["Réalisations", "Trois photos, pas de contexte"],
+      ["Sort chercher mieux"],
+    ],
+  },
+  {
+    id: 6,
+    name: "Bernard", age: 64, emoji: "🌲",
+    canal: "Google Maps", device: "Mobile", maturite: "Comparaison",
+    decisionLabel: "Va chez le mieux noté",
+    histoire: "Maps lui propose 4 paysagistes dans un rayon de 30 km autour de Longwy. Veut faire élaguer un grand chêne. Sur Maps il compare les notes Google. Sur le site GregPaysage : aucun avis affiché, aucune note relayée. Retourne sur Maps et choisit celui qui a le plus d'avis.",
+    questionCle: "Combien d'avis Google et quelle note ?",
+    reponse: "Non",
+    commentReponse: "Pas d'avis sur le site, pas de note relayée. Bernard préfère se fier aux concurrents qui affichent leurs avis Google directement sur leur site.",
+    positifs: ["Présence sur Maps", "Service élagage confirmé"],
+    frictions: ["Aucun avis Google sur le site", "Pas d'extrait de témoignage"],
+    ceQuiFeraitBasculer: "Une section avis sur la home avec 3-5 retours Google récents et la note moyenne (les étoiles peuvent même apparaître dans les résultats Google avec la fiche aggregateRating). Aujourd'hui Bernard ira chez celui qui a le plus d'avis affichés.",
+    exp: 5, conf: 3, clarte: 5,
+    decision: "Hésite",
+    localisation: "Longwy",
+    contexte: "Élagage d'un grand chêne, comparaison de 4 paysagistes locaux",
+    impression: "Bernard compare 4 fiches Maps en parallèle. Sans avis affichés sur le site, GregPaysage devient indifférenciable des autres.",
+    parcours: [
+      ["Maps", "Compare 4 paysagistes"],
+      ["Site GregPaysage", "Pas d'avis ni de note"],
+      ["Retour Maps", "Choisit le mieux noté"],
+    ],
+  },
+  {
+    id: 7,
+    name: "Mehdi", age: 32, emoji: "📱",
+    canal: "Google Search", device: "Mobile", maturite: "Découverte",
+    decisionLabel: "Ferme l'onglet, va voir le suivant",
+    histoire: "Vient d'acheter une maison avec jardin laissé à l'abandon. Cherche « paysagiste Verdun » depuis son téléphone en pause déjeuner. Le site met plusieurs secondes sans rien afficher. Mehdi ferme l'onglet et clique sur le résultat suivant qui s'ouvre tout de suite.",
+    questionCle: "Combien ça va me coûter de remettre tout ça en état ?",
+    reponse: "Non",
+    commentReponse: "Mehdi n'a même pas vu le contenu. Le délai d'affichage sur 4G l'a fait fuir avant. C'est un client perdu net, c'est-à-dire jamais.",
+    positifs: [],
+    frictions: ["Site trop lent à charger sur mobile (>11 s)", "Page tronquée à l'ouverture, contenu non visible"],
+    ceQuiFeraitBasculer: "Un chargement sous 2 secondes sur 4G. Aujourd'hui Mehdi est client perdu, c'est-à-dire jamais.",
+    exp: 1, conf: 0, clarte: 0,
+    decision: "Quitte",
+    localisation: "Verdun",
+    contexte: "Nouveau propriétaire, jardin à reprendre",
+    impression: "Mehdi voit un écran blanc qui ne se remplit pas. Il a fermé avant la fin du chargement.",
+    parcours: [
+      ["Clique depuis Google", "Page lente"],
+      ["Attend 4-5 secondes", "Page toujours pas visible"],
+      ["Ferme l'onglet", "Clique sur le concurrent"],
+    ],
+  },
+  {
+    id: 8,
+    name: "Florence", age: 38, emoji: "🤖",
+    canal: "IA (ChatGPT, Perplexity)", device: "Desktop", maturite: "Découverte",
+    decisionLabel: "Pas dans la shortlist IA",
+    histoire: "Demande à Perplexity « meilleurs paysagistes Marne pour aménagement piscine et terrasse ». Reçoit une liste de 5 noms — GregPaysage n'y est pas, malgré sa zone d'intervention qui couvre la Marne. Florence n'a même jamais vu le site.",
+    questionCle: "Cette entreprise est-elle reconnue comme paysagiste de la Marne ?",
+    reponse: "Non",
+    commentReponse: "L'IA ne sait pas catégoriser GregPaysage comme entreprise de la Marne parce qu'aucune fiche métier structurée n'est déclarée. Le texte le dit mais l'IA scanne d'abord la fiche.",
+    positifs: ["Le texte du site mentionne bien la Marne"],
+    frictions: ["Aucune fiche entreprise locale déclarée", "L'IA ne ressort pas le nom dans les recherches Marne"],
+    ceQuiFeraitBasculer: "Déclarer une fiche LocalBusiness avec adresse, géolocalisation, zone d'intervention par commune. Sans ça, GregPaysage est invisible pour les recherches IA. Florence ira chez un concurrent que Perplexity sait situer.",
+    exp: 0, conf: 0, clarte: 0,
+    decision: "Quitte",
+    localisation: "Châlons-en-Champagne",
+    contexte: "Recherche via Perplexity, projet aménagement piscine + terrasse",
+    impression: "Florence ne sait pas que GregPaysage existe. L'IA ne l'a pas remontée.",
+    parcours: [
+      ["Perplexity — requête Marne", "Liste de 5 concurrents"],
+      ["GregPaysage absent", "Florence n'a pas connaissance du site"],
+    ],
+  },
+  {
+    id: 9,
+    name: "Karim", age: 42, emoji: "📲",
+    canal: "Réseaux sociaux (Facebook)", device: "Mobile", maturite: "Comparaison",
+    decisionLabel: "Ferme et passe à autre chose",
+    histoire: "Vu un partage du nom dans un groupe Facebook « voisins Meurthe-et-Moselle ». Clique sur le lien. L'aperçu Facebook est cassé (pas d'image, titre tronqué) — premier doute. Sur le site, cherche un lien Facebook ou Instagram pour voir des chantiers récents. Aucun lien social visible. Ferme.",
+    questionCle: "Voir des photos récentes de chantiers ?",
+    reponse: "Non",
+    commentReponse: "Aucun lien Facebook/Instagram, et aucun fil de chantiers récents sur le site. Pour un métier visuel, c'est éliminatoire. Karim ira chez un concurrent qui poste régulièrement.",
+    positifs: [],
+    frictions: ["Aperçu Facebook cassé (pas d'image)", "Aucun lien réseaux sociaux", "Pas de fil de chantiers récents"],
+    ceQuiFeraitBasculer: "Une page Facebook ou Instagram active, un lien visible sur le site, un aperçu de partage propre (image + titre + description). Sans ça, Karim continuera son scroll.",
+    exp: 2, conf: 1, clarte: 2,
+    decision: "Quitte",
+    localisation: "Briey",
+    contexte: "Découverte via partage Facebook dans un groupe local",
+    impression: "Aperçu cassé sur Facebook = doute initial. Sur le site, aucun lien social = doute confirmé.",
+    parcours: [
+      ["Partage Facebook", "Aperçu cassé"],
+      ["Clique sur le lien", "Site sans page sociale"],
+      ["Ferme l'onglet"],
+    ],
+  },
+  {
+    id: 10,
+    name: "Jean-Marc", age: 57, emoji: "🏢",
+    canal: "Réseaux sociaux (Facebook)", device: "Mobile", maturite: "Comparaison",
+    decisionLabel: "Demande 2 autres devis pros",
+    histoire: "Gestionnaire d'une copropriété de 22 logements à Jarny, cherche un prestataire d'entretien annuel des espaces verts. Vu un partage. Sur le site : la mention « Professionnels » existe mais aucun chantier syndic / copro / résidence n'est documenté. Va voir 2 autres prestataires.",
+    questionCle: "Travaillent-ils avec des syndics et coproprietés ? Ont-ils des références B2B ?",
+    reponse: "Partiellement",
+    commentReponse: "L'onglet « Professionnels » existe mais ne montre aucune référence chantier collectif. Pour un syndic, ce n'est pas suffisant pour faire valider le choix au conseil syndical.",
+    positifs: ["Onglet « Professionnels » existe", "Service « pose de clôtures » spécifique B2B"],
+    frictions: ["Aucune référence syndic ou copropriété", "Aucun chiffre (m² entretenus, nombre de copros suivies)", "Pas d'extrait Kbis ni de SIRET visible"],
+    ceQuiFeraitBasculer: "Une section « Pour les syndics et gestionnaires » avec 3 chantiers récents (lieu, m², type de prestation, témoignage syndic). Aujourd'hui Jean-Marc ira chez un concurrent qui montre ses références B2B.",
+    exp: 5, conf: 3, clarte: 4,
+    decision: "Hésite",
+    localisation: "Jarny",
+    contexte: "Copropriété 22 logements, contrat annuel à signer",
+    impression: "L'onglet pro existe mais ne raconte pas grand-chose. Jean-Marc enverra le numéro au syndic mais regardera 2 autres prestataires en parallèle.",
+    parcours: [
+      ["Hero", "Métier identifié"],
+      ["Professionnels", "Page existe mais reste générique"],
+      ["Réalisations", "Pas de référence syndic"],
+      ["Sort comparer ailleurs"],
+    ],
+  },
+];
+
+const ameliorationsHautes = [
+  {
+    titre: "Documenter et afficher 8 à 10 réalisations récentes avec preuve client",
+    pourquoi: "5 visiteurs sur 10 (Étienne, Catherine, Bernard, Jean-Marc, Karim) hésitent ou repartent parce qu'ils ne trouvent pas la preuve concrète que vous savez faire ce qu'annonce le site. Pour un paysagiste, le visuel et l'avis client sont le contrat de confiance. Le métier, la zone, les services sont bien décrits — mais sans preuve, la majorité des hésitants partent comparer ailleurs.",
+    action: "Sur la page Réalisations : remplacer les 3 photos seules par une grille de 8 à 10 chantiers récents (photo après + lieu + type de prestation + 1 phrase de description ou témoignage client). Sur la home : intégrer 3 à 5 avis Google (avec balise aggregateRating pour faire apparaître les étoiles dans les résultats Google). Activer un fil Instagram ou Facebook pour les chantiers en cours.",
+    impact: "5 visiteurs sur 10",
+  },
+];
+
+const ameliorationsUtiles = [
+  {
+    titre: "Réduire le temps d'affichage mobile",
+    detail: "Le site met plus de 11 secondes à s'afficher sur 4G (cause : 2,7 Mo d'images sur 3,5 Mo de page). Mehdi est déjà parti avant d'avoir rien lu. Compresser les images au format moderne ramène le délai sous 3 secondes — sans toucher au contenu.",
+  },
+  {
+    titre: "Déclarer une fiche entreprise locale reconnue par Google et les IA",
+    detail: "Aucune fiche structurée n'est déclarée. Florence, qui passe par Perplexity, n'a même pas vu votre nom dans la liste des paysagistes Marne. Les concurrents qui déclarent une fiche LocalBusiness avec adresse, horaires et zone par commune apparaissent dans le pack local Google Maps et dans les recherches IA.",
+  },
+  {
+    titre: "Sécuriser le site",
+    detail: "Le formulaire de contact collecte nom, adresse, téléphone et email sans aucune protection technique de base (grade F). Pour la conformité RGPD, c'est à corriger en priorité avant tout audit ou plainte CNIL.",
+  },
+];
+
+const techVerdicts = [
+  { label: 'Vitesse mobile', verdict: "Lent", ok: false, detail: "Mobile 56/100 — affichage en 11,5 s" },
+  { label: 'Sécurité', verdict: "F", ok: false, detail: "Grade Mozilla Observatory : F (0/100)" },
+  { label: 'Fiche métier', verdict: "Absente", ok: false, detail: "Aucune fiche entreprise reconnue" },
+  { label: 'Partage réseaux', verdict: "Cassé", ok: false, detail: "Aucune balise aperçu Facebook/WhatsApp" },
+  { label: 'Visibilité Google', verdict: "À améliorer", ok: false, detail: "Pas de structure locale déclarée" },
+];
+
+const tech = {
+  observatory: { grade: "F", score: 0 },
+  pagespdMobile: { performance: 56 },
+  pagespdDesktop: { performance: 73 },
+  cwv: { lcp: "11,5 s", cls: "0,01" },
+  schema: [
+    { item: "Fiche Organization (identité de l'entreprise)", ok: false },
+    { item: "Fiche LocalBusiness (entreprise locale géolocalisée)", ok: false },
+    { item: "Fil d'Ariane (BreadcrumbList)", ok: false },
+    { item: "Site identifié (WebSite)", ok: false },
+    { item: "Avis structurés (aggregateRating)", ok: false },
+  ],
+};
+
+function decisionBorder(d) {
+  if (d === 'Convertit') return 'border-green-200';
+  if (d === 'Hésite') return 'border-amber-200';
+  return 'border-neutral-200';
+}
+function decisionBadge(d) {
+  if (d === 'Convertit') return 'bg-green-600';
+  if (d === 'Hésite') return 'bg-amber-500';
+  return 'bg-neutral-400';
+}
+---
+<BaseLayout
+  title={title}
+  description={description}
+  noindex={true}
+  lang="fr"
+  frPath={`/echo/${slug}`}
+>
+
+  <!-- HERO -->
+  <section class="relative w-full px-6 py-20 md:py-28 overflow-hidden" style="background: #0A0A0A;">
+    <div class="absolute top-[20%] left-[10%] w-[500px] h-[500px] rounded-full blur-[180px] pointer-events-none" style="background: #E86C47; opacity: 0.06;"></div>
+    <div class="relative mx-auto max-w-4xl z-10">
+      <div class="mb-6 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5);">
+        {formuleLabel} &middot; Rapport confidentiel
+      </div>
+      <h1 class="mb-6 text-3xl md:text-4xl font-bold text-white leading-tight tracking-tight">
+        {verdictHero}
+      </h1>
+      <p class="mb-10 text-sm" style="color: rgba(255,255,255,0.4);">
+        Site analysé : <a href={urlSite} target="_blank" rel="noopener" class="underline hover:text-white transition-colors">{urlSite}</a> &middot; {kpis.nbPersonas} visiteurs simulés &middot; {dateAudit}
+      </p>
+      <div class="grid grid-cols-3 gap-4">
+        <div class="rounded-xl p-5 text-center" style="background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2);">
+          <div class="text-4xl md:text-5xl font-black text-green-400 mb-1">{kpis.nbConvertissent}</div>
+          <div class="text-sm text-green-400/70">vous contactent</div>
+        </div>
+        <div class="rounded-xl p-5 text-center" style="background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2);">
+          <div class="text-4xl md:text-5xl font-black text-amber-400 mb-1">{kpis.nbHesitent}</div>
+          <div class="text-sm text-amber-400/70">hésitent</div>
+        </div>
+        <div class="rounded-xl p-5 text-center" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
+          <div class="text-4xl md:text-5xl font-black mb-1" style="color: rgba(255,255,255,0.5);">{kpis.nbRepartent}</div>
+          <div class="text-sm" style="color: rgba(255,255,255,0.3);">repartent</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CONSTAT -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="rounded-2xl p-6 md:p-8 mb-12 border-l-4" style="background: rgba(232,108,71,0.04); border-color: #E86C47;">
+      <p class="text-lg md:text-xl font-medium text-neutral-800 leading-relaxed">{constat}</p>
+    </div>
+
+    <h2 class="text-xl font-bold text-neutral-900 mb-2">D'où viennent vos visiteurs</h2>
+    <p class="text-sm text-neutral-500 mb-6">Et combien vous contactent selon leur canal d'arrivée.</p>
+    <div class="space-y-4 mb-12">
+      {canalData.map(c => {
+        const color = c.rate >= 50 ? '#22c55e' : c.rate >= 25 ? '#f59e0b' : '#ef4444';
+        return (
+          <div class="flex items-center gap-4">
+            <div class="w-52 text-sm text-neutral-700 shrink-0">{c.canal}</div>
+            <div class="flex-1 h-3 bg-neutral-100 rounded-full overflow-hidden">
+              <div class="h-full rounded-full transition-all" style={`width: ${c.rate}%; background: ${color}`}></div>
+            </div>
+            <div class="w-20 text-right">
+              <span class="text-sm font-bold" style={`color: ${color}`}>{c.rate}%</span>
+              <span class="text-xs text-neutral-400 ml-1">({c.convert}/{c.nb})</span>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+  </section>
+
+  <!-- ALERTES -->
+  <section class="py-12" style="background: #fefce8;">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center gap-3 mb-6">
+        <svg class="w-6 h-6 text-amber-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+        <div>
+          <h2 class="text-lg font-bold text-neutral-900">Problèmes détectés</h2>
+          <p class="text-sm text-neutral-600">
+            {alertes.filter(a => a.type === 'critique').length} critiques &middot; {alertes.filter(a => a.type === 'important').length} importants
+          </p>
+        </div>
+      </div>
+      <div class="grid md:grid-cols-2 gap-4">
+        {alertes.map(a => (
+          <div class={`bg-white rounded-xl p-5 ${a.type === 'critique' ? 'border-2 border-red-300' : 'border border-amber-300'}`}>
+            <div class={`inline-block text-2xl font-black px-3 py-1 rounded-lg mb-3 ${a.type === 'critique' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>
+              {a.chiffre}
+            </div>
+            <p class="text-[10px] text-neutral-400 uppercase tracking-wider mb-1">{a.chiffreLabel}</p>
+            <h3 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h3>
+            <p class="text-xs text-neutral-600 leading-relaxed">{a.detail}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- PERSONAS -->
+  <section class="py-16" style="background: #fafafa;">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs</h2>
+      <p class="text-neutral-600 mb-8">Voici ce qui se passe quand quelqu'un cherche vos services et tombe sur votre site.</p>
+
+      <div class="mb-10">
+        <h3 class="text-base font-bold text-green-800 mb-4 flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-green-500 inline-block"></span>
+          Ceux qui vous contactent
+          <span class="text-sm font-normal text-green-600">({kpis.nbConvertissent})</span>
+        </h3>
+        <div class="space-y-3">
+          {personas.filter(p => p.decision === 'Convertit').map(p => (
+            <details class={`group bg-white rounded-xl overflow-hidden shadow-sm border ${decisionBorder(p.decision)}`}>
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-1 flex-wrap">
+                    <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                    <span class={`text-[10px] ${decisionBadge(p.decision)} text-white px-1.5 py-0.5 rounded font-medium`}>{p.decisionLabel}</span>
+                  </div>
+                  <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                  </div>
+                </div>
+              </summary>
+              <div class="px-4 pb-5 border-t border-green-200">
+                <div class="grid gap-4 text-xs mt-4">
+                  <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p><p class="text-neutral-600">{p.contexte}</p></div>
+                  <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Première impression (5 sec)</p><p class="text-neutral-600">{p.impression}</p></div>
+                  <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours sur le site</p>
+                    <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                      {p.parcours.map((step) => (<li><strong class="text-neutral-800">{step[0]}</strong>{step[1] ? ` — ${step[1]}` : ''}</li>))}
+                    </ol>
+                  </div>
+                  <div class="bg-neutral-50 rounded-lg p-3">
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p>
+                    <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
+                    <p class="text-neutral-600">Le site répond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> — {p.commentReponse}</p>
+                  </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div><p class="font-semibold text-green-700 mb-1.5">✓ Points positifs</p>
+                      <ul class="space-y-1 text-neutral-600">{p.positifs.map(pt => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">·</span>{pt}</li>)}</ul></div>
+                    <div><p class="font-semibold text-amber-700 mb-1.5">✗ Frictions</p>
+                      <ul class="space-y-1 text-neutral-600">{p.frictions.map(f => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">·</span>{f}</li>)}</ul></div>
+                  </div>
+                  {p.ceQuiFeraitBasculer && (
+                    <div class="rounded-lg p-3" style="background: rgba(232,108,71,0.06);">
+                      <p class="font-semibold text-[10px] uppercase tracking-wider mb-1" style="color: #E86C47;">À noter</p>
+                      <p class="text-neutral-700 text-xs">{p.ceQuiFeraitBasculer}</p>
+                    </div>
+                  )}
+                  <div class="flex gap-6 pt-3 border-t border-neutral-100">
+                    {[{ label: 'Expérience', val: p.exp }, { label: 'Confiance', val: p.conf }, { label: 'Clarté', val: p.clarte }].map(s => {
+                      const sc = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500';
+                      return (<div class="text-center"><span class={`block text-lg font-bold ${sc}`}>{s.val}</span><span class="text-[10px] text-neutral-400">{s.label}</span></div>);
+                    })}
+                  </div>
+                </div>
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <h3 class="text-base font-bold text-amber-800 mb-4 flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span>
+          Ceux qui hésitent
+          <span class="text-sm font-normal text-amber-600">({kpis.nbHesitent})</span>
+        </h3>
+        <div class="space-y-3">
+          {personas.filter(p => p.decision === 'Hésite').map(p => (
+            <details class={`group bg-white rounded-xl overflow-hidden shadow-sm border ${decisionBorder(p.decision)}`}>
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-1 flex-wrap">
+                    <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                    <span class={`text-[10px] ${decisionBadge(p.decision)} text-white px-1.5 py-0.5 rounded font-medium`}>{p.decisionLabel}</span>
+                  </div>
+                  <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                  </div>
+                </div>
+              </summary>
+              <div class="px-4 pb-5 border-t border-amber-200">
+                <div class="grid gap-4 text-xs mt-4">
+                  <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p><p class="text-neutral-600">{p.contexte}</p></div>
+                  <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Première impression (5 sec)</p><p class="text-neutral-600">{p.impression}</p></div>
+                  <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours sur le site</p>
+                    <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                      {p.parcours.map((step) => (<li><strong class="text-neutral-800">{step[0]}</strong>{step[1] ? ` — ${step[1]}` : ''}</li>))}
+                    </ol>
+                  </div>
+                  <div class="bg-neutral-50 rounded-lg p-3">
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p>
+                    <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
+                    <p class="text-neutral-600">Le site répond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> — {p.commentReponse}</p>
+                  </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div><p class="font-semibold text-green-700 mb-1.5">✓ Points positifs</p>
+                      <ul class="space-y-1 text-neutral-600">{p.positifs.map(pt => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">·</span>{pt}</li>)}</ul></div>
+                    <div><p class="font-semibold text-amber-700 mb-1.5">✗ Frictions</p>
+                      <ul class="space-y-1 text-neutral-600">{p.frictions.map(f => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">·</span>{f}</li>)}</ul></div>
+                  </div>
+                  {p.ceQuiFeraitBasculer && (
+                    <div class="rounded-lg p-3" style="background: rgba(232,108,71,0.06);">
+                      <p class="font-semibold text-[10px] uppercase tracking-wider mb-1" style="color: #E86C47;">Ce qui le ferait passer à l'action</p>
+                      <p class="text-neutral-700 text-xs">{p.ceQuiFeraitBasculer}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-xl p-5 mb-10 bg-amber-50 border border-amber-200 flex items-start gap-3">
+        <span class="text-lg shrink-0 mt-0.5">💡</span>
+        <div>
+          <p class="text-sm font-medium text-amber-900">Ces {kpis.nbHesitent} visiteurs ont besoin d'un dernier signal pour vous contacter.</p>
+          <p class="text-xs text-amber-700 mt-1">Ils sont déjà sur votre site, motivés, mais retenus par un détail (preuve manquante, fourchette de prix, témoignage). C'est votre plus grand levier de conversion.</p>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <h3 class="text-base font-bold text-neutral-600 mb-4 flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-neutral-400 inline-block"></span>
+          Ceux qui repartent
+          <span class="text-sm font-normal text-neutral-500">({kpis.nbRepartent})</span>
+        </h3>
+        <div class="space-y-3">
+          {personas.filter(p => p.decision === 'Quitte').map(p => (
+            <details class={`group bg-white rounded-xl overflow-hidden shadow-sm border ${decisionBorder(p.decision)}`}>
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-1 flex-wrap">
+                    <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                    <span class={`text-[10px] ${decisionBadge(p.decision)} text-white px-1.5 py-0.5 rounded font-medium`}>{p.decisionLabel}</span>
+                  </div>
+                  <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                  </div>
+                </div>
+              </summary>
+              <div class="px-4 pb-5 border-t border-neutral-200">
+                <div class="grid gap-4 text-xs mt-4">
+                  <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p><p class="text-neutral-600">{p.contexte}</p></div>
+                  <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Première impression (5 sec)</p><p class="text-neutral-600">{p.impression}</p></div>
+                  <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours sur le site</p>
+                    <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                      {p.parcours.map((step) => (<li><strong class="text-neutral-800">{step[0]}</strong>{step[1] ? ` — ${step[1]}` : ''}</li>))}
+                    </ol>
+                  </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div><p class="font-semibold text-green-700 mb-1.5">✓ Points positifs</p>
+                      <ul class="space-y-1 text-neutral-600">{p.positifs.map(pt => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">·</span>{pt}</li>)}</ul></div>
+                    <div><p class="font-semibold text-amber-700 mb-1.5">✗ Frictions</p>
+                      <ul class="space-y-1 text-neutral-600">{p.frictions.map(f => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">·</span>{f}</li>)}</ul></div>
+                  </div>
+                  {p.ceQuiFeraitBasculer && (
+                    <div class="rounded-lg p-3" style="background: rgba(232,108,71,0.06);">
+                      <p class="font-semibold text-[10px] uppercase tracking-wider mb-1" style="color: #E86C47;">Ce qui l'aurait retenu</p>
+                      <p class="text-neutral-700 text-xs">{p.ceQuiFeraitBasculer}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-xl p-5 bg-neutral-100 border border-neutral-200 flex items-start gap-3">
+        <span class="text-lg shrink-0 mt-0.5">📉</span>
+        <div>
+          <p class="text-sm font-medium text-neutral-800">Chaque visiteur qui repart, c'est un client en moins.</p>
+          <p class="text-xs text-neutral-600 mt-1">Certains étaient hors cible — c'est normal. Mais d'autres avaient un vrai besoin et n'ont pas été convaincus.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- RECOMMANDATIONS -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <h2 class="text-2xl font-bold text-neutral-900 mb-2">Ce qu'on recommande</h2>
+    <p class="text-neutral-600 mb-8">La priorité numéro 1 identifiée sur vos 10 visiteurs.</p>
+
+    <p class="text-sm font-semibold text-red-700 mb-4">Si vous ne changez qu'une chose, changez ça :</p>
+
+    <div class="space-y-4 mb-12">
+      {ameliorationsHautes.map(a => (
+        <div class="bg-white border-2 border-red-200 rounded-xl p-6 shadow-sm">
+          <div class="flex items-start justify-between gap-4 mb-3">
+            <h4 class="font-bold text-neutral-900">{a.titre}</h4>
+            <span class="text-[10px] px-2 py-1 rounded-full bg-red-100 text-red-700 font-semibold shrink-0 whitespace-nowrap">{a.impact}</span>
+          </div>
+          <p class="text-sm text-neutral-600 mb-3">{a.pourquoi}</p>
+          <div class="bg-neutral-50 rounded-lg px-4 py-3">
+            <p class="text-[10px] text-neutral-400 uppercase tracking-wider mb-1">Action concrète</p>
+            <p class="text-xs text-neutral-700">{a.action}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <h3 class="text-lg font-bold text-neutral-900 mb-2">Utile aussi</h3>
+    <div class="grid md:grid-cols-2 gap-4 mb-12">
+      {ameliorationsUtiles.map(a => (
+        <div class="bg-white border border-neutral-200 rounded-xl p-5">
+          <h4 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h4>
+          <p class="text-xs text-neutral-600">{a.detail}</p>
+        </div>
+      ))}
+    </div>
+
+    {showUpsell && (
+      <div class="rounded-2xl p-8 text-center border-2 border-dashed" style="border-color: #E86C47; background: rgba(232,108,71,0.03);">
+        <p class="text-lg font-bold text-neutral-900 mb-2">10 visiteurs, c'est une tendance.</p>
+        <p class="text-sm text-neutral-600 mb-6">Avec 20 visiteurs (Echo Complet), ces frictions deviennent des certitudes. Avec 100 (Echo Pro), vous savez exactement quel canal investir.</p>
+      </div>
+    )}
+  </section>
+
+  <!-- TECHNIQUE -->
+  <section class="py-16 border-t border-neutral-200">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-2">Sous le capot</h2>
+      <p class="text-neutral-600 mb-8">Pour les curieux : ce que les outils techniques disent de votre site.</p>
+
+      <div class="flex flex-wrap gap-3 mb-10">
+        {techVerdicts.map(v => (
+          <div class={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium ${v.ok ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
+            {v.ok
+              ? <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              : <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            }
+            <span>{v.label}</span>
+            <span class="text-xs opacity-70">{v.verdict}</span>
+          </div>
+        ))}
+      </div>
+
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+          <div class="flex items-center gap-3">
+            <span class="text-base">⚡</span>
+            <div>
+              <h3 class="font-semibold text-neutral-900 text-sm">Vitesse mobile</h3>
+              <p class="text-[11px] text-neutral-500">{techVerdicts[0].detail}</p>
+            </div>
+          </div>
+        </summary>
+        <div class="px-4 pb-4 border-t border-neutral-100 pt-4">
+          <div class="grid grid-cols-2 gap-4 mb-3">
+            <div class="text-center">
+              <div class="text-3xl font-black leading-none" style="color: #E86C47;">{tech.pagespdMobile.performance ?? '—'}</div>
+              <div class="text-xs text-neutral-500 mt-1">Performance mobile /100</div>
+            </div>
+            <div class="text-center">
+              <div class="text-3xl font-black leading-none" style="color: #E86C47;">{tech.pagespdDesktop.performance ?? '—'}</div>
+              <div class="text-xs text-neutral-500 mt-1">Performance desktop /100</div>
+            </div>
+          </div>
+          <p class="text-xs text-neutral-600">Délai d'affichage mobile : {tech.cwv.lcp} (cible : sous 2,5 s). Stabilité de mise en page : {tech.cwv.cls} (cible : sous 0,1).</p>
+          <p class="text-[10px] text-neutral-400 mt-2 italic">Source : Google PageSpeed Insights v5, mesure réelle.</p>
+        </div>
+      </details>
+
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+          <div class="flex items-center gap-3">
+            <span class="text-base">🔒</span>
+            <div>
+              <h3 class="font-semibold text-neutral-900 text-sm">Sécurité du site</h3>
+              <p class="text-[11px] text-neutral-500">{techVerdicts[1].detail}</p>
+            </div>
+          </div>
+        </summary>
+        <div class="px-4 pb-4 border-t border-neutral-100 pt-4">
+          <div class="flex items-center gap-6 mb-3">
+            <div class="text-center">
+              <div class="text-4xl font-black leading-none" style="color: #E86C47;">{tech.observatory.grade}</div>
+              <div class="text-xs text-neutral-500 mt-1">Grade Mozilla Observatory</div>
+            </div>
+            <div class="text-center">
+              <div class="text-4xl font-black leading-none" style="color: #E86C47;">{tech.observatory.score}</div>
+              <div class="text-xs text-neutral-500 mt-1">Score /100</div>
+            </div>
+          </div>
+          <p class="text-xs text-neutral-600">Le grade indique la robustesse face aux attaques classiques (injection, vol de session, contenu détourné). Plus c'est bas, plus le site est vulnérable.</p>
+          <p class="text-[10px] text-neutral-400 mt-2 italic">Source : Mozilla Observatory v2, mesure réelle.</p>
+        </div>
+      </details>
+
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+          <div class="flex items-center gap-3">
+            <span class="text-base">📊</span>
+            <div>
+              <h3 class="font-semibold text-neutral-900 text-sm">Fiche métier (reconnue par Google et les IA)</h3>
+              <p class="text-[11px] text-neutral-500">{techVerdicts[2].detail}</p>
+            </div>
+          </div>
+        </summary>
+        <div class="px-4 pb-4 border-t border-neutral-100 pt-4">
+          <div class="space-y-2">
+            {tech.schema.map(s => (
+              <div class="flex items-start gap-2 text-xs text-neutral-600">
+                <span class={`shrink-0 font-bold ${s.ok ? 'text-green-500' : 'text-red-400'}`}>{s.ok ? '✓' : '✗'}</span>
+                <span>{s.item}</span>
+              </div>
+            ))}
+          </div>
+          <p class="text-[10px] text-neutral-400 mt-3 italic">Cette fiche structurée est ce que Google et les IA (ChatGPT, Perplexity) lisent en priorité pour catégoriser votre entreprise.</p>
+        </div>
+      </details>
+
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+          <div class="flex items-center gap-3">
+            <span class="text-base">🔗</span>
+            <div>
+              <h3 class="font-semibold text-neutral-900 text-sm">Partage sur les réseaux sociaux</h3>
+              <p class="text-[11px] text-neutral-500">{techVerdicts[3].detail}</p>
+            </div>
+          </div>
+        </summary>
+        <div class="px-4 pb-4 border-t border-neutral-100 pt-4">
+          <p class="text-xs text-neutral-600">Quand un visiteur partage le lien de votre site (Facebook, WhatsApp, Messenger, LinkedIn), un aperçu (titre + image + description) doit s'afficher. Aujourd'hui aucune balise d'aperçu n'est présente : le lien partagé apparaît cassé, sans image, et fait fuir les destinataires.</p>
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- METHODOLOGIE -->
+  <section class="py-12 bg-neutral-50 border-t border-neutral-100">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-lg font-bold text-neutral-900 mb-4">Comment on a fait ça</h2>
+      <div class="grid md:grid-cols-3 gap-4 text-sm text-neutral-600">
+        <div class="bg-white rounded-xl p-4 border border-neutral-200">
+          <div class="text-2xl font-black text-neutral-300 mb-2">1</div>
+          <p class="font-semibold text-neutral-800 mb-1">Scraping du site</p>
+          <p class="text-xs">Lecture de la page d'accueil et des pages secondaires accessibles. Identification du métier, de la zone, des contenus visibles.</p>
+        </div>
+        <div class="bg-white rounded-xl p-4 border border-neutral-200">
+          <div class="text-2xl font-black text-neutral-300 mb-2">2</div>
+          <p class="font-semibold text-neutral-800 mb-1">Audit technique mesuré</p>
+          <p class="text-xs">PageSpeed Insights mobile + desktop (Google PSI v5), Mozilla Observatory v2, validation fiche métier + partage réseaux. Aucun chiffre inventé.</p>
+        </div>
+        <div class="bg-white rounded-xl p-4 border border-neutral-200">
+          <div class="text-2xl font-black text-neutral-300 mb-2">3</div>
+          <p class="font-semibold text-neutral-800 mb-1">10 visiteurs simulés</p>
+          <p class="text-xs">Profils réalistes adaptés à votre métier — 5 canaux d'arrivée (Google Search, Maps, IA, Réseaux sociaux, Bouche-à-oreille), 3 niveaux de maturité, 3 devices, contextes typiques du secteur.</p>
+        </div>
+      </div>
+      <p class="text-xs text-neutral-400 mt-4 text-center">10 visiteurs = tendance solide &middot; 20 visiteurs (Echo Complet) = confirmation &middot; 100 visiteurs (Echo Pro) = certitude statistique</p>
+    </div>
+  </section>
+
+  <!-- CTA PROSPECTION -->
+  <section class="relative w-full px-6 py-20 overflow-hidden" style="background: #0A0A0A;">
+    <div class="absolute bottom-[10%] right-[10%] w-[400px] h-[400px] rounded-full blur-[160px] pointer-events-none" style="background: #E86C47; opacity: 0.05;"></div>
+    <div class="relative mx-auto max-w-3xl z-10 text-center">
+      <h2 class="text-2xl md:text-3xl font-bold text-white mb-4 leading-tight">
+        Votre site peut faire beaucoup mieux.
+      </h2>
+      <p class="text-sm mb-8" style="color: rgba(255,255,255,0.5);">
+        Ces recommandations sont actionnables en quelques jours. Un appel de 10 minutes suffit pour en discuter.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href={`tel:${phone}`} class="inline-flex items-center gap-2 px-8 py-4 text-white font-bold text-lg rounded-xl transition-all shadow-lg hover:-translate-y-0.5 bg-green-600 hover:bg-green-500">
+          Appeler Marc — {phoneDisplay}
+        </a>
+        <a href={`https://wa.me/${phoneNoPlus}`} target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-8 py-4 border border-neutral-600 font-semibold rounded-xl transition-all hover:border-white/40" style="color: rgba(255,255,255,0.6);">
+          WhatsApp
+        </a>
+      </div>
+      <p class="text-xs mt-6" style="color: rgba(255,255,255,0.3);">Ce rapport est confidentiel et non indexé par Google &middot; Généré le {dateAudit}</p>
+    </div>
+  </section>
+
+</BaseLayout>
