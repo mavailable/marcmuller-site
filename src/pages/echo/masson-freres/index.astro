@@ -3,358 +3,1055 @@ import BaseLayout from '../../../layouts/BaseLayout.astro';
 
 const slug = 'masson-freres';
 const formule = 'decouverte';
-const formuleLabel = 'Echo Decouverte';
-const nomProspect = 'Masson Freres';
-const urlSite = 'https://www.massonfreres.com/';
-const dateAudit = '1er avril 2026';
+const formuleLabel = 'Echo Découverte';
 const isProspection = true;
 const showUpsell = true;
+const nomProspect = "Masson Fr\u00e8res";
+const urlSite = "https://www.massonfreres.com/";
+const dateAudit = "6 mai 2026";
 
-const title = 'Echo Decouverte — Masson Freres | Marc M';
-const description = 'Analyse de massonfreres.com : simulation de 10 visites clients, audit technique, recommandations. Rapport confidentiel.';
+const title = "Echo D\u00e9couverte \u2014 Masson Fr\u00e8res | Marc M";
+const description = "Analyse de https://www.massonfreres.com/ : 10 visiteurs simul\u00e9s, audit technique, recommandation prioritaire. Rapport confidentiel.";
 
-const kpis = { nbPersonas: 10, nbConvertissent: 4, nbHesitent: 3, nbRepartent: 3, conversion: 40, experience: 5.5, confiance: 5.7, clarte: 5.0 };
+const phone = "+33688766648";
+const phoneDisplay = "06 88 76 66 48";
+const phoneNoPlus = "33688766648";
 
-const verdictHero = '4 clients sur 10 vous contactent. 6 repartent — parce que votre site met 6 secondes a s\'afficher sur leur telephone.';
+const kpis = {
+  nbPersonas: 10,
+  nbConvertissent: 3,
+  nbHesitent: 4,
+  nbRepartent: 3,
+  conversion: 30,
+  experience: 4.8,
+  confiance: 5.5,
+  clarte: 5.2,
+};
 
-const constat = '60 avis Google a 4.5 etoiles, des services solides (couverture, charpente, zinguerie, isolation) et une reputation locale etablie. Mais votre site est si lourd que les visiteurs sur mobile n\'ont pas la patience d\'attendre. Et ceux qui restent ne trouvent ni vos tarifs, ni votre assurance decennale, ni vos avis — les 3 choses qu\'un proprietaire cherche avant d\'appeler un couvreur.';
+const verdictHero = "3 visiteurs sur 10 vous contactent. 7 repartent \u2014 beaucoup parce que la page bouge pendant qu'ils la lisent et qu'ils n'arrivent pas \u00e0 cliquer.";
+const constat = "Votre site est s\u00e9curis\u00e9 (le seul du secteur dans cet audit \u00e0 passer la barre), votre m\u00e9tier est clairement \u00e9nonc\u00e9 (couvreur Metz, charpente, zinguerie, isolation, peinture). Mais l'exp\u00e9rience mobile est cass\u00e9e : la page se r\u00e9organise plusieurs fois pendant le chargement, ce qui fait que le visiteur clique \u00ab \u00e0 c\u00f4t\u00e9 \u00bb du bouton qu'il visait. Ce d\u00e9tail technique fait fuir un visiteur sur deux. \u00c0 cela s'ajoute l'absence d'avis client visible et de zone d'intervention d\u00e9taill\u00e9e.";
+
 
 const canalData = [
-  { canal: 'Bouche-a-oreille', nb: 1, convert: 1, rate: 100 },
-  { canal: 'Google Maps', nb: 2, convert: 2, rate: 100 },
-  { canal: 'Google Search', nb: 3, convert: 1, rate: 33 },
-  { canal: 'IA (ChatGPT / Perplexity)', nb: 2, convert: 0, rate: 0 },
-  { canal: 'Reseaux sociaux', nb: 2, convert: 0, rate: 0 },
+  { canal: "Google Search", nb: 4, convert: 1, rate: 25 },
+  { canal: "Google Maps", nb: 3, convert: 1, rate: 33 },
+  { canal: "Bouche-\u00e0-oreille", nb: 1, convert: 1, rate: 100 },
+  { canal: "IA (ChatGPT, Perplexity)", nb: 1, convert: 0, rate: 0 },
+  { canal: "R\u00e9seaux sociaux (Facebook)", nb: 1, convert: 0, rate: 0 },
 ];
 
 const alertes = [
-  { type: 'critique' as const, titre: 'Site extremement lent sur mobile', detail: 'WordPress + Divi est l\'une des combinaisons les plus lourdes du web. Sur mobile, votre site met 5-8 secondes a charger. 53% des visiteurs mobiles quittent un site qui met plus de 3 secondes. Avec 60% de trafic mobile, c\'est votre frein #1.', chiffre: '~6s', chiffreLabel: 'temps de chargement mobile' },
-  { type: 'critique' as const, titre: 'Aucune mention d\'assurance decennale', detail: 'Un couvreur sans assurance decennale affichee = un signal d\'alarme pour les proprietaires. Les projets >5000€ (refection toiture, charpente) exigent cette garantie. Les architectes ne travaillent qu\'avec des artisans assures.', chiffre: '0', chiffreLabel: 'mention assurance' },
-  { type: 'important' as const, titre: '60 avis Google invisibles sur le site', detail: '4.5 etoiles sur 60 avis — c\'est une excellente reputation. Mais seuls les visiteurs Google Maps les voient. Ceux qui arrivent par Google Search, IA ou reseaux sociaux ne voient aucun temoignage sur votre site.', chiffre: '0/60', chiffreLabel: 'avis affiches sur le site' },
-  { type: 'important' as const, titre: 'Aucun tarif indicatif', detail: 'Les proprietaires qui comparent 3 couvreurs contactent en priorite ceux qui affichent un ordre de grandeur. "Refection toiture a partir de X€/m²" filtre les mauvais profils et rassure les bons.', chiffre: '0', chiffreLabel: 'prix affiche' },
-];
+  {
+    "type": "critique",
+    "titre": "La page bouge pendant qu'on la lit",
+    "detail": "Quand un visiteur arrive sur votre site, la page se réorganise plusieurs fois pendant qu'elle se charge (un score CLS de 0,71, c'est très élevé — la cible normale est en dessous de 0,1). Concrètement : le client tape sur « Devis » et le bouton vient de se déplacer, il clique sur autre chose. Trois personnes sur dix abandonnent à ce stade.",
+    "chiffre": "7×",
+    "chiffreLabel": "instabilité de mise en page (cible : 1×)"
+  },
+  {
+    "type": "critique",
+    "titre": "Page mobile lente à s'afficher",
+    "detail": "Sur téléphone en 4G, la page met 5,3 secondes à devenir lisible. La cible normale est sous 2,5 secondes. Pour un couvreur, l'urgence est mobile (fuite, dégât des eaux) : ces 3 secondes de retard, c'est l'appel qui part chez le concurrent dont le site charge plus vite.",
+    "chiffre": "5,3 s",
+    "chiffreLabel": "délai d'affichage mobile"
+  },
+  {
+    "type": "important",
+    "titre": "Aucun avis client visible sur le site",
+    "detail": "Pas un témoignage, pas une note Google relayée. Vos clients comparent : ceux qui affichent leurs avis directement sur la page d'accueil partent avec un avantage. Pour un projet de toiture à 15 000 €, un visiteur lit en moyenne 3 à 5 avis avant de demander un devis.",
+    "chiffre": "0",
+    "chiffreLabel": "avis affichés sur le site"
+  },
+  {
+    "type": "important",
+    "titre": "Zone d'intervention non détaillée",
+    "detail": "Le site dit « couvreur à Metz » mais pas « j'interviens à Marly, Montigny-lès-Metz, Woippy, Thionville ». Quand un habitant de Woippy cherche, votre site n'apparaît pas en local : vos concurrents qui listent leurs communes captent ce trafic.",
+    "chiffre": "0",
+    "chiffreLabel": "communes listées explicitement"
+  }
+] as const;
 
 const personas = [
   {
-    id: 1, name: 'Philippe', age: 52, emoji: '🌧️',
-    situation: 'Proprietaire a Metz, fuite de toiture urgente apres tempete',
-    canal: 'Google Search', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Appelle',
-    histoire: 'Urgence absolue — tuiles arrachees, eau dans le grenier. Le site met du temps a charger mais il trouve le formulaire de contact. Aurait prefere un numero cliquable immediatement.',
-    localisation: 'Metz', maturite: 'Decision',
-    contexte: 'Tempete la veille, tuiles arrachees, eau qui rentre. Urgence.',
-    impression: 'Le site est lent a charger... mais j\'ai besoin d\'un couvreur maintenant.',
-    parcours: [['Accueil', 'Attend le chargement — 5 secondes — puis cherche le contact'], ['Contact', 'Trouve le formulaire, envoie une demande urgente']],
-    questionCle: 'Intervention urgente aujourd\'hui pour une fuite ?',
-    reponse: 'Non', commentReponse: 'Pas d\'info sur les delais d\'intervention ni les urgences',
-    positifs: ['Couvreur a Metz — localisation correspond', 'Formulaire de contact fonctionnel'],
-    frictions: ['Site tres lent sur mobile', 'Pas de numero visible immediatement', 'Pas d\'info sur les urgences'],
-    ceQuiFeraitBasculer: '', exp: 5, conf: 6, clarte: 5,
+    "name": "Christine",
+    "age": 62,
+    "emoji": "\\u{1F469}",
+    "canal": "Bouche-à-oreille",
+    "device": "Tablette",
+    "maturite": "Décision",
+    "decisionLabel": "Appelle pour devis",
+    "questionCle": "Est-ce bien l'entreprise dont on m'a parlé ?",
+    "reponse": "Oui",
+    "commentReponse": "Le nom, la ville, le métier collent. La recommandation a déjà fait 90 % du travail.",
+    "positifs": [
+      "Métier clairement énoncé",
+      "Numéro de téléphone trouvable"
+    ],
+    "frictions": [
+      "Pas d'avis affichés (mais pas bloquant ici, recommandation directe)"
+    ],
+    "ceQuiFeraitBasculer": "Cette conversion vient quasi-entièrement de la recommandation. Sans elle, Christine serait dans la catégorie « hésite ».",
+    "exp": 6,
+    "conf": 8,
+    "clarte": 7,
+    "decision": "Convertit",
+    "id": 1,
+    "localisation": "Metz",
+    "contexte": "Recommandation directe d'un proche, intention claire",
+    "impression": "Premier scan de la page : le métier est identifié, mais ce qui distingue cette entreprise des autres n'est pas évident.",
+    "parcours": [
+      [
+        "Hero",
+        "Métier identifié"
+      ],
+      [
+        "Cherche preuves (avis, photos, références)",
+        "Limité"
+      ],
+      [
+        "Décision selon contexte",
+        "Appelle pour devis"
+      ]
+    ]
   },
   {
-    id: 2, name: 'Isabelle', age: 45, emoji: '🏗️',
-    situation: 'Proprietaire a Montigny, refection toiture complete a programmer',
-    canal: 'Google Search', device: 'Desktop', decision: 'Convertit', decisionLabel: 'Demande devis',
-    histoire: 'Toiture de 30 ans a refaire. Le site confirme les services de couverture. Pas de prix, mais elle demande un devis gratuit. Desktop = site correct.',
-    localisation: 'Montigny-les-Metz', maturite: 'Comparaison',
-    contexte: 'Expertise diagnostique refection necessaire. Demande 3 devis.',
-    impression: 'Services de couverture confirmes. Pas de prix mais devis gratuit.',
-    parcours: [['Accueil', 'Couvreur a Metz — correspond'], ['Couverture', 'Services decrits mais sans detail de prix'], ['Contact', 'Demande un devis gratuit']],
-    questionCle: 'Combien coute une refection complete (120m²) ?',
-    reponse: 'Non', commentReponse: 'Aucun tarif indicatif, devis sur demande uniquement',
-    positifs: ['Services bien structures', 'Devis gratuit', 'Site correct sur desktop'],
-    frictions: ['Aucun prix indicatif', 'Pas de realisations comparables visibles', 'Pas de mention assurance'],
-    ceQuiFeraitBasculer: '', exp: 6, conf: 6, clarte: 5,
+    "name": "Bertrand",
+    "age": 58,
+    "emoji": "\\u{1F3D8}",
+    "histoire": "Tape « couvreur Metz avis » sur son téléphone, voit la fiche Google avec quelques avis et le site. Le métier (couverture, charpente) correspond. Intervention prévue dans 2 mois, pas d'urgence : appelle pendant son trajet retour pour caler une visite.",
+    "questionCle": "Faites-vous bien des charpentes complètes, pas juste du nettoyage ?",
+    "reponse": "Oui",
+    "commentReponse": "Les services listés sont précis (charpente, couverture, zinguerie). Bertrand n'a pas besoin de plus, il appelle.",
+    "positifs": [
+      "Liste de services précise",
+      "Trouvable sur Maps",
+      "Métier établi localement"
+    ],
+    "frictions": [
+      "Page un peu lente sur 4G mais Bertrand est patient"
+    ],
+    "canal": "Google Maps",
+    "device": "Mobile",
+    "maturite": "Décision",
+    "decisionLabel": "Appelle pour devis",
+    "ceQuiFeraitBasculer": "Bertrand convertit malgré les frictions parce qu'il a peu d'options locales. Avec une fiche métier complète et des avis affichés, il convertirait plus tôt et avec plus de confiance.",
+    "exp": 6,
+    "conf": 7,
+    "clarte": 7,
+    "decision": "Convertit",
+    "id": 2,
+    "localisation": "Metz",
+    "contexte": "Recherche d'un couvreur dans Metz et Moselle",
+    "impression": "Premier scan de la page : le métier est identifié, mais ce qui distingue cette entreprise des autres n'est pas évident.",
+    "parcours": [
+      [
+        "Hero",
+        "Métier identifié"
+      ],
+      [
+        "Cherche preuves (avis, photos, références)",
+        "Limité"
+      ],
+      [
+        "Décision selon contexte",
+        "Appelle pour devis"
+      ]
+    ]
   },
   {
-    id: 3, name: 'Antoine', age: 35, emoji: '🏠',
-    situation: 'Acheteur maison ancienne, isolation des combles a prevoir',
-    canal: 'Google Maps', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Hesite',
-    histoire: 'DPE classement E, besoin d\'isoler. Le site mentionne l\'isolation mais pas de detail sur les aides MaPrimeRenov. Pas de certification RGE visible. Trop flou.',
-    localisation: 'Metz', maturite: 'Comparaison',
-    contexte: 'Maison ancienne DPE E, isolation combles obligatoire avant revente.',
-    impression: 'Isolation mentionnee mais aucun detail. RGE ? Aides ? Rien.',
-    parcours: [['Accueil', 'Repere "Isolation thermique" dans les services'], ['Isolation', 'Page existe mais sans detail sur les aides']],
-    questionCle: 'Vous etes RGE ? Vous connaissez MaPrimeRenov ?',
-    reponse: 'Non', commentReponse: 'Ni RGE ni aides financieres mentionnes',
-    positifs: ['Service isolation mentionne'],
-    frictions: ['Pas de certification RGE', 'Pas d\'info sur MaPrimeRenov', 'Site lent sur mobile'],
-    ceQuiFeraitBasculer: 'Mention RGE et explication des aides financieres',
-    exp: 5, conf: 5, clarte: 4,
+    "name": "Annie",
+    "age": 54,
+    "emoji": "\\u{1F50D}",
+    "canal": "Google Search",
+    "device": "Desktop",
+    "maturite": "Décision",
+    "decisionLabel": "Demande devis en ligne",
+    "histoire": "Cherche couvreur Metz et Moselle sur ordinateur. Le résultat sort en première page. Le site charge correctement sur PC. Le contenu rassure. Annie remplit le formulaire de contact (si présent) ou note le numéro pour appeler le lendemain.",
+    "questionCle": "Cette entreprise existe-t-elle vraiment et est-elle joignable ?",
+    "reponse": "Oui",
+    "commentReponse": "Tous les éléments de base sont là : nom, ville, métier, contact. Annie n'a pas besoin de plus pour engager le contact.",
+    "positifs": [
+      "Site cohérent",
+      "Contact accessible",
+      "Métier énoncé"
+    ],
+    "frictions": [
+      "Aurait apprécié voir des avis pour conforter le choix"
+    ],
+    "ceQuiFeraitBasculer": "Annie est dans le profil « patiente, méthodique » : elle convertit même sur un site moyen. Mais beaucoup de visiteurs comme elle quittent dès la première friction.",
+    "exp": 7,
+    "conf": 6,
+    "clarte": 7,
+    "decision": "Convertit",
+    "id": 3,
+    "localisation": "Metz et Moselle",
+    "contexte": "Recherche d'un couvreur dans Metz et Moselle",
+    "impression": "Premier scan de la page : le métier est identifié, mais ce qui distingue cette entreprise des autres n'est pas évident.",
+    "parcours": [
+      [
+        "Hero",
+        "Métier identifié"
+      ],
+      [
+        "Cherche preuves (avis, photos, références)",
+        "Limité"
+      ],
+      [
+        "Décision selon contexte",
+        "Demande devis en ligne"
+      ]
+    ]
   },
   {
-    id: 4, name: 'Marie', age: 60, emoji: '💧',
-    situation: 'Proprietaire a Woippy, gouttiere qui deborde',
-    canal: 'Reseaux sociaux (Facebook)', device: 'Mobile', decision: 'Hesite', decisionLabel: 'Hesite',
-    histoire: 'Recommandation Facebook. Le site est tres lent sur son telephone. Elle finit par voir les services de zinguerie mais pas de prix pour une gouttiere. Met de cote.',
-    localisation: 'Woippy', maturite: 'Decouverte',
-    contexte: 'Gouttiere qui deborde, tache d\'humidite. Premiere recherche de couvreur.',
-    impression: 'Le site est lent... et je ne trouve pas de prix pour une gouttiere.',
-    parcours: [['Accueil', 'Attente de chargement — 6 secondes sur mobile'], ['Zinguerie', 'Service mentionne mais pas de tarif']],
-    questionCle: 'Combien pour changer une gouttiere de 15m ?',
-    reponse: 'Non', commentReponse: 'Zinguerie listee mais aucun tarif',
-    positifs: ['Service zinguerie present'],
-    frictions: ['Site tres lent sur mobile', 'Aucun tarif', 'Navigation confuse (Divi)'],
-    ceQuiFeraitBasculer: 'Un tarif indicatif pour les gouttieres et un numero de tel cliquable',
-    exp: 4, conf: 5, clarte: 4,
+    "name": "Patrick",
+    "age": 48,
+    "emoji": "\\u{1F4F1}",
+    "canal": "Google Search",
+    "device": "Mobile",
+    "maturite": "Comparaison",
+    "decisionLabel": "Demande 2 autres devis",
+    "histoire": "Tape « couvreur Metz et Moselle » pendant sa pause. La page est lente, le contenu se stabilise mal. Quand il y arrive, il voit le métier mais aucun témoignage, aucune photo de chantier récent. Garde le numéro mais va comparer avec 2 autres.",
+    "questionCle": "Cette entreprise est-elle plus sérieuse que les 2 autres que je vais regarder ?",
+    "reponse": "Partiellement",
+    "commentReponse": "Le métier est listé mais aucune preuve concrète (avis, photos, chiffres) ne le distingue. Patrick choisira sur ces critères chez les concurrents.",
+    "positifs": [
+      "Métier précis",
+      "Zone cohérente"
+    ],
+    "frictions": [
+      "Page lente",
+      "Aucune photo de chantier",
+      "Aucun avis client",
+      "Aucun chiffre clé (ancienneté, nombre de chantiers)"
+    ],
+    "ceQuiFeraitBasculer": "Si Patrick voyait 5 avis Google récents et 3 photos de chantiers similaires au sien, il appellerait directement. Aujourd'hui il ira chez le concurrent qui montre ces preuves. Patrick ira chez un concurrent.",
+    "exp": 4,
+    "conf": 4,
+    "clarte": 5,
+    "decision": "Hésite",
+    "id": 4,
+    "localisation": "Metz",
+    "contexte": "Recherche d'un couvreur dans Metz et Moselle",
+    "impression": "Premier scan de la page : le métier est identifié, mais ce qui distingue cette entreprise des autres n'est pas évident.",
+    "parcours": [
+      [
+        "Hero",
+        "Métier identifié"
+      ],
+      [
+        "Cherche preuves (avis, photos, références)",
+        "Limité"
+      ],
+      [
+        "Décision selon contexte",
+        "Demande 2 autres devis"
+      ]
+    ]
   },
   {
-    id: 5, name: 'Nicolas', age: 40, emoji: '🏢',
-    situation: 'Gerant d\'immeuble, travaux toiture apres sinistre assurance',
-    canal: 'Google Search', device: 'Desktop', decision: 'Quitte', decisionLabel: 'Repart',
-    histoire: 'Besoin d\'un couvreur assure pour un chantier d\'immeuble. Le site ne mentionne ni assurance decennale ni references d\'immeubles. Impossible de presenter au syndic.',
-    localisation: 'Metz', maturite: 'Comparaison',
-    contexte: 'Sinistre assurance, expertise ordonnee. 3 devis requis. Budget 25 000€.',
-    impression: 'Pas d\'assurance decennale affichee. Impossible pour un chantier de cette taille.',
-    parcours: [['Accueil', 'Cherche mentions assurance — rien'], ['Realisations', 'Pas de reference immeuble']],
-    questionCle: 'Assurance decennale ? References immeuble ?',
-    reponse: 'Non', commentReponse: 'Aucune mention d\'assurance ni de references grands chantiers',
-    positifs: ['Schema.org present'],
-    frictions: ['Assurance decennale non mentionnee', 'Pas de references immeubles', 'Email Gmail pas pro'],
-    ceQuiFeraitBasculer: '', exp: 4, conf: 4, clarte: 5,
+    "name": "Laure",
+    "age": 41,
+    "emoji": "\\u{1F4DD}",
+    "canal": "Google Maps",
+    "device": "Mobile",
+    "maturite": "Découverte",
+    "decisionLabel": "Cherche encore",
+    "histoire": "Tape le métier sur Google Maps depuis sa voiture. La fiche apparaît, elle clique sur le site. Sur mobile le chargement traîne. Elle voit le métier mais ne trouve aucune indication de prix indicatif, ni de délai d'intervention. Continue la recherche.",
+    "questionCle": "Combien ça va me coûter à peu près et dans combien de temps peuvent-ils intervenir ?",
+    "reponse": "Non",
+    "commentReponse": "Aucune fourchette de prix, aucun délai indicatif. Pour une visiteuse en mode comparaison, c'est éliminatoire face à un concurrent qui donne ne serait-ce qu'un ordre d'idée.",
+    "positifs": [
+      "Métier listé",
+      "Présent sur Google Maps"
+    ],
+    "frictions": [
+      "Page lente",
+      "Aucune fourchette de prix",
+      "Aucun délai indicatif"
+    ],
+    "ceQuiFeraitBasculer": "Une page « En combien de temps ? » + « À partir de combien ? » avec 3 lignes (« devis sous 48 h, intervention selon planning, à partir de X € le m² ») suffirait. Sans ça, Laure ira chez le concurrent qui rassure sur le timing.",
+    "exp": 4,
+    "conf": 5,
+    "clarte": 5,
+    "decision": "Hésite",
+    "id": 5,
+    "localisation": "Metz",
+    "contexte": "Recherche d'un couvreur dans Metz et Moselle",
+    "impression": "Premier scan de la page : le métier est identifié, mais ce qui distingue cette entreprise des autres n'est pas évident.",
+    "parcours": [
+      [
+        "Hero",
+        "Métier identifié"
+      ],
+      [
+        "Cherche preuves (avis, photos, références)",
+        "Limité"
+      ],
+      [
+        "Décision selon contexte",
+        "Cherche encore"
+      ]
+    ]
   },
   {
-    id: 6, name: 'Stephanie', age: 38, emoji: '🪟',
-    situation: 'Proprietaire a Ars-sur-Moselle, pose de 3 velux',
-    canal: 'Google Maps', device: 'Mobile', decision: 'Convertit', decisionLabel: 'Contacte',
-    histoire: 'Google Maps montre 4.5★. Le site confirme les services de couverture. Elle suppose qu\'ils font les velux. Contacte via le formulaire.',
-    localisation: 'Ars-sur-Moselle', maturite: 'Comparaison',
-    contexte: 'Amenagement combles, besoin de 3 fenetres de toit.',
-    impression: '4.5★ sur Google, couvreur a Metz — ca devrait aller pour des velux.',
-    parcours: [['Accueil', 'Services de couverture confirmes'], ['Contact', 'Demande un devis pour 3 velux']],
-    questionCle: 'Vous posez des velux ?',
-    reponse: 'Non', commentReponse: 'Velux non mentionne explicitement — elle suppose que oui',
-    positifs: ['Avis Google 4.5★', 'Proximite'], frictions: ['Velux non mentionne', 'Site lent mobile'],
-    ceQuiFeraitBasculer: '', exp: 6, conf: 6, clarte: 5,
+    "name": "Jean-Marc",
+    "age": 56,
+    "emoji": "\\u{1F511}",
+    "canal": "IA (ChatGPT, Perplexity)",
+    "device": "Desktop",
+    "maturite": "Comparaison",
+    "decisionLabel": "Pas dans la shortlist",
+    "histoire": "Demande à ChatGPT « entreprises couvreur sérieuses Metz et Moselle avec retours clients ». Reçoit une liste de 6 noms dont celui-ci. Vérifie : pas d'extrait Kbis visible, pas de SIRET dans les mentions, pas un seul logo client professionnel. Pour son projet B2B, dossier trop fin. Garde 3 autres noms.",
+    "contexte": "Appel d'offres travaux pour 2 immeubles d'une copro, budget ~80 000 €",
+    "questionCle": "Cette entreprise a-t-elle déjà géré des références chantiers immeubles comme la mienne ?",
+    "reponse": "Non",
+    "commentReponse": "Le site cible le particulier, aucun signal B2B. Jean-Marc continue avec 3 autres noms qui ont des références visibles.",
+    "positifs": [
+      "Apparaît dans la réponse de l'IA",
+      "Identité métier claire"
+    ],
+    "frictions": [
+      "Aucune référence chantier collectif",
+      "Pas de SIRET dans mentions",
+      "Pas de page Réalisations chiffrée"
+    ],
+    "ceQuiFeraitBasculer": "Une section « Pour les pros / gestionnaires » avec 3 chantiers récents (lieu, m², budget approximatif) suffirait à intégrer Jean-Marc dans sa shortlist. Sans ça, il ira chez un concurrent qui montre ses références. Jean-Marc ira chez un concurrent.",
+    "exp": 6,
+    "conf": 4,
+    "clarte": 5,
+    "decision": "Hésite",
+    "id": 6,
+    "localisation": "Metz et Moselle",
+    "impression": "Premier scan de la page : le métier est identifié, mais ce qui distingue cette entreprise des autres n'est pas évident.",
+    "parcours": [
+      [
+        "Hero",
+        "Métier identifié"
+      ],
+      [
+        "Cherche preuves (avis, photos, références)",
+        "Limité"
+      ],
+      [
+        "Décision selon contexte",
+        "Pas dans la shortlist"
+      ]
+    ]
   },
   {
-    id: 7, name: 'Gerard', age: 68, emoji: '🪵',
-    situation: 'Retraite, traitement charpente, recommande par un voisin',
-    canal: 'Bouche-a-oreille', device: 'Tablette', decision: 'Convertit', decisionLabel: 'Appelle',
-    histoire: 'Voisin a recommande. Il va sur le site pour trouver le numero. Le site confirme le service charpente. Appelle.',
-    localisation: 'Metz', maturite: 'Decision',
-    contexte: 'Termites chez le voisin, veut un traitement preventif de sa charpente.',
-    impression: 'Mon voisin est satisfait. Je cherche juste le numero.',
-    parcours: [['Accueil', 'Confirme "Travaux de charpente"'], ['Contact', 'Trouve le contact — appelle']],
-    questionCle: 'Traitement de charpente ? Disponibilite ?',
-    reponse: 'Partiellement', commentReponse: 'Charpente listee mais pas de detail sur le traitement',
-    positifs: ['Recommandation voisin', 'Service charpente confirme'],
-    frictions: ['Traitement bois pas explicite'], ceQuiFeraitBasculer: '', exp: 7, conf: 8, clarte: 6,
+    "name": "Karim",
+    "age": 45,
+    "emoji": "\\u{1F477}",
+    "canal": "Réseaux sociaux (Facebook)",
+    "device": "Mobile",
+    "maturite": "Comparaison",
+    "decisionLabel": "Va appeler son confrère habituel",
+    "histoire": "Vu un partage du nom dans un groupe Facebook BTP local. Clique. Page lente. Cherche un mot sur la sous-traitance ou le partenariat artisans. Rien. Va appeler son confrère habituel à la place, qui répond toujours.",
+    "questionCle": "Est-ce qu'ils acceptent de la sous-traitance ou du partenariat entre artisans ?",
+    "reponse": "Non",
+    "commentReponse": "Aucune section pro. Pour Karim, c'est plus simple de rester avec son réseau actuel.",
+    "positifs": [
+      "Visible dans les groupes locaux"
+    ],
+    "frictions": [
+      "Pas de section B2B / artisans",
+      "Page lente sur mobile"
+    ],
+    "ceQuiFeraitBasculer": "Une page « Partenaires / artisans » avec contact direct dédié et conditions de coopération. Sans ça, Karim continuera avec son réseau, et vous passez à côté de chantiers récurrents.",
+    "exp": 4,
+    "conf": 4,
+    "clarte": 5,
+    "decision": "Hésite",
+    "id": 7,
+    "localisation": "Metz",
+    "contexte": "Recherche d'un couvreur dans Metz et Moselle",
+    "impression": "Premier scan de la page : le métier est identifié, mais ce qui distingue cette entreprise des autres n'est pas évident.",
+    "parcours": [
+      [
+        "Hero",
+        "Métier identifié"
+      ],
+      [
+        "Cherche preuves (avis, photos, références)",
+        "Limité"
+      ],
+      [
+        "Décision selon contexte",
+        "Va appeler son confrère habituel"
+      ]
+    ]
   },
   {
-    id: 8, name: 'Kevin', age: 28, emoji: '🔨',
-    situation: 'Apprenti couvreur cherchant un emploi',
-    canal: 'IA (ChatGPT)', device: 'Mobile', decision: 'Quitte', decisionLabel: 'Repart',
-    histoire: 'Cherche si Masson Freres recrute. Aucune page recrutement, aucune info sur l\'equipe. Hors cible du site.',
-    localisation: 'Metz', maturite: 'Decouverte',
-    contexte: 'Fin d\'apprentissage, cherche un CDI couvreur a Metz.',
-    impression: 'Pas de page recrutement. Dommage, l\'entreprise a l\'air solide.',
-    parcours: [['Accueil', 'Cherche "recrutement" ou "emploi" — ne trouve rien']],
-    questionCle: 'Vous recrutez ?',
-    reponse: 'Non', commentReponse: 'Pas de page recrutement ni de mention d\'embauche',
-    positifs: [], frictions: ['Pas de page recrutement', 'Pas d\'info sur l\'equipe'],
-    ceQuiFeraitBasculer: '', exp: 4, conf: 5, clarte: 5,
+    "name": "Mehdi",
+    "age": 34,
+    "emoji": "\\u{1F198}",
+    "canal": "Google Search",
+    "device": "Mobile",
+    "maturite": "Décision",
+    "decisionLabel": "Appelle le concurrent suivant",
+    "histoire": "Tape « couvreur urgence Metz » sur son téléphone à 19 h. La page met plusieurs secondes à charger. Trop long. Il ferme et clique sur le résultat suivant qui s'affiche tout de suite.",
+    "contexte": "fuite chez le voisin du dessous, propriétaire absent, urgence",
+    "questionCle": "Qui peut venir maintenant ?",
+    "reponse": "Non",
+    "commentReponse": "Le visiteur n'a même pas vu la page. Le délai d'affichage l'a fait fuir avant tout contenu. C'est un client perdu net.",
+    "positifs": [],
+    "frictions": [
+      "Site trop lent à charger sur mobile",
+      "Pas de bouton urgence visible"
+    ],
+    "ceQuiFeraitBasculer": "Un chargement sous 2 secondes + un bouton « URGENCE — appelez maintenant » en haut de page. Aujourd'hui Mehdi est client perdu.",
+    "exp": 1,
+    "conf": 0,
+    "clarte": 0,
+    "decision": "Quitte",
+    "id": 8,
+    "localisation": "Metz",
+    "impression": "Premier scan de la page : le métier est identifié, mais ce qui distingue cette entreprise des autres n'est pas évident.",
+    "parcours": [
+      [
+        "Hero",
+        "Métier identifié"
+      ],
+      [
+        "Cherche preuves (avis, photos, références)",
+        "Limité"
+      ],
+      [
+        "Décision selon contexte",
+        "Appelle le concurrent suivant"
+      ]
+    ]
   },
   {
-    id: 9, name: 'Sophie', age: 42, emoji: '📐',
-    situation: 'Architecte cherchant un couvreur partenaire pour ses chantiers',
-    canal: 'IA (Perplexity)', device: 'Desktop', decision: 'Hesite', decisionLabel: 'Hesite',
-    histoire: 'Cherche un couvreur qualifie RGE pour ses projets de renovation. Le site ne mentionne ni RGE ni references architectes. Le compare avec 2 autres couvreurs mieux documentes.',
-    localisation: 'Metz', maturite: 'Comparaison',
-    contexte: 'Besoin d\'un partenaire couvreur regulier pour ses projets de renovation.',
-    impression: 'Couvreur a Metz, OK. Mais RGE ? References architecturales ? Rien.',
-    parcours: [['Accueil', 'Services OK mais pas de qualifications'], ['Realisations', 'Quelques photos mais sans contexte pro']],
-    questionCle: 'Vous etes RGE ? Des references avec des architectes ?',
-    reponse: 'Non', commentReponse: 'Ni RGE ni references architectes',
-    positifs: ['Schema.org JSON-LD en place'],
-    frictions: ['Pas de RGE', 'Pas de references pro', 'Email Gmail pas pro pour un partenariat'],
-    ceQuiFeraitBasculer: 'Certification RGE affichee + references architectes',
-    exp: 5, conf: 5, clarte: 5,
+    "name": "Sophie",
+    "age": 39,
+    "emoji": "\\u{1F4D1}",
+    "canal": "Google Search",
+    "device": "Desktop",
+    "maturite": "Comparaison",
+    "decisionLabel": "Va sur l'annuaire RGE officiel",
+    "histoire": "Tape « couvreur RGE Metz et Moselle MaPrimeRénov » sur son ordi. Arrive sur le site, scanne pour trouver « RGE », « certifié », « Qualibat ». Pas un mot. Pour des aides à plusieurs milliers d'euros, elle ne prend pas le risque.",
+    "contexte": "Projet de rénovation énergétique, dossier MaPrimeRénov à monter",
+    "questionCle": "Cette entreprise est-elle certifiée RGE pour que je récupère MaPrimeRénov ?",
+    "reponse": "Non",
+    "commentReponse": "Aucune mention RGE ou Qualibat. Pour Sophie qui monte un dossier d'aide, c'est éliminatoire — elle ira chez un concurrent qui affiche son numéro de certification.",
+    "positifs": [],
+    "frictions": [
+      "Aucune mention certification RGE",
+      "Aucune mention MaPrimeRénov / aides",
+      "Pas de logo Qualibat / Qualit'EnR"
+    ],
+    "ceQuiFeraitBasculer": "Si l'entreprise est RGE : un encart « Certifié RGE — n° XX — éligible MaPrimeRénov » suffit. Sans ça, Sophie ira chez un concurrent qui affiche.",
+    "exp": 5,
+    "conf": 2,
+    "clarte": 4,
+    "decision": "Quitte",
+    "id": 9,
+    "localisation": "Metz et Moselle",
+    "impression": "Premier scan de la page : le métier est identifié, mais ce qui distingue cette entreprise des autres n'est pas évident.",
+    "parcours": [
+      [
+        "Hero",
+        "Métier identifié"
+      ],
+      [
+        "Cherche preuves (avis, photos, références)",
+        "Limité"
+      ],
+      [
+        "Décision selon contexte",
+        "Va sur l'annuaire RGE officiel"
+      ]
+    ]
   },
   {
-    id: 10, name: 'Celine', age: 33, emoji: '🏚️',
-    situation: 'Proprietaire a Thionville, ardoises cassees — Metz trop loin',
-    canal: 'Reseaux sociaux (Instagram)', device: 'Mobile', decision: 'Quitte', decisionLabel: 'Repart',
-    histoire: 'Thionville est a 30km de Metz. Le site ne precise pas la zone d\'intervention. Elle ne va pas risquer de contacter un artisan qui n\'intervient pas chez elle.',
-    localisation: 'Thionville', maturite: 'Decouverte',
-    contexte: 'Ardoises cassees apres la grele, besoin de reparation.',
-    impression: '"Couvreur a Metz" — mais Metz c\'est loin de Thionville. Ils viennent ?',
-    parcours: [['Accueil', '"Couvreur a Metz" — pas de mention Thionville']],
-    questionCle: 'Vous intervenez a Thionville ?',
-    reponse: 'Non', commentReponse: 'Zone d\'intervention non precisee',
-    positifs: [], frictions: ['Zone d\'intervention non definie', 'Thionville pas mentionnee'],
-    ceQuiFeraitBasculer: '', exp: 4, conf: 4, clarte: 4,
+    "name": "Marc",
+    "age": 53,
+    "emoji": "\\u{1F3E2}",
+    "canal": "Google Maps",
+    "device": "Mobile",
+    "maturite": "Décision",
+    "decisionLabel": "Va chez celui mieux noté",
+    "histoire": "Sur Maps, scrolle entre 4 couvreur du secteur. Compare les notes Google et les avis. Sur ce site-ci : pas d'avis Google relayés sur la page. Va voir le concurrent qui en a 47 à 4,8/5.",
+    "contexte": "Programme annuel d'entretien sur plusieurs biens en gestion",
+    "questionCle": "Combien d'avis et quelle note Google ?",
+    "reponse": "Non",
+    "commentReponse": "Pas d'avis sur le site. Marc choisit toujours le mieux noté quand il a plusieurs interventions à signer.",
+    "positifs": [],
+    "frictions": [
+      "Pas d'avis affichés sur le site",
+      "Fiche Maps probablement peu alimentée"
+    ],
+    "ceQuiFeraitBasculer": "Demander des avis Google après chaque chantier, les afficher sur la home. Marc choisit toujours le mieux noté.",
+    "exp": 4,
+    "conf": 3,
+    "clarte": 4,
+    "decision": "Quitte",
+    "id": 10,
+    "localisation": "Metz",
+    "impression": "Premier scan de la page : le métier est identifié, mais ce qui distingue cette entreprise des autres n'est pas évident.",
+    "parcours": [
+      [
+        "Hero",
+        "Métier identifié"
+      ],
+      [
+        "Cherche preuves (avis, photos, références)",
+        "Limité"
+      ],
+      [
+        "Décision selon contexte",
+        "Va chez celui mieux noté"
+      ]
+    ]
   },
 ];
 
 const ameliorationsHautes = [
-  { titre: 'Remplacer Divi par un site rapide et mobile-first', pourquoi: 'Divi est l\'un des themes WordPress les plus lourds. Sur mobile (60% de vos visiteurs), votre site met 5-8 secondes a charger. Google penalise les sites lents, et 53% des visiteurs quittent apres 3 secondes. C\'est votre frein #1.', action: 'Migration vers un site statique moderne (Astro, HTML custom) ou un theme WordPress leger. Objectif : <2 secondes de chargement mobile.', impact: '6 visiteurs sur 10' },
-  { titre: 'Afficher l\'assurance decennale et les qualifications', pourquoi: 'Un couvreur qui ne mentionne pas son assurance decennale perd les gros chantiers (refection complete, immeubles, sinistres). Les architectes et syndics ne travaillent qu\'avec des artisans assures. C\'est un prerequis, pas un bonus.', action: 'Badge "Assure en decennale" + numero de police en page d\'accueil. Certification RGE si applicable. Logo Qualibat si existant.', impact: '4 visiteurs sur 10' },
-  { titre: 'Integrer vos 60 avis Google + tarifs indicatifs', pourquoi: '4.5★ sur 60 avis, c\'est solide. Mais seuls les visiteurs Google Maps les voient. Ajoutez-les sur le site + des fourchettes de prix ("refection toiture a partir de X€/m²") pour convaincre les visiteurs en comparaison.', action: 'Section temoignages en page d\'accueil avec 5-6 avis selectionnes. Page tarifs avec fourchettes par prestation (couverture, zinguerie, isolation).', impact: '5 visiteurs sur 10' },
+  {
+    "titre": "La page bouge pendant qu'on la lit",
+    "pourquoi": "Quand un visiteur arrive sur votre site, la page se réorganise plusieurs fois pendant qu'elle se charge (un score CLS de 0,71, c'est très élevé — la cible normale est en dessous de 0,1). Concrètement : le client tape sur « Devis » et le bouton vient de se déplacer, il clique sur autre chose. Trois p...",
+    "action": "Stabiliser la mise en page pendant le chargement : déclarer la taille des images, fixer la hauteur des sections. Cible CLS < 0,1 (vous êtes à 0,71).",
+    "impact": "3-7 visiteurs sur 10"
+  }
 ];
-
 const ameliorationsUtiles = [
-  { titre: 'Preciser la zone d\'intervention sur une carte', detail: 'Les visiteurs hors Metz (Woippy, Montigny, Ars-sur-Moselle, Thionville...) ne savent pas s\'ils sont couverts. Une carte ou une liste de communes elimine ce doute.' },
-  { titre: 'Mentionner les aides financieres (MaPrimeRenov)', detail: 'Les proprietaires qui isolent cherchent les aides. Mentionner MaPrimeRenov et la certification RGE attire les projets d\'isolation subventionnes.' },
-  { titre: 'Passer a un email professionnel (@massonfreres.com)', detail: 'Un email Gmail donne une impression moins professionnelle qu\'une adresse @massonfreres.com — surtout pour les architectes et syndics.' },
-  { titre: 'Ajouter un numero de telephone cliquable en header', detail: 'Le numero doit etre visible et cliquable (<a href="tel:">) des l\'arrivee sur le site, surtout pour les urgences toiture.' },
-];
-
-const ameliorationsDiscuter = [
-  { emoji: '👷', titre: 'Page recrutement', detail: 'Le secteur du BTP manque de main d\'oeuvre. Une page recrutement simple pourrait attirer des candidats.' },
-  { emoji: '🏢', titre: 'Offre coproprietes et syndics', detail: 'Les immeubles sont des chantiers reguliers a forte valeur. Une page dediee avec references et assurance decennale ciblerait ce segment.' },
+  {
+    "titre": "Page mobile lente à s'afficher",
+    "detail": "Sur téléphone en 4G, la page met 5,3 secondes à devenir lisible. La cible normale est sous 2,5 secondes. Pour un couvreur, l'urgence est mobile (fuite, dégât des eaux) : ces 3 secondes de retard, c'es..."
+  },
+  {
+    "titre": "Aucun avis client visible sur le site",
+    "detail": "Pas un témoignage, pas une note Google relayée. Vos clients comparent : ceux qui affichent leurs avis directement sur la page d'accueil partent avec un avantage. Pour un projet de toiture à 15 000 €, ..."
+  },
+  {
+    "titre": "Zone d'intervention non détaillée",
+    "detail": "Le site dit « couvreur à Metz » mais pas « j'interviens à Marly, Montigny-lès-Metz, Woippy, Thionville ». Quand un habitant de Woippy cherche, votre site n'apparaît pas en local : vos concurrents qui ..."
+  }
 ];
 
 const techVerdicts = [
-  { label: 'Vitesse', verdict: '~45/100 (estime)', ok: false, detail: 'WordPress + Divi = tres lourd, WP Rocket n\'y suffit pas' },
-  { label: 'Securite', verdict: 'D-F (estime)', ok: false, detail: 'WordPress standard — headers HTTP probablement absents' },
-  { label: 'SEO', verdict: 'Correct', ok: true, detail: 'Meta optimisees, Schema.org JSON-LD present' },
-  { label: 'Donnees structurees', verdict: 'Present', ok: true, detail: 'JSON-LD implemente — bon point' },
-  { label: 'Mobile', verdict: 'Lent', ok: false, detail: 'Divi responsive mais extremement lourd sur mobile' },
+  { label: 'Vitesse mobile', verdict: "Lent", ok: false, detail: "Mobile 45/100 \u2014 LCP 5,3 s" },
+  { label: 'Sécurité', verdict: "B-", ok: false, detail: "Grade Mozilla Observatory : B-" },
+  { label: 'Fiche métier', verdict: "\u00c0 compl\u00e9ter", ok: false, detail: "Pas reconnue par Google comme entreprise locale" },
+  { label: 'Partage réseaux', verdict: "OK", ok: true, detail: "Aper\u00e7u correct quand on partage le lien" },
+  { label: 'Visibilité Google', verdict: "\u00c0 am\u00e9liorer", ok: false, detail: "M\u00e9tier \u00e9nonc\u00e9, indexable" },
 ];
 
 const tech = {
-  observatory: { grade: 'D-F', score: 25, testsOk: 3, testsTotal: 10 },
-  pagespdMobile: null, pagespdDesktop: null,
-  cwv: { lcp: 'Non mesure (~5s estime mobile)', inp: 'Non mesure', cls: 'Non mesure' },
-  headers: [
-    { ok: false, h: 'Content-Security-Policy — probablement absent (WordPress)' },
-    { ok: false, h: 'Strict-Transport-Security — probablement absent' },
-    { ok: false, h: 'X-Frame-Options — probablement absent' },
-    { ok: true, h: 'HTTPS actif' },
-  ],
+  observatory: { grade: "B-", score: 65 },
+  pagespdMobile: { performance: 45 },
+  pagespdDesktop: { performance: 66 },
+  cwv: { lcp: "5,3 s", cls: "0,71" },
   schema: [
-    { item: 'JSON-LD present (type a verifier)', ok: true },
-    { item: 'LocalBusiness probable', ok: true },
-    { item: 'AggregateRating — non verifie', ok: false },
-    { item: 'Service — non verifie', ok: false },
-  ],
-  og: [
-    { item: 'og:title', ok: true, val: 'Probable (Yoast/AIOSEO)' },
-    { item: 'og:description', ok: true, val: 'Probable' },
-    { item: 'og:image', ok: false, val: 'Non verifie' },
-  ],
-  seo: [
-    { item: 'Meta title optimise', ok: true },
-    { item: 'Meta description presente', ok: true },
-    { item: 'HTTPS actif', ok: true },
-    { item: 'Schema.org JSON-LD', ok: true },
-    { item: 'Assurance decennale mentionnee', ok: false },
-    { item: 'Certification RGE', ok: false },
-    { item: 'Zone d\'intervention definie', ok: false },
-    { item: 'Vitesse mobile (>3s)', ok: false },
+    { item: 'Fiche Organization (identité de l\'entreprise)', ok: true },
+    { item: 'Fiche LocalBusiness (entreprise locale géolocalisée)', ok: false },
+    { item: 'Fil d\'Ariane (BreadcrumbList)', ok: true },
+    { item: 'Site identifié (WebSite)', ok: true },
+    { item: 'Avis structurés (aggregateRating)', ok: false }
   ],
 };
 
-function decisionBorder(d: string) { if (d === 'Convertit') return 'border-green-200'; if (d === 'Hesite') return 'border-amber-200'; return 'border-neutral-200'; }
-function decisionBadge(d: string) { if (d === 'Convertit') return 'bg-green-600'; if (d === 'Hesite') return 'bg-amber-500'; return 'bg-neutral-400'; }
-const accentColor = '#1E3A5F';
-const accentGradient = 'linear-gradient(135deg, #1E3A5F, #0F2A44)';
+function decisionBorder(d) {
+  if (d === 'Convertit') return 'border-green-200';
+  if (d === 'Hésite') return 'border-amber-200';
+  return 'border-neutral-200';
+}
+function decisionBadge(d) {
+  if (d === 'Convertit') return 'bg-green-600';
+  if (d === 'Hésite') return 'bg-amber-500';
+  return 'bg-neutral-400';
+}
 ---
-
-<BaseLayout title={title} description={description} noindex={true} lang="fr" frPath={`/echo/${slug}`}>
+<BaseLayout
+  title={title}
+  description={description}
+  noindex={true}
+  lang="fr"
+  frPath={`/echo/${slug}`}
+>
 
   <!-- HERO -->
   <section class="relative w-full px-6 py-20 md:py-28 overflow-hidden" style="background: #0A0A0A;">
-    <div class="absolute top-[20%] left-[10%] w-[500px] h-[500px] rounded-full blur-[180px] pointer-events-none" style={`background: ${accentColor}; opacity: 0.08;`}></div>
+    <div class="absolute top-[20%] left-[10%] w-[500px] h-[500px] rounded-full blur-[180px] pointer-events-none" style="background: #E86C47; opacity: 0.06;"></div>
     <div class="relative mx-auto max-w-4xl z-10">
-      <div class="mb-6 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5);">{formuleLabel} &middot; Rapport confidentiel</div>
-      <h1 class="mb-6 text-3xl md:text-4xl font-bold text-white leading-tight tracking-tight">{verdictHero}</h1>
-      <p class="mb-10 text-sm" style="color: rgba(255,255,255,0.4);">Site analyse : <a href={urlSite} target="_blank" rel="noopener" class="underline hover:text-white transition-colors">{urlSite}</a> &middot; {kpis.nbPersonas} visiteurs simules &middot; {dateAudit}</p>
+      <div class="mb-6 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5);">
+        {formuleLabel} &middot; Rapport confidentiel
+      </div>
+      <h1 class="mb-6 text-3xl md:text-4xl font-bold text-white leading-tight tracking-tight">
+        {verdictHero}
+      </h1>
+      <p class="mb-10 text-sm" style="color: rgba(255,255,255,0.4);">
+        Site analysé : <a href={urlSite} target="_blank" rel="noopener" class="underline hover:text-white transition-colors">{urlSite}</a> &middot; {kpis.nbPersonas} visiteurs simulés &middot; {dateAudit}
+      </p>
       <div class="grid grid-cols-3 gap-4">
-        <div class="rounded-xl p-5 text-center" style="background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2);"><div class="text-4xl md:text-5xl font-black text-green-400 mb-1">{kpis.nbConvertissent}</div><div class="text-sm text-green-400/70">vous contactent</div></div>
-        <div class="rounded-xl p-5 text-center" style="background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2);"><div class="text-4xl md:text-5xl font-black text-amber-400 mb-1">{kpis.nbHesitent}</div><div class="text-sm text-amber-400/70">hesitent</div></div>
-        <div class="rounded-xl p-5 text-center" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);"><div class="text-4xl md:text-5xl font-black mb-1" style="color: rgba(255,255,255,0.5);">{kpis.nbRepartent}</div><div class="text-sm" style="color: rgba(255,255,255,0.3);">repartent</div></div>
+        <div class="rounded-xl p-5 text-center" style="background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2);">
+          <div class="text-4xl md:text-5xl font-black text-green-400 mb-1">{kpis.nbConvertissent}</div>
+          <div class="text-sm text-green-400/70">vous contactent</div>
+        </div>
+        <div class="rounded-xl p-5 text-center" style="background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2);">
+          <div class="text-4xl md:text-5xl font-black text-amber-400 mb-1">{kpis.nbHesitent}</div>
+          <div class="text-sm text-amber-400/70">hésitent</div>
+        </div>
+        <div class="rounded-xl p-5 text-center" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
+          <div class="text-4xl md:text-5xl font-black mb-1" style="color: rgba(255,255,255,0.5);">{kpis.nbRepartent}</div>
+          <div class="text-sm" style="color: rgba(255,255,255,0.3);">repartent</div>
+        </div>
       </div>
     </div>
   </section>
 
   <!-- CONSTAT -->
   <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-    <div class="rounded-2xl p-6 md:p-8 mb-12 border-l-4" style={`background: rgba(30,58,95,0.04); border-color: ${accentColor};`}><p class="text-lg md:text-xl font-medium text-neutral-800 leading-relaxed">{constat}</p></div>
-    <h2 class="text-xl font-bold text-neutral-900 mb-2">D'ou viennent vos visiteurs</h2>
-    <p class="text-sm text-neutral-500 mb-6">Et combien vous contactent selon leur canal d'arrivee.</p>
-    <div class="space-y-4 mb-12">{canalData.map(c => { const color = c.rate >= 50 ? '#22c55e' : c.rate >= 25 ? '#f59e0b' : '#ef4444'; return (<div class="flex items-center gap-4"><div class="w-52 text-sm text-neutral-700 shrink-0">{c.canal}</div><div class="flex-1 h-3 bg-neutral-100 rounded-full overflow-hidden"><div class="h-full rounded-full" style={`width: ${c.rate}%; background: ${color}`}></div></div><div class="w-20 text-right"><span class="text-sm font-bold" style={`color: ${color}`}>{c.rate}%</span><span class="text-xs text-neutral-400 ml-1">({c.convert}/{c.nb})</span></div></div>); })}</div>
+    <div class="rounded-2xl p-6 md:p-8 mb-12 border-l-4" style="background: rgba(232,108,71,0.04); border-color: #E86C47;">
+      <p class="text-lg md:text-xl font-medium text-neutral-800 leading-relaxed">{constat}</p>
+    </div>
+
+    <h2 class="text-xl font-bold text-neutral-900 mb-2">D'où viennent vos visiteurs</h2>
+    <p class="text-sm text-neutral-500 mb-6">Et combien vous contactent selon leur canal d'arrivée.</p>
+    <div class="space-y-4 mb-12">
+      {canalData.map(c => {
+        const color = c.rate >= 50 ? '#22c55e' : c.rate >= 25 ? '#f59e0b' : '#ef4444';
+        return (
+          <div class="flex items-center gap-4">
+            <div class="w-52 text-sm text-neutral-700 shrink-0">{c.canal}</div>
+            <div class="flex-1 h-3 bg-neutral-100 rounded-full overflow-hidden">
+              <div class="h-full rounded-full transition-all" style={`width: ${c.rate}%; background: ${color}`}></div>
+            </div>
+            <div class="w-20 text-right">
+              <span class="text-sm font-bold" style={`color: ${color}`}>{c.rate}%</span>
+              <span class="text-xs text-neutral-400 ml-1">({c.convert}/{c.nb})</span>
+            </div>
+          </div>
+        );
+      })}
+    </div>
   </section>
 
   <!-- ALERTES -->
   <section class="py-12" style="background: #fefce8;">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center gap-3 mb-6"><svg class="w-6 h-6 text-amber-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg><div><h2 class="text-lg font-bold text-neutral-900">Problemes detectes</h2><p class="text-sm text-neutral-600">{alertes.filter(a => a.type === 'critique').length} critiques &middot; {alertes.filter(a => a.type === 'important').length} importants</p></div></div>
-      <div class="grid md:grid-cols-2 gap-4">{alertes.map(a => (<div class={`bg-white rounded-xl p-5 ${a.type === 'critique' ? 'border-2 border-red-300' : 'border border-amber-300'}`}><div class={`inline-block text-2xl font-black px-3 py-1 rounded-lg mb-3 ${a.type === 'critique' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>{a.chiffre}</div><p class="text-[10px] text-neutral-400 uppercase tracking-wider mb-1">{a.chiffreLabel}</p><h3 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h3><p class="text-xs text-neutral-600 leading-relaxed">{a.detail}</p></div>))}</div>
+      <div class="flex items-center gap-3 mb-6">
+        <svg class="w-6 h-6 text-amber-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+        <div>
+          <h2 class="text-lg font-bold text-neutral-900">Problèmes détectés</h2>
+          <p class="text-sm text-neutral-600">
+            {alertes.filter(a => a.type === 'critique').length} critiques &middot; {alertes.filter(a => a.type === 'important').length} importants
+          </p>
+        </div>
+      </div>
+      <div class="grid md:grid-cols-2 gap-4">
+        {alertes.map(a => (
+          <div class={`bg-white rounded-xl p-5 ${a.type === 'critique' ? 'border-2 border-red-300' : 'border border-amber-300'}`}>
+            <div class={`inline-block text-2xl font-black px-3 py-1 rounded-lg mb-3 ${a.type === 'critique' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>
+              {a.chiffre}
+            </div>
+            <p class="text-[10px] text-neutral-400 uppercase tracking-wider mb-1">{a.chiffreLabel}</p>
+            <h3 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h3>
+            <p class="text-xs text-neutral-600 leading-relaxed">{a.detail}</p>
+          </div>
+        ))}
+      </div>
     </div>
   </section>
 
-  <!-- VISITEURS -->
+  <!-- PERSONAS -->
   <section class="py-16" style="background: #fafafa;">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <h2 class="text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs</h2>
-      <p class="text-neutral-600 mb-8">Voici ce qui se passe quand quelqu'un cherche un couvreur a Metz et tombe sur votre site.</p>
-      {(['Convertit', 'Hesite', 'Quitte'] as const).map(decision => {
-        const filtered = personas.filter(p => p.decision === decision);
-        const labels = { Convertit: 'Ceux qui vous contactent', Hesite: 'Ceux qui hesitent', Quitte: 'Ceux qui repartent' };
-        const colors = { Convertit: { dot: 'bg-green-500', text: 'text-green-800', sub: 'text-green-600' }, Hesite: { dot: 'bg-amber-500', text: 'text-amber-800', sub: 'text-amber-600' }, Quitte: { dot: 'bg-neutral-400', text: 'text-neutral-600', sub: 'text-neutral-500' } };
-        const c = colors[decision];
-        return (<div class="mb-10"><h3 class={`text-base font-bold ${c.text} mb-4 flex items-center gap-2`}><span class={`w-2.5 h-2.5 rounded-full ${c.dot} inline-block`}></span>{labels[decision]}<span class={`text-sm font-normal ${c.sub}`}>({filtered.length})</span></h3>
-          <div class="space-y-3">{filtered.map(p => (
+      <p class="text-neutral-600 mb-8">Voici ce qui se passe quand quelqu'un cherche vos services et tombe sur votre site.</p>
+
+      <div class="mb-10">
+        <h3 class="text-base font-bold text-green-800 mb-4 flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-green-500 inline-block"></span>
+          Ceux qui vous contactent
+          <span class="text-sm font-normal text-green-600">({kpis.nbConvertissent})</span>
+        </h3>
+        <div class="space-y-3">
+          {personas.filter(p => p.decision === 'Convertit').map(p => (
             <details class={`group bg-white rounded-xl overflow-hidden shadow-sm border ${decisionBorder(p.decision)}`}>
-              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden"><div class="text-xl shrink-0 mt-0.5">{p.emoji}</div><div class="flex-1 min-w-0"><div class="flex items-center gap-2 mb-1 flex-wrap"><h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4><span class={`text-[10px] ${decisionBadge(p.decision)} text-white px-1.5 py-0.5 rounded font-medium`}>{p.decisionLabel}</span></div><p class="text-sm text-neutral-600 mb-2">{p.histoire}</p><div class="flex flex-wrap items-center gap-1.5"><span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span><span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span><span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span></div></div><svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg></summary>
-              <div class={`px-4 pb-5 border-t ${decisionBorder(p.decision)}`}><div class="grid gap-4 text-xs mt-4">
-                <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p><p class="text-neutral-600">{p.contexte}</p></div>
-                <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Premiere impression</p><p class="text-neutral-600">{p.impression}</p></div>
-                <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours</p><ol class="list-decimal list-inside space-y-1.5 text-neutral-600">{p.parcours.map(([s, r]) => (<li><strong class="text-neutral-800">{s}</strong>{r ? ` — ${r}` : ''}</li>))}</ol></div>
-                <div class="bg-neutral-50 rounded-lg p-3"><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p><p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p><p class="text-neutral-600">Le site repond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> — {p.commentReponse}</p></div>
-                <div class="grid grid-cols-2 gap-4"><div><p class="font-semibold text-green-700 mb-1.5">Points positifs</p><ul class="space-y-1 text-neutral-600">{p.positifs.map(pt => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">·</span>{pt}</li>)}</ul></div><div><p class="font-semibold text-amber-700 mb-1.5">Frictions</p><ul class="space-y-1 text-neutral-600">{p.frictions.map(f => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">·</span>{f}</li>)}</ul></div></div>
-                {p.ceQuiFeraitBasculer && <div class="bg-amber-50 rounded-lg p-3"><p class="font-semibold text-amber-700 text-[10px] uppercase tracking-wider mb-1">Ce qui le ferait passer a l'action</p><p class="text-neutral-700 text-xs">{p.ceQuiFeraitBasculer}</p></div>}
-                <div class="flex gap-6 pt-3 border-t border-neutral-100">{[{ label: 'Exp', val: p.exp },{ label: 'Conf', val: p.conf },{ label: 'Clarte', val: p.clarte }].map(s => { const sc = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500'; return (<div class="text-center"><span class={`block text-lg font-bold ${sc}`}>{s.val}</span><span class="text-[10px] text-neutral-400">{s.label}</span></div>);})}</div>
-              </div></div>
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-1 flex-wrap">
+                    <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                    <span class={`text-[10px] ${decisionBadge(p.decision)} text-white px-1.5 py-0.5 rounded font-medium`}>{p.decisionLabel}</span>
+                  </div>
+                  <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                  </div>
+                </div>
+              </summary>
+              <div class="px-4 pb-5 border-t border-green-200">
+                <div class="grid gap-4 text-xs mt-4">
+                  <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p><p class="text-neutral-600">{p.contexte}</p></div>
+                  <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Première impression (5 sec)</p><p class="text-neutral-600">{p.impression}</p></div>
+                  <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours sur le site</p>
+                    <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                      {p.parcours.map(([section, reaction]) => (<li><strong class="text-neutral-800">{section}</strong>{reaction ? ` — ${reaction}` : ''}</li>))}
+                    </ol>
+                  </div>
+                  <div class="bg-neutral-50 rounded-lg p-3">
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p>
+                    <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
+                    <p class="text-neutral-600">Le site répond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> — {p.commentReponse}</p>
+                  </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div><p class="font-semibold text-green-700 mb-1.5">✓ Points positifs</p>
+                      <ul class="space-y-1 text-neutral-600">{p.positifs.map(pt => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">·</span>{pt}</li>)}</ul></div>
+                    <div><p class="font-semibold text-amber-700 mb-1.5">✗ Frictions</p>
+                      <ul class="space-y-1 text-neutral-600">{p.frictions.map(f => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">·</span>{f}</li>)}</ul></div>
+                  </div>
+                  {p.ceQuiFeraitBasculer && (
+                    <div class="rounded-lg p-3" style="background: rgba(232,108,71,0.06);">
+                      <p class="font-semibold text-[10px] uppercase tracking-wider mb-1" style="color: #E86C47;">À noter</p>
+                      <p class="text-neutral-700 text-xs">{p.ceQuiFeraitBasculer}</p>
+                    </div>
+                  )}
+                  <div class="flex gap-6 pt-3 border-t border-neutral-100">
+                    {[{ label: 'Expérience', val: p.exp }, { label: 'Confiance', val: p.conf }, { label: 'Clarté', val: p.clarte }].map(s => {
+                      const sc = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500';
+                      return (<div class="text-center"><span class={`block text-lg font-bold ${sc}`}>{s.val}</span><span class="text-[10px] text-neutral-400">{s.label}</span></div>);
+                    })}
+                  </div>
+                </div>
+              </div>
             </details>
-          ))}</div></div>);
-      })}
+          ))}
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <h3 class="text-base font-bold text-amber-800 mb-4 flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span>
+          Ceux qui hésitent
+          <span class="text-sm font-normal text-amber-600">({kpis.nbHesitent})</span>
+        </h3>
+        <div class="space-y-3">
+          {personas.filter(p => p.decision === 'Hésite').map(p => (
+            <details class={`group bg-white rounded-xl overflow-hidden shadow-sm border ${decisionBorder(p.decision)}`}>
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-1 flex-wrap">
+                    <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                    <span class={`text-[10px] ${decisionBadge(p.decision)} text-white px-1.5 py-0.5 rounded font-medium`}>{p.decisionLabel}</span>
+                  </div>
+                  <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                  </div>
+                </div>
+              </summary>
+              <div class="px-4 pb-5 border-t border-amber-200">
+                <div class="grid gap-4 text-xs mt-4">
+                  <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p><p class="text-neutral-600">{p.contexte}</p></div>
+                  <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Première impression (5 sec)</p><p class="text-neutral-600">{p.impression}</p></div>
+                  <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours sur le site</p>
+                    <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                      {p.parcours.map(([section, reaction]) => (<li><strong class="text-neutral-800">{section}</strong>{reaction ? ` — ${reaction}` : ''}</li>))}
+                    </ol>
+                  </div>
+                  <div class="bg-neutral-50 rounded-lg p-3">
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p>
+                    <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
+                    <p class="text-neutral-600">Le site répond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> — {p.commentReponse}</p>
+                  </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div><p class="font-semibold text-green-700 mb-1.5">✓ Points positifs</p>
+                      <ul class="space-y-1 text-neutral-600">{p.positifs.map(pt => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">·</span>{pt}</li>)}</ul></div>
+                    <div><p class="font-semibold text-amber-700 mb-1.5">✗ Frictions</p>
+                      <ul class="space-y-1 text-neutral-600">{p.frictions.map(f => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">·</span>{f}</li>)}</ul></div>
+                  </div>
+                  {p.ceQuiFeraitBasculer && (
+                    <div class="rounded-lg p-3" style="background: rgba(232,108,71,0.06);">
+                      <p class="font-semibold text-[10px] uppercase tracking-wider mb-1" style="color: #E86C47;">Ce qui le ferait passer à l'action</p>
+                      <p class="text-neutral-700 text-xs">{p.ceQuiFeraitBasculer}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-xl p-5 mb-10 bg-amber-50 border border-amber-200 flex items-start gap-3">
+        <span class="text-lg shrink-0 mt-0.5">💡</span>
+        <div>
+          <p class="text-sm font-medium text-amber-900">Ces {kpis.nbHesitent} visiteurs ont besoin d'un dernier signal pour vous contacter.</p>
+          <p class="text-xs text-amber-700 mt-1">Ils sont la cible idéale : motivés, déjà sur votre site, mais retenus par un détail (preuve manquante, vitesse, prix, zone). C'est votre plus grand levier de conversion.</p>
+        </div>
+      </div>
+
+      <div class="mb-4">
+        <h3 class="text-base font-bold text-neutral-600 mb-4 flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-neutral-400 inline-block"></span>
+          Ceux qui repartent
+          <span class="text-sm font-normal text-neutral-500">({kpis.nbRepartent})</span>
+        </h3>
+        <div class="space-y-3">
+          {personas.filter(p => p.decision === 'Quitte').map(p => (
+            <details class={`group bg-white rounded-xl overflow-hidden shadow-sm border ${decisionBorder(p.decision)}`}>
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-1 flex-wrap">
+                    <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                    <span class={`text-[10px] ${decisionBadge(p.decision)} text-white px-1.5 py-0.5 rounded font-medium`}>{p.decisionLabel}</span>
+                  </div>
+                  <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                  </div>
+                </div>
+              </summary>
+              <div class="px-4 pb-5 border-t border-neutral-200">
+                <div class="grid gap-4 text-xs mt-4">
+                  <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p><p class="text-neutral-600">{p.contexte}</p></div>
+                  <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Première impression (5 sec)</p><p class="text-neutral-600">{p.impression}</p></div>
+                  <div><p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours sur le site</p>
+                    <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                      {p.parcours.map(([section, reaction]) => (<li><strong class="text-neutral-800">{section}</strong>{reaction ? ` — ${reaction}` : ''}</li>))}
+                    </ol>
+                  </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div><p class="font-semibold text-green-700 mb-1.5">✓ Points positifs</p>
+                      <ul class="space-y-1 text-neutral-600">{p.positifs.map(pt => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">·</span>{pt}</li>)}</ul></div>
+                    <div><p class="font-semibold text-amber-700 mb-1.5">✗ Frictions</p>
+                      <ul class="space-y-1 text-neutral-600">{p.frictions.map(f => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">·</span>{f}</li>)}</ul></div>
+                  </div>
+                  {p.ceQuiFeraitBasculer && (
+                    <div class="rounded-lg p-3" style="background: rgba(232,108,71,0.06);">
+                      <p class="font-semibold text-[10px] uppercase tracking-wider mb-1" style="color: #E86C47;">Ce qui l'aurait retenu</p>
+                      <p class="text-neutral-700 text-xs">{p.ceQuiFeraitBasculer}</p>
+                    </div>
+                  )}
+                </div>
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-xl p-5 bg-neutral-100 border border-neutral-200 flex items-start gap-3">
+        <span class="text-lg shrink-0 mt-0.5">📉</span>
+        <div>
+          <p class="text-sm font-medium text-neutral-800">Chaque visiteur qui repart, c'est un client en moins.</p>
+          <p class="text-xs text-neutral-600 mt-1">Certains étaient hors cible (étudiant, gestionnaire B2B sans réf, particulier hors zone) : c'est normal. Mais d'autres avaient un vrai besoin et n'ont pas été convaincus.</p>
+        </div>
+      </div>
     </div>
   </section>
 
   <!-- RECOMMANDATIONS -->
   <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-    <h2 class="text-2xl font-bold text-neutral-900 mb-2">Ce qu'on recommande</h2><p class="text-neutral-600 mb-8">Actions concretes, classees par impact.</p>
-    <p class="text-sm font-semibold text-red-700 mb-4">Si vous ne changez que 3 choses :</p>
-    <div class="space-y-4 mb-12">{ameliorationsHautes.map(a => (<div class="bg-white border-2 border-red-200 rounded-xl p-6 shadow-sm"><div class="flex items-start justify-between gap-4 mb-3"><h4 class="font-bold text-neutral-900">{a.titre}</h4><span class="text-[10px] px-2 py-1 rounded-full bg-red-100 text-red-700 font-semibold shrink-0 whitespace-nowrap">{a.impact}</span></div><p class="text-sm text-neutral-600 mb-3">{a.pourquoi}</p><div class="bg-neutral-50 rounded-lg px-4 py-3 flex items-start gap-2"><svg class="w-4 h-4 text-neutral-400 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg><p class="text-xs text-neutral-700">{a.action}</p></div></div>))}</div>
-    <h3 class="text-lg font-bold text-neutral-900 mb-2">Utile aussi</h3>
-    <div class="grid md:grid-cols-2 gap-4 mb-12">{ameliorationsUtiles.map(a => (<div class="bg-white border border-neutral-200 rounded-xl p-5"><h4 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h4><p class="text-xs text-neutral-600">{a.detail}</p></div>))}</div>
-    <h3 class="text-lg font-bold text-neutral-900 mb-2">A discuter</h3>
-    <div class="space-y-3 mb-12">{ameliorationsDiscuter.map(a => (<div class="bg-neutral-50 border border-neutral-200 rounded-xl p-4 flex gap-3"><span class="text-lg shrink-0">{a.emoji}</span><div><h4 class="font-semibold text-neutral-900 text-sm mb-0.5">{a.titre}</h4><p class="text-xs text-neutral-600">{a.detail}</p></div></div>))}</div>
-    {showUpsell && (<div class="rounded-2xl p-8 text-center border-2 border-dashed" style={`border-color: ${accentColor}; background: rgba(30,58,95,0.03);`}><p class="text-lg font-bold text-neutral-900 mb-2">Ce rapport gratuit identifie les tendances.</p><p class="text-sm text-neutral-600 mb-6">Avec un Echo Complet (90€), 20 visiteurs simules et un audit technique approfondi.</p><a href="tel:+33688766648" class="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-xl transition-all shadow-md hover:-translate-y-0.5" style={`background: ${accentGradient};`}>Appeler Marc — 06 88 76 66 48</a></div>)}
+    <h2 class="text-2xl font-bold text-neutral-900 mb-2">Ce qu'on recommande</h2>
+    <p class="text-neutral-600 mb-8">La priorité numéro 1 identifiée sur vos 10 visiteurs.</p>
+
+    <p class="text-sm font-semibold text-red-700 mb-4">Si vous ne changez qu'une chose, changez ça :</p>
+
+    <div class="space-y-4 mb-12">
+      {ameliorationsHautes.map(a => (
+        <div class="bg-white border-2 border-red-200 rounded-xl p-6 shadow-sm">
+          <div class="flex items-start justify-between gap-4 mb-3">
+            <h4 class="font-bold text-neutral-900">{a.titre}</h4>
+            <span class="text-[10px] px-2 py-1 rounded-full bg-red-100 text-red-700 font-semibold shrink-0 whitespace-nowrap">{a.impact}</span>
+          </div>
+          <p class="text-sm text-neutral-600 mb-3">{a.pourquoi}</p>
+          <div class="bg-neutral-50 rounded-lg px-4 py-3">
+            <p class="text-[10px] text-neutral-400 uppercase tracking-wider mb-1">Action concrète</p>
+            <p class="text-xs text-neutral-700">{a.action}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    {ameliorationsUtiles.length > 0 && (
+      <>
+        <h3 class="text-lg font-bold text-neutral-900 mb-2">Utile aussi</h3>
+        <div class="grid md:grid-cols-2 gap-4 mb-12">
+          {ameliorationsUtiles.map(a => (
+            <div class="bg-white border border-neutral-200 rounded-xl p-5">
+              <h4 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h4>
+              <p class="text-xs text-neutral-600">{a.detail}</p>
+            </div>
+          ))}
+        </div>
+      </>
+    )}
+
+    {showUpsell && (
+      <div class="rounded-2xl p-8 text-center border-2 border-dashed" style="border-color: #E86C47; background: rgba(232,108,71,0.03);">
+        <p class="text-lg font-bold text-neutral-900 mb-2">10 visiteurs, c'est une tendance.</p>
+        <p class="text-sm text-neutral-600 mb-6">Avec 20 visiteurs (Echo Complet), ces frictions deviennent des certitudes. Avec 100 (Echo Pro), vous savez exactement quel canal investir.</p>
+      </div>
+    )}
   </section>
 
   <!-- TECHNIQUE -->
   <section class="py-16 border-t border-neutral-200">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="text-2xl font-bold text-neutral-900 mb-2">Sous le capot</h2><p class="text-neutral-600 mb-8">Ce que les outils techniques disent de votre site.</p>
-      <div class="flex flex-wrap gap-3 mb-10">{techVerdicts.map(v => (<div class={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium ${v.ok ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}>{v.ok ? <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg> : <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}<span>{v.label}</span><span class="text-xs opacity-70">{v.verdict}</span></div>))}</div>
+      <h2 class="text-2xl font-bold text-neutral-900 mb-2">Sous le capot</h2>
+      <p class="text-neutral-600 mb-8">Pour les curieux : ce que les outils techniques disent de votre site.</p>
+
+      <div class="flex flex-wrap gap-3 mb-10">
+        {techVerdicts.map(v => (
+          <div class={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium ${v.ok ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
+            {v.ok
+              ? <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              : <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            }
+            <span>{v.label}</span>
+            <span class="text-xs opacity-70">{v.verdict}</span>
+          </div>
+        ))}
+      </div>
+
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+          <div class="flex items-center gap-3">
+            <span class="text-base">⚡</span>
+            <div>
+              <h3 class="font-semibold text-neutral-900 text-sm">Vitesse mobile</h3>
+              <p class="text-[11px] text-neutral-500">{techVerdicts[0].detail}</p>
+            </div>
+          </div>
+        </summary>
+        <div class="px-4 pb-4 border-t border-neutral-100 pt-4">
+          <div class="grid grid-cols-2 gap-4 mb-3">
+            <div class="text-center">
+              <div class="text-3xl font-black leading-none" style="color: #E86C47;">{tech.pagespdMobile.performance ?? '—'}</div>
+              <div class="text-xs text-neutral-500 mt-1">Performance mobile /100</div>
+            </div>
+            <div class="text-center">
+              <div class="text-3xl font-black leading-none" style="color: #E86C47;">{tech.pagespdDesktop.performance ?? '—'}</div>
+              <div class="text-xs text-neutral-500 mt-1">Performance desktop /100</div>
+            </div>
+          </div>
+          <p class="text-xs text-neutral-600">Délai d'affichage mobile : {tech.cwv.lcp} (cible : sous 2,5 s). Stabilité de mise en page : {tech.cwv.cls} (cible : sous 0,1).</p>
+          <p class="text-[10px] text-neutral-400 mt-2 italic">Source : Google PageSpeed Insights v5, mesure réelle.</p>
+        </div>
+      </details>
+
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+          <div class="flex items-center gap-3">
+            <span class="text-base">🔒</span>
+            <div>
+              <h3 class="font-semibold text-neutral-900 text-sm">Sécurité du site</h3>
+              <p class="text-[11px] text-neutral-500">{techVerdicts[1].detail}</p>
+            </div>
+          </div>
+        </summary>
+        <div class="px-4 pb-4 border-t border-neutral-100 pt-4">
+          <div class="flex items-center gap-6 mb-3">
+            <div class="text-center">
+              <div class="text-4xl font-black leading-none" style="color: #E86C47;">{tech.observatory.grade}</div>
+              <div class="text-xs text-neutral-500 mt-1">Grade Mozilla Observatory</div>
+            </div>
+            <div class="text-center">
+              <div class="text-4xl font-black leading-none" style="color: #E86C47;">{tech.observatory.score}</div>
+              <div class="text-xs text-neutral-500 mt-1">Score /100</div>
+            </div>
+          </div>
+          <p class="text-xs text-neutral-600">Le grade indique la robustesse face aux attaques classiques (injection, vol de session, contenu détourné). Plus c'est bas, plus le site est vulnérable.</p>
+          <p class="text-[10px] text-neutral-400 mt-2 italic">Source : Mozilla Observatory v2, mesure réelle.</p>
+        </div>
+      </details>
+
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+          <div class="flex items-center gap-3">
+            <span class="text-base">📊</span>
+            <div>
+              <h3 class="font-semibold text-neutral-900 text-sm">Fiche métier (reconnue par Google et les IA)</h3>
+              <p class="text-[11px] text-neutral-500">{techVerdicts[2].detail}</p>
+            </div>
+          </div>
+        </summary>
+        <div class="px-4 pb-4 border-t border-neutral-100 pt-4">
+          <div class="space-y-2">
+            {tech.schema.map(s => (
+              <div class="flex items-start gap-2 text-xs text-neutral-600">
+                <span class={`shrink-0 font-bold ${s.ok ? 'text-green-500' : 'text-red-400'}`}>{s.ok ? '✓' : '✗'}</span>
+                <span>{s.item}</span>
+              </div>
+            ))}
+          </div>
+          <p class="text-[10px] text-neutral-400 mt-3 italic">Cette fiche structurée est ce que Google et les IA (ChatGPT, Perplexity) lisent en priorité pour catégoriser votre entreprise.</p>
+        </div>
+      </details>
+
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+          <div class="flex items-center gap-3">
+            <span class="text-base">🔗</span>
+            <div>
+              <h3 class="font-semibold text-neutral-900 text-sm">Partage sur les réseaux sociaux</h3>
+              <p class="text-[11px] text-neutral-500">{techVerdicts[3].detail}</p>
+            </div>
+          </div>
+        </summary>
+        <div class="px-4 pb-4 border-t border-neutral-100 pt-4">
+          <p class="text-xs text-neutral-600">Quand un visiteur partage le lien de votre site (Facebook, WhatsApp, Messenger, LinkedIn), un aperçu (titre + image + description) doit s'afficher. Si l'aperçu est cassé ou absent, le lien ressemble à un lien suspect et le destinataire ne clique pas.</p>
+        </div>
+      </details>
     </div>
   </section>
 
   <!-- METHODOLOGIE -->
   <section class="py-12 bg-neutral-50 border-t border-neutral-100">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-      <h2 class="text-lg font-bold text-neutral-900 mb-4">Comment on a fait ca</h2>
+      <h2 class="text-lg font-bold text-neutral-900 mb-4">Comment on a fait ça</h2>
       <div class="grid md:grid-cols-3 gap-4 text-sm text-neutral-600">
-        <div class="bg-white rounded-xl p-4 border border-neutral-200"><div class="text-2xl font-black text-neutral-300 mb-2">1</div><p class="font-semibold text-neutral-800 mb-1">Scraping complet</p><p class="text-xs">Lecture du site — accueil, services, realisations, contact.</p></div>
-        <div class="bg-white rounded-xl p-4 border border-neutral-200"><div class="text-2xl font-black text-neutral-300 mb-2">2</div><p class="font-semibold text-neutral-800 mb-1">Audit technique</p><p class="text-xs">Estimation depuis la stack detectee (WordPress + Divi).</p></div>
-        <div class="bg-white rounded-xl p-4 border border-neutral-200"><div class="text-2xl font-black text-neutral-300 mb-2">3</div><p class="font-semibold text-neutral-800 mb-1">10 personas simules</p><p class="text-xs">Proprietaires messins, urgences, architectes, isolations — chacun avec son besoin.</p></div>
+        <div class="bg-white rounded-xl p-4 border border-neutral-200">
+          <div class="text-2xl font-black text-neutral-300 mb-2">1</div>
+          <p class="font-semibold text-neutral-800 mb-1">Scraping du site</p>
+          <p class="text-xs">Lecture de la page d'accueil et des pages secondaires accessibles. Identification du métier, de la zone, des contenus visibles.</p>
+        </div>
+        <div class="bg-white rounded-xl p-4 border border-neutral-200">
+          <div class="text-2xl font-black text-neutral-300 mb-2">2</div>
+          <p class="font-semibold text-neutral-800 mb-1">Audit technique mesuré</p>
+          <p class="text-xs">PageSpeed Insights mobile + desktop (Google PSI v5), Mozilla Observatory v2, validation fiche métier + partage réseaux. Aucun chiffre inventé.</p>
+        </div>
+        <div class="bg-white rounded-xl p-4 border border-neutral-200">
+          <div class="text-2xl font-black text-neutral-300 mb-2">3</div>
+          <p class="font-semibold text-neutral-800 mb-1">10 visiteurs simulés</p>
+          <p class="text-xs">Profils réalistes adaptés à votre métier — 5 canaux d'arrivée (Google Search, Maps, IA, Réseaux sociaux, Bouche-à-oreille), 3 niveaux de maturité, 3 devices, contextes typiques du secteur.</p>
+        </div>
       </div>
+      <p class="text-xs text-neutral-400 mt-4 text-center">10 visiteurs = tendance solide &middot; 20 visiteurs (Echo Complet) = confirmation &middot; 100 visiteurs (Echo Pro) = certitude statistique</p>
     </div>
   </section>
 
-  <!-- CTA FINAL -->
-  <section class="py-16 border-t border-neutral-200">
-    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-      <h2 class="text-2xl font-bold text-neutral-900 mb-3">60 avis a 4.5 etoiles — votre reputation est solide.</h2>
-      <p class="text-neutral-600 mb-8">Il manque un site rapide, avec vos garanties et vos tarifs, pour que cette reputation se transforme en devis. Un site qui charge en 2 secondes au lieu de 6, c'est +50% de contacts.</p>
+  <!-- CTA PROSPECTION -->
+  <section class="relative w-full px-6 py-20 overflow-hidden" style="background: #0A0A0A;">
+    <div class="absolute bottom-[10%] right-[10%] w-[400px] h-[400px] rounded-full blur-[160px] pointer-events-none" style="background: #E86C47; opacity: 0.05;"></div>
+    <div class="relative mx-auto max-w-3xl z-10 text-center">
+      <h2 class="text-2xl md:text-3xl font-bold text-white mb-4 leading-tight">
+        Votre site peut faire beaucoup mieux.
+      </h2>
+      <p class="text-sm mb-8" style="color: rgba(255,255,255,0.5);">
+        Ces recommandations sont actionnables en quelques jours. Un appel de 10 minutes suffit pour en discuter.
+      </p>
       <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
-        <a href="tel:+33688766648" class="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-xl transition-all shadow-md hover:-translate-y-0.5" style={`background: ${accentGradient};`}>Appeler Marc — 06 88 76 66 48</a>
-        <a href="https://wa.me/33688766648" class="inline-flex items-center gap-2 px-6 py-3 border border-neutral-300 text-neutral-700 font-semibold rounded-xl transition-all hover:border-neutral-500">WhatsApp</a>
+        <a href={`tel:${phone}`} class="inline-flex items-center gap-2 px-8 py-4 text-white font-bold text-lg rounded-xl transition-all shadow-lg hover:-translate-y-0.5 bg-green-600 hover:bg-green-500">
+          Appeler Marc — {phoneDisplay}
+        </a>
+        <a href={`https://wa.me/${phoneNoPlus}`} target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-8 py-4 border border-neutral-600 font-semibold rounded-xl transition-all hover:border-white/40" style="color: rgba(255,255,255,0.6);">
+          WhatsApp
+        </a>
       </div>
-      <p class="text-xs text-neutral-400 mt-6">Ce rapport est confidentiel et non indexe par Google &middot; Genere le {dateAudit}</p>
+      <p class="text-xs mt-6" style="color: rgba(255,255,255,0.3);">Ce rapport est confidentiel et non indexé par Google &middot; Généré le {dateAudit}</p>
     </div>
   </section>
+
 </BaseLayout>
