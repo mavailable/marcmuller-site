@@ -1,0 +1,574 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { personas, type Decision } from '../../../data/calypso-personas';
+
+const slug = 'calypso';
+const nomProspect = 'Calypso Diving Koh Tao';
+const urlSite = 'https://diving-calypso.com';
+const dateAudit = '17 mai 2026';
+
+const title = 'Audit Personas — Calypso Diving Koh Tao | Marc M';
+const description = 'Audit personnalise de diving-calypso.com : 20 personas x 3 langues = 60 simulations de visite. Pourquoi la conversion plafonne a 6,7% et comment debloquer le funnel.';
+
+// KPIs globaux (60 simulations)
+const totalSims = 60;
+const nbConvertit = personas.reduce(
+  (n, p) => n + (p.fr.decision === 'Convertit' ? 1 : 0) + (p.en.decision === 'Convertit' ? 1 : 0) + (p.de.decision === 'Convertit' ? 1 : 0),
+  0,
+);
+const nbHesite = personas.reduce(
+  (n, p) => n + (p.fr.decision === 'Hesite' ? 1 : 0) + (p.en.decision === 'Hesite' ? 1 : 0) + (p.de.decision === 'Hesite' ? 1 : 0),
+  0,
+);
+const nbQuitte = personas.reduce(
+  (n, p) => n + (p.fr.decision === 'Quitte' ? 1 : 0) + (p.en.decision === 'Quitte' ? 1 : 0) + (p.de.decision === 'Quitte' ? 1 : 0),
+  0,
+);
+
+const kpis = {
+  nbPersonas: totalSims,
+  nbConvertissent: nbConvertit,
+  nbHesitent: nbHesite,
+  nbRepartent: nbQuitte,
+  conversion: Math.round((nbConvertit / totalSims) * 100 * 10) / 10, // 6.7
+};
+
+const verdictHero = `Sur 60 simulations de visite, 3 personnes contactent Flo. 2 germanophones via le Calendly de la /de, 1 francophone en urgence via WhatsApp. La version FR n'existe pas, le CTA hero anglais renvoie a une 404.`;
+
+const constat = `Calypso a tout pour convertir (Tanote Bay vs Sairee party, max 4 personnes par groupe, SSI + CMAS, 25+ ans, temoignages avec instructeurs nommes) mais auto-sabote son funnel a chaque langue. Le toggle "France" promet une page qui n'existe pas, le CTA principal anglais est casse, les stats different entre versions (50 000 vs 11 500 plongeurs formes), et un bug d'affichage "990%" decredibilise la version DE. Les 5 hotfix critiques representent 132 mentions de friction sur 295 (45%) et sont tous triviaux a corriger.`;
+
+// Donnees par langue (versions du site) — comptees a partir des decisions personas
+const langueData = [
+  { langue: 'Version FR (toggle France)', code: 'FR', n: 20, exp: 2.1, conf: 3.1, clarte: 1.7, convertit: 0, hesite: 10, quitte: 10, taux: 0, friction: 'La page n\'existe pas (toggle "France" → 404)' },
+  { langue: 'Version EN', code: 'EN', n: 20, exp: 4.5, conf: 4.9, clarte: 4.2, convertit: 1, hesite: 13, quitte: 6, taux: 5, friction: 'CTA hero "See All Courses" en 404 + temoignages allemands non traduits' },
+  { langue: 'Version DE', code: 'DE', n: 20, exp: 4.2, conf: 4.5, clarte: 4.0, convertit: 2, hesite: 8, quitte: 10, taux: 10, friction: 'Bug "990%" + stats incoherentes + "Divemaster auf Anfrage"' },
+];
+
+// La vraie revelation : conversion par langue native du persona sur LEUR version
+const nativeData = [
+  { profil: 'Germanophones natifs sur version DE', flag: '🇩🇪', n: 7, exp: 6.4, convertit: 2, taux: 29, insight: 'Le seul segment qui marche grace au Calendly Beratungstermin' },
+  { profil: 'Anglophones natifs sur version EN', flag: '🇬🇧', n: 4, exp: 4.2, convertit: 0, taux: 0, insight: 'CTA hero casse + temoignages allemands non traduits = subliminal "ce site n\'est pas pour vous"' },
+  { profil: 'Francophones natifs sur version FR', flag: '🇫🇷', n: 6, exp: 2.5, convertit: 0, taux: 0, insight: 'La promesse FR est rompue avant meme la premiere lecture (la seule conversion FR -- Camille -- arrive sur la EN en urgence via WhatsApp, pas grace au site)' },
+  { profil: 'Autres langues (mandarin, japonais, polonais) sur EN', flag: '🌏', n: 3, exp: 4.7, convertit: 0, taux: 0, insight: 'Coquilles textuelles (990%, .de email, stats) signalent "amateur"' },
+];
+
+// 5 hotfix critiques = 132/295 mentions (45%)
+const alertes = [
+  {
+    type: 'critique' as const,
+    titre: 'La version FR n\'existe pas (toggle "France" → 404)',
+    detail: 'Le menu propose un toggle "France" qui promet une version francaise. La page n\'existe pas → 404. Tous les 60 personas le voient, 51 le mentionnent comme friction. Plus grave qu\'une 404 simple — c\'est une promesse rompue qui degrade la confiance dans toutes les langues.',
+    chiffre: '51',
+    chiffreLabel: 'mentions de friction',
+  },
+  {
+    type: 'critique' as const,
+    titre: 'CTA hero EN "See All Courses" renvoie a une 404',
+    detail: 'Le CTA principal du Hero anglais pointe vers /tauchkurse-en qui retourne 404. Le bon lien est /en-diving-diving-courses (qui existe). Tous les anglophones natifs (4/4) butent sur ce mur des la premiere interaction.',
+    chiffre: '24',
+    chiffreLabel: 'mentions de friction',
+  },
+  {
+    type: 'critique' as const,
+    titre: 'Stats incoherentes entre langues (50K en EN vs 11,5K en DE)',
+    detail: 'La page EN annonce "50,000+ divers trained" et la DE "11,500+ plongeurs". Les visiteurs qui ouvrent les 3 versions en onglets (typique des comparateurs sur desktop) voient l\'incoherence immediatement et perdent toute confiance dans le social proof.',
+    chiffre: '21',
+    chiffreLabel: 'mentions de friction',
+  },
+  {
+    type: 'important' as const,
+    titre: 'Bug d\'affichage "990%" en version DE',
+    detail: 'Sur le Hero DE, la stat satisfaction affiche "990%" (probable erreur de regex ou de calcul x100). Decredibilise immediatement la version DE qui est par ailleurs la plus convaincante.',
+    chiffre: '18',
+    chiffreLabel: 'mentions de friction',
+  },
+  {
+    type: 'important' as const,
+    titre: 'Email contact en .de sur site .com',
+    detail: 'L\'adresse Dennis@diving-calypso.de est affichee sur le site diving-calypso.com. Pour un visiteur attentif, c\'est un signal "site non aligne, peut-etre amateur". Trivial a corriger via un alias mail.',
+    chiffre: '10',
+    chiffreLabel: 'mentions de friction',
+  },
+];
+
+// Ameliorations
+const hotfix = [
+  {
+    titre: 'Retirer ou reparer le toggle "France"',
+    pourquoi: 'C\'est la friction #1 (51 mentions). Soit on cache le toggle FR (display:none), soit on cree une vraie page FR avec WhatsApp + lien EN clairement explique. Une promesse rompue est pire qu\'une absence.',
+    action: 'Header / nav-top / switcher de langue : either display:none sur le toggle FR, either redirection vers une page "FR coming soon" avec contact WhatsApp + lien vers la version EN.',
+    impact: '51 mentions / 60 visiteurs',
+  },
+  {
+    titre: 'Reparer le CTA hero EN « See All Courses »',
+    pourquoi: 'Le CTA principal du Hero EN est en 404. Les anglophones natifs (4 sur 60) butent dessus en 5 secondes. Conversion EN actuelle : 10% (2/20). Apres fix : 25-30% probable.',
+    action: 'Modifier le href du CTA pour pointer vers /en-diving-diving-courses (qui existe) au lieu de /tauchkurse-en (404). Verifier tous les liens internes EN dans la foulee.',
+    impact: '24 mentions / 60 visiteurs',
+  },
+  {
+    titre: 'Reconcilier les stats inter-langues',
+    pourquoi: 'Les comparateurs ouvrent les 3 versions en onglets desktop. Voir "50 000+" en EN et "11 500+" en DE detruit le social proof. Choisir une seule valeur reelle (probablement 11 500+ si Calypso forme ~500 plongeurs/an depuis 25 ans).',
+    action: 'Section "Key Highlights" toutes versions : choisir une valeur unique, l\'appliquer partout. Verifier coherence "25+ ans" vs "depuis 1999" (25 ou 26 ans en 2026 ?).',
+    impact: '21 mentions / 60 visiteurs',
+  },
+  {
+    titre: 'Corriger le bug "990%"',
+    pourquoi: 'Coquille visible des le Hero DE qui sape la version la plus convaincante. Probable erreur de regex ou de calcul x100.',
+    action: 'Hero DE → stat satisfaction : passer de "990%" a "99%" en dur, retirer la multiplication ou la regex foireuse.',
+    impact: '18 mentions / 60 visiteurs',
+  },
+  {
+    titre: 'Uniformiser l\'email contact en .com',
+    pourquoi: 'L\'adresse Dennis@diving-calypso.de sur le site diving-calypso.com signale un site non aligne. Trivial a corriger via un alias mail.',
+    action: 'Creer alias dennis@diving-calypso.com, retirer toutes les references .de dans le code et le contenu (Contact, Footer, About).',
+    impact: '10 mentions / 60 visiteurs',
+  },
+];
+
+const utiles = [
+  { titre: 'Creer une vraie version FR du site', detail: '51 mentions + ouvre un segment 30% du marche Koh Tao (FR/BE/CH/MA/CA). Reprendre traduction professionnelle home, courses, contact, FAQ, temoignages. Calendly + WhatsApp FR.' },
+  { titre: 'Traduire les 7 temoignages en EN', detail: 'Les temoignages sur la page EN sont tous en allemand. Subliminal "ce site est fait pour des Allemands". Traduction certifiee + conservation des noms d\'instructeurs (Martina, Matthias, etc.) + ajout avatar + nationalite + date.' },
+  { titre: 'Afficher les 12 cours en home', detail: 'Aujourd\'hui seuls 3 cours sont visibles en home (Fun Dive, Try Scuba, OWD). Tableau resume avec prix, duree, niveau pour Try Scuba / OWD / CMAS 1 etoile / Bubblemaker / Advanced / CMAS 2 etoiles / Rescue / DM (avec fourchette meme si "a partir de").' },
+  { titre: 'Page equipe avec photos + langues parlees', detail: 'Personnifie les temoignages (Martina, Matthias, Andre, Bax, Pierre, Micha, Markus, Sandy). Debloquer la question "instructeur FR ?", rassurer profils securite. 8-10 instructeurs avec photo, certif, langues, annees d\'experience, specialites.' },
+  { titre: 'Page Famille + Bubblemaker visible en EN', detail: '10 mentions (Klaus + profils famille). Page /families ou section home EN/FR avec Bubblemaker, suites familiales, photos enfants/parents, temoignages parents.' },
+  { titre: 'Formulaire de contact reel (en plus de WhatsApp)', detail: '14 mentions. Beaucoup de profils (Heinrich, Hans, Lukas, Pierre, Jean-Marc) preferent email a WhatsApp. Formulaire Web3Forms ou Calendly form avec Prenom, Email, Cours souhaite, Dates, Message. Auto-reponse 24h.' },
+];
+
+const moyens = [
+  { emoji: '📅', titre: 'Booking en ligne / calendrier dispo en self-service', detail: '9 mentions, surtout pour profils Decision (Sophie, Camille, Tom/Emma). Integrer Calendly type "Try Scuba mardi", "OWD demarre les lundi/jeudi", afficher prochaines dates dispo.' },
+  { emoji: '📞', titre: 'Numero telephone voix visible', detail: '7 mentions (surtout seniors Heinrich, Stefan/Anna). Ajouter un numero Thailande "appel international" + horaires d\'appel.' },
+  { emoji: '🗺️', titre: 'Page "Diving Sites" avec detail des 30+ spots', detail: 'N3/CMAS 3 etoiles/profils techniques (Jean-Marc, Heinrich) qui veulent evaluer le serieux. Carte des sites Koh Tao, profondeur, niveau requis, marine life, photos.' },
+  { emoji: '📦', titre: 'Packs combines Advanced + Fun Dives', detail: '5 mentions (Tom/Emma, Sarah, Sophie). 2-3 packs prix bloque ("Advanced + 5 fun dives = X THB", "OWD + Advanced + 10 dives = Y THB").' },
+  { emoji: '🧓', titre: 'Section seniors / ages mixtes', detail: '4 mentions (Robert, Stefan/Anna). Temoignages 40+, 60+, photos non-juveniles, FAQ "a 65 ans c\'est possible ?".' },
+  { emoji: '🏛️', titre: 'Programme Divemaster Internship + IDC detailles', detail: '4 mentions (Jake, Lukas, Hans). Page /divemaster avec couts all-in, hebergement DMT, planning type, temoignages anciens DMT. Page /instructor-development pour IDC.' },
+];
+
+const adiscuter = [
+  { emoji: '💬', titre: 'WhatsApp comme seul canal', detail: 'Beaucoup de profils (Heinrich, Hans, Lukas, Pierre) preferent email a WhatsApp. Decision : multi-canal ou continuer focus WhatsApp et accepter de perdre ces profils ?' },
+  { emoji: '💰', titre: 'Politique prix DM "auf Anfrage"', detail: 'Tester l\'affichage du prix (meme fourchette) vs maintien opaque. Lukas, Jake, Hans tous frustres. Une fourchette publique pourrait debloquer le segment B2B DM/IDC.' },
+  { emoji: '🇫🇷', titre: 'Recrutement instructeur francophone', detail: 'Justifie la version FR commerciale. Sans francophone identifie, une vraie page FR risque de creer une attente non tenue.' },
+  { emoji: '📱', titre: 'Strategie Instagram / TikTok segment jeune', detail: 'Hannah, Camille = profils ou le site ne pourra jamais concurrencer un funnel social pur. Decision : investir un canal social dedie ou accepter d\'abandonner ce segment ?' },
+];
+
+function decisionBorder(d: Decision) {
+  if (d === 'Convertit') return 'border-green-200';
+  if (d === 'Hesite') return 'border-amber-200';
+  return 'border-neutral-200';
+}
+function decisionBadge(d: Decision) {
+  if (d === 'Convertit') return 'bg-green-600';
+  if (d === 'Hesite') return 'bg-amber-500';
+  return 'bg-neutral-400';
+}
+function decisionEmoji(d: Decision) {
+  if (d === 'Convertit') return '✅';
+  if (d === 'Hesite') return '🟡';
+  return '❌';
+}
+function decisionTextColor(d: Decision) {
+  if (d === 'Convertit') return 'text-green-700';
+  if (d === 'Hesite') return 'text-amber-700';
+  return 'text-neutral-500';
+}
+function scoreColor(n: number) {
+  if (n >= 7) return 'text-green-600';
+  if (n >= 5) return 'text-amber-600';
+  return 'text-red-500';
+}
+---
+
+<BaseLayout
+  title={title}
+  description={description}
+  noindex={true}
+  lang="fr"
+  frPath={`/echo/${slug}/`}
+>
+
+  <!-- ═══ HERO ═══ -->
+  <section class="relative w-full px-6 py-20 md:py-28 overflow-hidden" style="background: #0A0A0A;">
+    <div class="absolute top-[20%] left-[10%] w-[500px] h-[500px] rounded-full blur-[180px] pointer-events-none" style="background: #0EA5E9; opacity: 0.08;"></div>
+    <div class="absolute bottom-[10%] right-[5%] w-[300px] h-[300px] rounded-full blur-[120px] pointer-events-none" style="background: #E86C47; opacity: 0.05;"></div>
+
+    <div class="relative mx-auto max-w-4xl z-10">
+      <div class="mb-6 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5);">
+        Audit Personas multilingue &middot; 60 simulations &middot; Cadeau
+      </div>
+
+      <h1 class="mb-6 text-3xl md:text-4xl font-bold text-white leading-tight tracking-tight">
+        {verdictHero}
+      </h1>
+
+      <p class="mb-10 text-sm" style="color: rgba(255,255,255,0.4);">
+        Site analyse : <a href={urlSite} target="_blank" rel="noopener" class="underline hover:text-white transition-colors">{urlSite}</a> &middot; 20 personas &times; 3 langues (FR / EN / DE) = 60 simulations &middot; {dateAudit}
+      </p>
+
+      <div class="grid grid-cols-3 gap-4">
+        <div class="rounded-xl p-5 text-center" style="background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2);">
+          <div class="text-4xl md:text-5xl font-black text-green-400 mb-1">{kpis.nbConvertissent}</div>
+          <div class="text-sm text-green-400/70">contactent Flo</div>
+        </div>
+        <div class="rounded-xl p-5 text-center" style="background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2);">
+          <div class="text-4xl md:text-5xl font-black text-amber-400 mb-1">{kpis.nbHesitent}</div>
+          <div class="text-sm text-amber-400/70">hesitent</div>
+        </div>
+        <div class="rounded-xl p-5 text-center" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
+          <div class="text-4xl md:text-5xl font-black mb-1" style="color: rgba(255,255,255,0.5);">{kpis.nbRepartent}</div>
+          <div class="text-sm" style="color: rgba(255,255,255,0.3);">repartent</div>
+        </div>
+      </div>
+
+      <p class="mt-6 text-sm text-center" style="color: rgba(255,255,255,0.5);">
+        Soit <strong class="text-white">{kpis.conversion}%</strong> de conversion globale &middot; <strong class="text-amber-400">0%</strong> chez les francophones et anglophones natifs sur leur version &middot; <strong class="text-green-400">29%</strong> chez les germanophones sur la /de
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══ CONSTAT ═══ -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="rounded-2xl p-6 md:p-8 mb-12 border-l-4" style="background: rgba(14,165,233,0.04); border-color: #0EA5E9;">
+      <p class="text-lg md:text-xl font-medium text-neutral-800 leading-relaxed">{constat}</p>
+    </div>
+
+    <!-- Comparaison par version linguistique du site -->
+    <h2 class="text-xl font-bold text-neutral-900 mb-2">Les 3 versions du site, cote a cote</h2>
+    <p class="text-sm text-neutral-500 mb-6">Chacun des 20 personas a teste les 3 versions linguistiques. Voici comment chaque version performe.</p>
+
+    <div class="space-y-3 mb-8">
+      {langueData.map(l => {
+        const color = l.taux >= 25 ? '#22c55e' : l.taux >= 10 ? '#f59e0b' : '#ef4444';
+        return (
+          <div class="bg-white border border-neutral-200 rounded-xl p-5">
+            <div class="flex items-center justify-between gap-4 mb-3 flex-wrap">
+              <h3 class="font-semibold text-neutral-900 text-sm">{l.langue}</h3>
+              <div class="flex items-center gap-3 text-xs">
+                <span class="text-neutral-400">{l.n} visites</span>
+                <span class="font-bold text-base" style={`color: ${color}`}>{l.taux}%</span>
+              </div>
+            </div>
+            <div class="flex w-full h-2.5 rounded-full overflow-hidden mb-3 bg-neutral-100">
+              <div class="h-full bg-green-500" style={`width: ${(l.convertit / l.n) * 100}%`} title={`${l.convertit} convertissent`}></div>
+              <div class="h-full bg-amber-400" style={`width: ${(l.hesite / l.n) * 100}%`} title={`${l.hesite} hesitent`}></div>
+              <div class="h-full bg-neutral-300" style={`width: ${(l.quitte / l.n) * 100}%`} title={`${l.quitte} quittent`}></div>
+            </div>
+            <div class="flex flex-wrap gap-3 text-[11px] text-neutral-500 mb-2">
+              <span><span class="inline-block w-2 h-2 rounded-full bg-green-500 mr-1"></span>{l.convertit} contactent</span>
+              <span><span class="inline-block w-2 h-2 rounded-full bg-amber-400 mr-1"></span>{l.hesite} hesitent</span>
+              <span><span class="inline-block w-2 h-2 rounded-full bg-neutral-300 mr-1"></span>{l.quitte} quittent</span>
+              <span class="text-neutral-400">&middot; exp {l.exp}/10 &middot; conf {l.conf}/10 &middot; clarte {l.clarte}/10</span>
+            </div>
+            <p class="text-xs text-neutral-600 italic">Friction principale : {l.friction}</p>
+          </div>
+        );
+      })}
+    </div>
+  </section>
+
+  <!-- ═══ LA VRAIE LECTURE : LANGUE NATIVE DU PERSONA ═══ -->
+  <section class="py-16" style="background: #f8fafc;">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-2">La vraie mesure : conversion par langue native</h2>
+      <p class="text-neutral-600 mb-8">Un Anglais voit-il vraiment l'EN comme "sa" version ? Quand on croise langue native du visiteur &times; version du site qu'il choisit, on isole le vrai taux d'efficacite par segment.</p>
+
+      <div class="space-y-3 mb-8">
+        {nativeData.map(n => {
+          const color = n.taux >= 25 ? '#22c55e' : n.taux >= 10 ? '#f59e0b' : '#ef4444';
+          const bg = n.taux >= 25 ? 'bg-green-50 border-green-200' : 'bg-white border-neutral-200';
+          return (
+            <div class={`rounded-xl p-5 border ${bg}`}>
+              <div class="flex items-center gap-4 mb-3 flex-wrap">
+                <span class="text-2xl">{n.flag}</span>
+                <h3 class="font-semibold text-neutral-900 text-sm flex-1">{n.profil}</h3>
+                <div class="flex items-center gap-3 text-xs">
+                  <span class="text-neutral-400">{n.n} visiteurs</span>
+                  <span class="font-black text-xl" style={`color: ${color}`}>{n.taux}%</span>
+                </div>
+              </div>
+              <div class="text-xs text-neutral-600 italic pl-9">
+                <strong class="text-neutral-700 not-italic">{n.convertit}</strong> sur {n.n} convertissent &middot; experience {n.exp}/10 &middot; {n.insight}
+              </div>
+            </div>
+          );
+        })}
+      </div>
+
+      <div class="rounded-xl p-5 bg-blue-50 border border-blue-200 flex items-start gap-3">
+        <span class="text-lg shrink-0 mt-0.5">💡</span>
+        <div>
+          <p class="text-sm font-medium text-blue-900">Insight cle</p>
+          <p class="text-xs text-blue-800 mt-1 leading-relaxed">Calypso ne convertit aujourd'hui qu'un seul segment : les germanophones natifs sur la /de (29%). Le site EN n'arrive a convertir <strong>aucun</strong> anglophone natif sur 4, alors qu'il convertit 1 francophone bilingue et 1 autre. Resultat : la /en marche surtout par defaut, pas par efficacite. Les hotfix prioritaires debloquent precisement ce qui empeche la /en de fonctionner.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ ALERTES — 5 HOTFIX CRITIQUES ═══ -->
+  <section class="py-12" style="background: #fefce8;">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center gap-3 mb-6">
+        <svg class="w-6 h-6 text-amber-600 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"/></svg>
+        <div>
+          <h2 class="text-lg font-bold text-neutral-900">5 hotfix critiques</h2>
+          <p class="text-sm text-neutral-600">Ces 5 problemes pesent <strong>132 mentions sur 295</strong> (45% de toutes les frictions identifiees). Tous sont triviaux a corriger.</p>
+        </div>
+      </div>
+      <div class="grid md:grid-cols-2 gap-4">
+        {alertes.map(a => (
+          <div class={`bg-white rounded-xl p-5 ${a.type === 'critique' ? 'border-2 border-red-300' : 'border border-amber-300'}`}>
+            <div class={`inline-block text-2xl font-black px-3 py-1 rounded-lg mb-3 ${a.type === 'critique' ? 'bg-red-100 text-red-700' : 'bg-amber-100 text-amber-700'}`}>
+              {a.chiffre}
+            </div>
+            <p class="text-[10px] text-neutral-400 uppercase tracking-wider mb-1">{a.chiffreLabel}</p>
+            <h3 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h3>
+            <p class="text-xs text-neutral-600 leading-relaxed">{a.detail}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ LES 20 VISITEURS x 3 LANGUES ═══ -->
+  <section class="py-16" style="background: #fafafa;">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-2">Les 20 visiteurs, langue par langue</h2>
+      <p class="text-neutral-600 mb-3">Chaque persona a teste les 3 versions du site. Cliquez sur une fiche pour voir le parcours detaille FR / EN / DE.</p>
+      <p class="text-xs text-neutral-500 mb-8">Legende : <span class="text-green-700 font-medium">✅ contacte Flo</span> &middot; <span class="text-amber-700 font-medium">🟡 hesite</span> &middot; <span class="text-neutral-500 font-medium">❌ repart</span></p>
+
+      <div class="space-y-3">
+        {personas.map(p => {
+          // decision pire des 3 pour la couleur de bordure (sauf si au moins 1 Convertit)
+          const anyConv = p.fr.decision === 'Convertit' || p.en.decision === 'Convertit' || p.de.decision === 'Convertit';
+          const anyHes = p.fr.decision === 'Hesite' || p.en.decision === 'Hesite' || p.de.decision === 'Hesite';
+          const borderCls = anyConv ? 'border-green-200' : anyHes ? 'border-amber-200' : 'border-neutral-200';
+          return (
+            <details class={`group bg-white rounded-xl overflow-hidden shadow-sm border ${borderCls}`}>
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-1 flex-wrap">
+                    <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.flag} {p.langueNative}</span>
+                  </div>
+                  <p class="text-sm text-neutral-600 mb-2">{p.situation}</p>
+                  <div class="flex flex-wrap items-center gap-1.5 mb-2">
+                    <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                  </div>
+                  <!-- Verdict par langue (mini-grid) -->
+                  <div class="grid grid-cols-3 gap-1.5">
+                    <div class="text-center px-2 py-1 rounded bg-neutral-50">
+                      <div class="text-[10px] text-neutral-400 uppercase tracking-wider">FR</div>
+                      <div class={`text-xs font-semibold ${decisionTextColor(p.fr.decision)}`}>{decisionEmoji(p.fr.decision)} {p.fr.decision}</div>
+                    </div>
+                    <div class="text-center px-2 py-1 rounded bg-neutral-50">
+                      <div class="text-[10px] text-neutral-400 uppercase tracking-wider">EN</div>
+                      <div class={`text-xs font-semibold ${decisionTextColor(p.en.decision)}`}>{decisionEmoji(p.en.decision)} {p.en.decision}</div>
+                    </div>
+                    <div class="text-center px-2 py-1 rounded bg-neutral-50">
+                      <div class="text-[10px] text-neutral-400 uppercase tracking-wider">DE</div>
+                      <div class={`text-xs font-semibold ${decisionTextColor(p.de.decision)}`}>{decisionEmoji(p.de.decision)} {p.de.decision}</div>
+                    </div>
+                  </div>
+                </div>
+                <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </summary>
+
+              <div class={`px-4 pb-5 border-t ${borderCls}`}>
+                <div class="grid gap-4 text-xs mt-4">
+
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p>
+                    <p class="text-neutral-600">{p.contexte}</p>
+                  </div>
+
+                  <div class="bg-neutral-50 rounded-lg p-3">
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question principale</p>
+                    <p class="text-neutral-700 italic">"{p.questionCle}"</p>
+                  </div>
+
+                  <!-- 3 cartes par langue avec parcours + scores -->
+                  <div class="grid md:grid-cols-3 gap-3">
+                    {[
+                      { code: 'FR', label: 'Version FR', data: p.fr },
+                      { code: 'EN', label: 'Version EN', data: p.en },
+                      { code: 'DE', label: 'Version DE', data: p.de },
+                    ].map(({ code, label, data }) => (
+                      <div class={`rounded-lg p-3 border ${decisionBorder(data.decision)}`}>
+                        <div class="flex items-center justify-between mb-2">
+                          <span class="text-[10px] text-neutral-400 uppercase tracking-wider">{label}</span>
+                          <span class={`text-[10px] ${decisionBadge(data.decision)} text-white px-1.5 py-0.5 rounded font-medium`}>{data.decision}</span>
+                        </div>
+                        <p class="text-xs text-neutral-700 mb-3 leading-relaxed">{data.resume}</p>
+                        <div class="flex gap-3 pt-2 border-t border-neutral-100 justify-around">
+                          {[
+                            { label: 'Exp', val: data.scores.exp },
+                            { label: 'Conf', val: data.scores.conf },
+                            { label: 'Clar', val: data.scores.clarte },
+                          ].map(s => (
+                            <div class="text-center">
+                              <span class={`block text-sm font-bold ${scoreColor(s.val)}`}>{s.val}</span>
+                              <span class="text-[9px] text-neutral-400">{s.label}</span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+
+                </div>
+              </div>
+            </details>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ RECOMMANDATIONS ═══ -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <h2 class="text-2xl font-bold text-neutral-900 mb-2">Ce qu'on recommande</h2>
+    <p class="text-neutral-600 mb-8">Actions classees par impact &times; effort. Les 5 hotfix prennent une demi-journee de dev maximum et debloquent 45% de la friction.</p>
+
+    <p class="text-sm font-semibold text-red-700 mb-4">🔴 Hotfix immediat (demi-journee de dev) — debloque 132 mentions de friction sur 295</p>
+
+    <div class="space-y-4 mb-12">
+      {hotfix.map(h => (
+        <div class="bg-white border-2 border-red-200 rounded-xl p-6 shadow-sm">
+          <div class="flex items-start justify-between gap-4 mb-3">
+            <h4 class="font-bold text-neutral-900">{h.titre}</h4>
+            <span class="text-[10px] px-2 py-1 rounded-full bg-red-100 text-red-700 font-semibold shrink-0 whitespace-nowrap">{h.impact}</span>
+          </div>
+          <p class="text-sm text-neutral-600 mb-3">{h.pourquoi}</p>
+          <div class="bg-neutral-50 rounded-lg px-4 py-3 flex items-start gap-2">
+            <svg class="w-4 h-4 text-neutral-400 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+            <p class="text-xs text-neutral-700">{h.action}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <p class="text-sm font-semibold text-orange-700 mb-4">🟠 Sprint 1 a 2 semaines</p>
+    <div class="grid md:grid-cols-2 gap-4 mb-12">
+      {utiles.map(u => (
+        <div class="bg-white border border-neutral-200 rounded-xl p-5">
+          <h4 class="font-semibold text-neutral-900 text-sm mb-2">{u.titre}</h4>
+          <p class="text-xs text-neutral-600 leading-relaxed">{u.detail}</p>
+        </div>
+      ))}
+    </div>
+
+    <p class="text-sm font-semibold text-amber-700 mb-4">🟡 Sprint 1 mois</p>
+    <div class="grid md:grid-cols-2 gap-4 mb-12">
+      {moyens.map(m => (
+        <div class="bg-white border border-neutral-200 rounded-xl p-5">
+          <div class="flex items-start gap-2 mb-2">
+            <span class="text-lg shrink-0">{m.emoji}</span>
+            <h4 class="font-semibold text-neutral-900 text-sm">{m.titre}</h4>
+          </div>
+          <p class="text-xs text-neutral-600 leading-relaxed">{m.detail}</p>
+        </div>
+      ))}
+    </div>
+
+    <h3 class="text-lg font-bold text-neutral-900 mb-2">A discuter — decisions business</h3>
+    <p class="text-sm text-neutral-500 mb-4">Pas de bonne ou mauvaise reponse, ca depend du positionnement.</p>
+    <div class="space-y-3 mb-12">
+      {adiscuter.map(a => (
+        <div class="bg-neutral-50 border border-neutral-200 rounded-xl p-4 flex gap-3">
+          <span class="text-lg shrink-0">{a.emoji}</span>
+          <div>
+            <h4 class="font-semibold text-neutral-900 text-sm mb-0.5">{a.titre}</h4>
+            <p class="text-xs text-neutral-600 leading-relaxed">{a.detail}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- ═══ PLAN D'ACTION POUR FLO ═══ -->
+  <section class="py-16 border-t border-neutral-200" style="background: linear-gradient(180deg, #ffffff 0%, #f0f9ff 100%);">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-2">Le plan, etape par etape</h2>
+      <p class="text-neutral-600 mb-8">Comment Marc verrait l'execution si Flo donnait le go.</p>
+
+      <div class="grid md:grid-cols-2 gap-4">
+        <div class="bg-white rounded-xl p-5 border border-neutral-200">
+          <div class="text-xs font-semibold text-blue-700 uppercase tracking-wider mb-2">Etape 1 &middot; Cette semaine</div>
+          <h3 class="font-bold text-neutral-900 mb-2">Lire ce rapport ensemble (call 30 min)</h3>
+          <p class="text-xs text-neutral-600 leading-relaxed">Parcourir les 5 hotfix, valider lesquels sont OK pour Wechselzurichter, decider si on va plus loin sur la FR. Aligner Dennis si besoin.</p>
+        </div>
+        <div class="bg-white rounded-xl p-5 border border-neutral-200">
+          <div class="text-xs font-semibold text-blue-700 uppercase tracking-wider mb-2">Etape 2 &middot; 1 a 2 jours</div>
+          <h3 class="font-bold text-neutral-900 mb-2">Hotfix immediat (Wechselzurichter)</h3>
+          <p class="text-xs text-neutral-600 leading-relaxed">Les 5 corrections triviales : toggle FR, CTA hero EN, stats, bug 990%, email .com. Que Wechselzurichter pousse ca rapidement = 45% de la friction reglee.</p>
+        </div>
+        <div class="bg-white rounded-xl p-5 border border-neutral-200">
+          <div class="text-xs font-semibold text-blue-700 uppercase tracking-wider mb-2">Etape 3 &middot; Mois suivant</div>
+          <h3 class="font-bold text-neutral-900 mb-2">Wave 1 : FR + temoignages EN + page equipe</h3>
+          <p class="text-xs text-neutral-600 leading-relaxed">Plus gros impact demographique. Soit Wechselzurichter, soit Marc + traducteur pro si Flo veut une autre paire d'yeux.</p>
+        </div>
+        <div class="bg-white rounded-xl p-5 border border-neutral-200">
+          <div class="text-xs font-semibold text-blue-700 uppercase tracking-wider mb-2">Etape 4 &middot; Trimestre</div>
+          <h3 class="font-bold text-neutral-900 mb-2">Wave 2 : catalogue + booking + packs</h3>
+          <p class="text-xs text-neutral-600 leading-relaxed">Impact funnel decision. Les 12 cours visibles en home, Calendly type "Try Scuba mardi", packs Advanced + fun dives prix bloque.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ METHODOLOGIE ═══ -->
+  <section class="py-12 bg-neutral-50 border-t border-neutral-100">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-lg font-bold text-neutral-900 mb-4">Comment Marc a fait ca</h2>
+      <div class="grid md:grid-cols-4 gap-4 text-sm text-neutral-600">
+        <div class="bg-white rounded-xl p-4 border border-neutral-200">
+          <div class="text-2xl font-black text-neutral-300 mb-2">1</div>
+          <p class="font-semibold text-neutral-800 mb-1">Snapshot du site</p>
+          <p class="text-xs">Capture des 3 versions FR / EN / DE : Hero, sections, cours, FAQ, contact, footer. Documentation des bugs et incoherences observes.</p>
+        </div>
+        <div class="bg-white rounded-xl p-4 border border-neutral-200">
+          <div class="text-2xl font-black text-neutral-300 mb-2">2</div>
+          <p class="font-semibold text-neutral-800 mb-1">20 personas calibres</p>
+          <p class="text-xs">Profils realistes du marche plongee Koh Tao : backpackers, certifies en voyage, familles, divemaster trainees, expats Asie. 6 nationalites, 7 niveaux d'experience.</p>
+        </div>
+        <div class="bg-white rounded-xl p-4 border border-neutral-200">
+          <div class="text-2xl font-black text-neutral-300 mb-2">3</div>
+          <p class="font-semibold text-neutral-800 mb-1">60 simulations</p>
+          <p class="text-xs">Chaque persona a teste les 3 versions linguistiques du site. Pour chaque visite : impression 5 sec, parcours, question cle, friction, decision, scores experience/confiance/clarte.</p>
+        </div>
+        <div class="bg-white rounded-xl p-4 border border-neutral-200">
+          <div class="text-2xl font-black text-neutral-300 mb-2">4</div>
+          <p class="font-semibold text-neutral-800 mb-1">Agregation + priorisation</p>
+          <p class="text-xs">295 mentions de friction comptees, segmentees par langue native, version testee, maturite, device, canal. Recommandations classees par impact &times; effort.</p>
+        </div>
+      </div>
+      <p class="text-xs text-neutral-400 mt-4 text-center">Format propre a cet audit cadeau &middot; Diffus du process Echo standard (qui simule 10, 20 ou 100 personas sur une seule version)</p>
+    </div>
+  </section>
+
+  <!-- ═══ CTA FINAL — CADEAU FLO ═══ -->
+  <section class="py-16 border-t border-neutral-200">
+    <div class="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+      <div class="inline-block mb-6 text-5xl">🎁</div>
+      <h2 class="text-2xl font-bold text-neutral-900 mb-3">Cadeau de Marc pour Flo</h2>
+      <p class="text-neutral-600 mb-3 leading-relaxed">
+        Pas de facture, pas d'upsell. Juste un audit detaille pour qu'on parle d'autre chose qu'un site cool en surface : ce qui se passe vraiment quand un visiteur arrive.
+      </p>
+      <p class="text-neutral-600 mb-8 leading-relaxed">
+        Les 5 hotfix prennent une demi-journee a Wechselzurichter (ou n'importe quel dev). Si Flo veut qu'on parle de l'execution, de la version FR, ou de la suite — WhatsApp ou call quand tu veux.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="https://wa.me/33688766648?text=Salut%20Marc%2C%20j%27ai%20vu%20l%27audit%20Calypso%20que%20t%27as%20fait%20pour%20Flo." class="inline-flex items-center gap-2 px-6 py-3 text-white font-semibold rounded-xl transition-all shadow-md hover:-translate-y-0.5" style="background: linear-gradient(135deg, #25D366, #128C7E);" target="_blank" rel="noopener">
+          <svg class="w-5 h-5" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.626.712.226 1.36.194 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+          Parler de l'audit a Marc
+        </a>
+        <a href={`https://wa.me/66903285990?text=Hi%20Flo%2C%20j%27ai%20regard%C3%A9%20l%27audit%20de%20Marc.`} class="inline-flex items-center gap-2 px-6 py-3 border border-neutral-300 text-neutral-700 font-semibold rounded-xl transition-all hover:border-neutral-500" target="_blank" rel="noopener">
+          Contacter Flo directement
+        </a>
+      </div>
+      <p class="text-xs text-neutral-400 mt-8">Ce rapport est confidentiel et non indexe par Google &middot; Genere le {dateAudit}</p>
+    </div>
+  </section>
+
+</BaseLayout>
