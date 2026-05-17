@@ -18,6 +18,7 @@ export default defineConfig({
         !page.includes('/audit/') &&
         !page.includes('/echo/') &&
         !page.includes('/aide/') &&
+        !page.includes('/en/help/') &&
         !page.includes('/formation'),
       i18n: {
         defaultLocale: 'fr',

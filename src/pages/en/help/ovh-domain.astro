@@ -1,0 +1,368 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import SchemaOrg from '../../../components/SchemaOrg.astro';
+import { business } from '../../../data/business';
+
+const title = 'Buy your domain name — OVH, Cloudflare or Gandi · Marc M';
+const description = 'Step-by-step guide to register your domain. OVH for France, Cloudflare Registrar or Gandi for international clients. ~10 minutes.';
+
+const breadcrumbs = [
+  { name: 'Home', url: `${business.url}/en/` },
+  { name: 'Help', url: `${business.url}/en/help/` },
+  { name: 'Domain name', url: `${business.url}/en/help/ovh-domain/` },
+];
+
+const registrars = [
+  {
+    name: 'OVH',
+    badge: 'Recommended for France',
+    href: 'https://www.ovhcloud.com/en-gb/domains/',
+    price: '~7 USD/year (.fr) · ~12 USD/year (.com)',
+    why: 'French registrar, French support, lowest price for .fr. Best fit if your business is in France.',
+    techContact: true,
+  },
+  {
+    name: 'Cloudflare Registrar',
+    badge: 'Recommended outside France',
+    href: 'https://www.cloudflare.com/products/registrar/',
+    price: 'At-cost (~9-12 USD/year for .com)',
+    why: 'No markup, lowest price on most TLDs, world-class DNS included. You need an existing Cloudflare account.',
+    techContact: false,
+  },
+  {
+    name: 'Gandi',
+    badge: 'Alternative',
+    href: 'https://www.gandi.net/en',
+    price: '~16 USD/year (.com)',
+    why: 'Long-standing French registrar, English UI, transparent pricing. Solid alternative if Cloudflare isn\'t an option.',
+    techContact: false,
+  },
+];
+
+const stepsOvh = [
+  {
+    name: 'Open the OVH Domains page',
+    text: 'Click the link below to access the domain search page directly.',
+    link: { href: 'https://www.ovhcloud.com/en-gb/domains/', label: 'Open OVH — Domains' },
+  },
+  {
+    name: 'Search for your domain',
+    text: 'Type your desired name (e.g. my-business.com) in the search bar. OVH immediately shows availability and suggests alternatives.',
+  },
+  {
+    name: 'Pick the extension',
+    text: 'Use .com for international reach, .fr if your audience is in France, or your country TLD (.de, .es, etc.). Count around 12 USD/year for .com.',
+  },
+  {
+    name: 'Create your OVH account',
+    text: 'On the login page, click "Create an account". Use your professional email and save your credentials.',
+    link: { href: 'https://www.ovh.com/auth/?onsuccess=https%3A%2F%2Fwww.ovh.com%2Fmanager&ovhSubsidiary=GB', label: 'Open OVH login page' },
+  },
+  {
+    name: 'Place your order',
+    text: 'Add the domain to cart. Uncheck unnecessary options (hosting, OVH email, we don\'t need those). Validate and pay.',
+    tip: 'Only the domain name is needed. Your site is hosted elsewhere, that\'s part of my service.',
+  },
+  {
+    name: 'Add me as technical contact',
+    text: 'Open the link below to access your domain list in the OVH client area. Click your domain, then the "Contacts" tab. In the "Technical contact" column, replace the handle with mine:',
+    code: 'uo9730-ovh',
+    copyable: true,
+    detail: 'Confirm the change. You remain the domain owner, the technical contact role only lets me configure DNS to point to your site.',
+    link: { href: 'https://manager.eu.ovhcloud.com/#/web-domains/domain', label: 'Open my domains — OVH client area' },
+    path: 'Client area > Domain names > your-domain.com > Contacts',
+  },
+  {
+    name: 'Confirm it\'s done',
+    text: 'Send me a message by email or WhatsApp with your registered domain. I\'ll receive the technical contact request on my side and start the DNS setup.',
+  },
+];
+
+const stepsCloudflare = [
+  { name: 'Open Cloudflare Registrar', text: 'Sign in to your Cloudflare account, go to Domains > Register Domains and search for the name you want.' },
+  { name: 'Check the price and register', text: 'Cloudflare charges at-cost (no markup). Add to cart and complete payment with card.' },
+  { name: 'Send me API access', text: 'In Cloudflare > My Profile > API Tokens, create a token with "Zone DNS Edit" permission scoped to the new domain, then send it to me by email. I\'ll configure DNS to point to your site. You can revoke the token anytime.' },
+];
+
+const stepsGandi = [
+  { name: 'Open Gandi Domains', text: 'Go to gandi.net, search your domain and pick the available extension you want.' },
+  { name: 'Create your account and register', text: 'Sign up with your professional email and complete the purchase. Skip Gandi hosting and email options, we don\'t need them.' },
+  { name: 'Share DNS access', text: 'Once registered, either send me a Gandi sharing invitation with "manage DNS" permissions, or change the nameservers to mine (I\'ll send them to you). Both options work, your choice.' },
+];
+
+const allHowToSteps = stepsOvh.map(s => ({ name: s.name, text: s.text }));
+
+const faq = [
+  {
+    question: 'Which registrar should I pick?',
+    answer: 'If your business is based in France, OVH is the cheapest for .fr and offers French support. Outside France, Cloudflare Registrar is the best value (at-cost pricing). Gandi is a solid alternative if you prefer a more traditional interface.',
+  },
+  {
+    question: 'Should I also take hosting from the registrar?',
+    answer: 'No. Your site will be hosted on Cloudflare Pages, that\'s part of my service. From the registrar, you only need the domain name.',
+  },
+  {
+    question: 'How do I pick a good domain name?',
+    answer: 'Short, easy to spell over the phone, no hyphens if possible. The sweet spot: your business name followed by .com (or your country TLD).',
+  },
+  {
+    question: 'Does the technical contact have access to my account?',
+    answer: 'No. The technical contact role only lets me manage the domain\'s DNS (the settings pointing to your site). I can\'t access your account, payment methods, or transfer the domain. You stay sole owner.',
+  },
+];
+---
+
+<BaseLayout title={title} description={description} lang="en" frPath="/aide/domaine-ovh" enPath="/en/help/ovh-domain" noindex>
+
+  <SchemaOrg type="breadcrumb" data={breadcrumbs} />
+  <SchemaOrg type="howTo" data={{
+    name: 'Buy a domain name (OVH)',
+    description: 'Guide to register your domain at OVH and prepare it for your website.',
+    totalTime: 'PT10M',
+    steps: allHowToSteps,
+  }} />
+  <SchemaOrg type="faqPage" data={faq} />
+
+  <!-- HERO -->
+  <section class="relative w-full bg-[#0D0D0D] px-6 py-16 md:px-8 md:py-24 overflow-hidden">
+    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 40px 40px;"></div>
+
+    <div class="relative mx-auto max-w-3xl z-10">
+      <a href="/en/help" class="inline-flex items-center gap-2 text-sm text-white/90 hover:text-white transition-colors mb-8">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" /></svg>
+        Back to all guides
+      </a>
+
+      <div class="flex flex-wrap items-center gap-3 mb-6">
+        <span class="inline-block rounded-full border border-sky-400/30 bg-sky-400/10 px-3 py-1 text-xs font-semibold text-sky-300">
+          Domain
+        </span>
+        <span class="text-sm text-white/90">~10 minutes</span>
+        <span class="text-sm text-white/90">•</span>
+        <span class="text-sm text-white/90">~10 USD/year</span>
+      </div>
+
+      <h1 class="mb-6 text-3xl font-bold leading-tight text-white md:text-5xl">
+        Buy your domain name
+      </h1>
+      <p class="text-lg text-white/90 md:text-xl leading-relaxed">
+        Your domain name is your address on the internet. Here's how to register it in a few minutes, with the registrar that fits you best.
+      </p>
+    </div>
+  </section>
+
+  <!-- GUIDE BODY -->
+  <section class="w-full bg-[var(--color-bg)] px-6 py-16 md:px-8 md:py-24">
+    <div class="mx-auto max-w-3xl">
+      <article class="rounded-xl bg-white border border-[var(--color-border)] p-8 md:p-12 shadow-sm">
+
+        <!-- Picker intro -->
+        <div class="mb-10 rounded-lg bg-sky-50 border border-sky-200 p-5">
+          <p class="text-sm font-semibold text-sky-800 mb-1">Pick a registrar first</p>
+          <p class="text-sm text-sky-700 leading-relaxed">
+            Three solid options below. The flow is the same: search, buy, give me DNS access. Detailed steps follow for each registrar.
+          </p>
+        </div>
+
+        <!-- Registrar cards -->
+        <div class="grid gap-4 sm:grid-cols-3 mb-12">
+          {registrars.map((r) => (
+            <a href={r.href} target="_blank" rel="noopener noreferrer"
+              class="group rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-alt)] p-5 hover:border-[var(--color-accent)]/40 hover:shadow-sm transition-all"
+              data-umami-event="help-domain-registrar" data-umami-event-registrar={r.name}>
+              <div class="flex items-center justify-between mb-2">
+                <h3 class="text-base font-bold text-[var(--color-text)]">{r.name}</h3>
+                <svg class="w-4 h-4 text-[var(--color-text-muted)] group-hover:text-[var(--color-accent-text)] transition-colors" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                </svg>
+              </div>
+              <span class="inline-block mb-3 rounded-full bg-[var(--color-accent)]/10 px-2 py-0.5 text-xs font-semibold text-[var(--color-accent-text)]">
+                {r.badge}
+              </span>
+              <p class="text-xs font-mono text-[var(--color-text-muted)] mb-2">{r.price}</p>
+              <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">{r.why}</p>
+            </a>
+          ))}
+        </div>
+
+        <!-- OVH section -->
+        <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6 pb-2 border-b-2 border-[var(--color-accent)]/30">Option A — OVH (France)</h2>
+        <div class="space-y-10 mb-12">
+          {stepsOvh.map((step, i) => (
+            <div class="flex gap-5">
+              <div class="flex-shrink-0 flex items-center justify-center w-10 h-10 rounded-full bg-[var(--color-accent)] text-white font-bold text-sm shadow-md">
+                {i + 1}
+              </div>
+              <div class="flex-1 pt-1.5">
+                <h3 class="text-lg font-bold text-[var(--color-text)] mb-2">{step.name}</h3>
+                <p class="text-[var(--color-text-muted)] leading-relaxed">{step.text}</p>
+
+                {step.code && (
+                  <div class="mt-3 rounded-lg bg-[#0D0D0D] px-5 py-3 flex items-center gap-3 max-w-fit">
+                    <code class="text-lg font-mono font-bold text-white tracking-wide">{step.code}</code>
+                    <button
+                      type="button"
+                      class="copy-btn flex items-center gap-1.5 rounded-md bg-white/10 px-3 py-1.5 text-xs font-semibold text-white hover:bg-white/20 transition-colors"
+                      data-copy={step.code}
+                      data-umami-event="help-domain-copy-id"
+                      aria-label="Copy OVH handle"
+                    >
+                      <svg class="w-3.5 h-3.5 copy-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                      </svg>
+                      <svg class="w-3.5 h-3.5 check-icon hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span class="copy-label">Copy</span>
+                    </button>
+                  </div>
+                )}
+
+                {step.detail && (
+                  <p class="mt-2 text-sm text-[var(--color-text-muted)] leading-relaxed">{step.detail}</p>
+                )}
+
+                {step.path && (
+                  <div class="mt-3 rounded-lg bg-neutral-50 border border-neutral-200 px-4 py-2.5">
+                    <p class="text-xs font-semibold text-neutral-500 mb-1">Path in the client area</p>
+                    <p class="text-sm font-mono text-neutral-700">{step.path}</p>
+                  </div>
+                )}
+
+                {step.tip && (
+                  <div class="mt-3 rounded-lg bg-amber-50 border border-amber-200 px-4 py-2.5">
+                    <p class="text-sm text-amber-700">{step.tip}</p>
+                  </div>
+                )}
+
+                {step.link && (
+                  <a href={step.link.href} target="_blank" rel="noopener noreferrer"
+                    class="mt-3 inline-flex items-center gap-2 rounded-lg border border-[var(--color-accent)]/20 bg-[var(--color-accent)]/5 px-4 py-2.5 text-sm font-semibold text-[var(--color-accent-text)] hover:bg-[var(--color-accent)]/10 transition-colors"
+                    data-umami-event="help-domain-ext-link" data-umami-event-url={step.link.href}>
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                    {step.link.label}
+                  </a>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <!-- Cloudflare section -->
+        <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6 pb-2 border-b-2 border-[var(--color-accent)]/30">Option B — Cloudflare Registrar</h2>
+        <div class="space-y-8 mb-12">
+          {stepsCloudflare.map((step, i) => (
+            <div class="flex gap-5">
+              <div class="flex-shrink-0 flex items-center justify-center w-10 h-10 rounded-full bg-sky-500 text-white font-bold text-sm shadow-md">
+                {i + 1}
+              </div>
+              <div class="flex-1 pt-1.5">
+                <h3 class="text-lg font-bold text-[var(--color-text)] mb-2">{step.name}</h3>
+                <p class="text-[var(--color-text-muted)] leading-relaxed">{step.text}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <!-- Gandi section -->
+        <h2 class="text-2xl font-bold text-[var(--color-text)] mb-6 pb-2 border-b-2 border-[var(--color-accent)]/30">Option C — Gandi</h2>
+        <div class="space-y-8 mb-10">
+          {stepsGandi.map((step, i) => (
+            <div class="flex gap-5">
+              <div class="flex-shrink-0 flex items-center justify-center w-10 h-10 rounded-full bg-violet-500 text-white font-bold text-sm shadow-md">
+                {i + 1}
+              </div>
+              <div class="flex-1 pt-1.5">
+                <h3 class="text-lg font-bold text-[var(--color-text)] mb-2">{step.name}</h3>
+                <p class="text-[var(--color-text-muted)] leading-relaxed">{step.text}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <!-- Tips -->
+        <div class="mt-10 rounded-lg bg-amber-50 border border-amber-200 p-5">
+          <p class="text-sm font-semibold text-amber-800 mb-2">Tips</p>
+          <ul class="list-disc pl-4 text-sm text-amber-700 leading-relaxed space-y-1.5">
+            <li>Don't touch any DNS setting yourself, I handle it.</li>
+            <li>Set auto-renew to avoid losing the domain (registrars send email reminders too).</li>
+            <li>If your first choice is taken, try a country TLD or add your city.</li>
+            <li>Avoid hyphens, they're hard to dictate over the phone.</li>
+          </ul>
+        </div>
+
+        <!-- FAQ -->
+        <div class="mt-10 space-y-4">
+          <p class="text-sm font-bold uppercase tracking-widest text-[var(--color-text-muted)]">Frequently asked questions</p>
+          {faq.map((item) => (
+            <details class="group rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-alt)] overflow-hidden">
+              <summary class="flex cursor-pointer items-center justify-between gap-4 p-4 text-sm font-semibold text-[var(--color-text)] hover:text-[var(--color-accent-text)] transition-colors [&::-webkit-details-marker]:hidden">
+                {item.question}
+                <svg class="w-4 h-4 shrink-0 text-[var(--color-text-muted)] transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </summary>
+              <div class="px-4 pb-4">
+                <p class="text-sm leading-relaxed text-[var(--color-text-muted)]">{item.answer}</p>
+              </div>
+            </details>
+          ))}
+        </div>
+
+        <!-- CTA -->
+        <div class="mt-10 rounded-xl bg-[#0D0D0D] p-6 text-center">
+          <p class="text-white font-semibold mb-2">Once your domain is registered</p>
+          <p class="text-white/90 text-sm mb-5">Send me the domain by email or WhatsApp, with the registrar you picked.</p>
+          <div class="flex flex-col sm:flex-row gap-3 justify-center">
+            <a href={`mailto:${business.email}?subject=Domain registered&body=Hi Marc,%0A%0AI registered my domain.%0A%0ARegistrar: %0ADomain: %0A%0AThanks!`}
+              class="inline-block px-6 py-2.5 bg-[var(--color-accent)] text-white text-sm font-semibold rounded-lg hover:bg-[var(--color-accent-hover)] transition-all"
+              data-umami-event="help-domain-email">
+              Send by email
+            </a>
+            <a href={`https://wa.me/${business.whatsapp}?text=Hi Marc, I registered my domain. Registrar: , Domain: `}
+              target="_blank" rel="noopener noreferrer"
+              class="inline-block px-6 py-2.5 bg-white/10 text-white text-sm font-semibold rounded-lg border border-white/20 hover:bg-white/20 transition-all"
+              data-umami-event="help-domain-whatsapp">
+              Send by WhatsApp
+            </a>
+          </div>
+        </div>
+
+        <!-- Next guide -->
+        <div class="mt-8 flex items-center justify-between rounded-lg border border-[var(--color-border)] p-4">
+          <span class="text-xs font-semibold uppercase tracking-widest text-[var(--color-text-muted)]">Next guide</span>
+          <a href="/en/help/web3forms" class="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-accent-text)] hover:gap-3 transition-all">
+            Create your Web3Forms account
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </a>
+        </div>
+
+      </article>
+    </div>
+  </section>
+
+  <script>
+    document.querySelectorAll('.copy-btn').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const text = btn.getAttribute('data-copy');
+        if (!text) return;
+        await navigator.clipboard.writeText(text);
+        const copyIcon = btn.querySelector('.copy-icon');
+        const checkIcon = btn.querySelector('.check-icon');
+        const label = btn.querySelector('.copy-label');
+        if (copyIcon) copyIcon.classList.add('hidden');
+        if (checkIcon) checkIcon.classList.remove('hidden');
+        if (label) label.textContent = 'Copied!';
+        setTimeout(() => {
+          if (copyIcon) copyIcon.classList.remove('hidden');
+          if (checkIcon) checkIcon.classList.add('hidden');
+          if (label) label.textContent = 'Copy';
+        }, 2000);
+      });
+    });
+  </script>
+</BaseLayout>
