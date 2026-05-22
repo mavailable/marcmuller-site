@@ -99,8 +99,36 @@ const enURL = enPath ? new URL(enPath, Astro.site).href : null;
     <!-- Schema.org WebSite (global) -->
     <SchemaOrg type="webSite" />
 
-    <!-- Umami Analytics (self-hosted for CSP/SRI compliance) -->
-    <script is:inline defer src="/scripts/umami.js" data-website-id="0e4930eb-681d-4c89-94f2-5abfcf564383" data-host-url="https://cloud.umami.is"></script>
+    <!-- Umami Analytics (self-hosted for CSP/SRI compliance).
+         Chargé APRÈS l'événement load + idle : le tracker s'auto-exécute au parse
+         (lecture currentScript), ce qui tombait dans la fenêtre de mesure TBT.
+         En l'injectant hors du chemin critique, on sort son exécution du TBT
+         (desktop comme mobile) sans rien perdre du tracking (1er pageview différé
+         de quelques centaines de ms, invisible côté analytics). -->
+    <script is:inline>
+      (function () {
+        function loadUmami() {
+          var s = document.createElement('script');
+          s.src = '/scripts/umami.js';
+          s.defer = true;
+          s.setAttribute('data-website-id', '0e4930eb-681d-4c89-94f2-5abfcf564383');
+          s.setAttribute('data-host-url', 'https://cloud.umami.is');
+          document.head.appendChild(s);
+        }
+        function schedule() {
+          if ('requestIdleCallback' in window) {
+            requestIdleCallback(loadUmami, { timeout: 3000 });
+          } else {
+            setTimeout(loadUmami, 1200);
+          }
+        }
+        if (document.readyState === 'complete') {
+          schedule();
+        } else {
+          window.addEventListener('load', schedule, { once: true });
+        }
+      })();
+    </script>
   </head>
   <body>
     <a href="#main" class="skip-link">

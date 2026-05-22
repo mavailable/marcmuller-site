@@ -17,6 +17,28 @@
   font-style: italic;
 }
 
+/* Fallback metric-matched pour Satoshi (LCP texte du H1).
+   Calibré sur les métriques RÉELLES de Satoshi-Variable.woff2 (upm 1000) :
+     ascent 1010, descent -240, lineGap 100, weight H1 = 700.
+   size-adjust calibré EMPIRIQUEMENT dans le navigateur : on mesure la largeur
+   intrinsèque réelle du H1 (font-size 64px, weight 700) en Satoshi vs fallback
+   et on ajuste size-adjust jusqu'à égalité (Satoshi 411.25px = fallback 411.3px).
+   Les overrides verticaux sont divisés par ce size-adjust (méthode Next.js /
+   Katie Hempenius) à partir des métriques réelles de Satoshi (ascent 1010,
+   descent 240, lineGap 100, upm 1000) pour que la hauteur de ligne reste
+   identique à Satoshi.
+   Objectif : font-swap CLS-neutre, le H1 ne reflow pas et Lighthouse fige le
+   LCP au paint du fallback (~FCP) au lieu d'attendre le repaint Satoshi. */
+@font-face {
+  font-family: 'Satoshi-fallback';
+  src: local('Arial'), local('Helvetica');
+  font-display: swap;
+  size-adjust: 104.19%;
+  ascent-override: 96.94%;
+  descent-override: 23.04%;
+  line-gap-override: 9.60%;
+}
+
 @theme {
   /* ======================
      PALETTE MARC M
@@ -98,8 +120,8 @@
   /* ======================
      TYPOGRAPHIE
      ====================== */
-  --font-heading: 'Satoshi', system-ui, sans-serif;
-  --font-body: 'Satoshi', system-ui, sans-serif;
+  --font-heading: 'Satoshi', 'Satoshi-fallback', system-ui, sans-serif;
+  --font-body: 'Satoshi', 'Satoshi-fallback', system-ui, sans-serif;
 
   /* ======================
      ÉCHELLE TYPOGRAPHIQUE
