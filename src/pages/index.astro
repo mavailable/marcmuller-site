@@ -81,7 +81,11 @@ const faqItems = [
   frPath="/"
   enPath="/en/"
   preloadImages={[
-    { href: heroProjects[0]?.img, media: '(max-width: 767px)' },
+    // Desktop uniquement : le showcase est immédiatement visible.
+    // Mobile : aucun preload image — l'élément LCP est le H1 (texte), et
+    // précharger la 1re carte du carrousel (sous la ligne de flottaison)
+    // volait de la bande passante 4G à la fonte Satoshi dont dépend le
+    // repaint final du H1 → LCP repoussé. La fonte gagne désormais la course.
     { href: heroProjects[1]?.img, media: '(min-width: 768px)' },
   ]}
 >
@@ -910,9 +914,14 @@ const faqItems = [
   });
 
   // ── Mobile carousel: JS-driven scroll + tap to pause ──
-  const track = document.getElementById('mobile-track') as HTMLElement | null;
+  // Le carrousel est mobile-only (parent `md:hidden`). Sur desktop la boucle
+  // rAF + la lecture de scrollWidth (reflow) tournaient quand même et créaient
+  // une longue tâche JS → TBT desktop. On gate donc TOUTE l'init derrière un
+  // check viewport mobile : sur desktop, rien ne s'exécute.
+  const isMobileViewport = window.matchMedia('(max-width: 767px)').matches;
+  const track = isMobileViewport ? (document.getElementById('mobile-track') as HTMLElement | null) : null;
   const resumeBtn = document.getElementById('carousel-resume');
-  const items = document.querySelectorAll<HTMLElement>('.carousel-item');
+  const items = isMobileViewport ? document.querySelectorAll<HTMLElement>('.carousel-item') : ([] as unknown as NodeListOf<HTMLElement>);
 
   if (track) {
     let offset = 0;
@@ -922,9 +931,9 @@ const faqItems = [
     let dragOriginX = 0;
     let activeCard: HTMLElement | null = null;
     let inView = true;
+    let halfWidth = 0;
     const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const speed = 0.7;
-    const halfWidth = track.scrollWidth / 2;
 
     function wrap() {
       if (offset > 0) offset -= halfWidth;
@@ -932,7 +941,7 @@ const faqItems = [
     }
 
     function tick() {
-      if (!paused && !dragging && inView) {
+      if (!paused && !dragging && inView && halfWidth > 0) {
         offset -= speed;
         wrap();
       }
@@ -941,10 +950,15 @@ const faqItems = [
     }
 
     // Démarre la boucle d'animation seulement quand le thread principal est libre
-    // (réduit la contention CPU pendant le chargement → baisse le TBT mobile).
+    // (réduit la contention CPU pendant le chargement → TBT mobile à 0).
+    // Le scrollWidth (reflow synchrone) est lu DANS l'idle callback, pas au
+    // parse du script, pour ne pas bloquer le chargement initial.
     // Désactivée si l'utilisateur préfère un mouvement réduit.
     if (!reduceMotion) {
-      const startLoop = () => requestAnimationFrame(tick);
+      const startLoop = () => {
+        halfWidth = track!.scrollWidth / 2; // reflow différé hors du chemin critique
+        requestAnimationFrame(tick);
+      };
       'requestIdleCallback' in window
         ? (window as any).requestIdleCallback(startLoop, { timeout: 2000 })
         : setTimeout(startLoop, 800);
