@@ -149,6 +149,7 @@ const faqItems = [
                     style={`width: ${i === 1 ? '520px' : '400px'};`}
                     loading="eager"
                     fetchpriority={i === 1 ? 'high' : 'auto'}
+                    decoding="async"
                   />
                   <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 60%);"></div>
                   <div class="absolute inset-0 flex items-center justify-center opacity-0 transition-opacity duration-300 group-hover/card:opacity-100" style="background: rgba(0,0,0,0.3);">
@@ -179,7 +180,7 @@ const faqItems = [
                   data-name={p.name}
                 >
                   <div class="relative overflow-hidden">
-                    <img src={p.img} alt={p.name} width="260" height="146" class="h-[146px] w-full object-cover object-top transition-transform duration-300" loading="eager" fetchpriority={i === 0 ? 'high' : 'auto'} />
+                    <img src={p.img} alt={p.name} width="260" height="146" class="h-[146px] w-full object-cover object-top transition-transform duration-300" loading={i < 2 ? 'eager' : 'lazy'} fetchpriority={i === 0 ? 'high' : 'auto'} decoding="async" />
                     <div class="absolute inset-0" style="background: linear-gradient(to top, rgba(0,0,0,0.7) 0%, transparent 55%);"></div>
                     <div class="absolute inset-x-0 bottom-0 px-3 pb-2.5">
                       <p class="text-sm font-semibold text-white truncate">{p.name}</p>
@@ -661,14 +662,30 @@ const faqItems = [
     100% { scale: 1; opacity: var(--blob-opacity, 0.06); }
   }
 
-  /* ── H1 reveal — clip mask from bottom ── */
-  .hero-reveal {
+  /* ── H1 reveal — clip mask from bottom ──
+     L'élément LCP ne doit JAMAIS démarrer caché (clip-path: inset(100%) ou opacity:0)
+     sinon le LCP ne se déclenche qu'à la fin de l'animation (pénalité mobile ~+1,5s).
+     On gate donc l'effet derrière une classe ajoutée par JS APRÈS le 1er paint :
+     sans JS (ou avant le rAF), le H1 est peint immédiatement et plein écran. */
+  .hero-reveal { clip-path: none; }
+  .hero-anim .hero-reveal {
     clip-path: inset(100% 0 0 0);
-    animation: clipReveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.1s forwards;
+    animation: clipReveal 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.05s forwards;
   }
   @keyframes clipReveal {
     0% { clip-path: inset(100% 0 0 0); }
     100% { clip-path: inset(0 0 0 0); }
+  }
+
+  /* Respect des préférences de mouvement réduit pour tout le hero */
+  @media (prefers-reduced-motion: reduce) {
+    .hero-anim .hero-reveal,
+    .hero-fade,
+    .hero-cta,
+    .hero-showcase,
+    .hero-card,
+    .hero-blob,
+    .mobile-track { animation: none !important; opacity: 1 !important; clip-path: none !important; transform: none !important; }
   }
 
   /* ── Accent text ── */
@@ -824,24 +841,20 @@ const faqItems = [
 </style>
 
 <script>
+  // ── Active l'animation de révélation du H1 APRÈS le 1er paint ──
+  // Le H1 (élément LCP) est peint visible immédiatement (clip-path: none).
+  // On ajoute .hero-anim au double rAF suivant : le LCP s'est déjà déclenché
+  // sur le texte peint, et l'effet clip joue ensuite sans pénaliser la mesure.
+  const heroSection = document.querySelector('.hero-reveal')?.closest('section');
+  if (heroSection && !window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+    requestAnimationFrame(() => requestAnimationFrame(() => heroSection.classList.add('hero-anim')));
+  }
+
   // Intersection Observer pour les animations au scroll
   const observerOptions = {
     threshold: 0.1,
     rootMargin: '0px 0px -50px 0px'
   };
-
-  const observer = new IntersectionObserver((entries) => {
-    entries.forEach((entry) => {
-      if (entry.isIntersecting) {
-        entry.target.classList.add('animate-in');
-      }
-    });
-  }, observerOptions);
-
-  // Observer sur les éléments count-up
-  document.querySelectorAll('.count-up').forEach((el) => {
-    observer.observe(el);
-  });
 
   // Animation des chiffres
   document.querySelectorAll('.count-up').forEach((element) => {
@@ -908,6 +921,8 @@ const faqItems = [
     let dragStartX = 0;
     let dragOriginX = 0;
     let activeCard: HTMLElement | null = null;
+    let inView = true;
+    const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const speed = 0.7;
     const halfWidth = track.scrollWidth / 2;
 
@@ -917,14 +932,31 @@ const faqItems = [
     }
 
     function tick() {
-      if (!paused && !dragging) {
+      if (!paused && !dragging && inView) {
         offset -= speed;
         wrap();
       }
       track!.style.transform = `translateX(${offset}px)`;
       requestAnimationFrame(tick);
     }
-    requestAnimationFrame(tick);
+
+    // Démarre la boucle d'animation seulement quand le thread principal est libre
+    // (réduit la contention CPU pendant le chargement → baisse le TBT mobile).
+    // Désactivée si l'utilisateur préfère un mouvement réduit.
+    if (!reduceMotion) {
+      const startLoop = () => requestAnimationFrame(tick);
+      'requestIdleCallback' in window
+        ? (window as any).requestIdleCallback(startLoop, { timeout: 2000 })
+        : setTimeout(startLoop, 800);
+
+      // Met la boucle en pause quand le carrousel sort de l'écran (économie CPU)
+      const carouselEl = document.getElementById('mobile-carousel');
+      if (carouselEl && 'IntersectionObserver' in window) {
+        new IntersectionObserver((entries) => {
+          inView = entries[0]?.isIntersecting ?? true;
+        }, { threshold: 0 }).observe(carouselEl);
+      }
+    }
 
     // ── Touch / drag to scroll ──
     track.addEventListener('touchstart', (e) => {

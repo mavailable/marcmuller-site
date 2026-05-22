@@ -79,8 +79,10 @@ const enURL = enPath ? new URL(enPath, Astro.site).href : null;
     <link rel="manifest" href="/site.webmanifest" />
 
     <!-- Font preload for faster First Contentful Paint -->
+    <!-- Seule la variable normale est préchargée : l'italique n'est pas dans le above-the-fold
+         et son préchargement entrait en concurrence avec l'image LCP sur la bande passante mobile.
+         font-display: swap dans global.css garantit son chargement à la demande. -->
     <link rel="preload" as="font" href="/fonts/Satoshi-Variable.woff2" type="font/woff2" crossorigin />
-    <link rel="preload" as="font" href="/fonts/Satoshi-VariableItalic.woff2" type="font/woff2" crossorigin />
 
     <!-- LCP image preload (passed per-page) -->
     {preloadImages?.map(({ href, media }) => (
