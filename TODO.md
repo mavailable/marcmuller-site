@@ -43,7 +43,7 @@
 
 - [x] **A11y** Audit axe DevTools complet sur toutes les pages -- Option B appliquee : texte accent #B5472B (7.8:1), boutons gardes #E86C47. 20 violations → 8 restantes (blanc sur fond bouton, acceptable WCAG UI components)
 - [ ] **Perf** Envisager le lazy loading des images du hero carousel (deja en `loading="lazy"` -- OK)
-- [ ] **SEO** Ajouter un BreadcrumbList schema sur les pages du journal/blog
+- [~] **SEO** Ajouter un BreadcrumbList schema sur les pages du journal/blog -- fait sur les 2 nouveaux articles (visible-chatgpt-artisan-geo + creer-site-web-entreprise-grand-est-guide, FR+EN) le 2026-05-24. Reste a backfiller sur les ~13 articles anterieurs.
 
 ## Notes d'audit
 
