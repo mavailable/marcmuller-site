@@ -1,0 +1,846 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { personas, type Decision } from '../../../data/orendafree-personas';
+
+const slug = 'orendafree';
+const nomProspect = 'Orenda Freediving & Island Cruises';
+const urlSite = 'https://orendafree.com';
+const dateAudit = '25 May 2026';
+
+const title = 'Persona Report — Orenda Freediving | Marc M';
+const description = 'A confidential look at orendafree.com through the eyes of 20 simulated visitors: who books, who hesitates, who leaves, and the few fixes that would turn more visits into bookings.';
+
+// Marc contact (from business.ts — phone +33688766648)
+const phoneDisplay = '+33 6 88 76 66 48';
+const whatsapp = '33688766648';
+
+const nbConvertit = personas.filter((p) => p.decision === 'Convertit').length;
+const nbHesite = personas.filter((p) => p.decision === 'Hesite').length;
+const nbQuitte = personas.filter((p) => p.decision === 'Quitte').length;
+
+const kpis = {
+  nbPersonas: personas.length,
+  nbConvertissent: nbConvertit,
+  nbHesitent: nbHesite,
+  nbRepartent: nbQuitte,
+  conversion: Math.round((nbConvertit / personas.length) * 100),
+  experience: Math.round((personas.reduce((s, p) => s + p.exp, 0) / personas.length) * 10) / 10,
+  confiance: Math.round((personas.reduce((s, p) => s + p.conf, 0) / personas.length) * 10) / 10,
+  clarte: Math.round((personas.reduce((s, p) => s + p.clarte, 0) / personas.length) * 10) / 10,
+};
+
+const verdictHero =
+  'Out of 20 visitors, 7 reach out to you. The other 13 do not, and the number one reason is simple: on a phone, your homepage takes more than 16 seconds to appear.';
+
+const constat =
+  'Your content does the hard part beautifully — the Molchanovs and Apnea Total partnership, the breath-and-growth story, the sailboat, the five-star words about Nicky. Visitors who reach the bottom of the page on a laptop are sold. The leak is everything between landing and booking: on a phone (where most of your guests find you) the site takes 16 seconds to load, most courses show no price, and the only way to book is a contact form with no WhatsApp. A warm story with a leaky funnel.';
+
+// Where visitors come from (sorted by conversion rate)
+const canalData = [
+  { canal: 'Word of mouth (island, friends)', nb: 4, convert: 2, rate: 50 },
+  { canal: 'Instagram & social', nb: 5, convert: 2, rate: 40 },
+  { canal: 'Google Search', nb: 6, convert: 2, rate: 33 },
+  { canal: 'AI assistants (ChatGPT, Perplexity)', nb: 3, convert: 1, rate: 33 },
+  { canal: 'Google Maps', nb: 2, convert: 0, rate: 0 },
+];
+
+// Critical, hard-to-miss problems
+const alertes = [
+  {
+    type: 'critique' as const,
+    titre: 'On a phone, your site takes 16 seconds to appear',
+    detail:
+      'Most of your guests find you on Instagram or Google, on their phone. Right now the main image takes more than 16 seconds to show on mobile (it is instant, 1.6s, on a laptop). People comparing schools on the move close the tab long before they see your story. On desktop everything is fine — the problem is mobile only.',
+    chiffre: '16s',
+    chiffreLabel: 'to load on mobile',
+  },
+  {
+    type: 'important' as const,
+    titre: 'Most courses and cruises show no price',
+    detail:
+      'Only the Discover course (3,000 / 4,000 THB) and the 7-day retreat (฿22,900) show a price. Levels 1-3, instructor, coaching and every cruise say "contact us". Budget-minded travellers who cannot see a price simply move on to a school that shows one.',
+    chiffre: '2/10',
+    chiffreLabel: 'offers with a price',
+  },
+  {
+    type: 'important' as const,
+    titre: 'No instant way to book or message',
+    detail:
+      'The only path to book is a generic contact form. There is no WhatsApp button — unusual for a Thailand business where almost everyone messages on WhatsApp or Line — and no online calendar. Each extra step between "I want this" and "done" loses people.',
+    chiffre: '0',
+    chiffreLabel: 'one-tap booking options',
+  },
+  {
+    type: 'important' as const,
+    titre: 'Nothing reassures a nervous first-timer',
+    detail:
+      'Many beginners quietly worry: is it safe, what if I panic, do I need to be fit, can my kids try. There is no FAQ and no safety section, so anxious-but-interested visitors hesitate and leave to "think about it".',
+    chiffre: '0',
+    chiffreLabel: 'FAQ / safety answers',
+  },
+];
+
+// 5-verdict technical summary
+const techVerdicts = [
+  { label: 'Speed', verdict: 'Slow on mobile', ok: false, detail: '16s to load on a phone, 1.6s on a laptop' },
+  { label: 'Security', verdict: 'Weak', ok: false, detail: 'Two standard web protections are missing' },
+  { label: 'Search (SEO)', verdict: 'Good', ok: true, detail: 'Well set up for Google' },
+  { label: 'Business data', verdict: 'Present', ok: true, detail: 'Google can read your business info' },
+  { label: 'Social sharing', verdict: 'OK', ok: true, detail: 'Looks right when shared on social' },
+];
+
+const tech = {
+  observatory: { grade: 'D-', score: 25, testsOk: 8, testsTotal: 10 },
+  pagespdMobile: { performance: 44, accessibility: 98, bestPractices: 100, seo: 92 },
+  pagespdDesktop: { performance: 91, accessibility: 98, bestPractices: 100, seo: 92 },
+  headers: [
+    { ok: true, h: 'HTTPS encryption and core protections in place (8 of 10 checks passed)' },
+    { ok: false, h: 'Content security policy: missing' },
+    { ok: false, h: 'External script integrity check: missing' },
+  ],
+  schema: [
+    { item: 'Business profile readable by Google (LocalBusiness)', ok: true },
+    { item: 'Website identity present', ok: true },
+    { item: 'Customer reviews not marked up for Google stars', ok: false },
+  ],
+  og: [
+    { item: 'Share title', ok: true, val: 'present' },
+    { item: 'Share description', ok: true, val: 'present' },
+    { item: 'Share image', ok: true, val: 'present' },
+    { item: 'Share link & type', ok: true, val: 'present' },
+  ],
+  seo: [
+    { item: 'Page title and description are well written', ok: true },
+    { item: 'Readable by search engines', ok: true },
+    { item: 'Structured business data present', ok: true },
+    { item: "Mobile speed (Google's #1 ranking factor): poor", ok: false },
+  ],
+};
+
+// Recommendations
+const ameliorationsHautes = [
+  {
+    titre: 'Make the site fast on a phone',
+    pourquoi:
+      'Most of your guests discover you on a phone, through Instagram or Google. Right now your main image takes over 16 seconds to appear there — most people leave before they see anything. Fixing this alone would keep far more visitors on the page.',
+    action:
+      'Compress and resize the hero and gallery images (they currently weigh ~1.5 MB), serve them in a modern lightweight format, and load below-the-fold images only when scrolled to. Target under 3 seconds on mobile.',
+    impact: 'most of 20 visitors',
+  },
+  {
+    titre: 'Show a price on every course and cruise',
+    pourquoi:
+      'Only the Discover course and the retreat show a price. For Levels 1-3, coaching, instructor and the cruises, visitors have to email just to find out the cost — and many never do. A visible price (even a "from") is one of the strongest trust signals you can give.',
+    action:
+      'Add a clear price or "from X THB" on each course and cruise page, plus a simple price table on the Schedule page so people can compare at a glance.',
+    impact: '8 visitors on 20',
+  },
+  {
+    titre: 'Add a WhatsApp button and a simple booking request',
+    pourquoi:
+      'In Thailand almost everyone books by WhatsApp. Today the only option is a contact form, which feels slow and one-way. A tap-to-chat button turns hesitation into a conversation.',
+    action:
+      'Add a floating WhatsApp button (your number already exists) and a short booking form on each course page — name, course, preferred dates — with a note like "we reply within 24h".',
+    impact: '7 visitors on 20',
+  },
+  {
+    titre: 'Add a short beginner FAQ (safety, fear, fitness)',
+    pourquoi:
+      'First-timers quietly worry about panicking, blacking out, or not being fit enough. Without answers, interested-but-nervous people leave. A few honest answers convert exactly the people who want to be convinced.',
+    action:
+      'Add an FAQ answering "Is it safe? / What if I panic? / Do I need to be fit? / Can children join, and from what age? / What is included and what do I bring?" and make your safety standards visible.',
+    impact: '6 visitors on 20',
+  },
+];
+
+const ameliorationsUtiles = [
+  {
+    titre: 'An instructor page with photos and bios',
+    detail:
+      'Guests praise "Nikki" by name, but there is no face, no certifications and no languages spoken anywhere on the site. A simple page — photo, certification level, years of experience, languages — turns a name into a person people trust.',
+  },
+  {
+    titre: 'A real schedule with concrete dates',
+    detail:
+      'The schedule currently says "most days" and "dates to be confirmed". Planners with fixed travel dates need to see actual upcoming start dates per course to commit.',
+  },
+  {
+    titre: 'A logistics block on each course',
+    detail:
+      'Add the practical details people ask before booking: meeting point, what is included (gear, the free underwater videos), group size, duration, and what to bring.',
+  },
+  {
+    titre: 'Activate the blog',
+    detail:
+      'The Blog link exists but has no visible content. Even three honest articles ("My first freedive", "A beginner’s guide to Koh Tao freediving", "What a day on the boat looks like") help Google find you and reassure first-timers.',
+  },
+];
+
+const ameliorationsDiscuter = [
+  {
+    emoji: '💰',
+    titre: 'Publish coaching / instructor prices, or keep them "on request"?',
+    detail:
+      'A few advanced and B2B leads stall on hidden prices. Testing a public range (even "from X THB") could unblock them — but there are reasons to keep bespoke pricing private. Your call.',
+  },
+  {
+    emoji: '📅',
+    titre: 'Self-service online booking, or stay hands-on?',
+    detail:
+      'A Calendly-style booking would convert planners automatically, but it also means committing to fixed slots. Worth deciding how hands-on you want the booking flow to be.',
+  },
+  {
+    emoji: '🌏',
+    titre: 'A second language (French or German)?',
+    detail:
+      'A large share of Koh Tao freedivers are European. A second language could widen your reach — but only worth it if you can comfortably handle enquiries and a course in that language.',
+  },
+];
+
+function decisionBorder(d: Decision) {
+  if (d === 'Convertit') return 'border-green-200';
+  if (d === 'Hesite') return 'border-amber-200';
+  return 'border-neutral-200';
+}
+function decisionBadge(d: Decision) {
+  if (d === 'Convertit') return 'bg-green-600';
+  if (d === 'Hesite') return 'bg-amber-500';
+  return 'bg-neutral-400';
+}
+function scoreColor(n: number) {
+  if (n >= 7) return 'text-green-600';
+  if (n >= 5) return 'text-amber-600';
+  return 'text-red-500';
+}
+
+const converts = personas.filter((p) => p.decision === 'Convertit');
+const hesitates = personas.filter((p) => p.decision === 'Hesite');
+const leaves = personas.filter((p) => p.decision === 'Quitte');
+---
+
+<BaseLayout title={title} description={description} noindex={true} lang="en" enPath={`/echo/${slug}/`}>
+
+  <!-- ═══ HERO ═══ -->
+  <section class="relative w-full px-6 py-20 md:py-28 overflow-hidden" style="background: #0A0A0A;">
+    <div class="absolute top-[20%] left-[10%] w-[500px] h-[500px] rounded-full blur-[180px] pointer-events-none" style="background: #0EA5E9; opacity: 0.08;"></div>
+    <div class="absolute bottom-[10%] right-[5%] w-[300px] h-[300px] rounded-full blur-[120px] pointer-events-none" style="background: #E86C47; opacity: 0.05;"></div>
+
+    <div class="relative mx-auto max-w-4xl z-10">
+      <div class="mb-6 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5);">
+        Persona report &middot; Confidential
+      </div>
+
+      <h1 class="mb-6 text-3xl md:text-4xl font-bold text-white leading-tight tracking-tight">
+        {verdictHero}
+      </h1>
+
+      <p class="mb-10 text-sm" style="color: rgba(255,255,255,0.4);">
+        Site reviewed: <a href={urlSite} target="_blank" rel="noopener" class="underline hover:text-white transition-colors">{urlSite}</a> &middot; {kpis.nbPersonas} simulated visitors &middot; {dateAudit}
+      </p>
+
+      <div class="grid grid-cols-3 gap-4">
+        <div class="rounded-xl p-5 text-center" style="background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2);">
+          <div class="text-4xl md:text-5xl font-black text-green-400 mb-1">{kpis.nbConvertissent}</div>
+          <div class="text-sm text-green-400/70">reach out</div>
+        </div>
+        <div class="rounded-xl p-5 text-center" style="background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2);">
+          <div class="text-4xl md:text-5xl font-black text-amber-400 mb-1">{kpis.nbHesitent}</div>
+          <div class="text-sm text-amber-400/70">hesitate</div>
+        </div>
+        <div class="rounded-xl p-5 text-center" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
+          <div class="text-4xl md:text-5xl font-black mb-1" style="color: rgba(255,255,255,0.5);">{kpis.nbRepartent}</div>
+          <div class="text-sm" style="color: rgba(255,255,255,0.3);">leave</div>
+        </div>
+      </div>
+
+      <p class="mt-6 text-sm text-center" style="color: rgba(255,255,255,0.5);">
+        That is <strong class="text-white">{kpis.conversion}%</strong> who get in touch &middot; <strong class="text-amber-400">0%</strong> from Google Maps &middot; <strong class="text-green-400">50%</strong> from word of mouth
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══ THE TAKEAWAY ═══ -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="rounded-2xl p-6 md:p-8 mb-12 border-l-4" style="background: rgba(14,165,233,0.04); border-color: #0EA5E9;">
+      <p class="text-lg md:text-xl font-medium text-neutral-800 leading-relaxed">{constat}</p>
+    </div>
+
+    <h2 class="text-xl font-bold text-neutral-900 mb-2">Where your visitors come from</h2>
+    <p class="text-sm text-neutral-500 mb-6">And how many reach out, depending on how they found you.</p>
+
+    <div class="space-y-4 mb-12">
+      {canalData.map((c) => {
+        const color = c.rate >= 50 ? '#22c55e' : c.rate >= 25 ? '#f59e0b' : '#ef4444';
+        return (
+          <div class="flex items-center gap-4">
+            <div class="w-44 sm:w-56 text-sm text-neutral-700 shrink-0">{c.canal}</div>
+            <div class="flex-1 h-3 bg-neutral-100 rounded-full overflow-hidden">
+              <div class="h-full rounded-full transition-all" style={`width: ${c.rate}%; background: ${color}`}></div>
+            </div>
+            <div class="w-20 text-right">
+              <span class="text-sm font-bold" style={`color: ${color}`}>{c.rate}%</span>
+              <span class="text-xs text-neutral-400 ml-1">({c.convert}/{c.nb})</span>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+
+    <details class="group mb-4">
+      <summary class="flex items-center gap-2 cursor-pointer text-sm text-neutral-500 hover:text-neutral-700 py-2">
+        <svg class="w-4 h-4 transition-transform group-open:rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        See the detailed scores (experience, trust, clarity)
+      </summary>
+      <div class="grid grid-cols-3 gap-4 mt-3">
+        <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
+          <div class="text-2xl font-bold text-neutral-800 mb-1">{kpis.experience}<span class="text-sm text-neutral-400">/10</span></div>
+          <div class="text-xs text-neutral-500">Experience</div>
+          <p class="text-[10px] text-neutral-400 mt-1">Navigation, readability, speed</p>
+        </div>
+        <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
+          <div class="text-2xl font-bold text-neutral-800 mb-1">{kpis.confiance}<span class="text-sm text-neutral-400">/10</span></div>
+          <div class="text-xs text-neutral-500">Trust</div>
+          <p class="text-[10px] text-neutral-400 mt-1">Credibility, proof, reassurance</p>
+        </div>
+        <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
+          <div class="text-2xl font-bold text-neutral-800 mb-1">{kpis.clarte}<span class="text-sm text-neutral-400">/10</span></div>
+          <div class="text-xs text-neutral-500">Clarity</div>
+          <p class="text-[10px] text-neutral-400 mt-1">Understanding the offer and prices</p>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ═══ ALERTS ═══ -->
+  <section class="py-14" style="background: #fefce8;">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center gap-2 mb-2">
+        <svg class="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01"/></svg>
+        <h2 class="text-xl font-bold text-neutral-900">What is holding visitors back</h2>
+      </div>
+      <p class="text-sm text-neutral-500 mb-6">{alertes.filter((a) => a.type === 'critique').length} critical &middot; {alertes.filter((a) => a.type === 'important').length} important</p>
+
+      <div class="grid sm:grid-cols-2 gap-4">
+        {alertes.map((a) => {
+          const crit = a.type === 'critique';
+          return (
+            <div class={`bg-white rounded-xl p-5 ${crit ? 'border-2 border-red-300' : 'border border-amber-200'}`}>
+              <div class="flex items-start gap-4">
+                <div class={`shrink-0 rounded-lg px-3 py-2 text-center ${crit ? 'bg-red-600' : 'bg-amber-500'}`}>
+                  <div class="text-lg font-black text-white leading-none">{a.chiffre}</div>
+                </div>
+                <div>
+                  <h3 class="font-semibold text-neutral-900 text-sm mb-1">{a.titre}</h3>
+                  <p class="text-[11px] text-neutral-400 mb-2">{a.chiffreLabel}</p>
+                  <p class="text-xs text-neutral-600 leading-relaxed">{a.detail}</p>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ VISITORS ═══ -->
+  <section class="py-16" style="background: #fafafa;">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-2">Your visitors</h2>
+      <p class="text-neutral-600 mb-8">Here is what happens when someone looking for freediving in Koh Tao lands on your site. Tap any profile to see their full journey.</p>
+
+      <!-- ✅ Reach out -->
+      <div class="mb-10">
+        <h3 class="text-base font-bold text-green-800 mb-4 flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-green-500 inline-block"></span>
+          Those who reach out
+          <span class="text-sm font-normal text-green-600">({converts.length})</span>
+        </h3>
+        <div class="space-y-3">
+          {converts.map((p) => (
+            <details class={`group persona-card bg-white rounded-xl overflow-hidden shadow-sm border ${decisionBorder(p.decision)}`} data-canal={p.canal}>
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-1 flex-wrap">
+                    <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age}</h4>
+                    <span class={`text-[10px] ${decisionBadge(p.decision)} text-white px-1.5 py-0.5 rounded font-medium`}>{p.decisionLabel}</span>
+                  </div>
+                  <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                  </div>
+                </div>
+                <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </summary>
+              <div class={`px-4 pb-5 border-t ${decisionBorder(p.decision)}`}>
+                <div class="grid gap-4 text-xs mt-4">
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Context</p>
+                    <p class="text-neutral-600">{p.contexte}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">First impression (5 seconds)</p>
+                    <p class="text-neutral-600">{p.impression}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Their journey</p>
+                    <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                      {p.parcours.map(([section, reaction]) => (
+                        <li><strong class="text-neutral-800">{section}</strong>{reaction ? ` — ${reaction}` : ''}</li>
+                      ))}
+                    </ol>
+                  </div>
+                  <div class="bg-neutral-50 rounded-lg p-3">
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Their question</p>
+                    <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
+                    <p class="text-neutral-600">The site answers: <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse === 'Oui' ? 'Yes' : p.reponse === 'Non' ? 'No' : 'Partly'}</strong> — {p.commentReponse}</p>
+                  </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <p class="font-semibold text-green-700 mb-1.5">✓ What works</p>
+                      <ul class="space-y-1 text-neutral-600">{p.positifs.map((pt) => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">·</span>{pt}</li>)}</ul>
+                    </div>
+                    <div>
+                      <p class="font-semibold text-amber-700 mb-1.5">✗ Friction</p>
+                      <ul class="space-y-1 text-neutral-600">{p.frictions.map((f) => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">·</span>{f}</li>)}</ul>
+                    </div>
+                  </div>
+                  <div class="flex gap-6 pt-3 border-t border-neutral-100">
+                    {[{ label: 'Experience', val: p.exp }, { label: 'Trust', val: p.conf }, { label: 'Clarity', val: p.clarte }].map((s) => (
+                      <div class="text-center">
+                        <span class={`block text-lg font-bold ${scoreColor(s.val)}`}>{s.val}</span>
+                        <span class="text-[10px] text-neutral-400">{s.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <!-- ⚠️ Hesitate -->
+      <div class="mb-4">
+        <h3 class="text-base font-bold text-amber-800 mb-4 flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span>
+          Those who hesitate
+          <span class="text-sm font-normal text-amber-600">({hesitates.length})</span>
+        </h3>
+        <div class="space-y-3">
+          {hesitates.map((p) => (
+            <details class={`group persona-card bg-white rounded-xl overflow-hidden shadow-sm border ${decisionBorder(p.decision)}`} data-canal={p.canal}>
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-1 flex-wrap">
+                    <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age}</h4>
+                    <span class={`text-[10px] ${decisionBadge(p.decision)} text-white px-1.5 py-0.5 rounded font-medium`}>{p.decisionLabel}</span>
+                  </div>
+                  <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                  </div>
+                </div>
+                <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </summary>
+              <div class={`px-4 pb-5 border-t ${decisionBorder(p.decision)}`}>
+                <div class="grid gap-4 text-xs mt-4">
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Context</p>
+                    <p class="text-neutral-600">{p.contexte}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">First impression (5 seconds)</p>
+                    <p class="text-neutral-600">{p.impression}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Their journey</p>
+                    <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                      {p.parcours.map(([section, reaction]) => (
+                        <li><strong class="text-neutral-800">{section}</strong>{reaction ? ` — ${reaction}` : ''}</li>
+                      ))}
+                    </ol>
+                  </div>
+                  <div class="bg-neutral-50 rounded-lg p-3">
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Their question</p>
+                    <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
+                    <p class="text-neutral-600">The site answers: <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse === 'Oui' ? 'Yes' : p.reponse === 'Non' ? 'No' : 'Partly'}</strong> — {p.commentReponse}</p>
+                  </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <p class="font-semibold text-green-700 mb-1.5">✓ What works</p>
+                      <ul class="space-y-1 text-neutral-600">{p.positifs.map((pt) => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">·</span>{pt}</li>)}</ul>
+                    </div>
+                    <div>
+                      <p class="font-semibold text-amber-700 mb-1.5">✗ Friction</p>
+                      <ul class="space-y-1 text-neutral-600">{p.frictions.map((f) => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">·</span>{f}</li>)}</ul>
+                    </div>
+                  </div>
+                  <div class="bg-sky-50 rounded-lg p-3">
+                    <p class="font-semibold text-sky-700 text-[10px] uppercase tracking-wider mb-1">What would tip them over</p>
+                    <p class="text-sky-800">{p.ceQuiFeraitBasculer}</p>
+                  </div>
+                  <div class="flex gap-6 pt-3 border-t border-neutral-100">
+                    {[{ label: 'Experience', val: p.exp }, { label: 'Trust', val: p.conf }, { label: 'Clarity', val: p.clarte }].map((s) => (
+                      <div class="text-center">
+                        <span class={`block text-lg font-bold ${scoreColor(s.val)}`}>{s.val}</span>
+                        <span class="text-[10px] text-neutral-400">{s.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-xl p-5 mb-10 bg-amber-50 border border-amber-200 flex items-start gap-3">
+        <span class="text-lg shrink-0 mt-0.5">💡</span>
+        <div>
+          <p class="text-sm font-medium text-amber-900">These {hesitates.length} visitors already want what you offer.</p>
+          <p class="text-xs text-amber-700 mt-1">They are missing one piece of reassurance — a price, a date, a face, a fast page — to take the step. This is your biggest growth lever.</p>
+        </div>
+      </div>
+
+      <!-- ❌ Leave -->
+      <div class="mb-4">
+        <h3 class="text-base font-bold text-neutral-600 mb-4 flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-neutral-400 inline-block"></span>
+          Those who leave
+          <span class="text-sm font-normal text-neutral-500">({leaves.length})</span>
+        </h3>
+        <div class="space-y-3">
+          {leaves.map((p) => (
+            <details class={`group persona-card bg-white rounded-xl overflow-hidden shadow-sm border ${decisionBorder(p.decision)}`} data-canal={p.canal}>
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-1 flex-wrap">
+                    <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age}</h4>
+                    <span class={`text-[10px] ${decisionBadge(p.decision)} text-white px-1.5 py-0.5 rounded font-medium`}>{p.decisionLabel}</span>
+                  </div>
+                  <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                  </div>
+                </div>
+                <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </summary>
+              <div class={`px-4 pb-5 border-t ${decisionBorder(p.decision)}`}>
+                <div class="grid gap-4 text-xs mt-4">
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Context</p>
+                    <p class="text-neutral-600">{p.contexte}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">First impression (5 seconds)</p>
+                    <p class="text-neutral-600">{p.impression}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Their journey</p>
+                    <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                      {p.parcours.map(([section, reaction]) => (
+                        <li><strong class="text-neutral-800">{section}</strong>{reaction ? ` — ${reaction}` : ''}</li>
+                      ))}
+                    </ol>
+                  </div>
+                  <div class="bg-neutral-50 rounded-lg p-3">
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Their question</p>
+                    <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
+                    <p class="text-neutral-600">The site answers: <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse === 'Oui' ? 'Yes' : p.reponse === 'Non' ? 'No' : 'Partly'}</strong> — {p.commentReponse}</p>
+                  </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <p class="font-semibold text-green-700 mb-1.5">✓ What works</p>
+                      <ul class="space-y-1 text-neutral-600">{p.positifs.map((pt) => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">·</span>{pt}</li>)}</ul>
+                    </div>
+                    <div>
+                      <p class="font-semibold text-amber-700 mb-1.5">✗ Friction</p>
+                      <ul class="space-y-1 text-neutral-600">{p.frictions.map((f) => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">·</span>{f}</li>)}</ul>
+                    </div>
+                  </div>
+                  <div class="bg-sky-50 rounded-lg p-3">
+                    <p class="font-semibold text-sky-700 text-[10px] uppercase tracking-wider mb-1">What would have kept them</p>
+                    <p class="text-sky-800">{p.ceQuiFeraitBasculer}</p>
+                  </div>
+                  <div class="flex gap-6 pt-3 border-t border-neutral-100">
+                    {[{ label: 'Experience', val: p.exp }, { label: 'Trust', val: p.conf }, { label: 'Clarity', val: p.clarte }].map((s) => (
+                      <div class="text-center">
+                        <span class={`block text-lg font-bold ${scoreColor(s.val)}`}>{s.val}</span>
+                        <span class="text-[10px] text-neutral-400">{s.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-xl p-5 bg-neutral-100 border border-neutral-200 flex items-start gap-3">
+        <span class="text-lg shrink-0 mt-0.5">📉</span>
+        <div>
+          <p class="text-sm font-medium text-neutral-800">Some of these were never your people — and that is fine.</p>
+          <p class="text-xs text-neutral-600 mt-1">Party-scuba and casual cruise tourists are simply outside your niche. But others (a slow phone, a missing price, no instructor face) had a real need your site didn’t answer in time.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ RECOMMENDATIONS ═══ -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <h2 class="text-2xl font-bold text-neutral-900 mb-2">What I'd change</h2>
+    <p class="text-neutral-600 mb-8">Concrete fixes, ordered by how many visitors they affect. The good news: none of them touch your story or your brand — they remove friction around it.</p>
+
+    <p class="text-sm font-semibold text-red-700 mb-4">If you only change four things:</p>
+
+    <div class="space-y-4 mb-12">
+      {ameliorationsHautes.map((a) => (
+        <div class="bg-white border-2 border-red-200 rounded-xl p-6 shadow-sm">
+          <div class="flex items-start justify-between gap-4 mb-3">
+            <h4 class="font-bold text-neutral-900">{a.titre}</h4>
+            <span class="text-[10px] px-2 py-1 rounded-full bg-red-100 text-red-700 font-semibold shrink-0 whitespace-nowrap">{a.impact}</span>
+          </div>
+          <p class="text-sm text-neutral-600 mb-3">{a.pourquoi}</p>
+          <div class="bg-neutral-50 rounded-lg px-4 py-3 flex items-start gap-2">
+            <svg class="w-4 h-4 text-neutral-400 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+            <p class="text-xs text-neutral-700">{a.action}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <h3 class="text-lg font-bold text-neutral-900 mb-2">Also worth doing</h3>
+    <div class="grid md:grid-cols-2 gap-4 mb-12">
+      {ameliorationsUtiles.map((a) => (
+        <div class="bg-white border border-neutral-200 rounded-xl p-5">
+          <h4 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h4>
+          <p class="text-xs text-neutral-600">{a.detail}</p>
+        </div>
+      ))}
+    </div>
+
+    <h3 class="text-lg font-bold text-neutral-900 mb-2">Up to you</h3>
+    <p class="text-sm text-neutral-500 mb-4">Business calls — no right or wrong answer.</p>
+    <div class="space-y-3 mb-4">
+      {ameliorationsDiscuter.map((a) => (
+        <div class="bg-neutral-50 border border-neutral-200 rounded-xl p-4 flex gap-3">
+          <span class="text-lg shrink-0">{a.emoji}</span>
+          <div>
+            <h4 class="font-semibold text-neutral-900 text-sm mb-0.5">{a.titre}</h4>
+            <p class="text-xs text-neutral-600">{a.detail}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- ═══ UNDER THE HOOD ═══ -->
+  <section class="py-16 border-t border-neutral-200">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-2">Under the hood</h2>
+      <p class="text-neutral-600 mb-8">For the curious: what the technical tools say about your site.</p>
+
+      <div class="flex flex-wrap gap-3 mb-10">
+        {techVerdicts.map((v) => (
+          <div class={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium ${v.ok ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
+            {v.ok
+              ? <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              : <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}
+            <span>{v.label}</span>
+            <span class="text-xs opacity-70">{v.verdict}</span>
+          </div>
+        ))}
+      </div>
+
+      <!-- Speed -->
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+          <div class="flex items-center gap-3">
+            <span class="text-base">⚡</span>
+            <div>
+              <h3 class="font-semibold text-neutral-900 text-sm">Speed</h3>
+              <p class="text-[11px] text-neutral-500">{techVerdicts[0].detail}</p>
+            </div>
+          </div>
+          <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <div class="px-4 pb-4 border-t border-neutral-100">
+          <p class="text-xs text-neutral-500 pt-3 pb-1">On a phone (where most of your guests are):</p>
+          <div class="grid grid-cols-4 gap-4 pb-4">
+            {['Performance', 'Accessibility', 'Best practices', 'Search'].map((label, i) => {
+              const scores = [tech.pagespdMobile.performance, tech.pagespdMobile.accessibility, tech.pagespdMobile.bestPractices, tech.pagespdMobile.seo];
+              const score = scores[i];
+              const color = score >= 90 ? '#22c55e' : score >= 50 ? '#f59e0b' : '#ef4444';
+              return (
+                <div class="text-center">
+                  <div class="relative w-14 h-14 mx-auto mb-2">
+                    <svg class="w-14 h-14 -rotate-90" viewBox="0 0 36 36">
+                      <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3" />
+                      <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={color} stroke-width="3" stroke-dasharray={`${score}, 100`} stroke-linecap="round" />
+                    </svg>
+                    <span class="absolute inset-0 flex items-center justify-center text-sm font-bold" style={`color: ${color}`}>{score}</span>
+                  </div>
+                  <p class="text-[11px] text-neutral-600">{label}</p>
+                </div>
+              );
+            })}
+          </div>
+          <p class="text-xs text-neutral-500 pb-3">On a laptop the site scores {tech.pagespdDesktop.performance}/100 for speed and loads in about 1.6 seconds — so the problem is mobile only, mainly heavy images.</p>
+        </div>
+      </details>
+
+      <!-- Security -->
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+          <div class="flex items-center gap-3">
+            <span class="text-base">🔒</span>
+            <div>
+              <h3 class="font-semibold text-neutral-900 text-sm">Security</h3>
+              <p class="text-[11px] text-neutral-500">{techVerdicts[1].detail}</p>
+            </div>
+          </div>
+          <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <div class="px-4 pb-4 border-t border-neutral-100">
+          <p class="text-xs text-neutral-500 py-2">Grade: {tech.observatory.grade} ({tech.observatory.testsOk}/{tech.observatory.testsTotal} checks passed)</p>
+          {tech.headers.map((h) => (
+            <div class="flex items-center gap-2 py-1">
+              {h.ok
+                ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                : <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}
+              <span class={`text-xs ${h.ok ? 'text-neutral-600' : 'text-red-500'}`}>{h.h}</span>
+            </div>
+          ))}
+        </div>
+      </details>
+
+      <!-- Business data -->
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+          <div class="flex items-center gap-3">
+            <span class="text-base">📊</span>
+            <div>
+              <h3 class="font-semibold text-neutral-900 text-sm">Business data (what Google reads)</h3>
+              <p class="text-[11px] text-neutral-500">{techVerdicts[3].detail}</p>
+            </div>
+          </div>
+          <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <div class="px-4 pb-4 border-t border-neutral-100">
+          {tech.schema.map((s) => (
+            <div class="flex items-center gap-2 py-1">
+              {s.ok
+                ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                : <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}
+              <span class={`text-xs ${s.ok ? 'text-neutral-600' : 'text-red-500 font-medium'}`}>{s.item}</span>
+            </div>
+          ))}
+        </div>
+      </details>
+
+      <!-- Social preview -->
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+          <div class="flex items-center gap-3">
+            <span class="text-base">🔗</span>
+            <div>
+              <h3 class="font-semibold text-neutral-900 text-sm">Social sharing preview</h3>
+              <p class="text-[11px] text-neutral-500">{techVerdicts[4].detail}</p>
+            </div>
+          </div>
+          <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <div class="px-4 pb-4 border-t border-neutral-100">
+          {tech.og.map((o) => (
+            <div class="flex items-start gap-2 py-1">
+              <svg class="w-3.5 h-3.5 text-green-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              <span class="text-xs text-neutral-600">{o.item} <span class="text-neutral-400">{o.val}</span></span>
+            </div>
+          ))}
+        </div>
+      </details>
+
+      <!-- Search -->
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+          <div class="flex items-center gap-3">
+            <span class="text-base">🔍</span>
+            <div>
+              <h3 class="font-semibold text-neutral-900 text-sm">Search (SEO)</h3>
+              <p class="text-[11px] text-neutral-500">{techVerdicts[2].detail}</p>
+            </div>
+          </div>
+          <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <div class="px-4 pb-4 border-t border-neutral-100">
+          {tech.seo.map((s) => (
+            <div class="flex items-center gap-2 py-1">
+              {s.ok
+                ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                : <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}
+              <span class={`text-xs ${s.ok ? 'text-neutral-600' : 'text-red-500'}`}>{s.item}</span>
+            </div>
+          ))}
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ═══ METHOD ═══ -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-neutral-200">
+    <h2 class="text-base font-bold text-neutral-900 mb-4">How this was done</h2>
+    <ol class="space-y-3 text-sm text-neutral-600">
+      <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">1</span><span>I read every page of your site, the way a visitor would</span></li>
+      <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">2</span><span>I ran the technical checks — speed, security, search, business data — with the same tools Google uses</span></li>
+      <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">3</span><span>I built {kpis.nbPersonas} realistic visitor profiles — the kind of people who actually look for freediving in Koh Tao</span></li>
+      <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">4</span><span>Each one "visited" your site and gave their honest reaction — first impression, journey, decision</span></li>
+      <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">5</span><span>I gathered the recurring friction and turned it into the short list of fixes above</span></li>
+    </ol>
+  </section>
+
+  <!-- ═══ FINAL CTA (soft) ═══ -->
+  <section class="relative w-full px-6 py-20 overflow-hidden" style="background: #0A0A0A;">
+    <div class="absolute bottom-[10%] right-[10%] w-[400px] h-[400px] rounded-full blur-[160px] pointer-events-none" style="background: #0EA5E9; opacity: 0.06;"></div>
+    <div class="relative mx-auto max-w-3xl z-10 text-center">
+      <h2 class="text-2xl md:text-3xl font-bold text-white mb-4 leading-tight">
+        The hard part — the story, the experience — you already nailed.
+      </h2>
+      <p class="text-sm mb-8 max-w-xl mx-auto" style="color: rgba(255,255,255,0.55);">
+        What is left is friction: a fast mobile page, prices on every course, a tap-to-book button, a few reassuring lines. Small fixes, real impact. If you want, I'm happy to walk you through any of them — no strings, just one ocean person helping another.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href={`https://wa.me/${whatsapp}`} target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-8 py-4 text-white font-bold text-lg rounded-xl transition-all shadow-lg hover:-translate-y-0.5 bg-green-600 hover:bg-green-500">
+          Message Marc on WhatsApp
+        </a>
+        <span class="text-sm" style="color: rgba(255,255,255,0.4);">or {phoneDisplay}</span>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<script is:inline>
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const personaCards = document.querySelectorAll('.persona-card');
+  if (filterBtns.length > 0) {
+    filterBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const filter = btn.dataset.filter;
+        filterBtns.forEach((b) => { b.classList.remove('bg-neutral-900', 'text-white'); b.classList.add('bg-white', 'text-neutral-600'); });
+        btn.classList.remove('bg-white', 'text-neutral-600');
+        btn.classList.add('bg-neutral-900', 'text-white');
+        personaCards.forEach((card) => { card.style.display = (filter === 'all' || card.dataset.canal === filter) ? '' : 'none'; });
+      });
+    });
+  }
+</script>
