@@ -54,6 +54,39 @@ export interface Project {
 }
 
 export const projects: Project[] = [
+  // ── Association Davia ─────────────────────────────────────────────────────
+  {
+    id: 'davia',
+    title: 'Association Davia',
+    titleEn: 'Davia Association',
+    sector: 'Association',
+    sectorEn: 'Non-profit',
+    sectorColor: 'border-sky-400/30 bg-sky-400/10 text-sky-600',
+    type: 'Site vitrine bilingue',
+    typeEn: 'Bilingual showcase site',
+    offer: 'Projet Sur Mesure',
+    description: "Association loi 1901 qui préserve le Davia, yacht de 1929 et dernier Dunkirk Little Ship de plus de 15 mètres en France, héros de l'Opération Dynamo en 1940. Site bilingue FR/EN : histoire du bateau, visites, journal de bord, dons HelloAsso. CMS maison pour gestion autonome.",
+    descriptionEn: "Non-profit preserving the Davia, a 1929 yacht and France's last Dunkirk Little Ship over 15 metres, a veteran of Operation Dynamo in 1940. Bilingual FR/EN site: the boat's history, visits, logbook, HelloAsso donations. In-house CMS for self-management.",
+    url: 'https://davia1929.com',
+    gradient: 'from-[#0B2238] to-[#1A3A2E]',
+    gradientFrom: '#0B2238',
+    gradientTo: '#1A3A2E',
+    screenshot: '/images/projects/davia.webp',
+    features: ['Bilingue FR/EN', 'Journal de bord', 'Dons HelloAsso', 'CMS maison', 'Schema.org NGO', 'SEO patrimoine'],
+    featuresEn: ['FR/EN bilingual', 'Logbook', 'HelloAsso donations', 'In-house CMS', 'Schema.org NGO', 'Heritage SEO'],
+    highlights: [
+      { label: 'Vitesse', value: '100' },
+      { label: 'Bilingue', value: 'FR / EN' },
+    ],
+    highlightsEn: [
+      { label: 'Speed', value: '100' },
+      { label: 'Bilingual', value: 'FR / EN' },
+    ],
+    stack: ['Astro', 'Tailwind', 'Cloudflare', 'CMS maison'],
+    multilingual: true,
+    carousels: ['realisations', 'portfolio', 'homepage'],
+  },
+
   // ── P'Accord Piano ───────────────────────────────────────────────────────
   {
     id: 'paccord-piano',
