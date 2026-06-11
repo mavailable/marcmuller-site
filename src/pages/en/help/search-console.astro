@@ -1,0 +1,291 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import SchemaOrg from '../../../components/SchemaOrg.astro';
+import { business } from '../../../data/business';
+
+const title = 'Give access to your Google Search Console: step-by-step · Marc M';
+const description = 'Add me to your Google Search Console in a few minutes so I can track your site\'s SEO. You remain the sole owner.';
+
+// Personal access (web) : editable here if it ever changes
+const ACCES_PERSO = business.email; // marc@muller.im
+// Service account (API) : covers Search Console API + Indexing API
+const ACCES_OUTIL = 'indexing-api@central-pod-492109-f5.iam.gserviceaccount.com';
+
+const breadcrumbs = [
+  { name: 'Home', url: `${business.url}/en/` },
+  { name: 'Help', url: `${business.url}/en/help/` },
+  { name: 'Google Search Console', url: `${business.url}/en/help/search-console/` },
+];
+
+const howToSteps = [
+  { name: 'Open Google Search Console', text: 'Go to search.google.com/search-console and sign in with the Google account used to create your Search Console.' },
+  { name: 'Select your site', text: 'Top left, choose your site (your "property"). If you have a "Domain" property, choose it first.' },
+  { name: 'Open Settings', text: 'Bottom left, click the gear icon "Settings".' },
+  { name: 'Go to Users and permissions', text: 'Click "Users and permissions".' },
+  { name: 'Click Add user', text: 'Top right, click "Add user". You\'ll do this twice, once per access below.' },
+];
+
+const faq = [
+  {
+    question: 'The list only offers "Full" and "Restricted", not "Owner". What should I do?',
+    answer: 'Add the 2nd access as "Full" anyway and let me know. I\'ll tell you the next step, it\'s very simple on my side.',
+  },
+  {
+    question: 'How can I be sure I won\'t mistype the 2nd address?',
+    answer: 'Use the "Copy" button next to the address. It\'s a long, technical address, and the smallest typo stops the access from working. By copy-pasting it, you avoid any mistake.',
+  },
+  {
+    question: 'Do I lose control of my Search Console?',
+    answer: 'No. You remain the owner of your Search Console. These accesses give no rights over your domain name, your hosting or your emails. You can remove them whenever you want from the same "Users and permissions" page.',
+  },
+];
+---
+
+<BaseLayout title={title} description={description} lang="en" frPath="/aide/search-console" enPath="/en/help/search-console" noindex>
+
+  <SchemaOrg type="breadcrumb" data={breadcrumbs} />
+  <SchemaOrg type="howTo" data={{
+    name: 'Give access to your Google Search Console',
+    description: 'Guide to add a personal access and a service account to your Google Search Console property.',
+    totalTime: 'PT5M',
+    steps: howToSteps,
+  }} />
+  <SchemaOrg type="faqPage" data={faq} />
+
+  <!-- HERO -->
+  <section class="relative w-full bg-[#0D0D0D] px-6 py-16 md:px-8 md:py-24 overflow-hidden">
+    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 40px 40px;"></div>
+
+    <div class="relative mx-auto max-w-3xl z-10">
+      <a href="/en/help" class="inline-flex items-center gap-2 text-sm text-neutral-300 hover:text-white transition-colors mb-8">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" /></svg>
+        Back to guides
+      </a>
+
+      <div class="flex flex-wrap items-center gap-3 mb-6">
+        <span class="inline-block rounded-full border border-sky-400/30 bg-sky-400/10 px-3 py-1 text-xs font-semibold text-sky-300">
+          SEO
+        </span>
+        <span class="text-sm text-neutral-400">~5 minutes</span>
+        <span class="text-sm text-neutral-400">•</span>
+        <span class="text-sm text-neutral-400">2 accesses to add</span>
+      </div>
+
+      <h1 class="mb-6 text-3xl font-bold leading-tight text-white md:text-5xl">
+        Give access to your Google Search Console
+      </h1>
+      <p class="text-lg text-neutral-300 md:text-xl leading-relaxed">
+        A few minutes to let me track your site's SEO.
+      </p>
+    </div>
+  </section>
+
+  <!-- GUIDE BODY -->
+  <section class="w-full bg-[var(--color-bg)] px-6 py-16 md:px-8 md:py-24">
+    <div class="mx-auto max-w-3xl">
+      <article class="rounded-xl bg-white border border-[var(--color-border)] p-8 md:p-12 shadow-sm">
+
+        <!-- Intro -->
+        <p class="text-[var(--color-text-muted)] leading-relaxed mb-6">
+          You already have a Google Search Console account for your site. So that I can track your performance and automate the stats monitoring, you just need to add me to your property. You remain the sole owner and you can remove this access at any time.
+        </p>
+
+        <!-- What you need -->
+        <div class="mb-10 rounded-lg bg-sky-50 border border-sky-200 p-5">
+          <p class="text-sm font-semibold text-sky-800 mb-1">What you need</p>
+          <p class="text-sm text-sky-700 leading-relaxed">
+            Be signed in to the Google account used to create your Search Console.
+          </p>
+        </div>
+
+        <!-- Steps -->
+        <div class="space-y-8">
+          {howToSteps.map((step, i) => (
+            <div class="flex gap-5">
+              <div class="flex-shrink-0 flex items-center justify-center w-10 h-10 rounded-full bg-[var(--color-accent)] text-white font-bold text-sm shadow-md">
+                {i + 1}
+              </div>
+              <div class="flex-1 pt-1.5">
+                <h2 class="text-lg font-bold text-[var(--color-text)] mb-2">{step.name}</h2>
+                {i === 0 ? (
+                  <p class="text-[var(--color-text-muted)] leading-relaxed">
+                    Go to <a href="https://search.google.com/search-console" target="_blank" rel="noopener noreferrer" class="font-semibold text-[var(--color-accent-text)] underline hover:text-[var(--color-accent)] transition-colors">Google Search Console</a> and sign in with the Google account used to create your Search Console.
+                  </p>
+                ) : (
+                  <p class="text-[var(--color-text-muted)] leading-relaxed">{step.text}</p>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <!-- The two accesses -->
+        <div class="mt-12 mb-6">
+          <h2 class="text-xl font-bold text-[var(--color-text)] mb-2">The two accesses to add</h2>
+          <p class="text-sm text-[var(--color-text-muted)] leading-relaxed">
+            For each access: paste the address, choose the indicated permission, then click "Add".
+          </p>
+        </div>
+
+        <!-- Access 1 -->
+        <div class="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-alt)] overflow-hidden mb-5">
+          <div class="border-b border-[var(--color-border)] bg-white px-5 py-3">
+            <div class="flex items-center gap-3">
+              <span class="flex h-7 w-7 items-center justify-center rounded-full bg-sky-100 text-sky-700 text-sm font-bold shrink-0">1</span>
+              <p class="font-bold text-[var(--color-text)]">My access</p>
+            </div>
+          </div>
+          <div class="p-5">
+            <p class="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-muted)] mb-2">Email address</p>
+            <div class="flex flex-col sm:flex-row gap-2">
+              <code id="copy-perso-value" class="flex-1 min-w-0 bg-white border border-[var(--color-border)] rounded-lg px-4 py-3 text-sm font-mono text-[var(--color-text)] break-all select-all">{ACCES_PERSO}</code>
+              <button
+                type="button"
+                data-copy-btn
+                data-copy-target="copy-perso-value"
+                class="copy-btn shrink-0 inline-flex items-center justify-center gap-2 px-4 py-3 bg-[var(--color-accent)] text-white text-sm font-semibold rounded-lg hover:bg-[var(--color-accent-hover)] transition-all min-h-[44px]"
+                aria-label="Copy my access email address"
+                data-umami-event="aide-gsc-copy-perso"
+              >
+                <svg class="copy-icon w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2m-6 12h8a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-8a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2Z" /></svg>
+                <span class="copy-label">Copy</span>
+              </button>
+            </div>
+            <div class="mt-4 flex items-center gap-2">
+              <span class="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">Permission to choose</span>
+              <span class="inline-flex items-center rounded-full bg-emerald-100 px-3 py-1 text-sm font-bold text-emerald-700">Full</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Access 2 -->
+        <div class="rounded-xl border border-[var(--color-border)] bg-[var(--color-bg-alt)] overflow-hidden">
+          <div class="border-b border-[var(--color-border)] bg-white px-5 py-3">
+            <div class="flex items-center gap-3">
+              <span class="flex h-7 w-7 items-center justify-center rounded-full bg-violet-100 text-violet-700 text-sm font-bold shrink-0">2</span>
+              <p class="font-bold text-[var(--color-text)]">The automatic tracking tool</p>
+            </div>
+          </div>
+          <div class="p-5">
+            <p class="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-muted)] mb-2">Email address</p>
+            <div class="flex flex-col sm:flex-row gap-2">
+              <code id="copy-outil-value" class="flex-1 min-w-0 bg-white border border-[var(--color-border)] rounded-lg px-4 py-3 text-sm font-mono text-[var(--color-text)] break-all select-all">{ACCES_OUTIL}</code>
+              <button
+                type="button"
+                data-copy-btn
+                data-copy-target="copy-outil-value"
+                class="copy-btn shrink-0 inline-flex items-center justify-center gap-2 px-4 py-3 bg-[var(--color-accent)] text-white text-sm font-semibold rounded-lg hover:bg-[var(--color-accent-hover)] transition-all min-h-[44px]"
+                aria-label="Copy the tracking tool email address"
+                data-umami-event="aide-gsc-copy-outil"
+              >
+                <svg class="copy-icon w-4 h-4 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8 16H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v2m-6 12h8a2 2 0 0 0 2-2v-8a2 2 0 0 0-2-2h-8a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2Z" /></svg>
+                <span class="copy-label">Copy</span>
+              </button>
+            </div>
+            <div class="mt-4 flex items-center gap-2">
+              <span class="text-xs font-semibold uppercase tracking-wider text-[var(--color-text-muted)]">Permission to choose</span>
+              <span class="inline-flex items-center rounded-full bg-violet-100 px-3 py-1 text-sm font-bold text-violet-700">Owner</span>
+            </div>
+            <p class="mt-4 text-sm text-[var(--color-text-muted)] leading-relaxed">
+              Make sure to choose "Owner" for this 2nd access: that's what enables the automation.
+            </p>
+          </div>
+        </div>
+
+        <!-- Done -->
+        <div class="mt-10 rounded-lg bg-emerald-50 border border-emerald-200 p-5">
+          <p class="text-sm font-semibold text-emerald-800 mb-1">Done</p>
+          <p class="text-sm text-emerald-700 leading-relaxed">
+            Once both accesses are added, you have nothing else to do. Access is active immediately.
+          </p>
+        </div>
+
+        <!-- A problem? -->
+        <div class="mt-10 space-y-4">
+          <p class="text-sm font-bold uppercase tracking-widest text-[var(--color-text-muted)]">A problem?</p>
+          {faq.map((item) => (
+            <details class="group rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-alt)] overflow-hidden">
+              <summary class="flex cursor-pointer items-center justify-between gap-4 p-4 text-sm font-semibold text-[var(--color-text)] hover:text-[var(--color-accent-text)] transition-colors [&::-webkit-details-marker]:hidden">
+                {item.question}
+                <svg class="w-4 h-4 shrink-0 text-[var(--color-text-muted)] transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </summary>
+              <div class="px-4 pb-4">
+                <p class="text-sm leading-relaxed text-[var(--color-text-muted)]">{item.answer}</p>
+              </div>
+            </details>
+          ))}
+          <p class="text-sm text-[var(--color-text-muted)] leading-relaxed pt-2">
+            A question? Email me at <a href={`mailto:${business.email}`} class="font-semibold text-[var(--color-accent-text)] underline hover:text-[var(--color-accent)] transition-colors">{business.email}</a>.
+          </p>
+        </div>
+
+        <!-- Reassurance -->
+        <div class="mt-10 rounded-xl bg-neutral-50 border border-neutral-200 p-5">
+          <p class="text-sm text-neutral-600 leading-relaxed">
+            You remain the owner of your Search Console. These accesses give no rights over your domain name, your hosting or your emails, and you can remove them whenever you want from the same page.
+          </p>
+        </div>
+
+        <!-- Nav between guides -->
+        <div class="mt-8 flex items-center justify-between rounded-lg border border-[var(--color-border)] p-4">
+          <a href="/en/help/technical-access" class="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-text-muted)] hover:text-[var(--color-accent-text)] transition-all">
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" />
+            </svg>
+            Technical access
+          </a>
+          <a href="/en/help" class="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-accent-text)] hover:gap-3 transition-all">
+            All guides
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </a>
+        </div>
+
+      </article>
+    </div>
+  </section>
+
+  <script is:inline>
+    (function () {
+      function bind(btn) {
+        btn.addEventListener('click', function () {
+          var targetId = btn.getAttribute('data-copy-target');
+          var el = document.getElementById(targetId);
+          if (!el) return;
+          var text = el.textContent.trim();
+          var label = btn.querySelector('.copy-label');
+          var original = label ? label.textContent : '';
+
+          function done() {
+            if (label) label.textContent = 'Copied!';
+            btn.classList.add('copied');
+            setTimeout(function () {
+              if (label) label.textContent = original;
+              btn.classList.remove('copied');
+            }, 2000);
+          }
+          function fallback() {
+            var range = document.createRange();
+            range.selectNodeContents(el);
+            var sel = window.getSelection();
+            sel.removeAllRanges();
+            sel.addRange(range);
+            try { document.execCommand('copy'); done(); } catch (e) {}
+            sel.removeAllRanges();
+          }
+
+          if (navigator.clipboard && navigator.clipboard.writeText) {
+            navigator.clipboard.writeText(text).then(done, fallback);
+          } else {
+            fallback();
+          }
+        });
+      }
+      var btns = document.querySelectorAll('[data-copy-btn]');
+      for (var i = 0; i < btns.length; i++) bind(btns[i]);
+    })();
+  </script>
+</BaseLayout>
