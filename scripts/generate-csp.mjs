@@ -74,7 +74,7 @@ async function main() {
 
   // Build script-src with 'self' + hashes (no unsafe-inline)
   const scriptSrc = ["'self'", ...hashes].join(' ');
-  const cspValue = `default-src 'none'; script-src ${scriptSrc}; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://api.web3forms.com https://cloud.umami.is https://api-gateway.umami.dev; form-action 'self' https://api.web3forms.com; frame-ancestors 'none'; base-uri 'self'; manifest-src 'self'`;
+  const cspValue = `default-src 'none'; script-src ${scriptSrc}; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self'; connect-src 'self' https://api.web3forms.com https://cloud.umami.is https://gateway.umami.is https://api-gateway.umami.dev; form-action 'self' https://api.web3forms.com; frame-ancestors 'none'; base-uri 'self'; manifest-src 'self'`;
 
   // Write CSP value as JS module for the Cloudflare Pages middleware
   // (the _headers file has a 2000-char limit per header value, CSP with hashes exceeds it)
