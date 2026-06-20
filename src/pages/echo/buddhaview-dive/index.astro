@@ -1,0 +1,814 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+import { personas, type Decision } from '../../../data/buddhaview-dive-personas';
+
+const slug = 'buddhaview-dive';
+const nomProspect = 'Buddha View Dive Centre';
+const urlSite = 'https://www.buddhaviewdivecentre.com';
+const dateAudit = '20 juin 2026';
+
+const title = 'Rapport Personas - Buddha View Dive Centre | Marc M';
+const description = "Un regard confidentiel sur buddhaviewdivecentre.com a travers 60 visiteurs simules (20 anglophones, 20 francophones, 20 germanophones) : qui vous contacte, qui hesite, qui repart, et les correctifs qui transformeraient plus de visites en reservations.";
+
+// Marc contact (from business.ts - phone +33688766648)
+const phoneDisplay = '+33 6 88 76 66 48';
+const whatsapp = '33688766648';
+
+// KPIs sur l'ensemble des 60 visiteurs simules (pas seulement les 24 affiches)
+const kpis = { nbPersonas: 60, nbConvertissent: 15, nbHesitent: 26, nbRepartent: 19, conversion: 25, experience: 5.3, confiance: 5.2, clarte: 5.2 };
+
+const verdictHero = "Sur 60 visiteurs adaptés à votre activité, 15 vous contactent. Les 45 autres non, et trois raisons reviennent : aucun avis client, des prix absents de la page d'aperçu des cours, et un site 100% anglais alors que votre équipe parle six langues.";
+
+const constat = "Votre contenu inspire confiance : centre PADI 5 étoiles, prix de fun-diving clairs, spot de Tanote Bay plus calme. La fuite se situe entre l'arrivée et la prise de contact. Trois trous reviennent chez la majorité des 60 visiteurs : aucune preuve sociale (zéro avis sur tout le site), des prix invisibles sur la page d'aperçu des cours (il faut ouvrir chaque cours un par un), et un site entièrement en anglais qui laisse les voyageurs francophones et germanophones sans repère, alors même que votre équipe parle leurs langues sans jamais le dire là où ça compte.";
+
+// Conversion par langue (le coeur de cet audit)
+const langueData = [
+  { langue: 'Anglophones', flag: '🇬🇧', total: 20, convert: 5, hesite: 10, quitte: 5, rate: 25, upside: 0, note: "Aucune barrière de langue. Ce sont vos frictions de contenu (zéro avis, prix cachés, mobile lent) qui plafonnent la conversion." },
+  { langue: 'Francophones', flag: '🇫🇷', total: 20, convert: 5, hesite: 8, quitte: 7, rate: 25, upside: 6, note: "Même taux, mais la langue y contribue. 6 de plus vous contacteraient si le site parlait français et signalait l'instructeur francophone, que votre équipe propose déjà." },
+  { langue: 'Germanophones', flag: '🇩🇪', total: 20, convert: 5, hesite: 8, quitte: 7, rate: 25, upside: 11, note: "Bon niveau d'anglais, mais l'absence d'avis et de politique d'annulation les bloque. 11 de plus avec ces repères et un signal instructeur germanophone." }
+];
+
+// D'ou viennent vos visiteurs (trie par taux de conversion)
+const canalData = [
+  { canal: 'Bouche-à-oreille', nb: 9, convert: 6, rate: 67 },
+  { canal: 'Google Maps', nb: 9, convert: 4, rate: 44 },
+  { canal: 'Google Search', nb: 15, convert: 3, rate: 20 },
+  { canal: 'Agrégateurs (PADI Travel, lien hostel)', nb: 9, convert: 1, rate: 11 },
+  { canal: 'Assistants IA (ChatGPT, Perplexity)', nb: 9, convert: 1, rate: 11 },
+  { canal: 'Réseaux sociaux', nb: 9, convert: 0, rate: 0 }
+];
+
+// Alertes (1 critique + 3 important)
+const alertes = [
+  { type: 'critique' as const, titre: "Aucun avis client sur tout le site", detail: "Zéro preuve sociale alors que Google et TripAdvisor en regorgent. C'est la friction numéro un, citée par la majorité des 60 visiteurs : sans avis, un inconnu ne sait pas s'il peut vous faire confiance.", chiffre: '0', chiffreLabel: 'avis ou témoignages' },
+  { type: 'important' as const, titre: "Sur mobile, le site met près de 7 secondes à s'afficher", detail: "La plupart de vos clients vous trouvent sur leur téléphone. Le visuel principal met 6,9 secondes à apparaître sur mobile (1,7s sur ordinateur). Beaucoup ferment l'onglet avant de voir quoi que ce soit. Le problème est mobile uniquement.", chiffre: '6,9s', chiffreLabel: 'chargement mobile' },
+  { type: 'important' as const, titre: "Les prix sont absents de la page d'aperçu des cours", detail: "L'Open Water (10 900 THB) n'est visible qu'en ouvrant sa propre page. Impossible de comparer d'un coup d'oeil. Les voyageurs au budget serré passent à un centre qui affiche ses prix.", chiffre: '0', chiffreLabel: "prix sur l'aperçu" },
+  { type: 'important' as const, titre: "Un site 100% anglais, langues parlées invisibles", detail: "Votre équipe parle anglais, thaï, chinois, allemand, espagnol et français, mais le site est entièrement en anglais et ne le signale jamais sur l'accueil ni les pages cours. Un visiteur francophone ou germanophone ne sait pas qu'il sera compris.", chiffre: '1/6', chiffreLabel: 'langues affichées' }
+];
+
+// Verdict technique (badges)
+const techVerdicts = [
+  { label: 'Vitesse', verdict: 'Lente sur mobile', ok: false, detail: "6,9s pour s'afficher sur téléphone, 1,7s sur ordinateur" },
+  { label: 'Sécurité', verdict: 'Faible', ok: false, detail: 'Note C-, 4 protections standard manquantes' },
+  { label: 'Référencement', verdict: 'Bon', ok: true, detail: 'Bien configuré pour Google (92/100)' },
+  { label: 'Données business', verdict: 'Présentes', ok: true, detail: 'Google lit votre fiche (LocalBusiness)' },
+  { label: 'Partage social', verdict: 'Incomplet', ok: false, detail: 'Aucune image lors d\'un partage' }
+];
+
+const tech = {
+  observatory: { grade: 'C-', score: 45, testsOk: 6, testsTotal: 10 },
+  pagespdMobile: { performance: 63, accessibility: 93, bestPractices: 96, seo: 92 },
+  pagespdDesktop: { performance: 87, accessibility: 97, bestPractices: 96, seo: 92 },
+  headers: [
+    { ok: true, h: 'Chiffrement HTTPS et protections de base en place (6 des 10 contrôles réussis)' },
+    { ok: false, h: 'Politique de sécurité du contenu (CSP) : absente' },
+    { ok: false, h: 'Protection contre le clickjacking (X-Frame-Options) : absente' },
+    { ok: false, h: 'Contrôle d\'intégrité des scripts externes : absent' }
+  ],
+  schema: [
+    { item: 'Fiche business lisible par Google (LocalBusiness)', ok: true },
+    { item: 'Identité du site présente', ok: true },
+    { item: 'Avis clients non balisés pour les étoiles Google', ok: false }
+  ],
+  og: [
+    { item: 'Titre de partage', ok: true, val: 'présent' },
+    { item: 'Description de partage', ok: true, val: 'présente' },
+    { item: 'Image de partage', ok: false, val: 'absente' },
+    { item: 'Lien et type', ok: true, val: 'présents' }
+  ],
+  seo: [
+    { item: 'Titre et description bien rédigés', ok: true },
+    { item: 'Lisible par les moteurs de recherche', ok: true },
+    { item: 'Données structurées présentes', ok: true },
+    { item: "Vitesse mobile (facteur de classement n°1 de Google) : faible", ok: false }
+  ]
+};
+
+// Recommandations
+const ameliorationsHautes = [
+  { titre: "Afficher les avis clients sur le site", pourquoi: "Aujourd'hui, zéro preuve sociale. C'est la première chose que cherchent vos visiteurs. Vous avez d'excellents avis sur Google et TripAdvisor, ils ne sont juste pas sur votre site.", action: "Intégrer un mur d'avis (widget Google) sur l'accueil et en bas de chaque page de cours.", impact: 'majorité des 60' },
+  { titre: "Afficher un prix sur la page d'aperçu des cours", pourquoi: "Les prix existent mais sont cachés un par un. Un prix visible, même un 'à partir de', est l'un des signaux de confiance les plus forts.", action: "Ajouter un tableau de prix clair sur la page d'aperçu des cours, pour comparer d'un coup d'oeil.", impact: 'la plupart des 60' },
+  { titre: "Signaler les langues parlées sur l'accueil et les pages cours", pourquoi: "Votre équipe parle français, allemand, espagnol et chinois, mais personne ne le sait. Un simple 'Instructeurs francophones et germanophones disponibles' rassure et débloque.", action: "Ajouter une ligne sur les langues parlées sur l'accueil, les pages cours et baptême.", impact: 'jusqu\'à +17 visiteurs' },
+  { titre: "Accélérer le site sur mobile", pourquoi: "Le contenu met près de 7 secondes à apparaître sur téléphone, là où se trouve la majorité de votre trafic.", action: "Compresser et redimensionner les images (page de 2,8 Mo), les servir dans un format léger, et charger les images du bas seulement au défilement. Objectif : moins de 3 secondes.", impact: 'tout le trafic mobile' },
+  { titre: "Ajouter une politique d'annulation et un 'ce qu'il faut prévoir'", pourquoi: "Surtout pour les voyageurs minutieux (germanophones), l'absence de règles écrites pousse à aller demander ailleurs plutôt qu'à réserver.", action: "Ajouter une courte section annulation, contre-indications, et ce qu'il faut apporter, sur chaque page de cours.", impact: '8 visiteurs (germanophones)' }
+];
+
+const ameliorationsUtiles = [
+  { titre: "Une prise de contact plus simple, avec délai de réponse annoncé", detail: "La réservation passe par WhatsApp ou un formulaire. Un bouton clair par cours, avec un 'nous répondons sous 24h', transforme l'hésitation en conversation." },
+  { titre: "Une image de partage (Open Graph)", detail: "Quand votre lien est partagé sur les réseaux, aucune image n'apparaît, alors que le social est un canal fort pour un centre de plongée." },
+  { titre: "Publier une FAQ structurée", detail: "La page brouillon existe déjà. Répondre à 'est-ce sûr, faut-il savoir nager, contre-indications, ce qui est inclus' convertit exactement les hésitants." },
+  { titre: "Nettoyer les pages résiduelles du sitemap", detail: "Des pages brouillon (copy-of, kopyasi, my-addresses) sont indexables. Un nettoyage améliore l'image aux yeux de Google." }
+];
+
+const ameliorationsDiscuter = [
+  { emoji: '🌏', titre: "Une version française et allemande du site ?", detail: "Le potentiel débloquable est réel (jusqu'à +17 contacts latents), mais cela n'a de sens que si vous pouvez gérer confortablement les demandes et un cours dans ces langues. Votre équipe les parle déjà." },
+  { emoji: '🏗️', titre: "Sortir de Wix ?", detail: "La plateforme plafonne la vitesse mobile et la sécurité. Un autre socle lèverait ce plafond, mais c'est un chantier à peser." },
+  { emoji: '📅', titre: "Réservation et paiement en ligne, ou rester sur WhatsApp ?", detail: "Une réservation en ligne convertirait les planificateurs automatiquement, mais demande de gérer des créneaux fixes. À vous de voir le niveau d'automatisation souhaité." }
+];
+
+function decisionBorder(d: Decision) {
+  if (d === 'Convertit') return 'border-green-200';
+  if (d === 'Hesite') return 'border-amber-200';
+  return 'border-neutral-200';
+}
+function decisionBadge(d: Decision) {
+  if (d === 'Convertit') return 'bg-green-600';
+  if (d === 'Hesite') return 'bg-amber-500';
+  return 'bg-neutral-400';
+}
+function scoreColor(n: number) {
+  if (n >= 7) return 'text-green-600';
+  if (n >= 5) return 'text-amber-600';
+  return 'text-red-500';
+}
+
+const converts = personas.filter((p) => p.decision === 'Convertit');
+const hesitates = personas.filter((p) => p.decision === 'Hesite');
+const leaves = personas.filter((p) => p.decision === 'Quitte');
+---
+
+<BaseLayout title={title} description={description} noindex={true}>
+
+  <!-- ═══ HERO ═══ -->
+  <section class="relative w-full px-6 py-20 md:py-28 overflow-hidden" style="background: #0A0A0A;">
+    <div class="absolute top-[20%] left-[10%] w-[500px] h-[500px] rounded-full blur-[180px] pointer-events-none" style="background: #0EA5E9; opacity: 0.08;"></div>
+    <div class="absolute bottom-[10%] right-[5%] w-[300px] h-[300px] rounded-full blur-[120px] pointer-events-none" style="background: #E86C47; opacity: 0.05;"></div>
+
+    <div class="relative mx-auto max-w-4xl z-10">
+      <div class="mb-6 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5);">
+        Rapport personas &middot; Confidentiel
+      </div>
+
+      <h1 class="mb-6 text-3xl md:text-4xl font-bold text-white leading-tight tracking-tight">
+        {verdictHero}
+      </h1>
+
+      <p class="mb-10 text-sm" style="color: rgba(255,255,255,0.4);">
+        Site analysé : <a href={urlSite} target="_blank" rel="noopener" class="underline hover:text-white transition-colors">{urlSite}</a> &middot; {kpis.nbPersonas} visiteurs simulés &middot; {dateAudit}
+      </p>
+
+      <div class="grid grid-cols-3 gap-4">
+        <div class="rounded-xl p-5 text-center" style="background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2);">
+          <div class="text-4xl md:text-5xl font-black text-green-400 mb-1">{kpis.nbConvertissent}</div>
+          <div class="text-sm text-green-400/70">vous contactent</div>
+        </div>
+        <div class="rounded-xl p-5 text-center" style="background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2);">
+          <div class="text-4xl md:text-5xl font-black text-amber-400 mb-1">{kpis.nbHesitent}</div>
+          <div class="text-sm text-amber-400/70">hésitent</div>
+        </div>
+        <div class="rounded-xl p-5 text-center" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
+          <div class="text-4xl md:text-5xl font-black mb-1" style="color: rgba(255,255,255,0.5);">{kpis.nbRepartent}</div>
+          <div class="text-sm" style="color: rgba(255,255,255,0.3);">repartent</div>
+        </div>
+      </div>
+
+      <p class="mt-6 text-sm text-center" style="color: rgba(255,255,255,0.5);">
+        Soit <strong class="text-white">{kpis.conversion}%</strong> qui prennent contact &middot; <strong class="text-green-400">67%</strong> via le bouche-à-oreille &middot; <strong class="text-amber-400">0%</strong> via les réseaux sociaux
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══ CONVERSION PAR LANGUE ═══ -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <h2 class="text-2xl font-bold text-neutral-900 mb-2">Conversion par langue</h2>
+    <p class="text-neutral-600 mb-8">C'est le coeur de cet audit. Vos visiteurs viennent de trois marchés, et chacun bute sur des freins différents.</p>
+
+    <div class="grid md:grid-cols-3 gap-4 mb-6">
+      {langueData.map((l) => (
+        <div class="bg-white border border-neutral-200 rounded-2xl p-5 shadow-sm">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="text-2xl">{l.flag}</span>
+            <h3 class="font-bold text-neutral-900">{l.langue}</h3>
+            <span class="ml-auto text-sm font-bold text-neutral-700">{l.rate}%</span>
+          </div>
+          <div class="flex h-3 rounded-full overflow-hidden mb-3">
+            <div class="bg-green-500" style={`width: ${(l.convert / l.total) * 100}%`}></div>
+            <div class="bg-amber-400" style={`width: ${(l.hesite / l.total) * 100}%`}></div>
+            <div class="bg-neutral-300" style={`width: ${(l.quitte / l.total) * 100}%`}></div>
+          </div>
+          <div class="flex justify-between text-[11px] text-neutral-500 mb-3">
+            <span><strong class="text-green-700">{l.convert}</strong> contactent</span>
+            <span><strong class="text-amber-700">{l.hesite}</strong> hésitent</span>
+            <span><strong class="text-neutral-600">{l.quitte}</strong> repartent</span>
+          </div>
+          {l.upside > 0 && (
+            <div class="inline-flex items-center gap-1 text-[11px] font-semibold text-sky-700 bg-sky-50 border border-sky-200 rounded-full px-2 py-0.5 mb-2">
+              +{l.upside} récupérables aujourd'hui
+            </div>
+          )}
+          <p class="text-xs text-neutral-600 leading-relaxed mt-1">{l.note}</p>
+        </div>
+      ))}
+    </div>
+
+    <div class="rounded-2xl p-6 border-l-4" style="background: rgba(14,165,233,0.04); border-color: #0EA5E9;">
+      <p class="text-sm md:text-base text-neutral-800 leading-relaxed">
+        Les trois marchés plafonnent à <strong>25%</strong>, mais le potentiel débloquable est très inégal : <strong>+6 visiteurs francophones</strong> et <strong>+11 germanophones</strong> sont aujourd'hui perdus faute de version localisée et d'un simple signal "instructeur dans votre langue". Si ce potentiel se concrétisait, la conversion passerait d'environ 25% à plus de 50%.
+      </p>
+    </div>
+  </section>
+
+  <!-- ═══ THE TAKEAWAY ═══ -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-4">
+    <div class="rounded-2xl p-6 md:p-8 mb-12 border-l-4" style="background: rgba(232,108,71,0.05); border-color: #E86C47;">
+      <p class="text-lg md:text-xl font-medium text-neutral-800 leading-relaxed">{constat}</p>
+    </div>
+
+    <h2 class="text-xl font-bold text-neutral-900 mb-2">D'où viennent vos visiteurs</h2>
+    <p class="text-sm text-neutral-500 mb-6">Et combien vous contactent, selon la façon dont ils vous ont trouvé.</p>
+
+    <div class="space-y-4 mb-12">
+      {canalData.map((c) => {
+        const color = c.rate >= 50 ? '#22c55e' : c.rate >= 25 ? '#f59e0b' : '#ef4444';
+        return (
+          <div class="flex items-center gap-4">
+            <div class="w-44 sm:w-56 text-sm text-neutral-700 shrink-0">{c.canal}</div>
+            <div class="flex-1 h-3 bg-neutral-100 rounded-full overflow-hidden">
+              <div class="h-full rounded-full transition-all" style={`width: ${c.rate}%; background: ${color}`}></div>
+            </div>
+            <div class="w-20 text-right">
+              <span class="text-sm font-bold" style={`color: ${color}`}>{c.rate}%</span>
+              <span class="text-xs text-neutral-400 ml-1">({c.convert}/{c.nb})</span>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+
+    <details class="group mb-4">
+      <summary class="flex items-center gap-2 cursor-pointer text-sm text-neutral-500 hover:text-neutral-700 py-2">
+        <svg class="w-4 h-4 transition-transform group-open:rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        Voir les scores détaillés (expérience, confiance, clarté)
+      </summary>
+      <div class="grid grid-cols-3 gap-4 mt-3">
+        <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
+          <div class="text-2xl font-bold text-neutral-800 mb-1">{kpis.experience}<span class="text-sm text-neutral-400">/10</span></div>
+          <div class="text-xs text-neutral-500">Expérience</div>
+          <p class="text-[10px] text-neutral-400 mt-1">Navigation, lisibilité, vitesse</p>
+        </div>
+        <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
+          <div class="text-2xl font-bold text-neutral-800 mb-1">{kpis.confiance}<span class="text-sm text-neutral-400">/10</span></div>
+          <div class="text-xs text-neutral-500">Confiance</div>
+          <p class="text-[10px] text-neutral-400 mt-1">Crédibilité, preuves, réassurance</p>
+        </div>
+        <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
+          <div class="text-2xl font-bold text-neutral-800 mb-1">{kpis.clarte}<span class="text-sm text-neutral-400">/10</span></div>
+          <div class="text-xs text-neutral-500">Clarté</div>
+          <p class="text-[10px] text-neutral-400 mt-1">Comprendre l'offre et les prix</p>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- ═══ ALERTS ═══ -->
+  <section class="py-14" style="background: #fefce8;">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center gap-2 mb-2">
+        <svg class="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01"/></svg>
+        <h2 class="text-xl font-bold text-neutral-900">Ce qui retient vos visiteurs</h2>
+      </div>
+      <p class="text-sm text-neutral-500 mb-6">{alertes.filter((a) => a.type === 'critique').length} critique &middot; {alertes.filter((a) => a.type === 'important').length} importants</p>
+
+      <div class="grid sm:grid-cols-2 gap-4">
+        {alertes.map((a) => {
+          const crit = a.type === 'critique';
+          return (
+            <div class={`bg-white rounded-xl p-5 ${crit ? 'border-2 border-red-300' : 'border border-amber-200'}`}>
+              <div class="flex items-start gap-4">
+                <div class={`shrink-0 rounded-lg px-3 py-2 text-center ${crit ? 'bg-red-600' : 'bg-amber-500'}`}>
+                  <div class="text-lg font-black text-white leading-none">{a.chiffre}</div>
+                </div>
+                <div>
+                  <h3 class="font-semibold text-neutral-900 text-sm mb-1">{a.titre}</h3>
+                  <p class="text-[11px] text-neutral-400 mb-2">{a.chiffreLabel}</p>
+                  <p class="text-xs text-neutral-600 leading-relaxed">{a.detail}</p>
+                </div>
+              </div>
+            </div>
+          );
+        })}
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ VISITORS ═══ -->
+  <section class="py-16" style="background: #fafafa;">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs</h2>
+      <p class="text-neutral-600 mb-2">Voici ce qui se passe quand une personne qui cherche à plonger à Koh Tao arrive sur votre site. Touchez un profil pour voir son parcours complet.</p>
+      <p class="text-sm text-neutral-500 mb-6">Profils représentatifs. 60 visiteurs simulés au total, 20 par langue.</p>
+
+      <!-- Filtre par langue -->
+      <div class="flex flex-wrap gap-2 mb-8">
+        <button class="filter-btn px-3.5 py-1.5 rounded-full text-sm font-medium bg-neutral-900 text-white transition-colors" data-langue="all">Toutes</button>
+        <button class="filter-btn px-3.5 py-1.5 rounded-full text-sm font-medium bg-white text-neutral-600 border border-neutral-200 transition-colors" data-langue="EN">🇬🇧 Anglophones</button>
+        <button class="filter-btn px-3.5 py-1.5 rounded-full text-sm font-medium bg-white text-neutral-600 border border-neutral-200 transition-colors" data-langue="FR">🇫🇷 Francophones</button>
+        <button class="filter-btn px-3.5 py-1.5 rounded-full text-sm font-medium bg-white text-neutral-600 border border-neutral-200 transition-colors" data-langue="DE">🇩🇪 Germanophones</button>
+      </div>
+
+      <!-- ✅ Contactent -->
+      <div class="mb-10">
+        <h3 class="text-base font-bold text-green-800 mb-4 flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-green-500 inline-block"></span>
+          Ceux qui vous contactent
+          <span class="text-sm font-normal text-green-600">({converts.length})</span>
+        </h3>
+        <div class="space-y-3">
+          {converts.map((p) => (
+            <details class={`group persona-card bg-white rounded-xl overflow-hidden shadow-sm border ${decisionBorder(p.decision)}`} data-langue={p.langue}>
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-1 flex-wrap">
+                    <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age}</h4>
+                    <span class={`text-[10px] ${decisionBadge(p.decision)} text-white px-1.5 py-0.5 rounded font-medium`}>{p.decisionLabel}</span>
+                    <span class="text-[10px] text-neutral-600 bg-neutral-100 px-1.5 py-0.5 rounded font-medium">{p.langueLabel}</span>
+                  </div>
+                  <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                  </div>
+                </div>
+                <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </summary>
+              <div class={`px-4 pb-5 border-t ${decisionBorder(p.decision)}`}>
+                <div class="grid gap-4 text-xs mt-4">
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p>
+                    <p class="text-neutral-600">{p.contexte}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Première impression (5 secondes)</p>
+                    <p class="text-neutral-600">{p.impression}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Son parcours</p>
+                    <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                      {p.parcours.map(([section, reaction]) => (
+                        <li><strong class="text-neutral-800">{section}</strong>{reaction ? ` : ${reaction}` : ''}</li>
+                      ))}
+                    </ol>
+                  </div>
+                  <div class="bg-neutral-50 rounded-lg p-3">
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p>
+                    <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
+                    <p class="text-neutral-600">Le site répond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong>, {p.commentReponse}</p>
+                  </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <p class="font-semibold text-green-700 mb-1.5">✓ Ce qui marche</p>
+                      <ul class="space-y-1 text-neutral-600">{p.positifs.map((pt) => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">·</span>{pt}</li>)}</ul>
+                    </div>
+                    <div>
+                      <p class="font-semibold text-amber-700 mb-1.5">✗ Frictions</p>
+                      <ul class="space-y-1 text-neutral-600">{p.frictions.map((f) => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">·</span>{f}</li>)}</ul>
+                    </div>
+                  </div>
+                  <div class="flex gap-6 pt-3 border-t border-neutral-100">
+                    {[{ label: 'Expérience', val: p.exp }, { label: 'Confiance', val: p.conf }, { label: 'Clarté', val: p.clarte }].map((s) => (
+                      <div class="text-center">
+                        <span class={`block text-lg font-bold ${scoreColor(s.val)}`}>{s.val}</span>
+                        <span class="text-[10px] text-neutral-400">{s.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <!-- ⚠️ Hésitent -->
+      <div class="mb-4">
+        <h3 class="text-base font-bold text-amber-800 mb-4 flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span>
+          Ceux qui hésitent
+          <span class="text-sm font-normal text-amber-600">({hesitates.length})</span>
+        </h3>
+        <div class="space-y-3">
+          {hesitates.map((p) => (
+            <details class={`group persona-card bg-white rounded-xl overflow-hidden shadow-sm border ${decisionBorder(p.decision)}`} data-langue={p.langue}>
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-1 flex-wrap">
+                    <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age}</h4>
+                    <span class={`text-[10px] ${decisionBadge(p.decision)} text-white px-1.5 py-0.5 rounded font-medium`}>{p.decisionLabel}</span>
+                    <span class="text-[10px] text-neutral-600 bg-neutral-100 px-1.5 py-0.5 rounded font-medium">{p.langueLabel}</span>
+                  </div>
+                  <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                  </div>
+                </div>
+                <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </summary>
+              <div class={`px-4 pb-5 border-t ${decisionBorder(p.decision)}`}>
+                <div class="grid gap-4 text-xs mt-4">
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p>
+                    <p class="text-neutral-600">{p.contexte}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Première impression (5 secondes)</p>
+                    <p class="text-neutral-600">{p.impression}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Son parcours</p>
+                    <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                      {p.parcours.map(([section, reaction]) => (
+                        <li><strong class="text-neutral-800">{section}</strong>{reaction ? ` : ${reaction}` : ''}</li>
+                      ))}
+                    </ol>
+                  </div>
+                  <div class="bg-neutral-50 rounded-lg p-3">
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p>
+                    <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
+                    <p class="text-neutral-600">Le site répond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong>, {p.commentReponse}</p>
+                  </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <p class="font-semibold text-green-700 mb-1.5">✓ Ce qui marche</p>
+                      <ul class="space-y-1 text-neutral-600">{p.positifs.map((pt) => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">·</span>{pt}</li>)}</ul>
+                    </div>
+                    <div>
+                      <p class="font-semibold text-amber-700 mb-1.5">✗ Frictions</p>
+                      <ul class="space-y-1 text-neutral-600">{p.frictions.map((f) => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">·</span>{f}</li>)}</ul>
+                    </div>
+                  </div>
+                  <div class="bg-sky-50 rounded-lg p-3">
+                    <p class="font-semibold text-sky-700 text-[10px] uppercase tracking-wider mb-1">Ce qui les ferait basculer</p>
+                    <p class="text-sky-800">{p.ceQuiFeraitBasculer}</p>
+                  </div>
+                  <div class="flex gap-6 pt-3 border-t border-neutral-100">
+                    {[{ label: 'Expérience', val: p.exp }, { label: 'Confiance', val: p.conf }, { label: 'Clarté', val: p.clarte }].map((s) => (
+                      <div class="text-center">
+                        <span class={`block text-lg font-bold ${scoreColor(s.val)}`}>{s.val}</span>
+                        <span class="text-[10px] text-neutral-400">{s.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-xl p-5 mb-10 bg-amber-50 border border-amber-200 flex items-start gap-3">
+        <span class="text-lg shrink-0 mt-0.5">💡</span>
+        <div>
+          <p class="text-sm font-medium text-amber-900">Ces visiteurs veulent déjà ce que vous proposez.</p>
+          <p class="text-xs text-amber-700 mt-1">Il leur manque une seule pièce de réassurance (un avis, un prix, une page rapide, un mot dans leur langue) pour franchir le pas. C'est votre plus gros levier de croissance.</p>
+        </div>
+      </div>
+
+      <!-- ❌ Repartent -->
+      <div class="mb-4">
+        <h3 class="text-base font-bold text-neutral-600 mb-4 flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-neutral-400 inline-block"></span>
+          Ceux qui repartent
+          <span class="text-sm font-normal text-neutral-500">({leaves.length})</span>
+        </h3>
+        <div class="space-y-3">
+          {leaves.map((p) => (
+            <details class={`group persona-card bg-white rounded-xl overflow-hidden shadow-sm border ${decisionBorder(p.decision)}`} data-langue={p.langue}>
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-1 flex-wrap">
+                    <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age}</h4>
+                    <span class={`text-[10px] ${decisionBadge(p.decision)} text-white px-1.5 py-0.5 rounded font-medium`}>{p.decisionLabel}</span>
+                    <span class="text-[10px] text-neutral-600 bg-neutral-100 px-1.5 py-0.5 rounded font-medium">{p.langueLabel}</span>
+                  </div>
+                  <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                  </div>
+                </div>
+                <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </summary>
+              <div class={`px-4 pb-5 border-t ${decisionBorder(p.decision)}`}>
+                <div class="grid gap-4 text-xs mt-4">
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p>
+                    <p class="text-neutral-600">{p.contexte}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Première impression (5 secondes)</p>
+                    <p class="text-neutral-600">{p.impression}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Son parcours</p>
+                    <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                      {p.parcours.map(([section, reaction]) => (
+                        <li><strong class="text-neutral-800">{section}</strong>{reaction ? ` : ${reaction}` : ''}</li>
+                      ))}
+                    </ol>
+                  </div>
+                  <div class="bg-neutral-50 rounded-lg p-3">
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p>
+                    <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
+                    <p class="text-neutral-600">Le site répond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong>, {p.commentReponse}</p>
+                  </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <p class="font-semibold text-green-700 mb-1.5">✓ Ce qui marche</p>
+                      <ul class="space-y-1 text-neutral-600">{p.positifs.map((pt) => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">·</span>{pt}</li>)}</ul>
+                    </div>
+                    <div>
+                      <p class="font-semibold text-amber-700 mb-1.5">✗ Frictions</p>
+                      <ul class="space-y-1 text-neutral-600">{p.frictions.map((f) => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">·</span>{f}</li>)}</ul>
+                    </div>
+                  </div>
+                  <div class="bg-sky-50 rounded-lg p-3">
+                    <p class="font-semibold text-sky-700 text-[10px] uppercase tracking-wider mb-1">Ce qui les aurait retenus</p>
+                    <p class="text-sky-800">{p.ceQuiFeraitBasculer}</p>
+                  </div>
+                  <div class="flex gap-6 pt-3 border-t border-neutral-100">
+                    {[{ label: 'Expérience', val: p.exp }, { label: 'Confiance', val: p.conf }, { label: 'Clarté', val: p.clarte }].map((s) => (
+                      <div class="text-center">
+                        <span class={`block text-lg font-bold ${scoreColor(s.val)}`}>{s.val}</span>
+                        <span class="text-[10px] text-neutral-400">{s.label}</span>
+                      </div>
+                    ))}
+                  </div>
+                </div>
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-xl p-5 bg-neutral-100 border border-neutral-200 flex items-start gap-3">
+        <span class="text-lg shrink-0 mt-0.5">📉</span>
+        <div>
+          <p class="text-sm font-medium text-neutral-800">Certains n'étaient pas pour vous, et c'est normal.</p>
+          <p class="text-xs text-neutral-600 mt-1">Plongée de luxe privée, plongée technique, location sèche, voyageur perdu cherchant Bali : ceux-là sont simplement hors de votre cible. Mais d'autres (un mobile lent, un prix manquant, pas un mot dans leur langue) avaient un vrai besoin que le site n'a pas su satisfaire à temps.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ═══ RECOMMENDATIONS ═══ -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <h2 class="text-2xl font-bold text-neutral-900 mb-2">Ce que je changerais</h2>
+    <p class="text-neutral-600 mb-8">Des correctifs concrets, classés par le nombre de visiteurs qu'ils touchent. La bonne nouvelle : aucun ne touche à votre histoire ni à votre marque, ils enlèvent la friction autour.</p>
+
+    <p class="text-sm font-semibold text-red-700 mb-4">Si vous ne changiez que cinq choses :</p>
+
+    <div class="space-y-4 mb-12">
+      {ameliorationsHautes.map((a) => (
+        <div class="bg-white border-2 border-red-200 rounded-xl p-6 shadow-sm">
+          <div class="flex items-start justify-between gap-4 mb-3">
+            <h4 class="font-bold text-neutral-900">{a.titre}</h4>
+            <span class="text-[10px] px-2 py-1 rounded-full bg-red-100 text-red-700 font-semibold shrink-0 whitespace-nowrap">{a.impact}</span>
+          </div>
+          <p class="text-sm text-neutral-600 mb-3">{a.pourquoi}</p>
+          <div class="bg-neutral-50 rounded-lg px-4 py-3 flex items-start gap-2">
+            <svg class="w-4 h-4 text-neutral-400 mt-0.5 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+            <p class="text-xs text-neutral-700">{a.action}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <h3 class="text-lg font-bold text-neutral-900 mb-2">Aussi utile</h3>
+    <div class="grid md:grid-cols-2 gap-4 mb-12">
+      {ameliorationsUtiles.map((a) => (
+        <div class="bg-white border border-neutral-200 rounded-xl p-5">
+          <h4 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h4>
+          <p class="text-xs text-neutral-600">{a.detail}</p>
+        </div>
+      ))}
+    </div>
+
+    <h3 class="text-lg font-bold text-neutral-900 mb-2">À vous de voir</h3>
+    <p class="text-sm text-neutral-500 mb-4">Décisions business : pas de bonne ou de mauvaise réponse.</p>
+    <div class="space-y-3 mb-4">
+      {ameliorationsDiscuter.map((a) => (
+        <div class="bg-neutral-50 border border-neutral-200 rounded-xl p-4 flex gap-3">
+          <span class="text-lg shrink-0">{a.emoji}</span>
+          <div>
+            <h4 class="font-semibold text-neutral-900 text-sm mb-0.5">{a.titre}</h4>
+            <p class="text-xs text-neutral-600">{a.detail}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+  </section>
+
+  <!-- ═══ UNDER THE HOOD ═══ -->
+  <section class="py-16 border-t border-neutral-200">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-2">Sous le capot</h2>
+      <p class="text-neutral-600 mb-8">Pour les curieux : ce que disent les outils techniques sur votre site.</p>
+
+      <div class="flex flex-wrap gap-3 mb-10">
+        {techVerdicts.map((v) => (
+          <div class={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium ${v.ok ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
+            {v.ok
+              ? <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              : <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}
+            <span>{v.label}</span>
+            <span class="text-xs opacity-70">{v.verdict}</span>
+          </div>
+        ))}
+      </div>
+
+      <!-- Vitesse -->
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+          <div class="flex items-center gap-3">
+            <span class="text-base">⚡</span>
+            <div>
+              <h3 class="font-semibold text-neutral-900 text-sm">Vitesse</h3>
+              <p class="text-[11px] text-neutral-500">{techVerdicts[0].detail}</p>
+            </div>
+          </div>
+          <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <div class="px-4 pb-4 border-t border-neutral-100">
+          <p class="text-xs text-neutral-500 pt-3 pb-1">Sur téléphone (où se trouve la majorité de vos visiteurs) :</p>
+          <div class="grid grid-cols-4 gap-4 pb-4">
+            {['Performance', 'Accessibilité', 'Bonnes pratiques', 'Référencement'].map((label, i) => {
+              const scores = [tech.pagespdMobile.performance, tech.pagespdMobile.accessibility, tech.pagespdMobile.bestPractices, tech.pagespdMobile.seo];
+              const score = scores[i];
+              const color = score >= 90 ? '#22c55e' : score >= 50 ? '#f59e0b' : '#ef4444';
+              return (
+                <div class="text-center">
+                  <div class="relative w-14 h-14 mx-auto mb-2">
+                    <svg class="w-14 h-14 -rotate-90" viewBox="0 0 36 36">
+                      <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3" />
+                      <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={color} stroke-width="3" stroke-dasharray={`${score}, 100`} stroke-linecap="round" />
+                    </svg>
+                    <span class="absolute inset-0 flex items-center justify-center text-sm font-bold" style={`color: ${color}`}>{score}</span>
+                  </div>
+                  <p class="text-[11px] text-neutral-600">{label}</p>
+                </div>
+              );
+            })}
+          </div>
+          <p class="text-xs text-neutral-500 pb-3">Sur ordinateur le site obtient {tech.pagespdDesktop.performance}/100 et s'affiche en 1,7 seconde. Le problème est donc mobile, surtout le poids des images (2,8 Mo).</p>
+        </div>
+      </details>
+
+      <!-- Sécurité -->
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+          <div class="flex items-center gap-3">
+            <span class="text-base">🔒</span>
+            <div>
+              <h3 class="font-semibold text-neutral-900 text-sm">Sécurité</h3>
+              <p class="text-[11px] text-neutral-500">{techVerdicts[1].detail}</p>
+            </div>
+          </div>
+          <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <div class="px-4 pb-4 border-t border-neutral-100">
+          <p class="text-xs text-neutral-500 py-2">Note : {tech.observatory.grade} ({tech.observatory.testsOk}/{tech.observatory.testsTotal} contrôles réussis)</p>
+          {tech.headers.map((h) => (
+            <div class="flex items-center gap-2 py-1">
+              {h.ok
+                ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                : <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}
+              <span class={`text-xs ${h.ok ? 'text-neutral-600' : 'text-red-500'}`}>{h.h}</span>
+            </div>
+          ))}
+        </div>
+      </details>
+
+      <!-- Données business -->
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+          <div class="flex items-center gap-3">
+            <span class="text-base">📊</span>
+            <div>
+              <h3 class="font-semibold text-neutral-900 text-sm">Données business (ce que Google lit)</h3>
+              <p class="text-[11px] text-neutral-500">{techVerdicts[3].detail}</p>
+            </div>
+          </div>
+          <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <div class="px-4 pb-4 border-t border-neutral-100">
+          {tech.schema.map((s) => (
+            <div class="flex items-center gap-2 py-1">
+              {s.ok
+                ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                : <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}
+              <span class={`text-xs ${s.ok ? 'text-neutral-600' : 'text-red-500 font-medium'}`}>{s.item}</span>
+            </div>
+          ))}
+        </div>
+      </details>
+
+      <!-- Partage social -->
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+          <div class="flex items-center gap-3">
+            <span class="text-base">🔗</span>
+            <div>
+              <h3 class="font-semibold text-neutral-900 text-sm">Aperçu lors d'un partage</h3>
+              <p class="text-[11px] text-neutral-500">{techVerdicts[4].detail}</p>
+            </div>
+          </div>
+          <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <div class="px-4 pb-4 border-t border-neutral-100">
+          {tech.og.map((o) => (
+            <div class="flex items-start gap-2 py-1">
+              {o.ok
+                ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                : <svg class="w-3.5 h-3.5 text-red-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}
+              <span class={`text-xs ${o.ok ? 'text-neutral-600' : 'text-red-500'}`}>{o.item} <span class="text-neutral-400">{o.val}</span></span>
+            </div>
+          ))}
+        </div>
+      </details>
+
+      <!-- Référencement -->
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+          <div class="flex items-center gap-3">
+            <span class="text-base">🔍</span>
+            <div>
+              <h3 class="font-semibold text-neutral-900 text-sm">Référencement (SEO)</h3>
+              <p class="text-[11px] text-neutral-500">{techVerdicts[2].detail}</p>
+            </div>
+          </div>
+          <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <div class="px-4 pb-4 border-t border-neutral-100">
+          {tech.seo.map((s) => (
+            <div class="flex items-center gap-2 py-1">
+              {s.ok
+                ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                : <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}
+              <span class={`text-xs ${s.ok ? 'text-neutral-600' : 'text-red-500'}`}>{s.item}</span>
+            </div>
+          ))}
+        </div>
+      </details>
+    </div>
+  </section>
+
+  <!-- ═══ METHOD ═══ -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-neutral-200">
+    <h2 class="text-base font-bold text-neutral-900 mb-4">Comment c'est fait</h2>
+    <ol class="space-y-3 text-sm text-neutral-600">
+      <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">1</span><span>J'ai lu chaque page de votre site, comme le ferait un visiteur</span></li>
+      <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">2</span><span>J'ai passé les contrôles techniques (vitesse, sécurité, référencement, données business) avec les mêmes outils que Google</span></li>
+      <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">3</span><span>J'ai construit 60 profils de visiteurs réalistes, 20 par langue (anglophones, francophones, germanophones), le genre de personnes qui cherchent vraiment à plonger à Koh Tao</span></li>
+      <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">4</span><span>Chacun a "visité" votre site et donné sa réaction honnête : première impression, parcours, décision</span></li>
+      <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">5</span><span>J'ai rassemblé les frictions récurrentes pour en faire la courte liste de correctifs ci-dessus</span></li>
+    </ol>
+  </section>
+
+  <!-- ═══ FINAL CTA (soft) ═══ -->
+  <section class="relative w-full px-6 py-20 overflow-hidden" style="background: #0A0A0A;">
+    <div class="absolute bottom-[10%] right-[10%] w-[400px] h-[400px] rounded-full blur-[160px] pointer-events-none" style="background: #0EA5E9; opacity: 0.06;"></div>
+    <div class="relative mx-auto max-w-3xl z-10 text-center">
+      <h2 class="text-2xl md:text-3xl font-bold text-white mb-4 leading-tight">
+        Le plus dur, votre histoire et votre expérience, vous l'avez déjà.
+      </h2>
+      <p class="text-sm mb-8 max-w-xl mx-auto" style="color: rgba(255,255,255,0.55);">
+        Reste à enlever la friction autour : des avis visibles, des prix sur chaque cours, un mobile rapide, un mot dans la langue du visiteur. Si vous voulez, je vous explique chacun de ces points, sans engagement.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href={`https://wa.me/${whatsapp}`} target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-8 py-4 text-white font-bold text-lg rounded-xl transition-all shadow-lg hover:-translate-y-0.5 bg-green-600 hover:bg-green-500">
+          Écrire à Marc sur WhatsApp
+        </a>
+        <span class="text-sm" style="color: rgba(255,255,255,0.4);">ou {phoneDisplay}</span>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
+
+<script is:inline>
+  const filterBtns = document.querySelectorAll('.filter-btn');
+  const personaCards = document.querySelectorAll('.persona-card');
+  if (filterBtns.length > 0) {
+    filterBtns.forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const filter = btn.dataset.langue;
+        filterBtns.forEach((b) => {
+          b.classList.remove('bg-neutral-900', 'text-white');
+          b.classList.add('bg-white', 'text-neutral-600', 'border', 'border-neutral-200');
+        });
+        btn.classList.remove('bg-white', 'text-neutral-600', 'border', 'border-neutral-200');
+        btn.classList.add('bg-neutral-900', 'text-white');
+        personaCards.forEach((card) => {
+          card.style.display = (filter === 'all' || card.dataset.langue === filter) ? '' : 'none';
+        });
+      });
+    });
+  }
+</script>
