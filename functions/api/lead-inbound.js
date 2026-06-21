@@ -46,10 +46,8 @@ const FORM_SOURCE_META = {
   echo:               { campagne: 'site-echo',            from_page: '/echo/' },
   commander:          { campagne: 'site-commander',       from_page: '/commander/' },
   'audit-gratuit':    { campagne: 'site-audit-gratuit',   from_page: '/audit-gratuit/' },
-  '100-sites':        { campagne: 'site-100-vitrines',    from_page: '/100-sites-artisans/' },
   'contact-en':       { campagne: 'site-contact-en',      from_page: '/en/contact/' },
   'free-audit-en':    { campagne: 'site-audit-gratuit-en',from_page: '/en/free-audit/' },
-  '100-sites-en':     { campagne: 'site-100-vitrines-en', from_page: '/en/100-artisan-websites/' },
 };
 
 function corsHeaders(origin) {

@@ -16,7 +16,6 @@ const FR_TO_EN = {
   '/politique-confidentialite': '/en/privacy-policy',
   '/merci': '/en/thank-you',
   '/formation': '/en/course',
-  '/100-sites-artisans': '/en/100-artisan-websites',
   '/graphistes': '/en/designers',
   // Pages ville
   '/creation-site-web-metz': '/en/web-design-metz',

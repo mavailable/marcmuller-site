@@ -5,7 +5,6 @@
 //   - 'homepage'        → carousel hero de la page d'accueil FR
 //   - 'realisations'    → page /realisations (liste complète)
 //   - 'portfolio'       → page /en/portfolio (version EN)
-//   - '100-sites'       → page /100-sites-artisans
 //   - 'graphistes'      → page /graphistes
 //
 // Pour ajouter un projet à un carousel, ajoutez simplement son tag.
@@ -117,7 +116,7 @@ export const projects: Project[] = [
       { label: 'Delivered in', value: '10 days' },
     ],
     stack: ['Astro', 'Tailwind', 'Cloudflare', 'Keystatic'],
-    carousels: ['realisations', 'portfolio', 'homepage', '100-sites', 'graphistes'],
+    carousels: ['realisations', 'portfolio', 'homepage', 'graphistes'],
   },
 
   // ── DMulti Services ──────────────────────────────────────────────────────
@@ -155,7 +154,7 @@ export const projects: Project[] = [
       role: 'DMulti Services',
       googleUrl: 'https://www.google.com/maps/contrib/117411737389498874981',
     },
-    carousels: ['realisations', 'portfolio', 'homepage', '100-sites', 'graphistes'],
+    carousels: ['realisations', 'portfolio', 'homepage', 'graphistes'],
   },
 
   // ── JD Zoothérapie ───────────────────────────────────────────────────────
@@ -193,7 +192,7 @@ export const projects: Project[] = [
       role: 'JD Zoothérapie',
       googleUrl: 'https://www.google.com/maps/contrib/103411737389498874981',
     },
-    carousels: ['realisations', 'portfolio', 'homepage', '100-sites', 'graphistes'],
+    carousels: ['realisations', 'portfolio', 'homepage', 'graphistes'],
   },
 
   // ── Le Refuge ────────────────────────────────────────────────────────────
@@ -226,7 +225,7 @@ export const projects: Project[] = [
       { label: 'Delivered in', value: '7 days' },
     ],
     stack: ['Astro', 'Tailwind', 'Cloudflare', 'Keystatic'],
-    carousels: ['realisations', 'portfolio', 'homepage', '100-sites', 'graphistes'],
+    carousels: ['realisations', 'portfolio', 'homepage', 'graphistes'],
   },
 
   // ── AM Électricité ───────────────────────────────────────────────────────
@@ -264,7 +263,7 @@ export const projects: Project[] = [
       role: 'AM Électricité',
       googleUrl: 'https://www.google.com/maps/contrib/108411737389498874981',
     },
-    carousels: ['realisations', 'portfolio', 'homepage', '100-sites', 'graphistes'],
+    carousels: ['realisations', 'portfolio', 'homepage', 'graphistes'],
   },
 
   // ── Angelo Grossi ────────────────────────────────────────────────────────
@@ -302,7 +301,7 @@ export const projects: Project[] = [
       role: 'Coach prise de parole',
       googleUrl: 'https://www.google.com/maps/contrib/104411737389498874981',
     },
-    carousels: ['realisations', 'portfolio', 'homepage', '100-sites', 'graphistes'],
+    carousels: ['realisations', 'portfolio', 'homepage', 'graphistes'],
   },
 
   // ── Occi'Volt ────────────────────────────────────────────────────────────
@@ -334,7 +333,7 @@ export const projects: Project[] = [
       { label: 'Delivered in', value: '7 days' },
     ],
     stack: ['Astro', 'Tailwind', 'Cloudflare', 'Keystatic'],
-    carousels: ['realisations', 'portfolio', 'homepage', '100-sites', 'graphistes'],
+    carousels: ['realisations', 'portfolio', 'homepage', 'graphistes'],
   },
 
   // ── MM Sécurité ──────────────────────────────────────────────────────────
@@ -366,7 +365,7 @@ export const projects: Project[] = [
       { label: '11', value: 'blog posts' },
     ],
     stack: ['Astro', 'Tailwind', 'Cloudflare'],
-    carousels: ['realisations', 'portfolio', 'homepage', '100-sites', 'graphistes'],
+    carousels: ['realisations', 'portfolio', 'homepage', 'graphistes'],
   },
 
   // ── La Grange aux Fées ──────────────────────────────────────────────────
@@ -399,7 +398,7 @@ export const projects: Project[] = [
       { label: '6', value: 'rentals' },
     ],
     stack: ['Astro', 'Cloudinary', 'Cloudflare'],
-    carousels: ['realisations', 'portfolio', 'homepage', '100-sites', 'graphistes'],
+    carousels: ['realisations', 'portfolio', 'homepage', 'graphistes'],
   },
 
   // ── Roma Laudarium ───────────────────────────────────────────────────────
@@ -432,7 +431,7 @@ export const projects: Project[] = [
       { label: 'Delivered in', value: '5 days' },
     ],
     stack: ['Astro', 'Tailwind', 'Cloudflare'],
-    carousels: ['realisations', 'portfolio', 'homepage', '100-sites', 'graphistes'],
+    carousels: ['realisations', 'portfolio', 'homepage', 'graphistes'],
   },
 
   // ── Kor ──────────────────────────────────────────────────────────────────

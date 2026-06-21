@@ -100,10 +100,6 @@ export const business = {
     rapportsGeneres: 26,
   },
 
-  // 100 Vitrines — 🔧 MISE À JOUR ICI pour changer le compteur partout
-  sitesRealises: 12,
-  sitesTotal: 100,
-
   // Géolocalisation (Schema.org)
   geo: {
     lat: 49.0948,
