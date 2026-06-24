@@ -6,7 +6,8 @@ export const business = {
   name: 'Marc M',
   legalName: 'Marc M — Marc Muller',
   owner: 'Marc Muller',
-  jobTitle: 'Développeur Web Freelance',
+  jobTitle: 'Le bras droit des indépendants',
+  tagline: "Tu n'as pas besoin d'un site. Tu as besoin de clients.",
 
   // Localisation
   lang: 'fr',
@@ -32,7 +33,7 @@ export const business = {
   },
 
   // Business
-  description: 'Création de sites web sur mesure pour artisans, commerçants et petites entreprises en France.',
+  description: "J'aide les indépendants à trouver des clients. Un site qui te ramène des clients, de quoi aller les chercher et savoir quoi leur dire, et les outils qui te font gagner du temps. Comme un associé qui met les mains dedans, sans prendre tes parts.",
   priceRange: '490€+',
   areaServed: ['France', 'Strasbourg', 'Metz', 'Nancy', 'Colmar', 'Mulhouse'],
 
