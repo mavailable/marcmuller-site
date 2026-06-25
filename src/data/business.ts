@@ -37,19 +37,28 @@ export const business = {
   priceRange: '490€+',
   areaServed: ['France', 'Strasbourg', 'Metz', 'Nancy', 'Colmar', 'Mulhouse'],
 
-  // Offres (2 niveaux : produit + service)
+  // Offres (gamme 3 niveaux : déclic → bras droit → briques)
+  // Note : le "bras droit" (accompagnement cœur) est SANS PRIX PUBLIC (price: null).
+  // schemas.ts filtre `price != null`, donc il n'apparaît pas dans le Schema.org makesOffer
+  // (pas de prix indexé pour cette offre). Voulu.
   offers: [
+    {
+      name: "L'accompagnement",
+      price: null, // sans prix public — "on en parle"
+      currency: 'EUR',
+      description: "On bosse ensemble chaque semaine. Je fais avec toi : le site, les réseaux, la prospection, le mini-CRM, tes devis-factures. Comme un associé qui met les mains dedans, sans prendre tes parts.",
+    },
     {
       name: 'Site Vitrine',
       price: 490,
       currency: 'EUR',
-      description: 'Site professionnel sur mesure, référencé Google & IA, Lighthouse 100, livré en 7 jours.',
+      description: 'Un site qui te ramène des clients : sur mesure, référencé Google et IA, Lighthouse 100, livré en 7 jours.',
     },
     {
       name: 'Projet Sur Mesure',
       price: null, // sur devis
       currency: 'EUR',
-      description: 'Multi-pages, blog, fonctionnalités métier, stratégie SEO — devis gratuit sous 48h.',
+      description: 'Multi-pages, blog, fonctionnalités métier, stratégie SEO. Devis gratuit sous 48h.',
     },
   ],
 

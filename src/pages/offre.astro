@@ -1,6 +1,5 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
-import Button from '../components/Button.astro';
 import SectionTitle from '../components/SectionTitle.astro';
 import SchemaOrg from '../components/SchemaOrg.astro';
 import { business } from '../data/business';
@@ -9,76 +8,73 @@ import { getClientProjects, getSampleProjects } from '../data/projects';
 const whatsappMessage = encodeURIComponent(business.whatsappMessage);
 const totalProjects = getClientProjects().length + getSampleProjects().length;
 
+// Liste d'attente formation : lien mailto léger, pas de nouvelle infra.
+const waitlistSubject = encodeURIComponent("Préviens-moi quand la formation sort");
+const waitlistBody = encodeURIComponent("Salut Marc, la formation \"le déclic\" m'intéresse. Préviens-moi quand elle sort.");
+const waitlistMailto = `mailto:${business.email}?subject=${waitlistSubject}&body=${waitlistBody}`;
+
 const checkIcon = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M16.707 5.293a1 1 0 010 1.414l-8 8a1 1 0 01-1.414 0l-4-4a1 1 0 011.414-1.414L8 12.586l7.293-7.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>`;
 
 const faqItems = [
   {
-    question: "490€, c'est un template ?",
-    answer: "Non. Chaque site est construit de zéro, à votre image. Pas de WordPress, pas de template. Le prix reflète l'efficacité de mon processus — un site unique prêt en 7 jours."
+    question: "Concrètement, tu m'aides à trouver des clients comment ?",
+    answer: "On regarde d'où viennent tes clients aujourd'hui, et on attaque ce qui manque. Ça peut être un site qui te ramène des demandes, tes réseaux qui tournent, de la prospection pour aller chercher des prospects, savoir quoi leur dire, et un mini-CRM pour les suivre et les relancer. On prend les bons leviers dans le bon ordre, et je mets les mains dedans avec toi chaque semaine."
   },
   {
-    question: "Comment un site à 490€ est-il possible ?",
-    answer: "Pas de commercial, pas de locaux, pas de WordPress à maintenir. J'utilise des outils modernes (Astro, Tailwind) et un processus optimisé — documenté, automatisé en partie — qui me permet de livrer en 7 jours ce qu'une agence met 3 semaines à produire. Aucun intermédiaire entre vous et le code : vous payez le travail réel, pas les frais structurels d'une agence. Résultat : un site unique, Lighthouse 100/100, à un prix honnête.",
-    link: { href: '/methode', label: 'Voir le process en détail →' }
+    question: "C'est quoi l'accompagnement, au juste ?",
+    answer: "On bosse ensemble dans la durée. Chaque semaine, on cale un point, je fais avec toi, on regarde ce qui rentre, on ajuste. Pas de PowerPoint, pas de réunions pour rien. Pour le tarif, on en parle ensemble selon ce dont tu as besoin : écris-moi, je te dis par quoi commencer."
   },
   {
-    question: "Quelles garanties sur les délais et la satisfaction ?",
-    answer: "Réponse sous 48h ouvrées garantie à chaque étape. Livraison en 7 jours ouvrés après votre validation du questionnaire. Un aller-retour de corrections inclus après livraison. Si le résultat ne correspond pas à vos attentes à la livraison, je reprends jusqu'à ce que ce soit bon — ou je rembourse. En 5 ans et 33 projets livrés, ça n'a jamais été nécessaire."
+    question: "Tu es plutôt un coach ou un dev ?",
+    answer: "Les deux, et surtout un entrepreneur. J'ai monté des boîtes et j'ai accompagné une vingtaine d'indépendants. Je construis moi-même les outils que je te livre : le site, la prospection, le CRM. La plupart des coachs parlent sans faire, et les devs codent sans avoir entrepris. Je fais les deux."
   },
   {
-    question: "Je suis professionnel de santé ou d'une profession réglementée ?",
-    answer: "Oui, c'est adapté. Infirmiers, kinés, ostéopathes, psychologues, sages-femmes, dentistes, naturopathes — je respecte les contraintes déontologiques : pas de publicité comparative, mentions légales conformes RPPS/Adeli/Ordre, lien vers votre fiche ordinale si nécessaire. Le site reste sobre, professionnel, et conforme à vos obligations."
+    question: "Et si je veux juste un site ?",
+    answer: "Possible aussi. Le site, c'est une brique : 490€ HT, livré en 7 jours, pensé pour te ramener des clients. Tu n'es pas obligé de prendre tout le reste. Tu peux entrer par là et avancer ensuite."
+  },
+  {
+    question: "490€ HT, c'est un template ?",
+    answer: "Non. Chaque site est construit de zéro, à ton image. Pas de WordPress, pas de template. Le prix reflète l'efficacité de mon processus : un site unique prêt en 7 jours."
+  },
+  {
+    question: "Comment un site à 490€ HT est-il possible ?",
+    answer: "Pas de commercial, pas de locaux, pas de WordPress à maintenir. J'utilise des outils modernes (Astro, Tailwind) et un processus optimisé qui me permet de livrer en 7 jours ce qu'une agence met 3 semaines à produire. Aucun intermédiaire entre toi et le code : tu paies le travail réel, pas les frais d'une agence. Résultat : un site unique, Lighthouse 100/100, à un prix honnête.",
+    link: { href: '/methode', label: 'Voir comment je bosse →' }
+  },
+  {
+    question: "C'est quoi l'audit Echo gratuit ?",
+    answer: "Je simule des visiteurs sur ton site et je te renvoie ce qu'ils ressentent vraiment : ce qui les bloque, ce qui les fait partir, ce qui les ferait passer à l'action. La version gratuite te donne un résumé. Les versions Complet (90€ HT) et Pro (250€ HT) vont beaucoup plus loin. C'est souvent le meilleur premier pas, et ça ne te coûte rien."
+  },
+  {
+    question: "Et après la première année de mon site ?",
+    answer: "Ton site continue de tourner sans frais mensuels. L'hébergement est inclus à vie. Seul le nom de domaine (~10€/an) est à renouveler. Si tu veux qu'on garde un œil dessus (modifs, support, contenu), des forfaits de suivi existent dès 39€/mois HT."
   },
   {
     question: "Paiement en plusieurs fois ?",
-    answer: "Oui. Site Vitrine : 2× 245€. Projet Sur Mesure : 50% à la signature, le reste à la livraison. On s'adapte."
+    answer: "Oui. Site : 2× 245€ HT ou 3× 165€ HT. Projet sur mesure : 50% à la signature, le reste à la livraison. On s'adapte."
   },
   {
-    question: "Et après la première année ?",
-    answer: "Votre site continue de fonctionner sans frais mensuels. L'hébergement est inclus à vie. Seul le nom de domaine (~10€/an) est à renouveler. Si vous voulez un accompagnement (modifs, support, contenu), des formules existent dès 39€/mois."
+    question: "Tu fais du WordPress ?",
+    answer: "Non, je travaille avec Astro. C'est plus rapide (meilleur ranking Google), plus sûr (zéro plugin = zéro faille) et plus léger. Résultat : un site qui charge en moins d'une seconde."
   },
   {
-    question: "C'est quoi le référencement GEO ?",
-    answer: "GEO = Generative Engine Optimization. En plus du SEO classique (Google), j'optimise votre site pour qu'il apparaisse dans les réponses des IA — ChatGPT, Perplexity, Claude. C'est le référencement de demain, inclus dès aujourd'hui."
-  },
-  {
-    question: "Vous faites du WordPress ?",
-    answer: "Non, je travaille avec Astro. C'est plus rapide (meilleur ranking Google), plus sûr (zéro plugin = zéro faille), et plus léger. Résultat : un site qui charge en moins d'1 seconde."
-  },
-  {
-    question: "Comment ça se passe concrètement ?",
-    answer: "Vous commandez en ligne, vous remplissez un questionnaire guidé (activité, textes, photos), on fait un échange de 15 min pour cadrer (téléphone, visio ou écrit), et je livre en 7 jours. Un aller-retour de corrections est inclus."
-  },
-  {
-    question: "Et si j'ai des besoins plus complexes ?",
-    answer: "Multi-pages, blog, réservation en ligne, boutique, fonctionnalités métier — on en parle ensemble. Je fais un devis gratuit sous 48h, sans engagement."
-  },
-  {
-    question: "Je ne sais pas quoi mettre sur mon site, vous m'aidez ?",
-    answer: "Oui, c'est inclus. Je rédige tous vos textes à partir d'un échange de 15 minutes sur votre activité. Vous validez le résultat, c'est tout. Aucune compétence rédactionnelle requise."
+    question: "Tu refais des sites WordPress, Wix ou Squarespace ?",
+    answer: "Oui, c'est fréquent. Je reprends ton contenu existant (textes, photos), ton nom de domaine, et je redirige l'ancien site vers le nouveau pour préserver ton référencement Google. Résultat : un site plus rapide, plus sécurisé, sans abonnement mensuel ni plugin à mettre à jour. Tu ne perds rien, tu gagnes en performance et en tranquillité."
   },
   {
     question: "Je peux modifier le site moi-même ensuite ?",
-    answer: "Oui. Votre site inclut un espace d'édition simple : vous changez vos textes, photos et horaires — c'est aussi facile que poster sur Facebook. Pas besoin de toucher au code."
-  },
-  {
-    question: "Vous refaites des sites WordPress, Wix ou Squarespace ?",
-    answer: "Oui, c'est une situation fréquente. Je reprends votre contenu existant (textes, photos), votre nom de domaine, et je redirige l'ancien site vers le nouveau pour préserver votre référencement Google. Résultat : un site plus rapide, plus sécurisé, sans abonnement mensuel ni plugin à mettre à jour. Vous ne perdez rien — vous gagnez en performance et en tranquillité."
-  },
-  {
-    question: "Un seul aller-retour de corrections ?",
-    answer: "Un aller-retour = une liste complète de modifications, pas une seule correction. Vous me listez tout, je corrige tout. L'échange de cadrage en amont permet de bien cibler vos attentes — dans les faits, mes clients valident souvent du premier coup."
+    answer: "Oui. Ton site inclut un espace d'édition simple : tu changes tes textes, photos et horaires, c'est aussi facile que poster sur Facebook. Pas besoin de toucher au code. L'objectif, c'est que tu sois autonome."
   },
   {
     question: "Mon site m'appartient ?",
-    answer: "Oui. Votre site et votre domaine sont à vous — zéro abonnement, zéro lock-in. L'hébergement est inclus à vie (Cloudflare). Vous êtes libre de changer de prestataire à tout moment. Contrairement à Wix ou Squarespace, vous ne louez pas votre site — vous le possédez."
+    answer: "Oui. Ton site et ton domaine sont à toi : zéro abonnement, zéro lock-in. L'hébergement est inclus à vie (Cloudflare). Tu es libre de changer de prestataire à tout moment. Contrairement à Wix ou Squarespace, tu ne loues pas ton site, tu le possèdes."
   },
 ];
 ---
 
 <BaseLayout
-  title="Tarifs création site web | Site pro dès 490€, livré en 7 jours"
-  description="Site Express 490€ ou Sur Mesure sur devis. Design unique, SEO local inclus, Lighthouse 100. Comparez les formules et commandez en ligne."
+  title="L'offre : des clients qui rentrent, pas juste un site | Marc M"
+  description="Je t'aide à trouver des clients, pour de vrai. L'accompagnement (on en parle), le site pro à 490€ HT, l'audit Echo. Le site, c'est une brique parmi d'autres."
   lang="fr"
   frPath="/offre"
   enPath="/en/services"
@@ -93,119 +89,246 @@ const faqItems = [
     <div class="mx-auto max-w-4xl text-center relative z-10">
       <div class="mb-6 inline-flex items-center gap-2 px-4 py-2 rounded-full border border-[var(--color-accent)]">
         <span class="w-2 h-2 rounded-full" style="background-color: #E86C47;"></span>
-        <span class="text-sm font-semibold text-white">Achat en ligne — livré en 7 jours</span>
+        <span class="text-sm font-semibold text-white">Tu entres par où tu veux</span>
       </div>
 
       <h1 class="mb-6 text-4xl font-bold leading-tight text-white md:text-5xl">
-        Un site pro qui vous amène des clients
+        Des clients qui rentrent. Pas juste un site.
       </h1>
       <p class="text-lg text-neutral-300 md:text-xl max-w-2xl mx-auto">
-        Design sur mesure. Visible sur Google et les IA. Ultra-rapide. Je m'occupe de tout — même les textes. Vous commandez, je livre.
+        Je t'aide à en trouver, pour de vrai. Le site, c'est une des briques. Tu peux commencer petit, ou bosser avec moi dans la durée.
       </p>
-      <p class="mt-4">
-        <a href="#sur-mesure" class="text-sm text-neutral-400 hover:text-[var(--color-accent-text)] transition-colors">
-          Besoin de plus qu'un site vitrine ? → Voir le Projet Sur Mesure
-        </a>
+      <p class="mt-6 flex flex-wrap items-center justify-center gap-x-6 gap-y-2 text-sm text-neutral-400">
+        <a href="#declic" class="hover:text-[var(--color-accent-text)] transition-colors">1. Le déclic</a>
+        <span class="text-neutral-700">·</span>
+        <a href="#bras-droit" class="hover:text-[var(--color-accent-text)] transition-colors">2. Le bras droit</a>
+        <span class="text-neutral-700">·</span>
+        <a href="#briques" class="hover:text-[var(--color-accent-text)] transition-colors">3. Les briques</a>
       </p>
     </div>
   </section>
 
-  <!-- SITE VITRINE — LE PRODUIT -->
-  <section class="w-full bg-[var(--color-bg)] px-6 py-12 md:px-8 md:py-16">
+  <!-- NIVEAU 1 - LE DECLIC (porte d'entrée) -->
+  <section id="declic" class="w-full bg-[var(--color-bg)] px-6 py-12 md:px-8 md:py-16">
     <div class="mx-auto max-w-5xl">
+      <div class="text-center mb-10">
+        <p class="text-xs font-bold uppercase tracking-widest text-[var(--color-accent-text)] mb-3" style="letter-spacing: 0.2em;">Niveau 1 · La porte d'entrée</p>
+        <h2 class="text-3xl font-bold text-[var(--color-text)]">Le déclic</h2>
+        <p class="mt-3 text-[var(--color-text-muted)] max-w-2xl mx-auto">Tu veux te lancer ou tu ne sais pas par où commencer ? On débloque ça. Le premier pas ne te coûte rien.</p>
+      </div>
+
+      <div class="grid gap-6 md:grid-cols-2">
+        <!-- Audit Echo gratuit -->
+        <div class="rounded-2xl border border-[var(--color-border)] bg-white p-8 flex flex-col">
+          <span class="inline-flex w-fit items-center gap-2 mb-3 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-emerald-700 bg-emerald-50">Gratuit</span>
+          <h3 class="text-xl font-bold text-[var(--color-text)] mb-2">L'audit Echo</h3>
+          <p class="text-sm text-[var(--color-text-muted)] mb-6 leading-relaxed flex-grow">
+            Je simule des visiteurs sur ton site et je te renvoie ce qu'ils ressentent vraiment : ce qui les bloque, ce qui les fait partir, ce qui les ferait passer à l'action. C'est le meilleur premier pas, et ça ne te coûte rien.
+          </p>
+          <a href="/audit-gratuit" class="block w-full py-3 px-6 text-center rounded-xl text-sm font-semibold text-white transition-all duration-200" style="background: linear-gradient(135deg, #E86C47, #D4572F);" data-umami-event="offre-declic-audit">
+            Demander mon audit gratuit
+          </a>
+        </div>
+
+        <!-- Formation à venir -->
+        <div class="rounded-2xl border border-dashed border-[var(--color-border)] bg-[var(--color-bg-alt)] p-8 flex flex-col">
+          <span class="inline-flex w-fit items-center gap-2 mb-3 px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider text-[var(--color-accent-text)]" style="background: rgba(232, 108, 71, 0.1);">Bientôt</span>
+          <h3 class="text-xl font-bold text-[var(--color-text)] mb-2">La formation</h3>
+          <p class="text-sm text-[var(--color-text-muted)] mb-6 leading-relaxed flex-grow">
+            Apprendre à trouver tes premiers clients toi-même : savoir quoi dire, à qui, et comment t'y mettre. Je la prépare en ce moment. Laisse-moi ton mail, je te préviens dès qu'elle sort.
+          </p>
+          <a href={waitlistMailto} class="block w-full py-3 px-6 text-center rounded-xl text-sm font-semibold text-[var(--color-text)] border border-[var(--color-border)] bg-white transition-all duration-200 hover:border-[var(--color-accent)]" data-umami-event="offre-declic-waitlist">
+            Préviens-moi quand ça sort
+          </a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NIVEAU 2 - LE BRAS DROIT (cœur, mis en avant) -->
+  <section id="bras-droit" class="w-full relative px-6 py-16 md:px-8 md:py-24" style="background-color: #0D0D0D;">
+    <div class="absolute inset-0 opacity-5" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 32px 32px;"></div>
+
+    <div class="mx-auto max-w-5xl relative z-10">
+      <div class="text-center mb-10">
+        <p class="text-xs font-bold uppercase tracking-widest text-[var(--color-accent-text)] mb-3" style="letter-spacing: 0.2em;">Niveau 2 · Le cœur</p>
+        <h2 class="text-3xl md:text-4xl font-bold text-white">Le bras droit</h2>
+        <p class="mt-4 text-lg text-neutral-300 max-w-2xl mx-auto leading-relaxed">
+          On bosse ensemble chaque semaine. Je fais <em class="not-italic text-white font-semibold">avec</em> toi, pas un PowerPoint. Comme un associé qui met les mains dedans, sans prendre tes parts.
+        </p>
+      </div>
+
+      <!-- Carte cœur mise en avant -->
+      <div class="relative rounded-2xl p-8 md:p-12" style="background: linear-gradient(135deg, #1A1A1A 0%, #141414 100%); box-shadow: 0 25px 60px -12px rgba(0,0,0,0.6), 0 0 0 1px rgba(232, 108, 71, 0.4);">
+        <div class="absolute top-0 left-0 right-0 h-1 rounded-t-2xl" style="background: linear-gradient(90deg, #E86C47, #F5C8B3);"></div>
+
+        <div class="grid gap-10 lg:grid-cols-2 items-start">
+          <!-- Ce qu'on fait ensemble -->
+          <div>
+            <p class="text-sm text-neutral-400 mb-6 leading-relaxed">
+              On regarde où tu en es, d'où viennent tes clients, ce qui bloque. On choisit les bons leviers, dans l'ordre qui compte. Et chaque semaine, j'avance avec toi. On prend ce dont tu as besoin, quand tu en as besoin :
+            </p>
+
+            <div class="space-y-4">
+              <div class="flex items-start gap-3">
+                <span class="text-[var(--color-accent-text)] flex-shrink-0 w-5 h-5 mt-0.5" set:html={checkIcon} />
+                <span class="text-sm text-white"><strong>Un site qui te ramène des clients</strong>, pas juste une carte de visite</span>
+              </div>
+              <div class="flex items-start gap-3">
+                <span class="text-[var(--color-accent-text)] flex-shrink-0 w-5 h-5 mt-0.5" set:html={checkIcon} />
+                <span class="text-sm text-white"><strong>Tes réseaux qui tournent</strong>, sans y passer tes soirées</span>
+              </div>
+              <div class="flex items-start gap-3">
+                <span class="text-[var(--color-accent-text)] flex-shrink-0 w-5 h-5 mt-0.5" set:html={checkIcon} />
+                <span class="text-sm text-white"><strong>De la prospection</strong> pour aller chercher des prospects, et savoir quoi leur dire</span>
+              </div>
+              <div class="flex items-start gap-3">
+                <span class="text-[var(--color-accent-text)] flex-shrink-0 w-5 h-5 mt-0.5" set:html={checkIcon} />
+                <span class="text-sm text-white"><strong>Un mini-CRM</strong> pour suivre tes prospects et relancer au bon moment</span>
+              </div>
+              <div class="flex items-start gap-3">
+                <span class="text-[var(--color-accent-text)] flex-shrink-0 w-5 h-5 mt-0.5" set:html={checkIcon} />
+                <span class="text-sm text-white"><strong>Tes devis et factures</strong>, pour arrêter de perdre des heures dans l'administratif</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- Pourquoi moi + CTA -->
+          <div class="rounded-xl p-6 lg:p-8 h-full flex flex-col" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
+            <p class="text-xs font-bold uppercase tracking-wider text-neutral-500 mb-4" style="letter-spacing: 0.15em;">Pourquoi moi</p>
+            <ul class="space-y-3 mb-8 flex-grow">
+              <li class="flex items-start gap-3">
+                <span class="text-[var(--color-accent-text)] flex-shrink-0 w-5 h-5 mt-0.5" set:html={checkIcon} />
+                <span class="text-sm text-neutral-200">J'ai monté 8 à 10 boîtes et accompagné une vingtaine d'indépendants. J'en parle d'expérience, pas de théorie.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-[var(--color-accent-text)] flex-shrink-0 w-5 h-5 mt-0.5" set:html={checkIcon} />
+                <span class="text-sm text-neutral-200">Je construis et fais tourner les outils moi-même. Pas un coach qui parle, pas un dev qui n'a jamais entrepris.</span>
+              </li>
+              <li class="flex items-start gap-3">
+                <span class="text-[var(--color-accent-text)] flex-shrink-0 w-5 h-5 mt-0.5" set:html={checkIcon} />
+                <span class="text-sm text-neutral-200">Des actions concrètes chaque semaine. Tu gardes la main : tout est éditable par toi, pour que tu continues seul.</span>
+              </li>
+            </ul>
+
+            <div class="rounded-lg px-4 py-3 mb-5 text-center" style="background: rgba(232, 108, 71, 0.08); border: 1px solid rgba(232, 108, 71, 0.25);">
+              <p class="text-sm text-white">Pas de tarif sec ici : ça dépend de ce dont tu as besoin. <strong>On en parle 20 min, c'est sans engagement.</strong></p>
+            </div>
+
+            <a href="/contact" class="block w-full py-4 px-6 text-center rounded-xl text-base font-semibold text-white transition-all duration-200" style="background: linear-gradient(135deg, #E86C47, #D4572F); box-shadow: 0 4px 20px rgba(232, 108, 71, 0.4);" data-umami-event="offre-brasdroit-cta">
+              On en parle
+            </a>
+            <a href="/methode" class="block mt-3 text-center text-sm text-neutral-400 hover:text-white transition-colors" data-umami-event="offre-brasdroit-methode">
+              Voir comment je bosse →
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- NIVEAU 3 - LES BRIQUES (à la carte) -->
+  <section id="briques" class="w-full bg-[var(--color-bg)] px-6 py-12 md:px-8 md:py-16">
+    <div class="mx-auto max-w-5xl">
+      <div class="text-center mb-10">
+        <p class="text-xs font-bold uppercase tracking-widest text-[var(--color-accent-text)] mb-3" style="letter-spacing: 0.2em;">Niveau 3 · À la carte</p>
+        <h2 class="text-3xl font-bold text-[var(--color-text)]">Les briques</h2>
+        <p class="mt-3 text-[var(--color-text-muted)] max-w-2xl mx-auto">Tu veux juste une pièce, pas tout l'accompagnement ? Pas de souci. Prends ce dont tu as besoin.</p>
+      </div>
+
       <div class="grid gap-10 lg:grid-cols-2 items-start">
 
-        <!-- CARD PRODUIT -->
+        <!-- BRIQUE : LE SITE -->
         <div class="relative rounded-2xl p-8 lg:p-10 flex flex-col" style="background-color: #111; box-shadow: 0 25px 50px -12px rgba(0, 0, 0, 0.4), 0 0 0 1px rgba(232, 108, 71, 0.3);">
           <div class="absolute top-0 left-0 right-0 h-1 rounded-t-2xl" style="background: linear-gradient(90deg, #E86C47, #F5C8B3);"></div>
 
           <div class="mb-2">
-            <span class="inline-block px-3 py-1 text-xs font-bold uppercase tracking-wider text-neutral-300" style="letter-spacing: 0.15em;">Site Vitrine</span>
+            <span class="inline-block px-3 py-1 text-xs font-bold uppercase tracking-wider text-neutral-300" style="letter-spacing: 0.15em;">Une brique : ton site</span>
           </div>
-          <h2 class="text-2xl font-bold text-white mb-2">Votre site professionnel</h2>
-          <p class="text-sm text-neutral-400 mb-6 leading-relaxed">Construit de zéro, à votre image. Pas un template.</p>
+          <h3 class="text-2xl font-bold text-white mb-2">Un site qui te ramène des clients</h3>
+          <p class="text-sm text-neutral-400 mb-6 leading-relaxed">Construit de zéro, à ton image. Pas un template.</p>
 
           <div class="mb-8">
             <div class="flex items-baseline gap-1">
               <span class="text-5xl font-extrabold text-white">490</span>
               <span class="text-2xl font-bold text-white">€</span>
-              <span class="text-sm text-neutral-400 ml-2">HT · ou 2× 245€ · ou 3× 165€</span>
+              <span class="text-sm text-neutral-400 ml-2">HT · ou 2× 245€ HT · ou 3× 165€ HT</span>
             </div>
           </div>
 
           <div class="space-y-3 flex-grow mb-8">
             <div class="flex items-start gap-3">
               <span class="text-[var(--color-accent-text)] flex-shrink-0 w-5 h-5 mt-0.5" set:html={checkIcon} />
-              <span class="text-sm text-white"><strong>Design unique</strong> à votre image — pas de template</span>
+              <span class="text-sm text-white"><strong>Design unique</strong> à ton image, pas de template</span>
             </div>
             <div class="flex items-start gap-3">
               <span class="text-[var(--color-accent-text)] flex-shrink-0 w-5 h-5 mt-0.5" set:html={checkIcon} />
-              <span class="text-sm text-white"><strong>Visible sur Google et les IA</strong> — SEO & GEO optimisé</span>
+              <span class="text-sm text-white"><strong>Visible sur Google et les IA</strong>, SEO et GEO optimisé</span>
             </div>
             <div class="flex items-start gap-3">
               <span class="text-[var(--color-accent-text)] flex-shrink-0 w-5 h-5 mt-0.5" set:html={checkIcon} />
-              <span class="text-sm text-white"><strong>Pensé pour convertir</strong> — appel, WhatsApp, formulaire</span>
+              <span class="text-sm text-white"><strong>Pensé pour convertir</strong>, appel, WhatsApp, formulaire</span>
             </div>
             <div class="flex items-start gap-3">
               <span class="text-[var(--color-accent-text)] flex-shrink-0 w-5 h-5 mt-0.5" set:html={checkIcon} />
-              <span class="text-sm text-white"><strong>Ultra-rapide</strong> — votre site charge en moins d'une seconde</span>
+              <span class="text-sm text-white"><strong>Ultra-rapide</strong>, ton site charge en moins d'une seconde</span>
             </div>
             <div class="flex items-start gap-3">
               <span class="text-[var(--color-accent-text)] flex-shrink-0 w-5 h-5 mt-0.5" set:html={checkIcon} />
-              <span class="text-sm text-white"><strong>Prêt en 7 jours</strong> — 1 aller-retour de corrections inclus</span>
+              <span class="text-sm text-white"><strong>Prêt en 7 jours</strong>, 1 aller-retour de corrections inclus</span>
             </div>
             <div class="flex items-start gap-3">
               <span class="text-[var(--color-accent-text)] flex-shrink-0 w-5 h-5 mt-0.5" set:html={checkIcon} />
-              <span class="text-sm text-white"><strong>Textes rédigés pour vous</strong> — vous n'avez rien à écrire</span>
+              <span class="text-sm text-white"><strong>Textes rédigés pour toi</strong>, tu n'as rien à écrire</span>
             </div>
             <div class="flex items-start gap-3">
               <span class="text-[var(--color-accent-text)] flex-shrink-0 w-5 h-5 mt-0.5" set:html={checkIcon} />
-              <span class="text-sm text-white"><strong>C'est votre site</strong> — vous êtes propriétaire, zéro lock-in</span>
+              <span class="text-sm text-white"><strong>C'est ton site</strong>, tu es propriétaire, zéro lock-in</span>
             </div>
           </div>
 
           <div class="space-y-3">
             <a href="/commander" class="block w-full py-4 px-6 text-center rounded-xl text-base font-semibold text-white transition-all duration-200" style="background: linear-gradient(135deg, #E86C47, #D4572F); box-shadow: 0 4px 20px rgba(232, 108, 71, 0.4);" data-umami-event="offre-cta-commander">
-              Commander mon site — 490€
+              Commander mon site, 490€ HT
             </a>
             <a href="/contact" class="block w-full py-3 px-6 text-center rounded-xl text-sm font-semibold text-neutral-300 border border-neutral-700 transition-all duration-200 hover:border-neutral-500 hover:text-white" data-umami-event="offre-cta-question">
               Juste poser une question
             </a>
-            <p class="text-center text-xs text-neutral-500 mt-1">Hébergement & domaine inclus la 1ère année</p>
+            <p class="text-center text-xs text-neutral-500 mt-1">Hébergement et domaine inclus la 1ère année</p>
           </div>
         </div>
 
-        <!-- CE QUI EST INCLUS -->
+        <!-- COMMENT ÇA MARCHE (le site) -->
         <div class="flex flex-col gap-6">
-          <h3 class="text-lg font-bold text-[var(--color-text)]">Comment ça marche</h3>
+          <h3 class="text-lg font-bold text-[var(--color-text)]">Comment se fabrique ton site</h3>
 
           <div class="space-y-5">
             <div class="flex gap-4">
               <div class="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center font-bold text-white text-sm" style="background: linear-gradient(135deg, #E86C47, #D4572F);">1</div>
               <div>
-                <p class="font-semibold text-[var(--color-text)]">Vous commandez en ligne</p>
-                <p class="text-sm text-[var(--color-text-muted)] mt-0.5">Paiement sécurisé. Vous remplissez un questionnaire guidé : activité, textes, photos, préférences.</p>
+                <p class="font-semibold text-[var(--color-text)]">Tu commandes en ligne</p>
+                <p class="text-sm text-[var(--color-text-muted)] mt-0.5">Paiement sécurisé. Tu remplis un questionnaire guidé : activité, textes, photos, préférences.</p>
               </div>
             </div>
             <div class="flex gap-4">
               <div class="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center font-bold text-white text-sm" style="background: linear-gradient(135deg, #E86C47, #D4572F);">2</div>
               <div>
                 <p class="font-semibold text-[var(--color-text)]">On fait le point ensemble</p>
-                <p class="text-sm text-[var(--color-text-muted)] mt-0.5">Échange de 15 minutes pour cadrer le projet (téléphone, visio ou écrit). Si vos besoins dépassent le Site Vitrine, je vous oriente sans surcoût.</p>
+                <p class="text-sm text-[var(--color-text-muted)] mt-0.5">Échange de 15 minutes pour cadrer le projet (téléphone, visio ou écrit). Si ton besoin dépasse le site, je t'oriente sans surcoût.</p>
               </div>
             </div>
             <div class="flex gap-4">
               <div class="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center font-bold text-white text-sm" style="background: linear-gradient(135deg, #E86C47, #D4572F);">3</div>
               <div>
-                <p class="font-semibold text-[var(--color-text)]">Je construis votre site</p>
-                <p class="text-sm text-[var(--color-text-muted)] mt-0.5">Design, développement, contenu, SEO — tout est fait sur mesure en 7 jours.</p>
+                <p class="font-semibold text-[var(--color-text)]">Je construis ton site</p>
+                <p class="text-sm text-[var(--color-text-muted)] mt-0.5">Design, développement, contenu, SEO, tout est fait sur mesure en 7 jours.</p>
               </div>
             </div>
             <div class="flex gap-4">
               <div class="flex-shrink-0 w-10 h-10 rounded-xl flex items-center justify-center font-bold text-white text-sm" style="background: linear-gradient(135deg, #E86C47, #D4572F);">4</div>
               <div>
-                <p class="font-semibold text-[var(--color-text)]">Votre site est en ligne</p>
-                <p class="text-sm text-[var(--color-text-muted)] mt-0.5">Un aller-retour de corrections, puis mise en ligne. Vous recevez les accès à tout.</p>
+                <p class="font-semibold text-[var(--color-text)]">Ton site est en ligne</p>
+                <p class="text-sm text-[var(--color-text-muted)] mt-0.5">Un aller-retour de corrections, puis mise en ligne. Tu reçois les accès à tout.</p>
               </div>
             </div>
           </div>
@@ -215,22 +338,50 @@ const faqItems = [
             <div class="text-3xl font-extrabold" style="color: #E86C47;">{totalProjects}</div>
             <div>
               <p class="text-sm font-semibold text-[var(--color-text)]">projets réalisés</p>
-              <p class="text-xs text-[var(--color-text-muted)]">Tous à Lighthouse 100 — <a href="/realisations" class="underline hover:text-[var(--color-accent-text)]">voir les réalisations</a></p>
+              <p class="text-xs text-[var(--color-text-muted)]">Tous à Lighthouse 100, <a href="/realisations" class="underline hover:text-[var(--color-accent-text)]">voir les réalisations</a></p>
             </div>
           </div>
         </div>
 
       </div>
+
+      <!-- L'AUDIT ECHO (brique chiffrée) -->
+      <div class="mt-16">
+        <div class="text-center mb-8">
+          <h3 class="text-2xl font-bold text-[var(--color-text)]">L'audit Echo</h3>
+          <p class="mt-2 text-[var(--color-text-muted)] max-w-2xl mx-auto">Savoir ce que ton site renvoie vraiment à tes visiteurs. Trois niveaux, à toi de voir jusqu'où tu veux aller.</p>
+        </div>
+
+        <div class="grid gap-4 md:grid-cols-3">
+          {business.visiteMystere.tiers.map((tier) => (
+            <div class="rounded-xl border border-[var(--color-border)] bg-white p-6 flex flex-col">
+              <h4 class="text-base font-bold text-[var(--color-text)] mb-1">{tier.name}</h4>
+              <div class="flex items-baseline gap-1 mb-3">
+                {tier.price === 0 ? (
+                  <span class="text-2xl font-extrabold text-emerald-600">Gratuit</span>
+                ) : (
+                  <>
+                    <span class="text-2xl font-extrabold" style="color: #E86C47;">{tier.price}€</span>
+                    <span class="text-sm text-[var(--color-text-muted)]">HT</span>
+                  </>
+                )}
+              </div>
+              <p class="text-sm text-[var(--color-text-muted)] mb-4 flex-grow">{tier.description}</p>
+              <a href="/echo" class="text-sm font-semibold text-[var(--color-accent-text)] hover:underline">En savoir plus →</a>
+            </div>
+          ))}
+        </div>
+      </div>
     </div>
   </section>
 
-  <!-- ADD-ONS -->
+  <!-- ADD-ONS (briques en complément du site) -->
   <section class="w-full px-6 py-12 md:px-8 md:py-16" style="background: linear-gradient(180deg, #FAFAFA 0%, #FFFFFF 100%);">
     <div class="mx-auto max-w-5xl">
       <div class="text-center mb-10">
-        <p class="text-xs font-bold uppercase tracking-widest text-[var(--color-accent-text)] mb-3" style="letter-spacing: 0.2em;">À la carte</p>
-        <h2 class="text-3xl font-bold text-[var(--color-text)]">Ajoutez ce dont vous avez besoin</h2>
-        <p class="mt-3 text-[var(--color-text-muted)]">Disponibles avec le Site Vitrine ou en complément d'un Projet Sur Mesure.</p>
+        <p class="text-xs font-bold uppercase tracking-widest text-[var(--color-accent-text)] mb-3" style="letter-spacing: 0.2em;">En complément du site</p>
+        <h2 class="text-3xl font-bold text-[var(--color-text)]">Ajoute ce dont tu as besoin</h2>
+        <p class="mt-3 text-[var(--color-text-muted)]">Disponible avec le site ou en complément d'un projet sur mesure.</p>
       </div>
 
       <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
@@ -240,7 +391,7 @@ const faqItems = [
           </div>
           <p class="font-semibold text-[var(--color-text)] text-sm">Page supplémentaire</p>
           <p class="text-xs text-[var(--color-text-muted)] mt-1">Page dédiée : à propos, tarifs, galerie, témoignages...</p>
-          <p class="mt-3 text-lg font-bold" style="color: #E86C47;">+120€</p>
+          <p class="mt-3 text-lg font-bold" style="color: #E86C47;">+120€ HT</p>
         </div>
 
         <div class="rounded-xl border border-[var(--color-border)] bg-white p-6 hover:shadow-md transition-shadow">
@@ -248,8 +399,8 @@ const faqItems = [
             <svg class="w-5 h-5 text-[var(--color-accent-text)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z" /><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z" /></svg>
           </div>
           <p class="font-semibold text-[var(--color-text)] text-sm">Fiche Google Business</p>
-          <p class="text-xs text-[var(--color-text-muted)] mt-1">Votre entreprise visible sur Google Maps — 46% des recherches sont locales</p>
-          <p class="mt-3 text-lg font-bold" style="color: #E86C47;">+90€</p>
+          <p class="text-xs text-[var(--color-text-muted)] mt-1">Ton entreprise visible sur Google Maps, 46% des recherches sont locales</p>
+          <p class="mt-3 text-lg font-bold" style="color: #E86C47;">+90€ HT</p>
         </div>
 
         <div class="rounded-xl border border-[var(--color-border)] bg-white p-6 hover:shadow-md transition-shadow">
@@ -258,7 +409,7 @@ const faqItems = [
           </div>
           <p class="font-semibold text-[var(--color-text)] text-sm">Pack réseaux sociaux</p>
           <p class="text-xs text-[var(--color-text-muted)] mt-1">Visuels aux bonnes dimensions pour Facebook, LinkedIn et Google Business</p>
-          <p class="mt-3 text-lg font-bold" style="color: #E86C47;">+150€</p>
+          <p class="mt-3 text-lg font-bold" style="color: #E86C47;">+150€ HT</p>
         </div>
 
         <div class="rounded-xl border border-[var(--color-border)] bg-white p-6 hover:shadow-md transition-shadow">
@@ -266,12 +417,12 @@ const faqItems = [
             <svg class="w-5 h-5 text-[var(--color-accent-text)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M19 20H5a2 2 0 01-2-2V6a2 2 0 012-2h10a2 2 0 012 2v1m2 13a2 2 0 01-2-2V7m2 13a2 2 0 002-2V9a2 2 0 00-2-2h-2m-4-3H9M7 16h6M7 8h6v4H7V8z" /></svg>
           </div>
           <p class="font-semibold text-[var(--color-text)] text-sm">Blog SEO</p>
-          <p class="text-xs text-[var(--color-text-muted)] mt-1">5 articles optimisés pour Google + un espace simple pour écrire vos prochains articles</p>
-          <p class="mt-3 text-lg font-bold" style="color: #E86C47;">+390€</p>
+          <p class="text-xs text-[var(--color-text-muted)] mt-1">5 articles optimisés pour Google + un espace simple pour écrire tes prochains articles</p>
+          <p class="mt-3 text-lg font-bold" style="color: #E86C47;">+390€ HT</p>
         </div>
       </div>
 
-      <!-- Ligne 2 — add-ons complémentaires -->
+      <!-- Ligne 2 - add-ons complémentaires -->
       <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-4 mt-4">
         <div class="rounded-xl border border-[var(--color-border)] bg-white p-6 hover:shadow-md transition-shadow">
           <div class="w-10 h-10 mb-4 rounded-lg flex items-center justify-center" style="background: rgba(232, 108, 71, 0.1);">
@@ -279,7 +430,7 @@ const faqItems = [
           </div>
           <p class="font-semibold text-[var(--color-text)] text-sm">Galerie photos avancée</p>
           <p class="text-xs text-[var(--color-text-muted)] mt-1">Galerie avant/après ou par catégorie, lightbox plein écran, chargement instantané</p>
-          <p class="mt-3 text-lg font-bold" style="color: #E86C47;">+90€</p>
+          <p class="mt-3 text-lg font-bold" style="color: #E86C47;">+90€ HT</p>
         </div>
 
         <div class="rounded-xl border border-[var(--color-border)] bg-white p-6 hover:shadow-md transition-shadow">
@@ -289,7 +440,7 @@ const faqItems = [
           <p class="font-semibold text-[var(--color-text)] text-sm">Boutique en ligne</p>
           <p class="text-xs text-[var(--color-text-muted)] mt-1">Catalogue produits, panier, paiement sécurisé (Stripe). Idéal pour créations, produits locaux, commandes sur mesure.</p>
           <p class="text-xs text-neutral-400 mt-1">→ Fleuriste, artisan, couturier, producteur local, créateur</p>
-          <p class="mt-3 text-lg font-bold" style="color: #E86C47;">+250€</p>
+          <p class="mt-3 text-lg font-bold" style="color: #E86C47;">+250€ HT</p>
         </div>
 
         <div class="rounded-xl border border-[var(--color-border)] bg-white p-6 hover:shadow-md transition-shadow relative">
@@ -298,9 +449,9 @@ const faqItems = [
             <svg class="w-5 h-5 text-[var(--color-accent-text)]" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" /></svg>
           </div>
           <p class="font-semibold text-[var(--color-text)] text-sm">Prise de RDV en ligne</p>
-          <p class="text-xs text-[var(--color-text-muted)] mt-1">Vos clients réservent un créneau directement sur votre site (Cal.com, Doctolib, Calendly, Planity…).</p>
+          <p class="text-xs text-[var(--color-text-muted)] mt-1">Tes clients réservent un créneau directement sur ton site (Cal.com, Doctolib, Calendly, Planity…).</p>
           <p class="text-xs text-neutral-400 mt-1">→ Kiné, coach, thérapeute, coiffeur, tatoueur, photographe</p>
-          <p class="mt-3 text-lg font-bold" style="color: #E86C47;">+180€</p>
+          <p class="mt-3 text-lg font-bold" style="color: #E86C47;">+180€ HT</p>
         </div>
 
         <div class="rounded-xl border border-[var(--color-border)] bg-white p-6 hover:shadow-md transition-shadow">
@@ -309,7 +460,7 @@ const faqItems = [
           </div>
           <p class="font-semibold text-[var(--color-text)] text-sm">Animations au scroll</p>
           <p class="text-xs text-[var(--color-text-muted)] mt-1">Entrées animées élégantes pour un site moderne et vivant</p>
-          <p class="mt-3 text-lg font-bold" style="color: #E86C47;">+90€</p>
+          <p class="mt-3 text-lg font-bold" style="color: #E86C47;">+90€ HT</p>
         </div>
       </div>
     </div>
@@ -325,29 +476,29 @@ const faqItems = [
           <p class="text-xs font-bold uppercase tracking-widest text-[var(--color-accent-text)] mb-4" style="letter-spacing: 0.2em;">Sur devis</p>
           <h2 class="text-3xl font-bold text-white mb-4">Un projet qui dépasse le site vitrine ?</h2>
           <p class="text-neutral-300 mb-6 leading-relaxed">
-            Multi-pages, blog, réservation en ligne, calculateur de prix, fonctionnalités métier — je construis exactement ce qu'il vous faut. Devis gratuit sous 48h.
+            Multi-pages, blog, réservation en ligne, calculateur de prix, fonctionnalités métier, je construis exactement ce qu'il te faut. Devis gratuit sous 48h.
           </p>
 
           <div class="space-y-4 mb-8">
             <div class="flex items-start gap-3">
               <span class="text-[var(--color-accent-text)] flex-shrink-0 w-5 h-5 mt-0.5" set:html={checkIcon} />
-              <span class="text-sm text-neutral-200"><strong>Architecture sur mesure</strong> — autant de pages qu'il en faut</span>
+              <span class="text-sm text-neutral-200"><strong>Architecture sur mesure</strong>, autant de pages qu'il en faut</span>
             </div>
             <div class="flex items-start gap-3">
               <span class="text-[var(--color-accent-text)] flex-shrink-0 w-5 h-5 mt-0.5" set:html={checkIcon} />
-              <span class="text-sm text-neutral-200"><strong>Fonctionnalités métier</strong> — booking, paiement, catalogue, calculateur</span>
+              <span class="text-sm text-neutral-200"><strong>Fonctionnalités métier</strong>, booking, paiement, catalogue, calculateur</span>
             </div>
             <div class="flex items-start gap-3">
               <span class="text-[var(--color-accent-text)] flex-shrink-0 w-5 h-5 mt-0.5" set:html={checkIcon} />
-              <span class="text-sm text-neutral-200"><strong>Blog + CMS</strong> — écrivez vos articles en autonomie</span>
+              <span class="text-sm text-neutral-200"><strong>Blog + CMS</strong>, écris tes articles en autonomie</span>
             </div>
             <div class="flex items-start gap-3">
               <span class="text-[var(--color-accent-text)] flex-shrink-0 w-5 h-5 mt-0.5" set:html={checkIcon} />
-              <span class="text-sm text-neutral-200"><strong>Stratégie SEO</strong> — pages par ville, par service, contenu ciblé</span>
+              <span class="text-sm text-neutral-200"><strong>Stratégie SEO</strong>, pages par ville, par service, contenu ciblé</span>
             </div>
             <div class="flex items-start gap-3">
               <span class="text-[var(--color-accent-text)] flex-shrink-0 w-5 h-5 mt-0.5" set:html={checkIcon} />
-              <span class="text-sm text-neutral-200"><strong>Analytics</strong> — suivi des visites et des conversions</span>
+              <span class="text-sm text-neutral-200"><strong>Analytics</strong>, suivi des visites et des conversions</span>
             </div>
           </div>
 
@@ -371,7 +522,7 @@ const faqItems = [
               <span class="text-sm font-semibold text-white">Site multi-pages + galerie</span>
               <span class="text-xs text-neutral-500">10 jours</span>
             </div>
-            <p class="text-xs text-neutral-400">Artisan menuisier — 6 pages, galerie par catégorie, formulaire devis, SEO local</p>
+            <p class="text-xs text-neutral-400">Artisan menuisier, 6 pages, galerie par catégorie, formulaire devis, SEO local</p>
           </div>
 
           <div class="rounded-xl p-5 border border-neutral-800" style="background: rgba(255,255,255,0.03);">
@@ -379,7 +530,7 @@ const faqItems = [
               <span class="text-sm font-semibold text-white">Site + blog + CMS</span>
               <span class="text-xs text-neutral-500">10 jours</span>
             </div>
-            <p class="text-xs text-neutral-400">Zoothérapeute — 16 pages, blog, tarification, CMS pour gérer le contenu</p>
+            <p class="text-xs text-neutral-400">Zoothérapeute, 16 pages, blog, tarification, CMS pour gérer le contenu</p>
           </div>
 
           <div class="rounded-xl p-5 border border-neutral-800" style="background: rgba(255,255,255,0.03);">
@@ -387,7 +538,7 @@ const faqItems = [
               <span class="text-sm font-semibold text-white">Site + calculateur de prix</span>
               <span class="text-xs text-neutral-500">10 jours</span>
             </div>
-            <p class="text-xs text-neutral-400">Accordeur de piano — 8 pages, calculateur par code postal, catalogue pianos d'occasion</p>
+            <p class="text-xs text-neutral-400">Accordeur de piano, 8 pages, calculateur par code postal, catalogue pianos d'occasion</p>
           </div>
 
           <div class="rounded-xl p-5 border border-neutral-800" style="background: rgba(255,255,255,0.03);">
@@ -395,7 +546,7 @@ const faqItems = [
               <span class="text-sm font-semibold text-white">Site + blog SEO + pages géo</span>
               <span class="text-xs text-neutral-500">3 semaines</span>
             </div>
-            <p class="text-xs text-neutral-400">Technicien sécurité — 20+ pages, 11 articles, pages par ville et par service</p>
+            <p class="text-xs text-neutral-400">Technicien sécurité, 20+ pages, 11 articles, pages par ville et par service</p>
           </div>
 
           <a href="/realisations" class="inline-flex items-center gap-1 text-sm font-medium text-[var(--color-accent-text)] hover:underline mt-2">
@@ -407,14 +558,18 @@ const faqItems = [
     </div>
   </section>
 
-  <!-- ACCOMPAGNEMENT -->
+  <!-- SUIVI DU SITE (forfaits maintenance, distinct du bras droit) -->
   <section class="w-full bg-white px-6 py-12 md:px-8 md:py-16">
     <div class="mx-auto max-w-5xl">
-      <div class="text-center mb-10">
-        <p class="text-xs font-bold uppercase tracking-widest text-[var(--color-accent-text)] mb-3" style="letter-spacing: 0.2em;">Après livraison</p>
-        <h2 class="text-3xl font-bold text-[var(--color-text)]">Accompagnement</h2>
-        <p class="mt-3 text-[var(--color-text-muted)]">La première année est incluse. Ensuite, vous choisissez.</p>
+      <div class="text-center mb-4">
+        <p class="text-xs font-bold uppercase tracking-widest text-[var(--color-accent-text)] mb-3" style="letter-spacing: 0.2em;">Après livraison de ton site</p>
+        <h2 class="text-3xl font-bold text-[var(--color-text)]">Tu n'es pas lâché</h2>
+        <p class="mt-3 text-[var(--color-text-muted)]">La première année est incluse. Ensuite, tu choisis. Ce sont des forfaits de suivi technique du site, pas l'accompagnement business.</p>
       </div>
+
+      <p class="text-center text-xs text-[var(--color-text-muted)] mb-10 max-w-xl mx-auto">
+        À ne pas confondre avec <a href="#bras-droit" class="text-[var(--color-accent-text)] hover:underline font-medium">le bras droit</a> (on bosse ensemble chaque semaine pour te trouver des clients). Ici, on parle juste de garder ton site en forme.
+      </p>
 
       <div class="grid gap-4 md:grid-cols-3">
         <!-- Autonomie -->
@@ -423,7 +578,7 @@ const faqItems = [
           <div class="flex items-baseline gap-1 mb-3">
             <span class="text-2xl font-extrabold text-[var(--color-text)]">0€</span>
           </div>
-          <p class="text-sm text-[var(--color-text-muted)] mb-4">Votre site tourne tout seul. L'hébergement reste sans frais. Seul le domaine est à renouveler (~10€/an).</p>
+          <p class="text-sm text-[var(--color-text-muted)] mb-4">Ton site tourne tout seul. L'hébergement reste sans frais. Seul le domaine est à renouveler (~10€/an).</p>
           <ul class="space-y-2">
             <li class="flex items-start gap-2">
               <span class="text-emerald-500 flex-shrink-0 w-4 h-4 mt-0.5" set:html={checkIcon} />
@@ -440,17 +595,17 @@ const faqItems = [
           </ul>
         </div>
 
-        <!-- Accompagnement -->
+        <!-- Suivi -->
         <div class="rounded-xl border-2 border-[var(--color-accent)] p-6 relative">
           <div class="absolute -top-3 left-1/2 -translate-x-1/2">
             <span class="bg-[var(--color-accent)] text-white text-[10px] font-bold px-3 py-1 rounded-full uppercase tracking-wider">Recommandé</span>
           </div>
-          <h3 class="text-base font-bold text-[var(--color-text)] mb-1">Accompagnement</h3>
+          <h3 class="text-base font-bold text-[var(--color-text)] mb-1">Suivi</h3>
           <div class="flex items-baseline gap-1 mb-3">
             <span class="text-2xl font-extrabold" style="color: #E86C47;">39€</span>
-            <span class="text-sm text-[var(--color-text-muted)]">/mois</span>
+            <span class="text-sm text-[var(--color-text-muted)]">/mois HT</span>
           </div>
-          <p class="text-sm text-[var(--color-text-muted)] mb-4">Quelqu'un à appeler quand vous avez besoin. Modifications, support, tranquillité d'esprit.</p>
+          <p class="text-sm text-[var(--color-text-muted)] mb-4">Quelqu'un à appeler quand tu en as besoin. Modifications, support, tranquillité d'esprit.</p>
           <ul class="space-y-2">
             <li class="flex items-start gap-2">
               <span class="text-emerald-500 flex-shrink-0 w-4 h-4 mt-0.5" set:html={checkIcon} />
@@ -458,7 +613,7 @@ const faqItems = [
             </li>
             <li class="flex items-start gap-2">
               <span class="text-emerald-500 flex-shrink-0 w-4 h-4 mt-0.5" set:html={checkIcon} />
-              <span class="text-xs text-[var(--color-text-muted)]">Support email & WhatsApp</span>
+              <span class="text-xs text-[var(--color-text-muted)]">Support email et WhatsApp</span>
             </li>
             <li class="flex items-start gap-2">
               <span class="text-emerald-500 flex-shrink-0 w-4 h-4 mt-0.5" set:html={checkIcon} />
@@ -476,13 +631,13 @@ const faqItems = [
           <h3 class="text-base font-bold text-[var(--color-text)] mb-1">Croissance</h3>
           <div class="flex items-baseline gap-1 mb-3">
             <span class="text-2xl font-extrabold" style="color: #E86C47;">99€</span>
-            <span class="text-sm text-[var(--color-text-muted)]">/mois</span>
+            <span class="text-sm text-[var(--color-text-muted)]">/mois HT</span>
           </div>
-          <p class="text-sm text-[var(--color-text-muted)] mb-4">On fait grandir votre site ensemble. Contenu, SEO, évolutions — chaque mois.</p>
+          <p class="text-sm text-[var(--color-text-muted)] mb-4">On fait grandir ton site ensemble. Contenu, SEO, évolutions, chaque mois.</p>
           <ul class="space-y-2">
             <li class="flex items-start gap-2">
               <span class="text-emerald-500 flex-shrink-0 w-4 h-4 mt-0.5" set:html={checkIcon} />
-              <span class="text-xs text-[var(--color-text-muted)]">Tout de Accompagnement</span>
+              <span class="text-xs text-[var(--color-text-muted)]">Tout du forfait Suivi</span>
             </li>
             <li class="flex items-start gap-2">
               <span class="text-emerald-500 flex-shrink-0 w-4 h-4 mt-0.5" set:html={checkIcon} />
@@ -525,13 +680,13 @@ const faqItems = [
       </div>
 
       <p class="mt-10 text-center text-sm text-[var(--color-text-muted)]">
-        Vous voulez creuser le sujet avant de vous lancer ?{' '}
+        Tu veux creuser le sujet avant de te lancer ?{' '}
         <a
           href="/journal/creer-site-web-entreprise-grand-est-guide"
           class="font-medium text-[var(--color-accent-text)] hover:underline"
           data-umami-event="offre-pillar-link"
         >
-          Lisez le guide : créer le site de votre entreprise dans le Grand Est &rarr;
+          Lis le guide : créer le site de ton entreprise dans le Grand Est &rarr;
         </a>
       </p>
     </div>
@@ -540,18 +695,18 @@ const faqItems = [
   <!-- CTA FINAL -->
   <section class="w-full relative px-6 py-16 md:px-8 md:py-24" style="background: linear-gradient(135deg, #1A1A1A 0%, #111111 100%);">
     <div class="mx-auto max-w-3xl text-center relative z-10">
-      <h2 class="mb-4 text-3xl font-bold text-white">Prêt à lancer votre site ?</h2>
+      <h2 class="mb-4 text-3xl font-bold text-white">Prêt à avoir des clients qui rentrent ?</h2>
       <p class="mb-8 text-lg text-neutral-300">
-        Commandez votre Site Vitrine à 490€ ou parlons de votre projet sur mesure.
+        On prend 20 minutes, tu me dis où tu en es, je te dis par quoi commencer. Sans engagement.
       </p>
       <div class="flex flex-col items-center justify-center gap-3 sm:flex-row">
         <a
-          href="/commander"
+          href="/contact"
           class="inline-flex items-center gap-2 rounded-lg bg-[var(--color-accent)] px-8 py-3 text-sm font-semibold text-white transition-all duration-300 hover:bg-[var(--color-accent-hover)] hover:shadow-lg"
           style="box-shadow: 0 0 40px rgba(232, 108, 71, 0.3);"
           data-umami-event="offre-cta-final"
         >
-          Commander 490€
+          On en parle
         </a>
         <a
           href={`https://wa.me/${business.whatsapp}?text=${whatsappMessage}`}
