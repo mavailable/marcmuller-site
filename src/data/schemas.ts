@@ -21,8 +21,8 @@ export function getPersonSchema() {
     "@context": "https://schema.org",
     "@type": "Person",
     "name": "Marc Muller",
-    "jobTitle": "Développeur Web Freelance",
-    "description": "Développeur web spécialisé dans la création de sites web sur mesure pour artisans, commerçants et petites entreprises",
+    "jobTitle": business.jobTitle,
+    "description": business.description,
     "url": business.url,
     "sameAs": [
       "https://www.linkedin.com/in/marcmuller"
