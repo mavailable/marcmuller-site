@@ -19,7 +19,8 @@ export default defineConfig({
         !page.includes('/echo/') &&
         !page.includes('/aide/') &&
         !page.includes('/en/help/') &&
-        !page.includes('/formation'),
+        !page.includes('/devenir-libre') &&
+        !page.includes('/become-free'),
       i18n: {
         defaultLocale: 'fr',
         locales: {
