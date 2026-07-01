@@ -39,8 +39,16 @@ function extractInlineScripts(html) {
     if (tag.includes('type="application/ld+json"')) continue;
     // Skip scripts with src attribute (external scripts)
     if (/\bsrc\s*=/.test(tag.split('>')[0])) continue;
-    const content = match[1].trim();
-    if (content) {
+    // IMPORTANT : le hash CSP doit porter sur le contenu EXACT de la balise
+    // (octets entre > et </script>), pas sur une version trimmée. Les navigateurs
+    // hashent le textContent verbatim, whitespace de bordure compris. Pour un
+    // <script is:inline> multi-lignes (loader Umami, cookie lang-switch), Astro
+    // conserve l'indentation source : trimmer produit un hash qui ne matche pas
+    // → script bloqué par la CSP (cas tracking Umami cassé 22/05→30/06). Les
+    // scripts Astro minifiés (une ligne, sans whitespace de bordure) sont
+    // inchangés par ce fix (trim = no-op sur eux).
+    const content = match[1];
+    if (content.trim()) {
       scripts.push(content);
     }
   }
