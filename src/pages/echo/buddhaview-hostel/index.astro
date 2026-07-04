@@ -1,100 +1,148 @@
 ---
 import BaseLayout from '../../../layouts/BaseLayout.astro';
-import { personas, type Decision } from '../../../data/buddhaview-hostel-personas';
+import { personas, type Decision } from '../../../data/buddhaview-hostel-personas-v2';
 
 const slug = 'buddhaview-hostel';
 const nomProspect = 'Buddha View Hostel';
-const urlSite = 'https://www.buddhaviewhostel.com';
-const dateAudit = '20 juin 2026';
-const title = 'Rapport Personas - Buddha View Hostel | Marc M';
-const description = "Un regard confidentiel sur buddhaviewhostel.com a travers 60 voyageurs simules (20 anglophones, 20 francophones, 20 germanophones) : qui reserve, qui hesite, qui repart, et les correctifs qui transformeraient plus de visites en reservations.";
+const urlSite = 'https://buddhaview-hostel.pages.dev';
+const dateAudit = '4 juillet 2026';
+const title = 'Rapport Personas v2 - Buddha View Hostel | Marc M';
+const description = "Echo Pro v2 : 300 voyageurs simulés (100 anglophones, 100 francophones, 100 hispanophones) sur le nouveau site Buddha View Hostel, comparés à l'audit v1 de l'ancien site.";
 const phoneDisplay = '+33 6 88 76 66 48';
 const whatsapp = '33688766648';
 
-// KPIs sur les 60 visiteurs simules (pas les 24 affiches), hardcode.
-const kpis = { nbPersonas: 60, nbConvertissent: 17, nbHesitent: 20, nbRepartent: 23, conversion: 28, experience: 5.6, confiance: 5.3, clarte: 5.1 };
+// KPIs sur les 300 visiteurs simulés (36 affichés ci-dessous), calculés depuis simulations.json.
+const kpis = { nbPersonas: 300, nbConvertissent: 165, nbHesitent: 63, nbRepartent: 72, conversion: 55, experience: 7.3, confiance: 7.6, clarte: 8.3 };
+const kpisV1 = { nbPersonas: 60, conversion: 28, experience: 5.6, confiance: 5.3, clarte: 5.1 };
 
-const verdictHero = "Sur 60 voyageurs adaptés à votre offre, 17 réservent. Les 43 autres partent, le plus souvent vers Hostelworld ou Booking, parce qu'ils ne trouvent ni prix, ni avis, ni même la mention du Wi-Fi sur votre site.";
+const verdictHero = "Sur 300 voyageurs simulés, 165 réservent sur votre nouveau site, près du double de l'ancien. Le frein principal restant : des avis qu'on ne peut pas vérifier.";
 
-const constat = "Votre offre a tout pour séduire un backpacker : le combo dormir et plonger, la démarche éco (solaire, eau de pluie), à 300 mètres de l'embarcadère. Mais le site cache précisément ce dont il a besoin pour décider : les prix (derrière le moteur de réservation), les avis (zéro sur le site), et le Wi-Fi (jamais mentionné, alors qu'un espace de travail est mis en avant). Résultat : il repart vérifier sur Hostelworld, où tout est là.";
+const constat = "La refonte a levé les cinq freins de l'ancien site : les prix sont affichés, les avis sont là, le Wi-Fi est confirmé, le site parle trois langues et Google reçoit enfin une vraie description. Ce qui retient encore les 63 hésitants n'est plus ce que le site cache, c'est ce qu'il ne prouve pas : une note d'avis vérifiable, un avantage à réserver en direct, une offre pour les plongeurs déjà certifiés.";
 
+// Timeline v1 -> v2
+const versionsData = [
+  { version: 'v1', date: '20 juin 2026', label: 'Ancien site (Wix)', nbPersonas: 60, taux: 28 },
+  { version: 'v2', date: '4 juillet 2026', label: 'Nouveau site', nbPersonas: 300, taux: 55 },
+];
+
+const deltaData = [
+  { friction: 'Prix 100% cachés derrière le moteur de réservation', statut: '✅', detail: 'Fourchettes « à partir de » affichées partout (dès 500 THB), lien de résa direct par chambre' },
+  { friction: 'Zéro avis ni note sur le site', statut: '🟡', detail: '10 témoignages traduits en 3 langues, mais toujours aucune note vérifiable ni lien vers Hostelworld, Booking ou Google' },
+  { friction: 'Wi-Fi jamais mentionné', statut: '✅', detail: 'Confirmé sur l\'accueil, en FAQ et dans les infos pratiques, avec espaces de travail' },
+  { friction: 'Site 100% anglais', statut: '✅', detail: 'Trois langues natives (EN, FR, ES) avec sélecteur clair. La cohorte francophone rejouée passe de 3 à 12 réservations' },
+  { friction: 'Description Google vide, titre faible, partage social sans image', statut: '✅', detail: 'Titres et descriptions optimisés par langue, aperçu de partage complet, 0 erreur mesurée' },
+  { friction: 'Page lente et instable sur mobile, sécurité C-', statut: '❓', detail: 'Non mesurable tant que la préversion est privée. Socle technique refait, à re-mesurer au passage sur le domaine public' },
+];
+
+// Conversion par langue (le coeur du Pro multilingue)
 const langueData = [
-  { langue: 'Anglophones', flag: '🇬🇧', total: 20, convert: 7, hesite: 5, quitte: 8, rate: 35, upside: 0, note: "Aucune barrière de langue. Les prix cachés, l'absence d'avis et le Wi-Fi non mentionné suffisent à en faire partir 8 vers les plateformes." },
-  { langue: 'Francophones', flag: '🇫🇷', total: 20, convert: 3, hesite: 8, quitte: 9, rate: 15, upside: 13, note: "Moitié du taux anglophone. L'anglais et l'absence d'avis en français les renvoient sur Hostelworld. 13 de plus réserveraient avec un contenu français, des prix et des avis visibles." },
-  { langue: 'Germanophones', flag: '🇩🇪', total: 20, convert: 7, hesite: 7, quitte: 6, rate: 35, upside: 16, note: "Bon anglais, mais leur rigueur se heurte à l'opacité. 16 de plus réserveraient si les prix, les avis et le Wi-Fi étaient simplement affichés." }
+  { langue: 'Anglophones', flag: '🇬🇧', total: 100, convert: 55, hesite: 21, quitte: 24, rate: 55, note: "La cohorte v1 rejouée reste à 7 réservations sur 20, mais les départs secs deviennent des hésitations (5 départs au lieu de 8). Les freins restants : avis à vérifier, aucun avantage résa directe, Wi-Fi sans preuve chiffrée." },
+  { langue: 'Francophones', flag: '🇫🇷', total: 100, convert: 55, hesite: 21, quitte: 24, rate: 55, note: "Le marché sacrifié de l'ancien site (15% contre 35% pour les anglophones) est à égalité. La cohorte v1 rejouée passe de 3 à 12 réservations : la version française et le staff francophone affiché changent tout." },
+  { langue: 'Hispanophones', flag: '🇪🇸', total: 100, convert: 55, hesite: 21, quitte: 24, rate: 55, note: "Nouveau marché testé (remplace l'allemand du v1). Un point spécifique : 17 visiteurs sur 100 relèvent que l'accueil du hostel ne parle pas espagnol, alors que le site et les instructeurs plongée le couvrent." },
 ];
 
 const canalData = [
-  { canal: 'Bouche-à-oreille', nb: 9, convert: 6, rate: 67 },
-  { canal: 'Google Maps', nb: 9, convert: 3, rate: 33 },
-  { canal: 'Assistants IA (ChatGPT, Perplexity)', nb: 9, convert: 2, rate: 22 },
-  { canal: 'Réseaux sociaux', nb: 9, convert: 2, rate: 22 },
-  { canal: 'Hostelworld / Booking', nb: 12, convert: 2, rate: 17 },
-  { canal: 'Google Search', nb: 12, convert: 2, rate: 17 }
+  { canal: 'Bouche-à-oreille', nb: 43, convert: 32, rate: 74 },
+  { canal: 'Hostelworld / Booking', nb: 61, convert: 35, rate: 57 },
+  { canal: 'Google Maps', nb: 45, convert: 24, rate: 53 },
+  { canal: 'Google Search', nb: 61, convert: 32, rate: 52 },
+  { canal: 'Assistants IA (ChatGPT, Perplexity)', nb: 46, convert: 23, rate: 50 },
+  { canal: 'Réseaux sociaux', nb: 44, convert: 19, rate: 43 },
 ];
 
+// Analyses avancées (Pro)
+const maturiteData = [
+  { label: 'Découverte', total: 87, convert: 22, hesite: 25, quitte: 40, rate: 25, friction: 'preuve sociale non vérifiable, vie du lieu peu illustrée : ils repartent « y réfléchir »' },
+  { label: 'Comparaison', total: 123, convert: 66, hesite: 33, quitte: 24, rate: 54, friction: 'prix exact par date sur le moteur de résa uniquement, aucun avantage à réserver en direct' },
+  { label: 'Décision', total: 90, convert: 77, hesite: 5, quitte: 8, rate: 86, friction: 'presque rien ne les arrête ; manque une offre pour plongeurs déjà certifiés' },
+];
+
+const deviceData = [
+  { device: 'Mobile', total: 197, convert: 119, rate: 60, insight: 'Le site mobile-first excelle, là où sont 2 visiteurs sur 3.' },
+  { device: 'Desktop', total: 73, convert: 32, rate: 44, insight: 'Concentre les compareurs méthodiques, onglets Hostelworld ouverts en parallèle.' },
+  { device: 'Tablette', total: 30, convert: 14, rate: 47, insight: 'Usage d\'appoint, mêmes réactions que sur mobile.' },
+];
+
+const segmentData = [
+  { segment: 'Client idéal', total: 75, convert: 70, rate: 93, insight: 'L\'offre parle parfaitement à sa cible.' },
+  { segment: 'Client recommandé', total: 30, convert: 27, rate: 90, insight: 'La preuve sociale humaine fonctionne à plein.' },
+  { segment: 'Client adjacent', total: 60, convert: 32, rate: 53, insight: 'Nomades, familles, 40+, plongeurs certifiés : rien ne s\'adresse explicitement à eux.' },
+  { segment: 'Client hésitant', total: 60, convert: 21, rate: 35, insight: 'Le gisement : 18 basculeraient avec des avis vérifiables, 15 avec un avantage résa directe.' },
+  { segment: 'Client en découverte', total: 44, convert: 15, rate: 34, insight: 'Normal à ce stade : à nourrir avec des avis et la vie du lieu.' },
+  { segment: 'Client hors cible', total: 31, convert: 0, rate: 0, insight: 'Clarté 8,8/10 : le positionnement calme filtre vite et bien, c\'est un succès.' },
+];
+
+const matriceData = [
+  { canal: 'Hostelworld / Booking', cells: [{ pct: 60, n: '3/5' }, { pct: 44, n: '16/36' }, { pct: 80, n: '16/20' }] },
+  { canal: 'Google Search', cells: [{ pct: 20, n: '4/20' }, { pct: 55, n: '16/29' }, { pct: 100, n: '12/12' }] },
+  { canal: 'Google Maps', cells: [{ pct: 20, n: '2/10' }, { pct: 40, n: '6/15' }, { pct: 80, n: '16/20' }] },
+  { canal: 'Assistants IA', cells: [{ pct: 32, n: '6/19' }, { pct: 57, n: '12/21' }, { pct: 83, n: '5/6' }] },
+  { canal: 'Réseaux sociaux', cells: [{ pct: 23, n: '7/30' }, { pct: 80, n: '8/10' }, { pct: 100, n: '4/4' }] },
+  { canal: 'Bouche-à-oreille', cells: [{ pct: 0, n: '0/3' }, { pct: 67, n: '8/12' }, { pct: 86, n: '24/28' }] },
+];
+
+// Ce qui freine encore (aucune alerte critique en v2, contre 4 en v1)
 const alertes = [
-  { type: 'critique' as const, titre: "Aucun prix affiché sur le site", detail: "Tous les tarifs sont derrière le moteur de réservation. Il faut saisir des dates pour voir un seul prix. Les voyageurs au budget serré ne font pas cet effort et repartent comparer ailleurs.", chiffre: '0', chiffreLabel: 'prix visible' },
-  { type: 'important' as const, titre: "Aucun avis ni note sur le site", detail: "La preuve sociale est le critère numéro un d'un backpacker. Hostelworld, Booking et Google débordent d'avis sur vous, mais votre site officiel n'en montre aucun.", chiffre: '0', chiffreLabel: 'avis affichés' },
-  { type: 'important' as const, titre: "Le Wi-Fi n'est jamais mentionné", detail: "C'est le critère numéro un des backpackers et des nomades digitaux. Il est absent du site, alors qu'un espace de travail est pourtant mis en avant. Cette contradiction sème le doute.", chiffre: '0', chiffreLabel: 'info Wi-Fi' },
-  { type: 'important' as const, titre: "Description Google vide et titre faible", detail: "La description de la page d'accueil est vide et le titre est simplement 'Home | Buddha View Hostel'. Google affiche alors un extrait au hasard, vous perdez la main sur votre accroche.", chiffre: 'vide', chiffreLabel: 'description Google' }
+  { titre: "Les avis ne se vérifient pas", detail: "10 témoignages maison, traduits et crédibles, mais aucune note globale ni lien vers Hostelworld, Booking ou Google. Pour un backpacker, un avis qu'on ne peut pas recouper compte à moitié. C'est le premier motif de bascule des hésitants (18 sur 63).", chiffre: '69', chiffreLabel: 'visiteurs sur 300 veulent vérifier' },
+  { titre: "Rien à acheter pour les plongeurs certifiés", detail: "L'offre plongée s'arrête à l'Advanced Open Water. Aucun prix par plongée, aucun forfait fun dives : des plongeurs déjà certifiés, prêts à payer, repartent sans pouvoir se projeter.", chiffre: '0', chiffreLabel: 'prix fun dive affiché' },
+  { titre: "Aucun avantage à réserver en direct", detail: "Les compareurs arrivent avec un panier Hostelworld ouvert. Le site affiche enfin ses prix, mais rien ne récompense la réservation directe : ni « meilleur prix ici », ni geste (café, late check-out).", chiffre: '15', chiffreLabel: 'hésitants basculeraient' },
 ];
 
 const techVerdicts = [
-  { label: 'Vitesse', verdict: 'À améliorer sur mobile', ok: false, detail: "4,7s sur téléphone et la page qui se décale au chargement" },
-  { label: 'Sécurité', verdict: 'Faible', ok: false, detail: 'Note C-, 4 protections standard manquantes' },
-  { label: 'Référencement', verdict: 'Description vide', ok: false, detail: 'Score technique 92/100 mais description d\'accueil vide et titre faible' },
-  { label: 'Données business', verdict: 'Présentes', ok: true, detail: 'Google lit votre fiche (LocalBusiness)' },
-  { label: 'Partage social', verdict: 'Incomplet', ok: false, detail: 'Ni image ni description lors d\'un partage' }
+  { label: 'Vitesse', verdict: 'Non mesurée', state: 'na', detail: 'Préversion privée : les outils de mesure ne voient pas le site. À mesurer au go-live.' },
+  { label: 'Sécurité', verdict: 'Configurée', state: 'na', detail: 'Jeu complet de protections en place dans le code ; la note officielle sera mesurable au go-live.' },
+  { label: 'Référencement', verdict: 'Optimisé', state: 'ok', detail: 'Titres, descriptions et versions de langue impeccables sur les pages vérifiées.' },
+  { label: 'Données business', verdict: 'Présentes', state: 'ok', detail: 'Fiche hostel lisible par Google, 0 erreur sur les pages vérifiées.' },
+  { label: 'Partage social', verdict: 'Complet', state: 'ok', detail: 'Image et description de partage présentes, dans les trois langues.' },
 ];
 
 const tech = {
-  observatory: { grade: 'C-', score: 45, testsOk: 6, testsTotal: 10 },
-  pagespdMobile: { performance: 74, accessibility: 100, bestPractices: 100, seo: 92 },
-  pagespdDesktop: { performance: 87, accessibility: 100, bestPractices: 100, seo: 92 },
-  headers: [
-    { ok: true, h: 'Chiffrement HTTPS et protections de base en place (6 des 10 contrôles réussis)' },
-    { ok: false, h: 'Politique de sécurité du contenu (CSP) : absente' },
-    { ok: false, h: 'Protection contre le clickjacking (X-Frame-Options) : absente' },
-    { ok: false, h: 'Contrôle d\'intégrité des scripts externes : absent' }
-  ],
   schema: [
-    { item: 'Fiche business lisible par Google (LocalBusiness)', ok: true },
-    { item: 'Identité du site présente', ok: true },
-    { item: 'Avis clients non balisés pour les étoiles Google', ok: false }
+    { item: 'Fiche hostel lisible par Google (type Hostel), 0 erreur', ok: true },
+    { item: 'Identité du site présente sur les trois langues', ok: true },
+    { item: 'Liste des chambres balisée (page Rooms)', ok: true },
+    { item: 'Avis clients pas encore balisés pour les étoiles Google (à faire avec la note agrégée)', ok: false },
   ],
   og: [
-    { item: 'Titre de partage', ok: true, val: 'présent' },
-    { item: 'Description de partage', ok: false, val: 'absente' },
-    { item: 'Image de partage', ok: false, val: 'absente' },
-    { item: 'Lien et type', ok: true, val: 'présents' }
+    { item: 'Titre de partage', val: 'présent (3 langues)' },
+    { item: 'Description de partage', val: 'présente' },
+    { item: 'Image de partage', val: 'présente (1200x630)' },
+    { item: 'Aperçu Twitter/X', val: 'complet' },
   ],
   seo: [
-    { item: 'Titre de page à retravailler (générique)', ok: false },
-    { item: "Description d'accueil vide", ok: false },
-    { item: 'Lisible par les moteurs de recherche', ok: true },
-    { item: 'Données structurées présentes', ok: true }
-  ]
+    { item: 'Titre optimisé : mot-clé + bénéfice (« Eco hostel on Koh Tao, free pool try-scuba »)', ok: true },
+    { item: 'Description remplie et vendeuse, unique par langue', ok: true },
+    { item: 'Versions de langue déclarées à Google (EN, FR, ES)', ok: true },
+    { item: '3 pages d\'administration présentes dans le sitemap : à retirer avant le go-live', ok: false },
+  ],
+  headers: [
+    { ok: true, h: 'Protections configurées dans le code : politique de sécurité du contenu, anti-clickjacking, chiffrement forcé' },
+    { ok: true, h: 'Cache long sur les fichiers statiques, polices hébergées localement' },
+    { ok: false, h: 'Note officielle non mesurable tant que la préversion est privée' },
+  ],
 };
 
 const ameliorationsHautes = [
-  { titre: "Afficher des fourchettes de prix", pourquoi: "Aujourd'hui aucun prix sans saisir des dates. Une fourchette claire (à partir de X THB la nuit) est l'un des signaux de confiance les plus forts pour un backpacker.", action: "Ajouter un 'à partir de X THB' sur chaque type de chambre, et un petit tableau récapitulatif.", impact: 'majorité des 60' },
-  { titre: "Afficher les avis et les notes sur le site", pourquoi: "La preuve sociale est le premier critère d'un backpacker. Vous en avez plein sur Hostelworld, Booking et Google, ils ne sont juste pas sur votre site.", action: "Intégrer un mur d'avis (widget Google ou Hostelworld) sur l'accueil et la page des chambres.", impact: 'la plupart des 60' },
-  { titre: "Mentionner le Wi-Fi, le petit-déjeuner, les moyens de paiement", pourquoi: "Ce sont les premières questions d'un voyageur. Leur absence crée le doute, surtout pour les nomades qui voient un espace de travail annoncé sans garantie de connexion.", action: "Ajouter un bloc 'équipements et infos pratiques' clair sur l'accueil et la page Guest Information.", impact: 'backpackers et nomades' },
-  { titre: "Remplir la description Google et retravailler le titre", pourquoi: "La description d'accueil est vide et le titre est générique. C'est la correction de référencement la plus simple et la plus rentable.", action: "Rédiger une balise titre et une description vendeuses, avec la promesse dormir et plonger à Koh Tao.", impact: 'tout le trafic Google' },
-  { titre: "Stabiliser et accélérer la page sur mobile", pourquoi: "La page se décale pendant le chargement (on peut cliquer au mauvais endroit) et met 4,7 secondes à s'afficher sur téléphone, là où sont la majorité des backpackers.", action: "Réserver l'espace des images et bannières au chargement, compresser les visuels. Objectif : page stable et sous 3 secondes.", impact: 'tout le trafic mobile' }
+  { titre: "Afficher une note d'avis vérifiable", pourquoi: "Les témoignages maison rassurent mais ne se recoupent pas. La note existe déjà sur Hostelworld et Google : il suffit de l'afficher avec un lien. C'est le levier le moins cher du rapport.", action: "Ajouter « 9+/10 sur Hostelworld » avec lien près des témoignages, sur l'accueil et la page Rooms.", impact: '69 visiteurs sur 300, 18 hésitants basculent' },
+  { titre: "Annoncer un avantage résa directe", pourquoi: "Les compareurs ont un panier Hostelworld ouvert dans l'onglet d'à côté. Sans raison de réserver ici, ils y retournent, et vous payez la commission.", action: "Un bandeau « meilleur prix en direct » ou un geste concret (café offert, late check-out) sur la page Rooms.", impact: '15 hésitants basculent' },
+  { titre: "Créer l'offre fun dives pour plongeurs certifiés", pourquoi: "Des certifiés prêts à payer ne trouvent rien après l'Advanced : ni prix par plongée, ni forfait. Ils repartent en phase de décision, le moment le plus rentable.", action: "Une page fun dives avec grille de prix (1, 5, 10 plongées) reliée au formulaire existant.", impact: '20 visiteurs en phase décision' },
+  { titre: "Prouver le Wi-Fi", pourquoi: "Le Wi-Fi est confirmé trois fois, mais sans débit ni retour d'usage. Pour un télétravailleur, « Wi-Fi gratuit » sans chiffre reste une promesse.", action: "Afficher un débit mesuré et ajouter un témoignage de télétravailleur.", impact: 'nomades (segment adjacent)' },
+  { titre: "Afficher l'accueil hispanophone", pourquoi: "Le site parle un espagnol parfait, mais les infos pratiques annoncent un staff anglais/français. 17 hispanophones sur 100 tiquent, alors que les instructeurs couvrent déjà l'espagnol.", action: "Mentionner l'espagnol côté hostel (instructeurs ES, « un peu d'espagnol au comptoir »).", impact: '17 visiteurs ES sur 100' },
 ];
 
 const ameliorationsUtiles = [
-  { titre: "Une image et une description de partage (Open Graph)", detail: "Quand votre lien est partagé, il n'y a ni image ni texte d'aperçu. Un visuel et une phrase donnent envie de cliquer." },
-  { titre: "Indiquer les langues parlées par l'équipe", detail: "Le site ne dit nulle part quelles langues sont parlées. Une simple mention rassure les voyageurs non anglophones sur l'accueil à l'arrivée." },
-  { titre: "Une carte et un itinéraire intégrés", detail: "Vous donnez une adresse mais pas de carte. Un plan cliquable lève l'inquiétude logistique de la dernière minute." }
+  { titre: "Un tarif long séjour indicatif", detail: "Les nomades comparent avec des colivings qui affichent un prix au mois. Même un « dès X nuits : -Y% » débloque la projection." },
+  { titre: "Parler aux publics adjacents", detail: "Un bloc « première plongée à 40 ans ? », l'âge minimum pour les familles, la remise à niveau après une pause : trois questions récurrentes restées sans réponse." },
+  { titre: "Montrer la vie du lieu", detail: "Le positionnement calme est clair, mais les solos sociables veulent voir le lounge vivre : deux photos de la vie commune suffisent." },
+  { titre: "Détailler la démarche éco", detail: "« Solaire et eau de pluie » est cru sur parole. Deux ou trois chiffres concrets transformeraient l'argument en preuve." },
+  { titre: "Expliquer les frais de carte (3,5%)", detail: "Relevés par 47 visiteurs, surtout hispanophones. Les expliquer (ou proposer un paiement sans frais) évite la mauvaise surprise au calcul." },
 ];
 
 const ameliorationsDiscuter = [
-  { emoji: '🌏', titre: "Une version française et allemande ?", detail: "Le potentiel est réel (jusqu'à +29 réservations latentes cumulées), mais l'urgence préalable reste prix, avis et Wi-Fi, qui valent pour tous les marchés." },
-  { emoji: '🏗️', titre: "Sortir de Wix ?", detail: "La plateforme plafonne la vitesse et la sécurité. Un autre socle lèverait ce plafond, mais c'est un chantier à peser." },
-  { emoji: '🛏️', titre: "Afficher la disponibilité en direct sur le site, ou garder la redirection ?", detail: "Une dispo en temps réel sur le site convertirait davantage, mais demande plus d'intégration. À arbitrer." }
+  { emoji: '📅', titre: "Afficher la disponibilité en direct sur le site ?", detail: "Le prix exact par date reste sur le moteur de résa. Une dispo en temps réel lèverait la friction n.2 du rapport, mais c'est un vrai chantier d'intégration." },
+  { emoji: '🤿', titre: "Un package lit + cours en une seule démarche ?", detail: "Aujourd'hui deux réservations séparées (lit d'un côté, plongée de l'autre). Un combo confirmé en une fois rassurerait les planificateurs." },
+  { emoji: '🥐', titre: "Le petit-déjeuner", detail: "Non inclus, relevé par 44 visiteurs. Partenariat avec un resto voisin ou option payante affichée : à arbitrer avec Anoush." },
+  { emoji: '🤫', titre: "Assumer « calme mais sociable »", detail: "Le filtre anti-fêtards fonctionne parfaitement (0 conversion hors cible, et c'est voulu). Reste à dire aux solos qu'on s'y fait quand même des amis." },
 ];
 
 function decisionBorder(d: Decision) {
@@ -112,6 +160,11 @@ function scoreColor(n: number) {
   if (n >= 5) return 'text-amber-600';
   return 'text-red-500';
 }
+function heatCls(pct: number) {
+  if (pct >= 60) return 'bg-green-100 text-green-800';
+  if (pct >= 30) return 'bg-amber-100 text-amber-800';
+  return 'bg-red-100 text-red-800';
+}
 
 const converts = personas.filter((p) => p.decision === 'Convertit');
 const hesitates = personas.filter((p) => p.decision === 'Hesite');
@@ -123,11 +176,11 @@ const leaves = personas.filter((p) => p.decision === 'Quitte');
   <!-- ═══ HERO ═══ -->
   <section class="relative w-full px-6 py-20 md:py-28 overflow-hidden" style="background: #0A0A0A;">
     <div class="absolute top-[20%] left-[10%] w-[500px] h-[500px] rounded-full blur-[180px] pointer-events-none" style="background: #0EA5E9; opacity: 0.08;"></div>
-    <div class="absolute bottom-[10%] right-[5%] w-[300px] h-[300px] rounded-full blur-[120px] pointer-events-none" style="background: #E86C47; opacity: 0.05;"></div>
+    <div class="absolute bottom-[10%] right-[5%] w-[300px] h-[300px] rounded-full blur-[120px] pointer-events-none" style="background: #22c55e; opacity: 0.05;"></div>
 
     <div class="relative mx-auto max-w-4xl z-10">
       <div class="mb-6 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5);">
-        Rapport personas &middot; Confidentiel
+        Echo Pro &middot; v2 &middot; Confidentiel
       </div>
 
       <h1 class="mb-6 text-3xl md:text-4xl font-bold text-white leading-tight tracking-tight">
@@ -135,7 +188,7 @@ const leaves = personas.filter((p) => p.decision === 'Quitte');
       </h1>
 
       <p class="mb-10 text-sm" style="color: rgba(255,255,255,0.4);">
-        Site analysé : <a href={urlSite} target="_blank" rel="noopener" class="underline hover:text-white transition-colors">{urlSite}</a> &middot; {kpis.nbPersonas} visiteurs simulés &middot; {dateAudit}
+        Site analysé : <a href={urlSite} target="_blank" rel="noopener" class="underline hover:text-white transition-colors">{urlSite}</a> &middot; {kpis.nbPersonas} visiteurs simulés (100 EN, 100 FR, 100 ES) &middot; {dateAudit}
       </p>
 
       <div class="grid grid-cols-3 gap-4">
@@ -154,15 +207,62 @@ const leaves = personas.filter((p) => p.decision === 'Quitte');
       </div>
 
       <p class="mt-6 text-sm text-center" style="color: rgba(255,255,255,0.5);">
-        Soit <strong class="text-white">{kpis.conversion}%</strong> qui réservent &middot; <strong class="text-green-400">67%</strong> via le bouche-à-oreille &middot; <strong class="text-amber-400">15%</strong> seulement chez les francophones
+        Soit <strong class="text-white">{kpis.conversion}%</strong> qui réservent, contre <strong class="text-white">{kpisV1.conversion}%</strong> sur l'ancien site &middot; l'écart entre langues a disparu
       </p>
     </div>
   </section>
 
-  <!-- ═══ CONVERSION PAR LANGUE ═══ -->
+  <!-- ═══ ÉVOLUTION v1 -> v2 ═══ -->
   <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-16">
+    <h2 class="text-xl font-bold text-neutral-900 mb-2">Comment votre site a évolué</h2>
+    <p class="text-sm text-neutral-500 mb-6">Le v1 (20 juin) auditait l'ancien site. Ce v2 mesure ce que la refonte débloque, avec les mêmes méthodes et, pour 40 profils, les mêmes visiteurs.</p>
+
+    <div class="grid grid-cols-2 gap-4 mb-6">
+      {versionsData.map((v, i) => (
+        <div class={`rounded-xl p-5 border ${i === versionsData.length - 1 ? 'bg-sky-50 border-sky-200' : 'bg-white border-neutral-200'}`}>
+          <div class="flex items-center justify-between mb-2">
+            <span class={`text-[10px] font-bold uppercase tracking-widest ${i === versionsData.length - 1 ? 'text-sky-700' : 'text-neutral-400'}`}>{v.version} &middot; {v.date}</span>
+            <span class={`text-2xl font-black ${i === versionsData.length - 1 ? 'text-sky-700' : 'text-neutral-500'}`}>{v.taux}%</span>
+          </div>
+          <p class="text-sm font-semibold text-neutral-900">{v.label}</p>
+          <p class="text-xs text-neutral-500 mt-1">{v.nbPersonas} visiteurs simulés</p>
+        </div>
+      ))}
+    </div>
+
+    <div class="rounded-xl p-5 bg-green-50 border border-green-200 flex items-start gap-3 mb-8">
+      <span class="text-lg shrink-0 mt-0.5">📈</span>
+      <p class="text-sm text-green-900 leading-relaxed">
+        <strong>Preuve la plus fiable : les 40 visiteurs du v1 rejoués à l'identique.</strong> Les 20 francophones passent de 3 à <strong>12 réservations (x4)</strong>. Les 20 anglophones restent à 7, mais les départs secs deviennent des hésitations rattrapables (5 départs au lieu de 8).
+      </p>
+    </div>
+
+    <div class="overflow-x-auto rounded-xl border border-neutral-200 mb-4">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="bg-neutral-50">
+            <th class="text-left p-3 text-neutral-500 font-medium">Friction identifiée au v1</th>
+            <th class="p-3 text-neutral-500 font-medium w-12">État</th>
+            <th class="text-left p-3 text-neutral-500 font-medium">Sur le nouveau site</th>
+          </tr>
+        </thead>
+        <tbody>
+          {deltaData.map((d) => (
+            <tr class="border-t border-neutral-100">
+              <td class="p-3 text-neutral-800">{d.friction}</td>
+              <td class="p-3 text-center text-base">{d.statut}</td>
+              <td class="p-3 text-neutral-600 text-xs">{d.detail}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- ═══ CONVERSION PAR LANGUE ═══ -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pt-12">
     <h2 class="text-xl font-bold text-neutral-900 mb-2">Conversion par langue</h2>
-    <p class="text-sm text-neutral-500 mb-6">Le cœur de cet audit : 20 voyageurs simulés par marché, et ce qu'ils décident.</p>
+    <p class="text-sm text-neutral-500 mb-6">100 voyageurs simulés par marché, sur la même grille de profils : les totaux se comparent d'un marché à l'autre.</p>
 
     <div class="grid md:grid-cols-3 gap-4 mb-6">
       {langueData.map((l) => (
@@ -188,11 +288,6 @@ const leaves = personas.filter((p) => p.decision === 'Quitte');
               <div class="text-[10px] text-neutral-500">repartent</div>
             </div>
           </div>
-          {l.upside > 0 && (
-            <div class="mb-3 inline-flex items-center gap-1 text-[11px] font-semibold text-sky-700 bg-sky-50 border border-sky-100 rounded-full px-2 py-0.5">
-              +{l.upside} réservations possibles
-            </div>
-          )}
           <p class="text-xs text-neutral-600 leading-relaxed">{l.note}</p>
         </div>
       ))}
@@ -201,12 +296,12 @@ const leaves = personas.filter((p) => p.decision === 'Quitte');
     <div class="rounded-xl p-5 bg-sky-50 border border-sky-200 flex items-start gap-3 mb-4">
       <span class="text-lg shrink-0 mt-0.5">🌐</span>
       <p class="text-sm text-sky-900 leading-relaxed">
-        La barrière de langue coupe le marché francophone de moitié (<strong>15% contre 35%</strong>). Mais l'urgence commune aux trois marchés est la même : afficher prix, avis et Wi-Fi. Le potentiel débloquable est considérable.
+        Sur l'ancien site, la langue coupait le marché francophone de moitié. Sur le nouveau, <strong>les trois marchés convertissent à égalité</strong> : le site ne discrimine plus par langue. Les frictions restantes sont les mêmes partout, plus une spécifique au marché hispanophone (l'accueil ne parle pas espagnol).
       </p>
     </div>
   </section>
 
-  <!-- ═══ LE CONSTAT ═══ -->
+  <!-- ═══ LE CONSTAT + CANAUX ═══ -->
   <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
     <div class="rounded-2xl p-6 md:p-8 mb-12 border-l-4" style="background: rgba(14,165,233,0.04); border-color: #0EA5E9;">
       <p class="text-lg md:text-xl font-medium text-neutral-800 leading-relaxed">{constat}</p>
@@ -233,334 +328,275 @@ const leaves = personas.filter((p) => p.decision === 'Quitte');
       })}
     </div>
 
+    <!-- Entonnoir maturité -->
+    <h2 class="text-xl font-bold text-neutral-900 mb-2">Le parcours de vos visiteurs</h2>
+    <p class="text-sm text-neutral-500 mb-6">De la découverte à la décision : où le site excelle, où il perd encore.</p>
+
+    <div class="grid md:grid-cols-3 gap-4 mb-12">
+      {maturiteData.map((m) => {
+        const color = m.rate >= 50 ? '#22c55e' : m.rate >= 25 ? '#f59e0b' : '#6b7280';
+        return (
+          <div class="bg-white border border-neutral-200 rounded-xl p-5">
+            <div class="text-2xl font-black mb-1" style={`color: ${color}`}>{m.rate}%</div>
+            <div class="text-sm font-semibold text-neutral-900 mb-1">{m.label}</div>
+            <div class="text-xs text-neutral-500 mb-3">{m.total} visiteurs</div>
+            <div class="flex gap-1 mb-3">
+              <span class="text-[10px] px-1.5 py-0.5 rounded bg-green-100 text-green-700">{m.convert} ✓</span>
+              <span class="text-[10px] px-1.5 py-0.5 rounded bg-amber-100 text-amber-700">{m.hesite} ~</span>
+              <span class="text-[10px] px-1.5 py-0.5 rounded bg-neutral-100 text-neutral-500">{m.quitte} ✗</span>
+            </div>
+            <p class="text-xs text-neutral-500 italic">Friction : {m.friction}</p>
+          </div>
+        );
+      })}
+    </div>
+
+    <!-- Segments -->
+    <h2 class="text-xl font-bold text-neutral-900 mb-2">Qui convertit, qui résiste</h2>
+    <p class="text-sm text-neutral-500 mb-6">Conversion par profil de clientèle : le levier se situe chez les hésitants et les adjacents.</p>
+
+    <div class="grid md:grid-cols-3 gap-4 mb-12">
+      {segmentData.map((s) => {
+        const color = s.rate >= 60 ? '#22c55e' : s.rate >= 30 ? '#f59e0b' : '#6b7280';
+        return (
+          <div class="bg-white border border-neutral-200 rounded-xl p-5">
+            <div class="text-2xl font-black mb-1" style={`color: ${color}`}>{s.rate}%</div>
+            <div class="text-sm font-semibold text-neutral-900 mb-1">{s.segment}</div>
+            <div class="text-xs text-neutral-500 mb-2">{s.convert}/{s.total} réservent</div>
+            <p class="text-xs text-neutral-500 italic">{s.insight}</p>
+          </div>
+        );
+      })}
+    </div>
+
+    <!-- Device -->
+    <h2 class="text-xl font-bold text-neutral-900 mb-2">Mobile vs Desktop</h2>
+    <p class="text-sm text-neutral-500 mb-6">Aucun problème mobile : c'est même l'inverse.</p>
+    <div class="grid md:grid-cols-3 gap-4 mb-12">
+      {deviceData.map((d) => {
+        const color = d.rate >= 50 ? '#22c55e' : d.rate >= 25 ? '#f59e0b' : '#6b7280';
+        return (
+          <div class="bg-white border border-neutral-200 rounded-xl p-5">
+            <div class="text-2xl font-black mb-1" style={`color: ${color}`}>{d.rate}%</div>
+            <div class="text-sm font-semibold text-neutral-900 mb-1">{d.device}</div>
+            <div class="text-xs text-neutral-500 mb-2">{d.total} visiteurs</div>
+            <p class="text-xs text-neutral-500 italic">{d.insight}</p>
+          </div>
+        );
+      })}
+    </div>
+
+    <!-- Heatmap canal x maturité -->
+    <h2 class="text-xl font-bold text-neutral-900 mb-2">Où investir</h2>
+    <p class="text-sm text-neutral-500 mb-6">Croisement canal &times; maturité : les cases rouges sont vos marges de progression (effectifs entre parenthèses).</p>
+    <div class="overflow-x-auto rounded-xl border border-neutral-200 mb-6">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="bg-neutral-50">
+            <th class="text-left p-3 text-neutral-500 font-medium">Canal</th>
+            <th class="p-3 text-neutral-500 font-medium">Découverte</th>
+            <th class="p-3 text-neutral-500 font-medium">Comparaison</th>
+            <th class="p-3 text-neutral-500 font-medium">Décision</th>
+          </tr>
+        </thead>
+        <tbody>
+          {matriceData.map((row) => (
+            <tr class="border-t border-neutral-100">
+              <td class="p-3 font-medium text-neutral-900">{row.canal}</td>
+              {row.cells.map((cell) => (
+                <td class={`p-3 text-center font-bold ${heatCls(cell.pct)}`}>{cell.pct}% <span class="font-normal text-[10px] opacity-60">({cell.n})</span></td>
+              ))}
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p class="text-xs text-neutral-500 mb-4">Lecture : la faiblesse est concentrée sur la <strong>découverte froide</strong> (Search, Maps, réseaux sociaux entre 20 et 23%). Ces visiteurs ne rejettent pas l'offre : il leur manque une preuve vérifiable et un aperçu de la vie du lieu pour s'engager dès la première visite. En phase de décision, le site ne perd presque personne (86%).</p>
+
+    <!-- Scores détaillés -->
     <details class="group mb-4">
       <summary class="flex items-center gap-2 cursor-pointer text-sm text-neutral-500 hover:text-neutral-700 py-2">
         <svg class="w-4 h-4 transition-transform group-open:rotate-90" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
-        Voir les scores détaillés (expérience, confiance, clarté)
+        Voir les scores détaillés (expérience, confiance, clarté) et le delta v1
       </summary>
       <div class="grid grid-cols-3 gap-4 mt-3">
-        <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
-          <div class="text-2xl font-bold text-neutral-800 mb-1">{kpis.experience}<span class="text-sm text-neutral-400">/10</span></div>
-          <div class="text-xs text-neutral-500">Expérience</div>
-          <p class="text-[10px] text-neutral-400 mt-1">Navigation, lisibilité, vitesse</p>
-        </div>
-        <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
-          <div class="text-2xl font-bold text-neutral-800 mb-1">{kpis.confiance}<span class="text-sm text-neutral-400">/10</span></div>
-          <div class="text-xs text-neutral-500">Confiance</div>
-          <p class="text-[10px] text-neutral-400 mt-1">Crédibilité, preuve, réassurance</p>
-        </div>
-        <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
-          <div class="text-2xl font-bold text-neutral-800 mb-1">{kpis.clarte}<span class="text-sm text-neutral-400">/10</span></div>
-          <div class="text-xs text-neutral-500">Clarté</div>
-          <p class="text-[10px] text-neutral-400 mt-1">Compréhension de l'offre et des prix</p>
-        </div>
+        {[
+          { label: 'Expérience', val: kpis.experience, old: kpisV1.experience, hint: 'Navigation, lisibilité, fluidité' },
+          { label: 'Confiance', val: kpis.confiance, old: kpisV1.confiance, hint: 'Crédibilité, preuves, rassurance' },
+          { label: 'Clarté', val: kpis.clarte, old: kpisV1.clarte, hint: 'Compréhension de l\'offre et des prix' },
+        ].map((s) => (
+          <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
+            <div class="text-2xl font-bold text-neutral-800 mb-1">{s.val}<span class="text-sm text-neutral-400">/10</span></div>
+            <div class="text-[11px] text-green-600 font-semibold mb-1">contre {s.old} au v1</div>
+            <div class="text-xs text-neutral-500">{s.label}</div>
+            <p class="text-[10px] text-neutral-400 mt-1">{s.hint}</p>
+          </div>
+        ))}
       </div>
     </details>
   </section>
 
-  <!-- ═══ ALERTES ═══ -->
+  <!-- ═══ CE QUI FREINE ENCORE ═══ -->
   <section class="py-14" style="background: #fefce8;">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-      <div class="flex items-center gap-2 mb-2">
-        <svg class="w-5 h-5 text-amber-600" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01"/></svg>
-        <h2 class="text-xl font-bold text-neutral-900">Ce qui retient vos visiteurs</h2>
+      <div class="flex items-center gap-3 mb-2">
+        <svg class="w-6 h-6 text-amber-500" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+        <h2 class="text-xl font-bold text-neutral-900">Ce qui freine encore</h2>
       </div>
-      <p class="text-sm text-neutral-500 mb-6">{alertes.filter((a) => a.type === 'critique').length} critique &middot; {alertes.filter((a) => a.type === 'important').length} importants</p>
+      <p class="text-sm text-neutral-600 mb-8">Aucune alerte critique (l'audit v1 en comptait 4). Restent 3 freins importants, tous corrigeables sans refonte.</p>
 
-      <div class="grid sm:grid-cols-2 gap-4">
-        {alertes.map((a) => {
-          const crit = a.type === 'critique';
-          return (
-            <div class={`bg-white rounded-xl p-5 ${crit ? 'border-2 border-red-300' : 'border border-amber-200'}`}>
-              <div class="flex items-start gap-4">
-                <div class={`shrink-0 rounded-lg px-3 py-2 text-center ${crit ? 'bg-red-600' : 'bg-amber-500'}`}>
-                  <div class="text-lg font-black text-white leading-none">{a.chiffre}</div>
-                </div>
-                <div>
-                  <h3 class="font-semibold text-neutral-900 text-sm mb-1">{a.titre}</h3>
-                  <p class="text-[11px] text-neutral-400 mb-2">{a.chiffreLabel}</p>
-                  <p class="text-xs text-neutral-600 leading-relaxed">{a.detail}</p>
-                </div>
-              </div>
+      <div class="grid md:grid-cols-3 gap-4">
+        {alertes.map((a) => (
+          <div class="bg-white rounded-xl p-5 border border-amber-200">
+            <div class="inline-flex items-baseline gap-2 rounded-lg px-3 py-1.5 mb-3 bg-amber-100">
+              <span class="text-2xl font-black text-amber-800">{a.chiffre}</span>
+              <span class="text-[10px] text-amber-700 font-medium">{a.chiffreLabel}</span>
             </div>
-          );
-        })}
+            <h3 class="font-bold text-neutral-900 text-sm mb-2">{a.titre}</h3>
+            <p class="text-xs text-neutral-600 leading-relaxed">{a.detail}</p>
+          </div>
+        ))}
       </div>
     </div>
   </section>
 
-  <!-- ═══ VISITEURS ═══ -->
+  <!-- ═══ VOS VISITEURS ═══ -->
   <section class="py-16" style="background: #fafafa;">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+
       <h2 class="text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs</h2>
-      <p class="text-neutral-600 mb-2">Voici ce qui se passe quand un voyageur cherchant une auberge à Koh Tao arrive sur votre site. Touchez un profil pour voir son parcours complet.</p>
-      <p class="text-xs text-neutral-400 mb-6">Profils représentatifs. 60 visiteurs simulés au total, 20 par langue.</p>
+      <p class="text-neutral-600 mb-6">36 visiteurs représentatifs des 300 simulés, 12 par langue. Les chiffres du rapport portent sur les 300. Ouvrez chaque carte pour lire le parcours complet.</p>
 
-      <!-- Filtres par langue -->
-      <div class="flex flex-wrap gap-2 mb-8">
-        <button class="filter-btn bg-neutral-900 text-white text-sm font-medium px-4 py-2 rounded-lg transition-all" data-langue="all">Toutes</button>
-        <button class="filter-btn bg-white text-neutral-600 text-sm font-medium px-4 py-2 rounded-lg border border-neutral-200 transition-all" data-langue="EN">🇬🇧 Anglophones</button>
-        <button class="filter-btn bg-white text-neutral-600 text-sm font-medium px-4 py-2 rounded-lg border border-neutral-200 transition-all" data-langue="FR">🇫🇷 Francophones</button>
-        <button class="filter-btn bg-white text-neutral-600 text-sm font-medium px-4 py-2 rounded-lg border border-neutral-200 transition-all" data-langue="DE">🇩🇪 Germanophones</button>
+      <div class="flex flex-wrap gap-2 mb-8" id="persona-filters">
+        <button data-langue="all" class="filter-btn px-3 py-1.5 rounded-full text-xs font-medium bg-neutral-900 text-white transition-colors">Tous (36)</button>
+        <button data-langue="EN" class="filter-btn px-3 py-1.5 rounded-full text-xs font-medium bg-white text-neutral-600 border border-neutral-200 hover:border-neutral-400 transition-colors">🇬🇧 Anglophones (12)</button>
+        <button data-langue="FR" class="filter-btn px-3 py-1.5 rounded-full text-xs font-medium bg-white text-neutral-600 border border-neutral-200 hover:border-neutral-400 transition-colors">🇫🇷 Francophones (12)</button>
+        <button data-langue="ES" class="filter-btn px-3 py-1.5 rounded-full text-xs font-medium bg-white text-neutral-600 border border-neutral-200 hover:border-neutral-400 transition-colors">🇪🇸 Hispanophones (12)</button>
       </div>
 
-      <!-- ✅ Réservent -->
-      <div class="mb-10">
-        <h3 class="text-base font-bold text-green-800 mb-4 flex items-center gap-2">
-          <span class="w-2.5 h-2.5 rounded-full bg-green-500 inline-block"></span>
-          Ceux qui réservent
-          <span class="text-sm font-normal text-green-600">({converts.length})</span>
-        </h3>
-        <div class="space-y-3">
-          {converts.map((p) => (
-            <details class={`group persona-card bg-white rounded-xl overflow-hidden shadow-sm border ${decisionBorder(p.decision)}`} data-langue={p.langue}>
-              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
-                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center gap-2 mb-1 flex-wrap">
-                    <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age}</h4>
-                    <span class={`text-[10px] ${decisionBadge(p.decision)} text-white px-1.5 py-0.5 rounded font-medium`}>{p.decisionLabel}</span>
-                    <span class="text-[10px] text-neutral-600 bg-neutral-100 px-1.5 py-0.5 rounded font-medium">{p.langueLabel}</span>
-                  </div>
-                  <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
-                  <div class="flex flex-wrap items-center gap-1.5">
-                    <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
-                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
-                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
-                  </div>
-                </div>
-                <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
-              </summary>
-              <div class={`px-4 pb-5 border-t ${decisionBorder(p.decision)}`}>
-                <div class="grid gap-4 text-xs mt-4">
-                  <div>
-                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p>
-                    <p class="text-neutral-600">{p.contexte}</p>
-                  </div>
-                  <div>
-                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Première impression (5 secondes)</p>
-                    <p class="text-neutral-600">{p.impression}</p>
-                  </div>
-                  <div>
-                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Son parcours</p>
-                    <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
-                      {p.parcours.map(([section, reaction]) => (
-                        <li><strong class="text-neutral-800">{section}</strong>{reaction ? ` : ${reaction}` : ''}</li>
-                      ))}
-                    </ol>
-                  </div>
-                  <div class="bg-neutral-50 rounded-lg p-3">
-                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p>
-                    <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
-                    <p class="text-neutral-600">Le site répond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> : {p.commentReponse}</p>
-                  </div>
-                  <div class="grid grid-cols-2 gap-4">
-                    <div>
-                      <p class="font-semibold text-green-700 mb-1.5">✓ Ce qui marche</p>
-                      <ul class="space-y-1 text-neutral-600">{p.positifs.map((pt) => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">·</span>{pt}</li>)}</ul>
+      {[
+        { key: 'Convertit' as Decision, list: converts, titre: 'Ceux qui réservent', dot: 'bg-green-500', txt: 'text-green-800', count: 'text-green-600' },
+        { key: 'Hesite' as Decision, list: hesitates, titre: 'Ceux qui hésitent', dot: 'bg-amber-500', txt: 'text-amber-800', count: 'text-amber-600' },
+        { key: 'Quitte' as Decision, list: leaves, titre: 'Ceux qui repartent', dot: 'bg-neutral-400', txt: 'text-neutral-600', count: 'text-neutral-500' },
+      ].map((groupe) => (
+        <div class="mb-10">
+          <h3 class={`text-base font-bold ${groupe.txt} mb-4 flex items-center gap-2`}>
+            <span class={`w-2.5 h-2.5 rounded-full ${groupe.dot} inline-block`}></span>
+            {groupe.titre}
+            <span class={`text-sm font-normal ${groupe.count}`}>({groupe.list.length} affichés)</span>
+          </h3>
+          <div class="space-y-3">
+            {groupe.list.map((p) => (
+              <details class={`group persona-card bg-white rounded-xl overflow-hidden shadow-sm border ${decisionBorder(p.decision)}`} data-langue={p.langue}>
+                <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                  <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                  <div class="flex-1 min-w-0">
+                    <div class="flex items-center gap-2 mb-1 flex-wrap">
+                      <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                      <span class={`text-[10px] ${decisionBadge(p.decision)} text-white px-1.5 py-0.5 rounded font-medium`}>{p.decisionLabel}</span>
+                      <span class="text-[10px] text-neutral-400">{p.langueLabel}</span>
                     </div>
-                    <div>
-                      <p class="font-semibold text-amber-700 mb-1.5">✗ Friction</p>
-                      <ul class="space-y-1 text-neutral-600">{p.frictions.map((f) => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">·</span>{f}</li>)}</ul>
+                    <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                    <div class="flex flex-wrap items-center gap-1.5">
+                      <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                      <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                      <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                      <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.segment}</span>
                     </div>
                   </div>
-                  <div class="flex gap-6 pt-3 border-t border-neutral-100">
-                    {[{ label: 'Expérience', val: p.exp }, { label: 'Confiance', val: p.conf }, { label: 'Clarté', val: p.clarte }].map((s) => (
-                      <div class="text-center">
-                        <span class={`block text-lg font-bold ${scoreColor(s.val)}`}>{s.val}</span>
-                        <span class="text-[10px] text-neutral-400">{s.label}</span>
+                  <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+                </summary>
+
+                <div class={`px-4 pb-5 border-t ${decisionBorder(p.decision)}`}>
+                  <div class="grid gap-4 text-xs mt-4">
+                    <div>
+                      <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p>
+                      <p class="text-neutral-600">{p.situation}. {p.contexte}. Arrive via {p.canalDetail}.</p>
+                    </div>
+                    <div>
+                      <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Première impression (5 sec)</p>
+                      <p class="text-neutral-600">{p.impression}</p>
+                    </div>
+                    <div>
+                      <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours sur le site</p>
+                      <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                        {p.parcours.map(([section, reaction]) => (
+                          <li><strong class="text-neutral-800">{section}</strong>{reaction ? ` : ${reaction}` : ''}</li>
+                        ))}
+                      </ol>
+                    </div>
+                    <div class="bg-neutral-50 rounded-lg p-3">
+                      <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p>
+                      <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
+                      <p class="text-neutral-600">Le site répond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> : {p.commentReponse}</p>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                      <div>
+                        <p class="font-semibold text-green-700 mb-1.5">✓ Points positifs</p>
+                        <ul class="space-y-1 text-neutral-600">{p.positifs.map((pt) => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">&middot;</span>{pt}</li>)}</ul>
                       </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </details>
-          ))}
-        </div>
-      </div>
-
-      <!-- ⚠️ Hésitent -->
-      <div class="mb-4">
-        <h3 class="text-base font-bold text-amber-800 mb-4 flex items-center gap-2">
-          <span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span>
-          Ceux qui hésitent
-          <span class="text-sm font-normal text-amber-600">({hesitates.length})</span>
-        </h3>
-        <div class="space-y-3">
-          {hesitates.map((p) => (
-            <details class={`group persona-card bg-white rounded-xl overflow-hidden shadow-sm border ${decisionBorder(p.decision)}`} data-langue={p.langue}>
-              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
-                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center gap-2 mb-1 flex-wrap">
-                    <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age}</h4>
-                    <span class={`text-[10px] ${decisionBadge(p.decision)} text-white px-1.5 py-0.5 rounded font-medium`}>{p.decisionLabel}</span>
-                    <span class="text-[10px] text-neutral-600 bg-neutral-100 px-1.5 py-0.5 rounded font-medium">{p.langueLabel}</span>
-                  </div>
-                  <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
-                  <div class="flex flex-wrap items-center gap-1.5">
-                    <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
-                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
-                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
-                  </div>
-                </div>
-                <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
-              </summary>
-              <div class={`px-4 pb-5 border-t ${decisionBorder(p.decision)}`}>
-                <div class="grid gap-4 text-xs mt-4">
-                  <div>
-                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p>
-                    <p class="text-neutral-600">{p.contexte}</p>
-                  </div>
-                  <div>
-                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Première impression (5 secondes)</p>
-                    <p class="text-neutral-600">{p.impression}</p>
-                  </div>
-                  <div>
-                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Son parcours</p>
-                    <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
-                      {p.parcours.map(([section, reaction]) => (
-                        <li><strong class="text-neutral-800">{section}</strong>{reaction ? ` : ${reaction}` : ''}</li>
-                      ))}
-                    </ol>
-                  </div>
-                  <div class="bg-neutral-50 rounded-lg p-3">
-                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p>
-                    <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
-                    <p class="text-neutral-600">Le site répond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> : {p.commentReponse}</p>
-                  </div>
-                  <div class="grid grid-cols-2 gap-4">
-                    <div>
-                      <p class="font-semibold text-green-700 mb-1.5">✓ Ce qui marche</p>
-                      <ul class="space-y-1 text-neutral-600">{p.positifs.map((pt) => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">·</span>{pt}</li>)}</ul>
-                    </div>
-                    <div>
-                      <p class="font-semibold text-amber-700 mb-1.5">✗ Friction</p>
-                      <ul class="space-y-1 text-neutral-600">{p.frictions.map((f) => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">·</span>{f}</li>)}</ul>
-                    </div>
-                  </div>
-                  <div class="bg-sky-50 rounded-lg p-3">
-                    <p class="font-semibold text-sky-700 text-[10px] uppercase tracking-wider mb-1">Ce qui le ferait basculer</p>
-                    <p class="text-sky-800">{p.ceQuiFeraitBasculer}</p>
-                  </div>
-                  <div class="flex gap-6 pt-3 border-t border-neutral-100">
-                    {[{ label: 'Expérience', val: p.exp }, { label: 'Confiance', val: p.conf }, { label: 'Clarté', val: p.clarte }].map((s) => (
-                      <div class="text-center">
-                        <span class={`block text-lg font-bold ${scoreColor(s.val)}`}>{s.val}</span>
-                        <span class="text-[10px] text-neutral-400">{s.label}</span>
+                      <div>
+                        <p class="font-semibold text-amber-700 mb-1.5">✗ Frictions</p>
+                        <ul class="space-y-1 text-neutral-600">
+                          {p.frictions.length > 0 ? p.frictions.map((f) => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">&middot;</span>{f}</li>) : <li class="text-neutral-400">Aucune notable</li>}
+                        </ul>
                       </div>
-                    ))}
-                  </div>
-                </div>
-              </div>
-            </details>
-          ))}
-        </div>
-      </div>
-
-      <div class="rounded-xl p-5 mb-10 bg-amber-50 border border-amber-200 flex items-start gap-3">
-        <span class="text-lg shrink-0 mt-0.5">💡</span>
-        <div>
-          <p class="text-sm font-medium text-amber-900">Ces {kpis.nbHesitent} visiteurs veulent déjà ce que vous proposez.</p>
-          <p class="text-xs text-amber-700 mt-1">Il leur manque une seule réassurance, un prix, un avis, le Wi-Fi, un mot dans leur langue, pour franchir le pas. C'est votre plus gros levier de croissance.</p>
-        </div>
-      </div>
-
-      <!-- ❌ Repartent -->
-      <div class="mb-4">
-        <h3 class="text-base font-bold text-neutral-600 mb-4 flex items-center gap-2">
-          <span class="w-2.5 h-2.5 rounded-full bg-neutral-400 inline-block"></span>
-          Ceux qui repartent
-          <span class="text-sm font-normal text-neutral-500">({leaves.length})</span>
-        </h3>
-        <div class="space-y-3">
-          {leaves.map((p) => (
-            <details class={`group persona-card bg-white rounded-xl overflow-hidden shadow-sm border ${decisionBorder(p.decision)}`} data-langue={p.langue}>
-              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
-                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
-                <div class="flex-1 min-w-0">
-                  <div class="flex items-center gap-2 mb-1 flex-wrap">
-                    <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age}</h4>
-                    <span class={`text-[10px] ${decisionBadge(p.decision)} text-white px-1.5 py-0.5 rounded font-medium`}>{p.decisionLabel}</span>
-                    <span class="text-[10px] text-neutral-600 bg-neutral-100 px-1.5 py-0.5 rounded font-medium">{p.langueLabel}</span>
-                  </div>
-                  <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
-                  <div class="flex flex-wrap items-center gap-1.5">
-                    <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
-                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
-                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
-                  </div>
-                </div>
-                <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
-              </summary>
-              <div class={`px-4 pb-5 border-t ${decisionBorder(p.decision)}`}>
-                <div class="grid gap-4 text-xs mt-4">
-                  <div>
-                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p>
-                    <p class="text-neutral-600">{p.contexte}</p>
-                  </div>
-                  <div>
-                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Première impression (5 secondes)</p>
-                    <p class="text-neutral-600">{p.impression}</p>
-                  </div>
-                  <div>
-                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Son parcours</p>
-                    <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
-                      {p.parcours.map(([section, reaction]) => (
-                        <li><strong class="text-neutral-800">{section}</strong>{reaction ? ` : ${reaction}` : ''}</li>
-                      ))}
-                    </ol>
-                  </div>
-                  <div class="bg-neutral-50 rounded-lg p-3">
-                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p>
-                    <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
-                    <p class="text-neutral-600">Le site répond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> : {p.commentReponse}</p>
-                  </div>
-                  <div class="grid grid-cols-2 gap-4">
-                    <div>
-                      <p class="font-semibold text-green-700 mb-1.5">✓ Ce qui marche</p>
-                      <ul class="space-y-1 text-neutral-600">{p.positifs.map((pt) => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">·</span>{pt}</li>)}</ul>
                     </div>
-                    <div>
-                      <p class="font-semibold text-amber-700 mb-1.5">✗ Friction</p>
-                      <ul class="space-y-1 text-neutral-600">{p.frictions.map((f) => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">·</span>{f}</li>)}</ul>
-                    </div>
-                  </div>
-                  <div class="bg-sky-50 rounded-lg p-3">
-                    <p class="font-semibold text-sky-700 text-[10px] uppercase tracking-wider mb-1">Ce qui l'aurait retenu</p>
-                    <p class="text-sky-800">{p.ceQuiFeraitBasculer}</p>
-                  </div>
-                  <div class="flex gap-6 pt-3 border-t border-neutral-100">
-                    {[{ label: 'Expérience', val: p.exp }, { label: 'Confiance', val: p.conf }, { label: 'Clarté', val: p.clarte }].map((s) => (
-                      <div class="text-center">
-                        <span class={`block text-lg font-bold ${scoreColor(s.val)}`}>{s.val}</span>
-                        <span class="text-[10px] text-neutral-400">{s.label}</span>
+                    {p.decision !== 'Convertit' && p.ceQuiFeraitBasculer && (
+                      <div class="bg-sky-50 rounded-lg p-3">
+                        <p class="font-semibold text-sky-700 text-[10px] uppercase tracking-wider mb-1">
+                          {p.decision === 'Hesite' ? 'Ce qui le ferait passer à l\'action' : 'Ce qui l\'aurait retenu'}
+                        </p>
+                        <p class="text-sky-800">{p.ceQuiFeraitBasculer}</p>
                       </div>
-                    ))}
+                    )}
+                    <div class="flex gap-6 pt-3 border-t border-neutral-100">
+                      {[
+                        { label: 'Expérience', val: p.exp },
+                        { label: 'Confiance', val: p.conf },
+                        { label: 'Clarté', val: p.clarte },
+                      ].map((s) => (
+                        <div class="text-center">
+                          <span class={`block text-lg font-bold ${scoreColor(s.val)}`}>{s.val}</span>
+                          <span class="text-[10px] text-neutral-400">{s.label}</span>
+                        </div>
+                      ))}
+                    </div>
                   </div>
                 </div>
-              </div>
-            </details>
-          ))}
-        </div>
-      </div>
+              </details>
+            ))}
+          </div>
 
-      <div class="rounded-xl p-5 bg-neutral-100 border border-neutral-200 flex items-start gap-3">
-        <span class="text-lg shrink-0 mt-0.5">📉</span>
-        <div>
-          <p class="text-sm font-medium text-neutral-800">Certains n'étaient pas vraiment pour vous, et c'est normal.</p>
-          <p class="text-xs text-neutral-600 mt-1">Le voyageur qui cherche un resort confort ou une ambiance fête est hors de votre cible. Mais d'autres (un prix caché, pas d'avis, le Wi-Fi absent, un site tout en anglais) avaient un vrai besoin auquel votre site n'a pas répondu à temps.</p>
+          {groupe.key === 'Hesite' && (
+            <div class="rounded-xl p-5 mt-6 bg-amber-50 border border-amber-200 flex items-start gap-3">
+              <span class="text-lg shrink-0 mt-0.5">💡</span>
+              <div>
+                <p class="text-sm font-medium text-amber-900">63 visiteurs sur 300 hésitent, et on sait pourquoi.</p>
+                <p class="text-xs text-amber-700 mt-1">18 basculeraient avec des avis vérifiables, 15 avec un avantage résa directe. Ce ne sont plus des inconnues : ce sont des correctifs.</p>
+              </div>
+            </div>
+          )}
+          {groupe.key === 'Quitte' && (
+            <div class="rounded-xl p-5 mt-6 bg-neutral-100 border border-neutral-200 flex items-start gap-3">
+              <span class="text-lg shrink-0 mt-0.5">🎯</span>
+              <div>
+                <p class="text-sm font-medium text-neutral-800">31 des 72 départs sont des hors cible, et c'est voulu.</p>
+                <p class="text-xs text-neutral-600 mt-1">Les fêtards comprennent en 20 secondes que ce n'est pas pour eux (clarté 8,8/10) : le positionnement calme filtre exactement comme prévu. Les vraies pertes se concentrent sur les certifiés sans offre et les budgets ultra-serrés.</p>
+              </div>
+            </div>
+          )}
         </div>
-      </div>
+      ))}
     </div>
   </section>
 
-  <!-- ═══ RECOMMANDATIONS ═══ -->
+  <!-- ═══ CE QU'ON RECOMMANDE ═══ -->
   <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-    <h2 class="text-2xl font-bold text-neutral-900 mb-2">Ce que je changerais</h2>
-    <p class="text-neutral-600 mb-8">Des correctifs concrets, classés par nombre de visiteurs concernés. La bonne nouvelle : aucun ne touche à votre histoire ni à votre offre, ils enlèvent juste la friction autour.</p>
+    <h2 class="text-2xl font-bold text-neutral-900 mb-2">Ce qu'on recommande</h2>
+    <p class="text-neutral-600 mb-8">Actions concrètes, classées par impact sur les 300 visiteurs. Aucune ne demande de refonte : le socle est bon.</p>
 
-    <p class="text-sm font-semibold text-red-700 mb-4">Si vous ne changez que cinq choses :</p>
+    <p class="text-sm font-semibold text-red-700 mb-4">Si vous ne changez que 5 choses avant le go-live :</p>
 
     <div class="space-y-4 mb-12">
       {ameliorationsHautes.map((a) => (
@@ -578,7 +614,7 @@ const leaves = personas.filter((p) => p.decision === 'Quitte');
       ))}
     </div>
 
-    <h3 class="text-lg font-bold text-neutral-900 mb-2">Aussi utile à faire</h3>
+    <h3 class="text-lg font-bold text-neutral-900 mb-2">Utile aussi</h3>
     <div class="grid md:grid-cols-2 gap-4 mb-12">
       {ameliorationsUtiles.map((a) => (
         <div class="bg-white border border-neutral-200 rounded-xl p-5">
@@ -588,9 +624,9 @@ const leaves = personas.filter((p) => p.decision === 'Quitte');
       ))}
     </div>
 
-    <h3 class="text-lg font-bold text-neutral-900 mb-2">À vous de voir</h3>
-    <p class="text-sm text-neutral-500 mb-4">Des choix business : pas de bonne ou de mauvaise réponse.</p>
-    <div class="space-y-3 mb-4">
+    <h3 class="text-lg font-bold text-neutral-900 mb-2">À discuter</h3>
+    <p class="text-sm text-neutral-500 mb-4">Décisions business : pas de bonne ou mauvaise réponse.</p>
+    <div class="space-y-3">
       {ameliorationsDiscuter.map((a) => (
         <div class="bg-neutral-50 border border-neutral-200 rounded-xl p-4 flex gap-3">
           <span class="text-lg shrink-0">{a.emoji}</span>
@@ -607,81 +643,24 @@ const leaves = personas.filter((p) => p.decision === 'Quitte');
   <section class="py-16 border-t border-neutral-200">
     <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
       <h2 class="text-2xl font-bold text-neutral-900 mb-2">Sous le capot</h2>
-      <p class="text-neutral-600 mb-8">Pour les curieux : ce que disent les outils techniques sur votre site.</p>
+      <p class="text-neutral-600 mb-4">Ce que les outils techniques disent du nouveau site.</p>
+      <div class="rounded-xl p-4 mb-8 bg-sky-50 border border-sky-200">
+        <p class="text-xs text-sky-900 leading-relaxed"><strong>Note honnête :</strong> le site est en préversion privée (protégé par mot de passe). Les mesures de vitesse et la note de sécurité officielles sont impossibles tant qu'il n'est pas public : elles seront prises au go-live. Tout le reste a été vérifié sur les pages réelles, rien n'est estimé.</p>
+      </div>
 
       <div class="flex flex-wrap gap-3 mb-10">
         {techVerdicts.map((v) => (
-          <div class={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium ${v.ok ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
-            {v.ok
+          <div class={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium ${v.state === 'ok' ? 'bg-green-50 border-green-200 text-green-800' : v.state === 'ko' ? 'bg-red-50 border-red-200 text-red-800' : 'bg-neutral-50 border-neutral-200 text-neutral-600'}`}>
+            {v.state === 'ok'
               ? <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-              : <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}
+              : v.state === 'ko'
+                ? <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                : <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" d="M12 8v4m0 4h.01"/></svg>}
             <span>{v.label}</span>
             <span class="text-xs opacity-70">{v.verdict}</span>
           </div>
         ))}
       </div>
-
-      <!-- Vitesse -->
-      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
-        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
-          <div class="flex items-center gap-3">
-            <span class="text-base">⚡</span>
-            <div>
-              <h3 class="font-semibold text-neutral-900 text-sm">Vitesse</h3>
-              <p class="text-[11px] text-neutral-500">{techVerdicts[0].detail}</p>
-            </div>
-          </div>
-          <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
-        </summary>
-        <div class="px-4 pb-4 border-t border-neutral-100">
-          <p class="text-xs text-neutral-500 pt-3 pb-1">Sur un téléphone (là où sont la plupart de vos visiteurs) :</p>
-          <div class="grid grid-cols-4 gap-4 pb-4">
-            {['Performance', 'Accessibilité', 'Bonnes pratiques', 'Référencement'].map((label, i) => {
-              const scores = [tech.pagespdMobile.performance, tech.pagespdMobile.accessibility, tech.pagespdMobile.bestPractices, tech.pagespdMobile.seo];
-              const score = scores[i];
-              const color = score >= 90 ? '#22c55e' : score >= 50 ? '#f59e0b' : '#ef4444';
-              return (
-                <div class="text-center">
-                  <div class="relative w-14 h-14 mx-auto mb-2">
-                    <svg class="w-14 h-14 -rotate-90" viewBox="0 0 36 36">
-                      <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3" />
-                      <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={color} stroke-width="3" stroke-dasharray={`${score}, 100`} stroke-linecap="round" />
-                    </svg>
-                    <span class="absolute inset-0 flex items-center justify-center text-sm font-bold" style={`color: ${color}`}>{score}</span>
-                  </div>
-                  <p class="text-[11px] text-neutral-600">{label}</p>
-                </div>
-              );
-            })}
-          </div>
-          <p class="text-xs text-neutral-500 pb-3">Sur ordinateur le site obtient {tech.pagespdDesktop.performance}/100 et s'affiche en 1,8 seconde. Sur mobile, c'est surtout la page qui se décale pendant le chargement (un défaut de stabilité visuelle) qui gêne.</p>
-        </div>
-      </details>
-
-      <!-- Sécurité -->
-      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
-        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
-          <div class="flex items-center gap-3">
-            <span class="text-base">🔒</span>
-            <div>
-              <h3 class="font-semibold text-neutral-900 text-sm">Sécurité</h3>
-              <p class="text-[11px] text-neutral-500">{techVerdicts[1].detail}</p>
-            </div>
-          </div>
-          <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
-        </summary>
-        <div class="px-4 pb-4 border-t border-neutral-100">
-          <p class="text-xs text-neutral-500 py-2">Note : {tech.observatory.grade} ({tech.observatory.testsOk}/{tech.observatory.testsTotal} contrôles réussis)</p>
-          {tech.headers.map((h) => (
-            <div class="flex items-center gap-2 py-1">
-              {h.ok
-                ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                : <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}
-              <span class={`text-xs ${h.ok ? 'text-neutral-600' : 'text-red-500'}`}>{h.h}</span>
-            </div>
-          ))}
-        </div>
-      </details>
 
       <!-- Données business -->
       <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
@@ -689,7 +668,7 @@ const leaves = personas.filter((p) => p.decision === 'Quitte');
           <div class="flex items-center gap-3">
             <span class="text-base">📊</span>
             <div>
-              <h3 class="font-semibold text-neutral-900 text-sm">Données business (ce que Google lit)</h3>
+              <h3 class="font-semibold text-neutral-900 text-sm">Données business (lues par Google et les IA)</h3>
               <p class="text-[11px] text-neutral-500">{techVerdicts[3].detail}</p>
             </div>
           </div>
@@ -700,14 +679,14 @@ const leaves = personas.filter((p) => p.decision === 'Quitte');
             <div class="flex items-center gap-2 py-1">
               {s.ok
                 ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                : <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}
-              <span class={`text-xs ${s.ok ? 'text-neutral-600' : 'text-red-500 font-medium'}`}>{s.item}</span>
+                : <svg class="w-3.5 h-3.5 text-amber-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>}
+              <span class={`text-xs ${s.ok ? 'text-neutral-600' : 'text-amber-600'}`}>{s.item}</span>
             </div>
           ))}
         </div>
       </details>
 
-      <!-- Aperçu de partage -->
+      <!-- Partage social -->
       <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
         <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
           <div class="flex items-center gap-3">
@@ -722,17 +701,15 @@ const leaves = personas.filter((p) => p.decision === 'Quitte');
         <div class="px-4 pb-4 border-t border-neutral-100">
           {tech.og.map((o) => (
             <div class="flex items-start gap-2 py-1">
-              {o.ok
-                ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                : <svg class="w-3.5 h-3.5 text-red-400 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}
-              <span class={`text-xs ${o.ok ? 'text-neutral-600' : 'text-red-500'}`}>{o.item} <span class="text-neutral-400">{o.val}</span></span>
+              <svg class="w-3.5 h-3.5 text-green-500 shrink-0 mt-0.5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              <span class="text-xs text-neutral-600">{o.item} <span class="text-neutral-400">{o.val}</span></span>
             </div>
           ))}
         </div>
       </details>
 
       <!-- Référencement -->
-      <details class="group border border-neutral-200 rounded-xl overflow-hidden bg-white">
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
         <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
           <div class="flex items-center gap-3">
             <span class="text-base">🔍</span>
@@ -748,8 +725,33 @@ const leaves = personas.filter((p) => p.decision === 'Quitte');
             <div class="flex items-center gap-2 py-1">
               {s.ok
                 ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
-                : <svg class="w-3.5 h-3.5 text-red-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>}
-              <span class={`text-xs ${s.ok ? 'text-neutral-600' : 'text-red-500'}`}>{s.item}</span>
+                : <svg class="w-3.5 h-3.5 text-amber-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>}
+              <span class={`text-xs ${s.ok ? 'text-neutral-600' : 'text-amber-600'}`}>{s.item}</span>
+            </div>
+          ))}
+          <p class="text-[11px] text-neutral-400 mt-2">Le site est volontairement masqué de Google tant qu'il est en préversion (c'est normal et réversible au go-live).</p>
+        </div>
+      </details>
+
+      <!-- Sécurité -->
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+          <div class="flex items-center gap-3">
+            <span class="text-base">🔒</span>
+            <div>
+              <h3 class="font-semibold text-neutral-900 text-sm">Sécurité</h3>
+              <p class="text-[11px] text-neutral-500">{techVerdicts[1].detail}</p>
+            </div>
+          </div>
+          <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <div class="px-4 pb-4 border-t border-neutral-100">
+          {tech.headers.map((h) => (
+            <div class="flex items-center gap-2 py-1">
+              {h.ok
+                ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                : <svg class="w-3.5 h-3.5 text-neutral-400 shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path stroke-linecap="round" d="M12 8v4m0 4h.01"/></svg>}
+              <span class="text-xs text-neutral-600">{h.h}</span>
             </div>
           ))}
         </div>
@@ -761,23 +763,26 @@ const leaves = personas.filter((p) => p.decision === 'Quitte');
   <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-neutral-200">
     <h2 class="text-base font-bold text-neutral-900 mb-4">Comment c'est fait</h2>
     <ol class="space-y-3 text-sm text-neutral-600">
-      <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">1</span><span>J'ai lu chaque page de votre site, comme le ferait un voyageur</span></li>
-      <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">2</span><span>J'ai passé les contrôles techniques (vitesse, sécurité, référencement, données business) avec les mêmes outils que Google</span></li>
-      <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">3</span><span>J'ai construit 60 profils de voyageurs réalistes, 20 par langue (anglophones, francophones, germanophones), le genre de personnes qui cherchent vraiment une auberge à Koh Tao</span></li>
-      <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">4</span><span>Chacun a "visité" votre site et donné sa réaction honnête : première impression, parcours, décision</span></li>
-      <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">5</span><span>J'ai rassemblé les frictions récurrentes et j'en ai fait la courte liste de correctifs ci-dessus</span></li>
+      <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">1</span><span>J'ai lu chaque page du nouveau site, dans les trois langues, comme le ferait un voyageur</span></li>
+      <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">2</span><span>J'ai passé les contrôles techniques possibles en préversion (données business, partage, référencement) sur les pages réelles ; vitesse et sécurité seront mesurées au go-live, rien n'est estimé</span></li>
+      <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">3</span><span>J'ai construit 300 profils réalistes, 100 par langue, sur la même grille (canaux d'arrivée, maturité, appareils, profils de clientèle), dont les 40 profils du premier audit rejoués à l'identique</span></li>
+      <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">4</span><span>Chacun a « visité » le site dans sa langue et donné sa réaction honnête : première impression, parcours, décision</span></li>
+      <li class="flex gap-3"><span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">5</span><span>J'ai croisé les 300 résultats par langue, canal, maturité, profil et appareil pour en tirer les recommandations ci-dessus</span></li>
     </ol>
+    <div class="mt-6 p-4 rounded-lg bg-neutral-50 text-xs text-neutral-500">
+      <strong>Note :</strong> les taux sont des simulations sur des profils adaptés à l'offre, pas une prévision de trafic. Leur valeur est dans la comparaison : v1 contre v2 à méthode égale, et les frictions qui reviennent en boucle.
+    </div>
   </section>
 
   <!-- ═══ CTA FINAL (soft) ═══ -->
   <section class="relative w-full px-6 py-20 overflow-hidden" style="background: #0A0A0A;">
-    <div class="absolute bottom-[10%] right-[10%] w-[400px] h-[400px] rounded-full blur-[160px] pointer-events-none" style="background: #0EA5E9; opacity: 0.06;"></div>
+    <div class="absolute bottom-[10%] right-[10%] w-[400px] h-[400px] rounded-full blur-[160px] pointer-events-none" style="background: #22c55e; opacity: 0.06;"></div>
     <div class="relative mx-auto max-w-3xl z-10 text-center">
       <h2 class="text-2xl md:text-3xl font-bold text-white mb-4 leading-tight">
-        L'offre, l'emplacement, l'éco, le combo plongée : vous avez déjà tout.
+        Le nouveau site fait le travail : 55% réservent, contre 28% avant.
       </h2>
       <p class="text-sm mb-8 max-w-xl mx-auto" style="color: rgba(255,255,255,0.55);">
-        Reste à montrer ce qui est caché : des prix, des avis, le Wi-Fi, un mot dans la langue du voyageur. Des petits correctifs, un vrai impact. Si vous voulez, je vous explique chacun, sans engagement.
+        Restent cinq correctifs ciblés avant le go-live : une note d'avis vérifiable, un avantage résa directe, une offre fun dives, la preuve du Wi-Fi et un mot d'espagnol à l'accueil. Chacun est petit, leur effet cumulé ne l'est pas.
       </p>
       <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
         <a href={`https://wa.me/${whatsapp}`} target="_blank" rel="noopener" class="inline-flex items-center gap-2 px-8 py-4 text-white font-bold text-lg rounded-xl transition-all shadow-lg hover:-translate-y-0.5 bg-green-600 hover:bg-green-500">
