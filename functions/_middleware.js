@@ -3,7 +3,13 @@
  * - Redirige les visiteurs non-francophones vers l'équivalent /en/
  * - Injecte le header CSP (trop long pour le fichier _headers, limité à 2000 chars)
  */
-import { CSP_VALUE } from './_csp-value.js';
+// Import namespace (pas d'import nommé direct) : si un _csp-value.js périmé
+// (généré avant l'ajout du cockpit /admin) ne contient pas CSP_ADMIN_VALUE,
+// on retombe sur la CSP publique au lieu de casser le bundle des functions.
+import * as csp from './_csp-value.js';
+
+const CSP_VALUE = csp.CSP_VALUE;
+const CSP_ADMIN_VALUE = csp.CSP_ADMIN_VALUE || csp.CSP_VALUE;
 
 // Table de correspondance FR → EN (pages ayant un équivalent traduit)
 const FR_TO_EN = {
@@ -64,13 +70,18 @@ export async function onRequest({ request, next }) {
     }
   }
 
-  // Servir la page avec les headers de sécurité
+  // Servir la page avec les headers de sécurité.
+  // /admin (cockpit CMS) : CSP dédiée relâchée (island React, previews blob:)
+  // + noindex dur. La CSP stricte du site public reste inchangée partout ailleurs.
+  // NB : pathname est déjà normalisé sans slash final ('/admin/' → '/admin').
+  const isAdmin = pathname === '/admin' || pathname.startsWith('/admin/');
   const response = await next();
   const newResponse = new Response(response.body, response);
-  newResponse.headers.set('Content-Security-Policy', CSP_VALUE);
+  newResponse.headers.set('Content-Security-Policy', isAdmin ? CSP_ADMIN_VALUE : CSP_VALUE);
   newResponse.headers.set('X-Content-Type-Options', 'nosniff');
   newResponse.headers.set('X-Frame-Options', 'DENY');
   newResponse.headers.set('Referrer-Policy', 'strict-origin-when-cross-origin');
   newResponse.headers.set('Permissions-Policy', 'camera=(), microphone=(), geolocation=()');
+  if (isAdmin) newResponse.headers.set('X-Robots-Tag', 'noindex, nofollow');
   return newResponse;
 }
