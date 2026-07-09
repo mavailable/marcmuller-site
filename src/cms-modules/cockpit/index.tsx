@@ -3,9 +3,10 @@
 // - defaultRoute : atterrissage direct sur le CRM (#/crm). Appliqué par CmsApp
 //   une seule fois au mount, et seulement si le hash initial est '#/'.
 // - hidesTabs : masque les onglets d'édition de site du cœur — 'site' (Mon
-//   site), 'blog', 'stats' (Mon activité), 'analytics' (Statistiques, pas de
-//   share URL Umami pour marcm.fr + frame-src fermé par la CSP). 'account'
-//   (Mon compte) est CONSERVÉ : logout + changement de mot de passe.
+//   site), 'blog', 'stats' (Mon activité). 'analytics' (Statistiques) est
+//   RÉACTIVÉ : share URL Umami dans cms.config → site.umamiShareUrl + CSP
+//   admin élargie frame-src https://cloud.umami.is. 'account' (Mon compte)
+//   est CONSERVÉ : logout + changement de mot de passe.
 // - matchRoute('#/') : hidesTabs masque les ONGLETS, pas les ROUTES. Le logo
 //   du header reste un lien href="#/" (HomeScreen = éditeur de site) et
 //   defaultRoute ne rejoue qu'au mount → on intercepte la route racine et on
@@ -26,7 +27,7 @@ function RedirectToCrm() {
 export const cockpitModule: CmsModule = {
   id: 'cockpit',
   defaultRoute: () => '#/crm',
-  hidesTabs: () => ['site', 'blog', 'stats', 'analytics'],
+  hidesTabs: () => ['site', 'blog', 'stats'],
   matchRoute(hash) {
     if (hash === '#/') return <RedirectToCrm />;
     return null;

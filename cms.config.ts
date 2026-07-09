@@ -25,7 +25,7 @@ const cmsConfig: CmsConfig = {
   locale: 'fr',
 
   // Modules moteur + module LOCAL cockpit (defaultRoute #/crm + hidesTabs).
-  modules: ['crm', 'board', './cms-modules/cockpit'],
+  modules: ['crm', 'board', 'marketing', './cms-modules/cockpit'],
 
   site: {
     webmasterName: 'Marc',
@@ -34,6 +34,10 @@ const cmsConfig: CmsConfig = {
     siteUrl: 'https://marcm.fr',
     previewUrl: 'https://marcmuller-site.pages.dev',
     clientType: 'freelance-consultant',
+    // Onglet Statistiques (AnalyticsTab cœur) : iframe Umami Cloud via share
+    // link. Nécessite frame-src https://cloud.umami.is dans la CSP admin
+    // (scripts/generate-csp.mjs → CSP_ADMIN_VALUE).
+    umamiShareUrl: 'https://cloud.umami.is/share/PQwpWjdhsSJGd5k6/marcm.fr',
     contactMarc: {
       phone: '06 88 76 66 48',
       whatsapp: '33688766648',
@@ -48,6 +52,17 @@ const cmsConfig: CmsConfig = {
   // Kanban « Mes tâches » — preset mono-board (BoardTab, storage figé
   // src/content/tasks/index.json, enveloppe { tasks: [...] }).
   kanban: { enabled: true },
+
+  // Module marketing — onglets Marketing (plan de publication) + Carrousels.
+  // Aucune donnée seedée : les deux tabs ont un empty-state propre sans
+  // fichier /marketing-data/*. `trimesters` volontairement OMIS tant qu'aucun
+  // plan-YYYY-QN.json n'existe (sinon le tab fetche le fichier et affiche un
+  // toast « Plan introuvable »). PAS de bloc gbp : GbpPostsTab utilise des
+  // fixtures hardcodées jd-zoo (MOCK_ARTICLES) — à ne pas activer sur marcm.
+  marketing: {
+    enabled: true,
+    carrousels: { enabled: true },
+  },
 
   // Mini-CRM « Clients » — funnel agence 5 colonnes + facturation.
   crm: {
