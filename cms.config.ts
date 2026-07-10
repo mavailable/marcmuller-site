@@ -23,6 +23,34 @@ const cmsConfig: CmsConfig = {
   branch: 'master', // pas de branche dev sur ce repo : master = prod
   siteName: 'Marc Muller',
   locale: 'fr',
+  // Pas de siteLogo : marcm.fr n'a pas de wordmark exploitable (favicons seuls).
+  // Fallback texte siteName en Satoshi (règle wf-00-cms §5).
+
+  // Branding admin — variante CLAIRE fidèle à l'identité marcm.fr (global.css :
+  // primary charcoal, secondary crème chaude, accent terracotta/coral #E86C47 ;
+  // font Satoshi variable). L'accent admin est le terracotta contrast-safe #B5472B
+  // (= le propre --color-accent-text du site ; l'accent display #E86C47 échoue le
+  // contraste sur blanc). Gate admin-theme-validate.py OK. Contrastes WCAG :
+  //   accent 5.38 / accentDeep sur accentSoft 6.10 / ink 17.4 / inkSoft 10.86 /
+  //   muted 7.81 / muted2 5.33 sur blanc (muted3 3.54 WARN).
+  adminTheme: {
+    accent: '#B5472B',        // terracotta (boutons, liens, onglet actif)
+    accentDeep: '#933A25',    // terracotta foncé (texte sur pastille accentSoft, badges)
+    accentSoft: '#F5E8E3',    // rosé très pâle (pastilles) = --color-accent-light du site
+    accentBorder: '#FACBB8',  // corail clair (bordures accent)
+    ink: '#1A1A1A',           // charcoal encre (titres)
+    inkSoft: '#3D3D3D',       // charcoal secondaire (labels)
+    muted: '#525252',         // gris chaud (paragraphes)
+    muted2: '#6B6B6B',        // gris (méta, contacts)
+    muted3: '#888888',        // gris clair (hints, dates)
+    line: '#F0EEEB',          // ligne crème (bordures de cartes)
+    lineSoft: '#F5F3EF',      // séparateur crème très doux
+    borderInput: '#E5E2DC',   // bordure crème des champs
+    surface: '#ffffff',       // fond des cartes
+    bg: '#FAFAF8',            // crème chaude (fond de l'espace)
+    fontBody: "'Satoshi', system-ui, sans-serif",     // même corps que le site
+    fontHeading: "'Satoshi', system-ui, sans-serif",  // même titrage que le site
+  },
 
   // Modules moteur + module LOCAL cockpit (defaultRoute #/crm + hidesTabs).
   modules: ['crm', 'board', 'marketing', './cms-modules/cockpit'],
