@@ -1,0 +1,285 @@
+---
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import SchemaOrg from '../../components/SchemaOrg.astro';
+import { business } from '../../data/business';
+
+const title = 'Acheter et déléguer votre domaine Cloudflare : guide pas-à-pas · Marc M';
+const description = 'Guide pour acheter votre nom de domaine chez Cloudflare (à prix coûtant) et me déléguer la gestion technique en m\'invitant comme membre Administrator. Vous restez propriétaire, révocable à tout moment.';
+
+const breadcrumbs = [
+  { name: 'Accueil', url: `${business.url}/` },
+  { name: 'Aide', url: `${business.url}/aide/` },
+  { name: 'Domaine Cloudflare', url: `${business.url}/aide/domaine-cloudflare/` },
+];
+
+const steps = [
+  {
+    name: 'Connectez-vous à Cloudflare (ou créez un compte gratuit)',
+    text: 'Ouvrez le tableau de bord Cloudflare. Si vous n\'avez pas encore de compte, créez-en un, c\'est gratuit. Vérifiez votre adresse email et gardez une carte bancaire sous la main pour l\'achat du domaine.',
+    link: { href: 'https://dash.cloudflare.com', label: 'Ouvrir le tableau de bord Cloudflare' },
+  },
+  {
+    name: 'Achetez votre nom de domaine',
+    text: 'Dans le menu, allez sur « Domain Registration » (Enregistrement de domaine) puis « Register Domains » (Enregistrer des domaines). Cherchez le nom voulu, par exemple mon-entreprise.fr, et réglez par carte.',
+    detail: 'Cloudflare vend les domaines à prix coûtant, sans marge : vous payez le prix du registre, généralement autour de 10 à 12 € par an pour un .fr ou un .com, au même prix chaque année. La zone DNS est créée automatiquement dans votre compte.',
+    path: 'Tableau de bord > Domain Registration (Enregistrement de domaine) > Register Domains (Enregistrer des domaines)',
+    tip: 'Vous n\'avez besoin que du nom de domaine. L\'hébergement de votre site est inclus dans ma prestation, sur l\'infrastructure Cloudflare : tout se retrouve au même endroit.',
+  },
+  {
+    name: 'Ouvrez la gestion des membres',
+    text: 'Toujours dans le tableau de bord, cliquez sur « Manage Account » (Gérer le compte) puis « Members » (Membres). C\'est ici que vous m\'ajoutez pour que je puisse gérer le technique.',
+    path: 'Tableau de bord > Manage Account (Gérer le compte) > Members (Membres)',
+  },
+  {
+    name: 'Invitez-moi avec mon adresse email',
+    text: 'Cliquez sur le bouton « Invite » (Inviter), puis saisissez mon adresse email dans le champ prévu :',
+    code: 'marc@muller.im',
+    copyable: true,
+    detail: 'C\'est la même adresse que celle avec laquelle vous me joignez. Cloudflare m\'enverra l\'invitation dessus.',
+  },
+  {
+    name: 'Choisissez le rôle « Administrator »',
+    text: 'Pour le rôle, sélectionnez « Administrator » (Administrateur), et non « Super Administrator ». C\'est volontaire : sur les comptes Cloudflare gratuits, il n\'existe que ces deux rôles, et « Administrator » me donne tout le nécessaire côté technique sans toucher à ce qui vous appartient.',
+    detail: 'Concrètement, « Administrator » me permet de gérer les DNS, les certificats SSL, la configuration du site et les réglages du domaine (renouvellement, contacts). Il ne touche ni à votre facturation ni à votre carte bancaire, et seul le « Super Administrator », c\'est-à-dire vous, peut supprimer le domaine.',
+  },
+  {
+    name: 'Validez l\'invitation',
+    text: 'Cliquez sur « Continue to summary » puis confirmez avec « Invite ». Je reçois l\'invitation par email et je l\'accepte de mon côté : c\'est terminé, vous n\'avez rien d\'autre à faire.',
+  },
+  {
+    name: 'Confirmez-moi que c\'est fait',
+    text: 'Envoyez-moi un message par email ou WhatsApp avec le nom de domaine acheté. Je reçois l\'invitation de mon côté et je lance la configuration DNS pour pointer vers votre site.',
+  },
+];
+
+const howToSteps = steps.map(s => ({ name: s.name, text: s.text }));
+
+const faq = [
+  {
+    question: 'Pourquoi acheter mon domaine chez Cloudflare ?',
+    answer: 'Cloudflare vend les domaines à prix coûtant, sans marge ni vente forcée d\'options. Comme votre site est de toute façon hébergé sur l\'infrastructure Cloudflare, le domaine et le site se retrouvent au même endroit : c\'est plus simple à gérer et à suivre.',
+  },
+  {
+    question: 'Marc a-t-il accès à ma carte bancaire ou à ma facturation ?',
+    answer: 'Non. Le rôle « Administrator » ne donne aucun accès à la facturation ni aux moyens de paiement. Je peux gérer le technique du domaine (DNS, SSL, réglages), rien de vos informations bancaires.',
+  },
+  {
+    question: 'Puis-je retirer cet accès plus tard ?',
+    answer: 'Oui, à tout moment. Allez dans « Members » (Membres), trouvez la ligne à mon nom, cliquez sur « Revoke » (Révoquer) puis confirmez avec « Yes, revoke access ». L\'accès est coupé immédiatement, et vous n\'avez besoin de personne pour le faire.',
+  },
+  {
+    question: 'Qui paie le domaine, et combien ?',
+    answer: 'Vous, directement chez Cloudflare, à prix coûtant : généralement autour de 10 à 12 € par an pour un .fr ou un .com, sans marge. Le renouvellement est débité sur votre carte au même prix. Je vous conseille d\'activer le renouvellement automatique.',
+  },
+  {
+    question: 'Dois-je aussi acheter un hébergement ?',
+    answer: 'Non. Votre site est hébergé sur Cloudflare Pages, c\'est inclus dans ma prestation. Chez Cloudflare, vous n\'avez besoin que du nom de domaine.',
+  },
+];
+---
+
+<BaseLayout title={title} description={description} lang="fr" frPath="/aide/domaine-cloudflare" enPath="/en/help/cloudflare-domain" noindex>
+
+  <SchemaOrg type="breadcrumb" data={breadcrumbs} />
+  <SchemaOrg type="howTo" data={{
+    name: 'Acheter et déléguer votre domaine Cloudflare',
+    description: 'Guide pour acheter votre nom de domaine chez Cloudflare et m\'inviter comme membre Administrator pour la gestion technique.',
+    totalTime: 'PT10M',
+    steps: howToSteps,
+  }} />
+  <SchemaOrg type="faqPage" data={faq} />
+
+  <!-- HERO -->
+  <section class="relative w-full bg-[#0D0D0D] px-6 py-16 md:px-8 md:py-24 overflow-hidden">
+    <div class="absolute inset-0 opacity-10" style="background-image: radial-gradient(circle, white 1px, transparent 1px); background-size: 40px 40px;"></div>
+
+    <div class="relative mx-auto max-w-3xl z-10">
+      <a href="/aide" class="inline-flex items-center gap-2 text-sm text-neutral-300 hover:text-white transition-colors mb-8">
+        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16l-4-4m0 0l4-4m-4 4h18" /></svg>
+        Retour aux guides
+      </a>
+
+      <div class="flex flex-wrap items-center gap-3 mb-6">
+        <span class="inline-block rounded-full border border-sky-400/30 bg-sky-400/10 px-3 py-1 text-xs font-semibold text-sky-300">
+          Domaine
+        </span>
+        <span class="text-sm text-neutral-400">~10 minutes</span>
+        <span class="text-sm text-neutral-400">•</span>
+        <span class="text-sm text-neutral-400">Domaine à prix coûtant</span>
+      </div>
+
+      <h1 class="mb-6 text-3xl font-bold leading-tight text-white md:text-5xl">
+        Acheter et déléguer votre domaine Cloudflare
+      </h1>
+      <p class="text-lg text-neutral-300 md:text-xl leading-relaxed">
+        Achetez votre nom de domaine chez Cloudflare, puis donnez-moi la main technique en m'invitant comme membre. Vous restez propriétaire, je m'occupe uniquement du technique.
+      </p>
+    </div>
+  </section>
+
+  <!-- GUIDE BODY -->
+  <section class="w-full bg-[var(--color-bg)] px-6 py-16 md:px-8 md:py-24">
+    <div class="mx-auto max-w-3xl">
+      <article class="rounded-xl bg-white border border-[var(--color-border)] p-8 md:p-12 shadow-sm">
+
+        <!-- Steps -->
+        <div class="space-y-10">
+          {steps.map((step, i) => (
+            <div class="flex gap-5">
+              <div class="flex-shrink-0 flex items-center justify-center w-10 h-10 rounded-full bg-[var(--color-accent)] text-white font-bold text-sm shadow-md">
+                {i + 1}
+              </div>
+              <div class="flex-1 pt-1.5">
+                <h2 class="text-lg font-bold text-[var(--color-text)] mb-2">{step.name}</h2>
+                <p class="text-[var(--color-text-muted)] leading-relaxed">{step.text}</p>
+
+                {/* Email to copy */}
+                {step.code && (
+                  <div class="mt-3 rounded-lg bg-[#0D0D0D] px-5 py-3 flex items-center gap-3 max-w-fit">
+                    <code class="text-lg font-mono font-bold text-white tracking-wide">{step.code}</code>
+                    <button
+                      type="button"
+                      class="copy-btn flex items-center gap-1.5 rounded-md bg-white/10 px-3 py-1.5 text-xs font-semibold text-white hover:bg-white/20 transition-colors"
+                      data-copy={step.code}
+                      data-umami-event="aide-domaine-cloudflare-copier"
+                      aria-label="Copier l'adresse email"
+                    >
+                      <svg class="w-3.5 h-3.5 copy-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
+                      </svg>
+                      <svg class="w-3.5 h-3.5 check-icon hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
+                      </svg>
+                      <span class="copy-label">Copier</span>
+                    </button>
+                  </div>
+                )}
+
+                {/* Additional detail */}
+                {step.detail && (
+                  <p class="mt-2 text-sm text-[var(--color-text-muted)] leading-relaxed">{step.detail}</p>
+                )}
+
+                {/* Navigation path */}
+                {step.path && (
+                  <div class="mt-3 rounded-lg bg-neutral-50 border border-neutral-200 px-4 py-2.5">
+                    <p class="text-xs font-semibold text-neutral-500 mb-1">Chemin dans le tableau de bord</p>
+                    <p class="text-sm font-mono text-neutral-700">{step.path}</p>
+                  </div>
+                )}
+
+                {/* Tip */}
+                {step.tip && (
+                  <div class="mt-3 rounded-lg bg-amber-50 border border-amber-200 px-4 py-2.5">
+                    <p class="text-sm text-amber-700">{step.tip}</p>
+                  </div>
+                )}
+
+                {/* External link */}
+                {step.link && (
+                  <a href={step.link.href} target="_blank" rel="noopener noreferrer"
+                    class="mt-3 inline-flex items-center gap-2 rounded-lg border border-[var(--color-accent)]/20 bg-[var(--color-accent)]/5 px-4 py-2.5 text-sm font-semibold text-[var(--color-accent-text)] hover:bg-[var(--color-accent)]/10 transition-colors"
+                    data-umami-event="aide-domaine-cloudflare-lien-externe" data-umami-event-url={step.link.href}>
+                    <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                      <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14" />
+                    </svg>
+                    {step.link.label}
+                  </a>
+                )}
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <!-- Reassurance callout -->
+        <div class="mt-10 rounded-lg bg-emerald-50 border border-emerald-200 p-5">
+          <p class="text-sm font-semibold text-emerald-800 mb-2">Vous gardez le contrôle</p>
+          <p class="text-sm text-emerald-700 leading-relaxed">
+            Le rôle « Administrator » me donne la main sur le technique, rien de plus. Pas d'accès à votre facturation ni à votre carte bancaire, pas de gestion des membres (je ne peux inviter ni exclure personne), et pas de suppression du domaine (réservée au « Super Administrator », donc à vous). Vous restez l'unique propriétaire du compte et du domaine, et vous pouvez révoquer mon accès à tout moment : « Members » (Membres), la ligne à mon nom, « Revoke » (Révoquer), puis « Yes, revoke access ».
+          </p>
+        </div>
+
+        <!-- Tips -->
+        <div class="mt-6 rounded-lg bg-amber-50 border border-amber-200 p-5">
+          <p class="text-sm font-semibold text-amber-800 mb-2">Conseils</p>
+          <ul class="list-disc pl-4 text-sm text-amber-700 leading-relaxed space-y-1.5">
+            <li>Activez le renouvellement automatique du domaine pour ne pas risquer de le perdre (le renouvellement est débité sur votre carte, à prix coûtant).</li>
+            <li>Activez la validation en deux étapes (2FA) sur votre compte Cloudflare : un réflexe de sécurité simple et efficace.</li>
+            <li>Ne touchez à aucun réglage DNS, je m'en charge.</li>
+            <li>Le tableau de bord Cloudflare peut s'afficher en anglais : les libellés entre guillemets ci-dessus sont ceux à chercher à l'écran.</li>
+          </ul>
+        </div>
+
+        <!-- FAQ -->
+        <div class="mt-10 space-y-4">
+          <p class="text-sm font-bold uppercase tracking-widest text-[var(--color-text-muted)]">Questions fréquentes</p>
+          {faq.map((item) => (
+            <details class="group rounded-lg border border-[var(--color-border)] bg-[var(--color-bg-alt)] overflow-hidden">
+              <summary class="flex cursor-pointer items-center justify-between gap-4 p-4 text-sm font-semibold text-[var(--color-text)] hover:text-[var(--color-accent-text)] transition-colors [&::-webkit-details-marker]:hidden">
+                {item.question}
+                <svg class="w-4 h-4 shrink-0 text-[var(--color-text-muted)] transition-transform group-open:rotate-180" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+                  <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7" />
+                </svg>
+              </summary>
+              <div class="px-4 pb-4">
+                <p class="text-sm leading-relaxed text-[var(--color-text-muted)]">{item.answer}</p>
+              </div>
+            </details>
+          ))}
+        </div>
+
+        <!-- CTA -->
+        <div class="mt-10 rounded-xl bg-[#0D0D0D] p-6 text-center">
+          <p class="text-white font-semibold mb-2">Une fois l'invitation envoyée</p>
+          <p class="text-neutral-300 text-sm mb-5">Envoyez-moi le nom de votre domaine par email ou WhatsApp.</p>
+          <div class="flex flex-col sm:flex-row gap-3 justify-center">
+            <a href={`mailto:${business.email}?subject=Domaine Cloudflare : invitation membre ajoutée&body=Bonjour Marc,%0A%0AJ'ai acheté mon domaine chez Cloudflare et je vous ai invité comme membre Administrator.%0A%0AMon domaine : %0A%0AMerci !`}
+              class="inline-block px-6 py-2.5 bg-[var(--color-accent)] text-white text-sm font-semibold rounded-lg hover:bg-[var(--color-accent-hover)] transition-all"
+              data-umami-event="aide-domaine-cloudflare-email">
+              Envoyer par email
+            </a>
+            <a href={`https://wa.me/${business.whatsapp}?text=Bonjour Marc, j'ai acheté mon domaine chez Cloudflare et je vous ai invité comme membre Administrator. Mon domaine : `}
+              target="_blank" rel="noopener noreferrer"
+              class="inline-block px-6 py-2.5 bg-white/10 text-white text-sm font-semibold rounded-lg border border-white/20 hover:bg-white/20 transition-all"
+              data-umami-event="aide-domaine-cloudflare-whatsapp">
+              Envoyer par WhatsApp
+            </a>
+          </div>
+        </div>
+
+        <!-- Next guide -->
+        <div class="mt-8 flex items-center justify-between rounded-lg border border-[var(--color-border)] p-4">
+          <span class="text-xs font-semibold uppercase tracking-widest text-[var(--color-text-muted)]">Guide suivant</span>
+          <a href="/aide/web3forms" class="inline-flex items-center gap-2 text-sm font-semibold text-[var(--color-accent-text)] hover:gap-3 transition-all">
+            Créer votre compte Web3Forms
+            <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 8l4 4m0 0l-4 4m4-4H3" />
+            </svg>
+          </a>
+        </div>
+
+      </article>
+    </div>
+  </section>
+
+  <script>
+    document.querySelectorAll('.copy-btn').forEach((btn) => {
+      btn.addEventListener('click', async () => {
+        const text = btn.getAttribute('data-copy');
+        if (!text) return;
+        await navigator.clipboard.writeText(text);
+        const copyIcon = btn.querySelector('.copy-icon');
+        const checkIcon = btn.querySelector('.check-icon');
+        const label = btn.querySelector('.copy-label');
+        if (copyIcon) copyIcon.classList.add('hidden');
+        if (checkIcon) checkIcon.classList.remove('hidden');
+        if (label) label.textContent = 'Copié !';
+        setTimeout(() => {
+          if (copyIcon) copyIcon.classList.remove('hidden');
+          if (checkIcon) checkIcon.classList.add('hidden');
+          if (label) label.textContent = 'Copier';
+        }, 2000);
+      });
+    });
+  </script>
+</BaseLayout>
