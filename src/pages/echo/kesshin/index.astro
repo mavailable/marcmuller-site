@@ -1,0 +1,1393 @@
+---
+import BaseLayout from '../../../layouts/BaseLayout.astro';
+
+const slug = 'kesshin';
+const formule = 'complet';
+const formuleLabel = 'Echo Complet v2';
+const nomProspect = 'Kesshin Recode';
+const urlSite = 'https://kesshinrecode.com';
+const dateAudit = '15 juillet 2026';
+const title = 'Rapport Echo v2 - Kesshin Recode | Marc M';
+const description = "Echo Complet v2 : 20 visiteurs simules sur kesshinrecode.com apres mise en ligne, compares a l'audit v1 d'avant corrections.";
+const showUpsell = false;
+
+const kpis = {
+  nbPersonas: 20,
+  nbConvertissent: 11,
+  nbHesitent: 2,
+  nbRepartent: 7,
+  conversion: 55,
+  experience: 6.9,
+  confiance: 6.0,
+  clarte: 7.1,
+};
+
+const verdictHero = "11 visiteurs sur 20 vous contactent, et pour la première fois tous passent par le site. Les 2 qui hésitent butent sur une seule question : où Thomas s'est-il formé ?";
+
+const constat = "Il y a cinq jours, le site convainquait mais ne permettait pas d'agir : 0 contact sur 20 passait par ses boutons. Aujourd'hui, les 11 prises de contact partent toutes des canaux du site : 8 par WhatsApp, 3 par le formulaire, plus aucune par contournement Instagram. Ce qui retient encore des visiteurs n'est plus ce qui est cassé, c'est ce qui n'est pas écrit : la formation du praticien, les limites du travail, et la possibilité de bloquer un créneau.";
+
+// Timeline v1 -> v2
+const versionsData = [
+  { version: 'v1', date: '10 juillet 2026', label: 'Avant corrections (préversion)', nbPersonas: 20, taux: 30, note: "6 contacts sur 20, tous par contournement : 0 % attribuable au site" },
+  { version: 'v2', date: '15 juillet 2026', label: 'Site en ligne', nbPersonas: 20, taux: 55, note: "11 contacts sur 20, tous par les canaux du site" },
+];
+
+const deltaData = [
+  { friction: "Formulaire qui n'envoyait rien (et sans message d'erreur)", statut: '✅', detail: "Réparé : envoi réel, page de confirmation, mention de confidentialité" },
+  { friction: "Bouton WhatsApp factice (renvoyait vers le formulaire)", statut: '✅', detail: "Vrai lien WhatsApp partout : menu mobile, section contact, page de confirmation" },
+  { friction: "Aucun prix nulle part", statut: '✅', detail: "Première séance à prix libre, 65 € ensuite, affiché noir sur blanc" },
+  { friction: "Praticien sans nom de famille ni photo", statut: '✅', detail: "Thomas Denamur nommé, portrait présent" },
+  { friction: "Présentiel uniquement, langue de séance inconnue", statut: '✅', detail: "Séances en ligne partout dans le monde, en anglais et en français" },
+  { friction: "Site lent sur mobile (écran vide 3,5 s)", statut: '✅', detail: "Affichage quasi immédiat : vitesse mobile 97/100" },
+  { friction: "Invisible pour Google et les assistants IA", statut: '✅', detail: "Site indexé, fiche complète lisible par les moteurs et les IA, vraie page 404" },
+  { friction: "Réservation sans calendrier ni délai de réponse", statut: '⚠️', detail: "Les canaux fonctionnent, mais rien n'est bloquable : la réservation reste une conversation" },
+  { friction: "Formation et origine de la méthode absentes", statut: '❌', detail: "Inchangé : la friction n°1 restante, celle qui bloque les 2 hésitants" },
+  { friction: "Aucune contre-indication ni confidentialité explicite", statut: '❌', detail: "Inchangé : la page évoque le trauma sans afficher de limites ni de cadre" },
+];
+
+const canalData = [
+  { canal: 'Instagram', nb: 4, convert: 3, rate: 75 },
+  { canal: 'Bouche-à-oreille', nb: 4, convert: 3, rate: 75 },
+  { canal: 'QR code et retours directs', nb: 3, convert: 2, rate: 67 },
+  { canal: 'Google Search', nb: 4, convert: 2, rate: 50 },
+  { canal: 'Assistants IA (ChatGPT, Claude...)', nb: 3, convert: 1, rate: 33 },
+  { canal: 'Google Maps', nb: 2, convert: 0, rate: 0 },
+];
+
+const alertes = [
+  {
+    type: 'important',
+    titre: "La formation du praticien est introuvable",
+    detail: "7 visiteurs sur 20 cherchent la même chose : qui a créé cette méthode et où Thomas l'a apprise. Le récit fondateur s'arrête une phrase trop tôt. C'est la question qui bloque les 2 hésitants et la première que 4 clients convaincus poseront en message.",
+    chiffre: '7/20',
+    chiffreLabel: 'cherchent la formation',
+  },
+  {
+    type: 'important',
+    titre: "Le site évoque le trauma sans afficher de limites",
+    detail: "La page propose de travailler sur les traumatismes passés et les symptômes psychosomatiques, sans dire à qui ce travail ne convient pas, sans mention de confidentialité, sans orientation vers un professionnel de santé quand il le faudrait.",
+    chiffre: '0',
+    chiffreLabel: 'contre-indication affichée',
+  },
+  {
+    type: 'important',
+    titre: "Rien ne se réserve, tout se demande",
+    detail: "Pas de créneaux visibles, pas de délai de réponse annoncé, pas de politique d'annulation : 4 des 11 prises de contact restent suspendues à la rapidité de la réponse de Thomas.",
+    chiffre: '4/11',
+    chiffreLabel: 'contacts suspendus à la réponse',
+  },
+];
+
+type Decision = 'Convertit' | 'Hesite' | 'Quitte';
+
+const personas = [
+  {
+    id: 1, name: 'Léa', age: 29, emoji: '🎒',
+    situation: 'Graphiste freelance française, 7 mois de voyage en Asie',
+    canal: 'Google Search', device: 'Mobile', maturite: 'Comparaison',
+    decision: 'Convertit' as Decision, decisionLabel: 'Contacte',
+    histoire: "Le prix qu'elle cherchait est affiché, le cadre est clair : elle écrit sur WhatsApp pour caler une séance pendant ses 10 jours sur l'île.",
+    localisation: 'Koh Phangan, arrive à Koh Tao dans 4 jours',
+    contexte: "Trois relations, le même schéma. Deux ans de thérapie par la parole : des prises de conscience, pas de changement.",
+    impression: "Le texte apparaît en un souffle, le ton est calme, un peu abstrait. Elle repère deux portes : Réserver une séance et Écrire sur WhatsApp.",
+    parcours: [
+      ['Accueil', 'ton posé, deux boutons d’action nets'],
+      ['Est-ce pour vous ?', '« certaines relations rejouent la même histoire » : c’est elle, mot pour mot'],
+      ['La séance', 'ni hypnose, ni thérapie, ni coaching : la différence qu’elle cherchait est écrite'],
+      ['En pratique', 'première séance à prix libre, 65 € ensuite : compatible avec un budget de freelance'],
+      ['Témoignages', 'Katie et Nitzan lui parlent directement, en français'],
+      ['Contact', 'elle prend le plus court : WhatsApp'],
+    ],
+    questionCle: 'Combien ça coûte, et est-ce que je peux avoir un créneau la semaine prochaine ?',
+    reponse: 'Partiellement',
+    commentReponse: "le prix est écrit noir sur blanc, mais aucune disponibilité : elle pose la question du créneau en 30 secondes sur un canal qui marche.",
+    impactVitesse: "Plus d'attente perceptible sur mobile : la lecture est fluide de bout en bout.",
+    impactConfiance: "Tout ce qu'elle touche fonctionne : WhatsApp réel, formulaire avec confirmation, praticien nommé et photographié.",
+    positifs: ['Prix affiché, première séance à prix libre', 'WhatsApp accessible dès le menu mobile', 'Page française complète, témoignages traduits', 'Thomas Denamur nommé, avec portrait'],
+    frictions: ['Aucune disponibilité ni délai de rendez-vous affiché', 'Forfaits mentionnés sans montant'],
+    ceQuiFeraitBasculer: '',
+    exp: 8, conf: 7, clarte: 8,
+  },
+  {
+    id: 2, name: 'Marcus', age: 41, emoji: '🧭',
+    situation: 'Ingénieur allemand en burn-out, arrêté depuis 3 mois',
+    canal: 'Google Maps', device: 'Mobile', maturite: 'Découverte',
+    decision: 'Quitte' as Decision, decisionLabel: 'Repart',
+    histoire: "Il cherche « therapist near me » sur Google Maps : aucune fiche n'existe, il choisit un concurrent noté avec un bouton d'appel.",
+    localisation: 'Sairee Beach, Koh Tao',
+    contexte: "Nuits blanches, irritabilité. Son médecin lui a dit de parler à quelqu'un.",
+    impression: "Aucune : sur Google Maps, là où il cherche, le site n'existe pas. S'il atterrit sur la page par une recherche web, il n'y trouve ni adresse, ni avis, ni numéro d'appel.",
+    parcours: [
+      ['Google Maps', 'des concurrents avec notes, photos et bouton Appeler ; pas de Kesshin Recode'],
+      ['Accueil (si atterrissage web)', 'océan et subconscient : aucun des repères qu’un utilisateur Maps attend'],
+      ['Contact', 'WhatsApp cliquable, mais ni adresse, ni carte, ni numéro affiché en clair'],
+      ['Ce que ce n’est pas', '« pas une psychothérapie » : à contre-courant de sa prescription médicale'],
+      ['Sortie', 'retour à Maps, il choisira une fiche notée'],
+    ],
+    questionCle: 'Où est-ce, et est-ce que je peux appeler maintenant ?',
+    reponse: 'Non',
+    commentReponse: "le lieu se limite à « Koh Tao », aucun numéro n'est affiché sur la page, et écrire à un inconnu n'est pas son geste spontané en pleine détresse.",
+    impactVitesse: "Bonne, et sans effet : il décroche pour des raisons structurelles, pas techniques.",
+    impactConfiance: "Sans avis notés, sans adresse, sans bouton d'appel, il n'a aucun repère de réassurance.",
+    positifs: ['Le lien WhatsApp fonctionne réellement s’il descend jusqu’au contact', 'Le ton calme pourrait apaiser un profil épuisé'],
+    frictions: ['Invisible sur Google Maps, exactement là où il cherche', 'Aucune adresse, aucun numéro affiché', 'Positionnement « pas une psychothérapie » face à une prescription médicale'],
+    ceQuiFeraitBasculer: "Une fiche Google avec avis et bouton d'appel, ou à défaut un numéro affiché : ne pas en créer est un choix assumé.",
+    exp: 4, conf: 4, clarte: 6,
+  },
+  {
+    id: 3, name: 'Priya', age: 34, emoji: '🤖',
+    situation: 'Consultante tech britannique, très analytique, prépare un sabbatique',
+    canal: 'Assistants IA', device: 'Desktop', maturite: 'Comparaison',
+    decision: 'Hesite' as Decision, decisionLabel: 'Hésite',
+    histoire: "L'IA lui présente enfin le site avec prix et modalités, mais sa question centrale reste sans réponse : auprès de qui Thomas s'est-il formé ?",
+    localisation: 'Londres, départ dans 6 semaines',
+    contexte: "Elle construit son sabbatique autour de deux ou trois expériences de transformation, comparées méthodiquement.",
+    impression: "Un site épuré, une méthode nommée, un praticien nommé. Elle note le nom de la méthode pour vérification : c'est son réflexe.",
+    parcours: [
+      ['Accueil', 'lecture intégrale : argumentaire cohérent, sans promesse chiffrée'],
+      ['The Story', 'nom, portrait, parcours. Puis « j’ai rencontré le recodage » : rencontré où ? Le récit s’arrête là où sa question commence'],
+      ['Recherche ciblée', '« trained », « certified », « lineage » : zéro résultat sur tout le site'],
+      ['En pratique', 'séances en ligne + première à prix libre : elle pourrait tester depuis Londres'],
+      ['Vérification externe', 'la méthode n’existe nulle part en dehors du site'],
+    ],
+    questionCle: 'Qui est Thomas, et auprès de qui s’est-il formé ?',
+    reponse: 'Partiellement',
+    commentReponse: "qui est Thomas, oui : nom, portrait, parcours incarné. Sa formation, non : aucune école, aucun formateur, aucune lignée.",
+    impactVitesse: "Affichage instantané sur ordinateur, à la hauteur de ses standards.",
+    impactConfiance: "Les données lisibles par les IA ont permis à son assistant de citer le site avec les bons faits : c'est ce qui l'a amenée ici.",
+    positifs: ['Essai à distance quasi sans risque (en ligne + prix libre)', 'Récit incarné : nom, portrait, parcours freediving', 'Ton honnête, scepticisme bienvenu', 'Prix clair et cohérent'],
+    frictions: ['Aucune formation, certification ni lignée', 'Méthode invérifiable en dehors du site', 'Pas de réservation garantie à distance', 'Email de contact générique plutôt qu’au nom du domaine'],
+    ceQuiFeraitBasculer: "Deux phrases sur la formation de Thomas et l'origine de la méthode : elle est à une réponse près de réserver.",
+    exp: 7, conf: 5, clarte: 7,
+  },
+  {
+    id: 4, name: 'Tom', age: 26, emoji: '🏄',
+    situation: 'Australien, divemaster en formation, peu porté sur le développement personnel',
+    canal: 'Instagram', device: 'Mobile', maturite: 'Découverte',
+    decision: 'Quitte' as Decision, decisionLabel: 'Repart',
+    histoire: "La page s'affiche vite cette fois, mais « wholeness » et « journey » le classent en 10 secondes : un truc de spiritualité, pas pour lui.",
+    localisation: 'Koh Tao',
+    contexte: "Une anxiété à la profondeur qu'il n'ose pas nommer. Il a vu un reel parce que Thomas est connu dans le milieu freediving.",
+    impression: "L'océan lui parle, le titre non. Verdict intérieur en 5 secondes : « spiritual stuff ».",
+    parcours: [
+      ['Accueil', '« returning to wholeness » : premier signal d’alerte, il reste par curiosité pour le personnage'],
+      ['L’écharde', 'la métaphore le retient : physique, presque sportive, il comprend sans effort'],
+      ['Est-ce pour vous ?', 'relations, travail intérieur : rien sur le sport, la performance, la peur'],
+      ['La séance (scan)', '« guilt, shame, journey » : le mot de trop, il décroche'],
+      ['Sortie', 'la seule section qui pouvait l’accrocher (Thomas ex-instructeur freediving) est tout en bas : il ne la verra jamais'],
+    ],
+    questionCle: 'Est-ce que c’est un truc de spiritualité, ou est-ce que ça peut m’aider avec ma peur en plongée ?',
+    reponse: 'Non',
+    commentReponse: "la plongée n'apparaît nulle part dans la zone qu'il consulte : rien ne relie ce travail à une peur concrète de sportif.",
+    impactVitesse: "Le progrès a changé la nature de son départ : le site a eu sa chance technique, c'est le contenu seul qui le fait sortir.",
+    impactConfiance: "Sans objet : il ne va pas assez loin.",
+    positifs: ['Chargement quasi instantané, même dans le navigateur Instagram', 'La métaphore de l’écharde, seul passage dans son langage', 'La photo d’océan, familière pour un divemaster'],
+    frictions: ['Registre spirituel dès le premier écran', 'Aucun pont vers son monde (peur, profondeur, performance)', 'L’atout freediving de Thomas invisible sans scroller jusqu’en bas'],
+    ceQuiFeraitBasculer: "Une ligne dans le premier écran reliant l'ex-instructeur de freediving à la peur en profondeur : son monde, ses mots.",
+    exp: 5, conf: 5, clarte: 4,
+  },
+  {
+    id: 5, name: 'Sophie', age: 45, emoji: '🔍',
+    situation: 'DRH lyonnaise, grosse consommatrice de développement personnel',
+    canal: 'Google Search', device: 'Desktop', maturite: 'Comparaison',
+    decision: 'Convertit' as Decision, decisionLabel: 'Contacte',
+    histoire: "Aucun avis externe n'existe, mais le prix affiché et la première séance à prix libre l'emportent : elle construira sa propre preuve en février.",
+    localisation: 'Lyon, voyage à Koh Tao prévu en février',
+    contexte: "Elle a entendu parler de la méthode dans un podcast et vérifie tout avant de s'engager.",
+    impression: "Sa recherche aboutit enfin sur le site officiel. Esthétique soignée, aucun compte à rebours marketing : bon signe.",
+    parcours: [
+      ['Accueil (FR)', 'bien écrit, sobre, pas de « guérissez en 3 séances »'],
+      ['Témoignages', 'registre crédible, dont deux sceptiques déclarés ; mais prénoms seuls, invérifiables'],
+      ['La séance', 'déroulé complet, consignes sobres : un cadre sérieux'],
+      ['En pratique', '65 €, première séance à prix libre : loin des retraites à quatre chiffres'],
+      ['Sortie vérification', 'aucun avis tiers nulle part : son critère central reste insatisfait'],
+      ['Retour et décision', 'elle remplit le formulaire, pose ses deux questions, reçoit une vraie confirmation'],
+    ],
+    questionCle: 'Est-ce que quelqu’un d’extérieur au site confirme que ça marche ?',
+    reponse: 'Non',
+    commentReponse: "aucun avis externe n'existe : pas de fiche Google, pas de plateforme d'avis, une méthode absente du web hors du site.",
+    impactVitesse: "Parfaite sur ordinateur, rien à signaler.",
+    impactConfiance: "Formulaire opérationnel, mentions légales, confidentialité : les signaux de sérieux administratif qu'une DRH remarque.",
+    positifs: ['Prix affiché + première séance à prix libre : risque d’essai presque nul', 'Témoignages au registre crédible, sceptiques inclus', 'Praticien incarné', 'Cadre administratif propre'],
+    frictions: ['Zéro preuve sociale vérifiable hors site', 'Témoignages prénoms seuls', 'Aucune formation mentionnée', 'Forfaits sans montant'],
+    ceQuiFeraitBasculer: '',
+    exp: 8, conf: 6, clarte: 8,
+  },
+  {
+    id: 6, name: 'Nina', age: 31, emoji: '💬',
+    situation: 'Instructrice de plongée suédoise, 2 ans sur l’île',
+    canal: 'Bouche-à-oreille', device: 'Mobile', maturite: 'Décision',
+    decision: 'Convertit' as Decision, decisionLabel: 'Contacte',
+    histoire: "« Écris-lui, c'est tout » : deux gestes, le bouton WhatsApp du menu ouvre la bonne conversation, message envoyé en 30 secondes.",
+    localisation: 'Koh Tao',
+    contexte: "Sa colocataire a fait une séance et n'arrête pas d'en parler. Elle est convaincue avant d'ouvrir le site.",
+    impression: "Elle ne lit rien. Elle cherche un seul mot : WhatsApp. Il est dans le menu.",
+    parcours: [
+      ['Accueil', 'elle repère « Book a Session » et « Message on WhatsApp » en moins de 5 secondes'],
+      ['Menu mobile', 'le lien ouvre réellement WhatsApp sur la conversation avec Thomas'],
+      ['Fin', 'message envoyé 30 secondes après l’ouverture du site : elle n’a vu ni prix, ni témoignages'],
+    ],
+    questionCle: 'Comment je lui écris, maintenant ?',
+    reponse: 'Oui',
+    commentReponse: "le chemin le plus court fonctionne de bout en bout, avec trois canaux de secours cliquables.",
+    impactVitesse: "Une petite seconde d'attente sur le réseau de l'île, absorbée sans dommage.",
+    impactConfiance: "Chaque bouton fait ce qu'il annonce : le site ne l'entame plus.",
+    positifs: ['WhatsApp réel dès le menu mobile, sans scroll ni lecture', 'Le parcours pré-vendu le plus fréquent de l’île est couvert en deux gestes'],
+    frictions: ['Le bouton principal du premier écran mène au formulaire : WhatsApp demande un geste de plus au profil le plus pressé'],
+    ceQuiFeraitBasculer: '',
+    exp: 9, conf: 9, clarte: 9,
+  },
+  {
+    id: 7, name: 'Jonas', age: 38, emoji: '📄',
+    situation: 'Néerlandais, ex-militaire reconverti dans la logistique, en voyage 3 semaines',
+    canal: 'QR code et retours directs', device: 'Mobile', maturite: 'Découverte',
+    decision: 'Convertit' as Decision, decisionLabel: 'Contacte',
+    histoire: "Prix, durée, déroulé : tout y est sauf le délai. Il pose LA question sur WhatsApp : « un créneau avant vendredi ? »",
+    localisation: 'Koh Tao, encore 6 jours',
+    contexte: "Sa compagne lui répète qu'il ne s'ouvre jamais. Le flyer du dive shop l'a intrigué.",
+    impression: "L'océan, le ton posé. Son réflexe : c'est quoi, combien, combien de temps, avant vendredi ?",
+    parcours: [
+      ['Est-ce pour vous ?', '« vous réagissez toujours de la même façon » le pique plus qu’il ne l’admettrait'],
+      ['La séance', 'ni hypnose ni thérapie, pleinement conscient du début à la fin : décisif pour un ex-militaire qui déteste perdre le contrôle'],
+      ['En pratique', 'une heure, 65 €, première à prix libre, sur place ou en ligne : il peut chiffrer et planifier'],
+      ['Calendrier ?', 'aucun : sa deadline de vendredi reste une inconnue'],
+      ['Contact', 'WhatsApp fonctionnel : il pose sa question en une minute'],
+    ],
+    questionCle: 'Est-ce que je peux caler ça avant de repartir vendredi ?',
+    reponse: 'Partiellement',
+    commentReponse: "aucune disponibilité affichée, mais tout le reste y est, et l'option en ligne rend même l'après-départ possible.",
+    impactVitesse: "Lecture fluide, aucun frein sur son scan méthodique.",
+    impactConfiance: "Un service qui affiche ses tarifs est un service qui assume. Il aimerait juste savoir qui a écrit les règles.",
+    positifs: ['« En pratique » répond d’un bloc : durée, lieu, langue, prix', 'Première séance à prix libre : essai sans risque pour un sceptique', 'Cadre net : sobriété exigée, contrôle conservé', 'WhatsApp pour lever la dernière inconnue'],
+    frictions: ['Aucune disponibilité ni délai de réponse affiché', 'Aucune formation mentionnée', 'Forfaits sans montant'],
+    ceQuiFeraitBasculer: '',
+    exp: 8, conf: 7, clarte: 8,
+  },
+  {
+    id: 8, name: 'Camille', age: 27, emoji: '🌊',
+    situation: 'Québécoise, prof de yoga itinérante',
+    canal: 'Instagram', device: 'Mobile', maturite: 'Découverte',
+    decision: 'Convertit' as Decision, decisionLabel: 'Contacte',
+    histoire: "Le portrait qu'elle cherchait existe enfin : la même personne sur Instagram et sur le site. Elle écrit dans la foulée.",
+    localisation: 'Koh Phangan, envisage Koh Tao',
+    contexte: "Curiosité professionnelle autant que personnelle, après une story partagée par une amie.",
+    impression: "Elle bascule en français. « Se souvenir de qui l'on est, sous son conditionnement » : elle est cueillie.",
+    parcours: [
+      ['L’écharde', 'imagée, incarnée : proche de ce qu’elle raconte à ses élèves'],
+      ['The Story', 'le portrait de Thomas, enfin : le visage correspond au compte Instagram, la cohérence la convainc'],
+      ['Lignée ?', '« j’ai découvert le recodage » sans école ni formateur : elle note le flou, sans casser l’élan'],
+      ['Témoignages', 'celui de Katie résonne avec sa grille : sécurité, vulnérabilité, espace'],
+      ['Contact', 'portrait, nom complet, trois canaux vivants : elle écrit sur WhatsApp'],
+    ],
+    questionCle: 'À quoi ressemble Thomas, et est-ce que je le sens ?',
+    reponse: 'Oui',
+    commentReponse: "portrait, nom complet, récit cohérent avec le compte d'où elle vient. Seule la lignée reste hors champ.",
+    impactVitesse: "Fluide même dans le navigateur Instagram : le scroll contemplatif est agréable.",
+    impactConfiance: "Portée par l'incarnation et par des canaux qui tiennent leurs promesses.",
+    positifs: ['Le portrait de Thomas : exactement ce qui manquait', 'Nom complet, identifiable, cherchable', 'Témoignages lisibles en français', 'Cohérence de ton entre Instagram et le site'],
+    frictions: ['Aucune lignée ni formation : sa première question en message', 'Un seul portrait : rien sur le lieu de séance', 'Forfaits sans montant'],
+    ceQuiFeraitBasculer: '',
+    exp: 9, conf: 8, clarte: 8,
+  },
+  {
+    id: 9, name: 'Richard', age: 56, emoji: '🚭',
+    situation: 'Britannique retraité en Thaïlande, veut arrêter de fumer',
+    canal: 'Google Search', device: 'Desktop', maturite: 'Comparaison',
+    decision: 'Quitte' as Decision, decisionLabel: 'Repart',
+    histoire: "Il cherche de l'hypnose anti-tabac ; le site répond noir sur blanc « ce n'est pas de l'hypnose ». Tri sain, en moins de deux minutes.",
+    localisation: 'Chumphon, à 2 h de ferry',
+    contexte: "Son médecin lui a mis la pression après un bilan.",
+    impression: "« Subconscious Rewiring » : vaguement dans le thème. Son tri mental tient en une seconde : hypnose pour fumeur, oui ou non ?",
+    parcours: [
+      ['Recherche des mots', '« smoking », « hypnosis » : plus de questions cliquables, il scrolle la page'],
+      ['Sur quoi on travaille', 'tabac et addiction absents de la liste'],
+      ['Ce que ce n’est pas', '« pas de l’hypnose » : réponse nette, ce n’est pas ce qu’il cherche'],
+      ['Sortie', 'propre, en moins de deux minutes'],
+    ],
+    questionCle: 'Est-ce que c’est de l’hypnose pour arrêter de fumer ?',
+    reponse: 'Oui',
+    commentReponse: "par la négative, et c'est un service rendu : la disqualification est explicite et honnête.",
+    impactVitesse: "Instantané sur ordinateur : le coût de sa visite inutile est minimal.",
+    impactConfiance: "Aucune sur-promesse ne l'appâte à tort : l'honnêteté du cadrage est à porter au crédit du site.",
+    positifs: ['Disqualification explicite : « pas de l’hypnose », noir sur blanc', 'Aucun malentendu entretenu sur le tabac', 'Page instantanée'],
+    frictions: ['La réponse disqualifiante demande plus de scroll depuis la disparition des questions cliquables'],
+    ceQuiFeraitBasculer: "Rien, et c'est très bien ainsi : il n'a jamais été la cible.",
+    exp: 5, conf: 5, clarte: 8,
+  },
+  {
+    id: 10, name: 'Yuki', age: 33, emoji: '📖',
+    situation: 'Traductrice littéraire japonaise, aucune intention d’achat',
+    canal: 'Assistants IA', device: 'Desktop', maturite: 'Découverte',
+    decision: 'Quitte' as Decision, decisionLabel: 'Repart',
+    histoire: "Venue vérifier une étymologie citée par une IA, repartie en une minute : la nuance linguistique qu'elle traquait est toujours là.",
+    localisation: 'Osaka, Japon',
+    contexte: "Curiosité linguistique pure sur le sens des kanji du nom.",
+    impression: "Son lien cité par l'IA fonctionne toujours : la redirection la dépose au bon endroit de la page.",
+    parcours: [
+      ['Arrivée par lien profond', 'l’ancienne page redirige proprement vers la bonne section'],
+      ['Le sens de Kesshin', 'lecture professionnelle du paragraphe étymologique'],
+      ['Analyse', 'le découpage des deux kanji est correct, mais le sens « moment décisif » appartient à un homophone écrit différemment'],
+      ['Sortie', 'curiosité satisfaite, réserve amusée intacte'],
+    ],
+    questionCle: 'L’étymologie donnée est-elle juste ?',
+    reponse: 'Partiellement',
+    commentReponse: "la décomposition est acceptable, la glose « instant décisif » emprunte à un mot homophone : un locuteur japonais le repère.",
+    impactVitesse: "Lecture immédiate, parfaite pour une visite de 60 secondes.",
+    impactConfiance: "Sur le seul plan qui la concerne (la rigueur linguistique), mitigée ; côté citations par les IA, le site est nettement mieux armé qu'avant.",
+    positifs: ['Son lien de citation survit à la refonte de la page', 'La section reste claire et facile à trouver', 'Chargement instantané'],
+    frictions: ['La nuance étymologique demeure', 'Trafic hors cible par nature : constat, pas défaut'],
+    ceQuiFeraitBasculer: "Rien : elle n'a jamais été une cliente.",
+    exp: 7, conf: 5, clarte: 8,
+  },
+  {
+    id: 11, name: 'Ahmed', age: 44, emoji: '🤿',
+    situation: 'Instructeur de plongée technique égyptien, 15 ans sur l’île, connaît Thomas',
+    canal: 'Bouche-à-oreille', device: 'Mobile', maturite: 'Décision',
+    decision: 'Convertit' as Decision, decisionLabel: 'Contacte',
+    histoire: "Le cadre et le prix le rassurent, mais le mot qu'il cherchait n'y est pas : sa première question WhatsApp sera la confidentialité.",
+    localisation: 'Koh Tao',
+    contexte: "Un accident de plongée il y a 3 ans, dont il n'a jamais parlé à personne.",
+    impression: "Le site colle enfin à l'homme qu'il connaît : nom complet, portrait. Lui vient vérifier le cadre, pas être convaincu.",
+    parcours: [
+      ['Sur quoi on travaille', '« traumatismes passés » : exactement son sujet, ça le touche et ça le tend'],
+      ['Pendant la séance', 'la forme rassure ; il cherche le mot « confidentiel » : introuvable'],
+      ['Avant / après', 'sobriété exigée, intégration conseillée : un vrai cadre. Mais rien sur « et si ça remue trop fort »'],
+      ['En pratique', 'le prix affiché lui évite la conversation d’argent gênante avec une connaissance'],
+      ['Contact', 'le bouton WhatsApp est un vrai lien : il reconnaît le numéro'],
+    ],
+    questionCle: 'Est-ce que ce qui sort de la séance reste entre nous, et que se passe-t-il si ça réveille l’accident ?',
+    reponse: 'Non',
+    commentReponse: "la confidentialité n'est nommée nulle part et aucun protocole n'existe pour « si ça déborde » ; la politique de confidentialité ne couvre que les données du formulaire.",
+    impactVitesse: "Avant il attendait un écran vide ; maintenant la page est juste là.",
+    impactConfiance: "Les canaux réels et le portrait alignent le site avec la personne.",
+    positifs: ['Déroulé complet avant / pendant / après', 'Prix affiché : pas de négociation gênante entre connaissances', 'Exigence de sobriété : signal de sérieux', 'WhatsApp immédiat'],
+    frictions: ['Confidentialité jamais mentionnée, sur une petite île où tout le monde se connaît', 'Aucun cadre « si ça réveille quelque chose de lourd »', 'La politique de confidentialité ne couvre que le formulaire'],
+    ceQuiFeraitBasculer: '',
+    exp: 8, conf: 7, clarte: 8,
+  },
+  {
+    id: 12, name: 'Hannah', age: 30, emoji: '🧘',
+    situation: 'Américaine digital nomad, consommatrice de bien-être',
+    canal: 'Google Maps', device: 'Mobile', maturite: 'Comparaison',
+    decision: 'Quitte' as Decision, decisionLabel: 'Repart',
+    histoire: "Elle compare des fiches étoilées sur Google Maps ; sans fiche, Kesshin n'entre jamais dans son champ de vision. Elle réserve un yoga.",
+    localisation: 'Koh Tao, arrivée hier',
+    contexte: "Envie de « faire quelque chose de spirituel » cette semaine, sans idée précise.",
+    impression: "Aucune : sa recherche « wellness koh tao » affiche des studios notés avec photos. Le site n'y figure pas.",
+    parcours: [
+      ['Google Maps', 'elle compare étoiles, avis, photos, prix'],
+      ['Kesshin Recode', 'n’apparaît nulle part : pour elle, l’offre n’existe pas'],
+      ['Décision', 'elle réserve un cours de yoga bien noté et referme Maps'],
+    ],
+    questionCle: 'Qu’est-ce qui est bien noté près d’ici ?',
+    reponse: 'Non',
+    commentReponse: "le site ne peut pas répondre dans un canal où il n'existe pas : toutes les corrections sont invisibles depuis Maps.",
+    impactVitesse: "Sans objet : elle n'ouvre jamais la page.",
+    impactConfiance: "Sans objet. Seule une fiche Google changerait son issue, et ne pas en créer est un choix assumé.",
+    positifs: ['Aucun accessible à Hannah : la perte est mesurée et assumée'],
+    frictions: ['Invisibilité totale sur le canal de découverte dominant de son profil', 'Pas d’étoiles, pas de photos, pas de bouton réserver : les quatre choses qu’elle attend'],
+    ceQuiFeraitBasculer: "Une fiche Google Business : décision volontairement écartée à ce jour.",
+    exp: 1, conf: 1, clarte: 1,
+  },
+  {
+    id: 13, name: 'Élodie', age: 36, emoji: '✨',
+    situation: 'Française en reconversion, 5 semaines de stage yoga sur l’île',
+    canal: 'Instagram', device: 'Mobile', maturite: 'Décision',
+    decision: 'Convertit' as Decision, decisionLabel: 'Contacte',
+    histoire: "Le bouton qui mentait avant tient sa promesse : WhatsApp s'ouvre, prix vérifié, message envoyé en moins d'une minute.",
+    localisation: 'Koh Tao',
+    contexte: "Elle suit le compte Instagram depuis 2 mois et a décidé de franchir le pas aujourd'hui.",
+    impression: "Elle connaît l'univers avant d'ouvrir : le site est cohérent avec le fil qu'elle suit. Elle vient réserver, pas lire.",
+    parcours: [
+      ['Lien en bio', 'accueil en français, zéro friction d’entrée'],
+      ['Écrire sur WhatsApp', 'WhatsApp s’ouvre réellement, conversation prête'],
+      ['En pratique', 'réflexe de cliente décidée : elle vérifie le prix avant d’envoyer'],
+      ['Message envoyé', '« je suis à Koh Tao pour 5 semaines, une séance cette semaine ? »'],
+      ['Après coup', 'pas de calendrier : sur l’île 5 semaines, ça ne la bloque pas'],
+    ],
+    questionCle: 'Comment je réserve, maintenant ?',
+    reponse: 'Oui',
+    commentReponse: "trois canaux réels, un formulaire avec confirmation, un prix affiché, une page en français : le chemin le plus court aboutit en deux gestes.",
+    impactVitesse: "Fluide dans le navigateur Instagram, là où la version d'avant laissait un écran vide.",
+    impactConfiance: "La continuité entre Instagram et le site est parfaite, et le lien réel transforme la confiance accumulée en action.",
+    positifs: ['Le bouton WhatsApp tient sa promesse', 'Prix transparent : pas de question gênante à poser', 'Version française complète', 'Formulaire opérationnel en filet de sécurité'],
+    frictions: ['Pas de créneau réservable : une cliente décidée attend une réponse pour avoir sa date', 'Forfaits sans montant'],
+    ceQuiFeraitBasculer: '',
+    exp: 9, conf: 8, clarte: 9,
+  },
+  {
+    id: 14, name: 'Daniel', age: 52, emoji: '⚠️',
+    situation: 'Israélien, ancien militaire, stress post-traumatique diagnostiqué, sous traitement',
+    canal: 'Google Search', device: 'Mobile', maturite: 'Décision',
+    decision: 'Quitte' as Decision, decisionLabel: 'Repart',
+    histoire: "Il cherche un cadre clinique pour relayer son suivi : ne trouve ni diplôme ni contre-indication, et se protège seul.",
+    localisation: 'Bangkok, envisage Koh Tao',
+    contexte: "Sa psychiatre est en Israël ; il cherche un relais professionnel sur place.",
+    impression: "« Rewriting the subconscious » : registre bien-être, pas le registre clinique attendu. Il vérifie avant de rebondir.",
+    parcours: [
+      ['Sur quoi on travaille', '« traumatismes passés », « symptômes psychosomatiques » : mot pour mot sa situation'],
+      ['Ce que ce n’est pas', '« pas une psychothérapie » : contradiction directe avec le trauma revendiqué, de son point de vue'],
+      ['The Story', 'une reconversion racontée, pas une qualification'],
+      ['Recherche active', '« qualified », « licensed », « contraindications », « medication » : rien'],
+      ['Sortie', 'il reprend sa recherche d’un professionnel de santé agréé'],
+    ],
+    questionCle: 'Est-ce sûr pour quelqu’un comme moi, et Thomas est-il qualifié pour ça ?',
+    reponse: 'Non',
+    commentReponse: "aucun diplôme ni certification, et aucune information de sécurité pour un profil sous traitement : la seule consigne concerne l'alcool.",
+    impactVitesse: "Excellente, et elle sert un tri rapide plutôt qu'une conversion.",
+    impactConfiance: "Les signaux de sérieux commercial existent ; le cadre clinique qu'il exige, non.",
+    positifs: ['« Ce que ce n’est pas » est plus visible qu’avant : il écarte vite une piste inadaptée', 'L’exigence de sobriété : au moins un garde-fou concret'],
+    frictions: ['Aucune contre-indication ni avertissement de non-substitution à un suivi médical', 'Aucune qualification vérifiable', 'Le profil le plus vulnérable est celui qui reçoit le moins de signal'],
+    ceQuiFeraitBasculer: "Rien ne doit le faire basculer : l'issue saine serait un paragraphe qui l'oriente explicitement vers un professionnel de santé.",
+    exp: 4, conf: 3, clarte: 5,
+  },
+  {
+    id: 15, name: 'Marta', age: 39, emoji: '🕉️',
+    situation: 'Professeure de yoga espagnole, 4 ans sur l’île, réseau dense',
+    canal: 'Bouche-à-oreille', device: 'Tablette', maturite: 'Comparaison',
+    decision: 'Hesite' as Decision, decisionLabel: 'Hésite',
+    histoire: "Prix citable et cadre sérieux acquis ; mais sans formation affichée ni limites annoncées, elle ne peut pas envoyer ses élèves les yeux fermés.",
+    localisation: 'Koh Tao',
+    contexte: "Deux de ses élèves ont fait une séance. Elle évalue pour elle, et surtout pour prescrire.",
+    impression: "Un site plus incarné qu'attendu : nom complet, portrait. Elle lit avec l'œil d'une prescriptrice qui engage sa réputation.",
+    parcours: [
+      ['Accueil complet', 'l’écharde : exactement l’image qu’elle réutiliserait avec ses élèves'],
+      ['La séance', 'avant / pendant / après, sobriété, intégration : un vrai cadre s’est structuré'],
+      ['En pratique', 'un prix à citer, et l’option en ligne pour ses élèves de passage'],
+      ['The Story', 'le portrait incarne l’homme ; la lignée de la méthode reste introuvable'],
+      ['Contre-indications ?', 'rien : le critère qui lui manque pour filtrer qui envoyer'],
+    ],
+    questionCle: 'Est-ce que je peux envoyer mes élèves ici les yeux fermés ?',
+    reponse: 'Partiellement',
+    commentReponse: "deux de ses trois informations de prescriptrice sont là (prix, cadre) ; la troisième, la plus lourde, manque : formation vérifiable et limites annoncées.",
+    impactVitesse: "Instantanée sur tablette : la lecture longue est confortable.",
+    impactConfiance: "Nom, portrait, canaux réels et prix forment un faisceau de sérieux ; le plafond reste les qualifications absentes.",
+    positifs: ['Prix citable : la première question de toute élève a une réponse', 'Cadre de séance descriptible', 'Personne identifiable, pas un concept', 'Séances en ligne pour les élèves qui repartent'],
+    frictions: ['Aucune formation, certification ni lignée : on ne cautionne pas ce qu’on ne peut pas vérifier', 'Aucune contre-indication : impossible de savoir quelle élève retenir', 'Preuve sociale entièrement sur le site du praticien'],
+    ceQuiFeraitBasculer: "La formation de Thomas et un « à qui ça ne convient pas » écrits sur la page : elle posera ces deux questions avant de prescrire.",
+    exp: 8, conf: 7, clarte: 8,
+  },
+  {
+    id: 16, name: 'Kevin', age: 24, emoji: '📱',
+    situation: 'Britannique, Open Water tout frais, vacances et fêtes',
+    canal: 'QR code et retours directs', device: 'Mobile', maturite: 'Découverte',
+    decision: 'Quitte' as Decision, decisionLabel: 'Repart',
+    histoire: "Le site s'affiche enfin dans sa fenêtre de 5 secondes ; il lit « subconscient, plénitude », répond « lol ouais » à son pote et referme.",
+    localisation: 'Koh Tao',
+    contexte: "Un pote lui a envoyé le lien sur WhatsApp avec « regarde ce truc lol ». Aucune intention.",
+    impression: "Le texte s'affiche vite, l'image suit : pas d'écran vide cette fois. Il comprend en un regard : développement personnel spirituel.",
+    parcours: [
+      ['Chargement', 'le site a réellement eu sa chance cette fois'],
+      ['Accueil', '« subconscious / wholeness » : classé instantanément côté spiritualité'],
+      ['Un scroll réflexe', 'la jungle et les échardes confirment le registre ; il referme'],
+    ],
+    questionCle: 'C’est quoi ce truc ?',
+    reponse: 'Partiellement',
+    commentReponse: "il repart en sachant ce que c'est, mais le premier écran ne dit toujours pas en une phrase concrète ce qu'on y fait ni pour qui.",
+    impactVitesse: "C'est lui qui bénéficie le plus du gain de vitesse : son budget de 5 secondes n'est plus mangé par le chargement.",
+    impactConfiance: "Neutre : rien ne le heurte, rien ne l'accroche.",
+    positifs: ['Le contenu s’affiche dans sa fenêtre d’attention', 'Rien ne saute pendant le chargement', 'Aucune agressivité commerciale', 'WhatsApp visible s’il avait voulu écrire'],
+    frictions: ['Vocabulaire spirituel qui filtre exactement son profil', 'Aucune accroche concrète pour un profane (la peur en plongée aurait pu l’accrocher)'],
+    ceQuiFeraitBasculer: "Probablement rien : découverte subie via un « lol ». La perte est assumée.",
+    exp: 6, conf: 5, clarte: 4,
+  },
+  {
+    id: 17, name: 'Sarah', age: 35, emoji: '💻',
+    situation: 'Product manager américaine en remote, rationnelle, lectrice de neurosciences',
+    canal: 'Assistants IA', device: 'Desktop', maturite: 'Comparaison',
+    decision: 'Convertit' as Decision, decisionLabel: 'Contacte',
+    histoire: "Honnêteté vérifiée point par point : pas de sur-promesse, prix modeste, scepticisme bienvenu. Elle teste en ligne, questions de diligence incluses.",
+    localisation: 'Chiang Mai',
+    contexte: "Anxiété de performance chronique ; la thérapie par la parole ne suffit plus.",
+    impression: "Son IA lui a présenté le site avec des faits précis : prix, en ligne, praticien nommé. Elle arrive mieux informée et lit en profondeur.",
+    parcours: [
+      ['Accueil', 'aucune promesse tapageuse, registre au conditionnel : premier critère validé'],
+      ['La méthode', 'elle cherche le terme ailleurs : aucune existence hors du site. Signal noté, pas éliminatoire'],
+      ['La séance', '« vous n’avez pas besoin d’y croire » : exactement son critère n°1'],
+      ['En pratique', 'test possible depuis Chiang Mai, en ligne, au montant qu’elle choisit'],
+      ['The Story', 'parcours concret, portrait ; mais « j’ai rencontré le recodage » reste sans source'],
+      ['Témoignages', 'le doute est montré, pas maquillé'],
+    ],
+    questionCle: 'Est-ce que ce praticien sur-promet, ou est-ce qu’il est honnête sur ce que c’est ?',
+    reponse: 'Oui',
+    commentReponse: "sur toute la ligne, le site est honnête : conditionnel, scepticisme accueilli, prix modeste, première séance à prix libre. Reste la diligence : qui a créé la méthode.",
+    impactVitesse: "Instantané, aucun frein pour une lecture comparative longue.",
+    impactConfiance: "Les données lisibles par les IA ont permis à son assistant de la router avec des faits exacts : l'amélioration invisible la plus rentable pour son profil.",
+    positifs: ['Accueil explicite du scepticisme, rare dans cette verticale', 'Structure tarifaire sans piège', 'Test en ligne possible avant d’envisager Koh Tao', 'Praticien incarné et socialement vérifiable'],
+    frictions: ['Méthode sans existence vérifiable hors du site', 'Aucune formation ni lignée', 'Aucune contre-indication affichée malgré le trauma revendiqué'],
+    ceQuiFeraitBasculer: '',
+    exp: 8, conf: 6, clarte: 8,
+  },
+  {
+    id: 18, name: 'Nok', age: 28, emoji: '🇹🇭',
+    situation: 'Thaïlandaise, gérante d’un café à Mae Haad, anglais courant',
+    canal: 'QR code et retours directs', device: 'Mobile', maturite: 'Décision',
+    decision: 'Convertit' as Decision, decisionLabel: 'Contacte',
+    histoire: "Décidée depuis trois semaines : la langue de séance est enfin écrite, le numéro est thaï, elle envoie son message WhatsApp.",
+    localisation: 'Koh Tao',
+    contexte: "Le deuil de son père, un an après. Elle s'est décidée.",
+    impression: "Elle revient pour réserver, pas pour lire. « Message on WhatsApp » est visible dès le premier écran.",
+    parcours: [
+      ['Premier écran', 'le canal qu’elle cherchait en vain existe maintenant'],
+      ['En pratique', 'séances en anglais ou en français : réponse claire, pas celle qu’elle espérait (pas de thaï)'],
+      ['Décision', 'pour parler de son père, ce sera en anglais : son anglais suffira'],
+      ['Contact', 'numéro thaï : elle écrit à un local, pas à un site'],
+    ],
+    questionCle: 'La séance se passe dans quelle langue, et comment je prends rendez-vous ?',
+    reponse: 'Oui',
+    commentReponse: "les deux moitiés de sa question ont une réponse écrite : anglais ou français (pas de thaï), et un lien WhatsApp réel vers un numéro local.",
+    impactVitesse: "Nettement plus vite que dans son souvenir : rien ne la freine.",
+    impactConfiance: "« Je lis chaque message personnellement » et le numéro local rassurent ; la confidentialité de la séance n'est toujours pas écrite.",
+    positifs: ['WhatsApp dès le premier écran : le canal du pays', 'La langue de séance enfin écrite : sa question la plus intime a une réponse avant d’écrire', 'Numéro thaï', 'Registre bienveillant, cohérent avec un deuil'],
+    frictions: ['Pas de séance en thaï : parler d’un deuil dans une langue seconde a un coût émotionnel réel', 'Confidentialité jamais adressée explicitement'],
+    ceQuiFeraitBasculer: '',
+    exp: 8, conf: 8, clarte: 8,
+  },
+  {
+    id: 19, name: 'Lucas', age: 33, emoji: '🎬',
+    situation: 'Vidéaste brésilien, voyage avec sa compagne, sensible à l’esthétique',
+    canal: 'Instagram', device: 'Tablette', maturite: 'Comparaison',
+    decision: 'Convertit' as Decision, decisionLabel: 'Contacte',
+    histoire: "« C'est beau, mais est-ce qu'il y a du fond ? » : prix affiché, déroulé précis, limites posées. Il dira à sa compagne « c'est sérieux, vas-y ».",
+    localisation: 'Koh Samui, Koh Tao dans 10 jours',
+    contexte: "Sa compagne veut faire une séance ; lui joue le filtre anti-marketing.",
+    impression: "La direction artistique est toujours aussi soignée, et c'est précisément ce qui active son radar : trop beau pour être vrai ?",
+    parcours: [
+      ['Accueil', 'lecture lente : cohérent de bout en bout, suspicion en éveil'],
+      ['La séance', 'une heure, processus structuré, sobriété, intégration : de la substance opérationnelle, pas du flou poétique'],
+      ['Ce que ce n’est pas', 'des limites posées noir sur blanc'],
+      ['En pratique', 'le prix est affiché sans détour : le test décisif. Un tunnel de vente cache son prix, celui-ci l’affiche'],
+      ['The Story', 'une personne réelle et incarnée, pas une marque hors-sol'],
+      ['Témoignages', '« je n’ai aucune idée de comment ça marche » sonne honnête plutôt que vendeur'],
+    ],
+    questionCle: 'Est-ce qu’il y a du fond, ou juste une belle direction artistique ?',
+    reponse: 'Oui',
+    commentReponse: "ses trois preuves exigées sont là : prix, déroulé, limites. La façade et la plomberie racontent la même histoire.",
+    impactVitesse: "L'esthétique se déploie sans accroc.",
+    impactConfiance: "Avant, le formulaire mort sur une si belle façade était son argument à charge ; maintenant la plomberie suit la façade.",
+    positifs: ['Prix affiché sans détour : l’anti-signal tunnel de vente', 'Déroulé dense et concret', 'Le discours sait dire ce qu’il n’est pas', 'Praticien incarné, vérifiable socialement sur l’île'],
+    frictions: ['Forfaits sans montant : le seul prix caché du site', 'Origine de la méthode invérifiable : le seul endroit où la substance redevient vague', 'Témoignages prénoms seuls'],
+    ceQuiFeraitBasculer: '',
+    exp: 9, conf: 7, clarte: 8,
+  },
+  {
+    id: 20, name: 'Ingrid', age: 47, emoji: '🛫',
+    situation: 'Cadre supérieure norvégienne, vient 2 semaines chaque année depuis 6 ans',
+    canal: 'Bouche-à-oreille', device: 'Desktop', maturite: 'Décision',
+    decision: 'Convertit' as Decision, decisionLabel: 'Contacte',
+    histoire: "Sa demande de deux créneaux part vraiment, avec preuve d'envoi. Mais rien n'est bloqué tant que Thomas n'a pas répondu.",
+    localisation: 'Oslo, vol dans 5 semaines',
+    contexte: "Une amie a fait une séance l'an dernier ; elle veut bloquer deux créneaux avant d'arriver.",
+    impression: "Elle attaque le site comme un outil de réservation : créneaux, prix, garantie, confirmation. Il est devenu utilisable ; pas encore un outil de réservation.",
+    parcours: [
+      ['Book a Session', 'elle arrive au formulaire'],
+      ['En pratique', '65 €, première à prix libre, une heure : elle peut chiffrer ses deux séances'],
+      ['Calendrier ?', 'aucun : la prise de rendez-vous est une conversation, pas une transaction'],
+      ['Formulaire', 'dates, fuseau, demande de deux créneaux : envoi confirmé par une vraie page de remerciement'],
+      ['Filets', 'elle note l’email et le WhatsApp pour relancer si besoin'],
+      ['Annulation ?', 'aucune politique : elle engage un agenda plein sans filet'],
+    ],
+    questionCle: 'Comment je bloque deux créneaux depuis Oslo, cinq semaines à l’avance ?',
+    reponse: 'Partiellement',
+    commentReponse: "elle peut initier la réservation de façon fiable et chiffrée, mais rien ne se bloque : pas de calendrier, pas d'acompte, pas de délai de réponse annoncé.",
+    impactVitesse: "Instantané, aucun frein.",
+    impactConfiance: "La page de confirmation est exactement la preuve minimale qu'une planificatrice exige : avant, le même geste échouait en silence.",
+    positifs: ['Formulaire avec confirmation explicite : sa demande part et elle le sait', 'Prix connu : budget validable depuis Oslo', 'Trois canaux de relance', 'Une première séance en ligne serait même possible avant le vol'],
+    frictions: ['Pas de créneaux visibles ni réservables', 'Pas de politique d’annulation', 'Pas d’acompte pour garantir', 'Aucun délai de réponse annoncé'],
+    ceQuiFeraitBasculer: '',
+    exp: 7, conf: 7, clarte: 8,
+  },
+];
+
+const ameliorationsHautes = [
+  {
+    titre: "Écrire où Thomas s'est formé",
+    pourquoi: "7 visiteurs sur 20 cherchent la même chose : qui a créé cette méthode et où Thomas l'a apprise. Le récit fondateur s'arrête une phrase trop tôt, et c'est la question qui retient les 2 hésitants.",
+    action: "Ajouter 2 ou 3 phrases dans la section The Story : le nom de la formation ou du formateur, l'année, la durée de pratique. Si la lignée ne peut pas être nommée, dire honnêtement pourquoi.",
+    impact: '7 visiteurs sur 20',
+  },
+  {
+    titre: "Afficher le cadre et les limites du travail",
+    pourquoi: "Le site propose de travailler sur les traumatismes sans dire à qui ça ne convient pas, ni ce qui se passe si quelque chose de lourd émerge, ni que la séance est confidentielle. Les profils prudents et les prescripteurs en ont besoin pour s'engager.",
+    action: "Un bloc court dans la section séance : confidentialité explicite, à qui ce travail ne convient pas (troubles diagnostiqués sous traitement : voir un professionnel de santé), et ce qui est prévu si la séance remue trop fort.",
+    impact: '5 visiteurs sur 20',
+  },
+  {
+    titre: "Annoncer un délai de réponse, rendre le créneau saisissable",
+    pourquoi: "4 des 11 prises de contact restent suspendues à la réponse de Thomas : voyageurs à dates serrées, planificatrice à 5 semaines. Une réponse lente peut encore les perdre.",
+    action: "Au minimum : afficher « réponse sous 24 h » près du formulaire et du bouton WhatsApp. Idéalement : un lien de réservation de créneau avec une politique d'annulation en une ligne.",
+    impact: '4 visiteurs sur 20',
+  },
+];
+
+const ameliorationsUtiles = [
+  { titre: 'Chiffrer les forfaits', detail: "« Forfaits à tarif réduit » sans montant est le seul prix caché du site. Afficher « 3 séances : X € » évite une question à chaque prise de contact." },
+  { titre: 'Un pont concret pour les non-initiés', detail: "Le passé d'instructeur de freediving est l'atout n°1 auprès du public local (la peur en profondeur), mais il est en bas de page. Une ligne dans le premier écran suffirait." },
+  { titre: 'Nommer la confidentialité', detail: "« Ce qui se dit en séance reste en séance » : une phrase, très attendue sur une petite île où tout le monde se connaît." },
+  { titre: 'Rendre 2-3 témoignages vérifiables', detail: "Prénoms seuls aujourd'hui. Un nom complet consenti ou un témoignage vidéo donnerait la preuve externe que cherchent les profils analytiques." },
+];
+
+const ameliorationsDiscuter = [
+  { emoji: '📍', titre: 'Fiche Google Business', detail: "2 visiteurs sur 20 ne trouvent jamais le site faute de fiche sur Google Maps. Le choix de ne pas en créer est assumé ; à réévaluer seulement si le contexte change." },
+  { emoji: '🇹🇭', titre: 'Séances en thaï', detail: "Une visiteuse thaïlandaise convertit en anglais pour parler d'un deuil. Le coût émotionnel d'une langue seconde est réel : proposer le thaï est une décision de praticien, pas de site." },
+  { emoji: '📅', titre: 'Réservation en ligne avec acompte', detail: "Transformerait les contacts fragiles en réservations fermes, au prix d'une mécanique plus lourde qu'un positionnement volontairement épuré." },
+];
+
+const techVerdicts = [
+  { label: 'Vitesse', verdict: 'Rapide', ok: true, detail: 'Affichage quasi immédiat, téléphone comme ordinateur' },
+  { label: 'Sécurité', verdict: 'B', ok: true, detail: '8 protections sur 10, deux avancées absentes' },
+  { label: 'Référencement', verdict: '100/100', ok: true, detail: 'Indexé, propre, aucune erreur détectée' },
+  { label: 'Données structurées', verdict: 'Complètes', ok: true, detail: '5 fiches lisibles par Google et les IA, 0 erreur' },
+  { label: 'Partage réseaux', verdict: 'OK', ok: true, detail: 'Aperçu complet avec image sur tous les réseaux' },
+];
+
+const tech = {
+  observatory: { grade: 'B', score: 70, testsOk: 8, testsTotal: 10 },
+  pagespdMobile: { performance: 97, accessibility: 100, bestPractices: 96, seo: 100 },
+  pagespdDesktop: { performance: 100, accessibility: 100, bestPractices: 100, seo: 100 },
+  cwv: { lcp: '2,6 s (mobile) / 0,6 s (ordinateur)', cls: '0 (aucun saut visuel)', tbt: '0 ms (aucun blocage)' },
+  headers: [
+    { ok: true, h: 'Connexion chiffrée forcée (HSTS)' },
+    { ok: true, h: 'Protection contre le détournement de contenu' },
+    { ok: true, h: 'Protection contre l’affichage en cadre pirate' },
+    { ok: true, h: 'Politique de référence propre' },
+    { ok: true, h: 'Permissions du navigateur verrouillées' },
+    { ok: true, h: 'Redirection sécurisée systématique' },
+    { ok: false, h: 'Politique de sécurité du contenu des pages publiques (absente)' },
+    { ok: false, h: 'Intégrité des scripts externes (absente)' },
+  ],
+  schema: [
+    { item: 'Fiche métier du praticien (avec prix, lieu, contact)', ok: true },
+    { item: 'Fiche personne : Thomas Denamur, fondateur', ok: true },
+    { item: 'Questions-réponses balisées pour Google et les IA', ok: true },
+    { item: 'Fiches site et page, 0 erreur de validation', ok: true },
+    { item: 'Champs recommandés mineurs absents (horaires)', ok: false },
+  ],
+  og: [
+    { item: 'Titre de partage', ok: true, val: '' },
+    { item: 'Description de partage', ok: true, val: '' },
+    { item: 'Image de partage', ok: true, val: '' },
+    { item: 'Adresse canonique', ok: true, val: '' },
+    { item: 'Carte de partage X/Twitter complète', ok: true, val: '' },
+  ],
+  seo: [
+    { item: 'Un seul titre principal par page', ok: true },
+    { item: 'Plan du site propre (7 adresses)', ok: true },
+    { item: 'Fichier robots avec directives pour les IA', ok: true },
+    { item: 'Vraie page 404 (le faux 404 d’avant est corrigé)', ok: true },
+    { item: 'Versions anglaise et française correctement déclarées', ok: true },
+    { item: 'Anciennes adresses redirigées proprement', ok: true },
+  ],
+};
+
+const borderColor = (d: Decision) => d === 'Convertit' ? 'border-green-200' : d === 'Hesite' ? 'border-amber-200' : 'border-neutral-200';
+const badgeBg = (d: Decision) => d === 'Convertit' ? 'bg-green-600' : d === 'Hesite' ? 'bg-amber-500' : 'bg-neutral-400';
+---
+
+<BaseLayout title={title} description={description} noindex={true}>
+
+  <!-- 1. HERO -->
+  <section class="relative w-full px-6 py-20 md:py-28 overflow-hidden" style="background: #0A0A0A;">
+    <div class="absolute top-[20%] left-[10%] w-[500px] h-[500px] rounded-full blur-[180px] pointer-events-none" style="background: #E86C47; opacity: 0.06;"></div>
+    <div class="relative mx-auto max-w-4xl z-10">
+      <div class="mb-6 inline-flex items-center gap-2 rounded-full px-3 py-1 text-[11px] font-semibold uppercase tracking-widest" style="background: rgba(255,255,255,0.06); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.5);">
+        {formuleLabel} · Rapport confidentiel
+      </div>
+      <h1 class="mb-6 text-3xl md:text-4xl font-bold text-white leading-tight tracking-tight">
+        {verdictHero}
+      </h1>
+      <p class="mb-10 text-sm" style="color: rgba(255,255,255,0.4);">
+        Site analysé : <a href={urlSite} target="_blank" rel="noopener" class="underline hover:text-white transition-colors">{urlSite}</a> · {kpis.nbPersonas} visiteurs simulés · {dateAudit} · comparé à l'audit du 10 juillet (avant corrections)
+      </p>
+      <div class="grid grid-cols-3 gap-4">
+        <div class="rounded-xl p-5 text-center" style="background: rgba(34,197,94,0.08); border: 1px solid rgba(34,197,94,0.2);">
+          <div class="text-4xl md:text-5xl font-black text-green-400 mb-1">{kpis.nbConvertissent}</div>
+          <div class="text-sm text-green-400/70">vous contactent</div>
+        </div>
+        <div class="rounded-xl p-5 text-center" style="background: rgba(245,158,11,0.08); border: 1px solid rgba(245,158,11,0.2);">
+          <div class="text-4xl md:text-5xl font-black text-amber-400 mb-1">{kpis.nbHesitent}</div>
+          <div class="text-sm text-amber-400/70">hésitent</div>
+        </div>
+        <div class="rounded-xl p-5 text-center" style="background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.08);">
+          <div class="text-4xl md:text-5xl font-black mb-1" style="color: rgba(255,255,255,0.5);">{kpis.nbRepartent}</div>
+          <div class="text-sm" style="color: rgba(255,255,255,0.3);">repartent</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 1b. EVOLUTION v1 -> v2 -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <h2 class="text-2xl font-bold text-neutral-900 mb-2">Comment votre site a évolué en 5 jours</h2>
+    <p class="text-neutral-600 mb-8">Les 20 mêmes visiteurs ont été rejoués sur le site d'avant corrections, puis sur le site en ligne.</p>
+
+    <div class="grid md:grid-cols-2 gap-4 mb-10">
+      {versionsData.map(v => (
+        <div class={`rounded-xl p-6 border ${v.version === 'v2' ? 'border-2 border-green-300 bg-green-50/40' : 'border-neutral-200 bg-white'}`}>
+          <div class="flex items-center gap-2 mb-2">
+            <span class={`text-[10px] px-2 py-0.5 rounded-full font-bold uppercase tracking-wider ${v.version === 'v2' ? 'bg-green-600 text-white' : 'bg-neutral-200 text-neutral-600'}`}>{v.version}</span>
+            <span class="text-xs text-neutral-500">{v.date}</span>
+          </div>
+          <p class="text-sm font-semibold text-neutral-900 mb-1">{v.label}</p>
+          <div class={`text-3xl font-black mb-1 ${v.version === 'v2' ? 'text-green-600' : 'text-neutral-400'}`}>{v.taux}%</div>
+          <p class="text-xs text-neutral-500">{v.note}</p>
+        </div>
+      ))}
+    </div>
+
+    <h3 class="text-base font-bold text-neutral-900 mb-4">Friction par friction</h3>
+    <div class="overflow-x-auto rounded-xl border border-neutral-200 mb-4">
+      <table class="w-full text-sm">
+        <thead>
+          <tr class="bg-neutral-50">
+            <th class="text-left p-3 text-neutral-500 font-medium">Friction identifiée le 10 juillet</th>
+            <th class="p-3 text-neutral-500 font-medium w-14">État</th>
+            <th class="text-left p-3 text-neutral-500 font-medium">Aujourd'hui</th>
+          </tr>
+        </thead>
+        <tbody>
+          {deltaData.map(d => (
+            <tr class="border-t border-neutral-100">
+              <td class="p-3 text-neutral-700">{d.friction}</td>
+              <td class="p-3 text-center text-base">{d.statut}</td>
+              <td class="p-3 text-neutral-600 text-xs">{d.detail}</td>
+            </tr>
+          ))}
+        </tbody>
+      </table>
+    </div>
+    <p class="text-xs text-neutral-400">✅ résolu · ⚠️ partiellement · ❌ inchangé</p>
+  </section>
+
+  <!-- 2. LE CONSTAT -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+    <div class="rounded-2xl p-6 md:p-8 mb-12 border-l-4" style="background: rgba(232,108,71,0.04); border-color: #E86C47;">
+      <p class="text-lg md:text-xl font-medium text-neutral-800 leading-relaxed">{constat}</p>
+    </div>
+
+    <h2 class="text-xl font-bold text-neutral-900 mb-2">D'où viennent vos visiteurs</h2>
+    <p class="text-sm text-neutral-500 mb-6">Et combien vous contactent selon leur canal d'arrivée.</p>
+    <div class="space-y-4 mb-12">
+      {canalData.map(c => {
+        const color = c.rate >= 50 ? '#22c55e' : c.rate >= 25 ? '#f59e0b' : '#ef4444';
+        return (
+          <div class="flex items-center gap-4">
+            <div class="w-40 sm:w-48 text-sm text-neutral-700 shrink-0">{c.canal}</div>
+            <div class="flex-1 h-3 bg-neutral-100 rounded-full overflow-hidden">
+              <div class="h-full rounded-full" style={`width: ${c.rate}%; background: ${color}`}></div>
+            </div>
+            <div class="w-20 text-right">
+              <span class="text-sm font-bold" style={`color: ${color}`}>{c.rate}%</span>
+              <span class="text-xs text-neutral-400 ml-1">({c.convert}/{c.nb})</span>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+
+    <details class="group mb-4">
+      <summary class="flex items-center gap-2 cursor-pointer text-sm text-neutral-500 hover:text-neutral-700 py-2">
+        <svg class="w-4 h-4 transition-transform group-open:rotate-90" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        Voir les scores détaillés (expérience, confiance, clarté)
+      </summary>
+      <div class="grid grid-cols-3 gap-4 mt-3">
+        <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
+          <div class="text-2xl font-bold text-neutral-800 mb-1">{kpis.experience}<span class="text-sm text-neutral-400">/10</span></div>
+          <div class="text-xs text-neutral-500">Expérience</div>
+          <p class="text-[10px] text-neutral-400 mt-1">4,9 en v1 · navigation, lisibilité, fluidité</p>
+        </div>
+        <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
+          <div class="text-2xl font-bold text-neutral-800 mb-1">{kpis.confiance}<span class="text-sm text-neutral-400">/10</span></div>
+          <div class="text-xs text-neutral-500">Confiance</div>
+          <p class="text-[10px] text-neutral-400 mt-1">4,9 en v1 · crédibilité, preuves, rassurance</p>
+        </div>
+        <div class="bg-white border border-neutral-200 rounded-xl p-4 text-center">
+          <div class="text-2xl font-bold text-neutral-800 mb-1">{kpis.clarte}<span class="text-sm text-neutral-400">/10</span></div>
+          <div class="text-xs text-neutral-500">Clarté</div>
+          <p class="text-[10px] text-neutral-400 mt-1">4,9 en v1 · compréhension de l'offre et des prix</p>
+        </div>
+      </div>
+    </details>
+  </section>
+
+  <!-- 2b. ALERTES -->
+  <section class="py-14" style="background: #fefce8;">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div class="flex items-center gap-3 mb-2">
+        <svg class="w-6 h-6 text-amber-500" width="24" height="24" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+        <h2 class="text-xl font-bold text-neutral-900">Ce qui retient encore vos visiteurs</h2>
+      </div>
+      <p class="text-sm text-neutral-600 mb-8">Plus rien n'est cassé. Ces trois points sont les manques qui coûtent le plus.</p>
+      <div class="grid md:grid-cols-3 gap-4">
+        {alertes.map(a => (
+          <div class="bg-white rounded-xl p-5 border border-amber-200">
+            <div class="inline-flex items-baseline gap-2 mb-3 px-2.5 py-1 rounded-lg bg-amber-100">
+              <span class="text-2xl font-black text-amber-700">{a.chiffre}</span>
+              <span class="text-[10px] text-amber-700 font-medium">{a.chiffreLabel}</span>
+            </div>
+            <h3 class="font-bold text-neutral-900 text-sm mb-2">{a.titre}</h3>
+            <p class="text-xs text-neutral-600">{a.detail}</p>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- 3. VOS VISITEURS -->
+  <section class="py-16" style="background: #fafafa;">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-2">Vos visiteurs</h2>
+      <p class="text-neutral-600 mb-8">Voici ce qui se passe quand quelqu'un cherche ce que vous proposez et tombe sur votre site. Cliquez sur un visiteur pour le détail complet.</p>
+
+      <!-- Convertissent -->
+      <div class="mb-10">
+        <h3 class="text-base font-bold text-green-800 mb-4 flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-green-500 inline-block"></span>
+          Ceux qui vous contactent
+          <span class="text-sm font-normal text-green-600">({kpis.nbConvertissent})</span>
+        </h3>
+        <div class="space-y-3">
+          {personas.filter(p => p.decision === 'Convertit').map(p => (
+            <details class={`group persona-card bg-white rounded-xl overflow-hidden shadow-sm border ${borderColor(p.decision)}`}>
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-1 flex-wrap">
+                    <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                    <span class={`text-[10px] ${badgeBg(p.decision)} text-white px-1.5 py-0.5 rounded font-medium`}>{p.decisionLabel}</span>
+                  </div>
+                  <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                  </div>
+                </div>
+                <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </summary>
+              <div class={`px-4 pb-5 border-t ${borderColor(p.decision)}`}>
+                <div class="grid gap-4 text-xs mt-4">
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p>
+                    <p class="text-neutral-600">{p.situation}. {p.localisation}. {p.contexte}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Première impression (5 sec)</p>
+                    <p class="text-neutral-600">{p.impression}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours sur le site</p>
+                    <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                      {p.parcours.map(([section, reaction]) => (
+                        <li><strong class="text-neutral-800">{section}</strong>{reaction ? ` : ${reaction}` : ''}</li>
+                      ))}
+                    </ol>
+                  </div>
+                  <div class="bg-neutral-50 rounded-lg p-3">
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p>
+                    <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
+                    <p class="text-neutral-600">Le site répond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> : {p.commentReponse}</p>
+                  </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Vitesse</p>
+                      <p class="text-neutral-600">{p.impactVitesse}</p>
+                    </div>
+                    <div>
+                      <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Confiance</p>
+                      <p class="text-neutral-600">{p.impactConfiance}</p>
+                    </div>
+                  </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <p class="font-semibold text-green-700 mb-1.5">✓ Points positifs</p>
+                      <ul class="space-y-1 text-neutral-600">{p.positifs.map(pt => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">·</span>{pt}</li>)}</ul>
+                    </div>
+                    <div>
+                      <p class="font-semibold text-amber-700 mb-1.5">✗ Frictions</p>
+                      <ul class="space-y-1 text-neutral-600">{p.frictions.map(f => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">·</span>{f}</li>)}</ul>
+                    </div>
+                  </div>
+                  <div class="flex gap-6 pt-3 border-t border-neutral-100">
+                    {[
+                      { label: 'Expérience', val: p.exp },
+                      { label: 'Confiance', val: p.conf },
+                      { label: 'Clarté', val: p.clarte },
+                    ].map(s => {
+                      const sColor = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500';
+                      return (
+                        <div class="text-center">
+                          <span class={`block text-lg font-bold ${sColor}`}>{s.val}</span>
+                          <span class="text-[10px] text-neutral-400">{s.label}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <!-- Hesitent -->
+      <div class="mb-4">
+        <h3 class="text-base font-bold text-amber-800 mb-4 flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-amber-500 inline-block"></span>
+          Ceux qui hésitent
+          <span class="text-sm font-normal text-amber-600">({kpis.nbHesitent})</span>
+        </h3>
+        <div class="space-y-3">
+          {personas.filter(p => p.decision === 'Hesite').map(p => (
+            <details class={`group persona-card bg-white rounded-xl overflow-hidden shadow-sm border ${borderColor(p.decision)}`}>
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-1 flex-wrap">
+                    <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                    <span class={`text-[10px] ${badgeBg(p.decision)} text-white px-1.5 py-0.5 rounded font-medium`}>{p.decisionLabel}</span>
+                  </div>
+                  <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                  </div>
+                </div>
+                <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </summary>
+              <div class={`px-4 pb-5 border-t ${borderColor(p.decision)}`}>
+                <div class="grid gap-4 text-xs mt-4">
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p>
+                    <p class="text-neutral-600">{p.situation}. {p.localisation}. {p.contexte}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Première impression (5 sec)</p>
+                    <p class="text-neutral-600">{p.impression}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours sur le site</p>
+                    <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                      {p.parcours.map(([section, reaction]) => (
+                        <li><strong class="text-neutral-800">{section}</strong>{reaction ? ` : ${reaction}` : ''}</li>
+                      ))}
+                    </ol>
+                  </div>
+                  <div class="bg-neutral-50 rounded-lg p-3">
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p>
+                    <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
+                    <p class="text-neutral-600">Le site répond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> : {p.commentReponse}</p>
+                  </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <p class="font-semibold text-green-700 mb-1.5">✓ Points positifs</p>
+                      <ul class="space-y-1 text-neutral-600">{p.positifs.map(pt => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">·</span>{pt}</li>)}</ul>
+                    </div>
+                    <div>
+                      <p class="font-semibold text-amber-700 mb-1.5">✗ Frictions</p>
+                      <ul class="space-y-1 text-neutral-600">{p.frictions.map(f => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">·</span>{f}</li>)}</ul>
+                    </div>
+                  </div>
+                  {p.ceQuiFeraitBasculer && (
+                    <div class="bg-primary-50 rounded-lg p-3">
+                      <p class="font-semibold text-primary-700 text-[10px] uppercase tracking-wider mb-1">Ce qui les ferait passer à l'action</p>
+                      <p class="text-primary-800">{p.ceQuiFeraitBasculer}</p>
+                    </div>
+                  )}
+                  <div class="flex gap-6 pt-3 border-t border-neutral-100">
+                    {[
+                      { label: 'Expérience', val: p.exp },
+                      { label: 'Confiance', val: p.conf },
+                      { label: 'Clarté', val: p.clarte },
+                    ].map(s => {
+                      const sColor = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500';
+                      return (
+                        <div class="text-center">
+                          <span class={`block text-lg font-bold ${sColor}`}>{s.val}</span>
+                          <span class="text-[10px] text-neutral-400">{s.label}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-xl p-5 mb-10 bg-amber-50 border border-amber-200 flex items-start gap-3">
+        <span class="text-lg shrink-0 mt-0.5">💡</span>
+        <div>
+          <p class="text-sm font-medium text-amber-900">Ces {kpis.nbHesitent} visiteuses ont besoin de ce que vous proposez.</p>
+          <p class="text-xs text-amber-700 mt-1">Les deux butent sur la même chose : la formation du praticien et les limites du travail ne sont pas écrites. Deux paragraphes suffiraient.</p>
+        </div>
+      </div>
+
+      <!-- Repartent -->
+      <div class="mb-4">
+        <h3 class="text-base font-bold text-neutral-600 mb-4 flex items-center gap-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-neutral-400 inline-block"></span>
+          Ceux qui repartent
+          <span class="text-sm font-normal text-neutral-500">({kpis.nbRepartent})</span>
+        </h3>
+        <div class="space-y-3">
+          {personas.filter(p => p.decision === 'Quitte').map(p => (
+            <details class={`group persona-card bg-white rounded-xl overflow-hidden shadow-sm border ${borderColor(p.decision)}`}>
+              <summary class="p-4 flex gap-3 cursor-pointer list-none [&::-webkit-details-marker]:hidden">
+                <div class="text-xl shrink-0 mt-0.5">{p.emoji}</div>
+                <div class="flex-1 min-w-0">
+                  <div class="flex items-center gap-2 mb-1 flex-wrap">
+                    <h4 class="font-semibold text-neutral-900 text-sm">{p.name}, {p.age} ans</h4>
+                    <span class={`text-[10px] ${badgeBg(p.decision)} text-white px-1.5 py-0.5 rounded font-medium`}>{p.decisionLabel}</span>
+                  </div>
+                  <p class="text-sm text-neutral-600 mb-2">{p.histoire}</p>
+                  <div class="flex flex-wrap items-center gap-1.5">
+                    <span class="text-[10px] text-blue-600 bg-blue-50 px-1.5 py-0.5 rounded">{p.canal}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.device}</span>
+                    <span class="text-[10px] text-neutral-500 bg-neutral-100 px-1.5 py-0.5 rounded">{p.maturite}</span>
+                  </div>
+                </div>
+                <svg class="w-5 h-5 text-neutral-300 shrink-0 mt-1 transition-transform group-open:rotate-180" width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+              </summary>
+              <div class={`px-4 pb-5 border-t ${borderColor(p.decision)}`}>
+                <div class="grid gap-4 text-xs mt-4">
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Contexte</p>
+                    <p class="text-neutral-600">{p.situation}. {p.localisation}. {p.contexte}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Première impression (5 sec)</p>
+                    <p class="text-neutral-600">{p.impression}</p>
+                  </div>
+                  <div>
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Parcours</p>
+                    <ol class="list-decimal list-inside space-y-1.5 text-neutral-600">
+                      {p.parcours.map(([section, reaction]) => (
+                        <li><strong class="text-neutral-800">{section}</strong>{reaction ? ` : ${reaction}` : ''}</li>
+                      ))}
+                    </ol>
+                  </div>
+                  <div class="bg-neutral-50 rounded-lg p-3">
+                    <p class="font-semibold text-neutral-500 uppercase tracking-wider text-[10px] mb-1">Sa question</p>
+                    <p class="text-neutral-700 italic mb-1">"{p.questionCle}"</p>
+                    <p class="text-neutral-600">Le site répond : <strong class={p.reponse === 'Oui' ? 'text-green-700' : p.reponse === 'Non' ? 'text-red-600' : 'text-amber-600'}>{p.reponse}</strong> : {p.commentReponse}</p>
+                  </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <p class="font-semibold text-green-700 mb-1.5">✓ Points positifs</p>
+                      <ul class="space-y-1 text-neutral-600">{p.positifs.map(pt => <li class="flex gap-1.5"><span class="text-green-500 shrink-0">·</span>{pt}</li>)}</ul>
+                    </div>
+                    <div>
+                      <p class="font-semibold text-amber-700 mb-1.5">✗ Frictions</p>
+                      <ul class="space-y-1 text-neutral-600">{p.frictions.map(f => <li class="flex gap-1.5"><span class="text-amber-500 shrink-0">·</span>{f}</li>)}</ul>
+                    </div>
+                  </div>
+                  {p.ceQuiFeraitBasculer && (
+                    <div class="bg-primary-50 rounded-lg p-3">
+                      <p class="font-semibold text-primary-700 text-[10px] uppercase tracking-wider mb-1">Ce qui les aurait retenus</p>
+                      <p class="text-primary-800">{p.ceQuiFeraitBasculer}</p>
+                    </div>
+                  )}
+                  <div class="flex gap-6 pt-3 border-t border-neutral-100">
+                    {[
+                      { label: 'Expérience', val: p.exp },
+                      { label: 'Confiance', val: p.conf },
+                      { label: 'Clarté', val: p.clarte },
+                    ].map(s => {
+                      const sColor = s.val >= 7 ? 'text-green-600' : s.val >= 5 ? 'text-amber-600' : 'text-red-500';
+                      return (
+                        <div class="text-center">
+                          <span class={`block text-lg font-bold ${sColor}`}>{s.val}</span>
+                          <span class="text-[10px] text-neutral-400">{s.label}</span>
+                        </div>
+                      );
+                    })}
+                  </div>
+                </div>
+              </div>
+            </details>
+          ))}
+        </div>
+      </div>
+
+      <div class="rounded-xl p-5 bg-neutral-100 border border-neutral-200 flex items-start gap-3">
+        <span class="text-lg shrink-0 mt-0.5">📉</span>
+        <div>
+          <p class="text-sm font-medium text-neutral-800">Sur les 7 qui repartent, 5 sont des pertes assumées ou saines.</p>
+          <p class="text-xs text-neutral-600 mt-1">Deux ne cherchent pas ce que vous proposez, deux ne peuvent pas vous trouver sans fiche Google (choix assumé), un doit être orienté vers un professionnel de santé. Restent Tom et Kevin : des plongeurs que le premier écran pourrait accrocher avec une phrase sur la peur en profondeur.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4. RECOMMANDATIONS -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <h2 class="text-2xl font-bold text-neutral-900 mb-2">Ce qu'on recommande</h2>
+    <p class="text-neutral-600 mb-8">Actions concrètes, classées par impact sur vos visiteurs.</p>
+
+    <p class="text-sm font-semibold text-red-700 mb-4">Si vous ne changez que 3 choses :</p>
+    <div class="space-y-4 mb-12">
+      {ameliorationsHautes.map(a => (
+        <div class="bg-white border-2 border-red-200 rounded-xl p-6 shadow-sm">
+          <div class="flex items-start justify-between gap-4 mb-3">
+            <h4 class="font-bold text-neutral-900">{a.titre}</h4>
+            <span class="text-[10px] px-2 py-1 rounded-full bg-red-100 text-red-700 font-semibold shrink-0 whitespace-nowrap">{a.impact}</span>
+          </div>
+          <p class="text-sm text-neutral-600 mb-3">{a.pourquoi}</p>
+          <div class="bg-neutral-50 rounded-lg px-4 py-3 flex items-start gap-2">
+            <svg class="w-4 h-4 text-neutral-400 mt-0.5 shrink-0" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+            <p class="text-xs text-neutral-700">{a.action}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <h3 class="text-lg font-bold text-neutral-900 mb-2">Utile aussi</h3>
+    <div class="grid md:grid-cols-2 gap-4 mb-12">
+      {ameliorationsUtiles.map(a => (
+        <div class="bg-white border border-neutral-200 rounded-xl p-5">
+          <h4 class="font-semibold text-neutral-900 text-sm mb-2">{a.titre}</h4>
+          <p class="text-xs text-neutral-600">{a.detail}</p>
+        </div>
+      ))}
+    </div>
+
+    <h3 class="text-lg font-bold text-neutral-900 mb-2">À discuter</h3>
+    <p class="text-sm text-neutral-500 mb-4">Décisions business : pas de bonne ou mauvaise réponse.</p>
+    <div class="space-y-3 mb-12">
+      {ameliorationsDiscuter.map(a => (
+        <div class="bg-neutral-50 border border-neutral-200 rounded-xl p-4 flex gap-3">
+          <span class="text-lg shrink-0">{a.emoji}</span>
+          <div>
+            <h4 class="font-semibold text-neutral-900 text-sm mb-0.5">{a.titre}</h4>
+            <p class="text-xs text-neutral-600">{a.detail}</p>
+          </div>
+        </div>
+      ))}
+    </div>
+
+  </section>
+
+  <!-- 5. SOUS LE CAPOT -->
+  <section class="py-16 border-t border-neutral-200">
+    <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+      <h2 class="text-2xl font-bold text-neutral-900 mb-2">Sous le capot</h2>
+      <p class="text-neutral-600 mb-8">Pour les curieux : ce que les outils techniques disent de votre site, mesuré le 15 juillet.</p>
+
+      <div class="flex flex-wrap gap-3 mb-10">
+        {techVerdicts.map(v => (
+          <div class={`inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border text-sm font-medium ${v.ok ? 'bg-green-50 border-green-200 text-green-800' : 'bg-red-50 border-red-200 text-red-800'}`}>
+            {v.ok
+              ? <svg class="w-4 h-4" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+              : <svg class="w-4 h-4" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+            }
+            <span>{v.label}</span>
+            <span class="text-xs opacity-70">{v.verdict}</span>
+          </div>
+        ))}
+      </div>
+
+      <!-- Vitesse -->
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+          <div class="flex items-center gap-3">
+            <span class="text-base">⚡</span>
+            <div>
+              <h3 class="font-semibold text-neutral-900 text-sm">Vitesse du site</h3>
+              <p class="text-[11px] text-neutral-500">Mobile 97/100 (89 en v1) · Ordinateur 100/100 · Affichage principal en 2,6 s sur mobile (3,5 s en v1)</p>
+            </div>
+          </div>
+          <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <div class="px-4 pb-4 border-t border-neutral-100">
+          <p class="text-xs text-neutral-500 py-3">Scores mobiles (les plus exigeants) :</p>
+          <div class="grid grid-cols-4 gap-4 pb-4">
+            {['Performance', 'Accessibilité', 'Bonnes pratiques', 'Référencement'].map((label, i) => {
+              const scores = [tech.pagespdMobile.performance, tech.pagespdMobile.accessibility, tech.pagespdMobile.bestPractices, tech.pagespdMobile.seo];
+              const score = scores[i];
+              const color = score >= 90 ? '#22c55e' : score >= 50 ? '#f59e0b' : '#ef4444';
+              return (
+                <div class="text-center">
+                  <div class="relative w-14 h-14 mx-auto mb-2">
+                    <svg class="w-14 h-14 -rotate-90" width="56" height="56" viewBox="0 0 36 36">
+                      <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke="#e5e7eb" stroke-width="3" />
+                      <path d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" fill="none" stroke={color} stroke-width="3" stroke-dasharray={`${score}, 100`} stroke-linecap="round" />
+                    </svg>
+                    <span class="absolute inset-0 flex items-center justify-center text-sm font-bold" style={`color: ${color}`}>{score}</span>
+                  </div>
+                  <p class="text-[11px] text-neutral-600">{label}</p>
+                </div>
+              );
+            })}
+          </div>
+          <div class="text-xs text-neutral-600 space-y-1 pb-2">
+            <p>· Plus gros élément affiché : {tech.cwv.lcp}</p>
+            <p>· Stabilité visuelle : {tech.cwv.cls}</p>
+            <p>· Blocage du chargement : {tech.cwv.tbt}</p>
+            <p>· Sur ordinateur : 100 partout ({tech.pagespdDesktop.performance}/{tech.pagespdDesktop.accessibility}/{tech.pagespdDesktop.bestPractices}/{tech.pagespdDesktop.seo})</p>
+          </div>
+        </div>
+      </details>
+
+      <!-- Securite -->
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+          <div class="flex items-center gap-3">
+            <span class="text-base">🔒</span>
+            <div>
+              <h3 class="font-semibold text-neutral-900 text-sm">Sécurité</h3>
+              <p class="text-[11px] text-neutral-500">Note {tech.observatory.grade} ({tech.observatory.testsOk}/{tech.observatory.testsTotal} tests passés) : solide, deux protections avancées absentes</p>
+            </div>
+          </div>
+          <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <div class="px-4 pb-4 border-t border-neutral-100">
+          <div class="py-2">
+            {tech.headers.map(h => (
+              <div class="flex items-center gap-2 py-1">
+                {h.ok
+                  ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                  : <svg class="w-3.5 h-3.5 text-red-400 shrink-0" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12"/></svg>
+                }
+                <span class={`text-xs ${h.ok ? 'text-neutral-600' : 'text-red-500'}`}>{h.h}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </details>
+
+      <!-- Donnees structurees -->
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+          <div class="flex items-center gap-3">
+            <span class="text-base">📊</span>
+            <div>
+              <h3 class="font-semibold text-neutral-900 text-sm">Données structurées</h3>
+              <p class="text-[11px] text-neutral-500">5 fiches valides (0 en v1) : Google et les assistants IA comprennent enfin qui fait quoi, où, à quel prix</p>
+            </div>
+          </div>
+          <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <div class="px-4 pb-4 border-t border-neutral-100">
+          <div class="py-2">
+            {tech.schema.map(s => (
+              <div class="flex items-center gap-2 py-1">
+                {s.ok
+                  ? <svg class="w-3.5 h-3.5 text-green-500 shrink-0" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                  : <svg class="w-3.5 h-3.5 text-amber-400 shrink-0" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M12 9v4m0 4h.01M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+                }
+                <span class={`text-xs ${s.ok ? 'text-neutral-600' : 'text-neutral-500'}`}>{s.item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </details>
+
+      <!-- Partage -->
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden mb-3 bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+          <div class="flex items-center gap-3">
+            <span class="text-base">🔗</span>
+            <div>
+              <h3 class="font-semibold text-neutral-900 text-sm">Aperçu réseaux sociaux</h3>
+              <p class="text-[11px] text-neutral-500">Complet : un lien partagé sur WhatsApp ou Instagram affiche titre, description et image</p>
+            </div>
+          </div>
+          <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <div class="px-4 pb-4 border-t border-neutral-100">
+          <div class="py-2">
+            {tech.og.map(o => (
+              <div class="flex items-start gap-2 py-1">
+                <svg class="w-3.5 h-3.5 text-green-500 shrink-0 mt-0.5" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                <span class="text-xs text-neutral-600">{o.item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </details>
+
+      <!-- SEO technique -->
+      <details class="group border border-neutral-200 rounded-xl overflow-hidden bg-white">
+        <summary class="p-4 flex items-center justify-between cursor-pointer list-none [&::-webkit-details-marker]:hidden hover:bg-neutral-50/50">
+          <div class="flex items-center gap-3">
+            <span class="text-base">🔍</span>
+            <div>
+              <h3 class="font-semibold text-neutral-900 text-sm">Référencement technique</h3>
+              <p class="text-[11px] text-neutral-500">100/100 (69 en v1, un artefact de préversion) : le site est désormais pleinement indexable</p>
+            </div>
+          </div>
+          <svg class="w-4 h-4 text-neutral-400 shrink-0 transition-transform group-open:rotate-180" width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M19 9l-7 7-7-7"/></svg>
+        </summary>
+        <div class="px-4 pb-4 border-t border-neutral-100">
+          <div class="py-2">
+            {tech.seo.map(s => (
+              <div class="flex items-center gap-2 py-1">
+                <svg class="w-3.5 h-3.5 text-green-500 shrink-0" width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2.5"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+                <span class="text-xs text-neutral-600">{s.item}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+      </details>
+
+      <div class="mt-8 rounded-xl p-5 bg-white border border-neutral-200 flex items-start gap-3">
+        <span class="text-lg shrink-0 mt-0.5">🔧</span>
+        <div>
+          <p class="text-sm font-medium text-neutral-800">Le socle technique est au niveau attendu.</p>
+          <p class="text-xs text-neutral-600 mt-1">Ce qui reste à gagner est éditorial (formation, cadre, réservation), pas technique.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6. METHODOLOGIE -->
+  <section class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-12 border-t border-neutral-200">
+    <h2 class="text-base font-bold text-neutral-900 mb-4">Comment ça marche</h2>
+    <ol class="space-y-3 text-sm text-neutral-600">
+      <li class="flex gap-3">
+        <span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">1</span>
+        <span>On lit votre site page par page, comme un visiteur le ferait</span>
+      </li>
+      <li class="flex gap-3">
+        <span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">2</span>
+        <span>On mesure la technique : vitesse, sécurité, référencement, données structurées</span>
+      </li>
+      <li class="flex gap-3">
+        <span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">3</span>
+        <span>On crée 20 profils réalistes, adaptés à votre activité et à votre zone : ici, les mêmes 20 que le 10 juillet, pour comparer</span>
+      </li>
+      <li class="flex gap-3">
+        <span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">4</span>
+        <span>Chaque profil visite votre site et donne son avis : première impression, parcours, décision</span>
+      </li>
+      <li class="flex gap-3">
+        <span class="w-6 h-6 rounded-full bg-neutral-100 text-neutral-500 text-xs font-bold flex items-center justify-center shrink-0 mt-0.5">5</span>
+        <span>On compile : frictions récurrentes, canaux performants, recommandations priorisées</span>
+      </li>
+    </ol>
+  </section>
+
+  <!-- 7. CTA FINAL -->
+  <section class="relative w-full px-6 py-20 overflow-hidden" style="background: #0A0A0A;">
+    <div class="absolute bottom-[10%] right-[10%] w-[400px] h-[400px] rounded-full blur-[160px] pointer-events-none" style="background: #E86C47; opacity: 0.05;"></div>
+    <div class="relative mx-auto max-w-3xl z-10 text-center">
+      <h2 class="text-2xl md:text-3xl font-bold text-white mb-4 leading-tight">
+        Votre site fait son travail.<br/>
+        <span style="color: #E86C47;">Les trois recommandations feraient le reste.</span>
+      </h2>
+      <p class="text-sm mb-8" style="color: rgba(255,255,255,0.5);">
+        Des questions sur ce rapport, ou envie d'appliquer les recommandations ensemble ? Écrivez-moi, on en parle.
+      </p>
+      <div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+        <a href="/contact" class="inline-flex items-center gap-2 px-8 py-4 text-white font-semibold rounded-xl transition-all shadow-lg hover:-translate-y-0.5" style="background: linear-gradient(135deg, #E86C47, #D4572F); box-shadow: 0 4px 24px rgba(232, 108, 71, 0.35);">
+          En discuter avec Marc
+          <svg class="w-4 h-4" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5l7 7-7 7"/></svg>
+        </a>
+      </div>
+    </div>
+  </section>
+
+</BaseLayout>
