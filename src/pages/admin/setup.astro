@@ -1,9 +1,11 @@
 ---
-// SHIM CLIENT — page de setup du mot de passe (lien généré depuis /admin,
-// nécessite le KV CMS_AUTH). Rend la page du package en lui passant le locale.
+// Shim de la page de setup du package : rend SetupPage en lui passant le locale
+// et l'id Umami (pour tracer l'ouverture de la page d'onboarding — #130).
 import SetupPage from '@marc/cms-engine/astro/setup';
 import cmsConfig from '../../../cms.config';
 
-const locale = (cmsConfig as { locale?: 'fr' | 'en' }).locale === 'en' ? 'en' : 'fr';
+const config = cmsConfig as { locale?: 'fr' | 'en'; site?: { umamiSiteId?: string } };
+const locale = config.locale === 'en' ? 'en' : 'fr';
+const umamiWebsiteId = config.site?.umamiSiteId;
 ---
-<SetupPage locale={locale} />
+<SetupPage locale={locale} umamiWebsiteId={umamiWebsiteId} />
