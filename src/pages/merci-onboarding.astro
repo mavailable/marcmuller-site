@@ -1,0 +1,61 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import Button from '../components/Button.astro';
+import { business } from '../data/business';
+
+const timeline = [
+  { title: 'Je lis vos infos et je prépare une proposition', when: 'Sous 48h' },
+  { title: 'On échange 30 minutes pour affiner ensemble', when: 'Jour 3 à 5' },
+  { title: 'Votre site est en ligne', when: 'Jour 10 à 15' },
+];
+---
+
+<BaseLayout
+  title="Merci, c'est bien reçu — Marc M"
+  description="Vos informations sont bien arrivées. Je reviens vers vous sous 48h."
+  noindex={true}
+>
+  <section class="bg-secondary-100 py-16 md:py-24">
+    <div class="max-w-2xl mx-auto px-4 text-center">
+      <h1 id="merci-titre" class="text-3xl md:text-4xl font-bold text-primary-950 mb-4">Merci, c'est bien reçu.</h1>
+      <p class="text-primary-700 leading-relaxed">
+        Je lis vos infos personnellement et je reviens vers vous sous 48h.
+        En attendant, voici ce qui va se passer :
+      </p>
+    </div>
+  </section>
+
+  <section class="py-12 md:py-16 bg-white">
+    <div class="max-w-2xl mx-auto px-4">
+      <ol class="space-y-4">
+        {timeline.map((item, i) => (
+          <li class="flex items-start gap-4 rounded-xl border border-secondary-300 bg-white shadow-sm p-5">
+            <span class="flex items-center justify-center h-10 w-10 shrink-0 rounded-full bg-accent-500 text-white font-bold">{i + 1}</span>
+            <div>
+              <p class="font-semibold text-primary-900">{item.title}</p>
+              <p class="text-sm text-primary-500">{item.when}</p>
+            </div>
+          </li>
+        ))}
+      </ol>
+
+      <div class="text-center mt-10">
+        <Button href="/realisations/" variant="primary" size="lg" arrow>En attendant, découvrez mes réalisations</Button>
+        <p class="text-sm text-primary-600 mt-6">
+          Une question tout de suite ? Écrivez-moi sur
+          <a href={`https://wa.me/${business.whatsapp}`} class="text-accent-600 underline" rel="noopener" target="_blank">WhatsApp</a>
+          ou à <a href={`mailto:${business.email}`} class="text-accent-600 underline">{business.email}</a>.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <script is:inline>
+    (function () {
+      var el = document.getElementById('merci-titre');
+      if (!el) return;
+      var p = new URLSearchParams(window.location.search).get('prenom');
+      if (p && p.length <= 60) el.textContent = 'Merci ' + p + ", c'est bien reçu.";
+    })();
+  </script>
+</BaseLayout>

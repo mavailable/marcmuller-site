@@ -128,3 +128,12 @@ export const RECAP_SECTIONS: { step: number; title: string; fields: [string, str
     ],
   },
 ];
+
+// Champs conditionnels par type : purges par l'island au changement de type_client.
+export const TYPE_CONDITIONAL_FIELDS: Record<ClientType, string[]> = {
+  'entreprise-locale': ['siret', 'adresse', 'zone_intervention', 'horaires', 'avis_google', 'nb_avis'],
+  'artiste-createur': ['discipline', 'nom_scene', 'book', 'book_url'],
+  'freelance-consultant': ['expertise', 'certifications', 'zone_intervention'],
+  'association': ['objet_social', 'nb_adherents', 'statut_juridique'],
+  'e-commerce': ['nb_produits', 'plateforme_actuelle', 'paiement', 'catalogue_pret', 'photos_produits'],
+};
