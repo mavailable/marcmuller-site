@@ -18,6 +18,7 @@ export default function OnboardingForm() {
   const [errors, setErrors] = useState<Record<string, string>>({});
   const [uploadError, setUploadError] = useState('');
   const [submitting, setSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
   const restored = useRef(false);
 
   // restauration du brouillon
@@ -27,9 +28,14 @@ export default function OnboardingForm() {
       if (raw) {
         const draft = JSON.parse(raw);
         if (draft && typeof draft === 'object' && draft.data) {
-          setData({ pays: 'France', ...draft.data });
-          setFiles(Array.isArray(draft.files) ? draft.files : []);
-          setStep(Number(draft.step) >= 1 && Number(draft.step) <= 5 ? Number(draft.step) : 1);
+          if (draft.savedAt && Date.now() - draft.savedAt > 30 * 24 * 3600 * 1000) {
+            localStorage.removeItem(DRAFT_KEY);
+          } else {
+            const clean = Object.fromEntries(Object.entries(draft.data).filter(([, v]) => typeof v === 'string'));
+            setData({ pays: 'France', ...clean });
+            setFiles(Array.isArray(draft.files) ? draft.files : []);
+            setStep(Number(draft.step) >= 1 && Number(draft.step) <= 5 ? Number(draft.step) : 1);
+          }
         }
       }
     } catch { /* brouillon corrompu : on repart de zero */ }
@@ -40,7 +46,7 @@ export default function OnboardingForm() {
   useEffect(() => {
     if (!restored.current) return;
     const t = setTimeout(() => {
-      try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ step, data, files })); } catch { /* quota */ }
+      try { localStorage.setItem(DRAFT_KEY, JSON.stringify({ step, data, files, savedAt: Date.now() })); } catch { /* quota */ }
     }, 500);
     return () => clearTimeout(t);
   }, [step, data, files]);
@@ -100,10 +106,17 @@ export default function OnboardingForm() {
 
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 8000);
+    let sent = false;
     try {
-      await fetch('https://api.web3forms.com/submit', { method: 'POST', body: fd, signal: controller.signal });
-    } catch { /* Web3Forms KO : on redirige quand meme, le brouillon est purge */ }
+      const resp = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: fd, signal: controller.signal });
+      sent = resp.ok;
+    } catch { /* reseau ou timeout : sent reste false, le brouillon est conserve */ }
     clearTimeout(timeout);
+    if (!sent) {
+      setSubmitting(false);
+      setSubmitError("L'envoi n'a pas abouti. Vos réponses sont conservées sur cet appareil : réessayez dans un instant, ou écrivez-moi directement à marc@muller.im.");
+      return;
+    }
     try { localStorage.removeItem(DRAFT_KEY); } catch { /* rien */ }
     window.location.href = `/merci-onboarding/?prenom=${encodeURIComponent(data.prenom || '')}`;
   }
@@ -164,6 +177,9 @@ export default function OnboardingForm() {
           </button>
         )}
       </div>
+      {submitError && step === 5 && (
+        <p className="text-sm text-red-600 mt-4 text-center" role="alert">{submitError}</p>
+      )}
       <p className="text-xs text-primary-500 mt-4 text-center">
         Vos réponses sont sauvegardées automatiquement sur cet appareil. Vous pouvez revenir plus tard.
       </p>
