@@ -32,6 +32,18 @@
  * bloquer le flux email). Log les erreurs dans la reponse pour debug.
  */
 
+import {
+  slugify,
+  githubGetFileAt,
+  githubPutFileAt,
+  githubUpdateJsonAt,
+  resolveArchiveSlug,
+  parseR2Keys,
+  upsertQueueEntry,
+  hmacSign,
+  buildNotifyNote,
+} from './_onboarding-lib.js';
+
 const ALLOWED_ORIGINS = [
   'https://marcm.fr',
   'https://www.marcm.fr',
@@ -48,6 +60,7 @@ const FORM_SOURCE_META = {
   'audit-gratuit':    { campagne: 'site-audit-gratuit',   from_page: '/audit-gratuit/' },
   'contact-en':       { campagne: 'site-contact-en',      from_page: '/en/contact/' },
   'free-audit-en':    { campagne: 'site-audit-gratuit-en',from_page: '/en/free-audit/' },
+  onboarding:         { campagne: 'site-onboarding',      from_page: '/onboarding/' },
 };
 
 function corsHeaders(origin) {
@@ -73,17 +86,6 @@ function json(status, body, origin) {
 }
 
 // ------- normalisation -------
-
-function slugify(s) {
-  return (s || '')
-    .toString()
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '');
-}
 
 async function readBody(request) {
   const ct = (request.headers.get('Content-Type') || '').toLowerCase();
@@ -320,83 +322,148 @@ function mergeOrCreate(crm, lead) {
   return { action: 'created', contact };
 }
 
-// ------- GitHub API -------
+// ------- flux onboarding (archive + queue + notification) -------
 
-async function githubGetFile(env) {
-  // leads-master.json pese ~3 MB : l'API contents renvoie 'content' vide
-  // au-dessus de 1 MB. On fait 2 appels :
-  //  1. object media type pour obtenir le sha (pas le contenu, pas de limite)
-  //  2. raw media type pour obtenir le contenu brut (supporte 1-100 MB)
-  const base = `https://api.github.com/repos/${env.LEADS_REPO}/contents/${env.LEADS_PATH}?ref=${env.LEADS_BRANCH}`;
-  const commonHeaders = {
-    Authorization: `Bearer ${env.GITHUB_TOKEN}`,
-    'User-Agent': 'marcm-lead-inbound',
-    'X-GitHub-Api-Version': '2022-11-28',
-  };
+const ONBOARDING_DIR = 'prospection/onboarding';
+const QUEUE_PATH = `${ONBOARDING_DIR}/queue.json`;
+const APPROVAL_TTL_SECONDS = 7 * 24 * 3600;
+const NOTIFY_URL = 'https://warming-api.marc-f10.workers.dev/notify-marc';
+// Champs techniques Web3Forms a ne pas archiver
+const STRIP_KEYS = ['access_key', 'botcheck', 'webhook', 'redirect', 'subject', 'from_name', 'email_confirm', 'r2_keys'];
 
-  const metaResp = await fetch(base, {
-    headers: { ...commonHeaders, Accept: 'application/vnd.github.object+json' },
-  });
-  if (!metaResp.ok) {
-    throw new Error(`github meta failed ${metaResp.status}: ${await metaResp.text()}`);
+/**
+ * 3 etapes best-effort (le contrat 200-toujours de Web3Forms est conserve ;
+ * l'email natif Web3Forms a Marc sert de filet si une etape echoue) :
+ *   1. archive prospection/onboarding/<slug>.json (payload complet)
+ *   2. queue prospection/onboarding/queue.json (statut recu)
+ *   3. POST /notify-marc avec lien d'approbation signe (HMAC, 7 jours)
+ */
+async function handleOnboarding(env, raw, lead, origin) {
+  const result = { slug: null, archive: null, queue: null, notify: null };
+  const activite = pick(raw, ['activite', 'activity', 'company']);
+  const baseSlug = slugify(activite || lead.nom || lead.email.split('@')[0]);
+  const recuAt = nowISO();
+  const r2Keys = parseR2Keys(raw.r2_keys);
+  let slug = baseSlug || 'sans-nom';
+
+  // 1. archive
+  try {
+    const resolved = await resolveArchiveSlug(env, baseSlug, lead.email);
+    slug = resolved.slug;
+    const payload = { ...raw };
+    for (const k of STRIP_KEYS) delete payload[k];
+    const archive = { version: 1, slug, recu_at: recuAt, r2_keys: r2Keys, payload };
+    await githubPutFileAt(env, `${ONBOARDING_DIR}/${slug}.json`, archive, resolved.sha,
+      `onboarding: dossier ${slug} recu`);
+    result.archive = 'ok';
+  } catch (e) {
+    console.error('onboarding archive', e);
+    result.archive = 'error: archive';
   }
-  const meta = await metaResp.json();
-  const sha = meta.sha;
-  if (!sha) throw new Error('github meta missing sha');
+  result.slug = slug;
 
-  const rawResp = await fetch(base, {
-    headers: { ...commonHeaders, Accept: 'application/vnd.github.raw' },
-  });
-  if (!rawResp.ok) {
-    throw new Error(`github raw failed ${rawResp.status}: ${await rawResp.text()}`);
+  // 2. queue
+  try {
+    await githubUpdateJsonAt(env, QUEUE_PATH, (q) => upsertQueueEntry(q, {
+      slug,
+      email: lead.email,
+      nom: lead.nom,
+      activite,
+      recu_at: recuAt,
+    }).queue, `onboarding: queue ${slug} recu`);
+    result.queue = 'ok';
+  } catch (e) {
+    console.error('onboarding queue', e);
+    result.queue = 'error: queue';
   }
-  const text = await rawResp.text();
-  return { json: JSON.parse(text), sha };
-}
 
-async function githubPutFile(env, newJson, sha, commitMessage) {
-  // encoder en base64 UTF-8 safe
-  const text = JSON.stringify(newJson, null, 2) + '\n';
-  const bytes = new TextEncoder().encode(text);
-  let binary = '';
-  for (let i = 0; i < bytes.length; i += 1) binary += String.fromCharCode(bytes[i]);
-  const content = btoa(binary);
-
-  const url = `https://api.github.com/repos/${env.LEADS_REPO}/contents/${env.LEADS_PATH}`;
-  const resp = await fetch(url, {
-    method: 'PUT',
-    headers: {
-      Authorization: `Bearer ${env.GITHUB_TOKEN}`,
-      Accept: 'application/vnd.github+json',
-      'Content-Type': 'application/json',
-      'User-Agent': 'marcm-lead-inbound',
-      'X-GitHub-Api-Version': '2022-11-28',
-    },
-    body: JSON.stringify({
-      message: commitMessage,
-      content,
-      sha,
-      branch: env.LEADS_BRANCH,
-      committer: {
-        name: 'marcm-lead-inbound',
-        email: 'marc@muller.im',
-      },
-    }),
-  });
-  if (!resp.ok) {
-    throw new Error(`github put failed ${resp.status}: ${await resp.text()}`);
+  // 3. notification + lien d'approbation signe
+  try {
+    if (!env.NOTIFY_TOKEN || !env.ONBOARDING_SIGNING_KEY) {
+      throw new Error('NOTIFY_TOKEN ou ONBOARDING_SIGNING_KEY manquant');
+    }
+    const exp = Math.floor(Date.now() / 1000) + APPROVAL_TTL_SECONDS;
+    const sig = await hmacSign(env.ONBOARDING_SIGNING_KEY, `${slug}.${exp}`);
+    const approveUrl = `${origin}/api/onboarding-approve?slug=${encodeURIComponent(slug)}&exp=${exp}&sig=${sig}`;
+    const note = buildNotifyNote({
+      nom: lead.nom,
+      activite,
+      type: pick(raw, ['type_client']),
+      ville: lead.ville,
+      pays: pick(raw, ['pays']),
+      objectif: pick(raw, ['objectif']),
+      budget: pick(raw, ['budget']),
+      nbFichiers: r2Keys.length,
+    }, approveUrl);
+    const resp = await fetch(NOTIFY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${env.NOTIFY_TOKEN}` },
+      body: JSON.stringify({
+        site_slug: 'marcm-onboarding',
+        client_name: lead.nom || lead.email,
+        sujet: `Dossier onboarding : ${activite || lead.nom || lead.email}`,
+        categorie: 'onboarding',
+        categorie_label: 'Onboarding',
+        note,
+      }),
+      signal: AbortSignal.timeout(10000),
+    });
+    if (!resp.ok) throw new Error(`notify ${resp.status}`);
+    result.notify = 'ok';
+  } catch (e) {
+    console.error('onboarding notify', e);
+    result.notify = 'error: notify';
   }
-  return await resp.json();
+
+  return result;
 }
 
 // ------- handler -------
+
+/** Pipeline complet (merge leads-master + flux onboarding). Peut prendre >10 s. */
+async function processLead(env, raw, lead, requestOrigin) {
+  const out = { ok: false, form_source: lead.form_source };
+
+  // 1. merge leads-master (comportement historique, best-effort)
+  try {
+    const { json: crm, sha } = await githubGetFileAt(env, env.LEADS_PATH);
+    if (!crm) throw new Error('leads-master introuvable');
+    const { action, contact } = mergeOrCreate(crm, lead);
+    recomputeStats(crm);
+    sortContacts(crm.contacts);
+    crm._maj = nowISO();
+    await githubPutFileAt(env, env.LEADS_PATH, crm, sha,
+      `inbound: ${action} lead ${contact.id} via ${lead.form_source}`);
+    out.ok = true;
+    out.action = action;
+    out.contact_id = contact.id;
+  } catch (e) {
+    // Ne jamais bloquer Web3Forms : 200 avec error en body, l'email natif a
+    // Marc est le filet.
+    out.error = e.message;
+    out.email = lead.email;
+  }
+
+  // 2. flux onboarding (archive + queue + notification), best-effort par etape
+  if (lead.form_source === 'onboarding') {
+    try {
+      out.onboarding = await handleOnboarding(env, raw, lead, requestOrigin);
+    } catch (e) {
+      console.error('onboarding handler', e);
+      out.onboarding = { error: 'handler' };
+    }
+  }
+
+  return out;
+}
 
 export async function onRequestOptions({ request }) {
   const origin = request.headers.get('Origin') || '';
   return new Response(null, { status: 204, headers: corsHeaders(origin) });
 }
 
-export async function onRequestPost({ request, env }) {
+export async function onRequestPost(context) {
+  const { request, env } = context;
   const origin = request.headers.get('Origin') || '';
 
   // env check
@@ -427,38 +494,32 @@ export async function onRequestPost({ request, env }) {
     return json(200, { ok: true, action: 'ignored', reason: 'honeypot' }, origin);
   }
 
-  try {
-    const { json: crm, sha } = await githubGetFile(env);
-    const { action, contact } = mergeOrCreate(crm, lead);
-    recomputeStats(crm);
-    sortContacts(crm.contacts);
-    crm._maj = nowISO();
+  const requestOrigin = new URL(request.url).origin;
 
-    const commitMessage = `inbound: ${action} lead ${contact.id} via ${lead.form_source}`;
-    await githubPutFile(env, crm, sha, commitMessage);
-
-    return json(200, {
-      ok: true,
-      action,
-      contact_id: contact.id,
-      form_source: lead.form_source,
-    }, origin);
-  } catch (e) {
-    // Ne jamais bloquer Web3Forms : renvoyer 200 avec error en body pour que
-    // Web3Forms ne retry pas et que l'email a Marc soit bien delivre.
-    return json(200, {
-      ok: false,
-      error: e.message,
-      form_source: lead.form_source,
-      email: lead.email,
-    }, origin);
+  if (lead.form_source === 'onboarding') {
+    // Le pipeline prend >10 s (3 commits GitHub sequentiels + notify) : on repond
+    // tout de suite et le runtime CF termine le travail apres la reponse
+    // (waitUntil). Les filets d'echec restent les logs CF + l'email W3F du client.
+    const work = processLead(env, raw, lead, requestOrigin)
+      .then((out) => console.log('onboarding processed', JSON.stringify(out)))
+      .catch((e) => console.error('onboarding deferred', e));
+    if (typeof context.waitUntil === 'function') {
+      context.waitUntil(work);
+    } else {
+      await work;
+    }
+    return json(200, { ok: true, accepted: true, form_source: lead.form_source }, origin);
   }
+
+  const out = await processLead(env, raw, lead, requestOrigin);
+  return json(200, out, origin);
 }
 
 // fallback autres methodes
-export async function onRequest({ request }) {
+export async function onRequest(context) {
+  const { request } = context;
   const origin = request.headers.get('Origin') || '';
-  if (request.method === 'POST') return onRequestPost({ request, env: {} });
+  if (request.method === 'POST') return onRequestPost(context);
   if (request.method === 'OPTIONS') return onRequestOptions({ request });
   return json(405, { ok: false, error: 'method not allowed' }, origin);
 }

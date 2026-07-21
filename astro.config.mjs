@@ -16,6 +16,7 @@ export default defineConfig({
       filter: (page) =>
         !page.includes('/admin') &&
         !page.includes('/merci') &&
+        !page.includes('/onboarding') &&
         !page.includes('/thank-you') &&
         !page.includes('/graphistes') &&
         !page.includes('/designers') &&
