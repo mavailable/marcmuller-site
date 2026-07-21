@@ -329,7 +329,7 @@ const QUEUE_PATH = `${ONBOARDING_DIR}/queue.json`;
 const APPROVAL_TTL_SECONDS = 7 * 24 * 3600;
 const NOTIFY_URL = 'https://warming-api.marc-f10.workers.dev/notify-marc';
 // Champs techniques Web3Forms a ne pas archiver
-const STRIP_KEYS = ['access_key', 'botcheck', 'webhook', 'redirect', 'subject', 'from_name', 'email_confirm'];
+const STRIP_KEYS = ['access_key', 'botcheck', 'webhook', 'redirect', 'subject', 'from_name', 'email_confirm', 'r2_keys'];
 
 /**
  * 3 etapes best-effort (le contrat 200-toujours de Web3Forms est conserve ;
@@ -357,7 +357,8 @@ async function handleOnboarding(env, raw, lead, origin) {
       `onboarding: dossier ${slug} recu`);
     result.archive = 'ok';
   } catch (e) {
-    result.archive = `error: ${e.message}`;
+    console.error('onboarding archive', e);
+    result.archive = 'error: archive';
   }
   result.slug = slug;
 
@@ -372,7 +373,8 @@ async function handleOnboarding(env, raw, lead, origin) {
     }).queue, `onboarding: queue ${slug} recu`);
     result.queue = 'ok';
   } catch (e) {
-    result.queue = `error: ${e.message}`;
+    console.error('onboarding queue', e);
+    result.queue = 'error: queue';
   }
 
   // 3. notification + lien d'approbation signe
@@ -404,11 +406,13 @@ async function handleOnboarding(env, raw, lead, origin) {
         categorie_label: 'Onboarding',
         note,
       }),
+      signal: AbortSignal.timeout(10000),
     });
     if (!resp.ok) throw new Error(`notify ${resp.status}`);
     result.notify = 'ok';
   } catch (e) {
-    result.notify = `error: ${e.message}`;
+    console.error('onboarding notify', e);
+    result.notify = 'error: notify';
   }
 
   return result;
@@ -476,7 +480,12 @@ export async function onRequestPost({ request, env }) {
 
   // 2. flux onboarding (archive + queue + notification), best-effort par etape
   if (lead.form_source === 'onboarding') {
-    out.onboarding = await handleOnboarding(env, raw, lead, new URL(request.url).origin);
+    try {
+      out.onboarding = await handleOnboarding(env, raw, lead, new URL(request.url).origin);
+    } catch (e) {
+      console.error('onboarding handler', e);
+      out.onboarding = { error: 'handler' };
+    }
   }
 
   return json(200, out, origin);
