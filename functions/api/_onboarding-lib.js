@@ -151,3 +151,97 @@ export function buildNotifyNote(p, approveUrl) {
   lines.push('', 'Approuver le dossier (lien valable 7 jours) :', approveUrl);
   return lines.join('\n');
 }
+
+// ------- GitHub contents API (generalisation des helpers lead-inbound) -------
+
+function ghHeaders(env, accept) {
+  return {
+    Authorization: `Bearer ${env.GITHUB_TOKEN}`,
+    'User-Agent': 'marcm-lead-inbound',
+    'X-GitHub-Api-Version': '2022-11-28',
+    Accept: accept,
+  };
+}
+
+/**
+ * Lit un fichier du repo hub. Retourne { json, sha } ; { json: null, sha: null } si 404.
+ * 2 appels (object media type pour le sha, raw pour le contenu) : leads-master
+ * pese ~3 MB et l'API contents ne renvoie pas `content` au-dessus de 1 MB.
+ * @param {object} env  @param {string} path  @param {typeof fetch} [fetchFn]
+ */
+export async function githubGetFileAt(env, path, fetchFn = fetch) {
+  const base = `https://api.github.com/repos/${env.LEADS_REPO}/contents/${path}?ref=${env.LEADS_BRANCH}`;
+  const metaResp = await fetchFn(base, { headers: ghHeaders(env, 'application/vnd.github.object+json') });
+  if (metaResp.status === 404) return { json: null, sha: null };
+  if (!metaResp.ok) {
+    throw new Error(`github meta failed ${metaResp.status}: ${await metaResp.text()}`);
+  }
+  const meta = await metaResp.json();
+  if (!meta.sha) throw new Error('github meta missing sha');
+  const rawResp = await fetchFn(base, { headers: ghHeaders(env, 'application/vnd.github.raw') });
+  if (!rawResp.ok) {
+    throw new Error(`github raw failed ${rawResp.status}: ${await rawResp.text()}`);
+  }
+  return { json: JSON.parse(await rawResp.text()), sha: meta.sha };
+}
+
+/**
+ * Ecrit un objet JSON (pretty + newline final). sha null = creation.
+ * @param {object} env  @param {string} path  @param {object} json
+ * @param {string|null} sha  @param {string} commitMessage  @param {typeof fetch} [fetchFn]
+ */
+export async function githubPutFileAt(env, path, json, sha, commitMessage, fetchFn = fetch) {
+  const text = JSON.stringify(json, null, 2) + '\n';
+  const bytes = new TextEncoder().encode(text);
+  let binary = '';
+  for (let i = 0; i < bytes.length; i += 1) binary += String.fromCharCode(bytes[i]);
+  const body = {
+    message: commitMessage,
+    content: btoa(binary),
+    branch: env.LEADS_BRANCH,
+    committer: { name: 'marcm-lead-inbound', email: 'marc@muller.im' },
+  };
+  if (sha) body.sha = sha;
+  const resp = await fetchFn(`https://api.github.com/repos/${env.LEADS_REPO}/contents/${path}`, {
+    method: 'PUT',
+    headers: { ...ghHeaders(env, 'application/vnd.github+json'), 'Content-Type': 'application/json' },
+    body: JSON.stringify(body),
+  });
+  if (!resp.ok) {
+    throw new Error(`github put failed ${resp.status}: ${await resp.text()}`);
+  }
+  return await resp.json();
+}
+
+/**
+ * Read-modify-write avec un unique retry si conflit sha (409 GitHub).
+ * mutate(jsonOrNull) doit RETOURNER l'objet a ecrire.
+ */
+export async function githubUpdateJsonAt(env, path, mutate, commitMessage, fetchFn = fetch) {
+  const attempt = async () => {
+    const { json, sha } = await githubGetFileAt(env, path, fetchFn);
+    return githubPutFileAt(env, path, mutate(json), sha, commitMessage, fetchFn);
+  };
+  try {
+    return await attempt();
+  } catch (e) {
+    if (String(e.message).includes('409')) return await attempt();
+    throw e;
+  }
+}
+
+/**
+ * Slug d'archive : reutilise le slug si le dossier existant a le meme email
+ * (resoumission -> overwrite avec sha), sinon suffixe -2, -3... (collision).
+ */
+export async function resolveArchiveSlug(env, baseSlug, email, fetchFn = fetch) {
+  const base = baseSlug || 'sans-nom';
+  for (let i = 0; i < 5; i += 1) {
+    const candidate = i === 0 ? base : `${base}-${i + 1}`;
+    const { json, sha } = await githubGetFileAt(env, `prospection/onboarding/${candidate}.json`, fetchFn);
+    if (!json) return { slug: candidate, sha: null };
+    const archivedEmail = (((json || {}).payload || {}).email || '').toLowerCase();
+    if (archivedEmail === (email || '').toLowerCase()) return { slug: candidate, sha };
+  }
+  return { slug: `${base}-${Date.now()}`, sha: null };
+}

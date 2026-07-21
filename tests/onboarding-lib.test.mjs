@@ -12,6 +12,10 @@ import {
   approveQueueEntry,
   parseR2Keys,
   buildNotifyNote,
+  githubGetFileAt,
+  githubPutFileAt,
+  githubUpdateJsonAt,
+  resolveArchiveSlug,
 } from '../functions/api/_onboarding-lib.js';
 
 test('slugify normalise accents et espaces', () => {
@@ -103,4 +107,90 @@ test('buildNotifyNote omet les champs vides et contient le lien', () => {
   assert.ok(!note.includes('Ville :'));
   assert.ok(note.includes('https://marcm.fr/api/onboarding-approve?slug=s&exp=1&sig=x'));
   assert.ok(!note.includes('—'));
+});
+
+const ENV = { LEADS_REPO: 'mavailable/web-factory-hub', LEADS_BRANCH: 'master', GITHUB_TOKEN: 'tok' };
+
+function mockFetch(script) {
+  // script: liste de reponses { status, body } consommees dans l'ordre ; enregistre les appels
+  const calls = [];
+  const fn = async (url, opts = {}) => {
+    const next = script.shift();
+    if (!next) throw new Error('mockFetch: script epuise pour ' + url);
+    calls.push({ url, method: opts.method || 'GET', headers: opts.headers || {}, body: opts.body });
+    return new Response(typeof next.body === 'string' ? next.body : JSON.stringify(next.body), {
+      status: next.status,
+      headers: { 'Content-Type': 'application/json' },
+    });
+  };
+  fn.calls = calls;
+  return fn;
+}
+
+test('githubGetFileAt: meta puis raw, retourne json + sha', async () => {
+  const f = mockFetch([
+    { status: 200, body: { sha: 'abc123' } },
+    { status: 200, body: '{"hello":"world"}' },
+  ]);
+  const { json, sha } = await githubGetFileAt(ENV, 'prospection/onboarding/queue.json', f);
+  assert.deepEqual(json, { hello: 'world' });
+  assert.equal(sha, 'abc123');
+  assert.ok(f.calls[0].url.includes('/contents/prospection/onboarding/queue.json?ref=master'));
+});
+
+test('githubGetFileAt: 404 -> { json: null, sha: null }', async () => {
+  const f = mockFetch([{ status: 404, body: { message: 'Not Found' } }]);
+  const { json, sha } = await githubGetFileAt(ENV, 'prospection/onboarding/inconnu.json', f);
+  assert.equal(json, null);
+  assert.equal(sha, null);
+});
+
+test('githubPutFileAt: PUT base64 avec sha, sans sha pour une creation', async () => {
+  const f = mockFetch([{ status: 201, body: { content: { sha: 'new' } } }]);
+  await githubPutFileAt(ENV, 'prospection/onboarding/x.json', { a: 1 }, null, 'msg', f);
+  const put = JSON.parse(f.calls[0].body);
+  assert.equal(put.branch, 'master');
+  assert.equal(put.message, 'msg');
+  assert.ok(!('sha' in put));
+  assert.equal(JSON.parse(atob(put.content)).a, 1);
+});
+
+test('githubPutFileAt: propage le sha et leve sur erreur', async () => {
+  const f = mockFetch([{ status: 200, body: {} }]);
+  await githubPutFileAt(ENV, 'p.json', {}, 'sha1', 'msg', f);
+  assert.equal(JSON.parse(f.calls[0].body).sha, 'sha1');
+  const f2 = mockFetch([{ status: 422, body: { message: 'boom' } }]);
+  await assert.rejects(() => githubPutFileAt(ENV, 'p.json', {}, 'sha1', 'msg', f2), /422/);
+});
+
+test('githubUpdateJsonAt: retry unique sur 409 avec le sha relu', async () => {
+  const f = mockFetch([
+    { status: 200, body: { sha: 'sha1' } },
+    { status: 200, body: '{"version":1,"entries":[]}' },
+    { status: 409, body: { message: 'conflict' } },
+    { status: 200, body: { sha: 'sha2' } },
+    { status: 200, body: '{"version":1,"entries":[]}' },
+    { status: 200, body: {} },
+  ]);
+  await githubUpdateJsonAt(ENV, 'queue.json', (q) => q || { version: 1, entries: [] }, 'msg', f);
+  const secondPut = JSON.parse(f.calls[5].body);
+  assert.equal(secondPut.sha, 'sha2');
+});
+
+test('resolveArchiveSlug: libre, meme email (resoumission), collision email different', async () => {
+  const free = mockFetch([{ status: 404, body: {} }]);
+  assert.deepEqual(await resolveArchiveSlug(ENV, 'atelier', 'a@b.fr', free), { slug: 'atelier', sha: null });
+
+  const same = mockFetch([
+    { status: 200, body: { sha: 's1' } },
+    { status: 200, body: '{"payload":{"email":"A@b.fr"}}' },
+  ]);
+  assert.deepEqual(await resolveArchiveSlug(ENV, 'atelier', 'a@b.fr', same), { slug: 'atelier', sha: 's1' });
+
+  const clash = mockFetch([
+    { status: 200, body: { sha: 's1' } },
+    { status: 200, body: '{"payload":{"email":"autre@x.fr"}}' },
+    { status: 404, body: {} },
+  ]);
+  assert.deepEqual(await resolveArchiveSlug(ENV, 'atelier', 'a@b.fr', clash), { slug: 'atelier-2', sha: null });
 });
