@@ -37,7 +37,7 @@ export const UPLOAD_ALLOWED_TYPES = [
   'image/png',
   'image/webp',
   'application/pdf',
-  'image/svg+xml',
+  'image/svg+xml', // un SVG peut contenir du script : ces fichiers ne doivent JAMAIS etre servis inline sur l'origin (prives R2 only)
 ];
 
 /** @param {{size:number,type:string}} meta */
@@ -45,7 +45,7 @@ export function validateUploadMeta({ size, type }) {
   if (!UPLOAD_ALLOWED_TYPES.includes(type)) {
     return { ok: false, status: 415, error: `type non autorise: ${type || 'inconnu'}` };
   }
-  if (!size || size > UPLOAD_MAX_BYTES) {
+  if (!Number.isFinite(size) || size <= 0 || size > UPLOAD_MAX_BYTES) {
     return { ok: false, status: 413, error: 'fichier vide ou trop lourd (max 5 Mo)' };
   }
   return { ok: true };
@@ -85,6 +85,7 @@ export function emptyQueue() {
 /**
  * Nouvelle soumission : met a jour l'entree `recu` du meme slug (resoumission),
  * sinon cree une nouvelle entree en tete.
+ * Mute la queue en place quand elle est valide ; toujours utiliser la valeur retournee (queue null/invalide -> nouvel objet).
  */
 export function upsertQueueEntry(queue, { slug, email, nom, activite, recu_at }) {
   const q = queue && Array.isArray(queue.entries) ? queue : emptyQueue();
@@ -97,8 +98,12 @@ export function upsertQueueEntry(queue, { slug, email, nom, activite, recu_at })
   return { queue: q, action: 'created' };
 }
 
+/**
+ * Mute la queue en place quand elle est valide ; toujours utiliser la valeur retournee (queue null/invalide -> nouvel objet).
+ */
 export function approveQueueEntry(queue, slug, approuveAt) {
   const q = queue && Array.isArray(queue.entries) ? queue : emptyQueue();
+  // invariant: l'upsert insere les entrees recu en tete, donc la 1re occurrence du slug est la plus recente
   const entry = q.entries.find((e) => e.slug === slug);
   if (!entry) return { ok: false, reason: 'not_found' };
   if (entry.statut === 'approuve') return { ok: true, already: true, entry };
@@ -110,12 +115,18 @@ export function approveQueueEntry(queue, slug, approuveAt) {
 
 // ------- payload onboarding -------
 
-/** r2_keys arrive en JSON string depuis le formulaire ; ne garder que le prefixe onboarding/. */
+/**
+ * r2_keys arrive en JSON string depuis le formulaire (entree non fiable).
+ * Filtre strict : forme exacte onboarding/<slug>/<fichier> produite par
+ * l'upload (pas de traversal, pas de segment vide), cap a UPLOAD_MAX_FILES.
+ */
 export function parseR2Keys(value) {
   try {
     const arr = JSON.parse(value || '[]');
     if (!Array.isArray(arr)) return [];
-    return arr.filter((k) => typeof k === 'string' && k.startsWith('onboarding/'));
+    return arr
+      .filter((k) => typeof k === 'string' && /^onboarding\/[a-z0-9-]+\/[a-z0-9][a-z0-9.-]*$/.test(k))
+      .slice(0, UPLOAD_MAX_FILES);
   } catch {
     return [];
   }

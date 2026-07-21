@@ -35,6 +35,8 @@ test('validateUploadMeta accepte la whitelist, refuse le reste', () => {
   const tooBig = validateUploadMeta({ size: UPLOAD_MAX_BYTES + 1, type: 'image/png' });
   assert.deepEqual([tooBig.ok, tooBig.status], [false, 413]);
   assert.equal(validateUploadMeta({ size: 0, type: 'image/png' }).ok, false);
+  assert.equal(validateUploadMeta({ size: -5, type: 'image/png' }).ok, false);
+  assert.equal(validateUploadMeta({ size: '1000', type: 'image/png' }).ok, false);
 });
 
 test('hmacSign vecteur de test RFC + hmacVerify constant-time', async () => {
@@ -86,6 +88,9 @@ test('parseR2Keys filtre le prefixe onboarding/ et le JSON invalide', () => {
   assert.deepEqual(parseR2Keys('["onboarding/a/1.png","vocaux/x.opus",42]'), ['onboarding/a/1.png']);
   assert.deepEqual(parseR2Keys('pas du json'), []);
   assert.deepEqual(parseR2Keys(undefined), []);
+  assert.deepEqual(parseR2Keys('["onboarding/../x","onboarding//x","onboarding/a/.."]'), []);
+  const many = JSON.stringify(Array.from({ length: 30 }, (_, i) => `onboarding/a/${i}.png`));
+  assert.equal(parseR2Keys(many).length, 15);
 });
 
 test('buildNotifyNote omet les champs vides et contient le lien', () => {
