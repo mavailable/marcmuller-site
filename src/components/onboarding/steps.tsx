@@ -74,7 +74,7 @@ export function Step2({ d, set, errors }: StepProps) {
       <TextInput id="telephone" label="Téléphone" type="tel" placeholder="+33 6..." value={d.telephone || ''} onChange={set('telephone')} />
       <div className="grid sm:grid-cols-2 gap-x-4">
         <TextInput id="ville" label="Ville" value={d.ville || ''} onChange={set('ville')} required error={errors.ville} />
-        <SelectInput id="pays" label="Pays" value={d.pays || 'France'} onChange={set('pays')} options={PAYS} required error={errors.pays} />
+        <SelectInput id="pays" label="Pays" value={d.pays} onChange={set('pays')} options={PAYS} required error={errors.pays} />
       </div>
       <RadioGroup name="canal_prefere" label="Comment préférez-vous échanger ?" value={d.canal_prefere || ''} onChange={set('canal_prefere')} options={CANAUX} required error={errors.canal_prefere} />
     </>
