@@ -177,6 +177,37 @@ test('githubUpdateJsonAt: retry unique sur 409 avec le sha relu', async () => {
   assert.equal(secondPut.sha, 'sha2');
 });
 
+test('githubUpdateJsonAt: un seul retry, double 409 -> rejet', async () => {
+  const f = mockFetch([
+    { status: 200, body: { sha: 'sha1' } },
+    { status: 200, body: '{}' },
+    { status: 409, body: { message: 'conflict' } },
+    { status: 200, body: { sha: 'sha2' } },
+    { status: 200, body: '{}' },
+    { status: 409, body: { message: 'conflict again' } },
+  ]);
+  await assert.rejects(() => githubUpdateJsonAt(ENV, 'q.json', (q) => q || {}, 'msg', f), /409/);
+  assert.equal(f.calls.length, 6);
+});
+
+test('githubUpdateJsonAt: un statut non-409 contenant "409" dans le corps ne retrie pas', async () => {
+  const f = mockFetch([
+    { status: 200, body: { sha: 'sha1' } },
+    { status: 200, body: '{}' },
+    { status: 422, body: { message: 'sha 409f00 mismatch' } },
+  ]);
+  await assert.rejects(() => githubUpdateJsonAt(ENV, 'q.json', (q) => q || {}, 'msg', f), /422/);
+  assert.equal(f.calls.length, 3);
+});
+
+test('githubPutFileAt: round-trip UTF-8 accentue', async () => {
+  const f = mockFetch([{ status: 200, body: {} }]);
+  await githubPutFileAt(ENV, 'x.json', { nom: 'Ébénisterie Müller' }, null, 'msg', f);
+  const put = JSON.parse(f.calls[0].body);
+  const bytes = Uint8Array.from(atob(put.content), (c) => c.charCodeAt(0));
+  assert.equal(JSON.parse(new TextDecoder().decode(bytes)).nom, 'Ébénisterie Müller');
+});
+
 test('resolveArchiveSlug: libre, meme email (resoumission), collision email different', async () => {
   const free = mockFetch([{ status: 404, body: {} }]);
   assert.deepEqual(await resolveArchiveSlug(ENV, 'atelier', 'a@b.fr', free), { slug: 'atelier', sha: null });

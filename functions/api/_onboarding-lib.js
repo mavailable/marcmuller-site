@@ -174,13 +174,17 @@ export async function githubGetFileAt(env, path, fetchFn = fetch) {
   const metaResp = await fetchFn(base, { headers: ghHeaders(env, 'application/vnd.github.object+json') });
   if (metaResp.status === 404) return { json: null, sha: null };
   if (!metaResp.ok) {
-    throw new Error(`github meta failed ${metaResp.status}: ${await metaResp.text()}`);
+    const err = new Error(`github meta failed ${metaResp.status}: ${await metaResp.text()}`);
+    err.status = metaResp.status;
+    throw err;
   }
   const meta = await metaResp.json();
   if (!meta.sha) throw new Error('github meta missing sha');
   const rawResp = await fetchFn(base, { headers: ghHeaders(env, 'application/vnd.github.raw') });
   if (!rawResp.ok) {
-    throw new Error(`github raw failed ${rawResp.status}: ${await rawResp.text()}`);
+    const err = new Error(`github raw failed ${rawResp.status}: ${await rawResp.text()}`);
+    err.status = rawResp.status;
+    throw err;
   }
   return { json: JSON.parse(await rawResp.text()), sha: meta.sha };
 }
@@ -208,7 +212,9 @@ export async function githubPutFileAt(env, path, json, sha, commitMessage, fetch
     body: JSON.stringify(body),
   });
   if (!resp.ok) {
-    throw new Error(`github put failed ${resp.status}: ${await resp.text()}`);
+    const err = new Error(`github put failed ${resp.status}: ${await resp.text()}`);
+    err.status = resp.status;
+    throw err;
   }
   return await resp.json();
 }
@@ -225,7 +231,7 @@ export async function githubUpdateJsonAt(env, path, mutate, commitMessage, fetch
   try {
     return await attempt();
   } catch (e) {
-    if (String(e.message).includes('409')) return await attempt();
+    if (e.status === 409) return await attempt();
     throw e;
   }
 }
