@@ -60,6 +60,7 @@ const FORM_SOURCE_META = {
   'audit-gratuit':    { campagne: 'site-audit-gratuit',   from_page: '/audit-gratuit/' },
   'contact-en':       { campagne: 'site-contact-en',      from_page: '/en/contact/' },
   'free-audit-en':    { campagne: 'site-audit-gratuit-en',from_page: '/en/free-audit/' },
+  onboarding:         { campagne: 'site-onboarding',      from_page: '/onboarding/' },
 };
 
 function corsHeaders(origin) {
@@ -321,6 +322,98 @@ function mergeOrCreate(crm, lead) {
   return { action: 'created', contact };
 }
 
+// ------- flux onboarding (archive + queue + notification) -------
+
+const ONBOARDING_DIR = 'prospection/onboarding';
+const QUEUE_PATH = `${ONBOARDING_DIR}/queue.json`;
+const APPROVAL_TTL_SECONDS = 7 * 24 * 3600;
+const NOTIFY_URL = 'https://warming-api.marc-f10.workers.dev/notify-marc';
+// Champs techniques Web3Forms a ne pas archiver
+const STRIP_KEYS = ['access_key', 'botcheck', 'webhook', 'redirect', 'subject', 'from_name', 'email_confirm'];
+
+/**
+ * 3 etapes best-effort (le contrat 200-toujours de Web3Forms est conserve ;
+ * l'email natif Web3Forms a Marc sert de filet si une etape echoue) :
+ *   1. archive prospection/onboarding/<slug>.json (payload complet)
+ *   2. queue prospection/onboarding/queue.json (statut recu)
+ *   3. POST /notify-marc avec lien d'approbation signe (HMAC, 7 jours)
+ */
+async function handleOnboarding(env, raw, lead, origin) {
+  const result = { slug: null, archive: null, queue: null, notify: null };
+  const activite = pick(raw, ['activite', 'activity', 'company']);
+  const baseSlug = slugify(activite || lead.nom || lead.email.split('@')[0]);
+  const recuAt = nowISO();
+  const r2Keys = parseR2Keys(raw.r2_keys);
+  let slug = baseSlug || 'sans-nom';
+
+  // 1. archive
+  try {
+    const resolved = await resolveArchiveSlug(env, baseSlug, lead.email);
+    slug = resolved.slug;
+    const payload = { ...raw };
+    for (const k of STRIP_KEYS) delete payload[k];
+    const archive = { version: 1, slug, recu_at: recuAt, r2_keys: r2Keys, payload };
+    await githubPutFileAt(env, `${ONBOARDING_DIR}/${slug}.json`, archive, resolved.sha,
+      `onboarding: dossier ${slug} recu`);
+    result.archive = 'ok';
+  } catch (e) {
+    result.archive = `error: ${e.message}`;
+  }
+  result.slug = slug;
+
+  // 2. queue
+  try {
+    await githubUpdateJsonAt(env, QUEUE_PATH, (q) => upsertQueueEntry(q, {
+      slug,
+      email: lead.email,
+      nom: lead.nom,
+      activite,
+      recu_at: recuAt,
+    }).queue, `onboarding: queue ${slug} recu`);
+    result.queue = 'ok';
+  } catch (e) {
+    result.queue = `error: ${e.message}`;
+  }
+
+  // 3. notification + lien d'approbation signe
+  try {
+    if (!env.NOTIFY_TOKEN || !env.ONBOARDING_SIGNING_KEY) {
+      throw new Error('NOTIFY_TOKEN ou ONBOARDING_SIGNING_KEY manquant');
+    }
+    const exp = Math.floor(Date.now() / 1000) + APPROVAL_TTL_SECONDS;
+    const sig = await hmacSign(env.ONBOARDING_SIGNING_KEY, `${slug}.${exp}`);
+    const approveUrl = `${origin}/api/onboarding-approve?slug=${encodeURIComponent(slug)}&exp=${exp}&sig=${sig}`;
+    const note = buildNotifyNote({
+      nom: lead.nom,
+      activite,
+      type: pick(raw, ['type_client']),
+      ville: lead.ville,
+      pays: pick(raw, ['pays']),
+      objectif: pick(raw, ['objectif']),
+      budget: pick(raw, ['budget']),
+      nbFichiers: r2Keys.length,
+    }, approveUrl);
+    const resp = await fetch(NOTIFY_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${env.NOTIFY_TOKEN}` },
+      body: JSON.stringify({
+        site_slug: 'marcm-onboarding',
+        client_name: lead.nom || lead.email,
+        sujet: `Dossier onboarding : ${activite || lead.nom || lead.email}`,
+        categorie: 'onboarding',
+        categorie_label: 'Onboarding',
+        note,
+      }),
+    });
+    if (!resp.ok) throw new Error(`notify ${resp.status}`);
+    result.notify = 'ok';
+  } catch (e) {
+    result.notify = `error: ${e.message}`;
+  }
+
+  return result;
+}
+
 // ------- handler -------
 
 export async function onRequestOptions({ request }) {
@@ -359,6 +452,9 @@ export async function onRequestPost({ request, env }) {
     return json(200, { ok: true, action: 'ignored', reason: 'honeypot' }, origin);
   }
 
+  const out = { ok: false, form_source: lead.form_source };
+
+  // 1. merge leads-master (comportement historique, best-effort)
   try {
     const { json: crm, sha } = await githubGetFileAt(env, env.LEADS_PATH);
     if (!crm) throw new Error('leads-master introuvable');
@@ -366,26 +462,24 @@ export async function onRequestPost({ request, env }) {
     recomputeStats(crm);
     sortContacts(crm.contacts);
     crm._maj = nowISO();
-
-    const commitMessage = `inbound: ${action} lead ${contact.id} via ${lead.form_source}`;
-    await githubPutFileAt(env, env.LEADS_PATH, crm, sha, commitMessage);
-
-    return json(200, {
-      ok: true,
-      action,
-      contact_id: contact.id,
-      form_source: lead.form_source,
-    }, origin);
+    await githubPutFileAt(env, env.LEADS_PATH, crm, sha,
+      `inbound: ${action} lead ${contact.id} via ${lead.form_source}`);
+    out.ok = true;
+    out.action = action;
+    out.contact_id = contact.id;
   } catch (e) {
-    // Ne jamais bloquer Web3Forms : renvoyer 200 avec error en body pour que
-    // Web3Forms ne retry pas et que l'email a Marc soit bien delivre.
-    return json(200, {
-      ok: false,
-      error: e.message,
-      form_source: lead.form_source,
-      email: lead.email,
-    }, origin);
+    // Ne jamais bloquer Web3Forms : 200 avec error en body, l'email natif a
+    // Marc est le filet.
+    out.error = e.message;
+    out.email = lead.email;
   }
+
+  // 2. flux onboarding (archive + queue + notification), best-effort par etape
+  if (lead.form_source === 'onboarding') {
+    out.onboarding = await handleOnboarding(env, raw, lead, new URL(request.url).origin);
+  }
+
+  return json(200, out, origin);
 }
 
 // fallback autres methodes
