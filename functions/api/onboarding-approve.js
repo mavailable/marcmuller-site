@@ -19,6 +19,10 @@ function nowISO() {
   return new Date().toISOString().slice(0, 19);
 }
 
+function esc(s) {
+  return String(s).replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
+}
+
 function page(status, title, message) {
   const html = `<!doctype html>
 <html lang="fr">
@@ -40,13 +44,16 @@ function page(status, title, message) {
 </html>`;
   return new Response(html, {
     status,
-    headers: { 'Content-Type': 'text/html; charset=utf-8' },
+    headers: { 'Content-Type': 'text/html; charset=utf-8', 'Cache-Control': 'no-store' },
   });
 }
 
 export async function onRequestGet({ request, env }) {
   for (const k of ['GITHUB_TOKEN', 'LEADS_REPO', 'LEADS_BRANCH', 'ONBOARDING_SIGNING_KEY']) {
-    if (!env[k]) return page(500, 'Configuration incomplete', `Variable ${k} manquante.`);
+    if (!env[k]) {
+      console.error('onboarding approve config', k);
+      return page(500, 'Configuration incomplete', 'Contactez le webmaster.');
+    }
   }
 
   const u = new URL(request.url);
@@ -71,16 +78,16 @@ export async function onRequestGet({ request, env }) {
       const res = approveQueueEntry(queue || emptyQueue(), slug, nowISO());
       if (!res.ok) {
         if (res.reason === 'not_found') {
-          return page(404, 'Dossier introuvable', `Aucune entree de queue pour « ${slug} ».`);
+          return page(404, 'Dossier introuvable', `Aucune entree de queue pour « ${esc(slug)} ».`);
         }
-        return page(200, 'Deja traite', `Le dossier « ${slug} » est deja passe en ${res.reason.replace('statut ', 'statut « ') + ' »'}.`);
+        return page(200, 'Deja traite', `Le dossier « ${esc(slug)} » est deja passe en ${res.reason.replace('statut ', 'statut « ') + ' »'}.`);
       }
       if (res.already) {
-        return page(200, 'Deja approuve', `Le dossier « ${slug} » etait deja approuve. Rien a faire.`);
+        return page(200, 'Deja approuve', `Le dossier « ${esc(slug)} » etait deja approuve. Rien a faire.`);
       }
       try {
         await githubPutFileAt(env, QUEUE_PATH, queue, sha, `onboarding: approve ${slug}`);
-        return page(200, 'Dossier approuve', `Le dossier « ${slug} » est passe en statut « approuve ». Le runner peut le prendre en charge.`);
+        return page(200, 'Dossier approuve', `Le dossier « ${esc(slug)} » est passe en statut « approuve ». Le runner peut le prendre en charge.`);
       } catch (e) {
         if (attempt === 0 && e.status === 409) continue;
         throw e;
