@@ -9,7 +9,7 @@ import type { Data, UploadedFile, ClientType } from './onboarding-data';
 const DRAFT_KEY = 'wf-onboarding-draft';
 const WEB3FORMS_KEY = 'dccda1f5-4e63-4b9f-9c66-f5ce76f0dfdd';
 // Champs a ne pas transmettre a Web3Forms
-const LOCAL_ONLY = ['email_confirm', 'rgpd'];
+const LOCAL_ONLY = ['email_confirm'];
 
 export default function OnboardingForm() {
   const [step, setStep] = useState(1);
@@ -83,32 +83,30 @@ export default function OnboardingForm() {
     if (Object.keys(errs).length > 0) return;
     setSubmitting(true);
 
-    const fd = new FormData();
-    fd.append('access_key', WEB3FORMS_KEY);
-    fd.append('webhook', `${window.location.origin}/api/lead-inbound`);
-    fd.append('form_source', 'onboarding');
-    fd.append('botcheck', '');
-    fd.append('subject', `[Onboarding] ${data.prenom || ''} ${data.nom || ''} - ${data.activite || ''} (${data.type_client || ''})`);
-    fd.append('from_name', 'Onboarding marcm.fr');
+    const payload = new FormData();
+    payload.append('form_source', 'onboarding');
+    payload.append('botcheck', '');
     for (const [k, v] of Object.entries(data)) {
       if (LOCAL_ONLY.includes(k)) continue;
-      if (v && v.trim()) fd.append(k, v.trim());
+      if (v && v.trim()) payload.append(k, v.trim());
     }
-    fd.append('message', [
+    payload.append('message', [
       data.objectif && `Objectif : ${data.objectif}`,
       data.budget && `Budget : ${data.budget}`,
       data.freins && `Freins : ${data.freins}`,
     ].filter(Boolean).join('\n'));
-    fd.append('r2_keys', JSON.stringify(files.map((f) => f.key)));
+    payload.append('r2_keys', JSON.stringify(files.map((f) => f.key)));
     if (files.length > 0) {
-      fd.append('fichiers_noms', files.map((f) => `${f.kind}: ${f.name}`).join(', '));
+      payload.append('fichiers_noms', files.map((f) => `${f.kind}: ${f.name}`).join(', '));
     }
 
+    // 1. Ecriture critique : notre endpoint same-origin (CRM + archive + queue + notification).
+    //    Le webhook Web3Forms est devenu une feature Pro (07/2026) : on ne depend plus de lui.
+    let sent = false;
     const controller = new AbortController();
     const timeout = setTimeout(() => controller.abort(), 8000);
-    let sent = false;
     try {
-      const resp = await fetch('https://api.web3forms.com/submit', { method: 'POST', body: fd, signal: controller.signal });
+      const resp = await fetch('/api/lead-inbound', { method: 'POST', body: payload, signal: controller.signal });
       sent = resp.ok;
     } catch { /* reseau ou timeout : sent reste false, le brouillon est conserve */ }
     clearTimeout(timeout);
@@ -117,6 +115,20 @@ export default function OnboardingForm() {
       setSubmitError("L'envoi n'a pas abouti. Vos réponses sont conservées sur cet appareil : réessayez dans un instant, ou écrivez-moi directement à marc@muller.im.");
       return;
     }
+
+    // 2. Email natif Web3Forms best-effort (SANS champ webhook), simple filet de notification.
+    const w3f = new FormData();
+    w3f.append('access_key', WEB3FORMS_KEY);
+    w3f.append('subject', `[Onboarding] ${data.prenom || ''} ${data.nom || ''} - ${data.activite || ''} (${data.type_client || ''})`);
+    w3f.append('from_name', 'Onboarding marcm.fr');
+    for (const [k, v] of payload.entries()) w3f.append(k, v);
+    const wc = new AbortController();
+    const wt = setTimeout(() => wc.abort(), 5000);
+    try {
+      await fetch('https://api.web3forms.com/submit', { method: 'POST', body: w3f, signal: wc.signal });
+    } catch { /* best-effort : la notification /notify-marc et l'archive font foi */ }
+    clearTimeout(wt);
+
     try { localStorage.removeItem(DRAFT_KEY); } catch { /* rien */ }
     window.location.href = `/merci-onboarding/?prenom=${encodeURIComponent(data.prenom || '')}`;
   }
