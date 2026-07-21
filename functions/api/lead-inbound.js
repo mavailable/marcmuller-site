@@ -420,12 +420,50 @@ async function handleOnboarding(env, raw, lead, origin) {
 
 // ------- handler -------
 
+/** Pipeline complet (merge leads-master + flux onboarding). Peut prendre >10 s. */
+async function processLead(env, raw, lead, requestOrigin) {
+  const out = { ok: false, form_source: lead.form_source };
+
+  // 1. merge leads-master (comportement historique, best-effort)
+  try {
+    const { json: crm, sha } = await githubGetFileAt(env, env.LEADS_PATH);
+    if (!crm) throw new Error('leads-master introuvable');
+    const { action, contact } = mergeOrCreate(crm, lead);
+    recomputeStats(crm);
+    sortContacts(crm.contacts);
+    crm._maj = nowISO();
+    await githubPutFileAt(env, env.LEADS_PATH, crm, sha,
+      `inbound: ${action} lead ${contact.id} via ${lead.form_source}`);
+    out.ok = true;
+    out.action = action;
+    out.contact_id = contact.id;
+  } catch (e) {
+    // Ne jamais bloquer Web3Forms : 200 avec error en body, l'email natif a
+    // Marc est le filet.
+    out.error = e.message;
+    out.email = lead.email;
+  }
+
+  // 2. flux onboarding (archive + queue + notification), best-effort par etape
+  if (lead.form_source === 'onboarding') {
+    try {
+      out.onboarding = await handleOnboarding(env, raw, lead, requestOrigin);
+    } catch (e) {
+      console.error('onboarding handler', e);
+      out.onboarding = { error: 'handler' };
+    }
+  }
+
+  return out;
+}
+
 export async function onRequestOptions({ request }) {
   const origin = request.headers.get('Origin') || '';
   return new Response(null, { status: 204, headers: corsHeaders(origin) });
 }
 
-export async function onRequestPost({ request, env }) {
+export async function onRequestPost(context) {
+  const { request, env } = context;
   const origin = request.headers.get('Origin') || '';
 
   // env check
@@ -456,45 +494,32 @@ export async function onRequestPost({ request, env }) {
     return json(200, { ok: true, action: 'ignored', reason: 'honeypot' }, origin);
   }
 
-  const out = { ok: false, form_source: lead.form_source };
+  const requestOrigin = new URL(request.url).origin;
 
-  // 1. merge leads-master (comportement historique, best-effort)
-  try {
-    const { json: crm, sha } = await githubGetFileAt(env, env.LEADS_PATH);
-    if (!crm) throw new Error('leads-master introuvable');
-    const { action, contact } = mergeOrCreate(crm, lead);
-    recomputeStats(crm);
-    sortContacts(crm.contacts);
-    crm._maj = nowISO();
-    await githubPutFileAt(env, env.LEADS_PATH, crm, sha,
-      `inbound: ${action} lead ${contact.id} via ${lead.form_source}`);
-    out.ok = true;
-    out.action = action;
-    out.contact_id = contact.id;
-  } catch (e) {
-    // Ne jamais bloquer Web3Forms : 200 avec error en body, l'email natif a
-    // Marc est le filet.
-    out.error = e.message;
-    out.email = lead.email;
-  }
-
-  // 2. flux onboarding (archive + queue + notification), best-effort par etape
   if (lead.form_source === 'onboarding') {
-    try {
-      out.onboarding = await handleOnboarding(env, raw, lead, new URL(request.url).origin);
-    } catch (e) {
-      console.error('onboarding handler', e);
-      out.onboarding = { error: 'handler' };
+    // Le pipeline prend >10 s (3 commits GitHub sequentiels + notify) : on repond
+    // tout de suite et le runtime CF termine le travail apres la reponse
+    // (waitUntil). Les filets d'echec restent les logs CF + l'email W3F du client.
+    const work = processLead(env, raw, lead, requestOrigin)
+      .then((out) => console.log('onboarding processed', JSON.stringify(out)))
+      .catch((e) => console.error('onboarding deferred', e));
+    if (typeof context.waitUntil === 'function') {
+      context.waitUntil(work);
+    } else {
+      await work;
     }
+    return json(200, { ok: true, accepted: true, form_source: lead.form_source }, origin);
   }
 
+  const out = await processLead(env, raw, lead, requestOrigin);
   return json(200, out, origin);
 }
 
 // fallback autres methodes
-export async function onRequest({ request }) {
+export async function onRequest(context) {
+  const { request } = context;
   const origin = request.headers.get('Origin') || '';
-  if (request.method === 'POST') return onRequestPost({ request, env: {} });
+  if (request.method === 'POST') return onRequestPost(context);
   if (request.method === 'OPTIONS') return onRequestOptions({ request });
   return json(405, { ok: false, error: 'method not allowed' }, origin);
 }

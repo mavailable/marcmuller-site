@@ -104,7 +104,7 @@ export default function OnboardingForm() {
     //    Le webhook Web3Forms est devenu une feature Pro (07/2026) : on ne depend plus de lui.
     let sent = false;
     const controller = new AbortController();
-    const timeout = setTimeout(() => controller.abort(), 8000);
+    const timeout = setTimeout(() => controller.abort(), 15000);
     try {
       const resp = await fetch('/api/lead-inbound', { method: 'POST', body: payload, signal: controller.signal });
       sent = resp.ok;
