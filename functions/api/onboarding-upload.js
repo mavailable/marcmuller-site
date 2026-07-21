@@ -18,6 +18,16 @@ import {
   UPLOAD_MAX_FILES,
 } from './_onboarding-lib.js';
 
+// Un POST multipart est une "simple request" : sans ce check, n'importe quel
+// site tiers peut faire uploader les visiteurs a leur insu.
+const ALLOWED_ORIGINS = ['https://marcm.fr', 'https://www.marcm.fr'];
+const ALLOWED_ORIGIN_PATTERNS = [/^https:\/\/[a-z0-9-]+\.marcmuller-site\.pages\.dev$/];
+
+function originAllowed(origin) {
+  if (!origin) return true; // pas de header Origin (curl, outils) : on laisse passer, les gardes contenu s'appliquent
+  return ALLOWED_ORIGINS.includes(origin) || ALLOWED_ORIGIN_PATTERNS.some((re) => re.test(origin));
+}
+
 function json(status, body) {
   return new Response(JSON.stringify(body), {
     status,
@@ -26,11 +36,19 @@ function json(status, body) {
 }
 
 export async function onRequestPost({ request, env }) {
+  if (!originAllowed(request.headers.get('Origin') || '')) {
+    return json(403, { ok: false, error: 'origin non autorisee' });
+  }
   if (!env.VOCAUX) return json(500, { ok: false, error: 'binding VOCAUX manquant' });
 
   const ct = (request.headers.get('Content-Type') || '').toLowerCase();
   if (!ct.includes('multipart/form-data')) {
     return json(400, { ok: false, error: 'multipart/form-data attendu' });
+  }
+
+  const declared = Number(request.headers.get('Content-Length') || 0);
+  if (declared > 6 * 1024 * 1024) {
+    return json(413, { ok: false, error: 'fichier trop lourd (max 5 Mo)' });
   }
 
   let form;
@@ -60,8 +78,8 @@ export async function onRequestPost({ request, env }) {
     if (listed.objects.length >= UPLOAD_MAX_FILES) {
       return json(413, { ok: false, error: `quota fichiers atteint (${UPLOAD_MAX_FILES})` });
     }
-    const key = `${prefix}${Date.now()}-${safeFilename(file.name)}`;
-    await env.VOCAUX.put(key, file.stream(), {
+    const key = `${prefix}${Date.now()}-${crypto.randomUUID().slice(0, 8)}-${safeFilename(file.name)}`;
+    await env.VOCAUX.put(key, file, {
       httpMetadata: { contentType: file.type },
     });
     return json(200, { ok: true, key });
