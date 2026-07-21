@@ -32,6 +32,18 @@
  * bloquer le flux email). Log les erreurs dans la reponse pour debug.
  */
 
+import {
+  slugify,
+  githubGetFileAt,
+  githubPutFileAt,
+  githubUpdateJsonAt,
+  resolveArchiveSlug,
+  parseR2Keys,
+  upsertQueueEntry,
+  hmacSign,
+  buildNotifyNote,
+} from './_onboarding-lib.js';
+
 const ALLOWED_ORIGINS = [
   'https://marcm.fr',
   'https://www.marcm.fr',
@@ -73,17 +85,6 @@ function json(status, body, origin) {
 }
 
 // ------- normalisation -------
-
-function slugify(s) {
-  return (s || '')
-    .toString()
-    .toLowerCase()
-    .normalize('NFD')
-    .replace(/[\u0300-\u036f]/g, '')
-    .replace(/[^a-z0-9]+/g, '-')
-    .replace(/-+/g, '-')
-    .replace(/^-|-$/g, '');
-}
 
 async function readBody(request) {
   const ct = (request.headers.get('Content-Type') || '').toLowerCase();
@@ -320,75 +321,6 @@ function mergeOrCreate(crm, lead) {
   return { action: 'created', contact };
 }
 
-// ------- GitHub API -------
-
-async function githubGetFile(env) {
-  // leads-master.json pese ~3 MB : l'API contents renvoie 'content' vide
-  // au-dessus de 1 MB. On fait 2 appels :
-  //  1. object media type pour obtenir le sha (pas le contenu, pas de limite)
-  //  2. raw media type pour obtenir le contenu brut (supporte 1-100 MB)
-  const base = `https://api.github.com/repos/${env.LEADS_REPO}/contents/${env.LEADS_PATH}?ref=${env.LEADS_BRANCH}`;
-  const commonHeaders = {
-    Authorization: `Bearer ${env.GITHUB_TOKEN}`,
-    'User-Agent': 'marcm-lead-inbound',
-    'X-GitHub-Api-Version': '2022-11-28',
-  };
-
-  const metaResp = await fetch(base, {
-    headers: { ...commonHeaders, Accept: 'application/vnd.github.object+json' },
-  });
-  if (!metaResp.ok) {
-    throw new Error(`github meta failed ${metaResp.status}: ${await metaResp.text()}`);
-  }
-  const meta = await metaResp.json();
-  const sha = meta.sha;
-  if (!sha) throw new Error('github meta missing sha');
-
-  const rawResp = await fetch(base, {
-    headers: { ...commonHeaders, Accept: 'application/vnd.github.raw' },
-  });
-  if (!rawResp.ok) {
-    throw new Error(`github raw failed ${rawResp.status}: ${await rawResp.text()}`);
-  }
-  const text = await rawResp.text();
-  return { json: JSON.parse(text), sha };
-}
-
-async function githubPutFile(env, newJson, sha, commitMessage) {
-  // encoder en base64 UTF-8 safe
-  const text = JSON.stringify(newJson, null, 2) + '\n';
-  const bytes = new TextEncoder().encode(text);
-  let binary = '';
-  for (let i = 0; i < bytes.length; i += 1) binary += String.fromCharCode(bytes[i]);
-  const content = btoa(binary);
-
-  const url = `https://api.github.com/repos/${env.LEADS_REPO}/contents/${env.LEADS_PATH}`;
-  const resp = await fetch(url, {
-    method: 'PUT',
-    headers: {
-      Authorization: `Bearer ${env.GITHUB_TOKEN}`,
-      Accept: 'application/vnd.github+json',
-      'Content-Type': 'application/json',
-      'User-Agent': 'marcm-lead-inbound',
-      'X-GitHub-Api-Version': '2022-11-28',
-    },
-    body: JSON.stringify({
-      message: commitMessage,
-      content,
-      sha,
-      branch: env.LEADS_BRANCH,
-      committer: {
-        name: 'marcm-lead-inbound',
-        email: 'marc@muller.im',
-      },
-    }),
-  });
-  if (!resp.ok) {
-    throw new Error(`github put failed ${resp.status}: ${await resp.text()}`);
-  }
-  return await resp.json();
-}
-
 // ------- handler -------
 
 export async function onRequestOptions({ request }) {
@@ -428,14 +360,15 @@ export async function onRequestPost({ request, env }) {
   }
 
   try {
-    const { json: crm, sha } = await githubGetFile(env);
+    const { json: crm, sha } = await githubGetFileAt(env, env.LEADS_PATH);
+    if (!crm) throw new Error('leads-master introuvable');
     const { action, contact } = mergeOrCreate(crm, lead);
     recomputeStats(crm);
     sortContacts(crm.contacts);
     crm._maj = nowISO();
 
     const commitMessage = `inbound: ${action} lead ${contact.id} via ${lead.form_source}`;
-    await githubPutFile(env, crm, sha, commitMessage);
+    await githubPutFileAt(env, env.LEADS_PATH, crm, sha, commitMessage);
 
     return json(200, {
       ok: true,
