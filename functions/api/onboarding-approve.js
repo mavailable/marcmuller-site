@@ -80,7 +80,8 @@ function triggerProvision(context, slug) {
     console.error('onboarding approve config', 'PROVISION_URL/PROVISION_TOKEN');
     return;
   }
-  const work = fetch(`${env.PROVISION_URL}/provision`, {
+  const base = env.PROVISION_URL.replace(/\/$/, '');
+  const work = fetch(`${base}/provision`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${env.PROVISION_TOKEN}` },
     body: JSON.stringify({ slug }),
@@ -125,6 +126,7 @@ export async function onRequestPost(context) {
   const sig = String(form.get('sig') || '');
   const paramErr = await checkParams(env, slug, exp, sig);
   if (paramErr) return paramErr;
+  const provisionReady = Boolean(env.PROVISION_URL && env.PROVISION_TOKEN);
 
   try {
     // read-modify-write, un retry si conflit sha
@@ -135,26 +137,29 @@ export async function onRequestPost(context) {
         if (res.reason === 'not_found') {
           return page(404, 'Dossier introuvable', `Aucune entree de queue pour « ${esc(slug)} ».`);
         }
-        return page(200, 'Deja traite', `Le dossier « ${esc(slug)} » est deja passe en ${res.reason.replace('statut ', 'statut « ') + ' »'}.`);
+        return page(200, 'Deja traite', `Le dossier « ${esc(slug)} » est deja passe en « ${esc(res.reason.replace('statut ', ''))} ».`);
       }
       if (res.already) {
         // Idempotent — et si le provisioning avait echoue (pas de champ repo), le re-clic le relance.
         if (!res.entry.repo) {
           triggerProvision(context, slug);
-          return page(200, 'Deja approuve', `Le dossier « ${esc(slug)} » etait deja approuve — provisioning relance.`);
+          return provisionReady
+            ? page(200, 'Deja approuve', `Le dossier « ${esc(slug)} » etait deja approuve — provisioning relance.`)
+            : page(200, 'Deja approuve', `Le dossier « ${esc(slug)} » etait deja approuve — provisioning NON relance (configuration manquante). Contactez le webmaster.`);
         }
         return page(200, 'Deja approuve', `Le dossier « ${esc(slug)} » etait deja approuve. Rien a faire.`);
       }
       try {
         await githubPutFileAt(env, QUEUE_PATH, queue, sha, `onboarding: approve ${slug}`);
         triggerProvision(context, slug);
-        return page(200, 'Dossier approuve', `Le dossier « ${esc(slug)} » est approuve. Provisioning lance, run au prochain poll (~1 h). Vous recevrez une notification.`);
+        return provisionReady
+          ? page(200, 'Dossier approuve', `Le dossier « ${esc(slug)} » est approuve. Provisioning lance, run au prochain poll (~1 h). Vous recevrez une notification.`)
+          : page(200, 'Dossier approuve', `Le dossier « ${esc(slug)} » est approuve, mais le provisioning n'a PAS ete lance (configuration manquante). Contactez le webmaster.`);
       } catch (e) {
         if (attempt === 0 && e.status === 409) continue;
         throw e;
       }
     }
-    return page(500, 'Erreur', 'Conflit repete sur la queue, reessayez.');
   } catch (e) {
     console.error('onboarding approve', e);
     return page(500, 'Erreur', 'Echec de la mise a jour, reessayez.');
