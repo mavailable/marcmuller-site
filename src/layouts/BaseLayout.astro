@@ -6,6 +6,7 @@ import MobileCallButton from '../components/MobileCallButton.astro';
 import WhatsAppButton from '../components/WhatsAppButton.astro';
 import SchemaOrg from '../components/SchemaOrg.astro';
 import { business } from '../data/business';
+import { getPageSeo } from '../data/seo';
 
 interface Props {
   title: string;
@@ -37,8 +38,17 @@ const {
   preloadImages,
 } = Astro.props;
 
+// ─── SEO editable via /admin -> ecran « SEO » (#/seo) ─────────────────────
+// Titre / description / image OG / noindex PAR ROUTE (singleton `seo`).
+// Champ vide -> valeur passee par la page. Doctrine : wf-00-cms §7bis.
+const pageSeo = getPageSeo(Astro.url.pathname);
+const resolvedTitle = pageSeo?.title || title;
+const resolvedDescription = pageSeo?.description || description;
+const resolvedOgImage = pageSeo?.ogImage || ogImage;
+const resolvedNoindex = pageSeo ? (pageSeo.noindex ?? noindex) : noindex;
+
 const canonicalURL = new URL(Astro.url.pathname, Astro.site);
-const ogImageURL = new URL(ogImage, Astro.site).href;
+const ogImageURL = new URL(resolvedOgImage, Astro.site).href;
 const ogLocale = lang === 'en' ? 'en_US' : 'fr_FR';
 
 const frURL = frPath ? new URL(frPath, Astro.site).href : null;
@@ -50,14 +60,14 @@ const enURL = enPath ? new URL(enPath, Astro.site).href : null;
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <meta name="description" content={description} />
+    <meta name="description" content={resolvedDescription} />
     <meta name="author" content={business.owner} />
     <meta name="theme-color" content="#E86C47" />
-    {noindex && <meta name="robots" content="noindex, nofollow" />}
+    {resolvedNoindex && <meta name="robots" content="noindex, nofollow" />}
 
     <!-- OG Meta Tags -->
-    <meta property="og:title" content={title} />
-    <meta property="og:description" content={description} />
+    <meta property="og:title" content={resolvedTitle} />
+    <meta property="og:description" content={resolvedDescription} />
     <meta property="og:image" content={ogImageURL} />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
@@ -69,8 +79,8 @@ const enURL = enPath ? new URL(enPath, Astro.site).href : null;
     <!-- Twitter Cards -->
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:site" content="@marcmuller_dev" />
-    <meta name="twitter:title" content={title} />
-    <meta name="twitter:description" content={description} />
+    <meta name="twitter:title" content={resolvedTitle} />
+    <meta name="twitter:description" content={resolvedDescription} />
     <meta name="twitter:image" content={ogImageURL} />
 
     <!-- Canonical URL & Favicon -->
@@ -94,7 +104,7 @@ const enURL = enPath ? new URL(enPath, Astro.site).href : null;
     {enURL && <link rel="alternate" hreflang="en" href={enURL} />}
     {frURL && <link rel="alternate" hreflang="x-default" href={frURL} />}
 
-    <title>{title}</title>
+    <title>{resolvedTitle}</title>
 
     <!-- Schema.org WebSite (global) -->
     <SchemaOrg type="webSite" />
