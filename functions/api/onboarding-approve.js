@@ -1,8 +1,10 @@
 /**
- * GET /api/onboarding-approve?slug=<slug>&exp=<unix>&sig=<hex>
- * Lien 1-clic depuis l'email de notification : flip queue recu -> approuve.
- * sig = HMAC-SHA256(ONBOARDING_SIGNING_KEY, "<slug>.<exp>"). Idempotent.
- * Reponse : petite page HTML (noindex, aucun secret).
+ * /api/onboarding-approve — approbation en deux temps (confirmation POST).
+ * GET  ?slug&exp&sig : verifie la signature et AFFICHE une page de confirmation
+ *      (un GET — scanner d'email, prefetch — ne mute JAMAIS la queue).
+ * POST (form slug/exp/sig) : re-verifie, flip queue recu -> approuve (idempotent),
+ *      puis declenche le provisioning (wf-provision) en waitUntil.
+ * sig = HMAC-SHA256(ONBOARDING_SIGNING_KEY, "<slug>.<exp>").
  */
 
 import {
@@ -23,7 +25,7 @@ function esc(s) {
   return String(s).replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`);
 }
 
-function page(status, title, message) {
+function page(status, title, message, extraHtml = '') {
   const html = `<!doctype html>
 <html lang="fr">
 <head>
@@ -40,7 +42,7 @@ function page(status, title, message) {
   p { margin: 0; color: #525252; line-height: 1.5; }
 </style>
 </head>
-<body><main><h1>${title}</h1><p>${message}</p></main></body>
+<body><main><h1>${title}</h1><p>${message}</p>${extraHtml}</main></body>
 </html>`;
   return new Response(html, {
     status,
@@ -48,19 +50,17 @@ function page(status, title, message) {
   });
 }
 
-export async function onRequestGet({ request, env }) {
+function checkEnv(env) {
   for (const k of ['GITHUB_TOKEN', 'LEADS_REPO', 'LEADS_BRANCH', 'ONBOARDING_SIGNING_KEY']) {
     if (!env[k]) {
       console.error('onboarding approve config', k);
       return page(500, 'Configuration incomplete', 'Contactez le webmaster.');
     }
   }
+  return null;
+}
 
-  const u = new URL(request.url);
-  const slug = u.searchParams.get('slug') || '';
-  const exp = u.searchParams.get('exp') || '';
-  const sig = u.searchParams.get('sig') || '';
-
+async function checkParams(env, slug, exp, sig) {
   if (!slug || !/^\d+$/.test(exp) || !sig) {
     return page(400, 'Lien invalide', 'Parametres manquants ou malformes.');
   }
@@ -70,6 +70,61 @@ export async function onRequestGet({ request, env }) {
   if (Number(exp) * 1000 < Date.now()) {
     return page(410, 'Lien expire', 'Ce lien a expire (7 jours). Approuvez le dossier depuis le hub.');
   }
+  return null;
+}
+
+/** Appel wf-provision, fire-and-forget via waitUntil (le run n'attend pas la reponse). */
+function triggerProvision(context, slug) {
+  const { env } = context;
+  if (!env.PROVISION_URL || !env.PROVISION_TOKEN) {
+    console.error('onboarding approve config', 'PROVISION_URL/PROVISION_TOKEN');
+    return;
+  }
+  const work = fetch(`${env.PROVISION_URL}/provision`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${env.PROVISION_TOKEN}` },
+    body: JSON.stringify({ slug }),
+    signal: AbortSignal.timeout(25000),
+  }).then(async (r) => {
+    if (!r.ok) console.error('provision call', r.status, await r.text());
+  }).catch((e) => console.error('provision call', e));
+  if (typeof context.waitUntil === 'function') context.waitUntil(work);
+}
+
+export async function onRequestGet({ request, env }) {
+  const envErr = checkEnv(env);
+  if (envErr) return envErr;
+  const u = new URL(request.url);
+  const slug = u.searchParams.get('slug') || '';
+  const exp = u.searchParams.get('exp') || '';
+  const sig = u.searchParams.get('sig') || '';
+  const paramErr = await checkParams(env, slug, exp, sig);
+  if (paramErr) return paramErr;
+  const form = `<form method="POST" action="/api/onboarding-approve" style="margin-top:20px">
+<input type="hidden" name="slug" value="${esc(slug)}">
+<input type="hidden" name="exp" value="${esc(exp)}">
+<input type="hidden" name="sig" value="${esc(sig)}">
+<button type="submit" style="background:#E86C47;color:#fff;border:0;border-radius:10px;padding:12px 24px;font-size:1rem;cursor:pointer">Approuver le dossier</button>
+</form>`;
+  return page(200, "Confirmer l'approbation",
+    `Dossier « ${esc(slug)} » : l'approbation lancera le provisioning puis le run self-service au prochain poll.`, form);
+}
+
+export async function onRequestPost(context) {
+  const { request, env } = context;
+  const envErr = checkEnv(env);
+  if (envErr) return envErr;
+  let form;
+  try {
+    form = await request.formData();
+  } catch {
+    return page(400, 'Requete invalide', 'Formulaire attendu.');
+  }
+  const slug = String(form.get('slug') || '');
+  const exp = String(form.get('exp') || '');
+  const sig = String(form.get('sig') || '');
+  const paramErr = await checkParams(env, slug, exp, sig);
+  if (paramErr) return paramErr;
 
   try {
     // read-modify-write, un retry si conflit sha
@@ -83,11 +138,17 @@ export async function onRequestGet({ request, env }) {
         return page(200, 'Deja traite', `Le dossier « ${esc(slug)} » est deja passe en ${res.reason.replace('statut ', 'statut « ') + ' »'}.`);
       }
       if (res.already) {
+        // Idempotent — et si le provisioning avait echoue (pas de champ repo), le re-clic le relance.
+        if (!res.entry.repo) {
+          triggerProvision(context, slug);
+          return page(200, 'Deja approuve', `Le dossier « ${esc(slug)} » etait deja approuve — provisioning relance.`);
+        }
         return page(200, 'Deja approuve', `Le dossier « ${esc(slug)} » etait deja approuve. Rien a faire.`);
       }
       try {
         await githubPutFileAt(env, QUEUE_PATH, queue, sha, `onboarding: approve ${slug}`);
-        return page(200, 'Dossier approuve', `Le dossier « ${esc(slug)} » est passe en statut « approuve ». Le runner peut le prendre en charge.`);
+        triggerProvision(context, slug);
+        return page(200, 'Dossier approuve', `Le dossier « ${esc(slug)} » est approuve. Provisioning lance, run au prochain poll (~1 h). Vous recevrez une notification.`);
       } catch (e) {
         if (attempt === 0 && e.status === 409) continue;
         throw e;
@@ -100,7 +161,9 @@ export async function onRequestGet({ request, env }) {
   }
 }
 
-export async function onRequest({ request, env }) {
-  if (request.method === 'GET') return onRequestGet({ request, env });
-  return page(405, 'Methode non autorisee', 'GET uniquement.');
+export async function onRequest(context) {
+  const { request } = context;
+  if (request.method === 'GET') return onRequestGet(context);
+  if (request.method === 'POST') return onRequestPost(context);
+  return page(405, 'Methode non autorisee', 'GET ou POST uniquement.');
 }
