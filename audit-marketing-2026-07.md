@@ -1,4 +1,4 @@
-# Audit marketing marcm.fr — juillet 2026
+# Audit marketing marcm.fr · juillet 2026
 
 > Analyse seule, aucune modification du site. Auteur : expert-marcm.
 > Données réelles au 2026-07-23. Sources : Umami Cloud (site Marc M, id `0e4930eb`), Google Search Console (`sc-domain:marcm.fr`), inventaire du repo post-bascule « zéro tarif » (commits 8ab9ed0 + 0e11f25) et funnel /onboarding (commit e6f2da8).
@@ -23,7 +23,7 @@ Réserve méthodo importante : une grande partie du trafic Umami est du bruit no
 
 ---
 
-## A. Cohérence — le site raconte-t-il une seule histoire ?
+## A. Cohérence : le site raconte-t-il une seule histoire ?
 
 Verdict : le repositionnement « bras droit des indépendants » est bien passé dans le contenu on-page (hero, /offre, /methode, /qui-suis-je), mais il n'a pas atteint trois couches critiques, et la bascule « zéro tarif » de cette semaine a laissé des références orphelines. Résultat : trois versions de Marc coexistent selon où on regarde.
 
@@ -66,7 +66,7 @@ Cas /graphistes (noindex) : la page est une offre de sous-traitance B2B aux grap
 
 ---
 
-## B. SEO — ce que disent les vrais chiffres GSC
+## B. SEO : ce que disent les vrais chiffres GSC
 
 Sur 90 j : 6 clics, 4 034 impressions, position moyenne 19,5. Google voit le site (57 pages avec des impressions, 111 requêtes distinctes) mais le classe en page 2-3, donc personne ne clique. Le problème n°1 n'est pas l'indexation, c'est le positionnement et l'adéquation requête/page.
 
@@ -116,7 +116,7 @@ Le meilleur levier CTR immédiat : la home est à 456 impressions, position 10,3
 
 ---
 
-## C. Conversion — parcours réels et friction des portes
+## C. Conversion : parcours réels et friction des portes
 
 ### C1. Le tunnel réel, mesuré (Umami 90 j)
 
