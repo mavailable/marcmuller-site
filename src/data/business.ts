@@ -34,13 +34,13 @@ export const business = {
 
   // Business
   description: "J'aide les indépendants à trouver des clients. Un site qui te ramène des clients, de quoi aller les chercher et savoir quoi leur dire, et les outils qui te font gagner du temps. Comme un associé qui met les mains dedans, sans prendre tes parts.",
-  priceRange: '490€+',
   areaServed: ['France', 'Strasbourg', 'Metz', 'Nancy', 'Colmar', 'Mulhouse'],
 
   // Offres (gamme 3 niveaux : déclic → bras droit → briques)
-  // Note : le "bras droit" (accompagnement cœur) est SANS PRIX PUBLIC (price: null).
-  // schemas.ts filtre `price != null`, donc il n'apparaît pas dans le Schema.org makesOffer
-  // (pas de prix indexé pour cette offre). Voulu.
+  // Note : plus AUCUN tarif public n'est affiché sur le site ni indexé dans le
+  // Schema.org (décision 2026-07). Les champs `price` restent comme données internes
+  // mais ne sont ni rendus par les pages ni émis dans le JSON-LD (cf. schemas.ts).
+  // Tout parcours commercial oriente vers l'échange (/contact, /onboarding).
   offers: [
     {
       name: "L'accompagnement",
@@ -104,8 +104,8 @@ export const business = {
     tagline: 'L\'écho de vos visiteurs — ce que votre site leur renvoie vraiment.',
     tiers: [
       { name: 'Gratuit', price: 0, personas: 5, description: '5 visiteurs simulés, résumé + 1 recommandation, par email.', stripePaymentLink: '' },
-      { name: 'Complet', price: 90, personas: 20, description: '20 visiteurs simulés, rapport interactif, audit technique, recommandations priorisées, page dédiée.', stripePaymentLink: 'https://buy.stripe.com/14AcN7gsL7ht7gecYY14400' },
-      { name: 'Pro', price: 250, personas: 100, description: '100 visiteurs simulés, analyse par canal et maturité, score par profil client, appel de 30 min.', stripePaymentLink: 'https://buy.stripe.com/cNi9AV5O7eJV6ca2kk14401' },
+      { name: 'Complet', price: 90, personas: 20, description: '20 visiteurs simulés, rapport interactif, audit technique, recommandations priorisées, page dédiée.', stripePaymentLink: '' },
+      { name: 'Pro', price: 250, personas: 100, description: '100 visiteurs simulés, analyse par canal et maturité, score par profil client, appel de 30 min.', stripePaymentLink: '' },
     ],
     rapportsGeneres: 26,
   },

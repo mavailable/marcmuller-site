@@ -4,8 +4,6 @@ import SchemaOrg from '../components/SchemaOrg.astro';
 import { business } from '../data/business';
 
 const vm = business.visiteMystere;
-const stripeComplet = vm.tiers[1].stripePaymentLink;
-const stripePro = vm.tiers[2].stripePaymentLink;
 
 const faqItems = [
   {
@@ -42,7 +40,7 @@ const faqItems = [
   },
   {
     question: 'Comment je règle ?',
-    answer: 'Après envoi du formulaire, vous êtes redirigé vers une page de paiement sécurisée Stripe (carte bancaire). Facture envoyée par email dès réception. La formule Découverte est gratuite — aucun paiement demandé.',
+    answer: 'Pour les formules Complet et Pro, je vous envoie une facture par email après votre demande, réglable par carte ou par virement. La formule Découverte est gratuite, aucun paiement demandé.',
   },
 ];
 
@@ -317,7 +315,7 @@ const demoPersonas = [
   <!-- ═══════════════════ PRICING ═══════════════════ -->
   <section class="w-full px-6 py-20 md:px-8 md:py-28" style="background: var(--color-bg);">
     <div class="mx-auto max-w-5xl">
-      <div class="text-xs font-semibold uppercase tracking-widest text-center mb-4" style="color: var(--color-accent); letter-spacing: 0.15em;">Tarifs</div>
+      <div class="text-xs font-semibold uppercase tracking-widest text-center mb-4" style="color: var(--color-accent); letter-spacing: 0.15em;">Formules</div>
       <h2 class="text-3xl md:text-4xl font-bold leading-tight tracking-[-0.02em] text-center mb-4" style="color: var(--color-text);">
         Combien de visiteurs voulez-vous envoyer ?
       </h2>
@@ -365,7 +363,7 @@ const demoPersonas = [
           <a href="?formule=complet#formulaire" data-umami-event="echo-pricing-complet" class="block w-full text-center px-6 py-3.5 rounded-xl font-semibold text-white transition-all duration-200 hover:shadow-lg hover:-translate-y-0.5" style="background: linear-gradient(135deg, #E86C47, #D4572F); box-shadow: 0 4px 20px rgba(232, 108, 71, 0.3);">
             Choisir cette formule
           </a>
-          <p class="text-center text-[11px] mt-2.5" style="color: var(--color-text-muted);">Paiement sécurisé immédiat. Facture par email.</p>
+          <p class="text-center text-[11px] mt-2.5" style="color: var(--color-text-muted);">Je reviens vers vous pour lancer votre Écho.</p>
         </div>
 
         <!-- Pro -->
@@ -385,7 +383,7 @@ const demoPersonas = [
           <a href="?formule=pro#formulaire" data-umami-event="echo-pricing-pro" class="block w-full text-center px-6 py-3.5 rounded-xl font-semibold border-2 transition-all duration-200 hover:border-[var(--color-accent)] hover:text-[var(--color-accent-text)]" style="border-color: var(--color-border); color: var(--color-text);">
             Choisir cette formule
           </a>
-          <p class="text-center text-[11px] mt-2.5" style="color: var(--color-text-muted);">Paiement sécurisé immédiat. Facture par email.</p>
+          <p class="text-center text-[11px] mt-2.5" style="color: var(--color-text-muted);">Je reviens vers vous pour lancer votre Écho.</p>
         </div>
       </div>
     </div>
@@ -553,12 +551,9 @@ const demoPersonas = [
     </div>
   </section>
 
-  <script define:vars={{ stripeComplet, stripePro }}>
+  <script>
     (function () {
-      function getRedirectUrl(formuleValue) {
-        var v = formuleValue.toLowerCase();
-        if (v.startsWith('complet') && stripeComplet) return stripeComplet;
-        if (v.startsWith('pro') && stripePro) return stripePro;
+      function getRedirectUrl() {
         return 'https://marcm.fr/merci';
       }
 
@@ -601,8 +596,7 @@ const demoPersonas = [
         form.addEventListener('submit', function (e) {
           e.preventDefault();
 
-          var checked = form.querySelector('input[name="formule"]:checked');
-          var redirectUrl = getRedirectUrl(checked ? checked.value : '');
+          var redirectUrl = getRedirectUrl();
 
           var btn = form.querySelector('button[type="submit"]');
           if (btn) { btn.disabled = true; btn.textContent = 'Envoi en cours…'; }

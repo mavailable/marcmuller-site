@@ -71,17 +71,13 @@ export function getLocalBusinessSchema() {
       "@type": area === 'France' ? 'Country' : 'City',
       "name": area
     })),
-    "priceRange": business.priceRange,
     "sameAs": [
       business.socialMedia.linkedin
     ],
     "makesOffer": business.offers
-      .filter(offer => offer.price != null)
       .map(offer => ({
         "@type": "Offer",
         "name": offer.name,
-        "price": String(offer.price),
-        "priceCurrency": offer.currency,
         "description": offer.description
       }))
   };

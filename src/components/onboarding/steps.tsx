@@ -115,7 +115,7 @@ export function Step4({ d, set, errors }: StepProps) {
       )}
       <TextArea id="freins" label="Qu'est-ce qui vous empêche d'avoir un site aujourd'hui ?" value={d.freins || ''} onChange={set('freins')} />
       <div className="grid sm:grid-cols-2 gap-x-4">
-        <SelectInput id="budget" label="Budget envisagé" value={d.budget || ''} onChange={set('budget')} options={BUDGETS} />
+        <SelectInput id="budget" label="Ampleur du projet" value={d.budget || ''} onChange={set('budget')} options={BUDGETS} />
         <SelectInput id="deadline" label="Deadline" value={d.deadline || ''} onChange={set('deadline')} options={DEADLINES} />
       </div>
 

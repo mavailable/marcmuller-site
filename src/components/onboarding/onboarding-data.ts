@@ -43,7 +43,7 @@ export const OBJECTIFS = [
   'Recruter des adhérents ou des bénévoles',
   'Autre',
 ];
-export const BUDGETS = ['Essentiel (environ 490€ HT)', 'Multi-pages (environ 1290€ HT)', 'Sur mesure (1990€ HT et plus)', 'Je ne sais pas'];
+export const BUDGETS = ['Essentiel (site one-page)', 'Multi-pages', 'Sur mesure', 'Je ne sais pas'];
 export const DEADLINES = ['Pas pressé', '1 mois', '2 semaines', 'Urgent'];
 
 export const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;

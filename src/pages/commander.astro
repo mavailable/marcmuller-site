@@ -1,12 +1,9 @@
 ---
 import BaseLayout from '../layouts/BaseLayout.astro';
 import SchemaOrg from '../components/SchemaOrg.astro';
-import { business } from '../data/business';
 import { getClientProjects, getSampleProjects } from '../data/projects';
 
-const siteVitrine = business.offers[0];
 const totalProjects = getClientProjects().length + getSampleProjects().length;
-const basePrice = siteVitrine.price!;
 
 const categories = [
   { id: 'all', label: 'Tout' },
@@ -46,7 +43,7 @@ const checkIcon = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
 
 <BaseLayout
   title="Commander votre site — Marc M"
-  description="Commandez votre site professionnel en ligne. Site Vitrine à 490€ HT, options à la carte, livré en 7 jours."
+  description="Configurez votre site professionnel en ligne. Site Vitrine sur mesure, options à la carte, livré en 7 jours."
   lang="fr"
   frPath="/commander"
   enPath="/en/order-starter-site"
@@ -97,9 +94,8 @@ const checkIcon = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
         <input type="hidden" name="form_source" value="commander" />
         <input type="text" name="botcheck" style="display: none;" />
         <input type="hidden" name="redirect" value="https://marcm.fr/merci" />
-        <input type="hidden" name="subject" value="Nouvelle commande Site Vitrine" />
+        <input type="hidden" name="subject" value="Nouvelle demande de site" />
         <input type="hidden" name="from_name" value="Commande marcm.fr" />
-        <input type="hidden" name="commande_total" id="hidden-total" value="490" />
         <input type="hidden" name="commande_options" id="hidden-options" value="" />
 
         <!-- ========== STEP 1 — Compact product + payment ========== -->
@@ -114,8 +110,8 @@ const checkIcon = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                   <h2 class="text-xl font-bold text-white mt-1">Votre site professionnel</h2>
                 </div>
                 <div class="text-right flex-shrink-0">
-                  <div class="text-3xl font-extrabold text-white">490<span class="text-lg">€</span></div>
-                  <span class="text-xs text-neutral-400">HT — ou 3× 165€</span>
+                  <div class="text-2xl font-extrabold text-white">Sur devis</div>
+                  <span class="text-xs text-neutral-400">livré en 7 jours</span>
                 </div>
               </div>
 
@@ -178,7 +174,7 @@ const checkIcon = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                 data-addon-name={addon.name}
                 data-addon-cat={addon.cat}
               >
-                <input type="checkbox" name={`addon_${i}`} value={`${addon.name} (+${addon.price}€)`} class="sr-only addon-checkbox" />
+                <input type="checkbox" name={`addon_${i}`} value={addon.name} class="sr-only addon-checkbox" />
 
                 <!-- Icon -->
                 <div class="addon-icon w-9 h-9 rounded-lg flex items-center justify-center flex-shrink-0 transition-all" style="background: rgba(232, 108, 71, 0.08);">
@@ -194,7 +190,7 @@ const checkIcon = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                         <span class={`inline-block text-[10px] font-bold uppercase tracking-wide px-1.5 py-0.5 rounded-full ${addon.badge === 'Populaire' ? 'bg-amber-100 text-amber-700' : 'bg-emerald-100 text-emerald-700'}`}>{addon.badge}</span>
                       )}
                     </div>
-                    <span class="text-sm font-bold text-[var(--color-accent-text)] flex-shrink-0">+{addon.price}€</span>
+                    <span class="text-xs font-semibold text-[var(--color-accent-text)] flex-shrink-0">En option</span>
                   </div>
                   <p class="text-xs text-[var(--color-text-muted)] mt-1 leading-relaxed">{addon.desc}</p>
                 </div>
@@ -206,8 +202,8 @@ const checkIcon = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
           <div class="mt-6 rounded-xl border border-[var(--color-border)] bg-white p-5">
             <div class="flex items-center justify-between mb-4">
               <div>
-                <span class="text-sm text-[var(--color-text-muted)]">Total estimé</span>
-                <div class="text-2xl font-extrabold text-[var(--color-text)]" id="inline-total">490€ <span class="text-sm font-normal text-[var(--color-text-muted)]">HT</span></div>
+                <span class="text-sm text-[var(--color-text-muted)]">Vos options</span>
+                <div class="text-lg font-bold text-[var(--color-text)]" id="inline-total">Site Vitrine sur mesure</div>
               </div>
               <div class="text-right">
                 <span class="text-xs text-[var(--color-text-muted)]" id="inline-addon-summary">Aucune option</span>
@@ -324,12 +320,10 @@ const checkIcon = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
                 <span class="font-semibold text-[var(--color-text)] text-sm">Site Vitrine</span>
                 <span class="text-xs text-[var(--color-text-muted)] block">Design sur mesure, livré en 7 jours</span>
               </div>
-              <span class="font-bold text-[var(--color-text)]">490€</span>
             </div>
             <div id="recap-addons"></div>
-            <div class="px-5 py-4 bg-[var(--color-bg-alt)] flex justify-between items-center">
-              <span class="font-bold text-[var(--color-text)]">Total HT</span>
-              <span class="text-xl font-extrabold text-[var(--color-accent-text)]" id="recap-total">490€</span>
+            <div class="px-5 py-4 bg-[var(--color-bg-alt)] text-sm text-[var(--color-text-muted)]">
+              Je vous envoie une proposition claire et chiffrée après notre échange.
             </div>
           </div>
 
@@ -369,7 +363,7 @@ const checkIcon = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
 
           <!-- Submit -->
           <button type="submit" class="w-full rounded-xl bg-[var(--color-accent)] px-8 py-4 text-base font-bold text-white transition-all hover:bg-[var(--color-accent-hover)] hover:-translate-y-0.5" style="box-shadow: 0 8px 25px rgba(232, 108, 71, 0.3);" data-umami-event="order-submit" id="btn-submit">
-            Confirmer ma commande
+            Envoyer ma demande
           </button>
           <p class="text-center text-xs text-[var(--color-text-muted)] mt-3 leading-relaxed">
             Pas de paiement immédiat — je vous recontacte d'abord.<br />
@@ -386,8 +380,8 @@ const checkIcon = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
     <div class="bg-white/95 backdrop-blur-md border-t border-[var(--color-border)] shadow-[0_-4px_20px_rgba(0,0,0,0.08)] px-6 py-3">
       <div class="mx-auto max-w-3xl flex items-center justify-between">
         <div>
-          <span class="text-xs text-[var(--color-text-muted)]">Total</span>
-          <div class="text-xl font-extrabold text-[var(--color-text)]" id="floating-total-amount">490€ <span class="text-xs font-normal text-[var(--color-text-muted)]">HT</span></div>
+          <span class="text-xs text-[var(--color-text-muted)]">Votre projet</span>
+          <div class="text-sm font-bold text-[var(--color-text)]" id="floating-total-amount">Site + options</div>
         </div>
         <div class="flex gap-2">
           <button type="button" id="btn-float-back" class="inline-flex items-center gap-1.5 px-4 py-2.5 text-sm text-[var(--color-text-muted)] font-medium rounded-lg border border-[var(--color-border)] hover:bg-[var(--color-bg-alt)] transition-all">
@@ -493,7 +487,6 @@ const checkIcon = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
 
 <script>
   document.addEventListener('DOMContentLoaded', () => {
-    const BASE_PRICE = 490;
     let currentStep = 1;
     let maxStepReached = 1;
 
@@ -632,38 +625,19 @@ const checkIcon = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
       });
     });
 
-    // ---- Totals ----
-    function getAddonsTotal(): number {
-      let sum = 0;
+    // ---- Sélection d'options (sans prix affiché) ----
+    function updateTotal() {
+      const inlineSummary = document.getElementById('inline-addon-summary');
+      let count = 0;
       addonCards.forEach(card => {
         const cb = card.querySelector('.addon-checkbox') as HTMLInputElement;
-        if (cb.checked) sum += parseInt(card.dataset.addonPrice || '0', 10);
+        if (cb.checked) count++;
       });
-      return sum;
-    }
-
-    function updateTotal() {
-      const total = BASE_PRICE + getAddonsTotal();
-      const formatted = `${total}€ <span class="text-xs font-normal text-[var(--color-text-muted)]">HT</span>`;
-      if (floatingAmount) floatingAmount.innerHTML = formatted;
-
-      // Inline total (step 2)
-      const inlineTotal = document.getElementById('inline-total');
-      if (inlineTotal) inlineTotal.innerHTML = `${total}€ <span class="text-sm font-normal text-[var(--color-text-muted)]">HT</span>`;
-
-      const inlineSummary = document.getElementById('inline-addon-summary');
       if (inlineSummary) {
-        let count = 0;
-        let addonsSum = 0;
-        addonCards.forEach(card => {
-          const cb = card.querySelector('.addon-checkbox') as HTMLInputElement;
-          if (cb.checked) { count++; addonsSum += parseInt(card.dataset.addonPrice || '0', 10); }
-        });
-        inlineSummary.textContent = count === 0 ? 'Aucune option' : `${count} option${count > 1 ? 's' : ''} (+${addonsSum}€)`;
+        inlineSummary.textContent = count === 0
+          ? 'Aucune option'
+          : `${count} option${count > 1 ? 's' : ''} sélectionnée${count > 1 ? 's' : ''}`;
       }
-
-      const ht = document.getElementById('hidden-total') as HTMLInputElement;
-      if (ht) ht.value = String(total);
       updateHiddenOptions();
     }
 
@@ -671,7 +645,7 @@ const checkIcon = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
       const names: string[] = [];
       addonCards.forEach(card => {
         const cb = card.querySelector('.addon-checkbox') as HTMLInputElement;
-        if (cb.checked) names.push(`${card.dataset.addonName} (+${card.dataset.addonPrice}€)`);
+        if (cb.checked && card.dataset.addonName) names.push(card.dataset.addonName);
       });
       const el = document.getElementById('hidden-options') as HTMLInputElement;
       if (el) el.value = names.length ? names.join(', ') : 'Aucune option';
@@ -735,7 +709,6 @@ const checkIcon = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
 
     // ---- Recap ----
     function populateRecap() {
-      const total = BASE_PRICE + getAddonsTotal();
       const recapAddons = document.getElementById('recap-addons');
       if (recapAddons) {
         recapAddons.innerHTML = '';
@@ -744,14 +717,11 @@ const checkIcon = `<svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20">
           if (cb.checked) {
             const row = document.createElement('div');
             row.className = 'recap-addon-row';
-            row.innerHTML = `<span class="text-[var(--color-text)]">${card.dataset.addonName}</span><span class="font-bold text-[var(--color-text)]">+${card.dataset.addonPrice}€</span>`;
+            row.innerHTML = `<span class="text-[var(--color-text)]">${card.dataset.addonName}</span><span class="text-xs font-semibold text-[var(--color-accent-text)]">En option</span>`;
             recapAddons.appendChild(row);
           }
         });
       }
-
-      const recapTotal = document.getElementById('recap-total');
-      if (recapTotal) recapTotal.textContent = `${total}€`;
 
       const recapInfo = document.getElementById('recap-info');
       if (recapInfo) {
