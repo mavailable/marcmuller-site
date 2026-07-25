@@ -54,10 +54,19 @@ export async function onRequest({ request, next }) {
 
   const enTarget = FR_TO_EN[pathname];
   if (enTarget && !pathname.startsWith('/en/') && !prefersLangFR) {
+    // Cible avec slash final (trailingSlash: 'always') : evite le hop 302 -> 308
+    const enUrl = new URL(enTarget.endsWith('/') ? enTarget : `${enTarget}/`, url).toString();
+
     // Si l'utilisateur a explicitement choisi EN via le toggle, rediriger
     if (prefersLangEN) {
-      return Response.redirect(new URL(enTarget, url).toString(), 302);
+      return Response.redirect(enUrl, 302);
     }
+
+    // Crawlers : JAMAIS de redirection langue. Googlebot crawle sans Accept-Language,
+    // le rediriger sert l'EN sur les URLs FR (cannibalisation constatee juil. 2026,
+    // audit-marketing-2026-07.md D15). Les bots decouvrent /en/ via les hreflang.
+    const ua = request.headers.get('User-Agent') || '';
+    const isBot = /bot|crawl|spider|slurp|bingpreview|facebookexternalhit|lighthouse/i.test(ua);
 
     // Sinon, détecter la langue du navigateur
     const acceptLanguage = request.headers.get('Accept-Language') || '';
@@ -65,8 +74,8 @@ export async function onRequest({ request, next }) {
       .split(',')
       .some((lang) => lang.trim().toLowerCase().startsWith('fr'));
 
-    if (!prefersFrench) {
-      return Response.redirect(new URL(enTarget, url).toString(), 302);
+    if (!isBot && !prefersFrench) {
+      return Response.redirect(enUrl, 302);
     }
   }
 
