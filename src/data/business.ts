@@ -76,8 +76,10 @@ export const business = {
     { name: 'Site bilingue FR/DE ou FR/EN', price: 390 },
   ],
 
-  // Accompagnement post-livraison
-  accompagnement: [
+  // Forfaits de suivi post-livraison (maintenance technique du site).
+  // Distinct de l'accompagnement (le bras droit récurrent, cf. offers[] + /accompagnement).
+  // Le mot « accompagnement » est réservé au cœur de gamme ; ici c'est du « suivi ».
+  suivi: [
     {
       name: 'Autonomie',
       price: 0,
@@ -85,7 +87,7 @@ export const business = {
       description: 'Votre site tourne tout seul. Vous gérez en toute indépendance.',
     },
     {
-      name: 'Accompagnement',
+      name: 'Suivi',
       price: 39,
       period: 'mois',
       description: 'Domaine inclus, support email/WhatsApp, modifications mineures.',
