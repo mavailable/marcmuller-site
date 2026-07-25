@@ -51,8 +51,12 @@ const canonicalURL = new URL(Astro.url.pathname, Astro.site);
 const ogImageURL = new URL(resolvedOgImage, Astro.site).href;
 const ogLocale = lang === 'en' ? 'en_US' : 'fr_FR';
 
-const frURL = frPath ? new URL(frPath, Astro.site).href : null;
-const enURL = enPath ? new URL(enPath, Astro.site).href : null;
+// Le site est en trailingSlash: 'always' → le canonical porte toujours un slash final.
+// On normalise les alternates hreflang pour qu'ils pointent sur l'URL canonique
+// (et non sur une URL qui redirige), sinon hreflang et canonical divergent.
+const withTrailingSlash = (p: string) => (p.endsWith('/') ? p : `${p}/`);
+const frURL = frPath ? new URL(withTrailingSlash(frPath), Astro.site).href : null;
+const enURL = enPath ? new URL(withTrailingSlash(enPath), Astro.site).href : null;
 ---
 
 <!doctype html>
