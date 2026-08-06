@@ -14,13 +14,18 @@ const breadcrumbs = [
 
 const checklist = [
   {
-    name: 'Contact technique OVH (si domaine chez OVH)',
-    text: 'Désignez-moi comme contact technique de votre domaine (identifiant : uo9730-ovh). Vous restez propriétaire — ça me permet uniquement de configurer les DNS.',
-    guide: { href: '/aide/domaine-ovh', label: 'Guide domaine OVH' },
+    name: 'Nom du domaine, où qu\'il soit acheté (OVH, Ionos, GoDaddy, Gandi, autre)',
+    text: 'Vous n\'avez aucun accès ni mot de passe à me donner. Envoyez-moi le nom exact du domaine, je prépare sa configuration de mon côté, puis je vous envoie 2 adresses de serveurs DNS à coller chez votre registrar. C\'est 2 minutes, vous restez propriétaire, et rien ne bouge tant que vous n\'avez pas collé.',
+    guide: { href: '/aide/domaine-ovh', label: 'Guide domaine et serveurs DNS (OVH)' },
   },
   {
-    name: 'Invitation membre Cloudflare (si domaine chez Cloudflare)',
-    text: 'Invitez-moi comme membre de votre compte Cloudflare avec le rôle « Administrator » (marc@muller.im). Vous restez propriétaire, ça me donne uniquement la main technique (DNS, SSL, réglages du domaine), sans aucun accès à votre facturation.',
+    name: 'Email professionnel sur ce domaine : oui ou non',
+    text: 'Si une adresse du type contact@votre-domaine.fr existe déjà (Google Workspace, OVH, autre), dites-le moi avant tout changement : je recopie ces réglages à l\'identique pour que rien ne s\'interrompe. C\'est le seul point sensible de la mise en ligne.',
+    guide: null,
+  },
+  {
+    name: 'Invitation membre Cloudflare (uniquement si vous achetez le domaine chez Cloudflare)',
+    text: 'Dans ce cas précis, le domaine est déjà dans votre compte Cloudflare : invitez-moi comme membre avec le rôle « Administrator » (marc@muller.im). Vous restez propriétaire, ça me donne uniquement la main technique (DNS, SSL, réglages du domaine), sans aucun accès à votre facturation.',
     guide: { href: '/aide/domaine-cloudflare', label: 'Guide domaine Cloudflare' },
   },
   {
@@ -61,7 +66,11 @@ const faq = [
   },
   {
     question: 'Mes identifiants sont-ils en sécurité ?',
-    answer: 'Je n\'ai pas besoin de votre mot de passe OVH — le rôle de contact technique me donne uniquement accès aux DNS du domaine. Pour la clé Web3Forms et le lien Cal.com, ce sont des informations qui ne donnent accès à rien de sensible.',
+    answer: 'Je ne demande jamais le mot de passe de votre registrar. Pour un domaine déjà acheté, c\'est vous qui collez les 2 adresses de serveurs DNS, dans votre compte, en 2 minutes. Pour un domaine acheté chez Cloudflare, l\'invitation membre « Administrator » se révoque en un clic et ne touche ni à votre facturation ni à votre carte. La clé Web3Forms et le lien Cal.com ne donnent accès à rien de sensible.',
+  },
+  {
+    question: 'Le changement de serveurs DNS peut-il couper mon site ou mon email ?',
+    answer: 'Non, si l\'ordre est respecté : je recopie d\'abord toute votre configuration actuelle (email, vérifications, ancien site), et seulement ensuite vous changez les 2 serveurs DNS. Votre ancien site continue de répondre pendant la propagation, et on revient en arrière en remettant les anciennes valeurs si besoin.',
   },
 ];
 ---
@@ -106,7 +115,7 @@ const faq = [
         <div class="mb-10 rounded-lg bg-orange-50 border border-orange-200 p-5">
           <p class="text-sm font-semibold text-orange-800 mb-1">Pas de panique</p>
           <p class="text-sm text-orange-700 leading-relaxed">
-            Vous n'avez pas besoin de tout avoir en même temps. Envoyez-moi ce que vous avez, on avance étape par étape. Les quatre premiers éléments ont chacun leur propre guide détaillé.
+            Vous n'avez pas besoin de tout avoir en même temps. Envoyez-moi ce que vous avez, on avance étape par étape. Côté domaine, aucun accès à me transmettre : je prépare la configuration, vous collez 2 lignes chez votre registrar au moment de la mise en ligne.
           </p>
         </div>
 
@@ -158,12 +167,12 @@ const faq = [
           <p class="text-white font-semibold mb-2">Prêt ? Envoyez-moi tout d'un coup</p>
           <p class="text-neutral-300 text-sm mb-5">Un seul message avec tout ce que vous avez — je fais le tri.</p>
           <div class="flex flex-col sm:flex-row gap-3 justify-center">
-            <a href={`mailto:${business.email}?subject=Accès techniques — Mon site&body=Bonjour Marc,%0A%0AVoici mes accès :%0A%0A- Domaine : %0A- Contact technique OVH ajouté : oui / non%0A- Invitation membre Cloudflare ajoutée : oui / non%0A- Clé Web3Forms : %0A- Lien Cal.com : %0A%0AMerci !`}
+            <a href={`mailto:${business.email}?subject=Accès techniques : mon site&body=Bonjour Marc,%0A%0AVoici mes infos :%0A%0A- Domaine : %0A- Acheté chez (OVH, Cloudflare, GoDaddy, autre) : %0A- Email pro sur ce domaine : oui / non (si oui, chez qui : )%0A- Invitation membre Cloudflare ajoutée (si domaine Cloudflare) : oui / non%0A- Clé Web3Forms : %0A- Lien Cal.com : %0A%0AMerci !`}
               class="inline-block px-6 py-2.5 bg-[var(--color-accent)] text-white text-sm font-semibold rounded-lg hover:bg-[var(--color-accent-hover)] transition-all"
               data-umami-event="aide-acces-email">
               Envoyer par email
             </a>
-            <a href={`https://wa.me/${business.whatsapp}?text=Bonjour Marc, voici mes accès techniques :%0A%0ADomaine : %0AContact technique OVH ajouté : oui/non%0AInvitation membre Cloudflare ajoutée : oui/non%0AClé Web3Forms : %0ALien Cal.com : `}
+            <a href={`https://wa.me/${business.whatsapp}?text=Bonjour Marc, voici mes infos techniques :%0A%0ADomaine : %0AAcheté chez : %0AEmail pro sur ce domaine : oui/non%0AInvitation membre Cloudflare (si domaine Cloudflare) : oui/non%0AClé Web3Forms : %0ALien Cal.com : `}
               target="_blank" rel="noopener noreferrer"
               class="inline-block px-6 py-2.5 bg-white/10 text-white text-sm font-semibold rounded-lg border border-white/20 hover:bg-white/20 transition-all"
               data-umami-event="aide-acces-whatsapp">

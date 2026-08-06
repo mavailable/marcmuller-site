@@ -4,7 +4,7 @@ import SchemaOrg from '../../../components/SchemaOrg.astro';
 import { business } from '../../../data/business';
 
 const title = 'Buy your domain name — OVH, Cloudflare or Gandi · Marc M';
-const description = 'Step-by-step guide to register your domain. OVH for France, Cloudflare Registrar or Gandi for international clients. ~10 minutes.';
+const description = 'Step-by-step guide to register your domain and point it at your site by changing two nameservers. OVH for France, Cloudflare Registrar or Gandi elsewhere. ~10 minutes.';
 
 const breadcrumbs = [
   { name: 'Home', url: `${business.url}/en/` },
@@ -19,7 +19,6 @@ const registrars = [
     href: 'https://www.ovhcloud.com/en-gb/domains/',
     price: '~7 USD/year (.fr) · ~12 USD/year (.com)',
     why: 'French registrar, French support, lowest price for .fr. Best fit if your business is in France.',
-    techContact: true,
   },
   {
     name: 'Cloudflare Registrar',
@@ -27,7 +26,6 @@ const registrars = [
     href: 'https://www.cloudflare.com/products/registrar/',
     price: 'At-cost (~9-12 USD/year for .com)',
     why: 'No markup, lowest price on most TLDs, world-class DNS included. You need an existing Cloudflare account.',
-    techContact: false,
   },
   {
     name: 'Gandi',
@@ -35,7 +33,6 @@ const registrars = [
     href: 'https://www.gandi.net/en',
     price: '~16 USD/year (.com)',
     why: 'Long-standing French registrar, English UI, transparent pricing. Solid alternative if Cloudflare isn\'t an option.',
-    techContact: false,
   },
 ];
 
@@ -64,24 +61,35 @@ const stepsOvh = [
     tip: 'Only the domain name is needed. Your site is hosted elsewhere, that\'s part of my service.',
   },
   {
-    name: 'Add me as technical contact',
-    text: 'Open the link below to access your domain list in the OVH client area. Click your domain, then the "Contacts" tab. In the "Technical contact" column, replace the handle with mine:',
-    code: 'uo9730-ovh',
-    copyable: true,
-    detail: 'Confirm the change. You remain the domain owner, the technical contact role only lets me configure DNS to point to your site.',
-    link: { href: 'https://manager.eu.ovhcloud.com/#/web-domains/domain', label: 'Open my domains — OVH client area' },
-    path: 'Client area > Domain names > your-domain.com > Contacts',
+    name: 'Tell me the domain is registered',
+    text: 'Send me the exact domain name by email or WhatsApp. Most importantly, tell me if a professional email address already runs on that domain (Google Workspace, OVH, other): that\'s the one thing we must not break.',
+    detail: 'On my side, I prepare your domain\'s configuration at Cloudflare, where your site is hosted, replicating exactly what already exists: email, Google verifications, current site. As long as you change nothing, nothing moves for your visitors.',
+  },
+  {
+    name: 'I send you 2 nameserver addresses',
+    text: 'Within 24 hours you receive two lines like these, generated specifically for your domain:',
+    sample: ['xxxxx.ns.cloudflare.com', 'yyyyy.ns.cloudflare.com'],
+    sampleNote: 'Format example only. Your two real addresses are in my message, don\'t copy these ones.',
+    detail: 'These are the servers that tell the internet where to find your site and your email. They are the only thing you\'ll have to paste.',
+  },
+  {
+    name: 'Change your 2 nameservers at OVH',
+    text: 'In your OVH client area, open your domain then the "DNS servers" tab. Click "Modify DNS servers", pick the external DNS servers option (sometimes labelled "custom configuration"), replace the two existing lines with the ones I sent you, and confirm.',
+    detail: 'It takes 2 minutes. The change propagates in under an hour usually, 24 hours at most. You touch no other setting.',
+    link: { href: 'https://manager.eu.ovhcloud.com/#/web-domains/domain', label: 'Open my domains in the OVH client area' },
+    path: 'Client area > Domain names > your-domain.com > DNS servers > Modify DNS servers',
+    tip: 'If DNSSEC is enabled on your domain, tell me before you confirm: it has to be turned off a few hours earlier, otherwise the domain becomes unreachable.',
   },
   {
     name: 'Confirm it\'s done',
-    text: 'Send me a message by email or WhatsApp with your registered domain. I\'ll receive the technical contact request on my side and start the DNS setup.',
+    text: 'A short message is enough. I check propagation, test that your email still works, then connect the site to your domain.',
   },
 ];
 
 const stepsGandi = [
   { name: 'Open Gandi Domains', text: 'Go to gandi.net, search your domain and pick the available extension you want.' },
   { name: 'Create your account and register', text: 'Sign up with your professional email and complete the purchase. Skip Gandi hosting and email options, we don\'t need them.' },
-  { name: 'Share DNS access', text: 'Once registered, either send me a Gandi sharing invitation with "manage DNS" permissions, or change the nameservers to mine (I\'ll send them to you). Both options work, your choice.' },
+  { name: 'Change the nameservers', text: 'Once registered, tell me and I\'ll send you two nameserver addresses to paste in your domain\'s DNS settings (Domain > Nameservers > change to external servers). Same 2-minute move as OVH, and you stay the owner.' },
 ];
 
 const allHowToSteps = stepsOvh.map(s => ({ name: s.name, text: s.text }));
@@ -100,8 +108,24 @@ const faq = [
     answer: 'Short, easy to spell over the phone, no hyphens if possible. The sweet spot: your business name followed by .com (or your country TLD).',
   },
   {
-    question: 'Does the technical contact have access to my account?',
-    answer: 'No. The technical contact role only lets me manage the domain\'s DNS (the settings pointing to your site). I can\'t access your account, payment methods, or transfer the domain. You stay sole owner.',
+    question: 'Do I stay the owner of my domain?',
+    answer: 'Yes. Changing the nameservers transfers nothing and gives me no access to your registrar account. The domain stays in your name, paid by you, and you are the only one who can renew it, sell it, or put the old settings back. I never have your password.',
+  },
+  {
+    question: 'Will my professional email keep working?',
+    answer: 'Yes. Before anything changes, I replicate your email settings exactly in the new configuration, and I test sending and receiving right after the switch. Just tell me which addresses run on the domain, that\'s the first thing I check.',
+  },
+  {
+    question: 'How long does it take, and can my site go down?',
+    answer: 'Two minutes on your side. Propagation takes under an hour usually, 24 hours at most, and your current site keeps answering meanwhile: visitors see nothing.',
+  },
+  {
+    question: 'What if something goes wrong?',
+    answer: 'We put your two previous nameservers back in the same place and everything returns to normal within the hour. I write them down before starting, and I recommend you do too. As long as your old site is still running, rollback is immediate.',
+  },
+  {
+    question: 'Why not add you as technical contact instead?',
+    answer: 'Because at OVH it does nothing useful: the technical contact role gives no access to the nameservers screen. The 2-minute change you make yourself is simpler, faster, and keeps you in control of your domain.',
   },
 ];
 ---
@@ -140,7 +164,7 @@ const faq = [
         Buy your domain name
       </h1>
       <p class="text-lg text-white/90 md:text-xl leading-relaxed">
-        Your domain name is your address on the internet. Here's how to register it in a few minutes, with the registrar that fits you best.
+        Your domain name is your address on the internet. Here's how to register it in a few minutes with the registrar that fits you best, then point it at your site by changing two lines.
       </p>
     </div>
   </section>
@@ -151,10 +175,18 @@ const faq = [
       <article class="rounded-xl bg-white border border-[var(--color-border)] p-8 md:p-12 shadow-sm">
 
         <!-- Picker intro -->
-        <div class="mb-10 rounded-lg bg-sky-50 border border-sky-200 p-5">
+        <div class="mb-6 rounded-lg bg-sky-50 border border-sky-200 p-5">
           <p class="text-sm font-semibold text-sky-800 mb-1">Pick a registrar first</p>
           <p class="text-sm text-sky-700 leading-relaxed">
-            Three solid options below. The flow is the same: search, buy, give me DNS access. Detailed steps follow for each registrar.
+            Three solid options below. The flow is the same: search, buy, then point the domain at your site by changing its two nameservers. Detailed steps follow for each registrar.
+          </p>
+        </div>
+
+        <!-- Already own a domain -->
+        <div class="mb-10 rounded-lg bg-emerald-50 border border-emerald-200 p-5">
+          <p class="text-sm font-semibold text-emerald-800 mb-1">Already own a domain?</p>
+          <p class="text-sm text-emerald-700 leading-relaxed">
+            No need to buy another one or to transfer it, wherever it is (OVH, Ionos, GoDaddy, Gandi, anywhere else). Jump to step 6: you tell me the domain, I prepare its configuration on my side, and you paste two nameserver addresses at your registrar. Your current site and your email keep running the whole time.
           </p>
         </div>
 
@@ -191,24 +223,16 @@ const faq = [
                 <h3 class="text-lg font-bold text-[var(--color-text)] mb-2">{step.name}</h3>
                 <p class="text-[var(--color-text-muted)] leading-relaxed">{step.text}</p>
 
-                {step.code && (
-                  <div class="mt-3 rounded-lg bg-[#0D0D0D] px-5 py-3 flex items-center gap-3 max-w-fit">
-                    <code class="text-lg font-mono font-bold text-white tracking-wide">{step.code}</code>
-                    <button
-                      type="button"
-                      class="copy-btn flex items-center gap-1.5 rounded-md bg-white/10 px-3 py-1.5 text-xs font-semibold text-white hover:bg-white/20 transition-colors"
-                      data-copy={step.code}
-                      data-umami-event="help-domain-copy-id"
-                      aria-label="Copy OVH handle"
-                    >
-                      <svg class="w-3.5 h-3.5 copy-icon" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 16H6a2 2 0 01-2-2V6a2 2 0 012-2h8a2 2 0 012 2v2m-6 12h8a2 2 0 002-2v-8a2 2 0 00-2-2h-8a2 2 0 00-2 2v8a2 2 0 002 2z" />
-                      </svg>
-                      <svg class="w-3.5 h-3.5 check-icon hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor" aria-hidden="true">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
-                      </svg>
-                      <span class="copy-label">Copy</span>
-                    </button>
+                {step.sample && (
+                  <div class="mt-3">
+                    <div class="rounded-lg bg-[#0D0D0D] px-5 py-3 space-y-1 max-w-fit">
+                      {step.sample.map((line) => (
+                        <code class="block text-base font-mono font-bold text-white tracking-wide">{line}</code>
+                      ))}
+                    </div>
+                    {step.sampleNote && (
+                      <p class="mt-2 text-xs text-[var(--color-text-muted)]">{step.sampleNote}</p>
+                    )}
                   </div>
                 )}
 
@@ -280,7 +304,8 @@ const faq = [
         <div class="mt-10 rounded-lg bg-amber-50 border border-amber-200 p-5">
           <p class="text-sm font-semibold text-amber-800 mb-2">Tips</p>
           <ul class="list-disc pl-4 text-sm text-amber-700 leading-relaxed space-y-1.5">
-            <li>Don't touch any DNS setting yourself, I handle it.</li>
+            <li>The nameservers are the only setting you touch. The rest of the DNS zone is on me.</li>
+            <li>Write down your two previous nameservers before replacing them, that's your rollback.</li>
             <li>Set auto-renew to avoid losing the domain (registrars send email reminders too).</li>
             <li>If your first choice is taken, try a country TLD or add your city.</li>
             <li>Avoid hyphens, they're hard to dictate over the phone.</li>
@@ -308,9 +333,9 @@ const faq = [
         <!-- CTA -->
         <div class="mt-10 rounded-xl bg-[#0D0D0D] p-6 text-center">
           <p class="text-white font-semibold mb-2">Once your domain is registered</p>
-          <p class="text-white/90 text-sm mb-5">Send me the domain by email or WhatsApp, with the registrar you picked.</p>
+          <p class="text-white/90 text-sm mb-5">Send me the domain by email or WhatsApp, with the registrar you picked. I prepare the configuration and send you the 2 nameservers to paste.</p>
           <div class="flex flex-col sm:flex-row gap-3 justify-center">
-            <a href={`mailto:${business.email}?subject=Domain registered&body=Hi Marc,%0A%0AI registered my domain.%0A%0ARegistrar: %0ADomain: %0A%0AThanks!`}
+            <a href={`mailto:${business.email}?subject=Domain registered&body=Hi Marc,%0A%0AI registered my domain.%0A%0ARegistrar: %0ADomain: %0AA professional email address runs on it: yes / no%0AIf yes, which provider (Google Workspace, OVH, other): %0A%0AThanks!`}
               class="inline-block px-6 py-2.5 bg-[var(--color-accent)] text-white text-sm font-semibold rounded-lg hover:bg-[var(--color-accent-hover)] transition-all"
               data-umami-event="help-domain-email">
               Send by email
@@ -339,24 +364,4 @@ const faq = [
     </div>
   </section>
 
-  <script>
-    document.querySelectorAll('.copy-btn').forEach((btn) => {
-      btn.addEventListener('click', async () => {
-        const text = btn.getAttribute('data-copy');
-        if (!text) return;
-        await navigator.clipboard.writeText(text);
-        const copyIcon = btn.querySelector('.copy-icon');
-        const checkIcon = btn.querySelector('.check-icon');
-        const label = btn.querySelector('.copy-label');
-        if (copyIcon) copyIcon.classList.add('hidden');
-        if (checkIcon) checkIcon.classList.remove('hidden');
-        if (label) label.textContent = 'Copied!';
-        setTimeout(() => {
-          if (copyIcon) copyIcon.classList.remove('hidden');
-          if (checkIcon) checkIcon.classList.add('hidden');
-          if (label) label.textContent = 'Copy';
-        }, 2000);
-      });
-    });
-  </script>
 </BaseLayout>
