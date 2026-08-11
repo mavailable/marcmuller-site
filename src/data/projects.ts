@@ -150,7 +150,7 @@ export const projects: Project[] = [
       { label: 'Delivered in', value: '10 days' },
     ],
     stack: ['Astro', 'Tailwind', 'Cloudflare', 'Keystatic'],
-    caseStudy: '/journal/site-web-menuisier-vic-en-bigorre-etude-de-cas',
+    caseStudy: '/journal/site-web-menuisier-vic-en-bigorre-etude-de-cas/',
     review: {
       text: "Si vous avez envie d'un site web Marc est la personne qu'il vous faut sans hésitation. Réactif, inventif, il sait exactement où il va pour que votre site soit parfait et surtout il est attentif à l'attente du client. Je le recommande à 1000%. Un très grand MERCI pour votre travail, grâce à vous j'ai une meilleure visibilité pour mon entreprise. AU TOOOOOOP.",
       author: 'David Merly',
@@ -189,7 +189,7 @@ export const projects: Project[] = [
       { label: 'Delivered in', value: '10 days' },
     ],
     stack: ['Astro', 'Tailwind', 'Cloudflare', 'Keystatic'],
-    caseStudy: '/journal/refonte-jd-zootherapeute',
+    caseStudy: '/journal/refonte-jd-zootherapeute/',
     review: {
       text: "Je conseille vivement de faire confiance à Marc — une écoute attentive, réactif dans la création du digital et très compétent. Faites-lui confiance, vous ne regretterez pas.",
       author: 'Jennifer De Groeve',
@@ -369,7 +369,7 @@ export const projects: Project[] = [
       { label: '11', value: 'blog posts' },
     ],
     stack: ['Astro', 'Tailwind', 'Cloudflare'],
-    caseStudy: '/journal/site-web-securite-alarme-metz-etude-de-cas',
+    caseStudy: '/journal/site-web-securite-alarme-metz-etude-de-cas/',
     carousels: ['realisations', 'portfolio', 'homepage', 'graphistes'],
   },
 

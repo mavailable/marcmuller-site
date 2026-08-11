@@ -22,27 +22,31 @@ const phoneDisplay = phoneRaw.replace(/(\+33)(\d)(\d{2})(\d{2})(\d{2})(\d{2})/, 
 
 const nav = lang === 'en'
   ? [
-      { href: '/en/portfolio', label: 'Portfolio', aria: 'View my work', event: 'nav-portfolio' },
-      { href: '/echo', label: 'Echo', aria: 'Test your website with AI prospects', event: 'nav-echo' },
-      { href: '/en/services', label: 'Services', aria: 'Discover my services', event: 'nav-services' },
-      { href: '/en/method', label: 'Method', aria: 'How I work with you', event: 'nav-method' },
-      { href: '/en/training', label: 'Training', aria: 'Learn to do it yourself', event: 'nav-training' },
-      { href: '/en/blog', label: 'Blog', aria: 'Read my blog', event: 'nav-blog' },
-      { href: '/en/about', label: 'About', aria: 'About Marc', event: 'nav-about' },
+      { href: '/en/portfolio/', label: 'Portfolio', aria: 'View my work', event: 'nav-portfolio' },
+      { href: '/echo/', label: 'Echo', aria: 'Test your website with AI prospects', event: 'nav-echo' },
+      { href: '/en/services/', label: 'Services', aria: 'Discover my services', event: 'nav-services' },
+      { href: '/en/method/', label: 'Method', aria: 'How I work with you', event: 'nav-method' },
+      { href: '/en/training/', label: 'Training', aria: 'Learn to do it yourself', event: 'nav-training' },
+      { href: '/en/blog/', label: 'Blog', aria: 'Read my blog', event: 'nav-blog' },
+      { href: '/en/about/', label: 'About', aria: 'About Marc', event: 'nav-about' },
     ]
   : [
-      { href: '/realisations', label: 'Réalisations', aria: 'Voir mes réalisations', event: 'nav-realisations' },
-      { href: '/echo', label: 'Écho', aria: 'Testez votre site avec des prospects IA', event: 'nav-echo' },
-      { href: '/offre', label: 'Offre', aria: 'Découvrir mon offre', event: 'nav-offre' },
-      { href: '/methode', label: 'Méthode', aria: 'Comment je bosse avec toi', event: 'nav-methode' },
-      { href: '/formation', label: 'Formation', aria: 'Apprendre à le faire toi-même', event: 'nav-formation' },
-      { href: '/journal', label: 'Journal', aria: 'Lire mon journal', event: 'nav-journal' },
-      { href: '/qui-suis-je', label: 'Qui suis-je', aria: 'En savoir plus sur Marc', event: 'nav-qui-suis-je' },
+      { href: '/realisations/', label: 'Réalisations', aria: 'Voir mes réalisations', event: 'nav-realisations' },
+      { href: '/echo/', label: 'Écho', aria: 'Testez votre site avec des prospects IA', event: 'nav-echo' },
+      { href: '/offre/', label: 'Offre', aria: 'Découvrir mon offre', event: 'nav-offre' },
+      { href: '/methode/', label: 'Méthode', aria: 'Comment je bosse avec toi', event: 'nav-methode' },
+      { href: '/formation/', label: 'Formation', aria: 'Apprendre à le faire toi-même', event: 'nav-formation' },
+      { href: '/journal/', label: 'Journal', aria: 'Lire mon journal', event: 'nav-journal' },
+      { href: '/qui-suis-je/', label: 'Qui suis-je', aria: 'En savoir plus sur Marc', event: 'nav-qui-suis-je' },
     ];
 
 // Language switcher URLs
-const switchToFR = frPath ?? '/';
-const switchToEN = enPath ?? '/en/';
+// Les props frPath/enPath sont ecrites sans slash final (meme convention que les
+// cles de la table FR_TO_EN du middleware). Le site est en trailingSlash: 'always',
+// donc on normalise ici, sinon chaque clic sur le selecteur part dans un 308.
+const withTrailingSlash = (p: string) => (p.endsWith('/') ? p : `${p}/`);
+const switchToFR = frPath ? withTrailingSlash(frPath) : '/';
+const switchToEN = enPath ? withTrailingSlash(enPath) : '/en/';
 ---
 
 <header
