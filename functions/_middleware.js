@@ -21,7 +21,11 @@ const FR_TO_EN = {
   '/mentions-legales': '/en/legal-notice',
   '/politique-confidentialite': '/en/privacy-policy',
   '/merci': '/en/thank-you',
-  '/formation': '/en/course',
+  // NB : la page EN de formation est /en/training. L'ancien slug /en/course a ete
+  // renomme en /en/become-free le 26/06/2026 (79acf3b, parodie 1er avril deplacee),
+  // et la vraie page formation EN creee sous /en/training (5b2c99d). Ne jamais
+  // repointer vers /en/course (404) ni vers /en/become-free (page parodie noindex).
+  '/formation': '/en/training',
   '/graphistes': '/en/designers',
   // Pages ville
   '/creation-site-web-metz': '/en/web-design-metz',
