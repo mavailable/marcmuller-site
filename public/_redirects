@@ -1,10 +1,42 @@
 # Redirects — URLs attendues par les visiteurs
-/tarifs /offre 301
-/a-propos /qui-suis-je 301
-/about /en/about 301
-/services /en/services 301
-/portfolio /en/portfolio 301
-/100-sites-artisans /offre 301
-/100-sites-artisans/* /offre 301
-/en/100-artisan-websites /en/services 301
-/en/100-artisan-websites/* /en/services 301
+#
+# ⚠️ Cloudflare Pages ne normalise PAS le slash final dans le motif source :
+# une regle « /tarifs » ne capture pas « /tarifs/ » (verifie en prod le 11/08/2026,
+# /tarifs -> 301 mais /tarifs/ -> 404). Le site est en trailingSlash: 'always',
+# donc chaque regle doit exister dans les DEUX formes, et la cible doit porter
+# le slash final pour eviter un hop 301 -> 308.
+
+# Anciens slugs FR
+/tarifs /offre/ 301
+/tarifs/ /offre/ 301
+/a-propos /qui-suis-je/ 301
+/a-propos/ /qui-suis-je/ 301
+
+# Slugs EN sans prefixe /en/
+/about /en/about/ 301
+/about/ /en/about/ 301
+/services /en/services/ 301
+/services/ /en/services/ 301
+/portfolio /en/portfolio/ 301
+/portfolio/ /en/portfolio/ 301
+
+# Slugs EN morts (jamais publies / renommes)
+/en/pricing /en/services/ 301
+/en/pricing/ /en/services/ 301
+/en/echo /echo/ 301
+/en/echo/ /echo/ 301
+/en/course /en/training/ 301
+/en/course/ /en/training/ 301
+
+# Rapport de demonstration marcm.fr : /echo/marcm/ supprime le 31/03/2026
+# (57f2023, purge des pages echo prospect). L'auto-audit vivant est /audit/marcm/.
+/echo/marcm /audit/marcm/ 301
+/echo/marcm/ /audit/marcm/ 301
+
+# Operation « 100 Vitrines » retiree
+/100-sites-artisans /offre/ 301
+/100-sites-artisans/ /offre/ 301
+/100-sites-artisans/* /offre/ 301
+/en/100-artisan-websites /en/services/ 301
+/en/100-artisan-websites/ /en/services/ 301
+/en/100-artisan-websites/* /en/services/ 301
