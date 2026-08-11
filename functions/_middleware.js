@@ -12,12 +12,30 @@ const CSP_VALUE = csp.CSP_VALUE;
 const CSP_ADMIN_VALUE = csp.CSP_ADMIN_VALUE || csp.CSP_VALUE;
 
 // Table de correspondance FR → EN (pages ayant un équivalent traduit)
+//
+// CRITERES D'ENTREE — une paire n'entre ici que si les DEUX conditions sont vraies :
+//   1. les deux pages se declarent mutuellement via les props frPath/enPath de
+//      BaseLayout (c'est la source de verite des hreflang et du selecteur de langue) ;
+//   2. la cible EN rend le Header (pas de noHeader), donc le visiteur peut revenir
+//      en FR via le selecteur, qui pose le cookie lang=fr et desarme cette redirection.
+// Sans (2) la redirection est un aller sans retour. Cas ecarte : /devenir-libre <->
+// /en/become-free (landings 1er avril) — vraies traductions l'une de l'autre, mais
+// aucune des deux ne passe par BaseLayout : ni hreflang, ni Header, ni selecteur.
+//
+// MAINTENANCE : renommer ou supprimer une page sous src/pages/** impose de grep
+// l'ancien ET le nouveau slug ici et dans public/_redirects. Rien ne teste cette
+// table : astro build ne voit pas les Pages Functions, et une entree morte reste
+// invisible en navigation FR (la page FR repond 200, seuls les non-francophones
+// tombent sur le 404). Cf. l'incident /formation -> /en/course ci-dessous.
 const FR_TO_EN = {
   '/': '/en/',
   '/contact': '/en/contact',
   '/qui-suis-je': '/en/about',
   '/realisations': '/en/portfolio',
   '/offre': '/en/services',
+  '/methode': '/en/method',
+  '/commander': '/en/order-starter-site',
+  '/audit-gratuit': '/en/free-audit',
   '/mentions-legales': '/en/legal-notice',
   '/politique-confidentialite': '/en/privacy-policy',
   '/merci': '/en/thank-you',
@@ -31,6 +49,8 @@ const FR_TO_EN = {
   '/creation-site-web-metz': '/en/web-design-metz',
   '/creation-site-web-nancy': '/en/web-design-nancy',
   '/creation-site-web-strasbourg': '/en/web-design-strasbourg',
+  '/creation-site-web-colmar': '/en/web-design-colmar',
+  '/creation-site-web-mulhouse': '/en/web-design-mulhouse',
   // Blog
   '/journal': '/en/blog',
   '/journal/3-actions-gratuites-visibilite': '/en/blog/3-free-actions-visibility',
