@@ -66,6 +66,10 @@ const cmsConfig: CmsConfig = {
     // link. Nécessite frame-src https://cloud.umami.is dans la CSP admin
     // (scripts/generate-csp.mjs → CSP_ADMIN_VALUE).
     umamiShareUrl: 'https://cloud.umami.is/share/PQwpWjdhsSJGd5k6/marcm.fr',
+    // siteId + proxy : sans eux les KPI visiteurs/vues de la HealthCard restent
+    // à « — ». Même valeur que le data-website-id de BaseLayout.
+    umamiSiteId: '0e4930eb-681d-4c89-94f2-5abfcf564383',
+    umamiProxyUrl: 'https://umami-proxy.marc-f10.workers.dev',
     contactMarc: {
       phone: '06 88 76 66 48',
       whatsapp: '33688766648',

@@ -90,11 +90,13 @@ async function main() {
   // inline window.__cmsConfig de dist/admin/index.html est hashé comme les
   // autres), directives élargies pour le panel seulement :
   //   img-src blob: (previews upload côté client) + media-src 'self' blob: https:
-  //   connect-src 'self' suffit (API /api/cms/* et /api/crm/* same-origin).
+  //   connect-src : les API /api/cms/* et /api/crm/* sont same-origin, mais le
+  //   worker umami-proxy ne l'est pas — sans lui les KPI visiteurs/vues de la
+  //   HealthCard restent à « — » alors que l'iframe s'affiche.
   //   frame-src https://cloud.umami.is : onglet Statistiques (iframe Umami
   //   share, cms.config → site.umamiShareUrl). Les sous-ressources de la page
   //   share sont gouvernées par la CSP d'Umami, pas par celle du parent.
-  const cspAdminValue = `default-src 'none'; script-src ${scriptSrc}; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self'; media-src 'self' blob: https:; frame-src https://cloud.umami.is; form-action 'self'; frame-ancestors 'none'; base-uri 'self'; manifest-src 'self'`;
+  const cspAdminValue = `default-src 'none'; script-src ${scriptSrc}; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self'; connect-src 'self' https://umami-proxy.marc-f10.workers.dev; media-src 'self' blob: https:; frame-src https://cloud.umami.is; form-action 'self'; frame-ancestors 'none'; base-uri 'self'; manifest-src 'self'`;
 
   // Write CSP values as JS module for the Cloudflare Pages middleware
   // (the _headers file has a 2000-char limit per header value, CSP with hashes exceeds it)
