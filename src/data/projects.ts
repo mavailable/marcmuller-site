@@ -55,6 +55,44 @@ export interface Project {
 }
 
 export const projects: Project[] = [
+  // ── Zompa Design ─────────────────────────────────────────────────────────
+  // hidden: true tant que Laurie n'a pas donné son accord de publication.
+  // Passer à false (ou retirer la ligne) dès qu'elle répond oui.
+  {
+    id: 'zompa',
+    title: 'Zompa Design',
+    titleEn: 'Zompa Design',
+    sector: 'Créatif',
+    sectorEn: 'Creative',
+    sectorColor: 'border-amber-400/30 bg-amber-400/10 text-amber-600',
+    type: 'Portfolio bilingue',
+    typeEn: 'Bilingual portfolio',
+    offer: 'Projet Sur Mesure',
+    description:
+      "Studio de graphic props pour escape games, parcs à thème et cinéma. Refonte complète d'un ancien site Webflow : portfolio de 12 projets, journal de 7 articles migrés, direction artistique sombre à l'or, le tout éditable par la cliente.",
+    descriptionEn:
+      'Graphic props studio for escape games, theme parks and cinema. Full rebuild of an ageing Webflow site: 12-project portfolio, 7 migrated journal articles, dark and gold art direction, all editable by the client herself.',
+    url: 'https://zompa.fr',
+    gradient: 'from-[#161619] to-[#4A2E0A]',
+    gradientFrom: '#161619',
+    gradientTo: '#4A2E0A',
+    screenshot: '/images/projects/zompa.webp',
+    features: ['Bilingue FR/EN', 'Portfolio 12 projets', 'Journal', 'CMS maison', 'Migration Webflow', 'Schema.org'],
+    featuresEn: ['FR/EN bilingual', '12-project portfolio', 'Journal', 'Custom CMS', 'Webflow migration', 'Schema.org'],
+    highlights: [
+      { label: 'Vitesse', value: '99' },
+      { label: 'Langues', value: '2' },
+    ],
+    highlightsEn: [
+      { label: 'Speed', value: '99' },
+      { label: 'Languages', value: '2' },
+    ],
+    stack: ['Astro', 'Tailwind', 'Cloudflare', 'CMS maison'],
+    multilingual: true,
+    hidden: true,
+    carousels: ['realisations', 'portfolio', 'graphistes'],
+  },
+
   // ── Association Davia ─────────────────────────────────────────────────────
   {
     id: 'davia',
