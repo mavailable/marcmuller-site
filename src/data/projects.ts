@@ -56,41 +56,44 @@ export interface Project {
 
 export const projects: Project[] = [
   // ── Zompa Design ─────────────────────────────────────────────────────────
-  // hidden: true tant que Laurie n'a pas donné son accord de publication.
-  // Passer à false (ou retirer la ligne) dès qu'elle répond oui.
+  // Faits vérifiés sur zompa.fr le 2026-08-17 : 6 pages projet publiées,
+  // journal bilingue, 301 depuis les anciennes URL Webflow /articles/*,
+  // modules admin actifs sur master (crm/facturation, planning, messages).
+  // PSI 99 desktop / 93 mobile le 2026-08-17.
   {
     id: 'zompa',
     title: 'Zompa Design',
     titleEn: 'Zompa Design',
     sector: 'Créatif',
     sectorEn: 'Creative',
+    // amber-600 et pas amber-400 : ce badge est aussi rendu sur fond BLANC
+    // (grille « Mes derniers projets » de la home), où amber-400 est illisible.
     sectorColor: 'border-amber-400/30 bg-amber-400/10 text-amber-600',
-    type: 'Portfolio bilingue',
-    typeEn: 'Bilingual portfolio',
+    type: 'Portfolio bilingue + back-office',
+    typeEn: 'Bilingual portfolio + back office',
     offer: 'Projet Sur Mesure',
     description:
-      "Studio de graphic props pour escape games, parcs à thème et cinéma. Refonte complète d'un ancien site Webflow : portfolio de 12 projets, journal de 7 articles migrés, direction artistique sombre à l'or, le tout éditable par la cliente.",
+      "Studio de graphic props pour escape games, parcs à thème et cinéma. Son ancien site Webflow a été refait de fond en comble : portfolio et journal bilingues anglais/français, anciennes adresses redirigées, et un back-office sur mesure dans le même espace d'administration (devis et factures en PDF, planning de charge, suivi de rentabilité).",
     descriptionEn:
-      'Graphic props studio for escape games, theme parks and cinema. Full rebuild of an ageing Webflow site: 12-project portfolio, 7 migrated journal articles, dark and gold art direction, all editable by the client herself.',
+      "Graphic props studio for escape games, theme parks and film. Her ageing Webflow site was rebuilt from the ground up: bilingual English/French portfolio and journal, old URLs redirected, plus a custom back office inside the same admin panel (PDF quotes and invoices, workload planning, profitability tracking).",
     url: 'https://zompa.fr',
     gradient: 'from-[#161619] to-[#4A2E0A]',
     gradientFrom: '#161619',
     gradientTo: '#4A2E0A',
     screenshot: '/images/projects/zompa.webp',
-    features: ['Bilingue FR/EN', 'Portfolio 12 projets', 'Journal', 'CMS maison', 'Migration Webflow', 'Schema.org'],
-    featuresEn: ['FR/EN bilingual', '12-project portfolio', 'Journal', 'Custom CMS', 'Webflow migration', 'Schema.org'],
+    features: ['Bilingue EN/FR', 'Devis et factures PDF', 'Planning & rentabilité', 'Migration Webflow', 'Journal bilingue', 'CMS maison'],
+    featuresEn: ['EN/FR bilingual', 'PDF quotes & invoices', 'Workload & profitability', 'Webflow migration', 'Bilingual journal', 'In-house CMS'],
     highlights: [
       { label: 'Vitesse', value: '99' },
-      { label: 'Langues', value: '2' },
+      { label: 'Bilingue', value: 'EN / FR' },
     ],
     highlightsEn: [
       { label: 'Speed', value: '99' },
-      { label: 'Languages', value: '2' },
+      { label: 'Bilingual', value: 'EN / FR' },
     ],
     stack: ['Astro', 'Tailwind', 'Cloudflare', 'CMS maison'],
     multilingual: true,
-    hidden: true,
-    carousels: ['realisations', 'portfolio', 'graphistes'],
+    carousels: ['realisations', 'portfolio', 'homepage', 'graphistes'],
   },
 
   // ── Association Davia ─────────────────────────────────────────────────────
