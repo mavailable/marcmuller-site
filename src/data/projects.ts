@@ -75,9 +75,9 @@ export const projects: Project[] = [
     typeEn: 'Bilingual portfolio + profitability tracking',
     offer: 'Projet Sur Mesure',
     description:
-      "Studio de graphic props pour escape games, parcs à thème et cinéma. Son ancien site Webflow a été refait de fond en comble : portfolio et journal bilingues anglais/français, anciennes adresses redirigées. Et dans le même espace d'administration, de quoi piloter son activité sans tableur : le temps passé remonte de Toggl projet par projet, la charge se lit semaine par semaine et la rentabilité réelle se calcule toute seule.",
+      "Studio de graphic props pour escape games, parcs à thème et cinéma. Son ancien site Webflow a été refait de fond en comble : portfolio et journal bilingues anglais/français, ancien blog récupéré et redirigé. Et dans le même espace d'administration, de quoi piloter son activité sans tableur : le temps passé remonte de Toggl projet par projet, la charge se lit semaine par semaine et la rentabilité réelle se calcule toute seule.",
     descriptionEn:
-      "Graphic props studio for escape games, theme parks and film. Her ageing Webflow site was rebuilt from the ground up: bilingual English/French portfolio and journal, old URLs redirected. And inside the same admin panel, everything she needs to run the studio without a spreadsheet: tracked time pulled from Toggl project by project, workload read week by week, and real profitability worked out on its own.",
+      "Graphic props studio for escape games, theme parks and film. Her ageing Webflow site was rebuilt from the ground up: bilingual English/French portfolio and journal, old blog recovered and redirected. And inside the same admin panel, everything she needs to run the studio without a spreadsheet: tracked time pulled from Toggl project by project, workload read week by week, and real profitability worked out on its own.",
     url: 'https://zompa.fr',
     gradientFrom: '#161619',
     gradientTo: '#4A2E0A',
@@ -94,6 +94,7 @@ export const projects: Project[] = [
     ],
     stack: ['Astro', 'Tailwind', 'Cloudflare', 'CMS maison'],
     multilingual: true,
+    caseStudy: '/journal/refonte-webflow-site-bilingue-etude-de-cas/',
     carousels: ['realisations', 'portfolio', 'homepage', 'graphistes'],
   },
 
