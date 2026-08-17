@@ -458,3 +458,49 @@
     max-width: 100%;
   }
 }
+
+/* ═══════════════════════════════════════════════════════════════════════════
+   PORTFOLIO : dépliage « Voir plus » des cartes (/realisations, /en/portfolio)
+
+   100 % CSS : le mécanisme repose sur <details> natif, donc il fonctionne sans
+   JavaScript. Carte fermée = description coupée à 2 lignes, exactement comme
+   avant. Carte ouverte = description entière + pastilles restantes + chiffres
+   + stack. Si :has() n'est pas supporté, le panneau s'ouvre quand même et la
+   description reste clampée : dégradation propre, jamais de contenu perdu.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+.pf-desc {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  overflow: hidden;
+}
+
+.project-card:has(.pf-more[open]) .pf-desc {
+  display: block;
+  overflow: visible;
+}
+
+.pf-more > summary {
+  list-style: none;
+  cursor: pointer;
+}
+
+.pf-more > summary::-webkit-details-marker {
+  display: none;
+}
+
+.pf-more > summary:focus-visible {
+  outline: 2px solid var(--color-accent);
+  outline-offset: 2px;
+}
+
+.pf-more[open] .pf-more-label-open,
+.pf-more:not([open]) .pf-more-label-close {
+  display: none;
+}
+
+.pf-more[open] .pf-more-chevron {
+  transform: rotate(180deg);
+}
