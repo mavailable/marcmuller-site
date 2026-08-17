@@ -58,8 +58,12 @@ export const projects: Project[] = [
   // ── Zompa Design ─────────────────────────────────────────────────────────
   // Faits vérifiés sur zompa.fr le 2026-08-17 : 6 pages projet publiées,
   // journal bilingue, 301 depuis les anciennes URL Webflow /articles/*,
-  // modules admin actifs sur master (crm/facturation, planning, messages).
+  // module planning actif sur master (temps Toggl, charge, rentabilité).
   // PSI 99 desktop / 93 mobile le 2026-08-17.
+  //
+  // ANGLE ÉDITORIAL (arbitrage Marc du 2026-08-17) : on met en avant le site,
+  // le suivi du temps et la rentabilité. On ne parle PAS de devis ni de
+  // factures, alors même que le module existe. Ne pas les réintroduire.
   {
     id: 'zompa',
     title: 'Zompa Design',
@@ -69,20 +73,20 @@ export const projects: Project[] = [
     // amber-600 et pas amber-400 : ce badge est aussi rendu sur fond BLANC
     // (grille « Mes derniers projets » de la home), où amber-400 est illisible.
     sectorColor: 'border-amber-400/30 bg-amber-400/10 text-amber-600',
-    type: 'Portfolio bilingue + back-office',
-    typeEn: 'Bilingual portfolio + back office',
+    type: 'Portfolio bilingue + suivi de rentabilité',
+    typeEn: 'Bilingual portfolio + profitability tracking',
     offer: 'Projet Sur Mesure',
     description:
-      "Studio de graphic props pour escape games, parcs à thème et cinéma. Son ancien site Webflow a été refait de fond en comble : portfolio et journal bilingues anglais/français, anciennes adresses redirigées, et un back-office sur mesure dans le même espace d'administration (devis et factures en PDF, planning de charge, suivi de rentabilité).",
+      "Studio de graphic props pour escape games, parcs à thème et cinéma. Son ancien site Webflow a été refait de fond en comble : portfolio et journal bilingues anglais/français, anciennes adresses redirigées. Et dans le même espace d'administration, de quoi piloter son activité sans tableur : le temps passé remonte de Toggl projet par projet, la charge se lit semaine par semaine et la rentabilité réelle se calcule toute seule.",
     descriptionEn:
-      "Graphic props studio for escape games, theme parks and film. Her ageing Webflow site was rebuilt from the ground up: bilingual English/French portfolio and journal, old URLs redirected, plus a custom back office inside the same admin panel (PDF quotes and invoices, workload planning, profitability tracking).",
+      "Graphic props studio for escape games, theme parks and film. Her ageing Webflow site was rebuilt from the ground up: bilingual English/French portfolio and journal, old URLs redirected. And inside the same admin panel, everything she needs to run the studio without a spreadsheet: tracked time pulled from Toggl project by project, workload read week by week, and real profitability worked out on its own.",
     url: 'https://zompa.fr',
     gradient: 'from-[#161619] to-[#4A2E0A]',
     gradientFrom: '#161619',
     gradientTo: '#4A2E0A',
     screenshot: '/images/projects/zompa.webp',
-    features: ['Bilingue EN/FR', 'Devis et factures PDF', 'Planning & rentabilité', 'Migration Webflow', 'Journal bilingue', 'CMS maison'],
-    featuresEn: ['EN/FR bilingual', 'PDF quotes & invoices', 'Workload & profitability', 'Webflow migration', 'Bilingual journal', 'In-house CMS'],
+    features: ['Bilingue EN/FR', 'Temps passé via Toggl', 'Charge & rentabilité', 'Migration Webflow', 'Journal bilingue', 'CMS maison'],
+    featuresEn: ['EN/FR bilingual', 'Time tracked via Toggl', 'Workload & profitability', 'Webflow migration', 'Bilingual journal', 'In-house CMS'],
     highlights: [
       { label: 'Vitesse', value: '99' },
       { label: 'Bilingue', value: 'EN / FR' },
